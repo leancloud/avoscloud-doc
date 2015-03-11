@@ -1,0 +1,12 @@
+# This is the Textmate configuration file used by @sparanoid
+# Variables
+EXCLUDES              = "{app/web,tmp,test,dist,vendor,components,node_modules,scripts/lib}"
+
+# Exclude search list
+excludeInFolderSearch = "$EXCLUDES"
+excludeInFileChooser  = "$EXCLUDES"
+
+# Tab settings
+softWrap              = false
+softTabs              = true
+tabSize               = 2

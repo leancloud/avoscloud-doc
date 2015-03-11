@@ -20,7 +20,7 @@ tocContents.eventProxy.on('ready', function () {
 function doSideBar(){
   $('.sidebar-wrapper').affix({
     offset: {
-      top: 60
+      top: 80
     , bottom: function () {
         return (this.bottom = $('.footer').outerHeight(true))
       }
@@ -53,22 +53,22 @@ $(window).on('resize',function(){
   $('#toc-wrapper').width($('#left-nav').width());
 });
 // Sidebar ScrollSpy
-// $.fn.scrollStopped = function(callback) {
-//   $(this).scroll(function() {
-//     var self = this, $this = $(self);
-//     if ($this.data('scrollTimeout')) {
-//       clearTimeout($this.data('scrollTimeout'));
-//     }
-//     $this.data('scrollTimeout', setTimeout(callback, 250, self));
-//   });
-// };
+$.fn.scrollStopped = function(callback) {
+  $(this).scroll(function() {
+    var self = this, $this = $(self);
+    if ($this.data('scrollTimeout')) {
+      clearTimeout($this.data('scrollTimeout'));
+    }
+    $this.data('scrollTimeout', setTimeout(callback, 250, self));
+  });
+};
 
-// $(window).scrollStopped(function() {
-//   setTimeout(function() {
-//     $(".sidebar-affix-shadow.on.sidebar-hover-off .sidebar-wrapper").scrollTo($("#toc > li .active").first(), 800, {offset: -20});
-//     // console.log("Haven't scrolled in 250ms, fired in 250ms later.");
-//   }, 250);
-// });
+$(window).scrollStopped(function() {
+  setTimeout(function() {
+    $(".sidebar-affix-shadow.on.sidebar-hover-off .sidebar-wrapper").scrollTo($("#toc > li .active").first(), 800, {offset: -20});
+    // console.log("Haven't scrolled in 250ms, fired in 250ms later.");
+  }, 250);
+});
 
 $(".sidebar-affix-shadow").hover(
   function() {

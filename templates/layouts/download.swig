@@ -11,7 +11,7 @@
 
 {% include 'templates/include/header.html' %}
 
-<div id="content" class="container-fluid" style="padding-bottom: 0;">
+<div class="doc-content container-fluid" id="content" style="padding-bottom: 0;">
 {{body}}
 </div>
 <!-- .container-fluid -->

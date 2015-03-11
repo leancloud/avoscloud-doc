@@ -1,0 +1,120 @@
+// notification.swig
+#site_notify_important{
+  height: 40px;
+  overflow: hidden;
+}
+
+.global-warning {
+  @c: #f38814;
+  color: @c;
+  background: #fff2e4;
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  a {
+    color: @c;
+    font-weight: bold;
+    border-bottom: 1px solid fade(@c, 50%);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+      border-bottom-color: @c;
+    }
+  }
+
+  .close {
+    color: @c;
+    opacity: 1;
+    text-shadow: none;
+
+    &:hover,
+    &:focus {
+      color: @c;
+      opacity: .6;
+    }
+  }
+
+  &.error {
+    background: #f7486b;
+  }
+}
+
+// Old-school stuff (copied from previous version)
+// Error input text for data.html
+.err-input{
+  color: rgb(233, 0, 56);
+  background: rgb(255, 179, 191);
+}
+
+.msg-tip-wrapper {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 999999;
+  color: #fff;
+  background-color: fade(@link-color, 90%);
+  background-size: 50px 50px;
+  background-image: linear-gradient(
+    45deg,
+    fade(darken(@link-color, 20%), 10%)  25%,
+    transparent              25%,
+    transparent              50%,
+    fade(darken(@link-color, 20%), 10%)  50%,
+    fade(darken(@link-color, 20%), 10%)  75%,
+    transparent              75%,
+    transparent
+  );
+  animation: barberpole 1s linear infinite;
+  cursor: pointer;
+
+  @keyframes barberpole {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 100px 50px;
+    }
+  }
+
+  .msg-tip {
+    line-height: (@navbar-height + 1px);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    a {
+      color: #fff;
+      font-weight: bold;
+    }
+  }
+
+  .msg-tip-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    display: block;
+    height: 20px;
+    width: 20px;
+    background: red;
+    cursor: pointer;
+  }
+
+  &.error {
+    background-color: fade(#eb192d, 90%);
+    background-image: linear-gradient(
+      45deg,
+      fade(darken(#eb192d, 20%), 10%)  25%,
+      transparent              25%,
+      transparent              50%,
+      fade(darken(#eb192d, 20%), 10%)  50%,
+      fade(darken(#eb192d, 20%), 10%)  75%,
+      transparent              75%,
+      transparent
+    );
+  }
+}

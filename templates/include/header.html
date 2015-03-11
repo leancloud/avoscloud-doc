@@ -1,18 +1,128 @@
-<header class="navbar navbar-light" role="banner" id="top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a href="/" class="navbar-brand font-logo">
-        LeanCloud
-      </a>
+<nav class="dashboard-subnav navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-collapse" id="app-options">
+            <ul class="nav navbar-nav navbar-app-select">
+                <li>
+                  <a href="/applist.html" class="nav-logo font-logo">L<span class="visible-xs-inline">eanCloud</span></a>
+                </li>
+            </ul>
+
+            <div class="navbar-app-actions-wrap">
+                <ul class="nav navbar-nav navbar-app-actions" >
+                  <li class="dropdown dropdown-toggle-app-name">
+                    <a href="applist.html">
+                      <i class="icon icon-dashbd-icon icon-blank-app"></i>
+                      <div class="name">返回控制台</div>
+                    </a>
+                  </li>
+
+                  {% if basename=='messaging' or basename=='data' or basename=='apistat' or basename=='stat' or basename=='devcomponent' or basename=='app' or basename=='cloud' or basename=='dataquery'%}
+                    <li ng-class="{active:currentHtmlPage=='stat.html',disabled:!hasPermission('stat.html',app.app_id)}" >
+                        <a class="nav-key-1 " ng-click="gotoPageWithId('stat.html')" >
+                                <i class="icon icon-dashbd-icon icon-chart-alt"></i>
+                                <i class="dashboard-subnav-text">分析</i>
+                        </a>
+                    </li>
+                    <li ng-class="{active:['data.html','cloud.html','apistat.html'].indexOf(currentHtmlPage)!=-1,disabled:!hasPermission('data.html',app.app_id)}">
+                        <a class="nav-key-2" ng-click="gotoPageWithId('data.html')" >
+                                <i class="icon icon-dashbd-icon icon-cabinet"></i>
+                                <i class="dashboard-subnav-text">存储</i>
+                        </a>
+                    </li>
+                    <li ng-class="{active:['messaging.html'].indexOf(currentHtmlPage)>-1,disabled:!hasPermission('messaging.html',app.app_id)}" >
+                        <a class="nav-key-3" ng-click="gotoPageWithId('messaging.html')">
+                                <i class="icon icon-dashbd-icon icon-push"></i>
+                                <i class="dashboard-subnav-text">消息</i>
+                        </a>
+                    </li>
+                    <li ng-class="{active:currentHtmlPage=='devcomponent.html',disabled:!hasPermission('devcomponent.html',app.app_id)}" >
+                        <a class="nav-key-4" ng-click="gotoPageWithId('devcomponent.html')" >
+                                <i class="icon icon-dashbd-icon icon-slider"></i>
+                                <i class="dashboard-subnav-text">组件</i>
+                        </a>
+                    </li>
+                    <li ng-class="{active:currentHtmlPage=='app.html',disabled:!hasPermission('app.html',app.app_id)}" >
+                        <a class="nav-key-5" ng-click="gotoPageWithId('app.html')">
+                                <i class="icon icon-dashbd-icon icon-gear"></i>
+                                <i class="dashboard-subnav-text">设置</i>
+                        </a>
+                    </li>
+                  {% endif %}
+                  <li ng-class="{active:currentHtmlPage=='help.html'}">
+                      <a class="nav-key-6 dropdown-toggle" title="帮助" data-toggle="dropdown">
+                          <i class="icon icon-dashbd-icon icon-question"></i>
+                          <i class="dashboard-subnav-text">帮助</i>
+                      </a>
+                      <ul class="dropdown-menu">
+                          {% if layout!="board-nologin.swig" %}
+                            <!-- <li><a href="start.html">快速入门</a></li> -->
+                          {% endif %}
+                          <li><a href="/docs">文档</a></li>
+                          <li><a href="/docs/sdk_down.html">SDK 下载</a></li>
+                          <li><a href="http://ticket.avosapps.com/tickets">技术支持</a></li>
+                          <li role="presentation" class="divider"></li>
+                          <li><a href="/pricing.html">价格</a></li>
+                          <li><a href="/apps.html">移动端 App</a></li>
+                          <li><a href="http://forum.leancloud.cn">社区</a></li>
+                          <li><a href="http://blog.leancloud.cn/">Blog</a></li>
+                          <li role="presentation" class="divider"></li>
+                          <li><a href="https://leancloud.cn/apionline/">在线 API 工具</a></li>
+                          <li><a href="http://drop.avosapps.com/">iOS 测试包分发</a></li>
+                          <!-- <li><a href="#" data-toggle="modal" data-target="#modal-shortcuts">快捷键</a></li> -->
+                      </ul>
+                  </li>
+                  <li ng-show="currentHtmlPage=='applist.html'">
+                    <div class="app-search">
+                      <input type="text" class="form-control" placeholder="搜索应用" ng-model="appSearch">
+                    </div>
+                  </li>
+                </ul>
+            </div>
+
+            <ul class="nav navbar-nav navbar-user-actions navbar-right" ng-cloak>
+              {% if layout!="board-nologin.swig" %}
+                <li ng-show="user.session_token" class="dropdown">
+                    <a id="news-notification" role="button" ng-click="readNotification()" title="消息中心" class="bstooltip" data-placement="bottom">
+                      <i class="icon icon-dashbd-icon icon-inbox-empty" ng-show="!hasnewnotify"></i>
+                      <i class="icon icon-dashbd-icon icon-inbox-files-bold has-news" ng-show="hasnewnotify"></i>
+                      <i class="dashboard-subnav-text">消息</i>
+                    </a>
+                </li>
+              {% endif %}
+
+                <li class="dropdown" ng-show="user.username">
+                    <a role="button" class="dropdown-toggle user-name" data-toggle="dropdown">
+                        <span class="user-gravatar">
+                            <img gravatar-src="user.email" gravatar-size="64">
+                        </span>
+                        <span class="user-name-text">{{user.username}}</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="settings.html">帐号设置</a></li>
+                        <li><a href="/applist.html">控制台</a></li>
+                        <li><a href="settings.html#/setting/team">团队管理</a></li>
+                        <li><a href="bill.html#/bill/general">财务</a></li>
+                        <!-- <li><a href="settings.html#/setting/invite">邀请好友</a></li> -->
+                        <li ng-show="user.username" style=""><a ng-click="signout()">登出</a></li>
+                    </ul>
+                </li>
+                <li ng-hide="user.username">
+                    <a href="login.html#/signin">登录</a>
+                </li>
+                <li ng-hide="user.username">
+                    <a href="login.html#/signup">注册</a>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
     </div>
-    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+    <!-- .container-fluid -->
+</nav>
+
+<header class="doc-subnav" role="banner">
+  <div class="container-fluid">
+    <nav class="" role="navigation">
       <ul class="nav navbar-nav">
-        <li ><a href="/docs/index.html">文档首页</a> </li>
+        <li><a href="/docs/">文档首页</a></li>
         <li class="dropdown">
           <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">iOS / OS X</a>
           <ul class="dropdown-menu">
@@ -46,11 +156,11 @@
             <li><a href="api/javascript/index.html" target="_blank">JavaScript SDK API</a></li>
           </ul>
         </li> -->
+        <li><a href="sdk_down.html">SDK 下载</a></li>
         <li class="dropdown">
           <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">更多</a>
           <ul class="dropdown-menu">
             <li><a href="/start.html">快速入门</a></li>
-            <li><a href="sdk_down.html">SDK 下载</a></li>
             <li><a href="demo.html">Demo</a></li>
             <li class="divider"></li>
             <li><a href="rest_api.html">REST API 详解</a></li>

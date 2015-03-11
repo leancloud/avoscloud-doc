@@ -1,0 +1,277 @@
+// settings.swig
+.settings-page {
+  margin-top: 20px;
+}
+
+.settings-content {
+
+  .tab-pane {
+    padding-top: 20px;
+  }
+}
+
+.email-form {
+
+  .email-address {
+    font-size: 24px;
+    font-weight: 300;
+  }
+
+  .email-verification-status {
+    font-size: 12px;
+    vertical-align: middle;
+    font-weight: normal;
+    padding: 3px 6px;
+  }
+}
+
+.team-manage-form {
+
+}
+
+// billing texts
+.vertical-spacer {
+  margin-bottom: 60px;
+}
+
+.billing-stat-wrapper {
+}
+
+.billing-stat-text {
+  font-size: 50px;
+  font-weight: 100;
+  line-height: 1;
+  margin-bottom: 16px;
+
+  span {
+    font-size: 16px;
+    font-weight: 300;
+  }
+}
+
+.billing-stat-text-info {
+  color: @gray-light;
+  margin-top: -16px;
+}
+
+.remove-btn {
+  color: lighten(@gray-light, 20%);
+
+  &:hover,
+  &:focus {
+    color: @brand-danger;
+  }
+}
+
+.avatar-settings {
+  @s: 100px;
+  display: block;
+  width: @s;
+  height: @s;
+
+  span,
+  img {
+    display: block;
+    width: @s;
+    height: @s;
+  }
+}
+
+.billing-id {
+  display: block;
+  max-width: 5em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: @font-family-monospace;
+}
+
+.billing-status,
+.billing-type {
+
+  &.billing-status-billed,
+  &.billing-type-1 {
+    color: @brand-success;
+  }
+
+  &.billing-status-unbilled,
+  &.billing-type-2 {
+    color: @brand-danger;
+  }
+
+  &.billing-status-balanced,
+  &.billing-type-3 {
+    color: @brand-info;
+  }
+}
+
+.billing-amount-head {
+  width: 80px;
+  text-align: right;
+}
+
+.billing-amount-col {
+  text-align: right;
+}
+
+.price-wrap {
+
+  &-billing-details {
+
+    .price-card {
+      width: 25%;
+
+      // I use `@screen-xs - 1px` here for smaller break point
+      // Tunghsiao, Jan 7, 2015, 7:16 AM
+      @media (max-width: (@screen-xs - 1px)) {
+        width: 100%;
+      }
+
+      > li {
+
+        &.progress {
+          width: 80%;
+          height: 3px;
+          margin: 10px auto 5px;
+          box-shadow: none;
+          background: #eee;
+
+          .progress-bar {
+            line-height: 3px;
+            box-shadow: none;
+          }
+        }
+
+        &.translucent {
+          opacity: 1;
+          color: @gray-light;
+
+          .cursor-pointer {
+
+            &:hover,
+            &:focus {
+              color: #000;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.billing-amount-total {
+  text-align: center;
+  background: #fafafa;
+  padding: 20px 0;
+  margin-top: -20px;
+}
+
+.table-wrap {
+
+  &-scrollable {
+    overflow-x: scroll;
+
+    table {
+      min-width: 640px;
+
+      > tbody > tr > th {
+        min-width: 80px;
+      }
+    }
+  }
+}
+
+table > tbody > tr > td > .cursor-pointer {
+  color: @link-color;
+}
+
+// bill_charge.html
+.payment-methods {
+
+  label {
+    cursor: pointer;
+
+    .payment-method-radio {
+      outline: none !important;
+      display: none;
+
+      &:checked {
+
+        ~ img {
+          border-color: @input-border-focus;
+        }
+      }
+    }
+
+    img {
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+
+    &:hover,
+    &:focus {
+
+      img {
+        border-color: @input-border-focus;
+      }
+    }
+  }
+}
+
+.charge-modal {
+
+  .modal-body {
+    text-align: center;
+
+    h5 {
+      color: @gray-light;
+    }
+
+    .billing-stat-text {
+      margin-bottom: 0;
+    }
+
+    .form-group {
+
+      &.last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .modal-footer {
+    text-align: center;
+    margin-top: 5px;
+  }
+}
+
+// bill_general.html
+.unpaid-amount {
+  font-style: normal;
+
+  &.has-unpaid {
+    color: @brand-danger;
+  }
+}
+
+// bill_invoice.html
+.modal-invoice-request {
+
+  .modal-body {
+
+    p {
+      margin-bottom: 6px;
+    }
+  }
+
+  p.billing-stat-text {
+    font-size: 32px;
+    margin-bottom: 20px;
+    font-weight: 300;
+
+    &.small {
+      font-size: 16px;
+    }
+  }
+}

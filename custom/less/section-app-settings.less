@@ -1,0 +1,248 @@
+// app-general-set.html
+.app-publish-icon {
+  display: block;
+  @s: 176px;
+  width: @s;
+  height: @s;
+  margin-bottom: 20px;
+  border-radius: 22%;
+
+  &--empty {
+    width: @s;
+    height: @s;
+    margin-bottom: 20px;
+    background-image: data-uri("../images/less-includes/empty-app.min.svg");
+    background-size: @s;
+    background-position: center center;
+    border-radius: 22%;
+    opacity: .4;
+    border: 1px solid #999;
+  }
+}
+
+// app-permission-set.html
+.permission-set {
+  margin-bottom: 30px;
+}
+
+// app-team-set.html
+.team-type {
+  color: @gray-light;
+}
+
+.list-collaborators {
+  .clearfix;
+  .list-unstyled;
+  margin: 0;
+
+  // Team item
+  .dropdown {
+    .clearfix;
+    width: 33%;
+    width: calc(~"100% / 3");
+    float: left;
+    padding: 15px 0;
+
+    @media (max-width: (@screen-xs-max)) {
+      width: 100%;
+    }
+
+    // For team settings in user perferences
+    &.team {
+
+      .user-name .user-gravatar {
+
+        .team-logo-image {
+          border-radius: 4px;
+          width: 60px;
+          height: 60px;
+          background-size: cover;
+          background-position: center center;
+          background-repeat: no-repeat;
+        }
+
+        .icon {
+          display: block;
+          font-size: 60px;
+        }
+      }
+    }
+  }
+
+  .user-name {
+    display: block;
+
+    .user-gravatar {
+      @s: 60px;
+      display: block;
+      float: left;
+      width: @s;
+      height: @s;
+      margin-right: 10px;
+
+      img {
+        width: @s;
+        height: @s;
+      }
+    }
+
+    .user-meta-wrap {
+      float: left;
+      padding-right: 10px;
+      margin-top: -1px;
+      width: 60%;
+      width: calc(~"100% - 70px"); // @s = 60px + 10px
+
+      .user-name-text {
+        float: left;
+        max-width: 60%;
+        display: block;
+        font-size: @font-size-large;
+      }
+
+      .user-in-team {
+        color: @gray-light;
+        font-size: 13px;
+        margin-left: 6px;
+      }
+
+      .user-type {
+        display: inline-block;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      text-decoration: none;
+      cursor: pointer;
+    }
+  }
+
+  // In global user settings page for modals
+  &.list-collaborators-team {
+    margin-bottom: -5px;
+
+    .dropdown {
+      width: 33%;
+      width: calc(~"100% / 3");
+      height: 64px;
+
+      @media (max-width: (@screen-xs - 1px)) {
+        width: 100%;
+      }
+    }
+
+    .user-name {
+      display: block;
+
+      .user-gravatar {
+        @s: 47px;
+        width: @s;
+        height: @s;
+
+        img {
+          width: @s;
+          height: @s;
+        }
+
+        .app-publish-icon--empty {
+          width: @s;
+          height: @s;
+        }
+      }
+
+      .user-meta-wrap {
+        line-height: 36px;
+      }
+    }
+  }
+
+  .user-meta-wrap.without-type {
+
+    span {
+      line-height: 50px;
+    }
+  }
+}
+
+.collaborators-select {
+
+  > li {
+
+    > a {
+      padding: 6px 10px;
+      font-size: 16px;
+
+      img {
+        @s: 28px;
+        width: @s;
+        height: @s;
+        border-radius: 50%;
+      }
+
+      img,
+      i {
+        vertical-align: -8px;
+      }
+    }
+  }
+}
+
+.list-collaborators-add {
+
+  .user-name .user-gravatar .icon {
+    display: block;
+    font-size: 47px;
+  }
+}
+
+.team-name-update-form {
+  margin-bottom: 0;
+  max-width: 200px;
+
+  .input-sm,
+  .btn-sm {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    height: 25px;
+  }
+}
+
+// team-edit-modal.html
+// For team settings in user perferences
+// .user-gravatar for team logo is used in app team settings page
+.team-icon-upload,
+.collaborators-select,
+.user-gravatar {
+  .clearfix;
+
+  .team-logo-image {
+    border-radius: 4px;
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  .icon {
+    display: block;
+    font-size: 60px;
+  }
+}
+
+// Team logo for collaborators-select
+.collaborators-select {
+
+  .team-logo-image {
+    width: 28px;
+    height: 28px;
+    display: inline-block;
+    vertical-align: -8px;
+  }
+
+  .icon {
+    display: inline-block;
+    // font-size: 60px;
+  }
+}
