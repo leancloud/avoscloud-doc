@@ -138,19 +138,19 @@ conversation.sendMessage(message, new AVIMConversationCallback() {
 
 2，实现自己的 `AVIMMessageHandler`，响应新消息到达通知，主要是如下函数：
 
-`public abstract void onMessage(AVIMMessage message, AVIMConversation conversation);`
+`public abstract void onMessage(AVIMMessage message, AVIMConversation conversation,AVIMClient client);`
 
 对于 Tom 发过来的消息，要显示出来，我们只需实现 `onMessage` 即可，示例代码如下：
 
 ```
 AVIMMessageManager.registerDefaultMessageHandler(new AVIMMessageHandler() {
   @Override
-  public void onMessage(AVIMMessage message, AVIMConversation conversation) {
+  public void onMessage(AVIMMessage message, AVIMConversation conversation,AVIMClient client) {
     // 新消息到来了。在这里增加你自己的处理代码。
   }
 
   @Override
-  public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation) {
+  public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation,AVIMClient client) {
     // 消息已经被接收。这个函数什么时候被调用，后面会有说明。
   }
 });
