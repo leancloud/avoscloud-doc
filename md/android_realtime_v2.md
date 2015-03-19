@@ -138,19 +138,19 @@ conversation.sendMessage(message, new AVIMConversationCallback() {
 
 2，实现自己的 `AVIMMessageHandler`，响应新消息到达通知，主要是如下函数：
 
-`public abstract void onMessage(AVIMMessage message, AVIMConversation conversation,AVIMClient client);`
+`public abstract void onMessage(AVIMMessage message, AVIMConversation conversation, AVIMClient client);`
 
 对于 Tom 发过来的消息，要显示出来，我们只需实现 `onMessage` 即可，示例代码如下：
 
 ```
 AVIMMessageManager.registerDefaultMessageHandler(new AVIMMessageHandler() {
   @Override
-  public void onMessage(AVIMMessage message, AVIMConversation conversation,AVIMClient client) {
+  public void onMessage(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
     // 新消息到来了。在这里增加你自己的处理代码。
   }
 
   @Override
-  public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation,AVIMClient client) {
+  public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
     // 消息已经被接收。这个函数什么时候被调用，后面会有说明。
   }
 });
@@ -257,11 +257,11 @@ LeanCloud IM SDK 内部使用了三种接口来响应这些事件。
 ```
   // 收到新的消息
   @Override
-  public abstract void onMessage(AVIMMessage message, AVIMConversation conversation,AVIMClient client);
+  public abstract void onMessage(AVIMMessage message, AVIMConversation conversation, AVIMClient client);
 
   // 自己发送的消息已经被对方接收
   @Override
-  public abstract void onMessageReceipt(AVIMMessage message, AVIMConversation conversation,AVIMClient client);
+  public abstract void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client);
 ```
 
 通过 `AVIMMessageManager.registerDefaultMessageHandler(AVIMMessageHandler handler)` 可以设置全局的 MessageHandler。
@@ -530,10 +530,10 @@ conversation.sendMessage(message, new AVIMConversationCallback() {
 public abstract class AVIMTypedMessageHandler<T extends AVIMTypedMessage> extends MessageHandler<T> {
 
   @Override
-  public abstract void onMessage(T message, AVIMConversation conversation,AVIMClient client);
+  public abstract void onMessage(T message, AVIMConversation conversation, AVIMClient client);
 
   @Override
-  public abstract void onMessageReceipt(T message, AVIMConversation conversation,AVIMClient client);
+  public abstract void onMessageReceipt(T message, AVIMConversation conversation, AVIMClient client);
 }
 ```
 
@@ -550,12 +550,12 @@ LeanCloud IM SDK 内部消息分发的逻辑是这样的：对于收到的任一
 class MsgHandler extends MessageHandler<AVIMTypedMessage> {
 
     @Override
-    public void onMessage(AVIMTypedMessage message, AVIMConversation conversation,AVIMClient client) {
+    public void onMessage(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
       getInstance().onMessage(conversation, message);
     }
 
     @Override
-    public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation,AVIMClient client) {
+    public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
       getInstance().onMessageDelivered(message);
     }
 }
