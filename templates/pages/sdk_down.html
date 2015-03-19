@@ -169,84 +169,7 @@
         <!-- .dl-cell -->
       </div>
 
-      <div class="col-md-6">
-        <div class="dl-cell">
-          <h2>JavaScript Core SDK <small>v{{sdkversion.javascript}}</small></h2>
 
-          <div class="row" style="display:none">
-            <div class="col-sm-4">
-              <label class="checkbox bspopover" data-toggle="popover" data-placement="top" data-trigger="hover" data-html="true" data-title="详情" data-content="<p><strong>基础模块包含：</strong></p><ul><li>存储</li><li>统计</li></ul>">
-                <input type="checkbox" name="javascript" checked disabled>
-                基础模块
-              </label>
-            </div>
-            <div class="col-sm-4" ng-repeat="m in download.javascript.optional">
-              <label class="checkbox">
-                <input type="checkbox" name="javascript" value="{{m.name}}" checked >
-                {{m.name}}
-              </label>
-            </div>
-          </div>
-
-          <a class="btn btn-sm btn-primary dl-cell-btn" ng-click="download('javascript')"  style="margin-bottom:10px">
-            下载 <span>- {{getDownSize('javascript')}}</span>
-          </a>
-
-          <ul class="list-inline">
-            <li>
-              <a href="https://download.leancloud.cn/sdk/javascript_feed.xml" class="changelog-rss bstooltip" title="JavaScript RSS"><i class="icon icon-rss"></i></a>
-              <a href="#sdk-changelog" data-toggle="modal" data-target="#modal-javascript-changelog">更新历史</a>
-            </li>
-            <li class="muted">·</li>
-            <li>
-              <a href="https://download.leancloud.cn/sdk/javascript/">其他版本</a>
-            </li>
-            <li class="muted">·</li>
-            <li>
-              <a href="https://github.com/leancloud/leancloud-demos#javascript">Demo</a>
-            </li>
-          </ul>
-
-          <hr>
-          <h2>JavaScript Chat SDK <small>v{{sdkversion.jschat}}</small></h2>
-
-          <div class="row" style="display:none">
-            <div class="col-sm-4">
-              <label class="checkbox bspopover" data-toggle="popover" data-placement="top" data-trigger="hover" data-html="true" data-title="详情" data-content="<p><strong>基础模块包含：</strong></p><ul><li>存储</li><li>统计</li></ul>">
-                <input type="checkbox" name="jschat" checked disabled>
-                基础模块
-              </label>
-            </div>
-            <div class="col-sm-4" ng-repeat="m in download.jschat.optional">
-              <label class="checkbox">
-                <input type="checkbox" name="jschat" value="{{m.name}}" checked >
-                {{m.name}}
-              </label>
-            </div>
-          </div>
-
-          <a class="btn btn-sm btn-primary dl-cell-btn" ng-click="download('jschat')" style="margin-bottom:10px">
-            下载 <span>- {{getDownSize('jschat')}}</span>
-          </a>
-
-          <ul class="list-inline">
-            <li>
-              <a href="https://download.leancloud.cn/sdk/jschat_feed.xml" class="changelog-rss bstooltip" title="JavaScript RSS"><i class="icon icon-rss"></i></a>
-              <a href="#sdk-changelog" data-toggle="modal" data-target="#modal-jschat-changelog">更新历史</a>
-            </li>
-            <li class="muted">·</li>
-            <li>
-              <a href="https://download.leancloud.cn/sdk/jschat/">其他版本</a>
-            </li>
-            <li class="muted">·</li>
-            <li>
-              <a href="https://download.leancloud.cn/sdk/jschat/samples/">Demo</a>
-            </li>
-          </ul>
-
-        </div>
-        <!-- .dl-cell -->
-      </div>
     </div>
   </div>
   <div class="col-md-12">
@@ -361,7 +284,15 @@
 
   <div class="col-md-12">
     <p>我们的开源 SDK：</p>
-    <a href="https://github.com/leancloud/cpp-sdk" class="btn  btn-default btn-lg"><i class="icon icon-github"></i> C++ SDK</a>
+    <ul class="list-unstyled list-inline">
+      <li><a href="https://github.com/leancloud/cpp-sdk" class="btn  btn-default btn-lg"><i class="icon icon-github"></i> C++ SDK</a></li>
+      <li><a href="https://github.com/leancloud/javascript-sdk" class="btn  btn-default btn-lg"><i class="icon icon-github"></i> JavaScript Core SDK</a></li>
+      <li><a href=" https://github.com/leancloud/js-realtime-sdk" class="btn  btn-default btn-lg"><i class="icon icon-github"></i> JavaScript 实时通信 SDK</a></li>
+      <li><a href="https://github.com/leancloud/js-push-sdk" class="btn  btn-default btn-lg"><i class="icon icon-github"></i> JavaScript 推送 SDK</a></li>
+      <li><a href="https://github.com/leancloud/python-sdk" class="btn  btn-default btn-lg"><i class="icon icon-github"></i> Python SDK</a></li>
+    </ul>
+
+
     <br>
     <br>
   </div>
