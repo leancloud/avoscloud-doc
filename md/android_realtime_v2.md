@@ -647,7 +647,7 @@ public void sendMessage(final AVIMMessage message, final int messageFlag,
 
 * 暂态消息（AVIMConversation.TRANSIENT_MESSAGE_FLAG）。这种消息不会被自动保存（以后在历史消息中无法找到它），也不支持延迟接收，离线用户更不会收到推送通知，所以适合用来做控制协议。譬如聊天过程中「某某正在输入中...」这样的状态信息，就适合通过暂态消息来发送。
 * 普通消息（AVIMConversation.NONTRANSIENT_MESSAGE_FLAG）。这种消息就是我们最常用的消息类型，在 LeanCloud 云端会自动保存起来，支持延迟接收和离线推送，以后在历史消息中可以找到它。
-* 待回执消息（AVIMConversation.RECEIPT_MESSAGE_FLAG）。这也是一种普通消息，只是消息被对方收到之后 LeanCloud 服务端会发送一个回执通知给发送方（这就是 AVIMMessageHandler 中 `public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation,AVIMClient client)` 函数被调用的时机）。
+* 待回执消息（AVIMConversation.RECEIPT_MESSAGE_FLAG）。这也是一种普通消息，只是消息被对方收到之后 LeanCloud 服务端会发送一个回执通知给发送方（这就是 AVIMMessageHandler 中 `public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client)` 函数被调用的时机）。
 
 ### 接收群组消息 ###
 
