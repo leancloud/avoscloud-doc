@@ -2580,6 +2580,234 @@ curl -X POST \
 
 对早期版本的实时通信，可以使用 `to_peers` （数组） 或 `group_id` 参数分别发消息到用户或群组。
 
+#### REST API 发送富媒体消息
+富媒体消息的参数格式相对于普通文本来说，仅仅是将 `message` 参数换成了一个 JSON Object，如下图片消息： 
+
+##### 图片消息
+
+```
+curl -X POST \
+  -H "X-AVOSCloud-Application-Id: {{appid}}" \
+  -H "X-AVOSCloud-Master-Key: " \
+  -H "Content-Type: application/json" \
+  -d '{"from_peer": "1a", "message": {"_lctype":-2,"_lctext":"这是一个图片","_lcattrs":{"a":"_lcattrs 是用来存储用户自定义的一些键值对","b":true,"c":12},"_lcfile":{"url":"http://ac-p2bpmgci.clouddn.com/246b8acc-2e12-4a9d-a255-8d17a3059d25","objId":"54699d87e4b0a56c64f470a4//文件对应的AVFile.objectId","metaData":{"name":"IMG_20141223.jepg","format":"png","height":768,"width":1024,"size":18}}}, "conv_id": "...", "transient": false}' \
+  https://leancloud.cn/1.1/rtm/messages
+
+```
+
+它只有 `message` 这个参数与普通消息有区别，普通消息仅仅是个字符串，而 v2 版本的聊天中，支持了内建的富媒体消息格式，以下针对 整个消息体 JSON 格式化之后的参数说明：
+
+```
+{
+  "from_peer": "1a",
+  "message": {
+    "_lctype": -2,//必要参数
+    "_lctext": "图片的文字说明",
+    "_lcattrs": {
+      "a": "_lcattrs 是用来存储用户自定义的一些键值对",
+      "b": true,
+      "c": 12
+    },
+    "_lcfile": {
+      "url": "http://ac-p2bpmgci.clouddn.com/246b8acc-2e12-4a9d-a255-8d17a3059d25",//必要参数
+      "objId": "54699d87e4b0a56c64f470a4//文件对应的AVFile.objectId",
+      "metaData": {
+        "name": "IMG_20141223.jepg",
+        "format": "png",
+        "height": 768,//单位：像素
+        "width": 1024,//单位：像素
+        "size": 18//单位：b
+      }
+    }
+  },
+  "conv_id": "...",
+  "transient": false
+}
+```
+
+以上是完整版的格式，如果想简单的发送一个 Url 可以参照以下格式：
+
+```
+{
+  "from_peer": "1a",
+  "message": {
+    "_lctype": -2,
+    "_lcfile": {
+      "url": "http://ac-p2bpmgci.clouddn.com/246b8acc-2e12-4a9d-a255-8d17a3059d25"
+      }
+    },
+  "conv_id": "...",
+  "transient": false
+}
+```
+
+##### 音频消息
+
+与图片类似，音频格式的完整格式如下：
+
+```
+{
+  "from_peer": "1a",
+  "message": {
+    "_lctype": -3,
+    "_lctext": "这是一个音频消息",
+    "_lcattrs": {
+      "a": "_lcattrs 是用来存储用户自定义的一些键值对"
+    },
+    "_lcfile": {
+      "url": "http://ac-p2bpmgci.clouddn.com/246b8acc-2e12-4a9d-a255-8d17a3059d25",
+      "objId": "54699d87e4b0a56c64f470a4//文件对应的AVFile.objectId",
+      "metaData": {
+        "name":"我的滑板鞋.wav",
+        "format": "wav",
+        "duration": 26,//单位：秒
+        "size": 2738//单位：b
+      }
+    }
+  },
+  "conv_id": "...",
+  "transient": false
+}
+```
+
+简略版：
+
+```
+{
+  "from_peer": "1a",
+  "message": {
+    "_lctype": -3,
+    "_lcfile": {
+      "url": "http://www.somemusic.com/x.mp3"
+    }
+  },
+  "conv_id": "...",
+  "transient": false
+}
+```
+
+##### 视频消息
+
+完整版：
+
+```
+{
+  "from_peer": "1a",
+  "message":   {
+    "_lctype": -4,
+    "_lctext": "这是一个视频消息",
+    "_lcattrs": {
+      "a": "_lcattrs 是用来存储用户自定义的一些键值对"
+    },
+    "_lcfile": {
+      "url": "http://ac-p2bpmgci.clouddn.com/99de0f45-171c-4fdd-82b8-1877b29bdd12",
+      "objId": "54699d87e4b0a56c64f470a4//文件对应的AVFile.objectId",
+      "metaData": {
+        "name":"录制的视频.mov",
+        "format": "avi",
+        "duration": 168,//单位：秒
+        "size": 18689//单位：b
+      }
+    }
+  },
+  "conv_id": "...",
+  "transient": false
+}
+```
+
+简略版：
+
+```
+{
+  "from_peer": "1a",
+  "message":   {
+    "_lctype": -4,
+    "_lcfile": {
+      "url": "http://www.somevideo.com/Y.flv"
+    }
+  },
+  "conv_id": "...",
+  "transient": false
+}
+```
+
+#### 通用文件消息
+
+```
+{
+  "from_peer": "1a",
+  "message":{
+  "_lctype":-6,
+  "_lctext":"这是一个普通文件类型",
+   "_lcattrs": {
+      "a": "_lcattrs 是用来存储用户自定义的一些键值对"
+    },
+    "_lcfile":{
+    "url": "http://www.somefile.com/jianli.doc",
+    "name":"我的简历.doc",
+    "size": 18689//单位：b
+    }
+  },
+  "conv_id": "...",
+  "transient": false
+}
+```
+
+简略版：
+
+```
+{
+  "from_peer": "1a",
+  "message":{
+  "_lctype":-6,
+    "_lcfile":{
+    "url": "http://www.somefile.com/jianli.doc",
+    "name":"我的简历.doc"
+    }
+  },
+  "conv_id": "...",
+  "transient": false
+}
+```
+
+#### 地理位置消息
+
+```
+{
+  "from_peer": "1a",
+  "message":{
+    "_lctype": -5,
+    "_lctext": "这是一个地理位置消息",
+    "_lcattrs": {
+      "a": "_lcattrs 是用来存储用户自定义的一些键值对"
+    },
+    "_lcloc": {
+      "longitude": 23.2,
+      "latitude": 45.2
+    }
+  },
+  "conv_id": "...",
+  "transient": false
+}
+```
+
+简略版：
+
+```
+{
+  "from_peer": "1a",
+  "message":{
+    "_lctype": -5,
+    "_lcloc": {
+      "longitude": 23.2,
+      "latitude": 45.2
+    }
+  },
+  "conv_id": "...",
+  "transient": false
+}
+```
+
 ### 获取暂态对话的在线人数
 
 你可以通过这个 API 获得暂态对话的在线人数。由于暂态对话没有成员列表支持，所以通常使用这个 API 获得当前的在线人数。
