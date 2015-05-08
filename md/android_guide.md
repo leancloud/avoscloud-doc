@@ -1697,6 +1697,7 @@ AVCloud.setProductionMode(false); //调用测试环境云代码
 -dontwarn sun.misc.**
 -keep class sun.misc.** { *;}
 
+-dontwarn com.alibaba.fastjson.**
 -keep class com.alibaba.fastjson.** { *;}
 
 -dontwarn sun.security.**
