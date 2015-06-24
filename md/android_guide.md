@@ -945,8 +945,6 @@ public class App extends Application {
 }
 ```
 
-还可以参考这个 [Todo.java](https://github.com/leancloud/Android-SDK-demos/blob/master/AVOSCloud-Todo/src/com/avos/demo/Todo.java) 以及 [AVService.java](https://github.com/leancloud/Android-SDK-demos/blob/master/AVOSCloud-Todo/src/com/avos/demo/AVService.java) 中的 `AVInit` 函数。
-
 ### 访问器，修改器和方法
 
 添加方法到 `AVObject` 的子类有助于封装类的逻辑。你可以将所有跟子类有关的逻辑放到一个地方，而不是分成多个类来分别处理商业逻辑和存储/转换逻辑。
@@ -1009,7 +1007,6 @@ query.findInBackground(new FindCallback<Armor>() {
   }
 });
 ```
-还可以参考 [AVService.java](https://github.com/leancloud/Android-SDK-demos/blob/master/AVOSCloud-Todo/src/com/avos/demo/AVService.java) 的 `findTodos` 函数。
 
 ### AVUser 的子类化
 
