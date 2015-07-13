@@ -854,6 +854,11 @@ curl -X POST \
 ```json
 {
     "data": {
+        "source" : {
+            "__type" : "Pointer",
+            "className" : "_User",
+            "objectId" : "dennis's id"
+        },
         "message": "hello catty!"
     },
     "inboxType": "private",
