@@ -10,6 +10,9 @@ custom/css/app-docs.css
 
 npm-debug.log
 
+# react dist
+server_public/js/main.js
+
 # use template
 .module-cache
 md/leanengine_guide-cloudcode.md
