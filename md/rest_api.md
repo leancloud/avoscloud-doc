@@ -1248,6 +1248,7 @@ curl -X GET \
 curl -X POST \
   -H "X-AVOSCloud-Application-Id: {{appid}}" \
   -H "X-AVOSCloud-Application-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
   -G \
   -d '{"mobilePhoneNumber":"186xxxxxxxx","smsCode":"6 位短信验证码"}' \
   https://api.leancloud.cn/1.1/usersByMobilePhone
