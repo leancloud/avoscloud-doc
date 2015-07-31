@@ -1050,31 +1050,31 @@ conversation.quit(new AVIMConversationCallback(){
 
 ### 获取历史消息 ###
 
-LeanMessage 会将非暂态消息自动保存在云端，之后开发者可以通过 AVIMConversation 来获取该对话的所有历史消息。获取历史消息的 API 如下：
+LeanMessage 会将非暂态消息自动保存在云端以及本地，之后开发者可以通过 AVIMConversation 来获取该对话的所有历史消息，如果本地不存在则从服务端获取，而这一切 SDK 已经封装好。获取历史消息的 API 如下：
 
 ```
-// 查询当前对话的最新消息，默认返回 100 条
-void queryMessages(final AVIMMessagesQueryCallback callback);
+// 查询最新的一条消息，用于展示最近会话列表。
+AVIMMessage queryLatestMessage()；
 
-// 查询当前对话的最新消息，返回 limit 指定的条数
-void queryMessages(int limit, final AVIMMessagesQueryCallback callback);
+// 查询当前对话最新的 limit 条消息，用于加载第一页消息记录。
+void queryLatestMessages(final int limit, final AVIMMessagesQueryCallback callback)
 
-// 前向查询当前对话的历史消息，msgId／timestamp 指定消息的起点，limit 指定需要的结果条数
+// 向前查询当前对话的历史消息，msgId／timestamp 指定消息的起点，limit 指定需要的结果条数。用于下拉加载历史消息时。
 void queryMessages(String msgId, long timestamp, int limit, final AVIMMessagesQueryCallback callback);
 ```
 
 各参数含义如下：
 
 * msgId - 本地已有的最旧一条消息的 messageId
-* timestamp － 本地已有的最旧一条消息的 timestamp
+* timestamp － 本地已有的最旧一条消息的 timestamp，必须是从已有 message 中获得。
 * limit － 本次查询希望的结果条数
 * AVIMMessagesQueryCallback － 结果回调接口，在操作结束之后调用
 
 通过这一 API 拿到的消息就是 AVIMMessage 或者 AVIMTypedMessage 实例数组，开发者可以像之前收到新消息通知一样处理。示例代码如下：
 
 ```
-String oldestMsgId;
-long oldestMsgTimestamp;
+String oldestMsgId = listMessages.get(0).getMessageId();
+long oldestMsgTimestamp = listMessages.get(0).getTimestamp();
 conversation.queryMessages(oldestMsgId,oldestMsgTimestamp, limit, new AVIMMessagesQueryCallback(){
   @Override
   public void done(List<AVIMMessage> messages, AVException e) {

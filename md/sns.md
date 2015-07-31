@@ -6,36 +6,33 @@ AVOSCloudSNS 是一个非常轻量的模块, 可以用最少一行代码就可�
 
 ## iOS SNS 组件
 
-### 导入 SDK
-您可以从 [SDK 下载页面](https://leancloud.cn/docs/sdk_down.html) 下载iOS的SDK。
+我们已经把 SNS 组件开源了，放在 Github 的 [leancloud-social-ios](https://github.com/leancloud/leancloud-social-ios) 项目上。该项目上的 LeanCloudSocialDemo 目录下也有个相应的 Demo。也可以参考 [LeanChat](https://github.com/leancloud/leanchat-ios/blob/master/LeanChat/LeanChat/controllers/entry/CDLoginVC.m)，它使用了该 SNS 组件，这里有个[视频演示](http://ac-x3o016bx.clouddn.com/a294809feb0c6a8a.mp4)。
 
-<!--
-您可以从 https://github.com/leancloud/avoscloud-sdk 下载iOS的SDK。您也可以使用Podfile通过cocoapods下载我们的SDK，如:
+### 导入 SDK
+您可以使用 Podfile 通过 cocoapods 引入 SDK，
 
 ```sh
-pod 'AVOSCloudSNS'
-```
--->
-
-### 添加代码
-
-```objc
-[AVOSCloudSNS loginWithCallback:^(id object, NSError *error) {
-        //you code here
-    }];
+	pod 'LeanCloudSocial'
 ```
 
-就这么简单, 现在你已经拥有了用户登录功能!
+也可以在开源项目上编译 framework 加入到项目中，或者直接拖动源代码到项目中。
 
 ### SSO
-利用SSO, 可以使用户不用输入用户名密码等复杂操作, 一键登录. **目前 LeanCloudSNS 已经支持新浪微博和手机QQ, 并且不需要使用各个平台官方的SDK, 保证您的app体积最小化**. 而你需要做的也很简单,以新浪微博为例:
+利用SSO, 可以使用户不用输入用户名密码等复杂操作，一键登录。 **目前 LeanCloudSNS 已经支持新浪微博、手机 QQ 和微信, 并且不需要使用各个平台官方的 SDK, 保证您的应用体积最小化。**而你需要做的也很简单，以新浪微博为例：
 
 ```objc
 [AVOSCloudSNS setupPlatform:AVOSCloudSNSSinaWeibo withAppKey:@"Weibo APP ID" andAppSecret:@"Weibo APP KEY" andRedirectURI:@""];
 
 [AVOSCloudSNS loginWithCallback:^(id object, NSError *error) {
-        //you code here
-    } toPlatform:AVOSCloudSNSSinaWeibo];
+ 	 if (error) {
+ 	 } else {
+ 	 	NSString *accessToken = object[@"access_token"];
+      	NSString *username = object[@"username"];
+      	NSString *avatar = object[@"avatar"];
+      	NSDictionary *rawUser = object[@"raw-user"]; // 性别等第三方平台返回的用户信息
+      	//...
+ 	 }
+   } toPlatform:AVOSCloudSNSSinaWeibo];
 
 ```
 
@@ -47,18 +44,22 @@ pod 'AVOSCloudSNS'
 }
 ```
 
-这样, 代码部分就完成了. 下一步就是设置, 为你的app添加 URL Schemes: `sinaweibosso.微博appId`(注意有个点".")
+这样, 代码部分就完成了. 下一步就是设置, 为你的app添加 URL Schemes: `sinaweibosso.appId`(注意有个点".")，像这样
+
+![Url Shceme](images/sns_guide_url_scheme.png)
 
 这时如果顺利, 应该可以正常的打开新浪微博官方iOS客户端进行登录了.
 
-QQ的SSO与微博完全一致, 只是设置URL Schemes:`tencent腾讯appid`
+QQ的SSO与微博完全一致, 只是设置URL Schemes:`tencentappid`，微信则使用微信开放平台提供的 AppId，如 `wxa3eacc1c86a717bc`。
+
+`+ (void)[AVOSCloudSNS loginWithCallback:toPlatform]` 接口当在相关应用安装的情况下，直接跳转到相关应用进行 SSO 授权，如果没有安装的话，则跳转至网页授权。网页授权需要用户输入账号、密码，体验较差，所以我们提供了 `+ (BOOL)[AVOSCloudSNS isAppInstalledForType:]`来让你检测相应的应用有没安装，没有安装的话可以提示用户或者隐藏按钮。
 
 ### 绑定 AVUser
 
 先导入头文件:
 
 ```objc
-# import <AVOSCloudSNS/AVUser+SNS.h>
+# import <LeanCloudSocial/AVUser+SNS.h>
 ```
 
 然后在登录SNS成功回调后`loginWithAuthData:block`,这样会用当前的SNS用户来尝试登录获取AVUser信息, 如果AVUser不存在, 系统会自动创建新用户并返回,如果已经存在, 则直接返回该用户.
@@ -101,7 +102,7 @@ if (vc) {
 请注意代码提到的`ARC模式中要将vc置空`来打破retain环, 否则vc将不会被释放而浪费内存!
 
 
-更多详细使用方法, 请查看SDK API文档.
+更多详细使用方法, 请前往[开源项目](https://github.com/leancloud/leancloud-social-ios)结合 Demo 学习。
 
 ## Android SNS 组件
 
