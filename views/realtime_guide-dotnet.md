@@ -103,7 +103,7 @@ public async void TomCreateConversationWithFriends()
     #endregion
 
     #region 第三步：发送一条消息
-    await friendConversation.SendTextMessageAsync("你们在哪儿呢？");
+    await friendConversation.SendTextMessageAsync("你们在哪儿？");
     #endregion
 }
 ```
@@ -393,7 +393,37 @@ public async void SendLocationAsync()
 此处各个 SDK 平台需要详细介绍一下如何接收 TypedMessage 接收，包含文字和代码。描述风格以及代码示例请参照 iOS 版本。
 {% endblock %}
 
-{% block transientMessage_sent %}{% endblock %}
+{% block transientMessage_sent %}
+```
+private void txbMessage_TextChanged(object sender, TextChangedEventArgs e)//在消息输入的文本框 TextChanged 事件中
+{
+  //以下代码需要在整个窗体包含一个 AVIMClient 和 一个 AVIMConversation 实例，并且确保已经被初始化
+
+  //以文本消息的方式发送暂态消息，其他成员在接受到此类消息时需要做特殊处理
+  await conversaion.SendTextMessageAsync("Inputting", true, false);
+  // 第一个参数 "Inputting" 表示自定义的一个字符串命令，此处开发者可以自行设置
+  // 第二个参数 true 表示该条消息为暂态消息
+  // 第三个参数 false 表示不要回执
+}
+```
+{% endblock %}
+
+{% block transientMessage_received %}
+```
+client.OnMessageReceieved += (s, e) => 
+{
+  if (e.Message is AVIMTextMessage)
+  {
+    //command 的内容就是：Inputting
+    string command = ((AVIMTextMessage)e.Message).TextContent;
+
+    // code 
+    // 刷新 UI 控件，显示对方正在输入……
+    // code
+  }
+};
+```
+{% endblock %}
 
 {% block messagePolicy_sent %}{% endblock %}
 
@@ -404,7 +434,7 @@ public async void SendLocationAsync()
 //Tom 用自己的名字作为 ClientId 建立了一个 AVIMClient
 AVIMClient client = new AVIMClient("Tom");
 
-//Tom 登陆到系统
+//Tom 登录到系统
 await client.ConnectAsync();
 
 //打开已存在的对话
@@ -522,7 +552,7 @@ imgMessage.Attributes = new Dictionary<string, object>()
 { 
     {"location","拉萨布达拉宫"}
 };
-imgMessage.Title = "这蓝天让我彻底醉了……";
+imgMessage.Title = "这蓝天……我彻底是醉了";
 await conversation.SendImageMessageAsync(imgMessage);// 假设 conversationId= conversation 并且已经在之前被实例化
 ```
 {% endblock %}
@@ -597,30 +627,41 @@ public async void InitiativeJoinAsync()
 ```
 {% endblock %}
 
-{% block conversation_memebersChanged %}
-* 如果 Bob 仅仅是登录了应用，并没有加载具体的对话到本地，他只会收到 `AVIMClient.OnConversationMembersChanged` 的响应的相关操作，代码如下:
+{% block conversation_membersChanged_callBack %}
 
-```c#
-public async void BobOnTomJoined_S1()
-{
-    AVIMClient client = new AVIMClient("Bob");
-    await client.ConnectAsync();
+该群的其他成员（比如 Bob）会收到该操作的事件回调:
 
-    client.OnConversationMembersChanged += (s, e) =>
-    {
-        switch (e.AffectedType)
-        {
-            case AVIMConversationEventType.MembersJoined:
-                {
-                    IList<string> joinedMemberClientIds = e.AffectedMembers;//这里就是本次加入的 ClientIds
-                    string clientId = joinedMemberClientIds.FirstOrDefault();//因为我们已知本次操作只有 Tom 一个人加入了对话，所以这样就可以直接读取到 Tom 的 clientId
-                    //开发者可以在这里添加自己的业务逻辑
-                }
-                break;
-        }
-    };
-}
+* 如果 Bob 仅仅是登录了应用，并没有加载具体的对话到本地，他只会激发 `AVIMClient` 层级上的回调，代码如下:
+
+{% block conversation_membersChanged %}
 ```
+- 初始化 ClientId = Bob
+- Bob 登录
+- 设置 MembersChanged 响应
+- switch:case 如果事件类型为 MembersJoined
+- 获取本次加入的 ClientIds //因为只是 Tom 一人加入，所以只有一个 Id
+- //开发者可以继续添加自己的业务逻辑
+- break;
+```
+{% endblock %}
+
+* 如果 Bob 不但登录了，还在客户端加载了当前这个对话，那么他不但会激发 `AVIMClient` 层级上的回调，也会激发 `AVIMConversation` 层级上相关回调，代码如下：
+
+{% block conversation_memebersJoined %}
+```
+- 初始化 ClientId = Bob
+- Bob 登录
+- 设置 MembersChanged 响应
+- switch:case 如果事件类型为 MembersJoined
+- 获取本次加入的 ClientIds //因为只是 Tom 一人加入，所以只有一个 Id
+- //开发者可以继续添加自己的业务逻辑
+- break; 
+- ------------ 以上与上例相同 ---------------
+- 获取对话对象 Id = 551260efe4b01608686c3e0f
+- 设置 OnMembersJoined 响应
+- 获取本次加入的 ClientIds //还是只有 Tom 一人，所以这样就可以直接读取到 Tom 的 clientId
+```
+{% endblock %}
 {% endblock %}
 
 {% block conversation_membersChanged %}
@@ -648,8 +689,6 @@ public async void BobOnTomJoined_S1()
 {% endblock %}
 
 {% block conversation_memebersJoined %}
-* 如果 Bob 不但登录了，还在客户端加载了当前这个对话，那么他不但会收到 `AVIMClient.OnConversationMembersChanged` 的响应的相关操作，也会收到 `AVIMConversation.OnMembersJoined` 的响应的相关操作，代码如下：
-
 ```c#
 public async void BobOnTomJoined_S2()
 {
@@ -1101,7 +1140,7 @@ public async void QueryChatRoom_SampleCode()
 //Tom 用自己的名字作为 ClientId 建立了一个 AVIMClient
 AVIMClient client = new AVIMClient("Tom");
 
-//Tom 登陆到系统
+//Tom 登录到系统
 await client.ConnectAsync();
 
 //打开已存在的对话
@@ -1130,10 +1169,14 @@ IEnumerable<AVIMMessage> pageContent2 = await con.QueryHistoryAsync(pager.Id, pa
 ```
 {% endblock %}
 
-{% block networkStatus %}
-ClientStatus.None    0   未知
-Online  1   在线
-Offline
+{% block networkStatus %} 
+在 `AVIMClient` 中有的 `Satus` 判断当前连接状态，如下表：
+
+枚举名称 |整型值 | 解释
+---|---|---
+ClientStatus.None  |  0 |  未知，初始值
+ClientStatus.Online | 1 |  在线
+ClientStatus.Offline | 2 | 离线
 {% endblock %}
 
 {% block logout %}

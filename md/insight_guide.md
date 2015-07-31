@@ -164,7 +164,7 @@ JavaScript SDK 0.5.5 版本开始支持离线数据分析。**请注意，离线
 ### 开始一个 Job
 
 ```js
-  AV.BigQuery.startJob({
+  AV.Insight.startJob({
         sql: "select * from `_User`",
         saveAs: {
           className: 'BigQueryResult',
@@ -172,12 +172,12 @@ JavaScript SDK 0.5.5 版本开始支持离线数据分析。**请注意，离线
         }
    }).done(function(id) {
       //返回 job id
-   }).catch(function(err)){
+   }).catch(function(err){
       //发生错误
    });
 ```
 
-`AV.BigQuery.startJob` 启动一个离线分析任务，它可以指定：
+`AV.Insight.startJob` 启动一个离线分析任务，它可以指定：
 
 * sql -- 本次任务的查询的 SQL 。
 * saveAs（可选） -- 本次任务查询结果保存的参数，比如要保存的表名和数量，limit 最大为 1000。
@@ -190,7 +190,7 @@ JavaScript SDK 0.5.5 版本开始支持离线数据分析。**请注意，离线
 在云引擎里，可以通过一个 hook 函数来监听 job 完成情况：
 
 ```js
-AV.BigQuery.on('end', function(err, result) {
+AV.Insight.on('end', function(err, result) {
     console.dir(result);
 });
  ```
@@ -214,7 +214,7 @@ AV.BigQuery.on('end', function(err, result) {
 
 ```js
   var id = '已知任务 id';
-  var q = new AV.BigQuery.JobQuery(id);
+  var q = new AV.Insight.JobQuery(id);
   q.find().then(function(result) {
     //返回查询结果 result 对象
   }, function(err) {
@@ -234,4 +234,4 @@ result 是一个 JSON 对象，形如：
  }
 ```
 
-`AV.BigQuery.JobQuery` 也可以设置 `skip` 和 `limit` 做分页查询。
+`AV.Insight.JobQuery` 也可以设置 `skip` 和 `limit` 做分页查询。

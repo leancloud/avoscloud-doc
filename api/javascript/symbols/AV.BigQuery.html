@@ -197,8 +197,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/AV.BigQuery.html">AV.BigQuery</a></li>
 	
-	<li><a href="../symbols/AV.BigQuery.JobQuery.html">AV.BigQuery.JobQuery</a></li>
-	
 	<li><a href="../symbols/AV.Cloud.html">AV.Cloud</a></li>
 	
 	<li><a href="../symbols/AV.Cloud.AfterSaveRequest.html">AV.Cloud.AfterSaveRequest</a></li>
@@ -232,6 +230,10 @@ ul.inheritsList
 	<li><a href="../symbols/AV.History.html">AV.History</a></li>
 	
 	<li><a href="../symbols/AV.InboxQuery.html">AV.InboxQuery</a></li>
+	
+	<li><a href="../symbols/AV.Insight.html">AV.Insight</a></li>
+	
+	<li><a href="../symbols/AV.Insight.JobQuery.html">AV.Insight.JobQuery</a></li>
 	
 	<li><a href="../symbols/AV.Object.html">AV.Object</a></li>
 	
@@ -295,7 +297,8 @@ ul.inheritsList
 				
 			
 				包含了使用了 LeanCloud
- <a href='/docs/bigquery_guide.html'>离线数据分析功能</a>的函数。
+ <a href='/docs/insight_guide.html'>离线数据分析功能</a>的函数，本模块已经废弃，
+请使用 AV.Insight 。
 <p><strong><em>
   部分函数仅在云引擎运行环境下有效。
 </em></strong></p>
@@ -333,46 +336,6 @@ ul.inheritsList
 			
 
 <!-- ============================== methods summary ======================== -->
-			
-				
-				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class AV.BigQuery.">
-					<caption>Method Summary</caption>
-					<thead>
-						<tr>
-							<th scope="col">Method Attributes</th>
-							<th scope="col">Method Name and Description</th>
-						</tr>
-					</thead>
-					<tbody>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">AV.BigQuery.<b><a href="../symbols/AV.BigQuery.html#.on">on</a></b>(event, 监听回调函数，接收)
-								</div>
-								<div class="description">监听 BigQuery 任务事件，目前仅支持 end 事件，表示任务完成。
- <p><strong><em>
-    仅在云引擎运行环境下有效。
- </em></strong></p></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">AV.BigQuery.<b><a href="../symbols/AV.BigQuery.html#.startJob">startJob</a></b>(jobConfig, options)
-								</div>
-								<div class="description">开始一个 BigQuery 任务。结果里将返回 Job id，你可以拿得到的 id 使用
-AV.BigQuery.JobQuery 查询任务状态和结果。</div>
-							</td>
-						</tr>
-					
-					</tbody>
-				</table>
-				
-				
-				
 			
 <!-- ============================== events summary ======================== -->
 			
@@ -412,120 +375,6 @@ AV.BigQuery.JobQuery 查询任务状态和结果。</div>
 
 <!-- ============================== method details ========================= -->		
 			
-				<div class="sectionTitle">
-					Method Detail
-				</div>
-				
-					<a name=".on"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					
-					<span class="light">AV.BigQuery.</span><b>on</b>(event, 监听回调函数，接收)
-					
-					</div>
-					<div class="description">
-						监听 BigQuery 任务事件，目前仅支持 end 事件，表示任务完成。
- <p><strong><em>
-    仅在云引擎运行环境下有效。
- </em></strong></p>
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>event</b>
-									
-								</dt>
-								<dd>监听的事件，目前仅支持 'end' ，表示任务完成</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Function}</span> <b>监听回调函数，接收</b>
-									
-								</dt>
-								<dd>(err, id) 两个参数，err 表示错误信息，
-                  id 表示任务 id。接下来你可以拿这个 id 使用AV.BigQuery.JobQuery 查询任务状态和结果。</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name=".startJob"> </a>
-					<div class="fixedFont">&lt;static&gt; 
-					
-					<span class="light">{<a href="../symbols/AV.Promise.html">AV.Promise</a>}</span>
-					<span class="light">AV.BigQuery.</span><b>startJob</b>(jobConfig, options)
-					
-					</div>
-					<div class="description">
-						开始一个 BigQuery 任务。结果里将返回 Job id，你可以拿得到的 id 使用
-AV.BigQuery.JobQuery 查询任务状态和结果。
-						
-						
-					</div>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{Object}</span> <b>jobConfig</b>
-									
-								</dt>
-								<dd>任务配置的 JSON 对象，例如：<code><pre>
-                  { "sql" : "select count(*) as c,gender from _User group by gender",
-                    "saveAs": {
-                        "className" : "UserGender",
-                        "limit": 1
-                     }
-                  }
-                 </pre></code>
-              sql 指定任务执行的 SQL 语句， saveAs（可选） 指定将结果保存在哪张表里，limit 最大 1000。</dd>
-							
-								<dt>
-									<span class="light fixedFont">{Object}</span> <b>options</b>
-									
-								</dt>
-								<dd>A Backbone-style options object
-options.success, if set, should be a function to handle a successful
-call to a cloud function.  options.error should be a function that
-handles an error running the cloud function.  Both functions are
-optional.  Both functions take a single argument.</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{<a href="../symbols/AV.Promise.html">AV.Promise</a>}</span> A promise that will be resolved with the result
-of the function.</dd>
-							
-							</dl>
-						
-						
-						
-
-					
-				
-			
 			
 <!-- ============================== event details ========================= -->		
 			
@@ -537,7 +386,7 @@ of the function.</dd>
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Mon Jun 29 2015 17:29:23 GMT+0800 (CST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Jul 30 2015 14:54:11 GMT+0800 (CST)
 		</div>
 	</body>
 </html>

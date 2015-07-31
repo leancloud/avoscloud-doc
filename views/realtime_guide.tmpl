@@ -35,6 +35,8 @@
 
 ### 发送消息
 
+![Tom and Jerry](images/tom-and-jerry-avatar.png)
+
 Tom 想给 Jerry 发一条消息，实现代码如下：
 
 
@@ -283,15 +285,9 @@ Tom 想建立一个群，把自己好朋友都拉进这个群，然后给他们�
 
 {% block locationMessage_received_intro %}
 ```
-- 地理位置元信息提取 [messageId, latitude, longitude]
+- 此处各个 SDK 平台需要详细介绍一下如何接收 TypedMessage 接收，包含文字和代码。描述风格以及代码示例请参照 iOS 版本。
 ```
 {% endblock %}
-
-{% block typedMessage_received %}
-此处各个 SDK 平台需要详细介绍一下如何接收 TypedMessage 接收，包含文字和代码。描述风格以及代码示例请参照 iOS 版本。
-{% endblock %}
-
-{% block typedMessage_received %}{% endblock %}
 
 ### 暂态消息
 
@@ -306,12 +302,15 @@ Tom 想建立一个群，把自己好朋友都拉进这个群，然后给他们�
 ```
 {% endblock %}
 
+而对话中的其他成员在聊天界面中需要有以下代码做出响应：
 
 {% block transientMessage_received %}
+```
 - 初始化 ClientId = Jerry
 - Jerry 登录到系统
 - 进入与 Tom 的对话 id = 551260efe4b01608686c3e0f
 - 此时收到提示："Tom 正在输入……"
+```
 {% endblock %}
 
 ### 消息的发送策略
@@ -379,8 +378,8 @@ Tom 想建立一个群，把自己好朋友都拉进这个群，然后给他们�
 {% block customAttributesMessage_sent %}
 ```
 - 构造一个 AVIMImageMessage
-- 在 Attributes 中加入 location = "拉萨布达拉宫"
-- 设置 Title = "这蓝天让我彻底醉了……";
+- 在 Attributes 中加入 location = "拉萨布达拉宫" //南京路刀刀面包坊
+- 设置 Title = "这蓝天……我彻底是醉了"; //好多甜品耶……彻底醉了我
 - 发送
 ```
 {% endblock %}
@@ -451,39 +450,8 @@ Tom 想主动加入 Jerry、Bob、Harry 和 William 的对话，以下代码将�
 ```
 {% endblock %}
 
-该群的其他成员（比如 Bob）会根据自身客户端的状态不同会出现以下情况:
+{% block conversation_membersChanged_callBack %}{% endblock %}
 
-* 如果 Bob 仅仅是登录了应用，并没有加载具体的对话到本地，他只会激发 `AVIMClient` 层级上的回调，代码如下:
-
-{% block conversation_membersChanged %}
-```
-- 初始化 ClientId = Bob
-- Bob 登录
-- 设置 MembersChanged 响应
-- switch:case 如果事件类型为 MembersJoined
-- 获取本次加入的 ClientIds //因为只是 Tom 一人加入，所以只有一个 Id
-- //开发者可以继续添加自己的业务逻辑
-- break;
-```
-{% endblock %}
-
-* 如果 Bob 不但登录了，还在客户端加载了当前这个对话，那么他不但会激发 `AVIMClient` 层级上的回调，也会激发 `AVIMConversation` 层级上相关回调，代码如下：
-
-{% block conversation_memebersJoined %}
-```
-- 初始化 ClientId = Bob
-- Bob 登录
-- 设置 MembersChanged 响应
-- switch:case 如果事件类型为 MembersJoined
-- 获取本次加入的 ClientIds //因为只是 Tom 一人加入，所以只有一个 Id
-- //开发者可以继续添加自己的业务逻辑
-- break; 
-- ------------ 以上与上例相同 ---------------
-- 获取对话对象 Id = 551260efe4b01608686c3e0f
-- 设置 OnMembersJoined 响应
-- 获取本次加入的 ClientIds //还是只有 Tom 一人，所以这样就可以直接读取到 Tom 的 clientId
-```
-{% endblock %}
 
 #### 添加其他成员
 
@@ -603,9 +571,9 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 ### 对话的查询 
 
-#### 基础查询
+<!-- #### 基础查询 -->
 
-##### 根据 id 查询
+#### 根据 id 查询
 
 假如已知某一对话的 Id，可以使用它来查询该对话的详细信息：
 
@@ -619,7 +587,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 {% block conversation_getSingle %}{% endblock %}
 
-##### 对话列表
+#### 对话列表
 
 用户登录进应用后，取回已经存在的所有对话（不包含暂态对话，如聊天室）：
 
@@ -631,8 +599,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 ```
 {% endblock %}
 
-
-针对对话的查询默认返回 10 个结果，若需要更改，请通过 limit 来设置。
+对话的查询默认返回 10 个结果，若要更改返回结果数量，请设置 `limit` 值。
 
 {% block conversation_query_limit %}
 ```
@@ -641,10 +608,11 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 ```
 {% endblock %}
 
-#### 条件查询
-条件查询分为：比较查询，正则匹配查询，包含查询。
+<!-- #### 条件查询 -->
 
-##### 比较查询
+条件查询分为：比较查询、正则匹配查询、包含查询。
+
+#### 比较查询
 
 比较查询在一般的理解上都包含以下几种：
 
@@ -688,7 +656,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 ```
 {% endblock %}
 
-##### 正则匹配查询
+#### 正则匹配查询
 
 {% block conversation_query_regexIntro %}{% endblock %}
 
@@ -703,7 +671,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 ```
 {% endblock %}
 
-##### 包含查询
+#### 包含查询
 
 包含查询是指方法名字包含 `Contains` 单词的方法，例如查询关键字包含「教育」的对话：
 
@@ -804,7 +772,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 开发者需要注意的是，{% block chatroom_query_method %}{% endblock %}方法是查询全部对话的，也就是说，如果想查询指定的聊天室，需要额外再调用一次{% block chatroom_query_method2 %}{% endblock %}方法：
 
-比如查询主题包含《奔跑吧，兄弟》的聊天室：
+比如查询主题包含「奔跑吧，兄弟」的聊天室：
 
 {% block chatroom_query_single %}
 ```
@@ -823,7 +791,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 我们的 SDK 会将普通的对话消息自动保存在云端，开发者可以通过 AVIMConversation 来获取该对话的所有历史消息。
 
-获取该对话中最近的 N （默认 100 ，最大值 1000）条历史消息，通常在第一次进入对话时使用：
+获取该对话中最近的 N （默认 20 ，最大值 1000）条历史消息，通常在第一次进入对话时使用：
 
 {% block conversation_messageHistoryByLimit %}
 ```
@@ -864,6 +832,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 当网络连接出现中断、恢复等状态变化时，可以通过以下接口来处理响应：
 
 {% block networkStatus %}{% endblock %}
+
 >注意：网络状态在短时间内很可能会发生频繁变化，但这并不代表对话的接收与发送一定会受到影响，因此开发者在处理此类事件响应时，比如更新 UI，要适应加入更多的逻辑判断，以免影响用户的使用体验。
 
 ### 退出登录

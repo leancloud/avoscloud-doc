@@ -20,7 +20,7 @@ $ avoscloud add <appName> <appId>
 * [leanengine-todo-demo](https://github.com/leancloud/leanengine-todo-demo)：这是一个稍微复杂点的项目，是上一个项目的扩展，演示了基本的用户注册、会话管理、业务数据的增删查改、简单的 ACL 使用。这个项目可以作为初学 LeanEngine 和 [JS-SDK](https://leancloud.cn/docs/js_guide.html) 使用。效果体验：http://todo-demo.avosapps.com/
 {% endblock %}
 
-{% block runtime_env %}**注意**： 目前 LeanEngine 的 Node.js 版本为 0.12，请你最好使用此版本进行开发，至少不要低于 0.10 。{% endblock%}
+{% block runtime_env %}**注意**： 目前 LeanEngine 的 Node.js 版本为 0.12，请你最好使用此版本进行开发，至少不要低于 0.10 。{% endblock %}
 
 {% block run_in_local_command %}
 安装依赖：
@@ -40,7 +40,8 @@ $ avoscloud
 
 {% block project_constraint %}
 LeanEngine Node.js 项目必须有 `$PROJECT_DIR/server.js` 文件，该文件为整个项目的启动文件。
-{% endblock %}
+
+**注意：**项目中**不能**有 `$PROJECT_DIR/cloud/main.js` 文件，否则会被识别为 [2.0 版本](./leanengine_guide-cloudcode.html#项目约束) 的项目。{% endblock %}
 
 {% block ping %}
 LeanEngine 中间件内置了该 URL 的处理，只需要将中间件添加到请求的处理链路中即可：
@@ -650,11 +651,9 @@ app.get('/logout', function(req, res) {
 
 ### 自定义 session
 
-有时候你需要将一些自己需要的属性保存在 session 中，你可以增加通用的 `cookie-session` 组件，详情可以参考 [文档](https://github.com/expressjs/cookie-session)。该组件和 {% block cookie_session_middleware %}{% endblock%} 组件可以并存。
+有时候你需要将一些自己需要的属性保存在 session 中，你可以增加通用的 `cookie-session` 组件，详情可以参考 [文档](https://github.com/expressjs/cookie-session)。该组件和 {% block cookie_session_middleware %}{% endblock %} 组件可以并存。{% endblock %}
 
-{% endblock %}
-
-{% block cookie_session_middleware %}`AV.Cloud.CookieSession`{% endblock%}
+{% block cookie_session_middleware %}`AV.Cloud.CookieSession`{% endblock %}
 
 {% block https_redirect %}
 ```javascript
@@ -676,3 +675,24 @@ if (NODE_ENV === 'development') {
 ```
 {% endblock %}
 
+{% block project_start %}### 项目启动
+
+如果 `$PROJECT_DIR/package.json` 文件有类似下面的声明：
+
+```
+{
+  ...
+  "scripts": {
+    ...
+    "start": "node server.js",
+    ...
+  },
+  ...
+}
+```
+
+则会使用 `npm start` 方式启动。这意味着可以使用 [npm scripts](https://docs.npmjs.com/misc/scripts) 来定制启动过程。
+
+**提示：**有些遗留项目可能会将 `start` 脚本写成 `node ./app.js` 从而导致启动检测失败，所以将脚本改成 `node server.js` 或者你确认的启动方式即可。
+
+如果没有 `start` 脚本，则默认使用 `npm server.js` 来启动，所以需要保证存在 `$PROJECT_DIR/server.js` 文件。 {% endblock %}

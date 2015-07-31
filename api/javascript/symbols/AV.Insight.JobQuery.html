@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - AV.Relation</title>
+		<title>JsDoc Reference - AV.Insight.JobQuery</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -288,7 +288,7 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class AV.Relation
+				Class AV.Insight.JobQuery
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -296,11 +296,7 @@ ul.inheritsList
 				
 				
 			
-				<p>
-A class that is used to access all of the children of a many-to-many
-relationship.  Each instance of AV.Relation is associated with a
-particular parent object and key.
-</p>
+				
 				
 				
 					<br /><i>Defined in: </i> <a href="../symbols/src/dist_av.js.html">av.js</a>.
@@ -309,7 +305,7 @@ particular parent object and key.
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class AV.Relation.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class AV.Insight.JobQuery.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -322,9 +318,9 @@ particular parent object and key.
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/AV.Relation.html#constructor">AV.Relation</a></b>(parent, key)
+								<b><a href="../symbols/AV.Insight.JobQuery.html#constructor">AV.Insight.JobQuery</a></b>(id, className)
 							</div>
-							<div class="description">Creates a new Relation for the given parent object and key.</div>
+							<div class="description">创建一个对象，用于查询 Insight 任务状态和结果。</div>
 						</td>
 					</tr>
 				</tbody>
@@ -338,7 +334,7 @@ particular parent object and key.
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class AV.Relation.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class AV.Insight.JobQuery.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -351,46 +347,29 @@ particular parent object and key.
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/AV.Relation.html#add">add</a></b>(objects)
+								<div class="fixedFont"><b><a href="../symbols/AV.Insight.JobQuery.html#find">find</a></b>(options)
 								</div>
-								<div class="description">Adds a AV.Object or an array of AV.Objects to the relation.</div>
+								<div class="description">查询任务状态和结果，任务结果为一个 JSON 对象，包括 status 表示任务状态， totalCount 表示总数，
+results 数组表示任务结果数组，previewCount 表示可以返回的结果总数，任务的开始和截止时间
+startTime、endTime 等信息。</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/AV.Relation.html#query">query</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/AV.Insight.JobQuery.html#limit">limit</a></b>(n)
 								</div>
-								<div class="description">Returns a AV.Query that is limited to objects in this
-relation.</div>
+								<div class="description">Sets the limit of the number of results to return.</div>
 							</td>
 						</tr>
 					
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/AV.Relation.html#remove">remove</a></b>(objects)
+								<div class="fixedFont"><b><a href="../symbols/AV.Insight.JobQuery.html#skip">skip</a></b>(n)
 								</div>
-								<div class="description">Removes a AV.Object or an array of AV.Objects from this relation.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&lt;static&gt; &nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont">AV.Relation.<b><a href="../symbols/AV.Relation.html#.reverseQuery">reverseQuery</a></b>(parentClass, relationKey, child)
-								</div>
-								<div class="description">Creates a query that can be used to query the parent objects in this relation.</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/AV.Relation.html#toJSON">toJSON</a></b>()
-								</div>
-								<div class="description">Returns a JSON version of the object suitable for saving to disk.</div>
+								<div class="description">Sets the number of results to skip before returning any results.</div>
 							</td>
 						</tr>
 					
@@ -411,13 +390,11 @@ relation.</div>
 				</div>
 				
 				<div class="fixedFont">
-						<b>AV.Relation</b>(parent, key)
+						<b>AV.Insight.JobQuery</b>(id, className)
 				</div>
 				
 				<div class="description">
-					Creates a new Relation for the given parent object and key. This
-constructor should rarely be used directly, but rather created by
-AV.Object.relation.
+					创建一个对象，用于查询 Insight 任务状态和结果。
 					
 				</div>
 				
@@ -429,31 +406,29 @@ AV.Object.relation.
 						<dt class="heading">Parameters:</dt>
 						
 							<dt>
-								<span class="light fixedFont">{<a href="../symbols/AV.Object.html">AV.Object</a>}</span>  <b>parent</b>
+								<span class="light fixedFont">{String}</span>  <b>id</b>
 								
 							</dt>
-								<dd>The parent of this relation.</dd>
+								<dd>任务 id</dd>
 						
 							<dt>
-								<span class="light fixedFont">{String}</span>  <b>key</b>
+								 <b>className</b>
 								
 							</dt>
-								<dd>The key for this relation on the parent.</dd>
+								<dd></dd>
 						
 						</dl>
-					
-					
-					
-					
 					
 					
 					
 						<dl class="detailList">
-						<dt class="heading">See:</dt>
-						
-							<dd><a href="../symbols/AV.Object.html#relation">AV.Object#relation</a></dd>
-						
+						<dt class="heading">Since:</dt>
+							<dd>0.5.5</dd>
 						</dl>
+					
+					
+					
+					
 					
 
 			</div>
@@ -468,15 +443,17 @@ AV.Object.relation.
 					Method Detail
 				</div>
 				
-					<a name="add"> </a>
+					<a name="find"> </a>
 					<div class="fixedFont">
 					
-					
-					<b>add</b>(objects)
+					<span class="light">{<a href="../symbols/AV.Promise.html">AV.Promise</a>}</span>
+					<b>find</b>(options)
 					
 					</div>
 					<div class="description">
-						Adds a AV.Object or an array of AV.Objects to the relation.
+						查询任务状态和结果，任务结果为一个 JSON 对象，包括 status 表示任务状态， totalCount 表示总数，
+results 数组表示任务结果数组，previewCount 表示可以返回的结果总数，任务的开始和截止时间
+startTime、endTime 等信息。
 						
 						
 					</div>
@@ -488,10 +465,14 @@ AV.Object.relation.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>objects</b>
+									<span class="light fixedFont">{Object}</span> <b>options</b>
 									
 								</dt>
-								<dd>The item or items to add.</dd>
+								<dd>A Backbone-style options object
+options.success, if set, should be a function to handle a successful
+call to a cloud function.  options.error should be a function that
+handles an error running the cloud function.  Both functions are
+optional.  Both functions take a single argument.</dd>
 							
 							</dl>
 						
@@ -499,53 +480,29 @@ AV.Object.relation.
 						
 						
 						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{<a href="../symbols/AV.Promise.html">AV.Promise</a>}</span> A promise that will be resolved with the result
+of the function.</dd>
+							
+							</dl>
+						
 						
 						
 
 					<hr />
 				
-					<a name="query"> </a>
+					<a name="limit"> </a>
 					<div class="fixedFont">
 					
 					<span class="light">{<a href="../symbols/AV.Query.html">AV.Query</a>}</span>
-					<b>query</b>()
+					<b>limit</b>(n)
 					
 					</div>
 					<div class="description">
-						Returns a AV.Query that is limited to objects in this
-relation.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{<a href="../symbols/AV.Query.html">AV.Query</a>}</span> </dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="remove"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>remove</b>(objects)
-					
-					</div>
-					<div class="description">
-						Removes a AV.Object or an array of AV.Objects from this relation.
+						Sets the limit of the number of results to return. The default limit is
+100, with a maximum of 1000 results being returned at a time.
 						
 						
 					</div>
@@ -557,10 +514,10 @@ relation.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<b>objects</b>
+									<span class="light fixedFont">{Number}</span> <b>n</b>
 									
 								</dt>
-								<dd>The item or items to remove.</dd>
+								<dd>the number of results to limit to.</dd>
 							
 							</dl>
 						
@@ -568,20 +525,29 @@ relation.
 						
 						
 						
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							
+								<dd><span class="light fixedFont">{<a href="../symbols/AV.Query.html">AV.Query</a>}</span> Returns the query, so you can chain this call.</dd>
+							
+							</dl>
+						
 						
 						
 
 					<hr />
 				
-					<a name=".reverseQuery"> </a>
-					<div class="fixedFont">&lt;static&gt; 
+					<a name="skip"> </a>
+					<div class="fixedFont">
 					
 					<span class="light">{<a href="../symbols/AV.Query.html">AV.Query</a>}</span>
-					<span class="light">AV.Relation.</span><b>reverseQuery</b>(parentClass, relationKey, child)
+					<b>skip</b>(n)
 					
 					</div>
 					<div class="description">
-						Creates a query that can be used to query the parent objects in this relation.
+						Sets the number of results to skip before returning any results.
+This is useful for pagination.
+Default is to skip zero results.
 						
 						
 					</div>
@@ -593,22 +559,10 @@ relation.
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>parentClass</b>
+									<span class="light fixedFont">{Number}</span> <b>n</b>
 									
 								</dt>
-								<dd>The parent class or name.</dd>
-							
-								<dt>
-									<span class="light fixedFont">{String}</span> <b>relationKey</b>
-									
-								</dt>
-								<dd>The relation field key in parent.</dd>
-							
-								<dt>
-									<span class="light fixedFont">{<a href="../symbols/AV.Object.html">AV.Object</a>}</span> <b>child</b>
-									
-								</dt>
-								<dd>The child object.</dd>
+								<dd>the number of results to skip.</dd>
 							
 							</dl>
 						
@@ -619,39 +573,7 @@ relation.
 							<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							
-								<dd><span class="light fixedFont">{<a href="../symbols/AV.Query.html">AV.Query</a>}</span> </dd>
-							
-							</dl>
-						
-						
-						
-
-					<hr />
-				
-					<a name="toJSON"> </a>
-					<div class="fixedFont">
-					
-					<span class="light">{Object}</span>
-					<b>toJSON</b>()
-					
-					</div>
-					<div class="description">
-						Returns a JSON version of the object suitable for saving to disk.
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-							<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							
-								<dd><span class="light fixedFont">{Object}</span> </dd>
+								<dd><span class="light fixedFont">{<a href="../symbols/AV.Query.html">AV.Query</a>}</span> Returns the query, so you can chain this call.</dd>
 							
 							</dl>
 						
@@ -672,7 +594,7 @@ relation.
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Jul 30 2015 14:54:12 GMT+0800 (CST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Jul 30 2015 14:54:11 GMT+0800 (CST)
 		</div>
 	</body>
 </html>

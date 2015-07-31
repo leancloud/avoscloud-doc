@@ -4,7 +4,7 @@
 
 ## 启用
 
-要启用崩溃报告功能，需要将 `AVOSCloudCrashReporting.framework` 添加到项目的依赖库列表，然后在 AppDelegate 之中，在 LeanCloud SDK 初始化之前，添加如下代码：
+要启用崩溃报告功能，需要将 AVOSCloudCrashReporting.framework 添加到项目的依赖库列表，然后在 AppDelegate 之中，在 LeanCloud SDK 初始化之前添加如下代码：
 
 ```objc
 // Enable Crash Reporting
@@ -13,7 +13,7 @@
 // Setup AVOSCloud
 [AVOSCloud setApplicationId:@"{{appid}}" clientKey:@"{{appkey}}"];
 ```
-崩溃报告打开后，应用的崩溃信息会发送到 LeanCloud 服务端，具体内容可在控制台的 [分析](/stat.html?appid={{appid}}#/statrealtime) 里看到。
+崩溃报告打开后，应用的崩溃信息会发送到 LeanCloud 云端，具体内容可在 [控制台 - 分析](/stat.html?appid={{appid}}#/statrealtime) 里看到。
 
 ## 符号化
 
@@ -37,7 +37,7 @@ leancloud upload_symbol \
 -i "{{appid}}" \
 -k "{{appkey}}"
   ```
-* 如果只想在 Archive 发布时运行这个脚本，可以勾选`Run script only when installing `，这样可以加快调试时 Build 的速度。
+* 如果只想在 Archive 发布时运行这个脚本，可以勾选 **Run script only when installing**，这样可以加快调试时 Build 的速度。
 
 要手动上传符号文件，则使用：
 ```sh
@@ -47,13 +47,29 @@ leancloud upload_symbol \
 -k "{{appkey}}"
 ```
 
+符号文件将默认上传到中国节点。如果你的应用使用了中国之外的其他节点，例如美国节点，需要通过 `-r` 或 `--region` 选项来设置：
+
+```sh
+leancloud upload_symbol -r us \
+-f "<dSYM/xcarchive/DWARF 请按下面提示替换本路径>" \
+-i "{{appid}}" \
+-k "{{appkey}}"
+```
+
+目前支持以下节点：
+
+节点名 | 地区
+-------|----------
+cn     | 中国
+us     | 美国
+
 符号文件的存放位置，与你的发布流程有关，具体为：
 
-* 对应用进行 Archive 后会生成一个 .xcarchive 文件，在 Xcode > Window > Organizer > Archives 选项卡里可以看到它的位置。
+* **xcarchive 文件**：对应用进行 Archive 后会生成一个 .xcarchive 文件，在 Xcode 中打开 **Window** > **Organizer** > **Archives** 选项卡里可以看到它的位置。
 
-* dSYM 文件，一般仅在使用 Release 或 Archiving 构建应用时产生，可以在 Xcode DerivedData 文件夹下，与生成的 .app 同级的文件夹里找到。
+* **dSYM 文件**：一般仅在使用 Release 或 Archiving 构建应用时产生，可以在 /Xcode/DerivedData 文件夹下，与生成的 .app 同级的文件夹里找到。
 
-* DWARF 文件在路径的最底层，它可以通过 strip 应用生成的二进制文件来获得。
+* **DWARF 文件**：在路径的最底层，它可以通过 strip 应用生成的二进制文件来获得。
 
 请参考以下路径结构，应用文件名为 Demo.app：
 
@@ -77,7 +93,7 @@ leancloud upload_symbol \
 
 ## 测试
 
-崩溃报告启用之后，要测试崩溃信息是否能发送到 LeanCloud 服务端，可以在 view controller 或 AppDelegate 中添加一个 `crash` 方法：
+崩溃报告启用之后，要测试崩溃信息是否能发送到 LeanCloud 云端，可以在 view controller 或 AppDelegate 中添加一个 `crash` 方法：
 
 ```objc
 - (void)crash {
@@ -95,7 +111,7 @@ leancloud upload_symbol \
 1. build、run，然后 stop 应用；
 2. 在 Home 界面点开应用（不要使用调试器开启应用，因为调试器开启时不会收集崩溃信息）；
 3. 等待应用崩溃；
-4. 再次运行应用。应用将在启动时自动将崩溃报告发送给 LeanCloud 服务端。
+4. 再次运行应用。应用将在启动时自动将崩溃报告发送给 LeanCloud 云端。
 
 这时打开应用控制台的 [错误分析](stat.html?appid={{appid}}#/stat/crashreport)，就会看到刚才的崩溃信息。
 
@@ -121,31 +137,25 @@ leancloud upload_symbol \
 
 ## 排错
 
-### 为什么编译的时候会报错：`Undefined symbols for architecture i386: "std::__1::basic_string<char, std::__1::char_traits<char>...`
+**为什么编译的时候会报错：Undefined symbols for architecture i386: "std::__1::basic_string<char, std::__1::char_traits<char>...？**
 
-这是在项目依赖里面缺少 libc++.dylib 库。你在「Target 设置」->「General」-> 「Linked Frameworks and Libraries」 中加入 `libc++.dylib` 即可。
+这是在项目依赖里面缺少 libc++.dylib 库。打开项目的 **TARGETS** > **General** > **Linked Frameworks and Libraries**，添加 libc++.dylib 即可。
 
-### 为什么我的崩溃没有在后台显示
+**为什么我的崩溃没有在后台显示？**
 
-  你的应用可能没有向 LeanCloud 服务端发送崩溃报告。需要检查：
+你的应用可能没有向 LeanCloud 云端发送崩溃报告。需要检查：
   
-  * 确认在 LeanCloud SDK 初始化之前开启了崩溃报告。
+* 确认在 LeanCloud SDK 初始化之前开启了崩溃报告。
+* 如果正在测试崩溃报告，要确认应用不是通过调试器运行的；需要执行 build、run、stop 之后，再在 Home 界面点开应用。
+* 崩溃信息是在崩溃发生之后、下次应用启动之时发送的，确保应用不会在崩溃信息发送之前再次崩溃。如果是在调试崩溃报告，可以添加一段延时做为保障。
+* 确保没有使用其他崩溃报告的库，否则会互相干扰。
 
-  * 如果正在测试崩溃报告，要确认应用不是通过调试器运行的；需要执行 build、run、stop 之后，再在 Home 界面点开应用。
+**为什么我的崩溃没有符号化？**
 
-  * 崩溃信息是在崩溃发生之后、下次应用启动之时发送的，确保应用不会在崩溃信息发送之前再次崩溃。如果是在调试崩溃报告，可以添加一段延时做为保障。
-
-  * 确保没有使用其他崩溃报告的库，否则会互相干扰。
-
-### 为什么我的崩溃没有符号化
-
-  你可能没有上传与应用版本对应的符号文件。请检查：
+你可能没有上传与应用版本对应的符号文件。请检查：
   
-  * 如果设置了自动上传符号文件，切换到 Xcode 的 Report Navigator（Command + 8），验证一下上传是否正常。
-
-  * 确认日志正常，上传过程没有错误。
-
-  * 如果为之前没有符号化的崩溃上传了对应的符号文件，当同一崩溃再次发生时它就会被符号化；而之前没有符号化的崩溃信息不会再被符号化了。所以，这时可以把之前的崩溃记录标记为「已解决」并等待其再次发生。
-
-  * 如果使用了自定义的动态链接框架（dynamic framework），并且部分堆栈信息没有符号化，请确认所有动态链接框架以及主应用的符号文件都已经上传。
+* 如果设置了自动上传符号文件，切换到 Xcode 的 Report Navigator（Command + 8），验证一下上传是否正常。
+* 确认日志正常，上传过程没有错误。
+* 如果为之前没有符号化的崩溃上传了对应的符号文件，当同一崩溃再次发生时它就会被符号化；而之前没有符号化的崩溃信息不会再被符号化了。所以，这时可以把之前的崩溃记录标记为「已解决」并等待其再次发生。
+* 如果使用了自定义的动态链接框架（dynamic framework），并且部分堆栈信息没有符号化，请确认所有动态链接框架以及主应用的符号文件都已经上传。
 

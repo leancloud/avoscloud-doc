@@ -167,7 +167,7 @@ REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对
 请参考这篇 [博文](http://blog.leancloud.cn/blog/2014/03/31/2014nian-3yue-di-4zhou-avos-cloud-geng-xin/)。
 
 ## iOS/OS X SDK
-<!--
+
 ### 安装 Cocopods 失败怎么解决
 
 推荐使用淘宝提供的 Gem 源，访问 [http://ruby.taobao.org/](http://ruby.taobao.org/)。
@@ -181,10 +181,6 @@ http://ruby.taobao.org
 # 请确保只有 ruby.taobao.org
 $ gem install cocoapods
 ```
--->
-### 为什么不支持 CocoaPods 安装
-
-新版 CocoaPods 不支持静态链接的 framework，客户端工具也不能发布静态链接的 framework，而动态链接的 framework 只能在 iOS 8 上使用。所以，目前我们已经暂停对 CocoaPods 安装的支持，所有新版 iOS SDK 都需要到我们官网下载。
 
 ### 编译失败
 

@@ -91,7 +91,7 @@ LeanEngine 上有一些平台相关的环境变量，可以在你的代码中使
 * `LC_APP_KEY`: 当前应用的 App Key
 * `LC_APP_MASTER_KEY`: 当前应用的 Master Key
 * `LC_APP_ENV`: 当前应用环境:
-  * 开发环境没有该管径变量，或值为 `development`
+  * 开发环境没有该环境变量，或值为 `development`
   * 测试环境值为 `stage`
   * 生产环境值为 `production`
 * `LC_APP_PORT`: 当前应用开放给外网的端口，只有监听此端口，用户才可以访问到你的服务
@@ -367,6 +367,8 @@ if (name) {
 你的项目需要遵循一定格式才会被 LeanEngine 识别并运行。
 
 {% block project_constraint %}{% endblock %}
+
+{% block project_start %}{% endblock %}
 
 ### 健康监测
 
@@ -806,3 +808,7 @@ console.log('getHours', time.hours())
 为了方便大家的使用，更加符合通常的习惯，LeanEngine 运行时环境（无沙箱的 Node.js 环境和 Python 环境）都是使用**东八区**作为默认时区。当然，我们仍然建议程序的时间字符串带有时区标志。
 
 {% block introduceCloudCodeV2 %}{% endblock %}
+
+
+
+

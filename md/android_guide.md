@@ -66,24 +66,24 @@ dependencies {
     compile 'com.android.support:support-v4:21.0.3'
 
     //avoscloud-sdk 为 LeanCloud基础包
-    compile 'cn.leancloud.android:avoscloud-sdk:v3.3+'
+    compile 'cn.leancloud.android:avoscloud-sdk:v3.+'
 
     //avoscloud-push 与 Java-WebSocket 为推送与IM需要的包
-    compile 'cn.leancloud.android:avoscloud-push:v3.3+@aar'
+    compile 'cn.leancloud.android:avoscloud-push:v3.+@aar'
     compile 'cn.leancloud.android:Java-WebSocket:1.2.0-leancloud'
     
     //avoscloud-statistics 为 LeanCloud 统计包
-    compile 'cn.leancloud.android:avoscloud-statistics:v3.3+@aar'
+    compile 'cn.leancloud.android:avoscloud-statistics:v3.+@aar'
 
     //avoscloud-feedback 为 LeanCloud 用户反馈包
-    compile 'cn.leancloud.android:avoscloud-feedback:v3.3+@aar'
+    compile 'cn.leancloud.android:avoscloud-feedback:v3.+@aar'
 
     //avoscloud-sns 为 LeanCloud 第三方登陆包
-    compile 'cn.leancloud.android:avoscloud-sns:v3.3+@aar'
+    compile 'cn.leancloud.android:avoscloud-sns:v3.+@aar'
     compile 'cn.leancloud.android:qq-sdk:1.6.1-leancloud'
 
     //avoscloud-search 为 LeanCloud 应用内搜索包
-    compile 'cn.leancloud.android:avoscloud-search:v3.3+@aar'    
+    compile 'cn.leancloud.android:avoscloud-search:v3.+@aar'    
 }
 ```
 
@@ -481,7 +481,23 @@ testDataObject.saveInBackground();
 我们不建议存储较大的二进制数据，如图像或文件不应使用 `AVObject` 的 byte[] 字段类型。`AVObject` 的大小**不应超过 128 KB**。如果需要存储较大的文件类型如图像、文件、音乐，可以使用 `AVFile` 对象来存储，具体使用方法可见 [AVFile 指南部分](#%E6%96%87%E4%BB%B6)。
 关于处理数据的更多信息，可查看开发指南的数据安全部分。
 
-** 注：在v3.4版本以后，`AVObject` 实现了原生的 `Parcelable` 接口，以支持通过 Intent 在不同的UI组件内传递 `AVObject` 对象实例。同时 `AVObject` 也可以通过 `avobject.toString()` 与 `AVObject.parseAVObject(String str)` 方法来进行序列化与反序列化。**
+### AVObject 序列化与反序列化
+
+在 v3.4 版本之前，想要在不同的组件中间传递 `AVObject` 数据，我们比较推荐的方式是，首先将 objectId-object pair 存入全局唯一的 Map 中，然后把 objectId 通过 Intent 传递到下一个组件中，最后新组件再从全局唯一的 Map 中通过 objectId 拿到 object 实例。
+而在 v3.4 版本之后， `AVObject` 实现了原生的 `Parcelable` 接口，以支持通过 Intent 在不同的组件中间传递 `AVObject` 对象实例。
+同时 `AVObject` 也可以通过 `avobject.toString()` 与 `AVObject.parseAVObject(String str)` 方法来进行序列化与反序列化。
+```java
+AVObject child = new AVObject("child");
+child.put("intVal",123);
+child.put("strVal","str");
+String objectStr = child.toString();
+try{
+  AVObject deserializedObject = AVObject.parseAVObject(objectStr);
+}catch(Exception e){
+ //处理解析异常
+}
+
+```
 
 ## 查询
 
@@ -988,6 +1004,30 @@ public void takeAccusation() {
 ```java
 Post postReference = AVObject.createWithoutData(Post.class, post.getObjectId());
 ```
+
+### 子类的序列化与反序列化
+
+在 v3.4 版本以后，如果希望 `AVObject` 子类也支持 `Parcelable`,则需要至少满足一下几个要求：
+
+* 确保子类有一个 public 并且参数为 Parcel的构造函数，并且在内部调用父类的该构造函数
+
+* 内部需要有一个静态变量 CREATOR 实现 `Parcelable.Creator`
+
+```java
+// Post.java
+@AVClassName("Post")
+public class Post extends AVObject {
+  public Post(){
+  }
+  
+  public Post(Parcle in){
+    super(in);
+  }
+  //此处为我们的默认实现，当然你也可以自行实现
+  public static final Creator CREATOR = AVObjectCreator.instance;
+}
+```
+
 
 ### 查询子类
 

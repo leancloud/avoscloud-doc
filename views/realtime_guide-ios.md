@@ -14,47 +14,54 @@
 
 [CocoaPods](http://www.cocoapods.org/) 是一款很好的依赖管理工具，其安装步骤大致如下：
 
-* 首先确保开发环境中已经安装了 Ruby（一般安装了 XCode，Ruby 会被自动安装上）
-* 我们建议使用淘宝提供的 [Gem源](http://ruby.taobao.org/)，在终端执行下列命令：
+首先确保开发环境中已经安装了 Ruby。一般安装了 XCode，Ruby 会被自动安装上。我们建议使用淘宝提供的 [Gem 源](http://ruby.taobao.org/)，在终端执行下列命令：
 
-  ```sh
-  $ gem sources --remove https://rubygems.org/
-  $ gem sources -a http://ruby.taobao.org/
-  # 请确保下列命令的输出只有 ruby.taobao.org
-  $ gem sources -l
-  *** CURRENT SOURCES ***
-  http://ruby.taobao.org
-  ```
+```sh
+$ gem sources --remove https://rubygems.org/
+$ gem sources -a http://ruby.taobao.org/
+# 请确保下列命令的输出只有 ruby.taobao.org
+$ gem sources -l
+*** CURRENT SOURCES ***
+http://ruby.taobao.org
+```
 
-* 通过下列命令，安装（或更新）CocoaPods（可能需要输入登录密码）：
+通过下列命令，安装或更新 CocoaPods（可能需要输入登录密码）：
 
-  ```sh
-  sudo gem install cocoapods
-  ```
+```sh
+sudo gem install cocoapods
+```
 
-* 在项目根目录下创建一个名为 `Podfile` 的文件（无扩展名），并添加以下内容：
+在项目根目录下创建一个名为 **Podfile** 的文件（无扩展名），并添加以下内容：
 
-  ```sh
-  pod 'AVOSCloudIM'
-  ```
-  
-* 执行命令 `pod install` 安装 SDK。
+```sh
+pod 'AVOSCloudIM'
+```
 
-相关资料：《[CocoaPods 安装和使用教程](http://code4app.com/article/cocoapods-install-usage)》
+最后执行安装命令：
+
+```sh
+pod install
+```
+
+相关资料：[《CocoaPods 安装和使用教程》](http://code4app.com/article/cocoapods-install-usage)
 
 ### 手动安装 SDK
-你也可以从我们官网下载最新版本的 iOS SDK，手动导入项目中。具体步骤详见[快速入门](https://leancloud.cn/start.html) 。
+
+你也可以从我们官网下载最新版本的 iOS SDK，手动导入项目中。具体步骤详见 [快速入门](https://leancloud.cn/start.html)。
 
 这里要特别注意如下几点：
 
 * 手动添加下列依赖库：
+
   * SystemConfiguration.framework
   * MobileCoreServices.framework
   * CoreTelephony.framework
   * CoreLocation.framework
   * libicucore.dylib
-* 如果使用 AVOSCloudCrashReporting ，还需额外添加 `libc++.dylib`
-* 在 target 的 Build Settings 中，为 `Other Linker Flags` 增加 `-all_load` 链接选项。
+
+* 如果使用 [崩溃报告 AVOSCloudCrashReporting](./ios_crashreporting_guide.html)，还需额外添加 **libc++.dylib**。
+
+* 在项目 Targets 的 **Build Settings** 中，为 **Other Linker Flags** 增加 **-all_load** 链接选项。
 
 然后我们需要在 application 的 `applicationDelegate` 函数中对实时通信 SDK 进行初始化：
 
@@ -87,24 +94,23 @@
 @end
 ```
 
-对于像 `self.prop` 这样的引用，我们约定 `prop` 属性在 `TomAndJerryEpisode` 类中已经有了正确的实现。
-
-例如，以下出现代码：
+对于像 `self.prop` 这样的引用，我们约定 `prop` 属性在 `TomAndJerryEpisode` 类中已经有了正确的实现。例如：
 
 ```
 self.client = [[AVIMClient alloc] init];
 ```
-如果需要正确运行，则需要在当前的 `ViewController.m` 中添加一个 `AVIMClient` 属性：
+
+若想让它正确执行，需要在当前的 `ViewController.m` 中添加一个 `AVIMClient` 属性：
 
 ```
 @property (nonatomic, strong) AVIMClient *client;
 ```
+
 以此类推。
 
 我们也故意省略了错误处理，有时还会省略一些上下文逻辑，目的是让示例代码简明扼要。
 
-示例代码并不是最佳实践，仅仅演示 SDK 接口的基础用法。
-
+示例代码并不是最佳实践，仅为演示 SDK 接口的基础用法。
 {% endblock %}
 
 {% block oneOnOneChat_sent %}
@@ -116,7 +122,7 @@ self.client = [[AVIMClient alloc] init];
     // Tom 用自己的名字作为 ClientId 打开 client
     [self.client openWithClientId:@"Tom" callback:^(BOOL succeeded, NSError *error) {
         // Tom 建立了与 Jerry 的会话
-        [self.client createConversationWithName:@"Tom and Jerry" clientIds:@[@"Jerry"] callback:^(AVIMConversation *conversation, NSError *error) {
+        [self.client createConversationWithName:@"猫和老鼠" clientIds:@[@"Jerry"] callback:^(AVIMConversation *conversation, NSError *error) {
             // Tom 发了一条消息给 Jerry
             [conversation sendMessage:[AVIMTextMessage messageWithText:@"耗子，起床！" attributes:nil] callback:^(BOOL succeeded, NSError *error) {
                 if (succeeded) {
@@ -167,7 +173,7 @@ self.client = [[AVIMClient alloc] init];
         NSArray *friends = @[@"Jerry", @"Bob", @"Harry", @"William"];
         [self.client createConversationWithName:@"Tom and friends" clientIds:friends callback:^(AVIMConversation *conversation, NSError *error) {
             // Tom 发了一条消息给朋友们
-            [conversation sendMessage:[AVIMTextMessage messageWithText:@"Hey，你们在哪里？" attributes:nil] callback:^(BOOL succeeded, NSError *error) {
+            [conversation sendMessage:[AVIMTextMessage messageWithText:@"你们在哪儿？" attributes:nil] callback:^(BOOL succeeded, NSError *error) {
                 if (succeeded) {
                     NSLog(@"发送成功！");
                 }
@@ -196,7 +202,7 @@ self.client = [[AVIMClient alloc] init];
 #pragma mark - AVIMClientDelegate
 
 - (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
-    NSLog(@"%@", message.text); // Hey，你们在哪里？
+    NSLog(@"%@", message.text); // 你们在哪儿？
 
     AVIMTextMessage *reply = [AVIMTextMessage messageWithText:@"Tom，我在 Jerry 家，你跟 Harry 什么时候过来？还有 William 和你在一起么？" attributes:nil];
 
@@ -218,7 +224,7 @@ self.client = [[AVIMClient alloc] init];
     // Tom 用自己的名字作为 ClientId 打开 client
     [self.client openWithClientId:@"Tom" callback:^(BOOL succeeded, NSError *error) {
         // Tom 建立了与 Jerry 的会话
-        [self.client createConversationWithName:@"Tom and Jerry" clientIds:@[@"Jerry"] callback:^(AVIMConversation *conversation, NSError *error) {
+        [self.client createConversationWithName:@"猫和老鼠" clientIds:@[@"Jerry"] callback:^(AVIMConversation *conversation, NSError *error) {
             // Tom 创建了一个图像消息
             NSString *filePath = [self imagePath];
             NSDictionary *attributes = @{ @"location": @"旧金山" };
@@ -371,7 +377,6 @@ self.client = [[AVIMClient alloc] init];
 {% endblock %}
 
 {% block videoMessage_url_sent %}
-
 ```objc
 - (void)TomSendExternalVedioToJerry {
     // Tom 创建了一个 client
@@ -400,11 +405,11 @@ self.client = [[AVIMClient alloc] init];
 {% endblock %}
 
 {% block fileMessage_sent %}
-iOS 暂不支持发送通用文件消息，已在计划中，近日发布。
+iOS 暂不支持发送通用文件消息，已在计划中，近期发布。
 {% endblock %}
 
 {% block fileMessage_receive_intro %}
-iOS 暂不支持发送通用文件消息，已在计划中，近日发布。
+iOS 暂不支持发送通用文件消息，已在计划中，近期发布。
 {% endblock %}
 
 {% block locationMessage_new %}
@@ -425,7 +430,7 @@ iOS 暂不支持发送通用文件消息，已在计划中，近日发布。
         [self.client createConversationWithName:@"猫和老鼠" clientIds:@[@"Jerry"] callback:^(AVIMConversation *conversation, NSError *error) {
             // Tom 发了一个地理位置给 Jerry
             // NOTE: 开发者更可以通过具体的设备的 API 去获取设备的地理位置
-            AVIMLocationMessage *message = [AVIMLocationMessage messageWithText:nil latitude:45.0 longitude:34.0 attributes:nil];
+            AVIMLocationMessage *message = [AVIMLocationMessage messageWithText:@"新开的蛋糕店！耗子咱们有福了…" latitude:45.0 longitude:34.0 attributes:nil];
             [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
                 if (succeeded) {
                     NSLog(@"发送成功！");
@@ -441,7 +446,11 @@ iOS 暂不支持发送通用文件消息，已在计划中，近日发布。
 与接收图像消息类似，需要使用 `conversation:didReceiveTypedMessage:` 方法来响应，实例代码请参照 [图像消息接收](#接收图像消息)。
 {% endblock %}
 
-{% block typedMessage_received %}{% endblock %}
+{% block typedMessage_received %}
+```
+- (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message;
+```
+{% endblock %}
 
 {% block transientMessage_sent %}{% endblock %}
 
@@ -493,8 +502,7 @@ ioType|消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（
 位置消息|-5
 文件消息|-6
 
->TODO: 举例说明如何使用这样的数字类型
-
+<!-- >TODO: 举例说明如何使用这样的数字类型 -->
 {% endblock %}
 
 {% block attributes %} `AVIMMessage.attributes` {% endblock %}
@@ -510,11 +518,11 @@ ioType|消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（
     // Tom 用自己的名字作为 ClientId 打开 client
     [self.client openWithClientId:@"Tom" callback:^(BOOL succeeded, NSError *error) {
         // Tom 建立了与 Jerry 的会话
-        [self.client createConversationWithName:@"Tom and Jerry" clientIds:@[@"Jerry"] callback:^(AVIMConversation *conversation, NSError *error) {
+        [self.client createConversationWithName:@"猫和老鼠" clientIds:@[@"Jerry"] callback:^(AVIMConversation *conversation, NSError *error) {
             // Tom 创建了一个图像消息
             NSString *filePath = [self imagePath];
-            NSDictionary *attributes = @{ @"location": @"旧金山" };
-            AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"发自我的 iPhone" attachedFilePath:filePath attributes:attributes];
+            NSDictionary *attributes = @{ @"location": @"拉萨布达拉宫" };
+            AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"这蓝天……我彻底是醉了" attachedFilePath:filePath attributes:attributes];
 
             // Tom 将图像消息发给 Jerry
             [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
@@ -550,7 +558,7 @@ ioType|消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（
     if ([message isKindOfClass:[AVIMImageMessage class]]) {
         AVIMImageMessage *imageMessage = (AVIMImageMessage *)message;
 
-        // 旧金山
+        // 拉萨布达拉宫
         NSString *location = imageMessage.attributes[@"location"];
     }
 }
@@ -626,9 +634,9 @@ ioType|消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（
 ```
 {% endblock %}
 
-{% block conversation_membersChanged %}{% endblock %}
+{% block conversation_membersChanged_callBack %}
+该群的其他成员（比如 Bob）会收到该操作的事件回调：
 
-{% block conversation_memebersJoined %}
 ```objc
 - (void)BobNoticedTomDidJoin {
     // Bob 创建了一个 client
@@ -648,7 +656,12 @@ ioType|消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（
 }
 
 ```
+
 {% endblock %}
+
+{% block conversation_membersChanged %}{% endblock %}
+
+{% block conversation_memebersJoined %}{% endblock %}
 
 {% block conversation_invite %}
 ```objc
@@ -909,8 +922,8 @@ AVIMConversation 属性名 | _Conversation 字段|含义
     [self.client openWithClientId:@"Tom" callback:^(BOOL succeeded, NSError *error) {
         // Tom 构建一个查询
         AVIMConversationQuery *query = [self.client conversationQuery];
-        // Tom 设置查询最近 10 个活跃回话
-        query.limit = 10;
+        // Tom 设置查询最近 20 个活跃对话
+        query.limit = 20;
 
         [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
             NSLog(@"查询成功！");
@@ -921,7 +934,7 @@ AVIMConversation 属性名 | _Conversation 字段|含义
 {% endblock %}
 
 {% block table_conservation_query_than %}
-逻辑操作 | `AVIMConversationQuery` 对应的方法|
+逻辑操作 | AVIMConversationQuery 方法|
 ---|---
 等于 | `equalTo`
 不等于 |  `notEqualTo` 
@@ -929,7 +942,6 @@ AVIMConversation 属性名 | _Conversation 字段|含义
 大于等于 | `greaterThanOrEqualTo` 
 小于 | `lessThanOrEqualTo`
 小于等于 | `lessThanOrEqualTo`
-
 {% endblock %}
 
 {% block conversation_query_equalTo %}
@@ -1274,7 +1286,7 @@ AVIMConversation 属性名 | _Conversation 字段|含义
 {% endblock %}
 
 {% block logout %}
-在 app 退出的时候，或者切换用户的时候，我们需要断开与 LeanCloud 实时通信服务的长连接，这时候需要调用 [AVIMClient closeWithCallback:] 函数。一般情况下，这个函数都会关闭连接并立刻返回，这时候 Leancloud 实时通信服务端就会认为当前用户已经下线。
+在 app 退出的时候，或者切换用户的时候，我们需要断开与 LeanCloud 实时通信服务的长连接，这时候需要调用 `[AVIMClient closeWithCallback:]` 函数。一般情况下，这个函数都会关闭连接并立刻返回，这时实时通信服务端就会认为当前用户已经下线。
 {% endblock %}
 
 {% block communicate_with_otherSDK %}{% endblock %}
@@ -1342,7 +1354,7 @@ imClient.signatureDataSource = signatureDelegate;
 
 在启用签名功能的情况下，实时通信 SDK 在进行一些重要操作前，都会首先请求 `AVIMSignatureDataSource` 接口，获取签名信息 `AVIMSignature`，然后把操作信息和第三方签名一起发给 LeanCloud 云端，由云端根据签名的结果来对操作进行处理。 
 
-用户登录是通过调用`［AVIMClient openWithClientId:callback:]` 方法实现的，该方法声明如下：
+用户登录是通过调用 `[AVIMClient openWithClientId:callback:]` 方法实现的，该方法声明如下：
 
 ```objc
 // 开启某个账户的聊天
