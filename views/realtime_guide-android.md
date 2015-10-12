@@ -58,7 +58,7 @@ public class MyApplication extends Application{
       @Override
       public void done(AVIMClient client, AVIMException e) {
         if (e == null) {
-          // 创建与Jerry之间的会话
+          // 创建与Jerry之间的对话
           client.createConversation(Arrays.asList("Jerry"), "Tom & Jerry", null,
               new AVIMConversationCreatedCallback() {
 
@@ -161,7 +161,7 @@ public void jerryReceiveMsgFromTom(){
       @Override
       public void done(AVIMClient client, AVIMException e) {
         if (e == null) {
-          // 创建与 Jerry，Bob,Harry,William 之间的会话
+          // 创建与 Jerry，Bob,Harry,William 之间的对话
           client.createConversation(Arrays.asList("Jerry","Bob","Harry","William"), "Tom & Jerry & friedns", null,
               new AVIMConversationCreatedCallback() {
 
@@ -1047,6 +1047,36 @@ jerry.open(new AVIMClientCallback() {
 ```
 {% endblock %}
 
+{% block conversation_creation_api %}
+### 创建对话
+创建对话的接口在 `AVIMClient` 中共有4个方法重写，下面我们以参数最详尽的这个重写来说明其中每个参数的意义。
+
+```
+  /**
+   * 创建或查询一个已有 conversation
+   *
+   * @param members 对话的成员
+   * @param name 对话的名字
+   * @param attributes 对话的额外属性
+   * @param isTransient 是否是暂态对话
+   * @param isUnique 如果已经存在符合条件的对话，是否返回已有对话
+   *                 为 false 时，则一直为创建新的回话
+   *                 为 true 时，则先查询，如果已有符合条件的回话，则返回已有的，否则，创建新的并返回
+   *                 为 true 时，仅 members 为有效查询条件
+   * @param callback
+   */
+  public void createConversation(final List<String> members, final String name,
+      final Map<String, Object> attributes, final boolean isTransient, final boolean isUnique,
+      final AVIMConversationCreatedCallback callback)
+```
+各个参数的含义如下：
+* members - 表示对话的初始成员列表。在对话创建成功后，这些成员会收到和邀请加入对话一样的相应通知
+* name - 表示对话的名字，主要是用于标记对话，让用户更好地识别对话
+* attributes - 表示额外属性
+* isTransient - 用于标注是否是临时对话
+* isUnique - 是否创建唯一对话，当 isUnique 为 true 时，如果当前已经有相同成员的对话存在则返回该对话，否则才创建新的对话，在 createConversation的多个重写中，没有 isUnique 参数的情况下，该值默认为 false
+{% endblock %}
+
 {% block event_memberJoin %} `onMemberJoined` {% endblock %}
 
 {% block event_memberLeft %} `onMemberLeft` {% endblock %}
@@ -1890,7 +1920,7 @@ private void TomQueryWithLimit() {
         //登录成功
         AVIMConversationQuery query = tom.getConversationQuery();
         query.setLimit(1);
-        //获取第一个会话
+        //获取第一个对话
         query.findInBackground(new AVIMConversationQueryCallback() {
           @Override
           public void done(List<AVIMConversation> convs, AVIMException e) {
@@ -1918,8 +1948,7 @@ private void TomQueryWithLimit() {
 ```
 {% endblock %}
 
-{% block chatroom_query_method %} `AVIMConversationQuery.findInBackground` {% endblock %}
-
+{% block chatroom_query_method %} `AVIMConversationQuery.findInBackground` {% endblock %}对话
 {% block chatroom_query_method2 %}以 `where` 开头的{% endblock %}
 
 {% block create_query_instance_method %}`AVIMClient.getConversationQuery()`{% endblock %}
@@ -1938,7 +1967,7 @@ private void TomQueryWithLimit() {
         AVIMConversationQuery query = client.getConversationQuery();
         query.whereEqualTo("attr.topic", "奔跑吧，兄弟");
         query.whereEqualTo("tr", true);
-        //获取第一个会话
+        //获取第一个对话
         query.findInBackground(new AVIMConversationQueryCallback() {
           @Override
           public void done(List<AVIMConversation> convs, AVIMException e) {
