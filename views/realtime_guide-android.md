@@ -1049,7 +1049,7 @@ jerry.open(new AVIMClientCallback() {
 
 {% block conversation_creation_api %}
 ### 创建对话
-创建对话的接口在 `AVIMClient` 中共有4个方法重写，下面我们以参数最详尽的这个重写来说明其中每个参数的意义。
+创建对话的接口在 `AVIMClient` 中共有 4 个方法重写，下面我们以参数最详尽的这个重写来说明其中每个参数的意义。
 
 ```
   /**
@@ -1060,8 +1060,8 @@ jerry.open(new AVIMClientCallback() {
    * @param attributes 对话的额外属性
    * @param isTransient 是否是暂态对话
    * @param isUnique 如果已经存在符合条件的对话，是否返回已有对话
-   *                 为 false 时，则一直为创建新的回话
-   *                 为 true 时，则先查询，如果已有符合条件的回话，则返回已有的，否则，创建新的并返回
+   *                 为 false 时，则一直为创建新的对话
+   *                 为 true 时，则先查询，如果已有符合条件的对话，则返回已有的，否则，创建新的并返回
    *                 为 true 时，仅 members 为有效查询条件
    * @param callback
    */
