@@ -74,11 +74,15 @@ LeanCloud 需要审核短信内容，并且保留对发送人追究相关法律�
 ### 注册验证
 1. **用户输入手机号以及密码**  
   引导用户正确的输入，建议在调用 SDK 接口之前，验证一下手机号的格式。
+
 2. **调用 AVUser 的注册接口，传入手机号以及密码**  
   {% block avuser_signup_send_sms %}{% endblock %}
+
 3. **云端发送手机验证码，并且返回注册成功，但是此时用户的 `mobilePhoneVerified` 依然是 `false`，客户端需要引导用户去输入验证码。**
+
 4. **用户再一次输入验证码**  
   最好验证一下是否为纯数字。
+  
 5. **调用验证接口，检查用户输入的纯数字验证码的合法性。**
   {% block avuser_signup_sms_verify %}{% endblock %}
 
@@ -88,8 +92,18 @@ LeanCloud 需要审核短信内容，并且保留对发送人追究相关法律�
 
 1. **请求发送验证码**
   {% block avuser_request_sms_code %}{% endblock %}
+  
 2. **调用验证接口验证用户输入的纯数字的验证码**
   {% block avuser_verify_sms_code %}{% endblock %}
+  
+
+#### 没收到注册验证短信？
+一般来说，用户收到的注册验证短信内容为：
+
+```
+【AppName】欢迎使用 AppName 服务，您的安全码是 123456，请输入完成验证。
+```
+其中 `AppName` 是应用的名称，如果这个名称超过5个汉字（10个字符）的长度，就会因为签名太长而被短信供应商拒绝发送。修改应用名称 [**设置**](https://leancloud.cn/app.html?appid={{appid}}#/general) 中的 **应用名称** 中修改。
 
 ### 操作认证
 
