@@ -23,7 +23,7 @@
     "assemble": "~0.4.33",
     "assemble-swig": "~0.1.0",
     "autoprefixer": "^6.0.1",
-    "avoscloud-sdk": "^1.0.0-rc3",
+    "avoscloud-sdk": "^0.6.1",
     "body-parser": "^1.13.1",
     "cheerio": "^0.19.0",
     "coffee-script": "^1.9.3",
