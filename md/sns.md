@@ -61,10 +61,19 @@ AVOSCloudSNS 是一个非常轻量的模块, 可以用最少一行代码就可�
 在 AppDelegate 里添加:
 
 ```objc
--(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+// For application below ios 9
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
     return [AVOSCloudSNS handleOpenURL:url];
 }
+// For application equals or larger ios 9
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options
+{
+    return [self onURLOpened:url];
+}
+
 ```
+
 
 这样，代码部分就完成了。
 
