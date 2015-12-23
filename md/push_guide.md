@@ -172,7 +172,7 @@ prod|**仅对 iOS 有效**。设置使用开发证书（**dev**）还是生产�
 push_time|定期推送时间
 where|检索 _Installation 表使用的查询条件，JSON 对象。
 
->我们建议给 iOS 设备的推送都设置过期时间，才能保证推送的当时如果用户设置了飞行模式，在关闭飞行模式之后可以收到推送消息，可以参考 [Stackoverflow 帖子](http://stackoverflow.com/questions/24026544/push-notification-is-not-being-delivered-when-iphone-comes-back-online)。
+注意：我们建议给 iOS 设备的推送都设置过期时间，这样才能保证在推送的当时, 如果用户与 APNS 之间的连接恰好断开（如关闭了手机网络、设置了飞行模式等)，在连接恢复之后消息过期之前，用户仍然可以收到推送消息，可以参考 [Stackoverflow 帖子](http://stackoverflow.com/questions/24026544/push-notification-is-not-being-delivered-when-iphone-comes-back-online)。
 
 #### 消息内容 Data
 
