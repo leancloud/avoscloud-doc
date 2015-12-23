@@ -135,6 +135,7 @@ AVPush *push = [[AVPush alloc] init];
 ...
 ```
 
+<div class="callout callout-info">为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 [控制台 / 消息 / 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 页面中体现。因此，在使用开发证书推送时，请合理设置推送条件。</div>
 
 ## 高级定向发送
 
@@ -447,8 +448,7 @@ if (application.applicationState != UIApplicationStateBackground) {
 }
 ```
 
-如果使用 iOS 7 推送的新特性（包括新的 content-available 功能），你需要实现 iOS 7 
-新加的方法：
+如果使用 iOS 7 推送的新特性（包括新的 content-available 功能），你需要实现 iOS 7 新加的方法：
 
 ```objc
 - (void)application:(UIApplication *)application

@@ -172,7 +172,13 @@ prod|**仅对 iOS 有效**。设置使用开发证书（**dev**）还是生产�
 push_time|定期推送时间
 where|检索 _Installation 表使用的查询条件，JSON 对象。
 
-注意：我们建议给 iOS 设备的推送都设置过期时间，这样才能保证在推送的当时, 如果用户与 APNS 之间的连接恰好断开（如关闭了手机网络、设置了飞行模式等)，在连接恢复之后消息过期之前，用户仍然可以收到推送消息，可以参考 [Stackoverflow 帖子](http://stackoverflow.com/questions/24026544/push-notification-is-not-being-delivered-when-iphone-comes-back-online)。
+#### 开发证书推送
+
+为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 [控制台 / 消息 / 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 页面中体现。因此，在使用开发证书推送时，请合理设置推送条件。
+
+#### 过期时间
+
+我们建议给 iOS 设备的推送都设置过期时间，这样才能保证在推送的当时，如果用户与 APNs 之间的连接恰好断开（如关闭了手机网络、设置了飞行模式等)，在连接恢复之后消息过期之前，用户仍然可以收到推送消息。可以参考 [Stackoverflow &middot; Push notification is not being delivered when iPhone comes back online](http://stackoverflow.com/questions/24026544/push-notification-is-not-being-delivered-when-iphone-comes-back-online)。
 
 #### 消息内容 Data
 
