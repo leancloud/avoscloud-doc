@@ -54,6 +54,8 @@ LeanCloud\LeanClient::get("/date"); // 获取服务器时间
 // => {"__type": "Date", "iso": "2015-10-01T09:45:45.123Z"}
 ```
 
+如果遇到类似「Fatal error: Uncaught exception 'RuntimeException'...CURL connection...」的系统报错，请参考 [修复 CURL connection 错误](#error_curl_connection)。
+
 #### 使用
 
 初始化应用后，就可以开始创建数据了：
@@ -99,3 +101,17 @@ $obj->destroy();
 
 请参考详细的 [API 文档](/api-docs/php)。
 
+#### 常见问题
+
+一、<a id="error_curl_connection" name="error_curl_connection"></a>【系统报错】**Fatal error: Uncaught exception 'RuntimeException' with message 'CURL connection (https://api.leancloud.cn/1.1/...) error: 60 60**
+
+错误原因是 Windows curl 没有证书无法发送 https 请求，解决方案有两种：
+
+1. 将证书文件 `curl-ca-bundle.crt` 置于与 `curl.exe` 相同的目录，通常情况下位于 `C:\Windows\system32`。
+1.  将证书文件 `curl-ca-bundle.crt` 置于自定义的目录，然后在 `php.ini` 中明确设置证书的位置：
+
+  ```
+[PHP]
+curl.cainfo={自定义的目录路径}/ca-bundle.crt
+  ```
+  
