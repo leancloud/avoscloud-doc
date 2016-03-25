@@ -1,3 +1,7 @@
+{% set appid = '{{appid}}' %}
+{% set appkey = '{{appkey}}' %}
+{% set masterkey = '{{masterkey}}' %}
+
 #  {{platform_title}} 数据存储开发指南
 
 数据存储（{{productName}}）是 {{cloudName}} 提供的核心功能之一，它的使用方法与传统的关系型数据库有诸多不同。下面我们将其与传统数据库的使用方法进行对比，让大家有一个初步了解。
@@ -10,8 +14,8 @@
 
 使用传统的关系型数据库作为应用的数据源几乎无法避免以下步骤：
 
-* 插入数据之前一定要先创建一个表结构，并且随着之后需求的变化，开发者需要不停地修改数据库的表结构，维护表数据。
-* 每次插入数据的时候，客户端都需要连接数据库来执行数据的增删改查（CRUD）操作。
+- 插入数据之前一定要先创建一个表结构，并且随着之后需求的变化，开发者需要不停地修改数据库的表结构，维护表数据。
+- 每次插入数据的时候，客户端都需要连接数据库来执行数据的增删改查（CRUD）操作。
 
 使用 {{productName}}，实现代码如下：
 
@@ -38,15 +42,15 @@
 * 对象
 * 文件
 
-接下来，我们将按照顺序逐一介绍各类的使用方法。
-## 快速入门
-如果想对 {{productName}} 有一个快速了解，建议阅读[快速入门](start.html)
+我们将按照顺序逐一介绍各类的使用方法。
 
 ## SDK 安装
+
 请阅读 [{{platform_title}} 安装指南](sdk_setup-{{segment_code}}.html)。
 
 ## 对象
-{{productName}} 的对象——`{{baseObjectName}}` 是 {{productName}} 对复杂对象的封装，每个 AVObject 包含若干属性值对（key-value，也称「键值对」），属性的值是与 JSON 格式兼容的数据。 通过 REST API 保存对象需要将对象的数据通过 JSON 来编码。这个数据是无模式化的（Schema Free），这意味着你不需要提前标注每个对象上有哪些 key，你只需要随意设置 key-value 对就可以，云端会保存它。
+
+`{{baseObjectName}}` 是 {{productName}} 对复杂对象的封装，每个 `AVObject` 包含若干属性值对，也称键值对（key-value）。属性的值是与 JSON 格式兼容的数据。通过 REST API 保存对象需要将对象的数据通过 JSON 来编码。这个数据是无模式化的（Schema Free），这意味着你不需要提前标注每个对象上有哪些 key，你只需要随意设置 key-value 对就可以，云端会保存它。
 
 ### 构建对象
 构建一个 {{baseObjectName}} 可以使用如下方式：
@@ -56,101 +60,121 @@
 每个 {{objectIdName}} 必须有一个 Class 类名称，这样云端才知道它的数据归属于哪张数据表。
 
 ### 保存对象
-正如 [{{productName}} 初识](#{{productName}} 初识) 小节里面实现的保存一个 Todo 对象操作一样，现在我们保存一个 TodoFolder，它可以包含多个 Todo，类似于给行程按文件夹的方式分组，那么我需要新建这个对象(`{{baseObjectName}}`)，而在此之前我不需要特地去后台创建这个类（Class），仅仅需要如下代码，云端就会自动创建这个类：
+现在我们保存一个 `TodoFolder`，它可以包含多个 Todo，类似于给行程按文件夹的方式分组。我们并不需要提前去后台创建这个名为 **TodoFolder** 的 Class 类，而仅需要执行如下代码，云端就会自动创建这个类：
 
 {% block code_save_todo_folder %}{% endblock %}
 
-创建完成之后，打开 [**控制台** > **存储**](https://leancloud.cn/data.html?appid={{appid}}#/)，点开 `TodoFolder` 类，查看刚才添加的数据，它除了我们自己添加的名称(name)，优先级(priority)之外，还有一些服务端内置的属性，具体的含义对照表如下：
+创建完成后，打开 [控制台 > 存储](/data.html?appid={{appid}}#/)，点开 `TodoFolder` 类，就可以看到刚才添加的数据。除了 name、priority（优先级）之外，其他字段都是数据表的内置属性。
 
-属性名称|类型|描述
+内置属性|类型|描述
 ---|---|---
-{{objectIdName}}|String|该对象唯一的 Id 标识
-ACL|ACL|该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化
-{{createdAtName}}|Date|该对象被创建的 UTC 时间，控制台做了针对当地时间的展现优化
-{{updatedAtName}} |Date|该对象最后一次被修改的时间
+`{{objectIdName}}`|String|该对象唯一的 Id 标识
+`ACL`|ACL|该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
+`{{createdAtName}}`|Date|该对象被创建的 UTC 时间，控制台做了针对当地时间的展现优化。
+`{{updatedAtName}}` |Date|该对象最后一次被修改的时间
 
-属性名（也称「键」，key），必须是由字母、数字或下划线组成的字符串；自定义的属性名，不能以 __（双下划线）开头。
-属性值，可以是字符串、数字、布尔值，或是数组和字典。
-在此也特地说明，**注意：以下为系统保留字段，不能作为属性名来使用。**
+<dl>
+  <dt>属性名</dt>
+  <dd>也叫键或 key，必须是由字母、数字或下划线组成的字符串；自定义的属性名，不能以 `__`（双下划线）开头。</dd>
+  <dt>属性值</dt>
+  <dd>可以是字符串、数字、布尔值、数组或字典。</dd>
+</dl>
 
-``` 
-acl             error            pendingKeys
+<div class="callout callout-danger"><p>以下为系统保留字段，不能作为属性名来使用。</p>
+<samp style="color:#666;">acl             error            pendingKeys
 ACL             fetchWhenSave    running
 className       id               updatedAt
 code            isDataReady      uuid
 createdAt       keyValues
 description     objectId
-```
+</samp>
+</div>
 
-为提高代码的可读性和可维护性，建议使用驼峰式命名法（CamelCase）为类和属性来取名。类，采用大驼峰法（如 CustomData）。属性，采用小驼峰法（如 imageUrl）。
+为提高代码的可读性和可维护性，建议使用驼峰式命名法（CamelCase）为类和属性来取名。类，采用大驼峰法，如 `CustomData`。属性，采用小驼峰法，如 `imageUrl`。
+
+#### 保存选项
+
+`{{baseObjectName}}` 对象在保存时可以通过设置 `AVSaveOption` 来指定保存选项。`AVSaveOption` 支持以下属性：
+
+选项 | 类型 | 说明
+--- | --- | ---
+<code class="text-nowrap">fetchWhenSave</code> | BOOL | 对象成功保存后，自动返回该对象在云端的最新数据。用途请参考 [更新计数器](#更新计数器)。
+`query` | AVQuery  | 当 query 中的条件满足后对象才能成功保存，否则放弃保存，并返回错误码 305。<br/><br/>开发者原本可以通过 `AVQuery` 和 `AVObject` 分两步来实现这样的逻辑，但如此一来无法保证操作的原子性从而导致并发问题。该选项可以用来判断多用户更新同一对象数据时可能引发的冲突。
+
+<a id="saveoption_query_example" name="saveoption_query_example"></a>【示例】一篇 wiki 文章允许任何人来修改，它的数据表字段有：**content**（wiki 内容）、**version**（版本号）。每当 wiki 内容被更新后，其 version 也需要更新（+1）。用户 A 要修改这篇 wiki，从数据表中取出时其 version 值为 3，当用户 A 完成编辑要保存新内容时，如果数据表中的 version 仍为 3，表明这段时间没有其他用户更新过这篇 wiki，可以放心保存；如果不是 3，开发者可以拒绝掉用户 A 的修改，或执行其他自定义的业务逻辑。
+
+{% block code_saveoption_query_example %}{% endblock %}
 
 ### 数据类型
-{{baseObjectName}} 支持的数据类型请参照：
+{{baseObjectName}} 支持以下数据类型：
 
 {% block code_data_type %}{% endblock %}
 
 ### 获取对象
-参照上一小节的表格，每一个被成功保存在云端的对象一定会有一个唯一的 Id 标识—— `{{objectIdName}}`，因此获取对象的最基本的方法就是根据 `{{objectIdName}}` 查询到这个对象：
+每个被成功保存在云端的对象会有一个唯一的 Id 标识 `{{objectIdName}}`，因此获取对象的最基本的方法就是根据 `{{objectIdName}}` 来查询：
 
 {% block code_get_todo_by_objectId %}{% endblock %}
 
-#### 如何获取 objectId ？
-每一次存储对象成功之后，服务端都会返回 `{{objectIdName}}`，这个 `{{objectIdName}}` 是全局唯一的属性。
+#### 获取 objectId
+每一次对象存储成功之后，云端都会返回 `{{objectIdName}}`，它是一个全局唯一的属性。
 
 {% block code_save_callback_get_objectId %}{% endblock %}
 
 {% block text_access_object_properties %}
 #### 访问对象的属性
-访问 Todo 的属性可以通过如下代码：
+访问 Todo 的属性的方式为：
 
 {% block code_access_todo_folder_properties %}{% endblock %}
 
-请注意以上代码中访问三个特殊属性（`{{objectIdName}}`, `{{createdAtName}}`, `{{updatedAtName}}`）的方式。
+请注意以上代码中访问三个特殊属性 `{{objectIdName}}`、`{{createdAtName}}`、`{{updatedAtName}}` 的方式。
 
-另外更需要注意的是，假如访问了并不存在的属性，SDK 并不会抛出异常，而是会返回空值。
+如果访问了并不存在的属性，SDK 并不会抛出异常，而是会返回空值。
 
 #### 默认属性
-默认属性是所有对象都会拥有的属性，它包括 `{{objectIdName}}`，`{{createdAtName}}`，`{{updatedAtName}}`。
-`{{objectIdName}}` 已在前面介绍过了，本小节主要介绍`{{createdAtName}}` 和 `{{updatedAtName}}`。
-##### {{createdAtName}}
-在 {{productName}} 中任何一个对象被保存在服务端都会记录一个服务端的时间，这个时间一旦被服务端创建，在之后的操作中，不会被修改，它只表示对象第一次被创建时候的时间戳，它的时区是国际标准时区，客户端在做展示的时候，需要根据当前客户端的时区做转化。
+默认属性是所有对象都会拥有的属性，它包括 `{{objectIdName}}`、`{{createdAtName}}`、`{{updatedAtName}}`。
 
-##### {{updatedAtName}}
-与 {{createdAtName}} 对比来说，{{updatedAtName}} 记录的就是对象最后一次被修改，或者可以理解为最近一次被更新的时间。
+<dl>
+  <dt>`{{createdAtName}}`</dt>
+  <dd>对象第一次保存到云端的时间戳。该时间一旦被云端创建，在之后的操作中就不会被修改。它采用国际标准时区 UTC，开发者可能需要根据客户端当前的时区做转化。</dd>
+  <dt>`{{updatedAtName}}`</dt>
+  <dd>对象最后一次被修改（或最近一次被更新）的时间。</dd>
+</dl>
 {% endblock %}
 
 {% block text_refresh_object%}
 #### 同步对象
-多终端共享一个数据的时候，为了确保当前客户端拿到的对象的数据是最新的，可以调用刷新的接口来强制刷新一下，确保本地数据与服务端的同步：
+多终端共享一个数据时，为了确保当前客户端拿到的对象数据是最新的，可以调用刷新接口来确保本地数据与云端的同步：
 
 {% block code_object_fetch %}{% endblock %}
 
 在更新对象操作后，对象本地的 {{updatedAtName}} 字段（最后更新时间）会被刷新，直到下一次 save 或 fetch 操作，{{updatedAtName}} 的最新值才会被同步到云端，这样做是为了减少网络流量传输。
 
-另外需要注意的是，如果想要保证更新之后本地数据与服务端一致，需要如下做：
+如果需要在保存或更新之后让本地数据自动与云端保持一致，可以使用 [保存选项](#保存选项) `fetchWhenSave`：
 
 {% block code_object_fetchWhenSave %}{% endblock %}
 
-##### 同步指定的属性
-目前 Todo 这个类已有四个自定义属性：priority、content、location 和 title。为了节省流量，现在只想刷新 priority 和 location 可以使用如下方式：
+##### 同步指定属性
+
+目前 Todo 这个类已有四个自定义属性：`priority`、`content`、`location` 和 `title`。为了节省流量，现在只想刷新 `priority` 和 `location` 可以使用如下方式：
 
 {% block code_object_fetch_with_keys %}{% endblock %}
 
-请注意，**刷新操作会强行使用服务端的属性值覆盖本地的属性，因此，如果本地有属性修改，请慎用这类接口。**
+**刷新操作会强行使用云端的属性值覆盖本地的属性**。因此如果本地有属性修改，请慎用这类接口。
 
 {% endblock %}
 
 ### 更新对象
-**请注意，{{productName}} 上的更新对象都是针对单个对象，确保对象的 objectId 不为空才可以去更新对象。服务端判断一个对象是新增还是更新，是根据有没有 objectId 来决定的。**
-代码如下：
+
+{{productName}} 上的更新对象都是针对单个对象，在确保对象的 objectId 不为空才可以更新对象。云端判断一个对象是新增还是更新，是根据<u>有没有 objectId</u> 的来决定。
 
 {% block code_update_todo_location %}{% endblock %}
 
-注意，需要特别声明是，更新操作是覆盖式的，云端会根据最后一次提交到服务器的有效请求更新数据。更新是字段级别的操作，未更新的字段不会产生变动，这一点请不用担心。
+需要特别声明是，更新操作是覆盖式的，云端会根据最后一次提交到服务器的有效请求更新数据。更新是字段级别的操作，未更新的字段不会产生变动，这一点请不用担心。
 
 #### 更新计数器
+
 这是原子操作（Atomic Operation）的一种。
-为了存储一个整型的数据, {{productName}} 提供对任何数字字段进行原子增加（或者减少）的功能。比如一条微博，我们需要记录有多少人喜欢或者转发了它。但可能很多次喜欢都是同时发生的，如果在每个客户端都直接把它们读到的计数值增加之后再写回去，那么极容易引发冲突和覆盖，导致最终结果不准。这时候怎么办？{{productName}} 提供了便捷的原子操作来实现计数器。
+为了存储一个整型的数据，{{productName}} 提供对任何数字字段进行原子增加（或者减少）的功能。比如一条微博，我们需要记录有多少人喜欢或者转发了它，但可能很多次喜欢都是同时发生的。如果在每个客户端都直接把它们读到的计数值增加之后再写回去，那么极容易引发冲突和覆盖，导致最终结果不准。此时就需要使用这类原子操作来实现计数器。
 
 假如，现在增加一个记录查看 Todo 次数的功能，一些与他人共享的 Todo 如果不用原子操作的接口，很有可能会造成统计数据不准确，可以使用如下代码实现这个需求：
 
@@ -158,37 +182,39 @@ description     objectId
 
 {% block text_atomic_operation_array %}
 #### 更新数组
-这也是原子操作（Atomic Operation）的一种。
-使用以下方法可以方便地维护数组类型的数据：
+
+这也是原子操作的一种。使用以下方法可以方便地维护数组类型的数据：
 
 {% block code_atomic_operation_array %}{% endblock %}
 
-例如，Todo 对象有一个提醒日期(reminders)是一个数组，它代表的是这个日程会在哪些时间点提醒用户，比如有些拖延症患者会把闹钟设为早上的 7点10分，7点20分，以及7点30分，代码如下：
+例如，Todo 对象有一个提醒日期 reminders，它是一个数组，代表这个日程会在哪些时间点提醒用户。比如有些拖延症患者会把闹钟设为早上的 7:10、7:20、7:30：
 
 {% block code_set_array_value %}{% endblock %}
 
 {% endblock %}
 
+### 删除对象
+
+假如某一个 Todo 完成了，用户想要删除这个 Todo 对象，可以如下操作：
+
+{% block code_delete_todo_by_objectId %}{% endblock %}
+
 ### 批量操作
+
 为了减少网络交互的次数太多带来的时间浪费，你可以在一个请求中对多个对象进行创建、更新、删除、获取。接口都在 {{baseObjectName}} 这个类下面：
 
 {% block code_batch_operation %}{% endblock %}
 
-批量设置 Todo 已经完成可以如下做：
+批量设置 Todo 已经完成：
 
 {% block code_batch_set_todo_completed %}{% endblock %}
 
 不同类型的批量操作所引发不同数量的 API 调用，具体请参考 [API 调用次数的计算](faq.html#API_调用次数的计算)。
 
-### 删除对象
-假如某一个 Todo 完成了，用户想要删除这个 Todo 对象，可以如下操作：
-
-{% block code_delete_todo_by_objectId %}{% endblock %}
 
 {% block text_work_in_background %}
 ### 后台运行
 细心的开发者已经发现，在所有的示例代码中几乎都是用了异步来访问 {{productName}} 云端，形如 `{{backgroundFunctionTemplate}}` 的方法都是提供给开发者在主线程调用用以实现后台运行的方法，因此开发者在主线程可以放心的调用这种命名方式的函数。另外，需要强调的是：**回调函数的代码是在主线程执行。**
-
 {% endblock %}
 
 {% block save_eventually %}
@@ -219,7 +245,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 
 {% block code_pointer_comment_one_to_many_todoFolder %}{% endblock %}
 
-关于关联数据的查询会在[关系查询](#关系查询)会详细介绍。
+相关内容可参考 [关联数据查询](#关联数据查询)。
 
 #### 地理位置
 地理位置是一个特殊的数据类型，{{productName}} 封装了 {{geoPointObjectName}} 来实现存储以及相关的查询。
@@ -237,7 +263,8 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 同时请参考 [地理位置查询](#地理位置查询)。
 
 {% block text_deserialize_and_serialize %}
-### {{baseObjectName}} 序列化和反序列化
+
+### 序列化和反序列化
 在实际的开发中，把 `{{baseObjectName}}` 当做参数传递的时候，会涉及到复杂对象的拷贝的问题，因此 `{{baseObjectName}}` 也提供了序列化和反序列化的方法：
 
 序列化：
@@ -248,11 +275,11 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 
 {% block text_data_protocol %}
 #### 数据协议
-很多开发者在使用 {{productName}} 初期都会产生疑惑：客户端的数据类型是如何被服务端识别的？
+很多开发者在使用 {{productName}} 初期都会产生疑惑：客户端的数据类型是如何被云端识别的？
 因此，我们有必要重点介绍一下 {{productName}} 的数据协议，这个就会用到上一小节讲解到的序列化的知识点。
 
 先从一个简单的日期类型入手，比如在 {{platform_title}} 中，默认的日期类型是 `{{dateType}}`，下面会详细讲解一个 
- `{{dateType}}` 是如何被服务端正确的按照日期格式存储的。
+ `{{dateType}}` 是如何被云端正确的按照日期格式存储的。
  
 为一个普通的 {{baseObjectName}} 的设置一个 `{{dateType}}` 的属性，然后调用保存的接口：
 
@@ -267,14 +294,9 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 }
 ```
 
-然后发送给服务端，服务端会自动进行反序列化，这样自然就知道这个数据类型是日期，然后按照传过来的有效值进行存储。
-
-因此，开发者在进阶开发的阶段，最好是能掌握 {{productName}} 的数据协议。
-
-如下表介绍的就是一些默认的数据类型被序列化之后的格式：
+然后发送给云端，云端会自动进行反序列化，这样自然就知道这个数据类型是日期，然后按照传过来的有效值进行存储。因此，开发者在进阶开发的阶段，最好是能掌握 {{productName}} 的数据协议。如下表介绍的就是一些默认的数据类型被序列化之后的格式：
 
 {% block table_data_protocol %}
-
 类型 | 序列化之后的格式|
 ---|---
 `{{dateType}}` | `{"__type": "Date","iso": "2015-11-21T18:02:52.249Z"}`
@@ -285,37 +307,41 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 
 {% endblock %}
 {% endblock %}
-
 ## 文件
-文件存储也是数据存储的一种方式，图像，音频，视频，通用文件等等都是数据的载体，另外很多开发者习惯了把复杂对象序列化之后保存成文件(常见的有 .json 或者 .xml 文件)，文件存储在 {{productName}} 中被单独封装成一个 {{fileObjectName}} 来实现文件的上传，下载等操作。
+文件存储也是数据存储的一种方式，图像、音频、视频、通用文件等等都是数据的载体，另外很多开发者习惯了把复杂对象序列化之后保存成文件（如 `.json` 或者 `.xml` )。文件存储在 {{productName}} 中被单独封装成一个 {{fileObjectName}} 来实现文件的上传、下载等操作。
 
 ### 文件上传
-文件的上传指的是开发者调用接口将文件存储在云端，并且返回文件最终 Url 的一个操作。
+文件的上传指的是开发者调用接口将文件存储在云端，并且返回文件最终的 URL 的操作。
 
 {% block text_create_avfile_by_stream_data %}
 #### 从数据流构建文件
 {{fileObjectName}} 支持图片、视频、音乐等常见的文件类型，以及其他任何二进制数据，在构建的时候，传入对应的数据流即可：
 
 {% block code_create_avfile_by_stream_data %}{% endblock %}
+
+上例将文件命名为 `resume.txt`，这里需要注意两点：
+
+- 不必担心文件名冲突。每一个上传的文件都有惟一的 ID，所以即使上传多个文件名为 `resume.txt` 的文件也不会有问题。
+- 给文件添加扩展名非常重要。云端通过扩展名来判断文件类型，以便正确处理文件。所以要将一张 PNG 图片存到 `AVFile` 中，要确保使用 `.png` 扩展名。
 {% endblock %}
 
 {% block text_create_avfile_from_local_path %}
 #### 从本地路径构建文件
 大多数的客户端应用程序都会跟本地文件系统产生交互，常用的操作就是读取本地文件，如下代码可以实现使用本地文件路径构建一个 {{fileObjectName}}：
+
 {% block code_create_avfile_from_local_path %}{% endblock %}
 
 {% endblock %}
 
 {% block text_create_avfile_from_url %}
 #### 从网络路径构建文件
-从一个已知的 Url 构建文件也是很多应用的需求，例如，从网页上拷贝了一个图像的链接，希望 SDK 能够读取并且上传到自己的应用内，之后的使用中不必担心原网址失效，而造成 UI 的缺失。
+从一个已知的  构建文件也是很多应用的需求，例如，从网页上拷贝了一个图像的链接，希望 SDK 能够读取并且上传到自己的应用内，之后的使用中不必担心原网址失效，而造成 UI 的缺失。
 
 {% block code_create_avfile_from_url %}{% endblock %}
 
 {% endblock %}
 
-我们需要做出说明的是，[从本地路径构建文件](#从本地路径构建文件)会实际产生上传的流量，并且文件最后是存在 LeanCloud 云端，而[从网络路径构建文件](#从网络路径构建文件)的文件实体并不存储在 LeanCloud 云端，只是会把文件的物理地址作为一个字符串保存在云端。
-
+我们需要做出说明的是，[从本地路径构建文件](#从本地路径构建文件) 会<u>产生实际上传的流量</u>，并且文件最后是存在云端，而 [从网络路径构建文件](#从网络路径构建文件) 的文件实体并不存储在云端，只是会把文件的物理地址作为一个字符串保存在云端。
 
 #### 执行上传
 上传的操作调用方法如下：
@@ -324,22 +350,45 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 
 {% block text_upload_file_with_progress %}
 #### 上传进度监听
-一般来说，上传文件都会有一个上传进度条显示用以提高用户体验。因此，SDK 也提供了进度监听的接口：
+一般来说，上传文件都会有一个上传进度条显示用以提高用户体验：
 
 {% block code_upload_file_with_progress %}{% endblock %}
 
 {% endblock %}
 
 ### 文件下载
-SDK 也提供了接口给开发者下载文件，SDK 提供的接口**是将文件的下载之后做了缓存，只要文件的 Url 不变，那么一次下载成功之后，就不会再重复下载，目的是为了减少客户端的流量**。
-
-{% block text_download_file %}
-SDK 提供的下载方法如下：
+SDK 接口可以下载文件并把它缓存起来，只要文件的 URL 不变，那么一次下载成功之后，就不会再重复下载，目的是为了减少客户端的流量。
 
 {% block code_download_file %}{% endblock %}
 
-请注意代码中下载进度数据的读取。
-{% endblock %}
+请注意代码中**下载进度**数据的读取。
+
+### 图像缩略图
+
+保存图像时，如果想在下载原图之前先得到缩略图，方法如下：
+
+{% block code_file_image_thumbnail %}{% endblock %}
+
+### 文件元数据
+
+`AVFile` 的 `metaData` 属性，可以用来保存和获取该文件对象的元数据信息：
+
+{% block code_file_metadata %}{% endblock %}
+
+### 删除
+
+当文件较多时，要把一些不需要的文件从云端删除：
+
+{% block code_file_delete %}{% endblock %}
+
+### 清除缓存
+
+`AVFile` 也提供了清除缓存的方法：
+
+{% block code_cache_operations_file %}{% endblock %}
+
+{% block text_https_access_for_ios9 %}{% endblock %}
+
 ## 查询
 {{baseQueryClassName}} 是构建针对 {{baseObjectName}} 查询的基础类。
 
@@ -356,20 +405,22 @@ SDK 提供的下载方法如下：
 
 {% block code_priority_equalTo_zero_query %}{% endblock %}
 
-其实，拥有传统关系型数据库开发经验的开发者完全可以翻译成如下的 SQL ：
+其实，拥有传统关系型数据库开发经验的开发者完全可以翻译成如下的 SQL：
 
 ```sql
   select * from Todo where priority = 0
 ```
-{{productName}} 支持这种传统的 SQL 语句查询么？答案是：必须支持的。关于 SQL 语句构建查询请移步：[Cloud Query Language（CQL）查询](#Cloud_Query_Language_CQL_查询)
+{{productName}} 也支持使用这种传统的 SQL 语句查询。具体使用方法请移步至 [Cloud Query Language（CQL）查询](#CQL_查询)。
 
-查询默认最多返回 100 条符合条件的结果，要更改这一数值，请参考 [查询结果](#查询结果)。
+查询默认最多返回 100 条符合条件的结果，要更改这一数值，请参考 [限定结果返回数量](#限定返回数量)。
 
 当多个查询条件并存时，它们之间默认为 AND 关系，即查询只返回满足了全部条件的结果。建立 OR 关系则需要使用 [复合查询](#复合查询)。
 
-注意：在简单查询中，如果对一个对象的同一属性设置多个条件，那么先前的条件会被覆盖，查询只返回满足最后一个条件的结果。例如，我们要找出优先级为 0 和 1 的所有 Todo，常见的错误写法是：
+注意：在简单查询中，如果对一个对象的同一属性设置多个条件，那么先前的条件会被覆盖，查询只返回满足最后一个条件的结果。例如，我们要找出优先级为 0 和 1 的所有 Todo，错误写法是：
 
 {% block code_priority_equalTo_zero_and_one_wrong_example %}{% endblock %}
+
+正确作法是使用 [OR 关系](#OR_查询) 来构建条件。
 
 #### 比较查询
 
@@ -385,21 +436,24 @@ SDK 提供的下载方法如下：
 
 {% block code_query_greaterThanOrEqualTo %}{% endblock %}
 
-**需要注意的是：比较查询只能适用于可比较大小的数据类型，例如整型，浮点等。**
+比较查询**只适用于可比较大小的数据类型**，如整型、浮点等。
 
 #### 正则匹配查询
+
 正则匹配查询是指在查询条件中使用正则表达式来匹配数据，查询指定的 key 对应的 value 符合正则表达式的所有对象。
 例如，要查询标题包含中文的 Todo 对象可以使用如下代码：
 
 {% block code_query_with_regular_expression %}{% endblock %}
 
-**需要注意的是：正则匹配查询只能适用于字符串类型的数据**
+正则匹配查询**只适用于**字符串类型的数据。
+
 #### 包含查询
-包含查询类似于传统 SQL 语句里面的 `LIKE %keyword%` 的查询，比如我想查询标题包含李总的 Todo，应该使用如下代码：
+
+包含查询类似于传统 SQL 语句里面的 `LIKE %keyword%` 的查询，比如查询标题包含「李总」的 Todo：
 
 {% block code_query_with_contains_keyword %}whereContains{% endblock %}
 
-而以上查询翻译成 SQL 语句就是：
+翻译成 SQL 语句就是：
 
 ```sql
   select * from Todo where title LIKE '%李总%'
@@ -408,59 +462,85 @@ SDK 提供的下载方法如下：
 
 {% block code_query_with_not_contains_keyword_using_regex %}正则表达式{% endblock %}
 
-而还有一个接口可以实现精确的匹配不等于，比如我要查询标题不等于「出差」「休假」的 Todo 对象：
+但是基于正则的模糊查询有两个缺点：
+
+- 当数据量逐步增大后，查询效率将越来越低。
+- 没有文本相关性排序
+
+因此，你还可以考虑使用 [应用内搜索](#应用内搜索) 功能。它基于搜索引擎技术构建，提供更强大的搜索功能。
+
+还有一个接口可以精确匹配不等于，比如查询标题不等于「出差、休假」的 Todo 对象：
 
 {% block code_query_with_not_contains_keyword %}notContainedIn{% endblock %}
 
-但是基于正则的模糊查询有两个缺点：
-
-- 当数据量逐步增大后，查询效率将越来越低
-- 没有文本相关性排序
-
-因此，你还可以考虑使用 [应用内搜索](#应用内搜索) 功能。它基于搜索引擎构建，提供更强大的搜索功能。
-
 #### 数组查询
-当一个对象有一个属性是数组的时候，针对数组的元数据查询可以有多种方式。
-例如，在[数组](#数组)一小节里面，我们设置了 Todo 的 reminders 属性，它就是一个日期数组，现在我们需要查询所有在 8 点 30 分会响起闹钟的 Todo 对象：
+
+当一个对象有一个属性是数组的时候，针对数组的元数据查询可以有多种方式。例如，在 [数组](#更新数组) 一节中我们为 Todo 设置了 reminders 属性，它就是一个日期数组，现在我们需要查询所有在 8:30 会响起闹钟的 Todo 对象：
 
 {% block code_query_array_contains_using_equalsTo %}{% endblock %}
 
-有包含的查询是需要精确匹配的，比如我要查询在只在 8 点 30 分，9 点 30 分这两个时间点响起闹钟的 Todo，可以使用如下代码：
+有包含的查询是需要精确匹配的，比如我要查询在只在 8:30、9:30 这两个时间点响起闹钟的 Todo，可以使用如下代码：
 
 {% block code_query_array_contains_all %}{% endblock %}
 
-假如有一个 Todo 会在 8 点 30 分，9 点 30 分 以及 10 点 30 分响起闹钟，它是不会被查询出来的。
+假如有一个 Todo 会在 8:30、9:30、10:30 响起闹钟，它是不会被查询出来的。
 
 #### 字符串查询
-使用 `whereKey:hasPrefix:` 可以过滤出以特定字符串开头的结果，这有点像 MySQL 的 LIKE 条件。因为支持索引，所以该操作对于大数据集也很高效。
+使用 `whereKey:hasPrefix:` 可以过滤出以特定字符串开头的结果，这有点像 SQL 的 LIKE 条件。因为支持索引，所以该操作对于大数据集也很高效。
+
 {% block code_query_whereHasPrefix %}{% endblock %}
+
+### 组合查询
+组合查询就是把诸多查询条件合并成一个查询，再交给 SDK 去云端查询。方式有两种：OR 和 AND。
+
+#### OR 查询
+OR 操作表示多个查询条件符合其中任意一个即可。 例如，查询优先级是大于等于 3 或者已经完成了的 Todo：
+
+{% block code_query_with_or %}{% endblock %}
+
+#### AND 查询
+AND 操作是指只有满足了所有查询条件的对象才会被返回给客户端。例如，查询优先级小于 1 并且尚未完成的 Todo：
+
+{% block code_query_with_and %}{% endblock %}
+
+可以对新创建的 {{baseQueryClassName}} 添加额外的约束，多个约束将以 AND 运算符来联接。
 
 ### 查询结果
 
-#### 获取查询的第一个结果
-例如很多应用场景下，只要获取满足条件的一个结果即可，例如获取符合查询条件的第一条 Todo：
+#### 获取第一条结果
+例如很多应用场景下，只要获取满足条件的一个结果即可，例如获取满足条件的第一条 Todo：
 
 {% block code_query_find_first_object %}{% endblock %}
 
-#### 设置返回的结果数量 
-为了防止查询出来的结果过大，服务端默认针对查询结果有一个数量（limit）的限制，比如一个查询的结果如果有 10000个对象，那么一次查询只会返回符合条件的 100 个结果，并且 limit 允许取值范围从 1 到 1000。例如设置返回 10 条结果的代码如下：
+#### 限定返回数量
+为了防止查询出来的结果过大，云端默认针对查询结果有一个数量限制，即 `limit`，它的默认值是 100。比如一个查询会得到 10000 个对象，那么一次查询只会返回符合条件的 100 个结果。`limit` 允许取值范围是 1 ~ 1000。例如设置返回 10 条结果：
 
 {% block code_set_query_limit %}{% endblock %}
 
-#### 设置跳过的数量
-客户端做列表展现的时候，尤其是在庞大的数据做展现的时候，一定会用到翻页技术，在查询的时候设置 skip 这个参数就可以告知服务端，本次查询跳过多少个结果。
-例如，客户端做翻页展现，一页显示的数量是 10 个，我要获取第 3 页的对象，可以使用如下代码：
+#### 跳过数量
+设置 skip 这个参数可以告知云端本次查询要跳过多少个结果。将 skip 与 limit 搭配使用可以实现翻页效果，这在客户端做列表展现时，尤其在数据量庞大的情况下就使用技术。例如，在翻页中，一页显示的数量是 10 个，要获取第 3 页的对象：
 
 {% block code_set_skip_for_pager %}{% endblock %}
 
-尽管我们提供以上的接口，但是我们十分不建议广泛使用，因为它会非常低效。取而代之的，我们建议的是是使用 {{createdAtName}} 或者 {{updatedAtName}} 之类的时间戳，进行分段查询。
+尽管我们提供以上接口，但是我们不建议广泛使用，因为它的执行效率比较低。取而代之，我们建议使用 `{{createdAtName}}` 或者 `{{updatedAtName}}` 这类的时间戳进行分段查询。
 
-#### 获取符合查询条件的数量
-在任何一个电商网站的搜索框输入关键字，点击搜索，它除了会展现符合条件的商品列表之外，一般都会在列表的开头显示如下语句：`搜索到符合条件的结果有 1020 条 ` 诸如此类，也就是说，它会有好的提示您，符合查询条件的结果数量，这样的需求，我们也提供了相对应的接口。
-
-例如，我们要查询今天一共完成了多少条 Todo，可以使用如下代码：
+#### 统计总数量
+通常用户在执行完搜索后，结果页面总会显示出诸如「搜索到符合条件的结果有 1020 条」这样的信息。例如，查询一下今天一共完成了多少条 Todo：
 
 {% block code_query_count %}{% endblock %}
+
+#### 排序
+
+对于数字、字符串、日期类型的数据，可对其进行升序或降序排列。
+
+{% block code_query_orderby %}{% endblock %}
+
+一个查询可以附加多个排序条件，如按 priority 升序、createdAt 降序排列：   
+
+{% block code_query_orderby_on_multiple_keys %}{% endblock %}
+
+<!-- #### 限定返回字段 -->
+
 
 ### 关系查询
 关联数据查询也可以通俗地理解为关系查询，关系查询在传统型数据库的使用中是很常见的需求，因此我们也提供了相关的接口来满足开发者针对关联数据的查询。
@@ -496,39 +576,20 @@ SDK 提供的下载方法如下：
 
 {% block code_query_comment_include_todoFolder %}{% endblock %}
 
-### 组合查询
-组合查询的概念就是把诸多查询条件合并成一个查询，再交给 SDK 去云端进行查询。
-组合的方式无外乎两种：OR 和 AND。
+### CQL 查询
+Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功能的语言，具有 SQL 开发经验的开发者可以方便地使用此接口实现查询。
 
-#### OR 查询
-OR 操作表示多个查询条件符合其中任意一个即可。 
+分别找出 status = 1 的全部 Todo 结果，以及 priority = 0 的 Todo 的总数：
 
-例如要查询优先级是大于等于 3 或者已经完成了的 Todo：
-
-{% block code_query_with_or %}{% endblock %}
-
-#### AND 查询
-AND 操作指的是对象必须满足所有的查询条件才会返回给客户端。
-
-例如要查询优先级小于 1 并且尚未完成的 Todo：
-
-{% block code_query_with_and %}{% endblock %}
-
-可以对新创建的 {{baseQueryClassName}} 添加额外的约束，多个约束将以 AND 运算符来联接。
-
-### Cloud Query Language（CQL）查询
-Cloud Query Language（CQL） 是 {{productName}} 独创的云端类 SQL 语句实现查询的方式。方便有 SQL 开发经验的开发者使用查询接口。
-
-查询 status 等于 1 的 Todo 和 查询 priority 等于 0 的 Todo 的数量：
 {% block code_query_by_cql %}{% endblock %}
 
 通常，查询语句会使用变量参数。为此，我们提供了与 Java JDBC 所使用的 PreparedStatement 占位符查询相类似的语法结构。
 
-查询 status 等于 0 并且 priority 等于 1 的 Todo：
+查询 status = 0、 priority = 1 的 Todo：
 
 {% block code_query_by_cql_with_placeholder %}{% endblock %}
 
-关于 Cloud Query Language（CQL）查询我们专门提供了一个更为详细的文档，请点击[Cloud Query Language 详细指南](cql_guide.html)。
+更多内容请参考 [Cloud Query Language 详细指南](cql_guide.html)。
 
 {% block text_query_cache_intro %}
 ### 缓存查询
@@ -552,7 +613,7 @@ Cloud Query Language（CQL） 是 {{productName}} 独创的云端类 SQL 语句�
 地理位置查询是较为特殊的查询，一般来说，常用的业务场景是查询距离 xx 米之内的某个位置或者是某个建筑物，甚至是以手机为圆心，查找方圆多少范围内餐厅，诸如此类，对此，{{productName}} 提供了一系列的方法来实现各种针对地理位置的查询。
 
 #### 查询位置附近的对象
-Todo 的 whereCreated 是一个 {{geoPointObjectName}} 对象，现在已知了一个地理位置，现在要查询 whereCreated 靠近这个位置的 Todo 对象可以使用如下代码：
+Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 {{geoPointObjectName}} 对象，现在已知了一个地理位置，现在要查询 `whereCreated` 靠近这个位置的 Todo 对象可以使用如下代码：
 
 {% block code_query_geoPoint_near %}{% endblock %}
 
@@ -562,9 +623,9 @@ Todo 的 whereCreated 是一个 {{geoPointObjectName}} 对象，现在已知了�
 
 {% block code_query_geoPoint_within %}{% endblock %}
 
-#### 地理位置使用相关注意事项
+#### 注意事项
 
-目前需要注意以下方面：
+使用地理位置需要注意以下方面：
 
 * 每个 {{baseObjectName}} 数据对象中只能有一个 {{geoPointObjectName}} 对象的属性。
 * 地理位置的点不能超过规定的范围。纬度的范围应该是在 `-90.0` 到 `90.0` 之间，经度的范围应该是在 `-180.0` 到 `180.0` 之间。如果添加的经纬度超出了以上范围，将导致程序错误。
@@ -578,6 +639,7 @@ Todo 的 whereCreated 是一个 {{geoPointObjectName}} 对象，现在已知了�
 ### 注册
 
 #### 手机号一键登录
+
 一些应用为了提高首次使用的友好度，一般会允许用户浏览一些内容，直到用户发起了一些操作才会要求用户输入一个手机号，而云端会自动发送一条验证码的短信给用户的手机号，最后验证一下，完成一个用户注册并且登录的操作，例如很多团购类应用都有这种用户场景。
 
 首先调用发送验证码的接口：
@@ -589,9 +651,10 @@ Todo 的 whereCreated 是一个 {{geoPointObjectName}} 对象，现在已知了�
 {% block code_verify_sms_code_for_loginOrSignup %}{% endblock %}
 
 #### 用户名和密码注册
-用户名和密码注册的时候需要注意的是：密码在是以明文的方式使用 HTTPS 加密传输给云端，而我们保证所有密码都是密文存储，并且我们的加密算法是无法通过所谓彩虹表撞库获取的，这一点请开发者放心，换言之用户的密码只可能用户本人知道，开发者不论是通过控制台还是 API 都是无法获取的。另外我们需要强调**在客户端，应用切勿再次对密码加密，这会导致重置密码等功能失效。**
 
-例如，使用 Tom 作为用户名，cat!@#123 作为密码注册一个用户的代码如下：
+采用用户名和密码注册的时候需要注意，密码是以明文方式通过 HTTPS 加密传输给云端，而我们保证所有密码都是密文存储，并且我们的加密算法是无法通过所谓「彩虹表撞库」获取的，这一点请开发者放心，换言之用户的密码只可能用户本人知道，开发者不论是通过控制台还是 API 都是无法获取的。另外我们需要强调**在客户端，应用切勿再次对密码加密，这会导致重置密码等功能失效。**
+
+例如，注册一个用户的示例代码如下（用户名：`Tom`，密码：`cat!@#123`）：
 
 {% block code_user_signUp_with_username_and_password %}{% endblock %}
 
@@ -601,14 +664,14 @@ Todo 的 whereCreated 是一个 {{geoPointObjectName}} 对象，现在已知了�
 
 这样做的好处是，在用户提交信息时可以将输入的「用户名」默认设置为用户的 Email 地址，以后在用户忘记了密码的情况下，可以使用 {{productName}} 提供的「重置密码」功能。
 
-关于自定义邮件模板和验证链接，请参考博客文章 [《自定义应用内用户重设密码和邮箱验证页面》](http://blog.leancloud.cn/blog/2014/01/09/zi-ding-yi-ying-yong-nei-yong-hu-zhong-she-mi-ma-he-you-xiang-yan-zheng-ye-mian/)。
+关于自定义邮件模板和验证链接，请参考博客文章 《[自定义应用内用户重设密码和邮箱验证页面](https://blog.leancloud.cn/607/)》。
 
 #### 设置手机号
-微信，陌陌等流行的应用都会建议用户的账号和一个手机号绑定，这样方便进行身份认证以及日后的密码找回等安全模块的使用，为此，在注册用户的时候也可以设置手机号，并且我们提供了一整套发送短信验证码以及验证手机号的流程。
 
-这部分流程以及代码演示请参考 {% block link_to_sms_guide_doc %}{% endblock %}
+微信、陌陌等应用都会建议用户在自己的账号中绑定手机号，这样方便进行身份认证以及密码找回等安全操作。我们提供了一整套发送短信验证码以及验证手机号的流程。这部分流程以及代码演示请参考 {% block link_to_sms_guide_doc %}{% endblock %}
 
 ### 登录
+
 我们提供了多种登录方式，以满足不同场景的应用。
 
 #### 用户名密码登录
@@ -616,13 +679,15 @@ Todo 的 whereCreated 是一个 {{geoPointObjectName}} 对象，现在已知了�
 {% block code_user_logIn_with_username_and_password %}{% endblock %}
 
 #### 手机号密码登录
-请确保已详细阅读了 {% block link_to_sms_guide_doc %}{% endblock %} 这一小节的内容，才可以顺利理解手机号匹配密码登陆的流程以及适用范围。
 
-用户的手机号只要经过了验证，就可以使用手机号密码登陆的功能，否则登陆会失败。
+请确保已详细阅读了 {% block link_to_sms_guide_doc %}{% endblock %} 这一小节的内容，才可以顺利理解手机号匹配密码登录的流程以及适用范围。
+
+用户的手机号只要经过了验证，就可以使用手机号密码登录的功能，否则登录会失败。
 
 {% block code_user_logIn_with_mobilephonenumber_and_password %}{% endblock %}
 
-#### 手机号验证码登陆
+#### 手机号验证码登录
+
 中国电信，中国联通，中国移动三大运营商的官网登录都支持 2 种方式，一种是手机号和密码，另一种就是手机号和随机的验证码登录，我们也提供了这种方式。
 
 首先，调用发送登录验证码的接口：
@@ -682,7 +747,7 @@ Todo 的 whereCreated 是一个 {{geoPointObjectName}} 对象，现在已知了�
 
 #### 手机号码重置密码
 
-与使用「电子邮件地址重置密码」类似，「手机号码重置密码」使用下面的方法来获取短信验证码：
+与使用 [邮箱重置密码](#邮箱重置密码) 类似，「手机号码重置密码」使用下面的方法来获取短信验证码：
 
 {% block code_reset_password_by_mobilephoneNumber %}{% endblock %}
 
@@ -692,9 +757,9 @@ Todo 的 whereCreated 是一个 {{geoPointObjectName}} 对象，现在已知了�
 
 {% block text_current_user %}
 ### 当前用户
-打开微博或者微信，它不会每次都要求用户都登陆，原因是因为在客户端做了用户数据的缓存。
+打开微博或者微信，它不会每次都要求用户都登录，原因是因为在客户端做了用户数据的缓存。
 因此，只要是调用了登录相关的接口，SDK 都会自动缓存登录用户的数据。
-例如，判断当前用户是否为空，为空就跳转到登陆页面让用户登陆，如果不为空就跳转到首页：
+例如，判断当前用户是否为空，为空就跳转到登录页面让用户登录，如果不为空就跳转到首页：
 
 {% block code_current_user %}{% endblock %}
 

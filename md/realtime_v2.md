@@ -304,10 +304,10 @@ appid:clientid::timestamp:nonce
 
 参数|说明<a name="signature-param-table"></a><!--2015-09-04 -->
 ---|---
-appid|应用的 id
-clientid|登录时使用的 clientId
-timestamp|当前的 UTC 时间距离 unix epoch 的**秒数**
-nonce|随机字符串
+`appid`|应用的 id
+`clientid`|登录时使用的 clientId
+`timestamp`|当前的 UTC 时间距离 unix epoch 的**秒数**
+`nonce`|随机字符串
 
 >注意：签名的 key **必须** 是应用的 master key，你可以 [控制台 > 设置 > 应用 Key](/app.html?appid={{appid}}#/key) 里找到。**请保护好 master key，不要泄露给任何无关人员。**
 
@@ -321,8 +321,8 @@ nonce|随机字符串
 appid:clientid:sorted_member_ids:timestamp:nonce
 ```
 
-* appid、clientid、timestamp 和 nonce 的含义 [同上](#signature-param-table)。
-* sorted_member_ids 是以半角冒号（:）分隔、**升序排序** 的 user id，即邀请参与该对话的成员列表。
+* `appid`、`clientid`、`timestamp` 和 `nonce` 的含义 [同上](#signature-param-table)。
+* `sorted_member_ids` 是以半角冒号 `:` 分隔、**升序排序** 的 user id，即邀请参与该对话的成员列表。
 
 ### 群组功能的签名
 

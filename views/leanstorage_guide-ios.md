@@ -1,7 +1,7 @@
 {# 指定继承模板 #}
 {% extends "./leanstorage_guide.tmpl" %}
 
-{# --Start--变量定义，主模板使用的单词，短语所有子模板都必须赋值 #}
+{# --Start--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 {% set cloudName ="LeanCloud" %}
 {% set productName ="LeanStorage" %}
 {% set platform_title ="iOS / OS X" %}
@@ -24,23 +24,23 @@
 {% set byteType= "NSData" %}
 
 
-{# --End--变量定义，主模板使用的单词，短语的定义所有子模板都必须赋值 #}
+{# --End--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 
 {# --Start--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
 
 {% block code_create_todo_object %}
-
 ```objc
-    // objectWithClassName 参数对应的就是控制台中的 Class Name
+    // objectWithClassName 参数对应控制台中的 Class Name
     AVObject *todo = [AVObject objectWithClassName:@"Todo"];
-    // 也可以是用下面的方式调用实例方法来创建一个对象
+    
+    // 或调用实例方法创建一个对象
     AVObject *todo = [[AVObject alloc] initWithClassName:@"Todo"];
-    // 以上两行代码是完全等价的
+    
+    // 以上两行代码完全等价
 ```
 {% endblock %}
 
 {% block code_quick_save_a_todo %}
-
 ```objc
     AVObject *todo = [AVObject objectWithClassName:@"Todo"];
     [todo setObject:@"工程师周会" forKey:@"title"];
@@ -56,7 +56,6 @@
 {% endblock %}
 
 {% block code_quick_save_a_todo_with_location %}
-
 ```objc
     AVObject *todo = [AVObject objectWithClassName:@"Todo"];
     [todo setObject:@"工程师周会" forKey:@"title"];
@@ -73,12 +72,30 @@
 {% endblock %}
 
 {% block code_save_todo_folder %}
-
 ```objc
     AVObject *todoFolder = [[AVObject alloc] initWithClassName:@"TodoFolder"];// 构建对象
     [todoFolder setObject:@"工作" forKey:@"name"];// 设置名称
     [todoFolder setObject:@1 forKey:@"priority"];// 设置优先级
     [todoFolder saveInBackground];// 保存到服务端
+```
+{% endblock %}
+
+{% block code_saveoption_query_example %}
+```objc
+// 假设 version 值已提前获取
+
+AVSaveOption *option = [[AVSaveOption alloc] init];
+
+AVQuery *query = [[AVQuery alloc] init];
+[query whereKey:@"version" equalTo:version];
+
+option.query = query;
+
+[object saveInBackgroundWithOption:option block:^(BOOL succeeded, NSError *error) {
+    if ( error.code == 305 ){
+      NSLog(@"无法保存修改，wiki 已被他人更新。");
+    }
+}];
 ```
 {% endblock %}
 
@@ -130,22 +147,20 @@
 {% endblock %}
 
 {% block code_object_fetch %}
-
 ```objc
-    // 假如已知了 objectId 可以用如下的方式构建一个 AVObject
+    // 使用已知 objectId 构建一个 AVObject
     AVObject *anotherTodo = [AVObject objectWithoutDataWithClassName:@"Todo" objectId:@"5656e37660b2febec4b35ed7"];
-        // 然后调用刷新的方法，将数据从服务端拉到本地
+    // 然后调用刷新的方法，将数据从服务端拉到本地
     [anotherTodo fetchIfNeededInBackgroundWithBlock:^(AVObject *object, NSError *error) {
-        // 调用 fetchIfNeededInBackgroundWithBlock 和 refreshInBackgroundWithBlock 效果是一样的。
+        // 此处调用 fetchIfNeededInBackgroundWithBlock 和 refreshInBackgroundWithBlock 效果一样。
     }];
 ```
 {% endblock %}
 
 {% block code_object_fetchWhenSave %}
-
 ```
     todo.fetchWhenSave = true;// 设置 fetchWhenSave 为 true
-    [todo saveInBackground];// 如此
+    [todo saveInBackground];
 ```
 {% endblock %}
 
@@ -158,13 +173,12 @@
     [theTodo fetchInBackgroundWithKeys:keys block:^(AVObject *object, NSError *error) {
         // theTodo 的 location 和 content 属性的值就是与服务端一致的
         NSString *location = [object objectForKey:@"location"];
-            NSString *content = object[@"content"];
+        NSString *content = object[@"content"];
     }];
 ```
 {% endblock %}
 
 {% block code_update_todo_location %}
-
 ```objc
     AVObject *todo = [AVObject objectWithClassName:@"Todo"];
     [todo setObject:@"工程师周会" forKey:@"title"];
@@ -183,19 +197,21 @@
 {% endblock %}
 
 {% block code_atomic_operation_increment %}
-
 ```objc
     AVObject *theTodo = [AVObject objectWithoutDataWithClassName:@"Todo" objectId:@"564d7031e4b057f4f3006ad1"];
     [theTodo setObject:[NSNumber numberWithInt:0] forKey:@"views"]; //初始值为 0
     [theTodo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         // 原子增加查看的次数
         [theTodo incrementKey:@"views"];
+        // 保存时自动取回云端最新数据
         theTodo.fetchWhenSave = true;
+        
         [theTodo saveInBackground];
+        
         // 也可以使用 incrementKey:byAmount: 来给 Number 类型字段累加一个特定数值。
         [theTodo incrementKey:@"views" byAmount:@(5)];
         [theTodo saveInBackground];
-        //saveInBackground 调用之后，如果成功的话，对象的计数器字段是当前系统最新值。
+        // 因为使用了 fetchWhenSave 选项，saveInBackground 调用之后，如果成功的话，对象的计数器字段是当前系统最新值。
     }];
 ```
 {% endblock %}
@@ -328,76 +344,73 @@
 
     // 假设已知了被分享的该 TodoFolder 的 objectId 是 5590cdfde4b00f7adb5860c8
     [comment setObject:[AVObject objectWithoutDataWithClassName:@"TodoFolder" objectId:@"5590cdfde4b00f7adb5860c8"] forKey:@"targetTodoFolder"];
-    // 以上代码就是的执行结果就会在 comment 对象上有一个名为 targetTodoFolder 属性，它是一个 Pointer 类型，指向 objectId 为 5590cdfde4b00f7adb5860c8 的 TodoFolder
+    // 以上代码的执行结果是在 comment 对象上有一个名为 targetTodoFolder 属性，它是一个 Pointer 类型，指向 objectId 为 5590cdfde4b00f7adb5860c8 的 TodoFolder
 ```
-
 {% endblock %}
 
 {% block code_data_type %}
-
 ```objc
-NSNumber *boolean = @(YES);
-NSNumber *number = [NSNumber numberWithInt:2014];
-NSString *string = [NSString stringWithFormat:@"famous film name is %i", number];
-NSDate *date = [NSDate date];
-NSData *data = [@"fooBar" dataUsingEncoding:NSUTF8StringEncoding];
-NSArray *array = [NSArray arrayWithObjects:string, number, nil]; // NSArray
-NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                              number,@"number",
-                              string, @"string",nil];
-                              // NSDictionary
+NSNumber     *boolean    = @(YES);
+NSNumber     *number     = [NSNumber numberWithInt:2015];
+NSString     *string     = [NSString stringWithFormat:@"%@ 年度音乐排行", number];
+NSDate       *date       = [NSDate date];
 
-AVObject *testObject = [AVObject objectWithClassName:@"DataTypeTest"];
-[testObject setObject:boolean    forKey:@"testBoolean"];
-[testObject setObject:number     forKey:@"testInteger"];
-[testObject setObject:string     forKey:@"testString"];
-[testObject setObject:date       forKey:@"testDate"];
-[testObject setObject:data       forKey:@"testData"];
-[testObject setObject:array      forKey:@"testArray"];
-[testObject setObject:dictionary forKey:@"testDictionary"];
-[testObject saveInBackground];
+NSData       *data       = [@"短篇小说" dataUsingEncoding:NSUTF8StringEncoding];
+NSArray      *array      = [NSArray arrayWithObjects:
+                              string,
+                              number,
+                              nil];
+NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                              number, @"数字",
+                              string, @"字符串", 
+                              nil];
+
+AVObject     *object     = [AVObject objectWithClassName:@"DataTypes"];
+[object setObject:boolean    forKey:@"testBoolean"];
+[object setObject:number     forKey:@"testInteger"];
+[object setObject:string     forKey:@"testString"];
+[object setObject:date       forKey:@"testDate"];
+[object setObject:data       forKey:@"testData"];
+[object setObject:array      forKey:@"testArray"];
+[object setObject:dictionary forKey:@"testDictionary"];
+[object saveInBackground];
 ```
 
 此外，NSDictionary 和 NSArray 支持嵌套，这样在一个 AVObject 中就可以使用它们来储存更多的结构化数据。
 
-我们**不推荐**在 `AVObject` 中使用 `NSData` 类型来储存大块的二进制数据，比如图片或整个文件。**每个 `AVObject` 的大小都不应超过 128 KB**。如果需要储存更多的数据，建议使用 `AVFile`。更多细节可以阅读本文 [文件](#文件) 部分。
+我们**不推荐**在 `AVObject` 中使用 `NSData` 类型来储存大块的二进制数据，比如图片或整个文件。**每个 `AVObject` 的大小都不应超过 128 KB**。如果需要储存更多的数据，建议使用 [`AVFile`](#文件)。
 
 若想了解更多有关 LeanStorage 如何解析处理数据的信息，请查看专题文档《[数据与安全](./data_security.html)》。
 {% endblock %}
 
 {% block code_create_geoPoint %}
-
 ``` objc
 AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 ```
 {% endblock %}
 
 {% block code_use_geoPoint %}
-
 ``` objc
 [todo setObject:point forKey:@"whereCreated"];
 ```
 {% endblock %}
 
 {% block code_serialize_baseObject_to_string %}
-
 ```objc
     AVObject *todoFolder = [[AVObject alloc] initWithClassName:@"TodoFolder"];// 构建对象
     [todoFolder setObject:@"工作" forKey:@"name"];// 设置名称
     [todoFolder setObject:@1 forKey:@"priority"];// 设置优先级
     [todoFolder setObject:[AVUser currentUser] forKey:@"owner"];// 这里就是一个 Pointer 类型，指向当前登录的用户
+    
     NSMutableDictionary *serializedJSONDictionary = [todoFolder dictionaryForObject];//获取序列化后的字典
-    NSError * err;
-    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:serializedJSONDictionary options:0 error:&err];//获取 JSON 数据
+    NSError *err;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:serializedJSONDictionary options:0 error:&err];//获取 JSON 数据
     NSString *serializedString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];// 获取 JSON 字符串
     // serializedString 的内容是：{"name":"工作","className":"TodoFolder","priority":1}
-
 ```
-
 {% endblock %}
 
 {% block code_deserialize_string_to_baseObject %}
-
 ```objc
     NSMutableDictionary *objectDictionary = [NSMutableDictionary dictionaryWithCapacity:10];// 声明一个 NSMutableDictionary
     [objectDictionary setObject:@"工作" forKey:@"name"];
@@ -410,13 +423,12 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 ```
 {% endblock %}
 
-
 {% block code_data_protocol_save_date %}{% endblock %}
 
 {% block code_create_avfile_by_stream_data %}
 
 ```objc
-    NSData *data = [@"Working with LeanCloud is great!" dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [@"我的工作经历" dataUsingEncoding:NSUTF8StringEncoding];
     AVFile *file = [AVFile fileWithName:@"resume.txt" data:data];
 ```
 {% endblock %}
@@ -432,7 +444,6 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 {% endblock %}
 
 {% block code_create_avfile_from_url %}
-
 ```objc
     AVFile *file =[AVFile fileWithURL:@"http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"];
     [file getData];// 注意这一步很重要，这是把图片从原始地址拉去到本地
@@ -440,7 +451,6 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 {% endblock %}
 
 {% block code_upload_file %}
-
 ```objc
     [file saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         NSLog(file.url);//返回一个唯一的 Url 地址
@@ -459,8 +469,26 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 ```
 {% endblock %}
 
-{% block code_download_file %}
+{% block code_file_image_thumbnail %}
+```objc
+AVFile *file = [AVFile fileWithURL:@"文件-url"];
+[file getThumbnail:YES width:100 height:100 withBlock:^(UIImage *image, NSError *error) {
+    }];
+```
+{% endblock %}
 
+{% block code_file_metadata %}
+``` objc
+AVFile *file = [AVFile fileWithName:@"test.jpg" contentsAtPath:@"文件-本地-路径"];
+[file.metaData setObject:@(100) forKey:@"width"];
+[file.metaData setObject:@(100) forKey:@"height"];
+[file.metaData setObject:@"LeanCloud" forKey:@"author"];
+NSError *error = nil;
+[file save:&error];
+```
+{% endblock %}
+
+{% block code_download_file %}
 ```objc
     [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         // data 就是文件的数据流
@@ -468,6 +496,70 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
         //下载的进度数据，percentDone 介于 0 和 100。
     }];
 ```
+{% endblock %}
+
+{% block code_file_delete %}
+``` objc
+[file deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+}];
+```
+{% endblock %}
+
+{% block code_cache_operations_file %}
+``` objc
+//清除当前文件缓存
+- (void)clearCachedFile;
+
+//类方法, 清除所有缓存
++ (BOOL)clearAllCachedFiles;
+
+//类方法, 清除多久以前的缓存
++ (BOOL)clearCacheMoreThanDays:(NSInteger)numberOfDays;
+```
+{% endblock %}
+
+{% block text_https_access_for_ios9 %}
+### iOS 9 适配
+
+iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文件的 getData 之外的 API 都是支持 HTTPS 访问的。 现有两种方式解决这个问题。
+
+#### 项目中配置访问策略
+
+一是在项目中额外配置一下该接口的访问策略。选择项目的 Info.plist，右击以 Source Code 的方式打开。在 plist -> dict 节点中加入以下文本：
+
+``` 
+  <key>NSAppTransportSecurity</key>
+  <dict>
+    <key>NSExceptionDomains</key>
+    <dict>
+      <key>clouddn.com</key>
+      <dict>
+        <key>NSIncludesSubdomains</key>
+        <true/>
+        <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+        <true/>
+      </dict>
+    </dict>
+  </dict>
+```
+
+或者在 Target 的 Info 标签中修改配置：
+
+![Info.plist Setting](images/ios_qiniu_http.png)
+
+如果是美国节点，请把上面的 `clouddn.com` 换成 `amazonaws.com`。
+
+也可以根据项目需要，允许所有的 HTTP 访问，更多可参考 [iOS 9 适配系列教程](https://github.com/ChenYilong/iOS9AdaptationTips)。
+
+#### 启用文件 SSL 域名
+
+另外一种方法是在网站控制台中进入相关的应用，点击上方的设置选项卡，勾选「启用文件 SSL 域名（对应 _File 中存储的文件）」选项。这样便启用了文件 SSL 域名，支持 HTTPS 访问。如图所示：
+
+![File SSL Config](images/ios_file_ssl_config.png)
+
+如果启用文件 SSL 域名前已经保存了许多文件，启用之后，这些文件的 URL 也会跟着变化，来支持 HTTPS 访问。
+
+这两种方式都能解决这个问题。但需要注意的是，实时通信组件 LeanMessage 也用了 AVFile 来保存消息的图片、音频等文件，并且把文件的地址写入到了消息内容中。开启了文件 SSL 域名后，历史消息中的文件地址将不会像控制台里 _File 表那样跟着改变。所以如果使用了实时通信组件并已上线，推荐使用方式一。
 {% endblock %}
 
 {% block code_create_query_by_className %}
@@ -498,7 +590,6 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 {% endblock %}
 
 {% block code_priority_equalTo_zero_and_one_wrong_example %}
-
 ```objc
     AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     [query whereKey:@"priority" equalTo:@0];
@@ -554,12 +645,12 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 {% block code_query_with_not_contains_keyword_using_regex %}
 
 ```objc
-
+  AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+  [query whereKey:@"title" matchesRegex:@"^((?!机票).)*$"];
 ```
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword %}
-
 ```objc
     AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     NSArray *filterArray = [NSArray arrayWithObjects:@"出差", @"休假", nil]; // NSArray
@@ -583,8 +674,9 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     NSDate *reminder= [self getDateWithDateString:@"2015-11-11 08:30:00"];
 
     AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-
-    [query whereKey:@"reminders" equalTo:reminder];// equalTo: 可以找出数组中包含单个值的对象
+    
+    // equalTo: 可以找出数组中包含单个值的对象
+    [query whereKey:@"reminders" equalTo:reminder];
 }
 ```
 {% endblock %}
@@ -602,8 +694,9 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 -(void)queryRemindersContainsAll{
     NSDate *reminder1= [self getDateWithDateString:@"2015-11-11 08:30:00"];
     NSDate *reminder2= [self getDateWithDateString:@"2015-11-11 09:30:00"];
-
-    NSArray *reminders =[NSArray arrayWithObjects:reminder1, reminder1,nil];// 构建查询时间点
+    
+    // 构建查询时间点数组
+    NSArray *reminders =[NSArray arrayWithObjects:reminder1, reminder1, nil];
 
     AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     [query whereKey:@"reminders" containsAllObjectsInArray:reminders];
@@ -760,11 +853,24 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
         }
     }];
 ```
+{% endblock %}
 
+{% block code_query_orderby %}
+``` objc
+// 按时间，升序排列
+[query orderByAscending:@"createdAt"];
+
+// 按时间，降序排列
+[query orderByDescending:@"createdAt"];
+```
+{% endblock %}
+
+{% block code_query_orderby_on_multiple_keys %}
+[query addAscendingOrder:@"priority"];
+[query addDescendingOrder:@"createdAt"];
 {% endblock %}
 
 {% block code_query_with_or %}
-
 ```objc
     AVQuery *priorityQuery = [AVQuery queryWithClassName:@"Todo"];
     [priorityQuery whereKey:@"priority" greaterThanOrEqualTo:[NSNumber numberWithInt:3]];
@@ -774,7 +880,7 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 
     AVQuery *query = [AVQuery orQueryWithSubqueries:[NSArray arrayWithObjects:statusQuery,priorityQuery,nil]];
     [query findObjectsInBackgroundWithBlock:^(NSArray *results, NSError *error) {
-        // 返回 priority 大于等于3 或 status 等于 1 的 Todo
+        // 返回 priority 大于等于 3 或 status 等于 1 的 Todo
     }];
 ```
 {% endblock %}
