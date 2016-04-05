@@ -461,6 +461,11 @@ avoscloud -P 3002
  
 如果希望能够充分利用 HTTP 提供的语义化特征，可以考虑使用云引擎的「[网站托管](leanengine_guide-node.html#使用框架)」功能，自行来处理 HTTP 请求。
 
+### Redis connection gone from end event ，出现这个错误是什么情况？
+LeanCache 或者任何网络程序都有可能出现连接闪断的问题，可能是因为网络波动，或者服务器负载，或者容量调整等等。这时只需要重建连接即可使用，而 Redis Client 一般都有断开重连的机制，未连接期间指令会保存到队列，待连接成功后再发送队列中的指令（最起码 [https://www.npmjs.com/package/redis](https://www.npmjs.com/package/redis) 是这么实现的），所以这个错误一般不会出现什么问题。
+
+同时建议您的应用[捕获 redis on error 事件](leancache_guide.html#在云引擎中使用_Node_js_环境_)。
+
 ## 文件
 
 ### 文件存储有 CDN 加速吗？
