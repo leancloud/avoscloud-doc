@@ -5,6 +5,7 @@ node_js:
   - "0.12"
 before_script:
   - npm install -g grunt-cli
+  - if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
 matrix:
   fast_finish: true
 notifications:
