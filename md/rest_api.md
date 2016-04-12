@@ -1343,14 +1343,70 @@ Location: https://api.leancloud.cn/1.1/users/55a47496e4b05001a7732c5f
 
 在你允许用户注册之后，在以后你需要让他们用自己的用户名和密码登录。为了做到这一点，发送一个 GET 请求到 /1.1/login，加上 username 和 password 作为 URL 编码后的参数。
 
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -G \
-  --data-urlencode 'username=hjiang' \
-  --data-urlencode 'password=f32@ds*@&dsa' \
-  https://api.leancloud.cn/1.1/login
+```curl
+curl --request POST \
+  --url https://api.leancloud.cn/1.1/login \
+  --header 'content-type: application/json' \
+  --header 'x-lc-id: uay57kigwe0b6f5n0e1d4z4xhydsml3dor24bzwvzr57wdap' \
+  --header 'x-lc-key: kfgz7jjfsk55r5a8a3y4ttd3je1ko11bkibcikonk32oozww' \
+  --data '{"username":"leancloud","password":"leancloud"}'
+```
+
+```javascript
+var ajaxRequest = {
+  "async": true,
+  "crossDomain": true,
+  "url": "https://api.leancloud.cn/1.1/login",
+  "method": "POST",
+  "headers": {
+    "content-type": "application/json",
+    "x-lc-id": "uay57kigwe0b6f5n0e1d4z4xhydsml3dor24bzwvzr57wdap",
+    "x-lc-key": "kfgz7jjfsk55r5a8a3y4ttd3je1ko11bkibcikonk32oozww",
+    "cache-control": "no-cache",
+    "postman-token": "1e324a74-bd4f-0c73-d0ab-b1c8012ed6ab"
+  },
+  "processData": false,
+  "data": "{\"username\":\"leancloud\",\"password\":\"leancloud\"}"
+}
+
+$.ajax(ajaxRequest).done(function (response) {
+  console.log(response);
+});
+```
+
+```nodejs
+var request = require("request");
+
+var options = { method: 'POST',
+  url: 'https://api.leancloud.cn/1.1/login',
+  headers: 
+   { 'X-LC-Key': 'kfgz7jjfsk55r5a8a3y4ttd3je1ko11bkibcikonk32oozww',
+     'X-LC-ID': 'uay57kigwe0b6f5n0e1d4z4xhydsml3dor24bzwvzr57wdap',
+     'content-type': 'application/json' },
+  body: { username: 'leancloud', password: 'leancloud' },
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+```
+
+```java
+OkHttpClient client = new OkHttpClient();
+
+MediaType mediaType = MediaType.parse("application/json");
+RequestBody body = RequestBody.create(mediaType, "{\"username\":\"leancloud\",\"password\":\"leancloud\"}");
+Request request = new Request.Builder()
+  .url("https://api.leancloud.cn/1.1/login")
+  .post(body)
+  .addHeader("content-type", "application/json")
+  .addHeader("X-LC-ID", "uay57kigwe0b6f5n0e1d4z4xhydsml3dor24bzwvzr57wdap")
+  .addHeader("X-LC-Key", "kfgz7jjfsk55r5a8a3y4ttd3je1ko11bkibcikonk32oozww")
+  .build();
+
+Response response = client.newCall(request).execute();
 ```
 
 返回的主体是一个 JSON 对象包括所有除了 password 以外的自定义字段。它同样包含了 createdAt、updateAt、objectId 和 sessionToken 字段。
