@@ -254,7 +254,7 @@ var codeBlockTabber = (function() {
       'lang-js': 'JavaScript',
       'lang-python': 'Python',
       'lang-java': 'Java',
-      'lang-nodejs': 'NodeJS',
+      'lang-nodejs': 'Node.js',
       'lang-curl': 'cURL'
     };
 
