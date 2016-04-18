@@ -3,6 +3,7 @@
 {% set platformName = 'Node.js' %}
 {% set productName = 'LeanEngine' %}
 {% set storageName = 'LeanStorage' %}
+{% set leanengine_middleware = '[LeanEngine Node.js SDK](https://github.com/leancloud/leanengine-node-sdk)' %}
 
 {% set sdk_guide_link = '[JavaScript SDK](./js_guide.html)' %}
 {% set cloud_func_file = '`$PROJECT_DIR/cloud.js`' %}
@@ -140,7 +141,7 @@ AV.Cloud.beforeUpdate('Review', function(request, response) {
 
 请注意：
 
-* 需要将 `leanengine` 中间件升级至 0.2.0 版本以上才能使用这个功能。
+* 需要将 {{leanengine_middleware}} 中间件升级至 0.2.0 版本以上才能使用这个功能。
 * 不要修改 `request.object`，因为对它的改动并不会保存到数据库，但可以用 `response.error` 返回一个错误，拒绝这次修改。
 {% endblock %}
 

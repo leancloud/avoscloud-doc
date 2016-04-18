@@ -131,6 +131,15 @@ https://leancloud.cn/1.1/functions/averageStars
 
 另外还需要注意：虽然 {{leanengine_middleware}} 已经响应，但此时云函数可能仍在执行，但执行完毕后的响应是无意义的。
 
+#### 针对超时的优化
+
+我们建议将代码中的任务转化为异步队列处理，以优化运行时间，避免云函数或 [定时任务](#定时任务) 发生超时。比如：
+
+- 在存储服务中创建一个队列表，包含 `status` 列；
+- 接到任务后，向队列表保存一条记录，`status` 值设置为「处理中」，然后直接 response，也可以把队列对象 id 返回，如 `response.success(id);`；
+- 当业务处理完毕，根据处理结果更新刚才的队列对象状态，将 `status` 字段设置为「完成」或者「失败」；
+- 在任何时候，在控制台通过队列 id 可以获取某个任务的执行结果，判断任务状态。
+
 ## Hook 函数
 
 Hook 函数本质上是云函数，但它有固定的名称，定义之后会**由系统**在特定事件或操作（如数据保存前、保存后，数据更新前、更新后等等）发生时**自动触发**，而不是由开发者来控制其触发时机。
@@ -271,7 +280,7 @@ AV.Cloud.afterUpdate('Post', function(request) {
 
 Hook 函数的超时时间为 3 秒。如果 Hook 函数被其他的云函数调用（比如因为 save 对象而触发 `beforeSave` 和 `afterSave`），那么它们的超时时间会进一步被其他云函数调用的剩余时间限制。
 
-例如，如果一个 `beforeSave` 函数是被一个已经运行了 13 秒的云函数触发，那么 `beforeSave` 函数就只剩下 2 秒的时间来运行。
+例如，如果一个 `beforeSave` 函数是被一个已经运行了 13 秒的云函数触发，那么 `beforeSave` 函数就只剩下 2 秒的时间来运行。同时请参考 [云函数超时](#云函数超时)。
 
 {% block online_editor %}{% endblock %}
 
@@ -281,11 +290,11 @@ Hook 函数的超时时间为 3 秒。如果 Hook 函数被其他的云函数调
 
 {% block timerLegacy %}{% endblock %}
 
-定时任务是普通的云函数。比如定义一个打印循环打印日志的任务 `log_timer`：
+定时任务是普通的云函数，也会遇到 [超时问题](#云函数超时)，具体请参考 [超时优化方案](#针对超时的优化)。
+
+部署云引擎之后，进入 [控制台 > 存储 > 云引擎 > 定时任务](/cloud.html?appid={{appid}}#/task)，点击 **创建定时器**，然后设定执行的函数名称、执行环境等等。例如定义一个打印循环打印日志的任务 `log_timer`：
 
 {% block timerExample %}{% endblock %}
-
-部署云引擎之后，进入 [控制台 > 存储 > 云引擎 > 定时任务](/cloud.html?appid={{appid}}#/task)，点击 **创建定时器**，然后设定执行的函数名称、执行环境等等。
 
 定时器创建后，其状态为**未运行**，需要点击 <span class="label label-default">启用</span> 来激活。之后其执行日志可以通过 [日志](/cloud.html?appid={{appid}}#/log) 查看。
 
@@ -350,7 +359,7 @@ Cron 表达式的基本语法为：
 定时器执行后的日志会记录在 [控制台 > 存储 > 云引擎 > 其它 > 日志](/cloud.html?appid={{appid}}#/log) 中，以下为常见的错误信息及原因。
 
 - **timerAction timed-out and no fallback available.**<br/>
-  某个定时器触发的云函数，因 15 秒内没有响应而超时。
+  某个定时器触发的云函数，因 15 秒内没有响应而超时（可参考 [对云函数调用超时的优化](#针对超时的优化)）。
 - **timerAction short-circuited and no fallback available.**<br/>
   某个定时器触发的云函数，因为太多次超时而停止触发。
 
