@@ -57,7 +57,7 @@
 **提示**：如果在客户端想调用云引擎的预备环境，各个 SDK 都有类似于 `setProduction` 的方法，比如 [JavaScript SDK &middot; AV.setProduction(production)](/api-docs/javascript/symbols/AV.html#.setProduction)，其中 `production` 设置为 `0` 则该 SDK 将请求预备环境；设置为 `1` 将请求生产环境，默认为 `1`。
 
 
-## 使用 LeanStorage 
+## 存储数据
 
 {% block use_leanstorage %}{% endblock %}
 
@@ -406,8 +406,8 @@ WAP<br/>
 
 云引擎区分「预备环境」和「生产环境」， 它们拥有不同的域名:
 
-* 预备环境：`stg-${your_app_domain}.leanapp.cn`
-* 生产环境：`${your_app_domain}.leanapp.cn`
+* 预备环境：`stg-{{var_app_domain}}.leanapp.cn`
+* 生产环境：`{{var_app_domain}}.leanapp.cn`
 
 但是两个环境使用相同的数据源。代码在预备环境测试通过后，再部署到生产环境是更安全的做法。
 

@@ -1,11 +1,11 @@
 {# 指定继承模板 #}
 {% extends "./leanengine_webhosting_guide.tmpl" %}
 
-{% set productName = 'LeanEngine' %}
+{% set productName = '云引擎' %}
 {% set platformName = 'Node.js' %}
 {% set fullName = productName + ' ' + platformName %}
 {% set sdk_name = 'JavaScript' %}
-{% set leanengine_middleware = '[leanengine](https://github.com/leancloud/leanengine-node-sdk)' %}
+{% set leanengine_middleware = '[LeanEngine Node.js SDK](https://github.com/leancloud/leanengine-node-sdk)' %}
 
 
 {% block custom_api_random_string %}
@@ -48,7 +48,7 @@ app.get('/time', function(req, res) {
 如果没有 `start` 脚本，则默认使用 `node server.js` 来启动，所以需要保证存在 `$PROJECT_DIR/server.js` 文件。 {% endblock %}
 
 {% block ping %}
-云引擎中间件内置了该 URL 的处理，只需要将中间件添加到请求的处理链路中即可：
+{{leanengine_middleware}} 内置了该 URL 的处理，只需要将中间件添加到请求的处理链路中即可：
 
 ```
 app.use(AV.Cloud);
@@ -63,7 +63,7 @@ var cloud = require('./cloud');
 app.use(cloud);
 ```
 
-如果未使用云引擎中间件，则需要自己实现该 URL 的处理，比如这样：
+如果未使用 {{leanengine_middleware}}，则需要自己实现该 URL 的处理，比如这样：
 
 ```
 // 健康监测 router
@@ -100,7 +100,7 @@ app.get('/', function(req, res) {
 {% endblock %}
 
 {% block use_leanstorage %}
-{{fullName}} 使用 {{leanengine_middleware}} 来代替 [JavaScript SDK](https://github.com/leancloud/javascript-sdk) ，前者扩展了后者，并增加了云函数和 Hook 函数的支持。因此开发者可以很方便地直接使用 LeanStorage 作为自己的后端数据存储服务，关于如何使用 LeanStorage 请查阅：[LeanCloud JavaScript SDK](js_guide.html)。
+云引擎使用 {{leanengine_middleware}} 来代替 [JavaScript 存储 SDK](https://github.com/leancloud/javascript-sdk) 。前者包含了后者，并增加了云函数和 Hook 函数的支持，因此开发者可以直接使用 [LeanCloud 的存储服务](js_guide.html) 来存储自己的数据。
 
 如果使用项目框架作为基础开发，{{leanengine_middleware}} 默认是配置好的，可以根据示例程序的方式直接使用。
 
@@ -110,7 +110,7 @@ app.get('/', function(req, res) {
   ```
   $ npm install leanengine --save
   ```
-* 初始化：在正式使用 LeanStorage 之前，你需要使用自己的应用 key 进行初始化中间件：
+* 初始化：在正式使用数据存储之前，你需要使用自己的应用 key 进行初始化中间件：
   ```js
   var AV = require('leanengine');
   
@@ -220,7 +220,7 @@ AV.Cloud.httpRequest({
 
 #### 发送 POST 请求
 
-通过设置选项对象的 method 属性就可以发送 POST请求。同时可以设置选项对象的 body 属性来发送数据，例如：
+通过设置选项对象的 method 属性就可以发送 POST 请求。同时可以设置选项对象的 body 属性来发送数据，例如：
 
 ```javascript
 AV.Cloud.httpRequest({
@@ -239,7 +239,7 @@ AV.Cloud.httpRequest({
 });
 ```
 
-这将会发送一个 POST 请求到 <http://www.example.com/create_post>，body 是被 URL 编码过的表单数据。 如果你想使用 JSON 编码 body，可以这样做：
+这将会发送一个 POST 请求到 `http://www.example.com/create_post`，body 是被 URL 编码过的表单数据。 如果你想使用 JSON 编码 body，可以这样做：
 
 ```javascript
 AV.Cloud.httpRequest({
@@ -423,7 +423,7 @@ app.use(AV.Cloud.HttpsRedirect());
 
 
 {% block custom_runtime %}
-目前 {{fullName}} 在项目框架中使用 {{platformName}} 4.x，请你最好使用此版本进行开发。
+目前{{fullName}}在项目框架中使用 {{platformName}} 4.x，开发者最好使用此版本进行开发。
 
 对于早期云引擎项目如果想使用 Node.js 4.x 版本，请在项目的 `package.json` 中为指定 `engine` 的版本，例如：
 
@@ -437,7 +437,7 @@ app.use(AV.Cloud.HttpsRedirect());
 
 **提示**：{{productName}} 0.12 和 4.x 差异较大，建议升级后充分测试。
 
-**提示**：如果指定的版本 {{productName}} 不支持，则会默认使用 {{platformName}} 4.x 版本。
+**提示**：如果 {{productName}} 不支持所指定的版本，则会默认使用 {{platformName}} 4.x 版本。
 {% endblock %}
 
 {% block get_env %}
