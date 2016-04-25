@@ -1,69 +1,108 @@
-
 # iOS 推送证书设置指南
 
+## 注册 App ID
 
-## 创建应用程序 ID
+首先注册 App ID。如果你已经注册过带有推送通知 App ID，可以跳过以下步骤：
 
-* 登录 [iOS Dev Center](https://developer.apple.com/devcenter/ios/index.action) 选择进入 iOS Provisioning Portal。
+1. 登录 [Apple Developer Center](https://developer.apple.com/account/)
+2. 点击 **Certificates, Identifiers & Profiles**
+3. 选择 **Identifiers** 下的 **App IDs**
+4. 点击右上方的加号按钮（**\+**）
+5. 填写 App ID 的基本信息
+ ![Create App ID](images/ios_cert_v2/create_app_id.png)
+6. 选择创建 Explicit App ID，填入 App 的 **Bundle ID**。注意，<u>Explicit App ID 不能包含星号</u>（\*）。
+ ![Enter Explicit bundle ID](images/ios_cert_v2/enter_explicit_app_id.png)
+7. 选择 App ID 需要开启的服务，此处要勾选 **Push Notifications**。
+ ![Select push notification](images/ios_cert_v2/select_push_notification.png)
+8. 点击 **Continue**
+9. 确认注册信息，然后点击 **Register**。
+10. 点击 **Done**
 
-![Enable push](images/ios_cert/login.png)
+## 开启推送通知
 
-* 在 [iOS Provisioning Portal](https://developer.apple.com/ios/manage/overview/index.action) 中，点击 App IDs 进入 App ID 列表。
+为已有的 App ID 开启推送通知的步骤如下：
 
-![Enable push](images/ios_cert/appid.png)
+1. 选择要开启推送通知的 App ID
+2. 勾选 **Push Notifications** 复选框。
+ ![Edit push notification](images/ios_cert_v2/edit_push_notification.png)
+3. 如果弹出警告对话框，点击 **OK**。
+4. 点击 **Done**
 
-* 创建 App ID，如果 ID 已经存在可以直接跳过此步骤。
+## 创建推送证书
 
-![Enable push](images/ios_cert/appid2.png)
+每个 App ID 都需要单独的客户端 SSL 证书来和 APNs 通信。从 2015 年 12 月 17 日起，APNs 服务全面支持 HTTP/2 协议，推送证书也进行了相应的调整，即推出了 Universal Push Notification Client SSL 证书，以下简称 **Universal 推送证书**。通过下图中红框标注的 **Apple Push Notification service SSL (Sandbox & Production)** 这种方式创建的推送证书就是「Universal 推送证书」。
 
-* 为 App 开启 Push Notification 功能。如果是已经创建的 App ID 也可以通过设置开启 Push Notification 功能。
+我们推荐使用「Universal 推送证书」来进行推送服务。
 
-![Enable push](images/ios_cert/appservice.png)
+   ![what is Universal Push Notification Client SSL Certificate](images/ios_cert_v2/what_is_universal_push_notification_client_ssl_certificate.png)
+  
+  图中其他方式就叫做「非 Universal 方式」，以下简称 **非 Universal 推送证书**：
+  
+  ![what is not Universal Push Notification Client SSL Certificate](images/ios_cert_v2/what_is_not_universal_push_notification_client_ssl_certificate.png)
 
-* 根据实际情况完善 App ID 信息并提交,注意此处需要指定具体的 Bundle ID 不要使用通配符。
+**注意：**要使用 Universal 推送证书，LeanCloud iOS SDK 需要更新到 v3.2.8 以上的版本，以获得更快速的推送效果。
 
-![Enable push](images/ios_cert/appid3.png)
+### 创建 Universal 推送证书
 
-## 配置和下载证书
+请按以下步骤创建「Universal 推送证书」：
 
-* 如果你之前没有创建过 Push 证书或者是要重新创建一个新的，请在证书列表下面新建。
+1. 前往 [Apple Developer Center](https://developer.apple.com)
+2. 点击 **Certificates, Identifiers & Profiles**
 
-![Enable push](images/ios_cert/cer0.png)
+  ![enter Certificates, Identifiers & Profiles](images/ios_cert_v2/enter_certificates_identifiers_profiles.png)
+3. 选择在 **Certificates** 栏下的 **All**
+4. 点击下图中红色边框内的加号按钮
 
-* 新建证书需要注意选择证书种类（开发证书用于开发和调试使用，生产证书用于 App Store 发布）
+  ![Create SSL certificate](images/ios_cert_v2/create_ssl_certificate.png)
+5. 勾选 **Production** 栏下的 **Apple Push Notification service SSL (Sandbox & Production)**，点击下一步。
+  
+  ![Select push certificate](images/ios_cert_v2/what_is_universal_push_notification_client_ssl_certificate.png)
+6. 从 App ID 下拉菜单中选择相应的 App ID，点击下一步。
 
-![Enable push](images/ios_cert/cer1.png)
+  ![select App ID](images/ios_cert_v2/select_app_id.png)
 
-* 点击 Continue 后选择证书对应的应用ID，然后继续会出现 **About Creating a Certificate Signing Request (CSR)**。
+7. 这时会出现 **About Creating a Certificate Signing Request (CSR)**。
 
-![Enable push](images/ios_cert/cer2.png)
+  ![guide to create a CSR](images/ios_cert_v2/guide_to_create_a_csr.png)
 
-* 根据它的说明创建 Certificate Signing Request。
+  根据它的说明创建 **Certificate Signing Request**。
 
-![Enable push](images/ios_cert/cer3.png)
+  ![how to create a CSR](images/ios_cert_v2/how_to_create_a_csr.png)
+8. 点击下图中的 **Choose File** 按钮
 
-* 然后点击 **Continue**，上传刚刚生成的 .certSigningRequest 文件 生成 APNs Push  Certificate。
-* 下载并双击打开证书，证书打开时会启动 **钥匙串访问** 工具。
-* 在 **钥匙串访问** 中你的证书会显示在 **我的证书** 中，注意选择左上角的 **My Certificates**（我的证书）和左下角 **login**(登录）。
+  ![upload CSR File](images/ios_cert_v2/upload_csr_file.png)
+9. 上传刚刚生成的 `.certSigningRequest` 文件，生成 APNs Push Certificate。
+10. 下载证书
+11. 双击打开证书，证书打开时会启动 **Keychain Access / 钥匙串访问** 工具。
+  在钥匙串访问工具中，你的证书会显示在 **证书** 中。<u>注意选择左下角的 **证书** 和左上角的 **登录**</u>。
 
-![Enable push](images/ios_cert/keychain_cert.png)
+   ![confirm create cer success](images/ios_cert_v2/confirm_create_cer_success.png)
 
-## 导出 .p12 证书文件
+「非 Universal 推送证书」的申请步骤与以上类似。
 
-* 在 **钥匙串访问** 中，选择刚刚加进来的证书，选择右键菜单中的 **导出 "..."**。
+## 验证推送服务状态
 
-![Enable push](images/ios_cert/export_p12.png)
+按以下步骤来验证 App ID 的推送服务是否打开：
 
-* 将文件保存为Personal Information Exchange (.p12) 格式。
+1. 点击 **Identifiers** 下的 **App IDs**
+2. 选择与应用 Bundle ID 匹配的 App ID
+3. 如果下图中红色方框中显示 **Enabled**，表示 App ID 的推送证书已配置好。
 
-![Enable push](images/ios_cert/export_filename.png)
+ ![Verify push notification](images/ios_cert_v2/verify_push_notification.png)
 
-**保存 p12 文件时，密码必须为空**。
+## 导出证书
 
-如果 **Personal Information Exchange (.p12)** 格式是灰色的，请确保选中 **My Certificates**（我的证书）。如果还是不行，请确认选择的是钥匙串里的 **login** 的证书（左上角）。或者你也可以尝试将证书文件拖拽到 **My Certificates** 下。
+1. 打开 **Keychain Access**，找到要导出的证书（证书名有前缀 **Apple Push Services**）。
+2. 右键点击证书，选择 **导出 / Export**，选择保存格式为 `.p12`。这时程序会提示你输入密码来保护导出的证书，**请不要输入密码**，让两个输入框为空，点击  **OK**。接着又会弹出一个对话框，要求输入 OS X 账户的密码来允许从 Keychain Access 中导出，请填写密码并点击 **允许 / Allow**。
 
 ## 上传证书
 
-在 [**控制台** > **消息 > 推送 > 设置**](/messaging.html?appid={{appid}}#/message/push/conf) 里，上传上面步骤得到 .p12 证书文件。这是 iOS SDK 能够接收到 LeanCloud 推送消息的必要步骤。
-
-![Enable push](images/ios_cert/upload_p12.png)
+1. 进入 [LeanCloud 应用控制台 > 消息 > 推送 > 设置](/messaging.html?appid={{appid}}#/message/push/conf)，然后就可以看到下面的页面：
+  
+  ![Push certificate configure](images/ios_cert_v2/push_certificate_config.png)
+2. 根据你的证书类别进行上传。这里请注意区分证书的类别，<u>测试环境</u>证书和<u>生产环境</u>证书请勿混淆。
+  - 「Universal 推送证书」需要上传到图中的 **自定义证书** 中。
+    <div class="callout callout-info">在 LeanCloud 的推送服务中，出于兼容性考虑，**Universal 证书只能用于生产环境**。如果需要进行推送测试，请使用图中的 **测试环境证书**。</div>
+  - 在 LeanCloud 的推送服务中，不同类型的推送证书能够服务的环境略有不同，对应关系如下图所示：
+    
+    ![relation between cer and prod or dev](images/ios_cert_v2/relation_between_cer_and_prod_or_dev.png)
