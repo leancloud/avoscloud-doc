@@ -43,57 +43,30 @@ Cloud 函数接收 JSON 格式的请求对象，我们可以用它来传入电�
 
 {% block cloudFuncParams %}{% endblock %}
 
-### 调用云函数
+### SDK 调用云函数
 
-#### iOS /OS X SDK 调用云函数
+在 LeanCloud 各个版本的 SDK 中，都提供了调用云函数的接口示例代码如下：
 
-在 iOS SDK 中，`AVCloud` 提供了一系列的静态方法实现客户端调用云函数：
 
 ```objc
-     // 构建传递给服务端的参数字典
-     NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦恼" forKey:@"movie"];
-    
+    //在 iOS SDK 中，`AVCloud` 提供了一系列的静态方法实现客户端调用云函数：
+    // 构建传递给服务端的参数字典
+     NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦恼" 
+                                                              forKey:@"movie"];
+
     // 调用指定名称的云函数 averageStars，并且传递参数
-    [AVCloud callFunctionInBackground:@"averageStars" withParameters:dicParameters block:^(id object, NSError *error) {
-        // 执行结果
+    [AVCloud callFunctionInBackground:@"averageStars" 
+                       withParameters:dicParameters 
+                       block:^(id object, NSError *error) {
+                       if(error == nil){
+                         // 处理结果
+                       } else {
+                         // 处理报错
+                       }
     }];
 ```
-
-##### RPC 调用云函数
-
-`+[AVCloud callFunctionInBackground:withParameters:block:]` 方法返回的结果是 `NSDictionary` 对象，而不是 `AVObject` 对象。为了实现直接返回 `AVObject` 对象，iOS SDK 在 v3.1.6.6 中加入了 RPC 调用。
-
-RPC 调用云函数的方法签名以 `rpc` 开头，例如 `+[AVCloud rpcFunctionInBackground:withParameters:block:]`，除此之外，还有其他的变种。
-
-```objc
-    NSDictionary *parameters = @{...};
-
-    [AVCloud rpcFunctionInBackground:@"averageStars" withParameters:parameters block:^(id object, NSError *error) {
-        // 执行结果
-    }];
-```
-
-##### 切换云引擎环境
-
-云引擎区分「预备环境」和「生产环境」，使用 `AVCloud` 的 `setProductionMode` 方法可以切换环境：
-
-```objc
-//
-[AVCloud setProductionMode:NO];
-```
-
-其中 `NO` 表示「预备环境」，默认调用生产环境。
-
-
-运行上述代码请确保已经正确安装了 LeanCloud iOS / OS SDK，详细请点击 [iOS / OS X SDK 安装指南](sdk_setup-ios.html)。
-
-
-#### Android SDK 调用云函数
-
-{% block code_client_sdk_callfuntion %}{% endblock %}
-在 Android SDK 中，`AVCloud` 里面提供了一系列的静态方法实现客户端调用云函数。
-
 ```java
+    //在 Android SDK 中，`AVCloud` 里面提供了一系列的静态方法实现客户端调用云函数：
     // 构建参数
     Map<String, String> dicParameters = new HashMap<String, String>();
     dicParameters.put("movie", "夏洛特烦恼");
@@ -109,10 +82,78 @@ RPC 调用云函数的方法签名以 `rpc` 开头，例如 `+[AVCloud rpcFuncti
         }
     });
 ```
-##### RPC 调用云函数
+```js
+  // 在 JavaScript 中 AV.Cloud 里面提供了一些列的方法实现调用云函数：
+  var paramsJson = {
+    movie: "夏洛特烦恼"
+  };
+  AV.Cloud.run('averageStars', paramsJson, {
+    success: function(data) {
+      //调用成功，得到成功的应答data
+    },
+    error: function(err) {
+      //处理调用失败
+    }
+  });
 
-`callFunction` 方法的返回并不支持 `AVObject` 类型的解析，很多用户不得不通过 HashMap 来返回结果。考虑到这个因素，我们在 v3.10.2 提供了 `rpcFunction` 以支持 `AVObject` 类型。
+```
+### 通过 REST API 调用云函数
+[REST API 调用云函数](rest_api.html#云函数-1) 是 LeanCloud 云端提供的统一的访问云函数的接口，所有的客户端 SDK 也都是封装了这个接口实现对云函数进行调用。
 
+关于调试工具，我们推荐的工具有：[Postman](http://www.getpostman.com/) 以及 [Paw](#https://luckymarmot.com/paw) ，他们可以帮助开发者更方便地调试 Web API。
+
+假设没有以上工具，也可以使用命令行进行调试：
+
+```sh
+curl -X POST -H "Content-Type: application/json; charset=utf-8" \
+       -H "X-LC-Id: {{appid}}" \
+       -H "X-LC-Key: {{appkey}}" \
+       -H "X-LC-Prod: 0" \
+       -d '{"movie":"夏洛特烦恼"}' \
+https://leancloud.cn/1.1/functions/averageStars
+```
+上述命令行实际上就是向服务端发送一个 JSON 对象作为参数，参数的内容是告诉服务端要查询的电影的名字。
+
+### 云引擎调用云函数
+
+在云引擎中可以使用 {{ runFuncName }} 调用 {{ defineFuncName }} 定义的云函数：
+
+```js
+  var paramsJson = {
+    movie: "夏洛特烦恼"
+  };
+  AV.Cloud.run('averageStars', paramsJson, {
+    success: function(data) {
+      //调用成功，得到成功的应答data
+    },
+    error: function(err) {
+      //处理调用失败
+    }
+  });
+```
+API 参数详解参见 {{ runFuncApiLink }}。
+
+**提示**：云引擎中调用云函数会变成一次本地调用，不会向其他 SDK 那样发起一次 HTTP 请求。
+
+### RPC 调用云函数
+
+RPC 调用云函数指的云引擎会在这种调用方式下，自动的为 Http Response Body 做序列化，而 SDK 调用之后拿回的返回结果就是一个完整的 `AVObject`:
+
+```objc
+    NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦恼" 
+                                                              forKey:@"movie"];
+
+    [AVCloud rpcFunctionInBackground:@"averageStars" 
+                      withParameters:parameters 
+                      block:^(id object, NSError *error) {
+                      if(error == nil){
+                         // 处理结果
+                      } 
+                      else {
+                         // 处理报错
+                      }
+    }];
+```
 ```java
     AVObject movie = new AVObject("Movie");
     movie.put("title", "夏洛特烦恼");
@@ -127,45 +168,16 @@ RPC 调用云函数的方法签名以 `rpc` 开头，例如 `+[AVCloud rpcFuncti
         });
 ```
 
-##### 切换云引擎环境
+### 切换云引擎环境
 
-云引擎区分「预备环境」和「生产环境」，使用 `setProductionMode` 方法可以切换环境：
+云引擎区分「预备环境」和「生产环境」，使用 `AVCloud` 的 `setProductionMode` 方法可以切换环境：
 
+```objc
+[AVCloud setProductionMode:NO];//调用预备环境
+```
 ```java
 AVCloud.setProductionMode(false); //调用预备环境
 ```
-
-默认为 true，也就是调用生产环境的云引擎函数。
-
-
-运行上述代码请确保已经正确安装了 LeanCloud Android SDK，详细请点击[LeanCloud Android SDK 安装指南](sdk_setup-android.html)。
-
-#### 云引擎调用云函数
-
-在云引擎中可以使用 {{ runFuncName }} 调用 {{ defineFuncName }} 定义的云函数：
-
-{% block runFuncExample %}{% endblock %}
-
-API 参数详解参见 {{ runFuncApiLink }}。
-
-**提示**：云引擎中调用云函数会变成一次本地调用，不会向其他 SDK 那样发起一次 HTTP 请求。
-
-#### 通过 REST API 调用云函数
-[REST API 调用云函数](rest_api.html#云函数-1) 是 LeanCloud 云端提供的统一的访问云函数的接口，所有的客户端 SDK 也都是封装了这个接口实现对云函数进行调用。
-
-关于调试工具，我们推荐的工具有：[Postman](http://www.getpostman.com/) 以及 [Paw](#https://luckymarmot.com/paw) ，他们可以帮助开发者更方便地调试 Web API。
-
-假设没有以上工具，也可以使用命令行进行调试：
-
-```sh
-curl -X POST -H "Content-Type: application/json; charset=utf-8" \
-       -H "X-LC-Id: {{appid}}" \
-       -H "X-LC-Key: {{appkey}}" \
-       -H "X-LC-Prod: 0" \
-       -d '{"movie":"夏洛特烦恼"}' \
-https://leancloud.cn/1.1/functions/averageStars
-``` 
-上述命令行实际上就是向服务端发送一个 JSON 对象作为参数，参数的内容是告诉服务端要查询的电影的名字。
 
 ### 云函数错误响应码
 
@@ -286,8 +298,8 @@ Hook 函数本质上是云函数，但它有固定的名称，定义之后会**�
 
 对于使用上述方式产生的对象，请根据需要自行调用以下 API：
 
-- `object.disableBeforeHook()` 或 
-- `object.disableAfterHook()` 
+- `object.disableBeforeHook()` 或
+- `object.disableAfterHook()`
 
 这样，对象的保存或删除动作就不会再次触发相关的 Hook 函数。
 
@@ -357,7 +369,7 @@ Hook 函数的超时时间为 3 秒。如果 Hook 函数被其他的云函数调
 
 * 使用 Cron 表达式安排调度
 * 以秒为单位的简单循环调度
- 
+
 以 Cron 表达式为例，比如每周一早上 8 点准时发送推送消息给用户：
 
 {% block timerExample2 %}{% endblock %}

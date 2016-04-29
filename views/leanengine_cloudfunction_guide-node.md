@@ -21,6 +21,7 @@
 {% set hook_on_login      = "onLogin" %}
 
 {% block cloudFuncExample %}
+
 ```javascript
 AV.Cloud.define('averageStars', function(request, response) {
   var query = new AV.Query('Review');
@@ -53,6 +54,7 @@ AV.Cloud.define('averageStars', function(request, response) {
 {% endblock %}
 
 {% block runFuncExample %}
+
 ```javascript
 AV.Cloud.run('averageStars', {movie: "夏洛特烦恼"}, {
   success: function(data){
@@ -285,6 +287,7 @@ AV.Cloud.beforeSave('Review', function(request, response) {
 {% endblock %}
 
 {% block timerExample %}
+
 ```javascript
 AV.Cloud.define('log_timer', function(req, res){
     console.log('Log in timer.');
@@ -294,6 +297,7 @@ AV.Cloud.define('log_timer', function(req, res){
 {% endblock %}
 
 {% block timerExample2 %}
+
 ```javascript
 AV.Cloud.define('push_timer', function(req, res){
   AV.Push.send({
@@ -308,6 +312,7 @@ AV.Cloud.define('push_timer', function(req, res){
 {% endblock %}
 
 {% block masterKeyInit %}
+
 ```javascript
 //参数依次为 AppId, AppKey, MasterKey
 AV.initialize('{{appid}}', '{{appkey}}', '{{masterkey}}');
@@ -320,6 +325,7 @@ AV.Cloud.useMasterKey();
 {% endblock %}
 
 {% block loggerExample %}
+
 ```javascript
 AV.Cloud.define('Logger', function(request, response) {
   console.log(request.params);
