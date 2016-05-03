@@ -1303,7 +1303,10 @@ tom.close().then(function() {
  * IMClient 登录签名工厂
  *
  * @param {String} clientId 登录用户 ID
- * @return {{ signature: String, timestamp: Number, nonce: String }} signatureResult
+ * @return {Object} signatureResult
+ * @return {String} signatureResult.signature
+ * @return {Number} signatureResult.timestamp
+ * @return {String} signatureResult.nonce
  */
 var signatureFactory = function(clientId) {
   // to be implemented
@@ -1316,7 +1319,10 @@ var signatureFactory = function(clientId) {
  * @param {String} clientId 当前用户 ID
  * @param {String[]} targetIds 此次操作的目标用户 IDs
  * @param {String} action  此次行为的动作，可能的值为 crete（创建会话）、add（加群和邀请）和 remove（踢出群）之一
- * @return {{ signature: String, timestamp: Number, nonce: String }} signatureResult
+ * @return {Object} signatureResult
+ * @return {String} signatureResult.signature
+ * @return {Number} signatureResult.timestamp
+ * @return {String} signatureResult.nonce
  */
 var conversationSignatureFactory = function(clientId) {
   // to be implemented
