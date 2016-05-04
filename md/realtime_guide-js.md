@@ -41,7 +41,7 @@ npm install leancloud-realtime@next --save
 最后进行初始化：
 ```javascript
 var Realtime = AV.Realtime;
-var realtime = Realtime({
+var realtime = new Realtime({
   appId: '{{appid}}',
   region: 'cn', // 美国节点为 "us"
 });
@@ -84,7 +84,7 @@ npm install --save leancloud-realtime-typed-messages avoscloud-sdk
 AV.initialize('{{appid}}', '{{appkey}}');
 // 初始化实时通讯 SDK
 var Realtime = AV.Realtime;
-var realtime = Realtime({
+var realtime = new Realtime({
   appId: '{{appid}}',
 });
 // 注册需要用到的富媒体消息类型
@@ -1157,7 +1157,7 @@ query
   .equalTo('tr', true)
   .find()
   .then(function(conversations) {
-    console.log(conversations[0].id;
+    console.log(conversations[0].id);
   })
   .catch(console.error.bind(console));
 ```
