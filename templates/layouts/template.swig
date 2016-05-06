@@ -9,7 +9,16 @@
 
 
 <body  class="dashboard-init" data-offset="0" ng-cloak ng-controller="AppCtrl">
-{% include 'templates/include/header.html' %}
+
+{% if node=='qcloud' %}
+  {% include 'templates/include/qcloudheader.html' %}
+{% endif %}
+
+{% if node!='qcloud' %}
+  {% include 'templates/include/header.html' %}
+{% endif %}
+
+{% include 'templates/include/doc-nav.html' %}
 
 <div class="container-fluid">
 
@@ -41,8 +50,15 @@
 
 </div>
 <!-- .container-fluid -->
+{% include 'templates/include/common-footer.html' %}
 
-{% include 'templates/include/footer.html' %}
+{% if node=='qcloud' %}
+  {% include 'templates/include/qcloudfooter.html' %}
+{% endif %}
+
+{% if node!='qcloud' %}
+  {% include 'templates/include/footer.html' %}
+{% endif %}
 
 </body>
 

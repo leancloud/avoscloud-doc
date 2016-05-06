@@ -21,7 +21,8 @@ $.fn.scrollStopped = function(callback) {
   };
 
   var tocContents = gajus.contents({
-    contents: document.querySelector('#toc-wrapper')
+    contents: document.querySelector('#toc-wrapper'),
+    articles: $('.col-sm-9').find('h1, h2, h3, h4').get()
   });
 
   // Add essential classes
