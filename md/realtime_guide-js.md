@@ -377,11 +377,12 @@ conversation.on('message', function messageEventHandler(message) {
 
 var { TypedMessage, messageType, messageField } = require('leancloud-realtime');
 // 自定义的消息类型，用于发送和接收所有的用户操作消息
-// 这里使用了 ES6 的 class 语法，也可以使用其他的继承机制的实现，详见「自定义消息类型」章节
-class OperationMessage extends TypedMessage {}
+// 这里使用了 TypeScript 的语法，也可以使用其他的继承机制的实现，详见「自定义消息类型」章节
+
 // 指定 type 类型，可以根据实际换成其他正整数
-messageType(1)(OperationMessage);
-messageField('op')(OperationMessage);
+@messageType(1)
+@messageField('op')
+class OperationMessage extends TypedMessage {}
 
 // app.js
 
@@ -580,7 +581,7 @@ client.on('message', function(message) {
 var { TypedMessage, messageType, messageField } = require('leancloud-realtime');
 var inherit = require('inherit');
 // 定义 OperationMessage 类，用于发送和接收所有的用户操作消息
-export const ImageMessage = inherit(TypedMessage);
+export const OperationMessage = inherit(TypedMessage);
 // 指定 type 类型，可以根据实际换成其他正整数
 messageType(1)(OperationMessage);
 // 申明需要发送 op 字段
@@ -1243,7 +1244,7 @@ realtime.on('schedule', function(attempt, delay) {
 realtime.on('retry', function(attempt) {
   console.log('正在进行第' + attempt + '次重连');
 });
-realtime.on('disconnect', function() {
+realtime.on('reconnect', function() {
   console.log('网络连接已恢复');
 });
 ```
@@ -1419,6 +1420,8 @@ tom.on('conflict', function() {
 
 如上述代码中，当前用户被服务端强行下线时，SDK 会在 client 上派发 `conflict` 事件，客户端在做展现的时候也可以做出类似于 QQ 一样友好的通知。
 
+## 从 v2 迁移
+如果你的应用正在使用 JavaScript SDK version 2 并希望升级到 version 3，请参考 [《JavaScript 实时通信 SDK v3 迁移指南》](./realtime_js-v3-migration-guide.html)。
 
 
 ## 常见问题

@@ -21,7 +21,9 @@
 * v3 不兼容 v2 的 API
 * v3 停止了对 IE10 及以下版本的支持。如果需要支持这些运行环境请使用 v2。
 
-v3 的详细的使用文档请参考[《JavaScript 实时通信开发指南》](./realtime_guide-js.html)。
+v3 的详细使用文档请参考[《JavaScript 实时通信开发指南》](./realtime_guide-js.html)。
+
+从 v2 升级到 v3，请参考 [《JavaScript 实时通信 SDK v3 迁移指南》](./realtime_js-v3-migration-guide.html)。
 
 ## 简介
 
