@@ -26,9 +26,11 @@
             <li><a href="realtime_guide-ios.html">实时通信开发指南</a></li>
             <li><a href="relation_guide-ios.html">关系建模指南</a></li>
             <li><a href="acl_guide-ios.html">权限管理使用指南</a></li>
-            <li><a href="ios_statistics.html">统计分析开发指南</a></li>
-<!--             <li><a href="sms_guide-ios.html">短信服务使用指南</a></li>
- -->            <li><a href="ios_crashreporting_guide.html">崩溃报告使用指南</a></li>
+            <li><a href="ios_statistics.html">统计分析开发指南  </a></li>
+            {% if node!='qcloud' %}
+            <li><a href="sms_guide-ios.html">短信服务使用指南</a></li>
+            {% endif %}
+ <li><a href="ios_crashreporting_guide.html">崩溃报告使用指南</a></li>
             <li><a href="ios_os_x_faq.html">FAQ</a></li>
             <li><a href="/api-docs/iOS/index.html" target="_blank">iOS SDK API</a></li>
           </ul>
