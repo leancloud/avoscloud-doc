@@ -45,7 +45,7 @@ v2 中所有的事件都在 `RealtimeObject` 上派发，v3 中与对话相关�
 断线重连机制已重新设计，请参考 [《JavaScript 实时通信开发指南》- 网络状态响应](./realtime_guide-js.html#网络状态响应)。
 
 v2 | v3 | v3 说明
---|--|--
+---|---|---
 `open`|无|原初始化成功时派发的 `open` 事件已被移除，请使用 `Realtime#createIMClient` 返回的 Promise 的成功回调代替。
 `open`|`reconnect`|原断线重连成功时派发的 `open` 事件由 `reconnect` 事件代替。
 `close`|无|原主动断开连接时派发的 `close` 事件已被移除，请使用 `IMClient.close` 返回的 Promise 的成功回调代替。
