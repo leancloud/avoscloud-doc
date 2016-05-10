@@ -851,7 +851,6 @@ textarea {
 
 code {
   font-size: 96%;
-  word-break: break-word;
   word-wrap: break-word;
 
   &.bstooltip {
@@ -1102,6 +1101,14 @@ hr {
 //
 // Tables
 // --------------------------------------------------
+
+table {
+  word-break: normal;
+  display: block;
+  width: 100%;
+  overflow: auto;
+  word-break: keep-all;
+}
 
 .table {
 
