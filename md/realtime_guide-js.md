@@ -181,7 +181,7 @@ realtime.createIMClient('Tom').then(function(tom) {
   // 创建与 Jerry,Bob,Harry,William 之间的对话
   return tom.createConversation({
     members: ['Jerry', 'Bob', 'Harry', 'William'],
-    name: 'Tom & Jerry & friedns',
+    name: 'Tom & Jerry & friends',
   })
 }).then(function(conversation) {
   // 发送消息
