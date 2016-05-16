@@ -20,28 +20,39 @@ $ cd node-js-getting-started
 然后添加应用 appId 等信息到该项目：
 
 ```
-$ avoscloud add <appName> <appId>
+$ lean add <appName> <appId>
 ```
 {% endblock %}
 
 {% block demo %}
-* [node-js-getting-started](https://github.com/leancloud/node-js-getting-started)：这是一个非常简单的基于 Express 4 的项目，可以作为大家的项目模板。（在线演示：<http://node.leanapp.cn/>） 
+* [node-js-getting-started](https://github.com/leancloud/node-js-getting-started)：这是一个非常简单的基于 Express 4 的项目，可以作为大家的项目模板。（在线演示：<http://node.leanapp.cn/>）
 * [leanengine-todo-demo](https://github.com/leancloud/leanengine-todo-demo)：这是一个稍微复杂点的项目，是上一个项目的扩展，演示了基本的用户注册、会话管理、业务数据的增删查改、简单的 ACL 使用。这个项目可以作为初学云引擎和 [JavaScript SDK](js_guide.html) 使用。（在线演示：<http://todo-demo.leanapp.cn/>）
 * [LeanEngine-Full-Stack](https://github.com/leancloud/LeanEngine-Full-Stack) ：该项目是基于云引擎的 Web 全栈开发的技术解决方案，比较大型的 Web 项目可以使用这个结构实现从 0 到 1 的敏捷开发。
 {% endblock %}
 
 {% block runtime_env %}
 **注意**：
-- 目前云引擎的 Node.js 版本为 0.12，请你最好使用此版本进行开发，至少不要低于 0.10。
-- 由于云引擎尚未支持 Node.js 4.x 版本，如果希望使用 ECMAScript 6 所提供的新语法，请在项目的 `package.json` 中为 node 加入 `--harmony` 参数，例如：
-  
-  ```json
-  ...
-  "scripts": {
-    "start": "node --harmony server.js"
-  },
-  ...
-  ```
+
+- 你可以在 `package.json` 中指定 Node.js 的版本，目前可选的版本包括 `0.12` 和 `4.x`, 云引擎的 Node.js 默认版本为 `0.12` 分支的最新版本，建议在本地开发时也使用相同的版本：
+
+```json
+...
+"engines": {
+  "node": "4.x"
+},
+...
+```
+
+- 如果你希望使用 Node.js 的实验性功能，请在项目的 `package.json` 中为 node 加入 `--harmony` 参数，例如：
+
+```json
+...
+"scripts": {
+  "start": "node --harmony server.js"
+},
+...
+```
+
 {% endblock %}
 
 {% block run_in_local_command %}
@@ -54,7 +65,7 @@ $ npm install
 启动应用：
 
 ```
-$ avoscloud
+$ lean up
 ```
 {% endblock %}
 
