@@ -1803,3 +1803,10 @@ option.force = YES;
 {% endblock %}
 
 {% block link_avquery_chache %} [存储指南 &middot; AVQuery 缓存查询](leanstorage_guide-ios.html#缓存查询) 一节。{% endblock %}
+
+{% block platform_specific_faq %}
+<a name="duplicate-offline-message-notification"></a>**为何离线消息重复推送了两次？**
+
+大部分原因是这种情况造成的：成员 A 和成员 B 同在一个对话中。A 调用了 `openWithCallback` 登录实时通信，在没有调用 `closeWithCallback` 退出登录的情况下，B 使用同一个设备也调用了 `openWithCallback` 登录了实时通信。此时应用退出到后台，其他同在这个对话中的成员向这个对话发送了消息，服务器会给不在线的 A 和 B 发送消息推送，这个设备就会收到两条消息推送。解决方案是确保 B 登录时 A 已经调用 `closeWithCallback` 成功地退出了登录。
+{% endblock %}
+
