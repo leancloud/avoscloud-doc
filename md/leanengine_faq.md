@@ -8,7 +8,7 @@
 
 云引擎 2.0 开始支持添加第三方模块（请参考 [云引擎指南 - 升级到 2.0](leanengine_guide-cloudcode.html#云引擎_2_0_版)），只需要像普通的 Node.js 项目那样，在项目根目录创建文件 `package.json`，下面是一个范例：
 
-``` 
+```
 {
   "name": "cloud-engine-test",
   "description": "Cloud Engine test project.",
@@ -25,7 +25,7 @@
 
 然后在项目根目录执行：
 
-``` 
+```
 npm install
 ```
 
@@ -33,7 +33,7 @@ npm install
 
 然后即可在代码中引入三方包：
 
-``` 
+```
 var async = require('async');
 ```
 
@@ -47,7 +47,7 @@ var async = require('async');
 
 ## 目前支持哪些语言？
 
-我们提供了 JavaScript SDK，支持 Node.js 和 Python 环境，未来可能会引入 PHP 等其他语言。
+我们提供了 JavaScript SDK，支持 Node.js 和 Python 环境，PHP 环境正在测试阶段。
 
 ## Web Hosting 备案如何操作？
 

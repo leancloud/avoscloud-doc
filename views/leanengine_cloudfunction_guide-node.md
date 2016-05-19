@@ -47,7 +47,7 @@ AV.Cloud.define('averageStars', function(request, response) {
 
 * **request**：包装了请求信息的请求对象，下列这些字段将被设置到 request 对象内：
   * **params**：客户端发送的参数对象
-  * **user**：`AV.User` 对象，发起调用的用户，如果没有登录，则不会设置此对象。如果通过 REST API 调用时模拟用户登录，需要增加一个头信息 `X-AVOSCloud-Session-Token: <sessionToken>`，该 `sessionToken` 在用户登录或注册时服务端会返回。
+  * **currentUser**：`AV.User` 对象，发起调用的用户，如果没有登录，则不会设置此对象。如果通过 REST API 调用时模拟用户登录，需要增加一个头信息 `X-LC-Session: <sessionToken>`，该 `sessionToken` 在用户登录或注册时服务端会返回。
 * **response**：应答对象，包含两个函数：
   * **success**：这个函数可以接收一个额外的参数，表示返回给客户端的结果数据。这个参数对象可以是任意的 JSON 对象或数组，并且可以包含 `AV.Object` 对象。
   * **error**：如果这个方法被调用，则表示发生了一个错误。它也接收一个额外的参数来传递给客户端，提供有意义的错误信息。
@@ -232,7 +232,7 @@ AV.Cloud.onLogin(function(request, response) {
 {% block errorCodeExample %}
 错误响应码允许自定义。云引擎方法最终的错误对象如果有 `code` 和 `message` 属性，则响应的 body 以这两个属性为准，否则 `code` 为 1， `message` 为错误对象的字符串形式。比如：
 
-```
+```javascript
 AV.Cloud.define('errorCode', function(req, res) {
   AV.User.logIn('NoThisUser', 'lalala', {
     error: function(user, err) {
@@ -244,7 +244,7 @@ AV.Cloud.define('errorCode', function(req, res) {
 {% endblock %}
 
 {% block errorCodeExample2 %}
-```
+```javascript
 AV.Cloud.define('customErrorCode', function(req, res) {
   res.error({code: 123, message: 'custom error message'});
 });
@@ -252,7 +252,7 @@ AV.Cloud.define('customErrorCode', function(req, res) {
 {% endblock %}
 
 {% block errorCodeExampleForHooks %}
-```
+```javascript
 AV.Cloud.beforeSave('Review', function(request, response) {
   // 使用 JSON.stringify() 将 object 变为字符串
   response.error(JSON.stringify({
@@ -316,13 +316,17 @@ AV.Cloud.define('push_timer', function(req, res){
 
 ```javascript
 //参数依次为 AppId, AppKey, MasterKey
-AV.initialize('{{appid}}', '{{appkey}}', '{{masterkey}}');
+AV.init({
+  appId: '{{appid}}',
+  appKey: '{{appkey}}',
+  masterKey: '{{masterkey}}'
+})
 AV.Cloud.useMasterKey();
 ```
 {% endblock %}
 
 {% block masterKeyInitLegacy %}
-**注意：**云引擎 2.0 版本已经默认使用 master key 初始化 SDK，所以不需要额外初始化。
+**注意：** 云引擎 2.0 版本已经默认使用 master key 初始化 SDK，所以不需要额外初始化。
 {% endblock %}
 
 {% block loggerExample %}
