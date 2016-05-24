@@ -688,6 +688,8 @@ data | 消息内容
 `0`| |websocket 正常关闭，可能发生在服务器重启，或本地网络异常的情况。SDK 会自动重连，无需人工干预。
 <code class="text-nowrap">1006</code>| |websocket 连接非正常关闭，通常见于路由器配置对长连接限制的情况。SDK 会自动重连，无需人工干预。
 `4100`|`APP_NOT_AVAILABLE`|应用不存在或应用禁用了实时通信服务
+`4101`|`DUPLICATED_LOGIN`|同一个设备重复登录推送服务。该错误码与实时通信服务无关。
+`4102`|`SIGNATURE_FAILED`|登录签名验证失败
 `4103`|`INVALID_LOGIN`|Client Id 格式错误，超过 64 个字符。
 `4105`|`SESSION_REQUIRED`|Session 没有打开就发送消息，或执行其他操作。常见的错误场景是调用 open session 后直接发送消息，正确的用法是在 Session 打开的回调里执行。
 `4107`|`READ_TIMEOUT`|读超时，服务器端长时间没有收到客户端的数据，切断连接。SDK 包装了心跳包的机制，出现此错误通常是网络问题。SDK 会自动重连，无需人工干预。
