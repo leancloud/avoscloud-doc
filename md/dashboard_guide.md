@@ -108,6 +108,30 @@ JSON 格式要求是一个符合我们 REST 格式的 JSON 对象数组，或者
 
 例如，Post 有一个字段 comments 是 Relation 类型，对应的 Class 是 Comment，那么 owningId 就是已存在的 Post 的 objectId，而 relatedId 就是关联的 Comment 的 objectId。
 
+##### 批量导入多个 Class 的 JSON 文件格式
+
+我们现在还支持一个 JSON 文件导入多个 class，要求格式如下：
+
+```json
+{
+  "classes": ["Post", "Author"],
+  "Post": [
+    {"title": "LeanCloud 数据导入说明",
+     "desc": "批量导入格式说明"},
+    {"title": "LeanCloud 数据安全指南",
+     "desc": "ACL 和 class 权限说明"}
+  ],
+  "Author": [
+    {"name": "LeanCloud 文档工程师",
+     "email": "Support@leancloud.cn"}
+  ]
+}
+```
+
+其中 `classes` 数组指定文件中的要导入的 class 列表，然后每个 class 名称对应一个要导入的对象数组即可，对象格式参见上文 [JSON 文件格式](#JSON_文件格式)
+
+<div class="callout callout-info">当文件格式为批量导入的时候，控制台数据导入界面上的 **Class 名称** 可以填写为其中任意一个 Class 的名称，服务端会忽略该设置，以导入文件中的 `classes:` 的值为准。</div>
+
 ##### CSV 格式文件
 
 导入 Class 的 CSV 文件格式必须符合我们的扩展要求：
@@ -319,6 +343,8 @@ LeanCloud 平台上，对每一个应用，有如下三个 id／key 用于标识
 我们还提供了数据导出的 [RETS API](./rest_api.html#数据导出_API)。
 
 ##### 导出用户数据的加密算法
+
+导出的 `_User` 表数据会包括加密后的密码 `password` 字段和用于加密的随机盐 `salt` 字段。 LeanCloud 不会以明文保存任何用户的密码，我们也不推荐开发者以明文方式保存应用内用户的密码，这将带来极大的安全隐患。如果你要在 LeanCloud 系统之外校验用户的密码，需要将用户的传输过来的明文密码，加上导出数据里对应用户的 `salt` 字段，使用下文描述的加密算法进行不可逆的加密运算，其结果如果与导出数据里的 `password` 字段值相同，即认为密码验证通过，否则验证失败。
 
 我们通过一个 Ruby 脚本来描述这个用户密码加密算法：
 

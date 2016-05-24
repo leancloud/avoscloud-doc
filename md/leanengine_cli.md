@@ -2,133 +2,110 @@
 
 ## 介绍
 
-云引擎命令行工具是用来管理、部署云引擎项目的命令行工具，称之为 avoscloud-code 项目。通过它，你可以部署、发布、回滚云引擎代码，并且可以对同一个云引擎项目做多应用管理，还可以查看云引擎日志，批量上传文件到 LeanCloud 平台上等。
+云引擎命令行工具（在 NPM 上包名为 avoscloud-code）是用来管理、部署云引擎项目的命令行工具。通过它你可以部署、发布、回滚云引擎代码，并且可以对同一个云引擎项目做多应用管理，还可以查看云引擎日志，批量上传文件到 LeanCloud 平台上等。
 
-<div class="callout callout-info">命令行工具不支持美国节点（avosapps.us），请使用 git 部署。</div>
+## 安装 Node.js 运行环境
 
-## 安装
+首先，你需要安装 [Node.js](http://nodejs.org/) 环境以及 [npm](https://npmjs.org/) 包管理工具。
 
-### Linux 和 Mac OSX
+### Linux
 
-首先，你需要安装 [Node.js](http://nodejs.org/) 环境以及 [npm](https://npmjs.org/) 包管理工具，在 ubuntu 上的 terminal（终端）可以简单地执行
-
-```sh
-apt-get install nodejs
-```
-
-在一些系统上你可能需要 `sudo` 权限：`sudo apt-get install nodejs`。
-
-提示：apt 提供的 Node.js 版本可能比较滞后，推荐从[官方网站](http://nodejs.org/)下载安装。
-
-在 Mac OSX 上，可以通过 [Homebrew](http://brew.sh/) 或者 [MacPort](http://www.macports.org/) 安装，terminal（终端）执行下列命令：
+Debian、Ubuntu 可以执行：
 
 ```sh
-sudo port install nodejs
+sudo apt-get install nodejs
 ```
 
-或者
+RedHat、CentOS 可以执行：
+
+```sh
+sudo yum install nodejs
+```
+
+提示：官网仓库的 Node.js 版本可能比较滞后，你可以从 [第三方源](https://github.com/nodesource/distributions) 安装。
+
+### Mac OS X
+
+可以通过 [Homebrew](http://brew.sh/)（需要自行安装）安装：
 
 ```sh
 brew install nodejs
 ```
 
-在其他操作系统上，你也可以从 nodejs 官方网站下载源码或者二进制安装，自己安装。
+### Windows
 
-接下来，通过执行下列命令安装 avoscloud 命令行工具：
+可在 [官网](https://nodejs.org) 下载安装包，Windows 系统用户请确保在系统盘 C 盘默认目录安装 Node.js，否则命令行工具可能无法正常运行。
+
+## 安装命令行工具
 
 ```sh
 npm install -g avoscloud-code
 ```
 
-**在一些系统上你可能需要 `sudo` 权限**：`sudo npm install -g avoscloud-code`。
+若在 Linux/Mac 上将 Node.js 安装到了整个系统，请在命令前添加 `sudo`；若在 Windows 上选择了「为所有用户安装 Node.js」，请以管理员权限打开一个命令行窗口再安装。
 
-加上 `-g` 表示全局安装。**以后升级也请执行此命令**。
-
-安装过程可能有些慢，请耐心等待。我们更推荐从 [cnpm](http://cnpmjs.org/) 仓库安装，速度理论上更快，请执行下列两个命令：
+NPM 官方仓库在国内比较慢，请耐心等待。你也可以从国内的 [cnpm](https://npm.taobao.org/) 安装，速度会更快：
 
 ```sh
-npm install -g cnpm --registry=http://r.cnpmjs.org
-cnpm install -g avoscloud-code
+npm install -g avoscloud-code --registry=https://registry.npm.taobao.org
 ```
 
-如果从 npm 安装失败，也可以直接从 Github 源码安装：
+### Bash Completion
+
+该功能可以让你在使用 lean 命令时得到自动补全（用 `tab` 补全），不安装也不会影响正常使用，Mac 用户需要先按照下一小节的方法安装 `bash-completion`。
+
+下载 [avoscloud_completion.sh](https://raw.githubusercontent.com/leancloud/avoscloud-code-command/master/avoscloud_completion.sh) 保存到某个目录，例如通常保存为 `~/.leancloud_completion.sh`，然后在 `~/.bashrc` 或者 `~/.bash_profile` 文件中添加：
 
 ```sh
-npm install -g  git+https://github.com/leancloud/avoscloud-code-command
+source ~/.leancloud_completion.sh
 ```
 
-### Windows 系统
+然后重启终端，就可以让 lean 命令拥有自动提示和完成功能。
 
-首先，你需要安装 [Node.js](http://nodejs.org/)，到网站下载安装包安装即可。
+### Mac 上安装 bash-completion
 
-**注意：**Windows 系统用户请确保在系统盘 C 盘默认目录安装 Node.js，否则命令行工具无法正常运行。
-
-然后通过命令行执行下列命令：
-
-```
-npm install -g avoscloud-code
+```sh
+brew install bash-completion
 ```
 
-加上 `-g` 表示全局安装。**以后升级也请执行此命令**。
+请将下面的内容添加到 `~/.bash_profile` 文件中：
 
-安装过程可能有些慢，请耐心等待。
-
-#### cnpm 安装
-
-【不建议使用】使用 `cnpm` 安装全局模块（-g 参数）时会将模块保存在 `c:\Program Files\nodejs\node_modules\` 目录，该目录没有 admin 权限是无法写入的。而原生的 `npm` 会将全局模块安装在 `%USERPROFILE%\AppData\Roaming\npm\node_modules\` 目录下，该目录写入不需要 admin 权限。
-
-使用 `cnpm` 安装命令行工具，运行时可能出现下列提示信息：
-
-```
-C:\Users\wchen\workspace\cloud-code-unit-test_v2.0>avoscloud
-提示：你可以敲入 rs 命令并回车来重启本进程
-module.js:338
-    throw err;
-          ^
-Error: Cannot find module 'C:\Users\wchen\workspace\cloud-code-unit-test_v2.0\"C:\Program'
-    at Function.Module._resolveFilename (module.js:336:15)
-    at Function.Module._load (module.js:278:25)
-    at Function.Module.runMain (module.js:501:10)
-    at startup (node.js:129:16)
-    at node.js:814:3
+```sh
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
 ```
 
-为了提高安装速度，可以使用 `cnpm` 的仓库进行安装：
-
-```
-npm install -g avoscloud-code --registry=https://r.cnpmjs.org
-```
-
-#### 问题排查
+### 常见问题排查
 
 如果安装完执行仍然出现一些问题，请尝试下列步骤：
 
 **移除命令行工具：**
 
-  ```
-  npm uninstall -g avoscloud-code
-  ```
+```sh
+npm uninstall -g avoscloud-code
+```
 
-移除之后，确认命令行工具不可运行，即执行 avoscloud 命令时会有如下提示：
-  
-  ```
-  C:\Users\wchen\workspace\cloud-code-unit-test_v2.0>avoscloud
-  'avoscloud' 不是内部或外部命令，也不是可运行的程序或批处理文件。
-  ```
+移除之后，确认命令行工具不可运行，即执行 lean 命令时会有如下提示：
+
+```sh
+C:\Users\wchen\workspace\cloud-code-unit-test_v2.0>lean
+'lean' 不是内部或外部命令，也不是可运行的程序或批处理文件。
+```
 
 **清除缓存：**
-  
-  ```
-  npm cache clean
-  ```
-  
-如果有安装 `cnpm`，还需要清除 `cnpm` 的缓存：
-  
-  ```
-  cnpm cache clean
-  ```
 
-然后使用 `npm` 重新安装 avoscloud 命令行工具。
+```sh
+npm cache clean
+```
+
+如果有安装 `cnpm`，还需要清除 `cnpm` 的缓存：
+
+```sh
+cnpm cache clean
+```
+
+然后使用 `npm` 重新安装 avoscloud-code 命令行工具。
 
 ## 使用
 
@@ -170,36 +147,10 @@ $ lean -h
 
 ```sh
 $ lean -V
-0.11.0
+1.1.0
 ```
 
 后面凡是以 `$ lean` 开头的即表示在终端里执行这个命令。
-
-## Bash Completion
-
-下载 [avoscloud_completion.sh](https://raw.githubusercontent.com/leancloud/avoscloud-code-command/master/avoscloud_completion.sh) 保存到某个目录，例如通常保存为 `~/.leancloud_completion.sh`，然后在 `~/.bashrc` 或者 `~/.bash_profile` 文件中添加：
-
-```sh
-source ~/.leancloud_completion.sh
-```
-
-重启终端 bash，或者重新加载 profile 文件，就可以让 lean 命令拥有自动提示和完成功能（tab 按键提示）。
-
-### Mac 上安装 bash-completion
-
-Mac 上建议通过 homebrew 安装 bash-completion:
-
-```
-brew install bash-completion
-```
-
-请将下面的内容添加到 `~/.bash_profile` 文件中：
-
-```
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-fi
-```
 
 ## 创建项目
 
@@ -217,6 +168,8 @@ $ lean new
 
 ```sh
 开始输入应用信息，这些信息可以从'开发者平台的应用设置 -> 应用 key'里找到。
+请输入应用的 Application ID: GQexGUn5wCPV7jp0eR2gkQxI-gzGzoHsz
+请选择项目语言，Node.js(N) 或 Python(P): n
 正在创建项目 ...
   .gitignore
   .jshintrc
@@ -234,6 +187,8 @@ $ lean new
   views/error.ejs
   views/index.ejs
   views/todos.ejs
+关联应用：new_app -- GQexGUn5wCPV7jp0eR2gkQxI-gzGzoHsz
+切换到应用 new_app
 项目创建完成！
 ```
 
@@ -245,19 +200,20 @@ $ lean new
 
 ```sh
 $ cd new_app
-``` 
+```
 
-安装依赖：
+安装项目本身的依赖（以 Node.js 为例）：
 
 ```sh
 $ npm install
-``` 
+```
 
 启动应用：
 
 ```sh
 $ lean up
-``` 
+```
+
 可能会提示输入应用的 Master Key，粘贴后窗口不会有任何显示，直接回车，即可在本机调试云引擎。
 
 * 通过浏览器打开 <http://localhost:3000>，进入 web 应用的首页。
@@ -273,7 +229,7 @@ $ lean up
 
 ## 部署
 
-### 本地推送部署
+### 从本地代码部署
 
 在你开发和本地测试云引擎项目通过后，你可以直接将本地源码推送到 LeanCloud 云引擎平台运行，只要执行 `deploy` 命令：
 
@@ -281,47 +237,64 @@ $ lean up
 $ lean deploy
 ```
 
-请注意，这个命令将部署本地源码到远程平台的预备环境，无条件覆盖原来预备环境的版本（无论是从 Git 仓库部署或者还是本地部署）。
+对于使用了免费版云引擎的应用，这个命令会将本地源码部署到线上的生产环境，无条件覆盖之前的代码（无论是从本地仓库部署、Git 部署还是在线定义）；如果是有预备环境的专业版应用，这个命令会先部署到预备环境，后续需要再用 `lean publish` 部署到生产环境。
 
-如果部署成功，会打印部署后的状态：
+在部署的过程中会实时地打印进度：
 
 ```sh
-[INFO]: Cloud Code Project Home Directory: /Users/dennis/programming/avos/new_app/
-Compress cloud code files...
-Wrote compressed file /var/folders/90/xwqqy61d6lg6v8ztpbfhwb5c0000gp/T/1412920453227.tar.gz ...
-Begin to upload cloud code files...
-Upload cloud code files successfully. Begin to deploy...
-Congrats! Deploy cloud code successfully.
-Cloud code status is:
+部署到：生产环境
+压缩项目文件 ...
+生成临时文件：/var/folders/90/y1fg6dds0fzg1ljs3cjqcl040000gp/T/1463385551840.zip
+开始上传项目文件 ...
+2016-05-16 15:59:14 [INFO] 开始构建 20160516-155914
+2016-05-16 15:59:14 [INFO] 正在下载应用代码 ...
+2016-05-16 15:59:15 [INFO] 正在解压缩应用代码 ...
+2016-05-16 15:59:15 [INFO] 运行环境: nodejs (leanengine/nodejs-base-4.x)
+2016-05-16 15:59:15 [INFO] 从之前的构建中恢复依赖项 ...
+2016-05-16 15:59:15 [INFO] 正在下载和安装依赖项 ...
+2016-05-16 15:59:27 [INFO] 依赖项体积：16.69MB
+2016-05-16 15:59:27 [INFO] 缓存最新的依赖项 ...
+2016-05-16 15:59:28 [INFO] 存储镜像到仓库 ...
+2016-05-16 16:00:33 [INFO] 镜像构建完成：20160516-155914
+2016-05-16 16:00:33 [INFO] 开始部署 20160516-155914 到 web1
+2016-05-16 16:00:33 [INFO] 正在创建新实例 ...
+2016-05-16 16:00:49 [INFO] 正在启动新实例 ...
+2016-05-16 16:00:50 [INFO] 实例启动成功：{"runtime":"nodejs-v4.4.3","version":"0.4.0"}
+2016-05-16 16:00:50 [INFO] 正在统一切换新旧实例 ...
+2016-05-16 16:00:50 [INFO] 正在更新云函数信息 ...
+2016-05-16 16:00:50 [INFO] 部署完成：1 个实例部署成功
 
-Development version    : 'local:adcce5dfb740a0e80c261dea038798b5'
-Development commit log : 'Uploaded at 2014-10-10 13:54:26'
-Production version     : 'local:3684975ddc5dc7abbfb06ed72ebcb371'
-Production commit log  : 'Uploaded at 2014-10-09 16:56:06'
+部署成功
 
+NAME      STATUS   GROUP NAME  QUOTA       IMAGE TAG        DEPLOYED           CREATED
+staging1  running  staging     5           20160516-155914  a few seconds ago  2 months ago
+web1      stopped  web         1CPU/512MB  20160511-134022  a day ago          4 months ago
+web2      stopped  web         5           20160511-134022  a day ago          25 days ago
 ```
 
-默认部署日志是 `Updated at YYYY-MM-DD HH:mm:ss` 的时间戳日志，你可以通过 `-o` 选项来提供更详细的部署日志：
+默认部署备注（将会显示在 LeanCloud 的网站控制台上）是简单的一句 `从命令行工具构建`，你可以通过 `-o` 选项来自定义部署备注：
 
 ```sh
-$ lean deploy -o '测试本地推送部署'
+$ lean deploy -o '添加 XXX 功能'
 ```
 
 部署之后，你可以通过 curl 命令，或者访问你设置的 `${your_app_domain}.leanapp.cn` 的二级域名对应的专用测试域名 `stg-${your_app_domain}.leanapp.cn` 测试你的云引擎代码。
 
-### Git 仓库部署
+### 从 Git 仓库部署
 
 如果你的代码是保存在某个 Git 仓库，例如 [Github](https://github.com) 上，你也可以请求 LeanCloud 平台从 Git 仓库获取源码并自动部署，这个操作可以在云引擎的部署菜单里完成，也可以在本地执行 `deploy` 命令和 `-g` 选项配合完成：
 
 ```sh
-$ lean -g deploy
+$ lean deploy -g
 ```
 
 * `-g` 选项指定要求从 Git 仓库部署，Git 仓库地址必须已经在云引擎菜单里保存。
 
 默认部署都将是 master 分支的最新代码，你可以通过 `-r <revision>` 来指定部署特定的 commit 或者 branch。
 
-## 发布
+## 发布到生产环境
+
+注意：体验版用户没有预备环境，因此不需要发布这个步骤。
 
 预备环境如果测试没有问题，你希望将预备环境的云引擎代码切换到生产环境，你可以使用开发者平台的云引擎部署菜单做发布，也可以直接运行 `publish` 命令：
 
@@ -329,45 +302,36 @@ $ lean -g deploy
 $ lean publish
 ```
 
-就会将预备环境的云引擎代码发布到生产环境。
+就会将预备环境的云引擎代码发布到生产环境：
 
 ```sh
-[INFO]: Cloud Code Project Home Directory: /Users/dennis/programming/avos/new_app/
-[INFO]: Current App: origin <app id>
-Publishing cloud code to production...
-Published cloud code successfully. Current status is:
+2016-05-16 16:03:41 [INFO] 开始部署 20160516-160159 到 web1,web2
+2016-05-16 16:03:41 [INFO] 正在创建新实例 ...
+2016-05-16 16:03:41 [INFO] 正在创建新实例 ...
+2016-05-16 16:03:44 [INFO] 正在启动新实例 ...
+2016-05-16 16:03:45 [INFO] 实例启动成功：{"runtime":"nodejs-v4.4.3","version":"0.4.0"}
+2016-05-16 16:03:53 [INFO] 正在启动新实例 ...
+2016-05-16 16:03:54 [INFO] 实例启动成功：{"runtime":"nodejs-v4.4.3","version":"0.4.0"}
+2016-05-16 16:03:54 [INFO] 正在统一切换新旧实例 ...
+2016-05-16 16:03:55 [INFO] 正在更新云函数信息 ...
+2016-05-16 16:03:55 [INFO] 部署完成：2 个实例部署成功
 
-Development version    : 'local:adcce5dfb740a0e80c261dea038798b5'
-Development commit log : 'Uploaded at 2014-10-10 13:54:26'
-Production version     : 'local:adcce5dfb740a0e80c261dea038798b5'
-Production commit log  : 'Uploaded at 2014-10-10 13:54:26'
+部署成功
 
+GROUP NAME  ENV   CURRENT IMAGE    INSTANCES                      CREATED       DEPLOYED
+web         prod  20160516-160159  [web1(running),web2(running)]  4 months ago  a few seconds ago
 ```
 
-## 查看部署状态
+## 查看云引擎状态
 
-可以通过 `status` 命令查询当前生产环境和预备环境的部署状态：
+可以通过 `lean instance list` 命令查询当前所有云引擎实例的状态：
 
 ```sh
-$ lean status
-[INFO]: Cloud Code Project Home Directory: /Users/dennis/programming/avos/new_app/
-[INFO]: Current App: origin <app id>
-Cloud code status is:
-
-Development version    : 'local:adcce5dfb740a0e80c261dea038798b5'
-Development commit log : 'Uploaded at 2014-10-10 13:54:26'
-Production version     : 'local:adcce5dfb740a0e80c261dea038798b5'
-Production commit log  : 'Uploaded at 2014-10-10 13:54:26'
-
+NAME      STATUS   GROUP NAME  QUOTA       IMAGE TAG        DEPLOYED       CREATED
+staging1  running  staging     5           20160516-160159  5 minutes ago  2 months ago
+web1      running  web         1CPU/512MB  20160516-160159  4 minutes ago  4 months ago
+web2      running  web         5           20160516-160159  4 minutes ago  25 days ago
 ```
-
-通过 `undeploy` 命令，可以将云引擎代码彻底从 LeanCloud 平台移除（包括代码、版本信息、提交日志等）：
-
-```sh
-$ lean undeploy
-```
-
-**请慎重执行此操作**。
 
 ## 查看日志
 
@@ -375,15 +339,16 @@ $ lean undeploy
 
 ```sh
 $ lean logs
-[INFO]: Cloud Code Project Home Directory: /Users/dennis/programming/avos/new_app/
-[INFO]: Current App: origin 7104en0u071tcb5d1tr2juxa499ouvdn1gm5szq47nqzt06q
-[2014-10-09T16:56:32.279Z] [production] -- info:  undefined
-
-[2014-10-09T17:03:33.672Z] [development] -- info:  Deploying cloud code to development environment, the commit is 'local:3684975ddc5dc7abbfb06ed72ebcb371', and log is 'Uploaded at 2014-10-09 17:03:33'.
-
-[2014-10-10T13:54:26.450Z] [development] -- info:  Deploying cloud code to development environment, the commit is 'local:adcce5dfb740a0e80c261dea038798b5', and log is 'Uploaded at 2014-10-10 13:54:26'.
-
-[2014-10-10T14:09:11.744Z] [production] -- info:  Deploying cloud code to production environment, the commit is 'local:adcce5dfb740a0e80c261dea038798b5', and log is 'Uploaded at 2014-10-10 13:54:26'.
+2016-05-16 16:03:53 [PROD] [INFO]
+2016-05-16 16:03:53 [PROD] [INFO] > playground@1.0.0 start /home/leanengine/app
+2016-05-16 16:03:53 [PROD] [INFO] > node server.js
+2016-05-16 16:03:53 [PROD] [INFO]
+2016-05-16 16:03:54 [PROD] [INFO] Node app is running, port: 3000
+2016-05-16 16:03:54 [PROD] [INFO] connected to redis server
+2016-05-16 16:03:54 [PROD] [INFO] 实例启动成功：{"runtime":"nodejs-v4.4.3","version":"0.4.0"}
+2016-05-16 16:03:54 [PROD] [INFO] 正在统一切换新旧实例 ...
+2016-05-16 16:03:55 [PROD] [INFO] 正在更新云函数信息 ...
+2016-05-16 16:03:55 [PROD] [INFO] 部署完成：2 个实例部署成功
 ```
 
 默认返回最新的 10 条，最新的在最下面。
@@ -391,48 +356,32 @@ $ lean logs
 可以通过 `-n` 选项设定返回的日志数目，例如返回最近的 100 条
 
 ```sh
-$ lean -n 100 logs
+$ lean logs -n 100
 ```
 
-也可以加上 `-t` 选项来自动滚动更新日志，类似`tailf`命令的效果：
+也可以加上 `-t` 选项来自动滚动更新日志，类似 `tail -f` 命令的效果：
 
 ```sh
-$ lean -t logs
+$ lean logs -t
 ```
 
 当有新的云引擎日志产生，都会自动填充到屏幕下方。
 
-
 ## 多应用管理
 
-从 0.5.0 版本开始，我们为 lean 添加了多应用管理功能，类似 git 的多分支功能。使用这个功能，允许你将同一个云引擎项目部署到多个 LeanCloud 应用上，**但是仅限于云引擎 2.0 项目使用**。
+我们为 lean 添加了多应用管理功能，类似 git 的多分支功能。使用这个功能，允许你将同一个云引擎项目部署到多个 LeanCloud 应用上。
 
 ### 查看应用状态
 
-使用 `lean app list` 可以查看当前应用列表，默认情况下应该显示 `config/global.json` 里设定的应用：
+使用 `lean app list` 可以查看当前应用列表，当前激活的应用前会显示一个星号：
 
 ```sh
 $ lean app list
-  origin <config/global.json 里的 applicationId>
+  github-commit-ical    d1ARJHxmAze1Qx8mWd75N6MM
+* leanengine-playground hOm6fe8KE285nUXsB6AR267i
 ```
 
-执行 `lean app` 查看当前应用，因为目前没有明确指定，会告诉你：
-
-```sh
-$ lean app
-You are not in an app.Please checkout <app>
-```
-
-我们明确切换到 `origin` 应用试试：
-
-```sh
-$ lean app checkout origin
-Switced to app origin
-$ lean app
-* origin <config/global.json 里的 applicationId>
-```
-
-现在确认我们处于默认的初始应用。此时，执行 `deploy`、`publish`、`status`、`logs`等命令都将是针对当前应用。
+此时，执行 `deploy`、`publish`、`status`、`logs` 等命令都将是针对当前激活的应用。
 
 ### 添加应用
 
@@ -447,7 +396,7 @@ $ lean app add other_app <other app 的应用 id>
 添加成功将打印：
 
 ```sh
-Added a new app: other_app -- <应用 id>
+关联应用：other_app -- <应用 id>
 ```
 
 通过 `app list` 命令将看到两个应用：
@@ -458,7 +407,7 @@ $ lean app list
   other_app 1qdney6b5qg2i69t79yq941krrwdu3glt0ot69re6w7xv6lf
 ```
 
-前面有星号的应用，表示是当前应用。切换应用，需要使用 `checkout` 命令。
+前面有星号的应用，表示是当前应用。
 
 ### 切换应用
 
@@ -488,18 +437,11 @@ $ lean deploy --app other_app
 
 ### 移除应用
 
-同样，你可以删除一个应用，使用  `rm` 命令：
+同样，你可以删除一个应用，使用  `lean rm` 命令：
 
 ```sh
 $ lean app rm other_app
 Removed app: other_app
-```
-
-通过 `app list` 确认已经删除：
-
-```sh
-$ lean app list
-  origin 7104en0u071tcb5d1tr2juxa499ouvdn1gm5szq47nqzt06q
 ```
 
 ## 批量上传文件
@@ -539,7 +481,7 @@ $ lean cql
 $ lean search AVObject
 ```
 
-这将打开浏览器，显示[搜索结果](/search.html?q=AVObject)。
+这将打开浏览器，显示 [搜索结果](/search.html?q=AVObject)。
 
 也可以查询多个关键字，空格隔开即可：
 
@@ -547,9 +489,6 @@ $ lean search AVObject
 $ lean search 云引擎 命令行
 ```
 
-
 ## 贡献
 
-`avoscloud-code` 本身是开源，基于 [GNU LGPL](https://www.gnu.org/licenses/lgpl.html) 协议，源码托管在 Github: [https://github.com/leancloud/avoscloud-code-command](https://github.com/leancloud/avoscloud-code-command)
-
-欢迎大家贡献。
+`avoscloud-code` 本身是开源，基于 [GNU LGPL](https://www.gnu.org/licenses/lgpl.html) 协议，源码托管在 Github: <https://github.com/leancloud/avoscloud-code-command>，欢迎大家贡献。

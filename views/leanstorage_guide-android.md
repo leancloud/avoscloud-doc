@@ -22,6 +22,7 @@
 {% set fileObjectName ="AVFile" %}
 {% set dateType= "Date" %}
 {% set byteType= "byte[]" %}
+{% set link_to_acl_doc= "[Android 权限管理使用指南](acl_guide-android.html)" %}
 {% set funtionName_whereKeyHasPrefix = "whereStartsWith()" %}
 
 
@@ -82,7 +83,7 @@
 
         avSaveOption.query(query);
 
-        avObject.saveInBackground(new SaveCallback() {
+        avObject.saveInBackground(avSaveOption, new SaveCallback() {
             @Override
             public void done(AVException e) {
                 if (e.getCode() == 305) {
@@ -221,13 +222,13 @@
 
 ```java
         AVObject theTodo = AVObject.createWithoutData("Todo", "564d7031e4b057f4f3006ad1");
-        String keys = "priority,content";// 指定刷新的 key 字符串
+        String keys = "priority,location";// 指定刷新的 key 字符串
         theTodo.fetchInBackground(keys, new GetCallback<AVObject>() {
             @Override
             public void done(AVObject avObject, AVException e) {
                 // theTodo 的 location 和 content 属性的值就是与服务端一致的
+                String priority = avObject.getString("priority");
                 String location = avObject.getString("location");
-                String content = avObject.getString("content");
             }
         });
 ```
@@ -528,13 +529,13 @@ fetchAllInBackground()
             public void done(Integer integer) {
                 // 上传进度数据，integer 介于 0 和 100。
             }
-        }); 
+        });
 ```
 {% endblock %}
 
 {% block code_download_file %}
 
-```java 
+```java
         file.getDataInBackground(new GetDataCallback() {
             @Override
             public void done(byte[] bytes, AVException e) {
@@ -572,7 +573,7 @@ fetchAllInBackground()
         file.deleteInBackground(new DeleteCallback() {
             @Override
             public void done(AVException e) {
-                
+
             }
         });
 ```
@@ -728,7 +729,7 @@ fetchAllInBackground()
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
-                
+
             }
         });
     }
@@ -963,7 +964,7 @@ fetchAllInBackground()
         todo.put("images", aTodoAttachmentImage);
         todo.put("content", "记得买过年回家的火车票！！！");
         todo.saveInBackground();
-        
+
         // 使用非空值查询获取有图片的 Todo
         AVQuery<AVObject> query = new AVQuery<>("Todo");
         query.whereExists("images");
@@ -1157,11 +1158,9 @@ fetchAllInBackground()
 {% endblock %} code_object_fetch_with_keys
 
 
-{% block link_to_acl_doc %}[Android 权限管理使用指南](acl_guide-android.html){% endblock %}
-
 {% block link_to_relation_guide_doc %}[Android 关系建模指南](relation_guide-android.html){% endblock %}
 
-{% block link_to_sms_guide_doc %}[Android 短信服务使用指南](sms_guide-Android.html#注册验证){% endblock %}
+{% set link_to_sms_guide_doc = '[短信服务使用指南 &middot; 注册验证](sms_guide-android.html#注册验证)' %}
 
 {% block code_send_sms_code_for_loginOrSignup %}
 
@@ -1213,7 +1212,7 @@ fetchAllInBackground()
         AVUser.logInInBackground("Tom", "cat!@#123", new LogInCallback<AVUser>() {
             @Override
             public void done(AVUser avUser, AVException e) {
-         
+
             }
         });
 ```
@@ -1225,7 +1224,7 @@ fetchAllInBackground()
         AVUser.loginByMobilePhoneNumberInBackground("13577778888", "cat!@#123", new LogInCallback<AVUser>() {
             @Override
             public void done(AVUser avUser, AVException e) {
-                
+
             }
         });
 ```
@@ -1237,7 +1236,7 @@ fetchAllInBackground()
         AVUser.requestLoginSmsCodeInBackground("13577778888", new RequestMobileCodeCallback() {
             @Override
             public void done(AVException e) {
-                
+
             }
         });
 ```
@@ -1249,7 +1248,7 @@ fetchAllInBackground()
         AVUser.signUpOrLoginByMobilePhoneInBackground("13577778888", "238825", new LogInCallback<AVUser>() {
             @Override
             public void done(AVUser avUser, AVException e) {
-                
+
             }
         });
 ```

@@ -227,7 +227,8 @@ var codeBlockTabber = (function() {
       'lang-javascript': 'JavaScript',
       'lang-js': 'JavaScript',
       'lang-python': 'Python',
-      'lang-java': 'Java'
+      'lang-java': 'Java',
+      'lang-ts':'TypeScript'
     };
 
     $.each($codeBlocks, function () {
@@ -359,3 +360,12 @@ $(window).scrollStopped(function() {
 $(window).resize(function() {
   updateSidebarAffixShadowWidth();
 });
+
+// set the title: LeanCloud 文档 - xxxxxxx
+if (window.location.pathname != '/' 
+  && window.location.pathname.toLowerCase() != '/index.html' ){
+  $('title').text(function(){
+    // do not use html()
+    return $(this).text() + ' - ' + $('.doc-content h1').first().text();
+  });
+}

@@ -2,6 +2,14 @@
 @table-border: 1px solid #ebebeb;
 @table-radius: 3px;
 @bubble-color: #eee;
+@base-font-color:#333;
+@internal-link-color: #78909C;
+
+.header-link() {
+  color: #3090e4!important;
+  border: none!important;
+}
+
 body {
   position: relative;
   font-size: 15px;
@@ -56,6 +64,23 @@ body {
     padding-bottom: 2px;
   }
 
+  /* decrease levels of attention for internal links */
+  a[href^="#"] {
+    color: @internal-link-color;
+    text-decoration: none;
+
+    &:hover {
+      border-bottom: 1px solid @internal-link-color;
+      padding-bottom: 1px;
+    }
+  }
+
+  em {
+    font-style: normal;
+    text-emphasis: dot #bbb;
+    text-emphasis-position: under right;
+  }
+
   dt {
     margin-top: 1.5em;
   }
@@ -72,6 +97,7 @@ body {
     color: inherit;
     background-color: transparent;
   }
+
 
   dt code, h1 code, h2 code, h3 code, h4 code, h5 code {
     padding:0;
@@ -103,6 +129,22 @@ body {
         left: -11px;
         top: 31%;
       }
+    }
+  }
+
+  .callout-info {
+    color: #666;
+    background-color: #f2f2f2;
+    border-color: none;
+    border-radius: @table-radius;
+  }
+
+  .callout {
+    padding: 1.2em;
+    border-left: none;
+
+    a {
+        font-weight: inherit;
     }
   }
 
@@ -184,7 +226,8 @@ body {
     border-bottom: 1px solid @gray-lighter;
 
     a {
-      color: #000;
+      .header-link;
+      color: @base-font-color!important;
     }
 
     // When GitHub contributers loaded, add a special class to remove extra space
@@ -204,6 +247,10 @@ body {
     margin: 17px 0;
     margin-top: 40px;
     border-bottom: 1px solid #eee;
+
+    a {
+      .header-link;
+    }
   }
 
   h3 {
@@ -213,6 +260,10 @@ body {
     padding-top: 24px;
     margin-top: 30px;
     margin-bottom: 15px;
+
+    a {
+      .header-link;
+    }
   }
 
   h4 {
@@ -221,18 +272,30 @@ body {
     line-height: 1.4;
     padding-top: 24px;
     margin-top: 20px;
+
+    a {
+      .header-link;
+    }
   }
 
   h5 {
     line-height: 1.4;
     padding-top: 24px;
     margin-top: 20px;
+
+    a {
+      .header-link;
+    }
   }
 
   h6 {
     line-height: 1.4;
     padding-top: 24px;
     margin-top: 20px;
+
+    a {
+      .header-link;
+    }
   }
 }
 
@@ -335,6 +398,10 @@ body {
   .hero-search {
     max-width: 400px;
     margin: 15px auto;
+  }
+
+  .faq-title {
+    font-weight: bold;
   }
 }
 

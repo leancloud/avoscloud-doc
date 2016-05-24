@@ -208,6 +208,7 @@ AV.Cloud.afterDelete('Album', function(request) {
 AV.Cloud.onVerified('sms', function(request, response) {
     console.log('onVerified: sms, user: ' + request.object);
     response.success();
+});
 ```
 {% endblock %}
 

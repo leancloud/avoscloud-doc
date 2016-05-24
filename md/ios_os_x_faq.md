@@ -68,28 +68,3 @@ pod 'AVOSCloudSNS'
 5. 执行 `pod install` 命令，安装新的动态库。
 
 完成以上几个步骤后，就能在真机上调试应用了。
-
-## 为什么无法上传推送证书
-
-如果无法上传推送证书，通常是因为证书有问题。一般是由下列原因导致的：
-
-1. 证书不是推送证书；
-2. 证书导出格式有误。
-
-有两个办法来验证导出的证书是不是推送证书：
-
-1. 通过证书的名字来判断，推送证书的名字中会包含「Push Service」或者「Pass Type ID」；
-2. 配合真实设备来测试导出的证书是否有效。可以利用第三方工具，例如 [NWPusher](https://github.com/noodlewerk/NWPusher) 快速测试。
-
-目前 LeanCloud 只接受 p12 格式的证书。因此，在导出证书时，必须选择 p12 作为导出格式。
-
-上传证书时，LeanCloud 会进一步校验证书，帮助开发者发现错误。上传程序会检查证书的名字是否包含以下前缀：
-
-* "Apple Push Services"
-* "Apple Development IOS Push Services"
-* "Apple Production IOS Push Services"
-* "Pass Type ID"
-
-如果程序发现证书的名字中不包含以上前缀，就会校验失败，证书将无法上传。
-
-Apple 未来可能会修改推送证书的名字前缀，我们会及时更新前缀列表，同时也欢迎大家来补充。

@@ -22,6 +22,7 @@
 {% set fileObjectName ="AVFile" %}
 {% set dateType= "NSDate" %}
 {% set byteType= "NSData" %}
+{% set link_to_acl_doc ="[iOS / OS X 权限管理使用指南](acl_guide-ios.html)"%}
 {% set funtionName_whereKeyHasPrefix = "whereKey:hasPrefix:" %}
 
 {# --End--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
@@ -32,10 +33,10 @@
 ```objc
     // objectWithClassName 参数对应控制台中的 Class Name
     AVObject *todo = [AVObject objectWithClassName:@"Todo"];
-    
+
     // 或调用实例方法创建一个对象
     AVObject *todo = [[AVObject alloc] initWithClassName:@"Todo"];
-    
+
     // 以上两行代码完全等价
 ```
 {% endblock %}
@@ -46,7 +47,7 @@
     // 执行 CQL 语句实现新增一个 TodoFolder 对象
     [AVQuery doCloudQueryInBackgroundWithCQL:@"insert into TodoFolder(name, priority) values('工作', 1) " callback:^(AVCloudQueryResult *result, NSError *error) {
         // 如果 error 为空，说明保存成功
-        
+
     }];
 ```
 {% endblock %}
@@ -181,11 +182,11 @@ option.query = query;
 
 ```objc
     AVObject *theTodo = [AVObject objectWithoutDataWithClassName:@"Todo" objectId:@"564d7031e4b057f4f3006ad1"];
-    NSArray *keys = [NSArray arrayWithObjects:@"priority", @"content",nil];// 指定刷新的 key 数组
+    NSArray *keys = [NSArray arrayWithObjects:@"priority", @"location",nil];// 指定刷新的 key 数组
     [theTodo fetchInBackgroundWithKeys:keys block:^(AVObject *object, NSError *error) {
-        // theTodo 的 location 和 content 属性的值就是与服务端一致的
-        NSString *location = [object objectForKey:@"location"];
-        NSString *content = object[@"content"];
+        // theTodo 的 priority 和 location 属性的值就是与服务端一致的
+        NSString *priority = [object objectForKey:@"priority"];
+        NSString *location = object[@"location"];
     }];
 ```
 {% endblock %}
@@ -214,7 +215,7 @@ option.query = query;
     // 执行 CQL 语句实现更新一个 TodoFolder 对象
     [AVQuery doCloudQueryInBackgroundWithCQL:@"update TodoFolder set name='家庭' where objectId='558e20cbe4b060308e3eb36c'" callback:^(AVCloudQueryResult *result, NSError *error) {
         // 如果 error 为空，说明保存成功
-        
+
     }];
 ```
 {% endblock %}
@@ -228,9 +229,9 @@ option.query = query;
         [theTodo incrementKey:@"views"];
         // 保存时自动取回云端最新数据
         theTodo.fetchWhenSave = true;
-        
+
         [theTodo saveInBackground];
-        
+
         // 也可以使用 incrementKey:byAmount: 来给 Number 类型字段累加一个特定数值。
         [theTodo incrementKey:@"views" byAmount:@(5)];
         [theTodo saveInBackground];
@@ -332,7 +333,7 @@ option.query = query;
     // 执行 CQL 语句实现删除一个 Todo 对象
     [AVQuery doCloudQueryInBackgroundWithCQL:@"delete from Todo where objectId='558e20cbe4b060308e3eb36c'" callback:^(AVCloudQueryResult *result, NSError *error) {
         // 如果 error 为空，说明保存成功
-        
+
     }];
 ```
 {% endblock %}
@@ -343,22 +344,22 @@ option.query = query;
     AVObject *todoFolder = [[AVObject alloc] initWithClassName:@"TodoFolder"];// 构建对象
     [todoFolder setObject:@"工作" forKey:@"name"];// 设置名称
     [todoFolder setObject:@1 forKey:@"priority"];// 设置优先级
-    
+
     AVObject *todo1 = [[AVObject alloc] initWithClassName:@"Todo"];
     [todo1 setObject:@"工程师周会" forKey:@"title"];
     [todo1 setObject:@"每周工程师会议，周一下午2点" forKey:@"content"];
     [todo1 setObject:@"会议室" forKey:@"location"];
-    
+
     AVObject *todo2 = [[AVObject alloc] initWithClassName:@"Todo"];
     [todo2 setObject:@"维护文档" forKey:@"title"];
     [todo2 setObject:@"每天 16：00 到 18：00 定期维护文档" forKey:@"content"];
     [todo2 setObject:@"当前工位" forKey:@"location"];
-    
+
     AVObject *todo3 = [[AVObject alloc] initWithClassName:@"Todo"];
     [todo3 setObject:@"发布 SDK" forKey:@"title"];
     [todo3 setObject:@"每周一下午 15：00" forKey:@"content"];
     [todo3 setObject:@"SA 工位" forKey:@"location"];
-    
+
     [AVObject saveAllInBackground:@[todo1,todo2,todo3] block:^(BOOL succeeded, NSError *error) {
         if (error) {
             // 出现错误
@@ -369,7 +370,7 @@ option.query = query;
             [relation addObject:todo2];
             [relation addObject:todo3];
             // 上述 3 行代码表示 relation 关联了 3 个 Todo 对象
-            
+
             [todoFolder saveInBackground];// 保存到云端
         }
     }];
@@ -403,7 +404,7 @@ NSArray      *array      = [NSArray arrayWithObjects:
                               nil];
 NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
                               number, @"数字",
-                              string, @"字符串", 
+                              string, @"字符串",
                               nil];
 
 AVObject     *object     = [AVObject objectWithClassName:@"DataTypes"];
@@ -442,7 +443,7 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
     [todoFolder setObject:@"工作" forKey:@"name"];// 设置名称
     [todoFolder setObject:@1 forKey:@"priority"];// 设置优先级
     [todoFolder setObject:[AVUser currentUser] forKey:@"owner"];// 这里就是一个 Pointer 类型，指向当前登录的用户
-    
+
     NSMutableDictionary *serializedJSONDictionary = [todoFolder dictionaryForObject];//获取序列化后的字典
     NSError *err;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:serializedJSONDictionary options:0 error:&err];//获取 JSON 数据
@@ -573,7 +574,7 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 
 一是在项目中额外配置一下该接口的访问策略。选择项目的 Info.plist，右击以 Source Code 的方式打开。在 plist -> dict 节点中加入以下文本：
 
-``` 
+```
   <key>NSAppTransportSecurity</key>
   <dict>
     <key>NSExceptionDomains</key>
@@ -720,7 +721,7 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     NSDate *reminder= [self getDateWithDateString:@"2015-11-11 08:30:00"];
 
     AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-    
+
     // equalTo: 可以找出数组中包含单个值的对象
     [query whereKey:@"reminders" equalTo:reminder];
 }
@@ -740,7 +741,7 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 -(void)queryRemindersContainsAll{
     NSDate *reminder1= [self getDateWithDateString:@"2015-11-11 08:30:00"];
     NSDate *reminder2= [self getDateWithDateString:@"2015-11-11 09:30:00"];
-    
+
     // 构建查询时间点数组
     NSArray *reminders =[NSArray arrayWithObjects:reminder1, reminder1, nil];
 
@@ -865,7 +866,7 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     [query findObjectsInBackgroundWithBlock:^(NSArray *comments, NSError *error) {
         // comments 就是符合超过 20 个赞的 TodoFolder 这一条件的 Comment 对象集合
     }];
-    
+
     // 注意如果要做相反的查询可以使用
     [query whereKey:@"targetTodoFolder" doesNotMatchQuery:innerQuery];
     // 如此做将查询出 likes 小于或者等于 20 的 TodoFolder 的 Comment 对象
@@ -915,7 +916,7 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 
             NSString *title = avObject[@"title"];// 读取 title
             NSString *content = avObject[@"content"]; // 读取 content
-            
+
             // 如果访问没有指定返回的属性（key），则会报错，在当前这段代码中访问 location 属性就会报错
             NSString *location = [avObject objectForKey:@"location"];
         }
@@ -998,14 +999,14 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     [todo setObject:aTodoAttachmentImage forKey:@"images"];
     [todo setObject:@"记得买过年回家的火车票！！！" forKey:@"content"];
     [todo saveInBackground];
-    
+
     // 使用非空值查询获取有图片的 Todo
     AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     [query whereKeyExists:@"images"];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
        // objects 返回的就是有图片的 Todo 集合
     }];
-    
+
     // 使用空值查询获取没有图片的 Todo
     [query whereKeyDoesNotExist:@"images"];
 ```
@@ -1128,9 +1129,6 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     [query whereKey:@"whereCreated"  nearGeoPoint:point withinKilometers:2.0];
 ```
 {% endblock %} code_object_fetch_with_keys
-
-
-{% block link_to_acl_doc %}[iOS / OS X 权限管理使用指南](acl_guide-ios.html){% endblock %}
 
 {% block link_to_relation_guide_doc %}[iOS / OS X 关系建模指南](relation_guide-ios.html){% endblock %}
 

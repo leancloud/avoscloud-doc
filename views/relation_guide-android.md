@@ -33,7 +33,7 @@
         AVObject dongGuan = new AVObject("City");// 东莞
         dongGuan.put("name", "东莞");
 
-        dongGuan.put("dependent", dongGuan);// 为东莞设置 dependent 属性为广东
+        dongGuan.put("dependent", guangDong);// 为东莞设置 dependent 属性为广东
 ```
 
 {% endblock %}

@@ -181,7 +181,7 @@ realtime.createIMClient('Tom').then(function(tom) {
   // 创建与 Jerry,Bob,Harry,William 之间的对话
   return tom.createConversation({
     members: ['Jerry', 'Bob', 'Harry', 'William'],
-    name: 'Tom & Jerry & friedns',
+    name: 'Tom & Jerry & friends',
   })
 }).then(function(conversation) {
   // 发送消息
@@ -941,12 +941,14 @@ tom.getConversation(CONVERSATION_ID).then(function(conversation) {
 
 
 ```javascript
-tom.getQuery().find().then(function(conversations) {
+tom.getQuery().containsMembers(['Tom']).find().then(function(conversations) {
   // 按每个对话的最后更新日期（收到最后一条消息的时间）倒序排列
-  console.log(conversations.map(function(conversation) {
-    return conversation.id;
-  }));
+  conversations.map(function(conversation) {
+    console.log(conversation.lastMessageAt.toString(), conversation.members);
+  });
 }).catch(console.error.bind(console));
+
+// http://jsplay.avosapps.com/biy/embed?js,console
 ```
 
 
@@ -956,11 +958,11 @@ tom.getQuery().find().then(function(conversations) {
 
 ```javascript
 var query = tom.getQuery();
-query.limit(20).find().then(function(conversations) {
-  console.log(conversations.map(function(conversation) {
-    return conversation.id;
-  }));
+query.limit(20).containsMembers(['Tom']).find().then(function(conversations) {
+  console.log(conversations.length);
 }).catch(console.error.bind(console));
+
+// http://jsplay.avosapps.com/mej/embed?js,console
 ```
 
 

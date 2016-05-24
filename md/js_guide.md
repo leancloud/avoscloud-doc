@@ -1609,7 +1609,7 @@ AV.Cloud.httpRequest({
 你还可以在上传文件之前设置文件的元信息，例如：
 
 ```javascript
-file.metaData().mimeType = 'text/plain';
+file.metaData().author = 'steven';
 ```
 
 获取元信息列表函数 `metaData` 返回的是一个 JSON 对象。
@@ -1626,10 +1626,10 @@ var ownerId = file.ownerId();
 ```javascript
 //获取所有元信息组成的JSON对象
 var metadata = file.metaData();
-//设置format元信息
-file.metaData('format','image/jpeg');
-//获取format元信息
-var format = file.metaData('format');
+//设置author元信息
+file.metaData('author','steven');
+//获取author元信息
+var format = file.metaData('author');
 ```
 
 ### 缩略图

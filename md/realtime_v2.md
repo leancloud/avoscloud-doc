@@ -94,7 +94,7 @@ LeanCloud 实时通信服务的特性主要有：
 **name**|name|String|可选|对话的名字，可为群组命名。
 **tr**|transient|Boolean|可选|是否为暂态对话
 **sys**|system|Boolean|可选|是否是系统对话
-**unique**|unique|Boolean|可选|内部字段，标记根据成员原子创建的对话。<br/>（原子创建对话功能只能通过 SDK 调用创建对话接口实现，REST API 创建对话可以设置 unique 值，但无原子创建对话效果)
+**unique**|unique|Boolean|可选|内部字段，标记根据成员原子创建的对话。<br/>（只能在 SDK 中使用。**REST API 不支持此参数**，传入 unique 无效)
 
 除了在各平台的 SDK 里面可以调用 API 创建对话外，我们也提供 [REST API](./realtime_rest_api.html#通过_REST_API_创建_更新_删除对话数据) 可以让大家预先建立对话：对话的信息存储在 _Conversation 表中，你可以直接通过 [数据存储相关的 REST API](./rest_api.html#%E5%AF%B9%E8%B1%A1-1) 对其进行操作。
 
@@ -372,6 +372,8 @@ appid:clientid:convid:sorted_member_ids:timestamp:nonce:action
   向对话添加成员，在签名校验（如果开启）之后，实际加入之前，包括主动加入和被其他用户加入两种情况。
 * **_conversationRemove**<br/>
   从对话中踢出成员，在签名校验（如果开启）之后，实际踢出之前，用户自己退出对话不会调用。
+* **_conversationUpdate**<br/>
+  修改对话属性、设置或取消对话消息提醒，在实际修改之前调用。
 
 ### 使用场景
 
@@ -506,13 +508,13 @@ code | 可选 | 当 reject 为 true 时可以下发一个应用自定义的整�
 
 对话创建后调用
 
-### 参数
+#### 参数
 
 参数 | 说明
 --- | ---
 convId | 新生成的对话 Id
 
-### 返回
+#### 返回
 
 这个 hook 不对返回值进行处理，只需返回 `{}` 即可。
 
@@ -553,6 +555,28 @@ convId | 对话 id
 ---|---|---
 reject | 可选 | 是否拒绝，默认为 **false**。
 code | 可选 | 当 reject 为 true 时可以下发一个应用自定义的整型错误码。
+
+### `_conversationUpdate`
+
+在修改对话属性、设置或取消对话消息提醒之前调用。
+
+#### 参数
+
+参数 | 说明
+--- | ---
+initBy | 由谁发起。
+convId | 对话 id。
+mute | 是否关闭当前对话提醒。
+attr | 待设置的对话属性。
+
+#### 返回
+
+参数 |约束| 说明
+---|---|---
+reject | 可选 | 是否拒绝，默认为 **false**。
+code | 可选 | 当 reject 为 true 时可以下发一个应用自定义的整型错误码。
+attr | 可选 | 修改后的待设置对话属性，如果不提供则保持原参数中的对话属性。
+mute | 可选 | 修改后的关闭对话提醒设置，如果不提供则保持原参数中的关闭提醒设置。
 
 ### 部署环境
 
@@ -664,6 +688,8 @@ data | 消息内容
 `0`| |websocket 正常关闭，可能发生在服务器重启，或本地网络异常的情况。SDK 会自动重连，无需人工干预。
 <code class="text-nowrap">1006</code>| |websocket 连接非正常关闭，通常见于路由器配置对长连接限制的情况。SDK 会自动重连，无需人工干预。
 `4100`|`APP_NOT_AVAILABLE`|应用不存在或应用禁用了实时通信服务
+`4101`|`DUPLICATED_LOGIN`|同一个设备重复登录推送服务。该错误码与实时通信服务无关。
+`4102`|`SIGNATURE_FAILED`|登录签名验证失败
 `4103`|`INVALID_LOGIN`|Client Id 格式错误，超过 64 个字符。
 `4105`|`SESSION_REQUIRED`|Session 没有打开就发送消息，或执行其他操作。常见的错误场景是调用 open session 后直接发送消息，正确的用法是在 Session 打开的回调里执行。
 `4107`|`READ_TIMEOUT`|读超时，服务器端长时间没有收到客户端的数据，切断连接。SDK 包装了心跳包的机制，出现此错误通常是网络问题。SDK 会自动重连，无需人工干预。

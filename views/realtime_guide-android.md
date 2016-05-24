@@ -856,7 +856,7 @@ ioType|AVIMMessageIOType 枚举|消息传输方向，有两种取值：<br/><br/
  
 {% endblock %}
 
-{% block attributes %}`AVIMTypedMessage.attributes`{% endblock %}
+{% set attributes = "`AVIMTypedMessage.attributes`" %}
 
 {% block attributes_property %}attributes{% endblock %}
 

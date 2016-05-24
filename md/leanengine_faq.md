@@ -55,7 +55,7 @@ var async = require('async');
 
 ## 调用云引擎方法如何收费？
 
-现在云引擎本身不收费，云引擎中如果有 LeanCloud 的存储等 API 调用，按 API 收费策略收费。
+云引擎中如果有 LeanCloud 的存储等 API 调用，按 [API 收费策略](faq.html#API_调用次数的计算) 收费。另外如果使用的是云引擎专业版，该服务也会产生使用费，具体请参考 [云引擎运行方案](leanengine_plan.html#价格)。
 
 ## 「定义函数」和「Git 部署」可以混用吗？
 

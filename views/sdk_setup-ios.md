@@ -114,11 +114,11 @@ import AVOSCloud
 
 ```
 #import <AVOSCloud/AVOSCloud.h>;
-//如果使用了实时通信模块，请添加下列导入语句到头部：
-#import <AVOSCloudIM.h>
+// 如果使用了实时通信模块，请添加以下导入语句：
+#import <AVOSCloudIM/AVOSCloudIM.h>
 ```
 
-如果使用 Swift 语言开发，请在 `AppDelegate.swift` 中包含 AVOSCloud 模块：
+如果使用 Swift 语言开发并使用动态库，请在 `AppDelegate.swift` 中包含 AVOSCloud 模块；如果已经在 [桥接头文件](#创建桥接头文件) 中 `import` 过，跳过此步即可。
 
 ```swift
 import AVOSCloud

@@ -438,7 +438,7 @@ AVPush *push = [[AVPush alloc] init];
 
 ## 跟踪推送和应用的打开情况
 
-通过 AVAnalytics 你可以跟踪通知和应用的打开情况。添加下列代码到上面例子中的 `application:didFinishLaunchingWithOptions:` 方法来收集打开信息：
+通过 `AVAnalytics` 你可以跟踪通知和应用的打开情况。添加下列代码到上面例子中的 `application:didFinishLaunchingWithOptions:` 方法来收集打开信息：
 
 ```objc
 if (application.applicationState != UIApplicationStateBackground) {
@@ -456,9 +456,9 @@ if (application.applicationState != UIApplicationStateBackground) {
 ```
 
 
-传递 nil 或者空白的参数给 `trackAppOpenedWithLaunchOptions:` 方法只是统计一次标准的应用打开事件（比如不是通过通知打开的应用）。
+传递 `nil` 或者空白的参数给 `trackAppOpenedWithLaunchOptions:` 方法只是统计一次标准的应用打开事件（比如不是通过通知打开的应用）。
 
-你可以在 [控制台 /<span class="text-muted">（选择应用）</span>/ 分析 / 行为分析 / 应用使用](/stat.html?appid={{appid}}#/stat/appuse) 里看到通知和应用打开的情况。
+你可以在 [控制台 > 分析 > 行为分析 > 应用使用](/stat.html?appid={{appid}}#/stat/appuse) 里看到通知和应用打开的情况。
 
 请注意，如果你的应用正在运行或者在后台，`application:didReceiveRemoteNotification:`方法将会处理收到的推送通知。
 
@@ -492,7 +492,7 @@ if (application.applicationState != UIApplicationStateBackground) {
 }
 ```
 
-### 跟踪本地通知 (iOS only)
+### 跟踪本地通知
 
 为了统计跟踪本地通知消息，需要注意以下两种方法都会调用到：
 
@@ -501,7 +501,7 @@ if (application.applicationState != UIApplicationStateBackground) {
 
 如果你实现了 `application:didReceiveLocalNotification:` 这个方法，要注意避免重复统计。
 
-#### 清除 Badge
+### 清除 Badge
 
 清除 Badge 数字的最好时机是打开应用的时候。设置当前 installation 的 badge 属性并保存到服务器：
 
@@ -526,3 +526,7 @@ if (application.applicationState != UIApplicationStateBackground) {
 - `application:didReceiveRemoteNotification:`
 
 请阅读 [UIApplicationDelegate 文档](http://developer.apple.com/library/ios/#DOCUMENTATION/UIKit/Reference/UIApplicationDelegate_Protocol/Reference/Reference.html)。
+
+## 离线消息重复推送
+
+请参考 [为什么在 iOS 上离线消息重复推送了两次？](realtime_guide-ios.html#duplicate-offline-message-notification)

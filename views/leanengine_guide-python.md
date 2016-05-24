@@ -20,7 +20,7 @@ $ cd python-getting-started
 然后添加应用 appId 等信息到该项目：
 
 ```
-$ avoscloud add <APP-NAME> <APP-ID>
+$ lean app add <APP-NAME> <APP-ID>
 ```
 
 `<APP-NAME>` 是应用名称，`<APP-ID>` 是应用 ID。这些信息可以 [控制台 /（选择应用）/ 设置 / 基本信息](/app.html?appid={{appid}}#/general) 和 [应用 Key](/app.html?appid={{appid}}#/key) 中找到。
@@ -42,7 +42,7 @@ $ sudo pip install -Ur requirements.txt
 启动应用：
 
 ```
-$ avoscloud
+$ lean up
 ```
 {% endblock %}
 
