@@ -1,7 +1,7 @@
 #### 自动安装
+[CocoaPods](http://www.cocoapods.org) 是一个很好的依赖管理工具，我们推荐您使用这个方法来安装 SDK，最大化地简化安装过程。
 
-[CocoaPods](http://www.cocoapods.org) 是一个很好的依赖管理工具，我们推荐您使用这个方法来安装 SDK，最大化地简化安装过程。iOS 从 8.0 开始支持动态库，如果你的项目只支持 iOS 8 及以上，使用动态库是个不错的选择。**但目前动态库还不能通过 CocoaPods 集成**，如果希望使用动态库，请 [手动集成](#manual-install)。
-
+##### 安装静态库
 首先，在项目根目录下的 Podfile 文件中添加以下 pods：
 
 ```ruby
@@ -13,6 +13,8 @@ pod 'AVOSCloudCrashReporting' # 错误报告模块
 然后在项目根目录执行 `pod install` 命令，就能将 LeanCloud iOS SDK 集成到您的项目中。
 
 
+##### 安装动态库
+**目前动态库还不能通过 CocoaPods 集成**，如果希望使用动态库，请 [手动集成](#manual-install)。
 
 
 #### 手动安装
@@ -33,6 +35,8 @@ pod 'AVOSCloudCrashReporting' # 错误报告模块
 
 
 ##### 安装动态库
+
+<div class="callout callout-info">iOS 从 8.0 开始支持动态库，请确保你的项目只支持 iOS 8 及以上版本</div>
 
 首先，准备好待集成的模块。将它们放入同一个目录中：
 
