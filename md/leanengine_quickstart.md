@@ -112,19 +112,16 @@ app.get('/', function(req, res) {
 
 ## 部署到云端
 
-部署到预备环境：
+使用免费版的应用可以直接部署到生产环境：
 
 ```
 $ lean deploy
 ```
 
-如果你设置了 [二级域名](leanengine_webhosting_guide-node.html#设置域名)，即可通过 `http://stg-${your_app_domain}.leanapp.cn` 访问你应用的预备环境。
-
-部署到生产环境：
-
-```
-$ lean publish
-```
-
 如果你设置了 [二级域名](leanengine_webhosting_guide-node.html#设置域名)，即可通过 `http://${your_app_domain}.leanapp.cn` 访问你应用的生产环境。
 
+如果是专业版应用，`lean deploy` 会先部署到预备环境（`http://stg-${your_app_domain}.leanapp.cn`），你可以再运行一下 `lean publish` 来部署到生产环境：
+
+```
+$ lean deploy
+```

@@ -43,26 +43,43 @@ AV.Cloud.define('averageStars', function(request, response) {
 {% endblock %}
 
 {% block cloudFuncParams %}
-有两个参数会被传入到云函数：
+Request 和 Response 会作为两个参数传入到云函数中：
 
-* **request**：包装了请求信息的请求对象，下列这些字段将被设置到 request 对象内：
-  * **params**：客户端发送的参数对象
-  * **user**：`AV.User` 对象，发起调用的用户，如果没有登录，则不会设置此对象。如果通过 REST API 调用时模拟用户登录，需要增加一个头信息 `X-AVOSCloud-Session-Token: <sessionToken>`，该 `sessionToken` 在用户登录或注册时服务端会返回。
-* **response**：应答对象，包含两个函数：
-  * **success**：这个函数可以接收一个额外的参数，表示返回给客户端的结果数据。这个参数对象可以是任意的 JSON 对象或数组，并且可以包含 `AV.Object` 对象。
-  * **error**：如果这个方法被调用，则表示发生了一个错误。它也接收一个额外的参数来传递给客户端，提供有意义的错误信息。
+`Request` 上的属性包括：
+
+* `params: object`：客户端发送的参数对象，当使用 `rpc` 调用时，也可能是 `AV.Object`。
+* `currentUser?: AV.User`：客户端所关联的用户（根据客户端发送的 `LC-Session` 头）。
+* `meta: object`：有关客户端的更多信息，目前只有一个 `remoteAddress` 属性表示客户端的 IP。
+* `sessionToken?: string`：客户端发来的 sessionToken（`X-LC-Session` 头）。
+
+`Response` 上的属性包括：
+
+* `success: function(result?)`：向客户端发送结果，可以是包括 AV.Object 在内的各种数据类型或数组，客户端解析方式见各 SDK 文档。
+* `error: function(err?: string)`：向客户端返回一个错误，目前仅支持字符串，`Error` 等类型也会被转换成字符串。
 {% endblock %}
 
 {% block runFuncExample %}
-
-```javascript
-AV.Cloud.run('averageStars', {movie: "夏洛特烦恼"}, {
-  success: function(data){
-    //调用成功，得到成功的应答data
+```js
+var paramsJson = {
+  movie: "夏洛特烦恼"
+};
+AV.Cloud.run('averageStars', paramsJson, {
+  success: function(data) {
+    // 调用成功，得到成功的应答data
   },
-  error: function(err){
-    //处理调用失败
+  error: function(err) {
+    // 处理调用失败
   }
+});
+```
+
+云引擎中默认会直接进行一次本地的函数调用，而不是像客户端一样发起一个 HTTP 请求。如果你希望发起 HTTP 请求来调用云函数，可以传入一个 `remote: true` 的选项（与 success 和 error 回调同级），当你在云引擎之外运行 Node SDK 时这个选项非常有用：
+
+```js
+AV.Cloud.run('averageStars', paramsJson, {
+  remote: true,
+  success: function(data) {},
+  error: function(err) {}
 });
 ```
 {% endblock %}
@@ -111,14 +128,14 @@ AV.Cloud.afterSave('Comment', function(request) {
 AV.Cloud.afterSave('_User', function(request) {
   console.log(request.object);
   request.object.set('from','LeanCloud');
-  request.object.save(null,{success:function(user)
-    {
+  request.object.save(null, {
+    success:function(user)  {
       console.log('ok!');
-    },error:function(user,error)
-    {
-      console.log('error',error);
+    },
+    error:function(user, error) {
+      console.log('error', error);
     }
-    });
+  });
 });
 ```
 {% endblock %}
@@ -141,17 +158,14 @@ AV.Cloud.beforeUpdate('Review', function(request, response) {
 });
 ```
 
-请注意：
-
-* 需要将 {{leanengine_middleware}} 中间件升级至 0.2.0 版本以上才能使用这个功能。
-* 不要修改 `request.object`，因为对它的改动并不会保存到数据库，但可以用 `response.error` 返回一个错误，拒绝这次修改。
+**注意：** 不要修改 `request.object`，因为对它的改动并不会保存到数据库，但可以用 `response.error` 返回一个错误，拒绝这次修改。
 {% endblock %}
 
 {% block afterUpdateExample %}
 
 ```javascript
 AV.Cloud.afterUpdate('Article', function(request) {
-   console.log('Updated article,the id is :' + request.object.id);
+  console.log('Updated article,the id is :' + request.object.id);
 });
 ```
 {% endblock %}
@@ -233,10 +247,10 @@ AV.Cloud.onLogin(function(request, response) {
 错误响应码允许自定义。云引擎方法最终的错误对象如果有 `code` 和 `message` 属性，则响应的 body 以这两个属性为准，否则 `code` 为 1， `message` 为错误对象的字符串形式。比如：
 
 ```
-AV.Cloud.define('errorCode', function(req, res) {
+AV.Cloud.define('errorCode', function(request, response) {
   AV.User.logIn('NoThisUser', 'lalala', {
     error: function(user, err) {
-      res.error(err);
+      response.error(err);
     }
   });
 });
@@ -245,8 +259,8 @@ AV.Cloud.define('errorCode', function(req, res) {
 
 {% block errorCodeExample2 %}
 ```
-AV.Cloud.define('customErrorCode', function(req, res) {
-  res.error({code: 123, message: 'custom error message'});
+AV.Cloud.define('customErrorCode', function(request, response) {
+  response.error({code: 123, message: 'custom error message'});
 });
 ```
 {% endblock %}
@@ -270,8 +284,8 @@ AV.Cloud.beforeSave('Review', function(request, response) {
 
 使用此功能需要注意：
 
-* 会替代你之前 git 或者命令行部署的项目。
-* 暂不提供主机托管功能。
+* 在定义的函数会覆盖你之前用 Git 或命令行部署的项目。
+* 目前只能在线编写云函数和 Hook，不支持托管静态网页、编写动态路由。
 
 在 [控制台 > 存储 > 云引擎 > 部署 > 在线编辑](/cloud.html?appid={{appid}}#/deploy/online) 标签页，可以：
 
@@ -283,16 +297,12 @@ AV.Cloud.beforeSave('Review', function(request, response) {
 **提示**：云函数编辑之后需要重新部署才能生效。
 {% endblock %}
 
-{% block timerLegacy %}
-**原来提供的 `AV.Cloud.setInterval` 和 `AV.Cloud.cronjob` 都已经废弃，这两个函数的功能变成和 `AV.Cloud.define` 一样，已经定义的任务会自动帮你做转换并启动。**
-{% endblock %}
-
 {% block timerExample %}
 
 ```javascript
-AV.Cloud.define('log_timer', function(req, res){
-    console.log('Log in timer.');
-    return res.success();
+AV.Cloud.define('log_timer', function(request, response){
+  console.log('Log in timer.');
+  return response.success();
 });
 ```
 {% endblock %}
@@ -300,14 +310,14 @@ AV.Cloud.define('log_timer', function(req, res){
 {% block timerExample2 %}
 
 ```javascript
-AV.Cloud.define('push_timer', function(req, res){
+AV.Cloud.define('push_timer', function(request, response){
   AV.Push.send({
-        channels: [ 'Public' ],
-        data: {
-            alert: 'Public message'
-        }
-    });
-   return res.success();
+    channels: ['Public'],
+    data: {
+      alert: 'Public message'
+    }
+  });
+  return response.success();
 });
 ```
 {% endblock %}
@@ -316,17 +326,16 @@ AV.Cloud.define('push_timer', function(req, res){
 
 ```javascript
 //参数依次为 AppId, AppKey, MasterKey
-AV.initialize('{{appid}}', '{{appkey}}', '{{masterkey}}');
+AV.init({
+  appId: '{{appid}}',
+  appKey: '{{appkey}}',
+  masterkey: '{{masterkey}}'
+})
 AV.Cloud.useMasterKey();
 ```
 {% endblock %}
 
-{% block masterKeyInitLegacy %}
-**注意：**云引擎 2.0 版本已经默认使用 master key 初始化 SDK，所以不需要额外初始化。
-{% endblock %}
-
 {% block loggerExample %}
-
 ```javascript
 AV.Cloud.define('Logger', function(request, response) {
   console.log(request.params);

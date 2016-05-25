@@ -1,6 +1,7 @@
 {% extends "./relation_guide.tmpl" %}
 
-{% set platform = 'Android' %}
+{% set platform    = "Android" %}
+{% set ops_include = "include" %}
 
 {% block code_city_point_to_province %}
 
@@ -21,7 +22,7 @@
                 }
             }
         });
-        // 广东无需被单独保存，因为在保存广州的时候已经上传到服务端。
+        // 广东无需被单独保存，因为在保存广州的时候已经上传到云端。
 ```
 {% endblock %}
 
@@ -115,7 +116,7 @@
             public void done(AVException e) {
                 guangDong.addAllUnique("cityList", Arrays.asList(guangZhou, shenZhen));
 
-                // 只要保存 guangDong 即可，它关联的对象都会一并被保存在服务端。
+                // 只要保存 guangDong 即可，它关联的对象都会一并被保存在云端。
                 guangDong.saveInBackground();
             }
         });
@@ -223,33 +224,7 @@
 ```
 {% endblock %}
 
-{% block code_query_student_by_course %}
-
-```java
-        // 假设 Tom 被保存到云端之后的 objectId 是 562da3fdddb2084a8a576d49
-        AVObject studentTom = AVObject.createWithoutData("Student", "562da3fdddb2084a8a576d49");
-
-        // 读取 AVRelation 对象
-        AVRelation<AVObject> relation = studentTom.getRelation("coursesChosen");
-
-        AVQuery<AVObject> query = relation.getQuery();
-
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                // list 就是当前学生 Tom 所选择的所有课程
-                for (AVObject course : list) {
-                    // 打印 course 的 objectId 以及 name
-                    Log.d(TAG, "objectId:" + course.getObjectId());
-                    Log.d(TAG, "name:" + course.get("name"));
-                }
-            }
-        });
-```
-{% endblock %}
-
-{% block code_query_courses_by_student %}
-
+{% block code_query_students_by_course %}
 ```java
         // 微积分课程
         AVObject courseCalculus = AVObject.createWithoutData("Course", "562da3fdddb2084a8a576d49");
@@ -269,6 +244,31 @@
                     // 打印 course 的 objectId 以及 name
                     Log.d(TAG, "objectId:" + student.getObjectId());
                     Log.d(TAG, "name:" + student.get("name"));
+                }
+            }
+        });
+```
+{% endblock %}
+
+{% block code_query_courses_by_student %}
+
+```java
+        // 假设 Tom 被保存到云端之后的 objectId 是 562da3fdddb2084a8a576d49
+        AVObject studentTom = AVObject.createWithoutData("Student", "562da3fdddb2084a8a576d49");
+
+        // 读取 AVRelation 对象
+        AVRelation<AVObject> relation = studentTom.getRelation("coursesChosen");
+
+        AVQuery<AVObject> query = relation.getQuery();
+
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> list, AVException e) {
+                // list 就是当前学生 Tom 所选择的所有课程
+                for (AVObject course : list) {
+                    // 打印 course 的 objectId 以及 name
+                    Log.d(TAG, "objectId:" + course.getObjectId());
+                    Log.d(TAG, "name:" + course.get("name"));
                 }
             }
         });
@@ -306,8 +306,8 @@
         // 微积分课程
         AVObject courseCalculus = AVObject.createWithoutData("Course", "562da3fdddb2084a8a576d49");
 
-        // 构建 CourseChoosing 的查询
-        AVQuery<AVObject> query = new AVQuery<>("CourseChoosing");
+        // 构建 StudentCourseMap 的查询
+        AVQuery<AVObject> query = new AVQuery<>("StudentCourseMap");
 
         // 查询所有选择了线性代数的学生
         query.whereEqualTo("course", courseCalculus);
