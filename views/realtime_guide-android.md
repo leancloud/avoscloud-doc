@@ -14,6 +14,8 @@
 {% endblock %}
 
 {% block oneOnOneChat_sent %}
+**请注意：启用实时通信一定要正确配置 AndroidManifest.xml，请点击[Android SDK 初始化配置](https://leancloud.cn/docs/sdk_setup-android.html#初始化)**
+
 ```
   public void sendMessageToJerryFromTom() {
     // Tom 用自己的名字作为clientId，获取AVIMClient对象实例
