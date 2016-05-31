@@ -50,15 +50,6 @@
 
 注意：因为 TypeScript SDK 是基于 JavaScript SDK 编写的定义文件，因此并不是所有 JavaScript SDK 的接口都有对应 TypeScript 的版本，示例代码会持续更新。
 
-### TypeScript SDK 安装
-#### 通过 typings 工具安装
-
-> Todo
-
-#### 直接引用 d.ts 文件
-
-> Todo
-
 {% endblock %}
 
 {# --End--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}

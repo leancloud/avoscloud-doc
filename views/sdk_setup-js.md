@@ -44,6 +44,27 @@ $ bower install leancloud-javascript-sdk --save
 <script src="https://cdn1.lncld.net/static/js/av-core-mini-<版本号>.js"></script>
 ```
 
+### TypeScript SDK 安装
+#### 通过 typings 工具安装
+
+首先需要安装 [typings 命令行工具](https://www.npmjs.com/package/typings)
+
+```sh
+npm install typings --global
+```
+
+然后再执行如下命令即可：
+
+```sh
+typings install leancloud-jssdk --save
+```
+
+
+#### 直接引用 d.ts 文件
+TypeScript 使用 JavaScript SDK 是通过定义文件来实现调用的，因此我们也将定义文件开源在 GitHub 上，地址是：
+[typed-leancloud-jssdk](https://github.com/leancloud/typed-leancloud-jssdk)
+
+
 #### Web 安全
 
 如果在前端使用 JavaScript SDK，当你打算正式发布的时候，请务必配置 **Web 安全域名**。配置方式为：进入 [控制台 / 设置 / 安全中心 / **Web 安全域名**](/app.html?appid={{appid}}#/security)。这样就可以防止其他人，通过外网其他地址盗用你的服务器资源。
