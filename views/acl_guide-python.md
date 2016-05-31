@@ -103,13 +103,13 @@ role_query = Query(Role)
 role_query.equal_to('name', 'Administrator')
 role_query_list = role_query.find()
 
-if len(role_query_list) > 0:  #该角色存在
-    administrator_role = role_query_list[0]  #获取该角色对象
+if len(role_query_list) > 0:  # 该角色存在
+    administrator_role = role_query_list[0]  # 获取该角色对象
     user_relation = administrator_role.relation('users')
-    users_with_administrator = user_relation.query.find()  #查找该角色下的所有用户列表。如果这里有权限问题，请到控制台设置 User 对象的权限
+    users_with_administrator = user_relation.query.find()  # 查找该角色下的所有用户列表。如果这里有权限问题，请到控制台设置 User 对象的权限
     print users_with_administrator
 else:
-    #该角色不存在，可以新建该角色，并把当前用户设置成该角色
+    # 该角色不存在，可以新建该角色，并把当前用户设置成该角色
     pass
 ```
 {% endblock %}
@@ -122,10 +122,10 @@ from leancloud import Role
 from leancloud import Query
 
 role_query = Query(Role)
-role = role_query.get('573d5fdc2e958a0069f5d6fe') #根据 objectId 获取 role 对象
-user_relation = role.get_users() #获取 user 的 relation
+role = role_query.get('573d5fdc2e958a0069f5d6fe') # 根据 objectId 获取 role 对象
+user_relation = role.get_users() # 获取 user 的 relation
 
-user_list = user_relation.query.find() #根据 relation 查找所包含的用户列表
+user_list = user_relation.query.find() # 根据 relation 查找所包含的用户列表
 ```
 {% endblock %}
 
@@ -138,26 +138,26 @@ from leancloud import Role
 from leancloud import Object
 from leancloud import ACL
 
-#登录一个用户
+# 登录一个用户
 user = User()
-user.login('username','password')
-#创建一个 Post 的帖子对象
+user.login('username', 'password')
+# 创建一个 Post 的帖子对象
 Post = Object.extend('Post')
 post = Post()
-post.set('title','大家好，我是新人')
+post.set('title', '大家好，我是新人')
 
-#新建一个角色，并把当前用户赋予该角色
+# 新建一个角色，并把当前用户赋予该角色
 administrator_role = Role('Administrator')
 relation = administrator_role.get_users()
 relation.add(User.get_current())
 administrator_role.save()
 
-#新建一个 ACL 对象，并赋予角色可写权限
+# 新建一个 ACL 对象，并赋予角色可写权限
 acl = ACL()
 acl.set_public_read_access(True)
 acl.set_role_write_access(administrator_role, True)
 
-#将 ACL 实例赋予 Post 对象
+# 将 ACL 实例赋予 Post 对象
 post.set_acl(acl)
 post.save()
 ```
@@ -175,25 +175,25 @@ from leancloud import ACL
 from leancloud import Query
 
 user = User()
-user.login('username','password')
+user.login('username', 'password')
 
 role_query = Query(Role)
 role_query.equal_to('name', 'Administrator')
 role_query_list = role_query.find()
 
-if len(role_query_list) > 0:  #该角色存在
+if len(role_query_list) > 0:  # 该角色存在
     administrator_role = role_query_list[0]
     role_query.equal_to('users', User.get_current())
     role_query_with_current_user = role_query.find()
-    if len(role_query_with_current_user) == 0: #该角色存在，但是当前用户尚未被赋予该角色
+    if len(role_query_with_current_user) == 0: # 该角色存在，但是当前用户尚未被赋予该角色
         relation = administrator_role.get_users()
-        relation.add(User.get_current())  #为当前用户赋予该角色
+        relation.add(User.get_current())  # 为当前用户赋予该角色
         administrator_role.save()
     else:
-        #该角色存在，当前用户已被被赋予该角色
+        # 该角色存在，当前用户已被被赋予该角色
         pass
 else:
-    #该角色不存在，可以新建该角色，并把当前用户设置成该角色
+    # 该角色不存在，可以新建该角色，并把当前用户设置成该角色
     administrator_role = Role('Administrator')
     relation = administrator_role.get_users()
     relation.add(User.get_current())
@@ -210,25 +210,25 @@ from leancloud import Role
 from leancloud import Query
 
 user = User()
-user.login('username','password')
+user.login('username', 'password')
 
 role_query = Query(Role)
 role_query.equal_to('name', 'Administrator')
 role_query_list = role_query.find()
 
-if len(role_query_list) > 0:  #该角色存在
+if len(role_query_list) > 0:  # 该角色存在
     administrator_role = role_query_list[0]
     role_query.equal_to('users', User.get_current())
     role_query_with_current_user = role_query.find()
-    if len(role_query_with_current_user) > 0: #该角色存在，且当前用户拥有该角色
+    if len(role_query_with_current_user) > 0: # 该角色存在，且当前用户拥有该角色
         relation = administrator_role.get_users()
-        relation.remove(User.get_current())  #为当前用户剥夺该角色
+        relation.remove(User.get_current())  # 为当前用户剥夺该角色
         administrator_role.save()
     else:
-        #该角色存在，当前用户并不拥有该角色
+        # 该角色存在，当前用户并不拥有该角色
         pass
 else:
-    #该角色不存在，可以新建该角色，并把当前用户设置成该角色
+    # 该角色不存在，可以新建该角色，并把当前用户设置成该角色
     pass
 ```
 {% endblock %}
@@ -241,19 +241,19 @@ from leancloud import Role
 from leancloud import Query
 from leancloud import ACL
 
-#建立版主和论坛管理员之间的角色从属关系
-administratorRole = Role("Administrator") #新建角色
-moderatorRole = Role("Moderator") #新建角色
+# 建立版主和论坛管理员之间的角色从属关系
+administrator_role = Role("Administrator") # 新建角色
+moderator_role = Role("Moderator") # 新建角色
 
 moderator_acl = ACL()
-moderator_acl.set_public_write_access(True) #这里为了在后面可以添加 moderatorRole 可以添加 role， 设置一个可写权限
-moderatorRole.set_acl(moderator_acl)
+moderator_acl.set_public_write_access(True) # 这里为了在后面可以添加 moderator_role 可以添加 role， 设置一个可写权限
+moderator_role.set_acl(moderator_acl)
 
-administratorRole.save()
-moderatorRole.save()
+administrator_role.save()
+moderator_role.save()
 
-moderatorRole.get_roles().add(administratorRole) #将 Administrator 设为 moderatorRole 一个子角色
-moderatorRole.save()
+moderator_role.get_roles().add(administrator_role) # 将 Administrator 设为 moderator_role 一个子角色
+moderator_role.save()
 ```
 {% endblock %}
 
@@ -266,61 +266,61 @@ from leancloud import Query
 from leancloud import ACL
 from leancloud import Object
 
-photographicRole = Role("Photographic") #新建摄影器材版主角色
-mobileRole = Role("Mobile") #新建手机平板版主角色
-digitalRole = Role("Digital") #新建电子数码版主角色
+photographic_role = Role("Photographic") # 新建摄影器材版主角色
+mobile_role = Role("Mobile") # 新建手机平板版主角色
+digital_role = Role("Digital") # 新建电子数码版主角色
 
-#先行保存 photographicRole 和 mobileRole
-photographicRole.save()
-mobileRole.save()
+# 先行保存 photographic_role 和 mobile_role
+photographic_role.save()
+mobile_role.save()
 
-#将 photographicRole 和 mobileRole 设为 digitalRole 一个子角色
-digitalRole.get_roles().add(photographicRole)
-digitalRole.get_roles().add(mobileRole)
-digitalRole.save() #保存
+# 将 photographic_role 和 mobile_role 设为 digital_role 一个子角色
+digital_role.get_roles().add(photographic_role)
+digital_role.get_roles().add(mobile_role)
+digital_role.save() # 保存
 
 
-#新建一个帖子对象
+# 新建一个帖子对象
 Post = Object.extend("Post")
 
-#新建摄影器材板块的帖子
-photographicPost = Post()
-photographicPost.set("title", "我是摄影器材板块的帖子！")
+# 新建摄影器材板块的帖子
+photographic_post = Post()
+photographic_post.set("title", "我是摄影器材板块的帖子！")
 
-#新建手机平板板块的帖子
-mobilePost = Post()
-mobilePost.set("title", "我是手机平板板块的帖子！")
+# 新建手机平板板块的帖子
+mobile_post = Post()
+mobile_post.set("title", "我是手机平板板块的帖子！")
 
-#新建电子数码板块的帖子
-digitalPost = Post()
-digitalPost.set("title", "我是电子数码板块的帖子！")
+# 新建电子数码板块的帖子
+digital_post = Post()
+digital_post.set("title", "我是电子数码板块的帖子！")
 
 
-#新建一个摄影器材版主可写的 ACL 实例
-photographicACL = ACL()
-photographicACL.set_public_read_access(True)
-photographicACL.set_role_write_access(photographicRole,True)
+# 新建一个摄影器材版主可写的 ACL 实例
+photographic_acl = ACL()
+photographic_acl.set_public_read_access(True)
+photographic_acl.set_role_write_access(photographic_role,True)
 
-#新建一个手机平板版主可写的 ACL 实例
-mobileACL = ACL();
-mobileACL.set_public_read_access(True)
-mobileACL.set_role_write_access(mobileRole,True)
+# 新建一个手机平板版主可写的 ACL 实例
+mobile_acl = ACL();
+mobile_acl.set_public_read_access(True)
+mobile_acl.set_role_write_access(mobile_role,True)
 
-#新建一个手机平板版主可写的 ACL 实例
-digitalACL = ACL()
-digitalACL.set_public_read_access(True)
-digitalACL.set_role_write_access(digitalRole,True)
+# 新建一个手机平板版主可写的 ACL 实例
+digital_acl = ACL()
+digital_acl.set_public_read_access(True)
+digital_acl.set_role_write_access(digital_role,True)
 
-#photographicPost 只有 photographicRole 可以读写
-#mobilePost 只有 mobileRole 可以读写
-#而 photographicRole，mobileRole，digitalRole 均可以对 digitalPost 进行读写
-photographicPost.set_acl(photographicACL)
-mobilePost.set_acl(mobileACL)
-digitalPost.set_acl(digitalACL)
+# photographic_post 只有 photographic_role 可以读写
+# mobile_post 只有 mobile_role 可以读写
+# 而 photographic_role，mobile_role，digital_role 均可以对 digital_post 进行读写
+photographic_post.set_acl(photographic_acl)
+mobile_post.set_acl(mobile_acl)
+digital_post.set_acl(digital_acl)
 
-photographicPost.save()
-mobilePost.save()
-digitalPost.save()
+photographic_post.save()
+mobile_post.save()
+digital_post.save()
 ```
 
 {% endblock %}

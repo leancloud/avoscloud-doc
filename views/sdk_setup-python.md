@@ -29,8 +29,8 @@ easy_install leancloud-sdk
 import leancloud
 
 leancloud.init("{{appid}}", "{{appkey}}")
-#或者使用 masterKey
-#leancloud.init("appId", master_key="masterKey")
+# 或者使用 masterKey
+# leancloud.init("appId", master_key="masterKey")
 ```
 将上述代码中的 App ID 以及 App Key 替换成从控制台复制粘贴的对应的数据即可。
 {% endblock %}
@@ -40,8 +40,8 @@ leancloud.init("{{appid}}", "{{appkey}}")
 import leancloud
 
 leancloud.init("{{appid}}", "{{appkey}}")
-leancloud.use_region('US') #启用美国节点
-#leancloud.use_region('CN') 启用国内节点，是默认行为
+leancloud.use_region('US') # 启用美国节点
+# leancloud.use_region('CN') 启用国内节点，是默认行为
 ```
 {% endblock %}
 
