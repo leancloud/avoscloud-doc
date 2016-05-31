@@ -503,14 +503,14 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
   // unread 是未读消息数量，conversation 为所属的会话
   // 没有未读消息就跳过
   if (unread <= 0) return;
-  
+
   // 否则从服务端取回未读消息
   [conversation queryMessagesFromServerWithLimit:unread callback:^(NSArray *objects, NSError *error) {
     if (!error && objects.count) {
-      // 显示消息或进行其他处理 
+      // 显示消息或进行其他处理
     }
   }];
-  // 将这些消息标记为已读 
+  // 将这些消息标记为已读
   [conversation markAsReadInBackground];
 }
 ```
@@ -691,7 +691,7 @@ ioType|AVIMMessageIOType 枚举|消息传输方向，有两种取值：<br/><br/
     1. `AVIMConversationOptionTransient`：聊天室，具体可以参见[创建开放聊天室](#创建开放聊天室)；
     2. `AVIMConversationOptionNone`：普通对话；
     3. `AVIMConversationOptionUnique`：根据成员（clientIds）创建原子对话。如果没有这个选项，服务端会为相同的 clientIds 创建新的对话。clientIds 即 \_Conversation 表的 **m** 字段。
-    
+
   其中，`AVIMConversationOptionNone` 和 `AVIMConversationOptionUnique` 可以使用 `|` 来组合使用，其他选项则不允许。
 * **callback** － 结果回调，在操作结束之后调用，通知开发者成功与否。
 {% endblock %}
@@ -842,7 +842,7 @@ No.|加入者|其他人
     // Mary 创建一个 client，用自己的名字作为 clientId
     self.client = [[AVIMClient alloc] initWithClientId:@"Mary"];
     self.client.delegate = self;
-    
+
     [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
         // 登录成功
     }];
@@ -860,8 +860,8 @@ No.|加入者|其他人
 
 No.|邀请者|被邀请者|其他人
 ---|---|---|---
-1|发出请求 addMembers| | 
-2| |收到 invitedByClientId 通知| 
+1|发出请求 addMembers| |
+2| |收到 invitedByClientId 通知|
 3|收到 membersAdded 通知|收到 membersAdded 通知 | 收到 membersAdded 通知
 {% endblock %}
 
@@ -892,7 +892,7 @@ No.|邀请者|被邀请者|其他人
     // Harry 创建一个 client，用自己的名字作为 clientId
     self.client = [[AVIMClient alloc] initWithClientId:@"Harry"];
     self.client.delegate = self;
-    
+
     [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
         // 登录成功
     }];
@@ -941,7 +941,7 @@ No.|退出者|其他人
     // Harry 创建一个 client，用自己的名字作为 clientId
     self.client = [[AVIMClient alloc] initWithClientId:@"Harry"];
     self.client.delegate = self;
-    
+
     [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
         // 登录成功
     }];
@@ -959,8 +959,8 @@ No.|退出者|其他人
 
 No.|踢人者|被踢者|其他人
 ---|---|---|---
-1|发出请求 removeMembers| | 
-2| |收到 kickedByClientId 通知| 
+1|发出请求 removeMembers| |
+2| |收到 kickedByClientId 通知|
 3|收到 membersRemoved 通知| | 收到 membersRemoved 通知
 {% endblock %}
 
@@ -1076,9 +1076,9 @@ AVIMConversation 属性名 | _Conversation 字段|含义
     // Tom 打开 client
     [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
         // Tom 创建名称为「猫和老鼠」的会话，并附加会话属性
-        NSDictionary *attributes = @{ 
+        NSDictionary *attributes = @{
             @"type": @"private",
-            @"isSticky": @(YES) 
+            @"isSticky": @(YES)
         };
         [self.client createConversationWithName:@"猫和老鼠" clientIds:@[@"Jerry"] attributes:attributes options:AVIMConversationOptionNone callback:^(AVIMConversation *conversation, NSError *error) {
             if (succeeded) {
@@ -1105,18 +1105,18 @@ AVIMConversation 属性名 | _Conversation 字段|含义
         [query getConversationById:@"551260efe4b01608686c3e0f" callback:^(AVIMConversation *conversation, NSError *error) {
 
             AVIMConversationUpdateBuilder *updateBuilder = [conversation newUpdateBuilder];
-            
+
             // ---------  非常重要！！！--------------
             // 将所有属性转交给 updateBuilder 统一处理。
             // 如果缺失这一步，下面没有改动过的属性，如上例中的 isSticky，
             // 在保存后会被删除。
             // -------------------------------------
             updateBuilder.attributes = conversation.attributes;
-            
+
             // 将 type 值改为 public
             [updateBuilder setObject:@"public" forKey:@"type"];
 
-            // 其他操作方法：删除 type 
+            // 其他操作方法：删除 type
             // [updateBuilder removeObjectForKey:@"type"];
 
             // 将更新后的全部属性写回对话
@@ -1236,7 +1236,7 @@ NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
 逻辑操作 | AVIMConversationQuery 方法|
 ---|---
 等于 | `equalTo`
-不等于 |  `notEqualTo` 
+不等于 |  `notEqualTo`
 大于 | `greaterThan`
 大于等于 | `greaterThanOrEqualTo`
 小于 | `lessThanOrEqualTo`
@@ -1684,7 +1684,7 @@ imClient.signatureDataSource = signatureDelegate;
 * nonce：随机字符串 nonce
 * error：签名错误信息
 
-在启用签名功能的情况下，实时通信 SDK 在进行一些重要操作前，都会首先请求 `AVIMSignatureDataSource` 接口，获取签名信息 `AVIMSignature`，然后把操作信息和第三方签名一起发给 LeanCloud 云端，由云端根据签名的结果来对操作进行处理。 
+在启用签名功能的情况下，实时通信 SDK 在进行一些重要操作前，都会首先请求 `AVIMSignatureDataSource` 接口，获取签名信息 `AVIMSignature`，然后把操作信息和第三方签名一起发给 LeanCloud 云端，由云端根据签名的结果来对操作进行处理。
 
 用户登录是通过调用 `AVIMClient` 对象中以「open」开头的方法来实现的，以下是其中一个方法：
 
@@ -1736,7 +1736,7 @@ AVIMClient *currentClient = [[AVIMClient alloc] initWithClientId:@"Tom" tag:@"Mo
 ```objc
 -(void)client:(AVIMClient *)client didOfflineWithError:(NSError *)error{
     if ([error code]  == 4111) {
-        //适当的弹出友好提示，告知当前用户的 Client Id 在其他设备上登陆了
+        //适当的弹出友好提示，告知当前用户的 Client Id 在其他设备上登录了
     }
 };
 ```
@@ -1797,7 +1797,7 @@ option.force = YES;
     AVIMConversationQuery *query = [[AVIMClient defaultClient] conversationQuery];
     query.cachePolicy = kAVCachePolicyNetworkElseCache;
     [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
-        
+
     }];
 ```
 {% endblock %}
@@ -1809,4 +1809,3 @@ option.force = YES;
 
 大部分原因是这种情况造成的：成员 A 和成员 B 同在一个对话中。A 调用了 `openWithCallback` 登录实时通信，在没有调用 `closeWithCallback` 退出登录的情况下，B 使用同一个设备也调用了 `openWithCallback` 登录了实时通信。此时应用退出到后台，其他同在这个对话中的成员向这个对话发送了消息，服务器会给不在线的 A 和 B 发送消息推送，这个设备就会收到两条消息推送。解决方案是确保 B 登录时 A 已经调用 `closeWithCallback` 成功地退出了登录。
 {% endblock %}
-

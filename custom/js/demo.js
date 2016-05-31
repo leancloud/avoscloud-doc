@@ -65,7 +65,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         type: 'android'
       },{
         name: 'Anytime',
-        desc: '用户注册、登陆、登出和忘记密码等用户系统相关的功能。相对复杂一些的数据增删改查操作。消息推送',
+        desc: '用户注册、登录、登出和忘记密码等用户系统相关的功能。相对复杂一些的数据增删改查操作。消息推送',
         downPath: '',
         mdPath: 'https://github.com/lzwjava/AnyTime',
         type: 'android'

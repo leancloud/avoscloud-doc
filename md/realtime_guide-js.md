@@ -1414,7 +1414,7 @@ realtime.createIMClient('Tom', null, 'Web').then(function(tom) {
 
 ```javascriptjava
 tom.on('conflict', function() {
-  // 弹出提示，告知当前用户的 Client Id 在其他设备上登陆了
+  // 弹出提示，告知当前用户的 Client Id 在其他设备上登录了
 });
 ```
 

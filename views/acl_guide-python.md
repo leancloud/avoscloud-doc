@@ -34,7 +34,7 @@ from leancloud import Object
 from leancloud import ACL
 from leancloud import User
 
-#登陆一个用户
+#登录一个用户
 user = User()
 user.login('my_user_name','my_password')
 
@@ -46,8 +46,8 @@ post.set('title','大家好，我是新人')
 #新建一个 ACL 实例
 acl = ACL()
 acl.set_public_read_access(True)
-acl.set_write_access(User.get_current().id, True) #设置当前登陆用户的的可写权限
-acl.set_write_access('55f1572460b2ce30e8b7afde', True) #设定指定用户的可写权限
+acl.set_write_access(User.get_current().id, True) #设置当前登录用户的的可写权限
+acl.set_write_access('55f1572460b2ce30e8b7afde', True) #设定指定 objectId 用户的可写权限
 post.set_acl(acl)
 post.save()
 ```
@@ -61,13 +61,13 @@ from leancloud import User
 from leancloud import Role
 
 user = User()
-user.login('username','password') #登陆一个用户
+user.login('username','password') #登录一个用户
 
 #新建一个角色，并把为当前用户赋予该角色
-administratorRole = Role('Administrator')
-relation = administratorRole.get_users()
+administrator_role = Role('Administrator')
+relation = administrator_role.get_users()
 relation.add(User.get_current())  #为当前用户赋予该角色
-administratorRole.save() #保存
+administrator_role.save() #保存
 ```
 {% endblock %}
 
@@ -105,8 +105,8 @@ role_query_list = role_query.find()
 
 if len(role_query_list) > 0:  #该角色存在
     administrator_role = role_query_list[0]  #获取该角色对象
-    userRelation = administrator_role.relation('users')
-    users_with_administrator = userRelation.query.find()  #查找该角色下的所有用户列表。如果这里有权限问题，请到控制台设置 User 对象的权限
+    user_relation = administrator_role.relation('users')
+    users_with_administrator = user_relation.query.find()  #查找该角色下的所有用户列表。如果这里有权限问题，请到控制台设置 User 对象的权限
     print users_with_administrator
 else:
     #该角色不存在，可以新建该角色，并把当前用户设置成该角色
@@ -138,7 +138,7 @@ from leancloud import Role
 from leancloud import Object
 from leancloud import ACL
 
-#登陆一个用户
+#登录一个用户
 user = User()
 user.login('username','password')
 #创建一个 Post 的帖子对象
@@ -147,15 +147,15 @@ post = Post()
 post.set('title','大家好，我是新人')
 
 #新建一个角色，并把当前用户赋予该角色
-administratorRole = Role('Administrator')
-relation = administratorRole.get_users()
+administrator_role = Role('Administrator')
+relation = administrator_role.get_users()
 relation.add(User.get_current())
-administratorRole.save()
+administrator_role.save()
 
 #新建一个 ACL 对象，并赋予角色可写权限
 acl = ACL()
 acl.set_public_read_access(True)
-acl.set_role_write_access(administratorRole, True)
+acl.set_role_write_access(administrator_role, True)
 
 #将 ACL 实例赋予 Post 对象
 post.set_acl(acl)

@@ -57,18 +57,18 @@
 ```
 public class MyApplication extends Application{
  public static class CustomMessageHandler extends AVIMMessageHandler{
-   //接收到消息后的处理逻辑 
+   //接收到消息后的处理逻辑
    @Override
    public void onMessage(AVIMMessage message,AVIMConversation conversation,AVIMClient client){
      if(message instanceof AVIMTextMessage){
        Log.d("Tom & Jerry",((AVIMTextMessage)message).getText());
      }
    }
-   
+
    public void onMessageReceipt(AVIMMessage message,AVIMConversation conversation,AVIMClient client){
-   
+
    }
- }	
+ }
  public void onCreate(){
    ...
    AVOSCloud.initialize(this,"{{appid}}","{{appkey}}");   
@@ -81,7 +81,7 @@ public void jerryReceiveMsgFromTom(){
   //Jerry登录
   AVIMClient jerry = AVIMClient.getInstance("Jerry");
   jerry.open(new AVIMClientCallback(){
-  
+
     @Override
     public void done(AVIMClient client,AVIMException e){
     	if(e==null){
@@ -167,7 +167,7 @@ public class MyApplication extends Application{
 
 - CustomMessageHandler.java
 public class CustomMessageHandler<AVIMTextMessage> implements AVTypedMessageHandler{
- 
+
   @Override
   public void onMessage(AVIMTextMessage msg,AVIMConversation conv,AVIMClient client){
     Log.d("Tom & Jerry",msg.getText();)//你们在哪儿?
@@ -182,9 +182,9 @@ public class CustomMessageHandler<AVIMTextMessage> implements AVTypedMessageHand
   	   }
   	 });
   }
-  
+
 public void onMessageReceipt(AVIMTextMessage msg,AVIMConversation conv,AVIMClient client){
-  
+
 }
 }
 
@@ -211,14 +211,14 @@ public void sendImage(String filePath){
   AVIMClient tom = AVIMClient.getInstance("Tom");
 
   tom.open(new AVIMClientCallback(){
-  
+
     @Override
     public void done(AVIMClient client,AVIMException e){
       if(e==null){
       //登录成功
       // 创建对话，默认创建者是在包含在成员列表中的
       client.createConversation(Arrays.asList("Jerry"),new AVIMConversationCreatedCallback(){
-      
+
         @Override
         public void done(AVIMConversation conv,AVIMException e){
           if(e==null){
@@ -228,7 +228,7 @@ public void sendImage(String filePath){
             attributes.put("location","旧金山");
             picture.setAttribute(attributes);
             conv.sendMessage(picture,new AVIMConversationCallback(){
-              
+
               @Override
               public void done(AVIMException e){
                 if(e==null){
@@ -292,7 +292,7 @@ AVIMMessageManager.registerMessageHandler(AVIMImageMessage.class,
           @Override
           public void onMessage(AVIMImageMessage msg, AVIMConversation conv, AVIMClient client) {
           	//只处理 Jerry 这个客户端的消息
-          	//并且来自 conversationId 为 55117292e4b065f7ee9edd29 的conversation 的消息	
+          	//并且来自 conversationId 为 55117292e4b065f7ee9edd29 的conversation 的消息
             if ("Jerry".equals(client.getClientId()) && "55117292e4b065f7ee9edd29".equals(conv.getConversationId())) {
                 String fromClientId = msg.getFrom();
                 String messageId = msg.getMessageId();
@@ -313,7 +313,7 @@ AVIMMessageManager.registerMessageHandler(AVIMImageMessage.class,
             }
           }
         });
-        
+
     AVIMClient jerry = AVIMClient.getInstance("Jerry");
     jerry.open(new AVIMClientCallback() {
       @Override
@@ -357,7 +357,7 @@ AVIMMessageManager.registerMessageHandler(AVIMImageMessage.class,
         }
       }
     });
-``` 
+```
 {% endblock %}
 
 {% block audioMessage_url_sent %}
@@ -401,7 +401,7 @@ AVIMMessageManager.registerMessageHandler(AVIMAudioMessage.class,
           @Override
           public void onMessage(AVIMAudioMessage msg, AVIMConversation conv, AVIMClient client) {
           	//只处理 Jerry 这个客户端的消息
-          	//并且来自 conversationId 为 55117292e4b065f7ee9edd29 的conversation 的消息	
+          	//并且来自 conversationId 为 55117292e4b065f7ee9edd29 的conversation 的消息
             if ("Jerry".equals(client.getClientId()) && "55117292e4b065f7ee9edd29".equals(conv.getConversationId())) {
                 String fromClientId = msg.getFrom();
                 String messageId = msg.getMessageId();
@@ -416,7 +416,7 @@ AVIMMessageManager.registerMessageHandler(AVIMAudioMessage.class,
             }
           }
         });
-        
+
     AVIMClient jerry = AVIMClient.getInstance("Jerry");
     jerry.open(new AVIMClientCallback() {
       @Override
@@ -654,7 +654,7 @@ SDK 内部在接收消息时的处理逻辑是这样的：
 ```
 //自定义的消息类型，用于发送和接收所有的用户操作消息
 - AVIMOperationMessage.java
- 
+
 //指定type类型，可以根据实际换成其他正整数
 @AVIMMessageType(type = 1)
 public class AVIMOperationMessage extends AVIMTypedMessage {
@@ -690,7 +690,7 @@ tom.open(new AVIMClientCallback() {
           AVIMOperationMessage msg = new AVIMOperationMessage();
           msg.setOp("keyboard inputing");
           // AVIMConversation.TRANSIENT_MESSAGE_FLAG 表示该条消息为暂态消息
-          // 
+          //
           conv.sendMessage(msg, AVIMConversation.TRANSIENT_MESSAGE_FLAG,
               new AVIMConversationCallback() {
                 @Override
@@ -711,7 +711,7 @@ tom.open(new AVIMClientCallback() {
 ```
 //自定义的消息类型，用于发送和接收所有的用户操作消息
 - AVIMOperationMessage.java
- 
+
 //指定type类型，可以根据实际换成其他正整数
 @AVIMMessageType(type = 1)
 public class AVIMOperationMessage extends AVIMTypedMessage {
@@ -750,7 +750,7 @@ AVIMMessageManager.registerMessageHandler(AVIMOperationMessage.class,
             }
         }
 });
-        
+
 // 登录操作，建立和服务端的连接，开始接收消息
 AVIMClient jerry = AVIMClient.getInstance("Jerry");
 jerry.open(new AVIMClientCallback() {
@@ -807,7 +807,7 @@ onOfflineMessagesUnread(AVIMClient client, AVIMConversation conversation, int un
   //如果有多个 conversation 有未读消息，此函数会执行多次
   if (unreadCount > 0) {
     // 可以根据 readCount 更新 UI
-    
+
     // 也可以拉取对应的未读消息
     conversation.queryMessages(unreadCount, new AVIMMessagesQueryCallback() {
       @Override
@@ -836,9 +836,9 @@ onOfflineMessagesUnread(AVIMClient client, AVIMConversation conversation, int un
 属性|描述|类型
 ---|---|---
 content|String|消息内容
-clientId|String|指消息发送者的 clientId 
+clientId|String|指消息发送者的 clientId
 conversationId|String|消息所属对话 id
-messageId|String|消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 id 
+messageId|String|消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 id
 timestamp|long|消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。
 receiptTimestamp|long| 消息被对方接收到的时间。消息被接收之后，由 LeanCloud 云端赋予的全局的时间戳。
 status|AVIMMessageStatus 枚举|消息状态，有五种取值：<br/><br/>`AVIMMessageStatusNone`（未知）<br/>`AVIMMessageStatusSending`（发送中）<br/>`AVIMMessageStatusSent`（发送成功）<br/>`AVIMMessageStatusReceipt`（被接收）<br/>`AVIMMessageStatusFailed`（失败）
@@ -853,7 +853,7 @@ ioType|AVIMMessageIOType 枚举|消息传输方向，有两种取值：<br/><br/
 视频消息|-4
 位置消息|-5
 文件消息|-6
- 
+
 {% endblock %}
 
 {% set attributes = "`AVIMTypedMessage.attributes`" %}
@@ -1175,8 +1175,8 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
 
 No.|邀请者|被邀请者|其他人
 ---|---|---|---
-1|发出请求 addMembers| | 
-2| |收到 onInvited 通知| 
+1|发出请求 addMembers| |
+2| |收到 onInvited 通知|
 3|收到 onMemberJoined 通知| | 收到 onMemberJoined 通知
 {% endblock %}
 
@@ -1202,7 +1202,7 @@ tom.open(new AVIMClientCallback(){
 			      if(e==null){
 			      //退出成功
 			      }
-			    } 
+			    }
 			  });
 			  }
 			}
@@ -1210,7 +1210,7 @@ tom.open(new AVIMClientCallback(){
 	  }
 	}
 });
-``` 
+```
 {% endblock %}
 
 {% block conversation_kick %}
@@ -1230,7 +1230,7 @@ william.open(new AVIMClientCallback(){
 			  if(e==null){
 			  //加入成功
 			  conv.kickMembers(Arrays.asList("Harry"),new AVIMConversationCallback(){
-			  
+
 			  	 @Override
 			    public void done(AVIMException e){
 			    }
@@ -1249,8 +1249,8 @@ william.open(new AVIMClientCallback(){
 
 No.|操作者（管理员）|被踢者|其他人
 ---|---|---|---
-1|发出请求 kickMembers| | 
-2| |收到 onKicked 通知| 
+1|发出请求 kickMembers| |
+2| |收到 onKicked 通知|
 3|收到 onMemberLeft 通知| |收到 onMemberLeft 通知
 {% endblock %}
 
@@ -1275,7 +1275,7 @@ tom.open(new AVIMClientCallback(){
            if(convs!=null && !convs.isEmpty()){
              AVIMConversation conv = convs.get(0);
              conv.getMemberCount(new AVIMConversationMemberCountCallback(){
-               
+
                @Override
                public void done(Integer count,AVIMException e){			
                if(e==null){						
@@ -1318,7 +1318,7 @@ tom.open(new AVIMClientCallback(){
 	  //登录成功
 	  client.createConversation(Arrays.asList("Black"),"喵星人",null,
 	           new AVIMConversationCreatedCallback(){
-	           
+
 	             @Override
 	             public void done(AVIMConversation conv,AVIMException e){
 	               if(e==null){
@@ -1346,7 +1346,7 @@ black.open(new AVIMClientCallback(){
 	  AVIMConversation conv = client.getConversation("55117292e4b065f7ee9edd29");
 	  conv.setName("聪明的喵星人");
 	  conv.updateInfoInBackground(new AVIMConversationCallback(){
-	    
+
 	    @Override
 	    public void done(AVIMException e){	    
 	      if(e==null){
@@ -1372,7 +1372,7 @@ tom.open(new AVIMClientCallback(){
 	  //登录成功
 	  AVIMConversation conv = client.getConversation("551260efe4b01608686c3e0f");
 	  conv.mute(new AVIMConversationCallback(){
-	  
+
 	    @Override
 	    public void done(AVIMException e){
 	      if(e==null){
@@ -1485,7 +1485,7 @@ query.findInBackground(new AVIMConversationQueryCallback(){
     //注意：按每个对话的最后更新日期（收到最后一条消息的时间）倒序排列
 	}
 	}
-});	
+});
 ```
 {% endblock %}
 
@@ -1666,7 +1666,7 @@ tom.open(new AVIMClientCallback(){
 	  AVIMConversationQuery query = client.getQuery();
 	  query.whereNotEqualTo("attr.type","private");
 	  query.setLimit(50);//limit 设为 50 ,默认为 10 个
-	  
+
 	  query.findInBackground(new AVIMConversationQueryCallback(){
 	    @Override
 	    public void done(List<AVIMConversation> convs,AVIMException e){
@@ -1695,7 +1695,7 @@ tom.open(new AVIMClientCallback(){
 	  //登录成功
 	  AVIMConversationQuery query = client.getQuery();
 	  query.whereGreaterThan("attr.age",18);
-	  
+
 	  query.findInBackground(new AVIMConversationQueryCallback(){
 	    @Override
 	    public void done(List<AVIMConversation> convs,AVIMException e){
@@ -1727,8 +1727,8 @@ tom.open(new AVIMClientCallback(){
 	  if(e==null){
 	  //登录成功
 	  AVIMConversationQuery query = client.getQuery();
-	  query.whereMatches("attr.language","[\\u4e00-\\u9fa5]"); //attr.language 是中文字符 
-	  
+	  query.whereMatches("attr.language","[\\u4e00-\\u9fa5]"); //attr.language 是中文字符
+
 	  query.findInBackground(new AVIMConversationQueryCallback(){
 	    @Override
 	    public void done(List<AVIMConversation> convs,AVIMException e){
@@ -1756,10 +1756,10 @@ tom.open(new AVIMClientCallback(){
 	  if(e==null){
 	  //登录成功
 	  AVIMConversationQuery query = client.getQuery();
-	  
+
 	  //查询attr.keywords 包含 「教育」的Conversation
-	  query.whereContains("attr.keywords","教育"); 
-	  
+	  query.whereContains("attr.keywords","教育");
+
 	  query.findInBackground(new AVIMConversationQueryCallback(){
 	    @Override
 	    public void done(List<AVIMConversation> convs,AVIMException e){
@@ -1787,10 +1787,10 @@ tom.open(new AVIMClientCallback(){
 	  if(e==null){
 	  //登录成功
 	  AVIMConversationQuery query = client.getQuery();
-	  
+
 	  //查询对话成员有 Bob 和 Jerry的Conversation
 	  query.withMembers(Arrays.as("Bob","Jerry"));
-	  
+
 	  query.findInBackground(new AVIMConversationQueryCallback(){
 	    @Override
 	    public void done(List<AVIMConversation> convs,AVIMException e){
@@ -1818,11 +1818,11 @@ tom.open(new AVIMClientCallback(){
 	  if(e==null){
 	  //登录成功
 	  AVIMConversationQuery query = client.getQuery();
-	  
+
 	  //查询 attr.keywords 包含 「教育」并且 attr.age 小于 18 的对话
 	  query.whereContains("attr.keywords", "教育");
 	  query.whereLessThan("attr.age", 18);
-	  
+
 	  query.findInBackground(new AVIMConversationQueryCallback(){
 	    @Override
 	    public void done(List<AVIMConversation> convs,AVIMException e){
@@ -1867,7 +1867,7 @@ tom.open(new AVIMClientCallback(){
 	    new AVIMConversationCreatedCallback(){
 	      @Override
 	      public void done(AVIMConversation conv,AVIMException e){
-	        
+
 	      }
 	    });
 	  }
@@ -1885,7 +1885,7 @@ tom.open(new AVIMClientCallback(){
 private void TomQueryWithLimit() {
   AVIMClient tom = AVIMClient.getInstance("Tom");
   tom.open(new AVIMClientCallback() {
-    
+
     @Override
     public void done(AVIMClient client, AVIMException e) {
       if (e == null) {
@@ -1901,7 +1901,7 @@ private void TomQueryWithLimit() {
                 AVIMConversation conv = convs.get(0);
                 //获取第一个对话的
                 conv.getMemberCount(new AVIMConversationMemberCountCallback() {
-                  
+
                   @Override
                   public void done(Integer count, AVIMException e) {
                     if (e == null) {
@@ -1982,7 +1982,7 @@ private void TomQueryWithLimit() {
 ```
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
-  
+
   @Override
   public void done(AVIMClient client,AVIMException e){
   	if(e==null){
@@ -2016,7 +2016,7 @@ tom.open(new AVIMClientCallback(){
 
   /**
    * 实现AVIMConversation相关的签名计算
-   * 
+   *
    * @param conversationId
    * @param clientId
    * @param targetIds - 此次操作的member的clientIds
@@ -2136,7 +2136,7 @@ public class AVImClientManager extends AVIMClientEventHandler {
   @Override
   public void onClientOffline(AVIMClient avimClient, int i) {
     if(i == 4111){
-      // 适当地弹出友好提示，告知当前用户的 Client Id 在其他设备上登陆了
+      // 适当地弹出友好提示，告知当前用户的 Client Id 在其他设备上登录了
     }
   }
   ...
@@ -2162,7 +2162,7 @@ public class AVImClientManager extends AVIMClientEventHandler {
     query.findInBackground(new AVIMConversationQueryCallback() {
       @Override
       public void done(List<AVIMConversation> conversations, AVIMException e) {
-        
+
       }
     });
 ```
@@ -2170,4 +2170,3 @@ public class AVImClientManager extends AVIMClientEventHandler {
 
 {% block link_avquery_chache %}[存储指南 - AVQuery 缓存查询](leanstorage_guide-android.html#缓存查询) 一节。
 {% endblock %}
-

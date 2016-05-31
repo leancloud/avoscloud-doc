@@ -1,6 +1,7 @@
 {% extends "./relation_guide.tmpl" %}
 
 {% set platform = 'Python' %}
+{% set ops_include = "include" %}
 
 {% block code_city_point_to_province %}
 

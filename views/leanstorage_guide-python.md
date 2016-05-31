@@ -20,9 +20,9 @@
 {% set geoPointObjectName ="GeoPoint" %}
 {% set userObjectName ="User" %}
 {% set fileObjectName ="File" %}
-{% set dateType= "Date" %}
+{% set dateType= "datetime.datetime" %}
 {% set byteType= "byte[]" %}
-{% set funtionName_whereKeyHasPrefix = "startsWith()" %}
+{% set funtionName_whereKeyHasPrefix = "startswith()" %}
 
 
 {# --End--变量定义，主模板使用的单词，短语的定义所有子模板都必须赋值 #}
@@ -88,7 +88,7 @@ from leancloud import Object
 TodoFolder = Object.extend('TodoFolder')
 todoFolder = TodoFolder()
 todoFolder.set('name', '工作')  
-todoFolder.set('priority',1)
+todoFolder.set('priority', 1)
 todoFolder.save()
 ```
 {% endblock %}
@@ -115,19 +115,20 @@ result = Query.do_cloud_query(r"insert into TodoFolder(name, priority) values('�
 
 ```python
 import datetime
+from datetime import datetime
 import leancloud
 from leancloud import Object
 
 SupportedType = Object.extend('SupportedType')
-supportedType = SupportedType()
-supportedType.set('string', '工作')  
-supportedType.set('int',108)
-supportedType.set('float',1.890)
-supportedType.set('boolean',True)
-supportedType.set('list',[1,2,[3,4,"string"]])
-supportedType.set('map',{"item1":12, "item2":"string item", "item3":[1,2,"3"]})
-supportedType.set('date',datetime.datetime.now())
-supportedType.save()
+supported_type = SupportedType()
+supported_type.set('string', '工作')  
+supported_type.set('int', 108)
+supported_type.set('float', 1.890)
+supported_type.set('boolean', True)
+supported_type.set('list', [1, 2, [3, 4, 'string']])
+supported_type.set('map', {'item1': 12, 'item2': 'string item', 'item3': [1, 2, '3']})
+supported_type.set('date', datetime.now())
+supported_type.save()
 ```
 
 此外，map 和 list 支持嵌套，这样在一个 Object 中就可以使用它们来储存更多的结构化数据。
@@ -235,8 +236,8 @@ todo.save()
 ```python
 import leancloud
 from leancloud import Query
-
-result = Query.do_cloud_query(r"update TodoFolder set name='家庭' where objectId='57318f14df0eea006331a19a'")
+query_string = 'update TodoFolder set name=%s where objectId= %s'%('家庭','57318f14df0eea006331a19a')
+result = Query.do_cloud_query(query_string)
 ```
 {% endblock %}
 
@@ -277,17 +278,16 @@ todo.save()
 
 ```python
 import datetime
+from datetime import datetime
 import leancloud
 from leancloud import Object
-
-leancloud.init("EhAPcOpWYqBGTV045GK4jVW7-gzGzoHsz", "iUtOLymTFVnSI8020CgjJ5TQ")
 
 Todo = Object.extend('Todo')
 todo = Todo()
 
-reminder1 = datetime.datetime(2015,11,11,07,10,00)
-reminder2 = datetime.datetime(2015,11,11,07,20,00)
-reminder3 = datetime.datetime(2015,11,11,07,30,00)
+reminder1 = datetime(2015,11,11,07,10,00)
+reminder2 = datetime(2015,11,11,07,20,00)
+reminder3 = datetime(2015,11,11,07,30,00)
 
 todo.add('reminders', reminder1)
 todo.add('reminders', reminder2)
@@ -312,7 +312,8 @@ todo.destroy();
 import leancloud
 from leancloud import Query
 
-Query.do_cloud_query(r"delete from Todo where objectId='5731a29d71cfe4006cbdbc22'")
+query_string = 'delete from %s where objectId=%s'%('Todo','5731a29d71cfe4006cbdbc22')
+Query.do_cloud_query(query_string)
 ```
 {% endblock %}
 
@@ -322,11 +323,10 @@ Query.do_cloud_query(r"delete from Todo where objectId='5731a29d71cfe4006cbdbc22
 
 ```python
 #批量创建、更新
-save_all()
+Object.save_all(list_of_objects)
 
 #批量删除
-destroy_all()
-```
+Object.destroy_all(list_of_objects)```
 {% endblock %}
 
 
@@ -341,7 +341,7 @@ TodoFolder = Object.extend('TodoFolder')
 
 todoFolder = TodoFolder()
 todoFolder.set('name','工作')
-todoFolder.set('priority',1)
+todoFolder.set('priority', 1)
 
 todo1 = Todo()
 todo1.set('title','工程师周会')
@@ -400,6 +400,7 @@ Todo.save_all([todo1, todo2, todo3])  #save_all是一个类方法
 import leancloud
 from leancloud import Object
 from leancloud import Query
+from leancloud.errors import LeanCloudError
 
 Wiki = Object.extend('Wiki')
 wiki = Wiki()
@@ -409,11 +410,11 @@ wiki.save()
 
 #这里其它的进程可能已经更新了 wiki 的内容和版本，如下的更新可能会出错
 query = Query('Wiki')
-query.equal_to('version', 2) #可能查询的时候版本号不符
+query.equal_to('version', 1) #可能查询的时候版本号不符
 wiki.set('content', 'Morning, World!')
 try:
     wiki.save(query)
-except Exception, e:
+except LeanCloudError as e:
     print "无法保存修改，wiki 已被他人更新。"   #如果抛出异常，则说明 query 的条件不符合
 else:
     print "保存成功。"
@@ -523,8 +524,8 @@ import leancloud
 from leancloud import File
 
 with open('~/avatar.png') as f:
-    file = File('fileFromLocalFile', f)
-    file.save()
+    avatar = File('fileFromLocalFile', f)
+    avatar.save()
 ```
 {% endblock %}
 
@@ -543,26 +544,10 @@ file.save()
 
 ```python
 file.save()  #执行上传
-objectId = file.id #一旦保存成功会返回文件的 objectId
+objectId = file.id #一旦保存成功即可获取到文件的 objectId
 ```
 {% endblock %}
 
-{% block code_upload_file_with_progress %}
-
-```java
-        file.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                // 成功或失败处理...
-            }
-        }, new ProgressCallback() {
-            @Override
-            public void done(Integer integer) {
-                // 上传进度数据，integer 介于 0 和 100。
-            }
-        });
-```
-{% endblock %}
 
 {% block code_download_file %}
 
@@ -579,7 +564,7 @@ from leancloud import File
 file = File.create_without_data('5732df1c1ea4930060ba4642')
 file.fetch()
 
-thumbnail_url = file.get_thumbnail_url(width='100', height='100')
+thumbnail_url = file.get_thumbnail_url(width=100, height=100)
 ```
 {% endblock %}
 
@@ -603,9 +588,9 @@ with open('~/avatar.png') as f:
 ``` python
 import leancloud
 from leancloud import File
-#默认情况下文件的产出权限是关闭的，如果想要删除需要更改class权限或者使用 master_key
-leancloud.init("yourAppId", master_key="YourMasterKey")
-
+#默认情况下文件的删除权限是关闭的，如果想要删除需要更改class权限或者使用 master_key
+leancloud.init("{{appid}}", master_key="{{masterkey}}")
+leancloud.use_master_key()
 file = File.create_without_data('5732f4cf71cfe4006cc89d75')
 file.destroy()
 ```
@@ -622,6 +607,9 @@ from leancloud import Query
 
 Todo = Object.extend('Todo')
 query = Query(Todo)
+
+#或者采用 Todo 的 query属性，也可以获得 Todo 的 query对象  
+#query = Todo.query
 ```
 {% endblock %}
 
@@ -659,8 +647,8 @@ from leancloud import Query
 Todo = Object.extend('Todo')
 query = Query(Todo)
 
-query.equal_to('priority', 0)
-query.equal_to('priority', 0)  
+query.equal_to('priority', 1)
+query.equal_to('priority', 1)  
 
 #如果这样写，只会返回 priority = 1 的结果
 query_list = query.find()
@@ -701,7 +689,7 @@ from leancloud import Query
 
 Todo = Object.extend('Todo')
 query = Query(Todo)
-query.matched('title', '^工程师')
+query.matched('title', '^李总')
 todo_list = query.find()
 ```
 {% endblock %}
@@ -716,7 +704,7 @@ from leancloud import Query
 Todo = Object.extend('Todo')
 query = Query(Todo)
 
-query.contains('title', '工程师')
+query.contains('title', '李总')
 ```
 {% endblock %}
 
@@ -730,7 +718,7 @@ from leancloud import Query
 Todo = Object.extend('Todo')
 query = Query(Todo)
 
-query.matched('title', '^((?!工程师).)*')
+query.matched('title', '^((?!机票).)*')
 ```
 {% endblock %}
 
@@ -750,8 +738,9 @@ query.not_contained_in('title',['工程师周会'])
 
 {% block code_query_array_contains_using_equalsTo %}
 
-```java
+```python
 import datetime
+from datetime import datetime
 import leancloud
 from leancloud import Object
 from leancloud import Query
@@ -759,8 +748,8 @@ from leancloud import Query
 Todo = Object.extend('Todo')
 query = Query(Todo)
 
-reminder1 = datetime.datetime(2015,11,11,07,10,00)
-reminder2 = datetime.datetime(2015,11,11,07,30,00)
+reminder1 = datetime(2015,11,11,07,10,00)
+reminder2 = datetime(2015,11,11,07,30,00)
 
 #如果只查询数组中含有某一个特定的元素可以用 equal_to 函数
 query.equal_to('reminders', reminder1)
@@ -774,6 +763,7 @@ query.contains_all('reminders', [reminder1,reminder2])
 
 ```python
 import datetime
+from datetime import datetime
 import leancloud
 from leancloud import Object
 from leancloud import Query
@@ -781,8 +771,8 @@ from leancloud import Query
 Todo = Object.extend('Todo')
 query = Query(Todo)
 
-reminder1 = datetime.datetime(2015,11,11,8,30,00)
-reminder2 = datetime.datetime(2015,11,11,9,30,00)
+reminder1 = datetime(2015,11,11,8,30,00)
+reminder2 = datetime(2015,11,11,9,30,00)
 
 #如果精确查询数组元素，则用 equal_to 函数，并在第二个参数传入需要精确查询的数组
 query.equal_to('reminders', [reminder1, reminder2])
@@ -923,13 +913,14 @@ todo_first = query.first()
 
 ```python
 import datetime
+from datetime import datetime
 import leancloud
 from leancloud import Object
 from leancloud import Query
 
 Todo = Object.extend('Todo')
 query = Query(Todo)
-date = datetime.datetime.now()
+date = datetime.now()
 
 query.less_than('createdAt', date) #查询今天之前创建的 Todo
 query.limit(10)   #最多返回 10 条结果
@@ -940,13 +931,14 @@ query.limit(10)   #最多返回 10 条结果
 
 ```python
 import datetime
+from datetime import datetime
 import leancloud
 from leancloud import Object
 from leancloud import Query
 
 Todo = Object.extend('Todo')
 query = Query(Todo)
-date = datetime.datetime.now()
+date = datetime.now()
 
 query.less_than('createdAt', date) #查询今天之前创建的 Todo
 query.limit(10)   #最多返回 10 条结果
@@ -1027,7 +1019,6 @@ query.add_descending('priority')
 {% block code_query_where_keys_exist %}
 
 ```python
-import datetime
 import leancloud
 from leancloud import Object
 from leancloud import Query
@@ -1091,7 +1082,7 @@ import leancloud
 from leancloud import Query
 
 cql = "select * from Todo where status = 1"
-todo_list = Query.do_cloud_query(cql)
+todo_list = Query.do_cloud_query(cql).results
 
 cql = "select count(*) from Todo where priority = 0"
 todo_count = Query.do_cloud_query(cql).count
@@ -1100,7 +1091,7 @@ todo_count = Query.do_cloud_query(cql).count
 
 {% block code_query_by_cql_with_placeholder %}
 
-```java
+```python
 import leancloud
 from leancloud import Query
 
@@ -1117,49 +1108,10 @@ todo_list  = todo_query.results #返回符合条件的 todo list
 ```
 {% endblock %}
 
-{% block table_cache_policy %}
-
-策略枚举 | 含义及解释|
----|---
-`IGNORE_CACHE`| **（默认缓存策略）**查询行为不从缓存加载，也不会将结果保存到缓存中。
-`CACHE_ONLY` |  查询行为忽略网络状况，只从缓存加载。如果没有缓存结果，该策略会产生 `AVException`。
-`CACHE_ELSE_NETWORK` |  查询行为首先尝试从缓存加载，若加载失败，则通过网络加载结果。如果缓存和网络获取行为均为失败，则产生 `AVException`。
-`NETWORK_ELSE_CACHE` | 查询行为先尝试从网络加载，若加载失败，则从缓存加载结果。如果缓存和网络获取行为均为失败，则产生 `AVException`。
-`CACHE_THEN_NETWORK` | 查询先从缓存加载，然后从网络加载。在这种情况下，回调函数会被调用两次，第一次是缓存中的结果，然后是从网络获取的结果。因为它会在不同的时间返回两个结果，所以该策略不能与 `find()` 同时使用。
-{% endblock %}
-
-{% block code_cache_operation %}
-
-* 检查是否存在缓存查询结果：
-
-  ``` java
-  boolean isInCache = query.hasCachedResult();
-  ```
-
-* 删除某一查询的任何缓存结果：
-
-  ``` java
-  query.clearCachedResult();
-  ```
-
-* 删除查询的所有缓存结果：
-
-  ``` java
-  AVQuery.clearAllCachedResults();
-  ```
-
-* 设定缓存结果的最长时限：
-
-  ``` java
-  query.setMaxCacheAge(60 * 60 * 24);// 一天的总秒数
-  ```
-
-查询缓存也适用于 `AVQuery` 的辅助方法，包括 `getFirst()` 和 `getInBackground()`。
-{% endblock %}
 
 {% block code_query_geoPoint_near %}
 
-```java
+```python
 import leancloud
 from leancloud import Query
 from leancloud import GeoPoint
@@ -1172,7 +1124,7 @@ query.near('whereCreated', point) #离这个位置最近的 10 个 Todo 对象
 query.find()
 ```
 
-在上面的代码中，`nearbyTodos` 返回的是与 `point` 这一点按距离排序（由近到远）的对象数组。注意：**如果在此之后又使用了 `orderByAscending` 或 `orderByDescending` 方法，则按距离排序会被新排序覆盖。**
+在上面的代码中，`nearbyTodos` 返回的是与 `point` 这一点按距离排序（由近到远）的对象数组。注意：**如果在此之后又使用了 `ascending` 或 `descending` 方法，则按距离排序会被新排序覆盖。但是如果使用`add_ascending`或`add_descending`方法，则之前指定的按距离排序的优先级更高。**
 {% endblock %}
 
 {% block text_platform_geoPoint_notice %}
@@ -1426,7 +1378,7 @@ def take_accusation():
 你可以使用你自定义的构造函数来创建你的子类对象。你的子类必须定义一个公开的默认构造函数，并且不修改任何父类 AVObject 中的字段，这个默认构造函数将会被 SDK 使用来创建子类的强类型的对象。
 
 
-要创建一个到现有对象的引用，可以使用 `AVObject.createWithoutData()`:
+要创建一个到现有对象的引用，可以使用 `leancloud.Object.create_without_data()`：
 
 ```python
 import leancloud

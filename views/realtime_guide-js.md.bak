@@ -1158,8 +1158,8 @@ tom.open(new AVIMClientCallback(){
              conv.getMemberCount(new AVIMConversationMemberCountCallback(){
 
                @Override
-               public void done(Integer count,AVIMException e){			
-               if(e==null){						
+               public void done(Integer count,AVIMException e){
+               if(e==null){
                Log.d("Tom & Jerry","conversation got "+count+" members");
 				}
                }
@@ -1229,7 +1229,7 @@ black.open(new AVIMClientCallback(){
 	  conv.updateInfoInBackground(new AVIMConversationCallback(){
 
 	    @Override
-	    public void done(AVIMException e){	    
+	    public void done(AVIMException e){
 	      if(e==null){
 	      //更新成功
 	      }
@@ -1346,7 +1346,7 @@ tom.open(new AVIMClientCallback(){
           //注意：按每个对话的最后更新日期（收到最后一条消息的时间）倒序排列
 	      }
 	    }
-	  });	  
+	  });
 	  }
 	}
 });
@@ -2017,7 +2017,7 @@ public class AVImClientManager extends AVIMClientEventHandler {
   @Override
   public void onClientOffline(AVIMClient avimClient, int i) {
     if(i == 4111){
-      // 适当地弹出友好提示，告知当前用户的 Client Id 在其他设备上登陆了
+      // 适当地弹出友好提示，告知当前用户的 Client Id 在其他设备上登录了
     }
   }
   ...
