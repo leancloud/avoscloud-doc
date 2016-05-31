@@ -122,7 +122,7 @@ imClient.open(new AVIMClientCallback(){
 * members，数组，对话参与者，这里记录了所有的参与者
 * name，字符串，对话的名字，可选，可用来对于群组命名
 * attributes，Map/Dict，自定义属性，可选，供开发者自己扩展用。
-* transient，布尔值，表示对话是否为[暂态对话](./realtime_v2.html#暂态对话_transient_conversation_)（关于暂态对话，[后面](#开放聊天室)会详细解释）
+* transient，布尔值，表示对话是否为[暂态对话](./realtime_v2.html#暂态对话_transient_conversation_)（关于暂态对话，[后面](#聊天室)会详细解释）
 
 我们可以通过 `AVIMClient` 来创建一个对话，其函数声明为：
 
@@ -1161,19 +1161,19 @@ conversationQuery.findInBackground(new AVIMConversationQueryCallback(){
 `conversationQuery.whereXXX()` 系列方法可用来限定对话名称和自定义属性，这里要强调的一点是，对于自定义属性的约束条件，属性名一定要以 `attr` 开头，如上例所示，限定额外的 `type` 条件的时候需要指定的属性名是 `attr.type`。具体可以参看其头文件。
 
 
-开放聊天室
+聊天室
 -------------
-开放聊天室（也叫「暂态」对话）可以用于很多地方，譬如弹幕、直播等等。在 LeanCloud IM SDK 中，开放聊天室是一类特殊的群组，它也支持创建、加入/踢出成员等操作，消息记录会被保存并可供获取；与普通群组不一样的地方具体体现为：
+聊天室（也叫「暂态」对话）可以用于很多地方，譬如弹幕、直播等等。在 LeanCloud IM SDK 中，聊天室是一类特殊的群组，它也支持创建、加入/踢出成员等操作，消息记录会被保存并可供获取；与普通群组不一样的地方具体体现为：
 
 * 不支持查询成员列表，你可以通过相关 API 查询在线人数；
 * 不支持离线消息、离线推送通知等功能；
 * 没有成员加入、离开的通知；
-* 一个用户一次登录只能加入一个开放聊天室，加入新的开放聊天室后会自动离开原来的聊天室；
+* 一个用户一次登录只能加入一个聊天室，加入新的聊天室后会自动离开原来的聊天室；
 * 加入后半小时内断网重连会自动加入原聊天室，超过这个时间则需要重新加入；
 
-### 创建开放聊天室 ###
+### 创建聊天室 ###
 
-和普通的群组类似，建立一个开放聊天室也是很简单的，只是在 `AVIMClient.createConversation(conversationMembers, name, attributes, isTransient, callback)` 中我们需要传入 `isTransient=true` 选项。例如：
+和普通的群组类似，建立一个聊天室也是很简单的，只是在 `AVIMClient.createConversation(conversationMembers, name, attributes, isTransient, callback)` 中我们需要传入 `isTransient=true` 选项。例如：
 
 ```
 Map<String, Object> attr = new HashMap<String, Object>();
@@ -1191,15 +1191,15 @@ imClient.createConversation(clientIds, name, attr, true, new AVIMConversationCre
 });
 ```
 
-创建成功之后，我们就可以进入聊天界面了。开放聊天室的其他操作，都与普通群组操作一样。
+创建成功之后，我们就可以进入聊天界面了。聊天室的其他操作，都与普通群组操作一样。
 
-### 加入开放聊天室
-只要应用层不做限制，任何终端用户都可以加入开放聊天室，这部分逻辑与之前的加入群组一样。
+### 加入聊天室
+只要应用层不做限制，任何终端用户都可以加入聊天室，这部分逻辑与之前的加入群组一样。
 同样的，离开任何「对话」（不论普通还是「暂态」），调用 `AVIMConversation.quit(callback)` 函数即可，这里不再赘述。
 
 ### 查询在线人数 ###
 
-对于开放聊天室来说，与普通群组有很大一点不同，就是没有了参与用户列表，取而代之的是可以查询实时在线人数。`AVIMConversation.getMemberCount()` 函数可以完成这一功能，其声明如下：
+对于聊天室来说，与普通群组有很大一点不同，就是没有了参与用户列表，取而代之的是可以查询实时在线人数。`AVIMConversation.getMemberCount()` 函数可以完成这一功能，其声明如下：
 
 ```
 void getMemberCount(AVIMConversationMemberCountCallback callback)
