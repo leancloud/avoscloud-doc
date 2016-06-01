@@ -6,7 +6,7 @@
 
 #### pip
 
-pip 是最推荐的 Python 包管理工具，它是 easy_install 的替代。安装 leancloud-sdk 只需执行以下命令：
+pip 是 最推荐的 Python 包管理工具，它是 easy_install 的替代。安装 leancloud-sdk 只需执行以下命令：
 ```
 pip install leancloud-sdk
 ```
@@ -52,7 +52,7 @@ leancloud.use_region('US') # 启用美国节点
 import leancloud
 from leancloud import Object
 
-leancloud.init("{{appid}}", "{{appkey}}")
+leancloud.init("appId", "masterKey")
 
 TestObject = Object.extend('TestObject')
 testObject = TestObject()
@@ -62,3 +62,7 @@ testObject.save()
 
 然后编译执行。
 {% endblock %}
+
+{% block permission_access_network_config %}{% endblock %}
+
+{% block platform_specific_faq %}{% endblock %}

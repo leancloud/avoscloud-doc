@@ -20,9 +20,9 @@
 {% set geoPointObjectName ="GeoPoint" %}
 {% set userObjectName ="User" %}
 {% set fileObjectName ="File" %}
-{% set dateType= "datetime.datetime" %}
+{% set dateType= "Date" %}
 {% set byteType= "byte[]" %}
-{% set funtionName_whereKeyHasPrefix = "startswith()" %}
+{% set funtionName_whereKeyHasPrefix = "startsWith()" %}
 
 
 {# --End--变量定义，主模板使用的单词，短语的定义所有子模板都必须赋值 #}
@@ -88,7 +88,7 @@ from leancloud import Object
 TodoFolder = Object.extend('TodoFolder')
 todoFolder = TodoFolder()
 todoFolder.set('name', '工作')  
-todoFolder.set('priority', 1)
+todoFolder.set('priority',1)
 todoFolder.save()
 ```
 {% endblock %}
@@ -114,20 +114,19 @@ result = Query.do_cloud_query(query_string)
 
 ```python
 import datetime
-from datetime import datetime
 import leancloud
 from leancloud import Object
 
 SupportedType = Object.extend('SupportedType')
-supported_type = SupportedType()
-supported_type.set('string', '工作')  
-supported_type.set('int', 108)
-supported_type.set('float', 1.890)
-supported_type.set('boolean', True)
-supported_type.set('list', [1, 2, [3, 4, 'string']])
-supported_type.set('map', {'item1': 12, 'item2': 'string item', 'item3': [1, 2, '3']})
-supported_type.set('date', datetime.now())
-supported_type.save()
+supportedType = SupportedType()
+supportedType.set('string', '工作')  
+supportedType.set('int',108)
+supportedType.set('float',1.890)
+supportedType.set('boolean',True)
+supportedType.set('list',[1,2,[3,4,"string"]])
+supportedType.set('map',{"item1":12, "item2":"string item", "item3":[1,2,"3"]})
+supportedType.set('date',datetime.datetime.now())
+supportedType.save()
 ```
 
 此外，map 和 list 支持嵌套，这样在一个 `leancloud.Object` 中就可以使用它们来储存更多的结构化数据。
@@ -236,8 +235,8 @@ todo.save()
 ```python
 import leancloud
 from leancloud import Query
-query_string = 'update TodoFolder set name=%s where objectId= %s'%('家庭','57318f14df0eea006331a19a')
-result = Query.do_cloud_query(query_string)
+
+result = Query.do_cloud_query(r"update TodoFolder set name='家庭' where objectId='57318f14df0eea006331a19a'")
 ```
 {% endblock %}
 
@@ -278,9 +277,10 @@ todo.save()
 
 ```python
 import datetime
-from datetime import datetime
 import leancloud
 from leancloud import Object
+
+leancloud.init("EhAPcOpWYqBGTV045GK4jVW7-gzGzoHsz", "iUtOLymTFVnSI8020CgjJ5TQ")
 
 Todo = Object.extend('Todo')
 todo = Todo()
@@ -312,8 +312,7 @@ todo.destroy();
 import leancloud
 from leancloud import Query
 
-query_string = 'delete from %s where objectId=%s'%('Todo','5731a29d71cfe4006cbdbc22')
-Query.do_cloud_query(query_string)
+Query.do_cloud_query(r"delete from Todo where objectId='5731a29d71cfe4006cbdbc22'")
 ```
 {% endblock %}
 
@@ -413,7 +412,7 @@ query.equal_to('version', 1) # 可能查询的时候版本号不符
 wiki.set('content', 'Morning, World!')
 try:
     wiki.save(query)
-except LeanCloudError as e:
+except Exception, e:
     print "无法保存修改，wiki 已被他人更新。"   #如果抛出异常，则说明 query 的条件不符合
 else:
     print "保存成功。"
@@ -523,8 +522,8 @@ import leancloud
 from leancloud import File
 
 with open('~/avatar.png') as f:
-    avatar = File('fileFromLocalFile', f)
-    avatar.save()
+    file = File('fileFromLocalFile', f)
+    file.save()
 ```
 {% endblock %}
 
@@ -548,6 +547,7 @@ objectId = file.id # 一旦保存成功即可获取到文件的 objectId
 {% endblock %}
 
 
+
 {% block code_download_file %}
 
 ```python
@@ -563,7 +563,7 @@ from leancloud import File
 file = File.create_without_data('5732df1c1ea4930060ba4642')
 file.fetch()
 
-thumbnail_url = file.get_thumbnail_url(width=100, height=100)
+thumbnail_url = file.get_thumbnail_url(width='100', height='100')
 ```
 {% endblock %}
 
@@ -587,6 +587,7 @@ with open('~/avatar.png') as f:
 ``` python
 import leancloud
 from leancloud import File
+
 # 默认情况下文件的删除权限是关闭的，如果想要删除需要更改class权限或者使用 master_key
 leancloud.init("{{appid}}", master_key="{{masterkey}}")
 leancloud.use_master_key()
@@ -640,8 +641,8 @@ from leancloud import Object
 Todo = Object.extend('Todo')
 query = Todo.query
 
-query.equal_to('priority', 1)
-query.equal_to('priority', 1)  
+query.equal_to('priority', 0)
+query.equal_to('priority', 0)  
 
 # 如果这样写，只会返回 priority = 1 的结果
 query_list = query.find()
@@ -695,7 +696,7 @@ from leancloud import Object
 Todo = Object.extend('Todo')
 query = Todo.query
 
-query.contains('title', '李总')
+query.contains('title', '工程师')
 ```
 {% endblock %}
 
@@ -708,7 +709,7 @@ from leancloud import Object
 Todo = Object.extend('Todo')
 query = Todo.query
 
-query.matched('title', '^((?!机票).)*')
+query.matched('title', '^((?!工程师).)*')
 ```
 {% endblock %}
 
@@ -727,9 +728,8 @@ query.not_contained_in('title', ['工程师周会'])
 
 {% block code_query_array_contains_using_equalsTo %}
 
-```python
+```java
 import datetime
-from datetime import datetime
 import leancloud
 from leancloud import Object
 
@@ -751,7 +751,6 @@ query.contains_all('reminders', [reminder1,reminder2])
 
 ```python
 import datetime
-from datetime import datetime
 import leancloud
 from leancloud import Object
 
@@ -899,7 +898,6 @@ todo_first = query.first()
 
 ```python
 import datetime
-from datetime import datetime
 import leancloud
 from leancloud import Object
 
@@ -916,7 +914,6 @@ query.limit(10)   # 最多返回 10 条结果
 
 ```python
 import datetime
-from datetime import datetime
 import leancloud
 from leancloud import Object
 
@@ -1001,6 +998,7 @@ query.add_descending('priority')
 {% block code_query_where_keys_exist %}
 
 ```python
+import datetime
 import leancloud
 from leancloud import Object
 from leancloud import File
@@ -1063,7 +1061,7 @@ import leancloud
 from leancloud import Query
 
 cql = "select * from Todo where status = 1"
-todo_list = Query.do_cloud_query(cql).results
+todo_list = Query.do_cloud_query(cql)
 
 cql = "select count(*) from Todo where priority = 0"
 todo_count = Query.do_cloud_query(cql).count
@@ -1072,7 +1070,7 @@ todo_count = Query.do_cloud_query(cql).count
 
 {% block code_query_by_cql_with_placeholder %}
 
-```python
+```java
 import leancloud
 from leancloud import Query
 
@@ -1105,7 +1103,7 @@ query.near('whereCreated', point) # 离这个位置最近的 10 个 Todo 对象
 query.find()
 ```
 
-在上面的代码中，`nearbyTodos` 返回的是与 `point` 这一点按距离排序（由近到远）的对象数组。注意：**如果在此之后又使用了 `ascending` 或 `descending` 方法，则按距离排序会被新排序覆盖。但是如果使用`add_ascending`或`add_descending`方法，则之前指定的按距离排序的优先级更高。**
+在上面的代码中，`nearbyTodos` 返回的是与 `point` 这一点按距离排序（由近到远）的对象数组。注意：**如果在此之后又使用了 `orderByAscending` 或 `orderByDescending` 方法，则按距离排序会被新排序覆盖。**
 {% endblock %}
 
 {% block text_platform_geoPoint_notice %}
@@ -1360,7 +1358,7 @@ def take_accusation():
 你可以使用你自定义的构造函数来创建你的子类对象。你的子类必须定义一个公开的默认构造函数，并且不修改任何父类 `leancloud.Object` 中的字段，这个默认构造函数将会被 SDK 使用来创建子类的强类型的对象。
 
 
-要创建一个到现有对象的引用，可以使用 `leancloud.Object.create_without_data()`：
+要创建一个到现有对象的引用，可以使用 `AVObject.createWithoutData()`:
 
 ```python
 import leancloud
