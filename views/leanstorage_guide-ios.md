@@ -671,6 +671,13 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 ```objc
 [query whereKey:@"priority" greaterThanOrEqualTo:@2];
 ```
+
+另外，因为 Objective-C 语言本身特定的设定，boolean 值的查询很多开发者**错误地**使用了 0 和 1 进行查询。
+正确的构建方式如下：
+
+```
+[query whereKey:@"booleanTest" equalTo:@(YES)];
+```
 {% endblock %}
 
 {% block code_query_with_regular_expression %}

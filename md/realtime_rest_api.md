@@ -1,5 +1,24 @@
 # 实时通信 REST API 使用指南
 
+## API 域名
+
+所有 API 访问都通过 HTTPS 进行。API 访问域名为：
+
+- **中国节点**：<https://api.leancloud.cn>
+- **美国节点**：<https://us-api.leancloud.cn>
+
+域名之后衔接 API 版本号，如 `/1.1/`，代表正在使用 1.1 版的 API。
+
+## 请求格式
+对于 POST 和 PUT 请求，请求的主体必须是 JSON 格式，而且 HTTP Header 的 Content-Type 需要设置为 `application/json`。
+
+请求的鉴权是通过 HTTP Header 里面包含的键值对来进行的，参数如下表：
+
+Key|Value|含义|来源
+---|----|---|---
+`X-LC-Id`|{{appid}}|当前应用的 App Id|可在控制台->设置页面查看
+`X-LC-Key`| {{appkey}}|当前应用的 App Key |可在控制台->设置页面查看
+
 ## 对话数据操作
 
 你可以通过 REST API 对对话（相应的聊天室、群组或单聊等）进行操作，例如提前创建聊天室，关联聊天室到其他数据实体。LeanCloud 实时通信系统采用透明的设计，对话数据在 LeanCloud 系统中是普通的数据表，表名为 `_Conversation`，你可以直接调用 [数据存储相关的 API 进行数据操作](./rest_api.html#对象-1)。`_Conversation` 表 包含一些内置的关键字段定义了对话的属性、成员等，你可以在 [实时通信概览 - 对话](./realtime_v2.html#对话_Conversation_) 了解。
