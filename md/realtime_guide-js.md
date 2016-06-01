@@ -441,7 +441,7 @@ realtime.createIMClient('bob').then(function(bob) {
 
 ### 未读消息
 
-未读消息有两种处理方式，未读消息数量通知与离线消息内容通知。
+未读消息有两种处理方式，未读消息数量通知与离线消息通知。
 
 #### 未读消息数量通知
 
@@ -484,11 +484,11 @@ client.markAllAsRead([conversation]).then(function() {
 }).catch(console.error.bind(console));
 ```
 
-#### 离线消息内容通知
+#### 离线消息通知
 
-离线消息内容通知方式是指，当客户端上线时，服务器会主动将所有离线时收到的消息推送过来，每个对话最多推送 20 条最近的消息。当收到离线消息时，SDK 会在 Client 上派发 `messages` 事件，与在线时收到消息无异。
+离线消息通知方式是指，当客户端上线时，服务器会主动将所有离线时收到的消息推送过来，每个对话最多推送 20 条最近的消息。当收到离线消息时，SDK 会在 Client 上派发 `messages` 事件，与在线时收到消息无异。
 
-要使用离线消息内容通知方式，需要在初始化 Realtime 时设置参数 `pushOfflineMessages` 为 `true`：
+要使用离线消息通知方式，需要在初始化 Realtime 时设置参数 `pushOfflineMessages` 为 `true`：
 
 ```javascript
 var realtime = new AV.Realtime({
