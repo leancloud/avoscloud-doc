@@ -258,6 +258,11 @@ realtimeObj.on('membersleft', function(data) {
 realtimeObj.on('message', function(data) {
     console.log('某个当前用户在的 Conversation 接收到消息：', data);
 });
+
+//当聊天出现错误时会触发
+realtimeObj.on('error', function (error) {
+    console.error(error);
+});
 ```
 
 如果 A 创建了一个包含 B 的 Conversation ，并向其发送消息。
