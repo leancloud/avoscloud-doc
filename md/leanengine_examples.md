@@ -4,7 +4,7 @@
 
 ## 一个简单的 Todo 列表
 
-[leanengine-todo-demo](https://github.com/leancloud/leanengine-todo-demo) 这是一个稍微复杂点的项目，演示了基本的用户注册、会话管理、业务数据的增删查改、简单的 ACL 使用。这个项目可以作为初学云引擎和 [JavaScript SDK](js_guide.html) 使用。（在线演示：<http://todo-demo.leanapp.cn/>）
+[leanengine-todo-demo](https://github.com/leancloud/leanengine-todo-demo) 这是一个稍微复杂点的项目，演示了基本的用户注册、会话管理、业务数据的增删查改、简单的 ACL 使用。这个项目可以作为初学云引擎和 [JavaScript SDK](leanstorage_guide-js.html) 使用。（在线演示：<http://todo-demo.leanapp.cn/>）
 
 ## 微信自动问答机器人
 

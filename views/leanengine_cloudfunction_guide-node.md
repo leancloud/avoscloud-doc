@@ -5,7 +5,7 @@
 {% set storageName = 'LeanStorage' %}
 {% set leanengine_middleware = '[LeanEngine Node.js SDK](https://github.com/leancloud/leanengine-node-sdk)' %}
 
-{% set sdk_guide_link = '[JavaScript SDK](./js_guide.html)' %}
+{% set sdk_guide_link = '[JavaScript SDK](./leanstorage_guide-js.html)' %}
 {% set cloud_func_file = '`$PROJECT_DIR/cloud.js`' %}
 {% set runFuncName = '`AV.Cloud.run`' %}
 {% set defineFuncName = '`AV.Cloud.define`' %}

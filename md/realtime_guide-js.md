@@ -246,7 +246,7 @@ realtime.createIMClient('William').then(function(william) {
 
 ##### 图像消息、音频消息、视频消息、文件消息
 
-图像可以通过浏览器或 Node.js 提供的 API 获取，也可以用有效的图像 URL。先使用存储 SDK 的 `AV.File` 类 [构造出一个文件对象](js_guide.html#文件)，再调用其 `save` 方法将其保存到服务端，然后把它当做参数构造一个 `ImageMessage` 的实例，最后通过 `Conversation#send` 方法即可发送这条消息。
+图像可以通过浏览器或 Node.js 提供的 API 获取，也可以用有效的图像 URL。先使用存储 SDK 的 `AV.File` 类 [构造出一个文件对象](leanstorage_guide-js.html#文件)，再调用其 `save` 方法将其保存到服务端，然后把它当做参数构造一个 `ImageMessage` 的实例，最后通过 `Conversation#send` 方法即可发送这条消息。
 
 音频消息、视频消息、文件消息的构造与发送与图像消息类似，不再赘述。
 
@@ -301,7 +301,7 @@ file.save().then(function() {
 
 ##### 地理位置消息
 
-先使用存储 SDK 的 `AV.GeoPoint` 类 [构造出一个地理位置对象](js_guide.html#地理位置)，然后把它当做参数构造一个 `LocationMessage` 的实例，最后通过 `Conversation#send` 方法即可发送这条消息。
+先使用存储 SDK 的 `AV.GeoPoint` 类 [构造出一个地理位置对象](leanstorage_guide-js.html#地理位置)，然后把它当做参数构造一个 `LocationMessage` 的实例，最后通过 `Conversation#send` 方法即可发送这条消息。
 
 ```javascript
 var location = new AV.GeoPoint(31.3753285,120.9664658);

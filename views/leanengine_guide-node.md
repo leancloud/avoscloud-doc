@@ -26,7 +26,7 @@ $ avoscloud add <appName> <appId>
 
 {% block demo %}
 * [node-js-getting-started](https://github.com/leancloud/node-js-getting-started)：这是一个非常简单的基于 Express 4 的项目，可以作为大家的项目模板。（在线演示：<http://node.leanapp.cn/>） 
-* [leanengine-todo-demo](https://github.com/leancloud/leanengine-todo-demo)：这是一个稍微复杂点的项目，是上一个项目的扩展，演示了基本的用户注册、会话管理、业务数据的增删查改、简单的 ACL 使用。这个项目可以作为初学云引擎和 [JavaScript SDK](js_guide.html) 使用。（在线演示：<http://todo-demo.leanapp.cn/>）
+* [leanengine-todo-demo](https://github.com/leancloud/leanengine-todo-demo)：这是一个稍微复杂点的项目，是上一个项目的扩展，演示了基本的用户注册、会话管理、业务数据的增删查改、简单的 ACL 使用。这个项目可以作为初学云引擎和 [JavaScript SDK](leanstorage_guide-js.html) 使用。（在线演示：<http://todo-demo.leanapp.cn/>）
 * [LeanEngine-Full-Stack](https://github.com/leancloud/LeanEngine-Full-Stack) ：该项目是基于云引擎的 Web 全栈开发的技术解决方案，比较大型的 Web 项目可以使用这个结构实现从 0 到 1 的敏捷开发。
 {% endblock %}
 
@@ -120,7 +120,7 @@ AV.initialize(APP_ID, APP_KEY, MASTER_KEY);
 ```
 {% endblock %}
 
-{% set sdk_guide_link = '[JavaScript SDK](./js_guide.html)' %}
+{% set sdk_guide_link = '[JavaScript SDK](./leanstorage_guide-js.html)' %}
 
 {% block cloudFuncExample %}
 ```javascript

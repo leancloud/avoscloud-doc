@@ -43,7 +43,7 @@ var async = require('async');
 
 `AV.Object.extend` 产生的对象需要作为全局变量保存（即定义在 AV.Cloud.define 方法之外）。因为每调用一次，就会产生一个新的类的实例，并且和之前创建的实例形成一个链表。调用次数过多后（几万次）就会堆栈溢出。如果你的应用时不时出现 **Maximum call stack size exceeded** 错误，请确认是否误用了 `AV.Object.extend` 方法。
 
-我们在 [JavaScript 指南 - AV.Object](./js_guide.html#AV_Object) 章节中也进行了描述。
+我们在 [JavaScript 指南 - AV.Object](./leanstorage_guide-js.html#AV_Object) 章节中也进行了描述。
 
 ## 目前支持哪些语言？
 

@@ -205,7 +205,7 @@ LeanCloud 平台保证 99.9% 的高可用性，并且数据访问方面保证了
 详细请参看 [Android 数据存储开发指南](./leanstorage_guide-android.html);
 
 ### Javascript 开发指南
-详细请参看 [Javascript 数据存储开发指南](./js_guide.html);
+详细请参看 [Javascript 数据存储开发指南](./leanstorage_guide-js.html);
 
 ### .Net/Unity3D 开发指南
 详细请参看 [.Net 数据存储开发指南](./dotnet_guide.html);

@@ -52,7 +52,7 @@ testObject.save({
 });
 ```
 
-大功告成！就这么简单，你就可以存储一条任意的数据到数据库中了，不再需要繁琐的数据库配置，甚至是服务端代码。访问 [控制台 - 数据管理](/data.html?appid={{appid}}#/TestObject) 可以看到上面创建的 TestObject 的相关数据。当然，还可以同样非常简单地基于 LeanCloud 实现[账号系统](js_guide.html#用户)、[短信发送](sms_guide-js.html)、[实时聊天](realtime_guide-js.html)等功能，快速入门之后还有丰富的文档和 Demo 你可以尝试。
+大功告成！就这么简单，你就可以存储一条任意的数据到数据库中了，不再需要繁琐的数据库配置，甚至是服务端代码。访问 [控制台 - 数据管理](/data.html?appid={{appid}}#/TestObject) 可以看到上面创建的 TestObject 的相关数据。当然，还可以同样非常简单地基于 LeanCloud 实现[账号系统](leanstorage_guide-js.html#用户)、[短信发送](sms_guide-js.html)、[实时聊天](realtime_guide-js.html)等功能，快速入门之后还有丰富的文档和 Demo 你可以尝试。
 
 你也可以通过 bower 安装 JavaScript SDK：
 

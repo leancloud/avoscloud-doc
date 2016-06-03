@@ -63,7 +63,7 @@ errors| | 本次推送过程中的错误信息。
 
 ## 云引擎和 JavaScript 创建推送
 
-请阅读 [JavaScript SDK 指南 - Push 通知](./js_guide.html#Push_通知)。
+请阅读 [JavaScript SDK 指南 - Push 通知](./leanstorage_guide-js.html#Push_通知)。
 我们还提供单独的 [JavaScript 推送客户端](https://github.com/leancloud/js-push-sdk/) 用于在网页中收发推送。
 
 ## 使用 REST API 推送消息

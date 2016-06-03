@@ -96,7 +96,7 @@ app.get('/', function(req, res) {
 {% endblock %}
 
 {% block use_leanstorage %}
-云引擎使用 {{leanengine_middleware}} 来代替 [JavaScript 存储 SDK](https://github.com/leancloud/javascript-sdk) 。前者包含了后者，并增加了云函数和 Hook 函数的支持，因此开发者可以直接使用 [LeanCloud 的存储服务](js_guide.html) 来存储自己的数据。
+云引擎使用 {{leanengine_middleware}} 来代替 [JavaScript 存储 SDK](https://github.com/leancloud/javascript-sdk) 。前者包含了后者，并增加了云函数和 Hook 函数的支持，因此开发者可以直接使用 [LeanCloud 的存储服务](leanstorage_guide-js.html) 来存储自己的数据。
 
 如果使用项目框架作为基础开发，{{leanengine_middleware}} 默认是配置好的，可以根据示例程序的方式直接使用。
 
