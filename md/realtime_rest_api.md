@@ -252,7 +252,7 @@ curl -X POST \
 
 参数 | 约束 | 说明
 ---|---|---
-from_peer | |消息的发件人 id
+from_peer | |消息的发件人 client Id
 conv_id | |发送到对话 id
 transient | 可选|是否为暂态消息（**由于向后兼容的考虑，默认为 true**，请注意设置这个值。）
 message || 消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
@@ -264,9 +264,27 @@ no_sync | 可选|默认情况下消息会被同步给在线的 from_peer 用户�
 
 ### 系统对话给用户发消息
 
-利用 REST API 通过系统对话给用户发消息时，除了 conv_id 需要设置为对应系统对话的 ID 以外，还需要设置 to_peers（数组）指定实际接收消息的 Client ID。
+利用 REST API 通过系统对话给用户发消息时，除了 conv_id 需要设置为对应系统对话的 id 以外，还需要设置 to_peers（数组）指定实际接收消息的 client id。
 
-目前你可以在一次调用中传入至多 20 个 Client ID。
+目前你可以在一次调用中传入至多 20 个 client id。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '{"from_peer": "1a", "to_peers":["2c","3d","4f"],"message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "...", "transient": false}' \
+  https://leancloud.cn/1.1/rtm/messages
+```
+
+参数 | 约束 | 说明
+---|---|---
+from_peer | |消息的发件人 client id
+to_peers | 长度最长为 20 个 client id| 接受系统消息的 client id
+conv_id | |发送到对话 id
+transient | 可选|是否为暂态消息（**由于向后兼容的考虑，默认为 true**，请注意设置这个值。）
+message || 消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
+no_sync | 可选|默认情况下消息会被同步给在线的 from_peer 用户的客户端，设置为 true 禁用此功能。
 
 ### 系统对话发送广播消息
 
