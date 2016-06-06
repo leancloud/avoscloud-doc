@@ -1,10 +1,11 @@
 {% set appid = '{{appid}}' %}
 {% set appkey = '{{appkey}}' %}
 {% set masterkey = '{{masterkey}}' %}
+{% set middot = '&middot;' | safe %}
 
 #  {{platform_title}} 数据存储开发指南
 
-数据存储（{{productName}}）是 {{cloudName}} 提供的核心功能之一，它的使用方法与传统的关系型数据库有诸多不同。下面我们将其与传统数据库的使用方法进行对比，让大家有一个初步了解。
+数据存储（{{productName}}）是 LeanCloud 提供的核心功能之一，它的使用方法与传统的关系型数据库有诸多不同。下面我们将其与传统数据库的使用方法进行对比，让大家有一个初步了解。
 
 下面这条 SQL 语句在绝大数的关系型数据库都可以执行，其结果是在 Todo 表里增加一条新数据：
 
@@ -55,7 +56,7 @@
 `{{baseObjectName}}` 是 {{productName}} 对复杂对象的封装，每个 `AVObject` 包含若干属性值对，也称键值对（key-value）。属性的值是与 JSON 格式兼容的数据。通过 REST API 保存对象需要将对象的数据通过 JSON 来编码。这个数据是无模式化的（Schema Free），这意味着你不需要提前标注每个对象上有哪些 key，你只需要随意设置 key-value 对就可以，云端会保存它。
 
 ### 构建对象
-构建一个 {{baseObjectName}} 可以使用如下方式：
+构建一个 `{{baseObjectName}}` 可以使用如下方式：
 
 {% block code_create_todo_object %}{% endblock %}
 
@@ -105,15 +106,15 @@ description     objectId
 
 选项 | 类型 | 说明
 --- | --- | ---
-<code class="text-nowrap">fetchWhenSave</code> | BOOL | 对象成功保存后，自动返回该对象在云端的最新数据。用途请参考 [更新计数器](#更新计数器)。
-`query` | {{baseQueryClassName}}  | 当 query 中的条件满足后对象才能成功保存，否则放弃保存，并返回错误码 305。<br/><br/>开发者原本可以通过 `{{baseQueryClassName}}` 和 `{{baseObjectName}}` 分两步来实现这样的逻辑，但如此一来无法保证操作的原子性从而导致并发问题。该选项可以用来判断多用户更新同一对象数据时可能引发的冲突。
+<code class="text-nowrap">{{saveOptions_fetchWhenSave}}</code> | BOOL | 对象成功保存后，自动返回该对象在云端的最新数据。用途请参考 [更新计数器](#更新计数器)。
+`{{saveOptions_query}}` | `{{baseQueryClassName}}`  | 当 query 中的条件满足后对象才能成功保存，否则放弃保存，并返回错误码 305。<br/><br/>开发者原本可以通过 `{{baseQueryClassName}}` 和 `{{baseObjectName}}` 分两步来实现这样的逻辑，但如此一来无法保证操作的原子性从而导致并发问题。该选项可以用来判断多用户更新同一对象数据时可能引发的冲突。
 
 <a id="saveoption_query_example" name="saveoption_query_example"></a>【示例】一篇 wiki 文章允许任何人来修改，它的数据表字段有：**content**（wiki 内容）、**version**（版本号）。每当 wiki 内容被更新后，其 version 也需要更新（+1）。用户 A 要修改这篇 wiki，从数据表中取出时其 version 值为 3，当用户 A 完成编辑要保存新内容时，如果数据表中的 version 仍为 3，表明这段时间没有其他用户更新过这篇 wiki，可以放心保存；如果不是 3，开发者可以拒绝掉用户 A 的修改，或执行其他自定义的业务逻辑。
 
 {% block code_saveoption_query_example %}{% endblock %}
 
 ### 数据类型
-{{baseObjectName}} 支持以下数据类型：
+`{{baseObjectName}}` 支持以下数据类型：
 
 {% block code_data_type %}{% endblock %}
 
@@ -160,11 +161,11 @@ description     objectId
 
 在更新对象操作后，对象本地的 {{updatedAtName}} 字段（最后更新时间）会被刷新，直到下一次 save 或 fetch 操作，{{updatedAtName}} 的最新值才会被同步到云端，这样做是为了减少网络流量传输。
 
-如果需要在保存或更新之后让本地数据自动与云端保持一致，可以使用 [保存选项](#保存选项) `fetchWhenSave`：
+如果需要在保存或更新之后让本地数据自动与云端保持一致，可以使用 [保存选项 `{{saveOptions_fetchWhenSave}}`](#保存选项)：
 
 {% block code_object_fetchWhenSave %}{% endblock %}
 
-##### 同步指定属性
+#### 同步指定属性
 
 目前 Todo 这个类已有四个自定义属性：`priority`、`content`、`location` 和 `title`。为了节省流量，现在只想刷新 `priority` 和 `location` 可以使用如下方式：
 
@@ -182,7 +183,7 @@ description     objectId
 
 需要特别声明是，更新操作是覆盖式的，云端会根据最后一次提交到服务器的有效请求更新数据。更新是字段级别的操作，未更新的字段不会产生变动，这一点请不用担心。
 
-另外，假如已知了 `{{objectIdName}}`，可以通过如下接口从本地构建一个 {{baseObjectName}}，然后更新这个对象：
+另外，假如已知了 `{{objectIdName}}`，可以通过如下接口从本地构建一个 `{{baseObjectName}}`，然后更新这个对象：
 
 {% block code_update_todo_content_with_objectId %}{% endblock %}
 
@@ -219,8 +220,7 @@ description     objectId
 
 {% block code_delete_todo_by_objectId %}{% endblock %}
 
-**注意：删除对象是一个较为敏感的操作，在控制台创建对象的时候，默认开启了权限保护，关于这部分的内容请阅读{% block link_to_acl_doc %}{% endblock %}
-**
+<div class="callout callout-danger">删除对象是一个较为敏感的操作。在控制台创建对象的时候，默认开启了权限保护，关于这部分的内容请阅读《{% block link_to_acl_doc %}{% endblock %}》。</div>
 
 #### 使用 CQL 语法删除对象
 {{productName}} 提供了类似 SQL 语法中的 Delete 方式删除一个对象，例如删除一个 Todo 对象可以使用下面的代码：
@@ -228,7 +228,7 @@ description     objectId
 
 ### 批量操作
 
-为了减少网络交互的次数太多带来的时间浪费，你可以在一个请求中对多个对象进行创建、更新、删除、获取。接口都在 {{baseObjectName}} 这个类下面：
+为了减少网络交互的次数太多带来的时间浪费，你可以在一个请求中对多个对象进行创建、更新、删除、获取。接口都在 `{{baseObjectName}}` 这个类下面：
 
 {% block code_batch_operation %}{% endblock %}
 
@@ -255,15 +255,16 @@ description     objectId
 {% endblock %}
 
 ### 关联数据
-#### {{relationObjectName}}
-对象可以与其他对象相联系。如前面所述，我们可以把一个 {{baseObjectName}} 的实例 a，当成另一个 {{baseObjectName}} 实例 b 的属性值保存起来。这可以解决数据之间一对一或者一对多的关系映射，就像关系型数据库中的主外键关系一样。
+
+#### `{{relationObjectName}}`
+对象可以与其他对象相联系。如前面所述，我们可以把一个 `{{baseObjectName}}` 的实例 a，当成另一个 `{{baseObjectName}}` 实例 b 的属性值保存起来。这可以解决数据之间一对一或者一对多的关系映射，就像关系型数据库中的主外键关系一样。
 
 例如，一个 TodoFolder 包含多个 Todo ，可以用如下代码实现：
 
 {% block code_relation_todoFolder_one_to_many_todo %}{% endblock %}
 
 #### Pointer
-Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObjectName}} 不一样的地方在于：{{relationObjectName}} 是在「一对多」的「一」这一方（上述代码中这个「一」就指的 TodoFolder）保存一个 {{relationObjectName}} 属性，这个属性实际上保存的是对被关联数据——「多」的这一方（上述代码中这个「多」指的是 Todo）的一个 Pointer 的集合。而反过来，{{productName}} 也支持在「多」的这一方保存一个指向「一」的这一方的 Pointer，这样也可以实现「一对多」的关系。
+Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObjectName}}` 不一样的地方在于：`{{relationObjectName}}` 是在**一对多**的「一」这一方（上述代码中的一指 TodoFolder）保存一个 `{{relationObjectName}}` 属性，这个属性实际上保存的是对被关联数据**多**的这一方（上述代码中这个多指 Todo）的一个 Pointer 的集合。而反过来，{{productName}} 也支持在「多」的这一方保存一个指向「一」的这一方的 Pointer，这样也可以实现**一对多**的关系。
 
 简单的说， Pointer 就是一个外键的指针，只是在 LeanCloud 控制台做了显示优化。
 
@@ -274,14 +275,12 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 相关内容可参考 [关联数据查询](#关联数据查询)。
 
 #### 地理位置
-地理位置是一个特殊的数据类型，{{productName}} 封装了 {{geoPointObjectName}} 来实现存储以及相关的查询。
+地理位置是一个特殊的数据类型，{{productName}} 封装了 `{{geoPointObjectName}}` 来实现存储以及相关的查询。
 
-##### 构建地理位置对象
-首先要创建一个 {{geoPointObjectName}} 对象。例如，创建一个北纬 39.9 度、东经 116.4 度的 {{geoPointObjectName}} 对象（{{cloudName}} 北京办公室所在地）：
+首先要创建一个 `{{geoPointObjectName}}` 对象。例如，创建一个北纬 39.9 度、东经 116.4 度的 `{{geoPointObjectName}}` 对象（LeanCloud 北京办公室所在地）：
 
 {% block code_create_geoPoint %}{% endblock %}
 
-##### 使用地理位置对象
 假如，添加一条 Todo 的时候为该 Todo 添加一个地理位置信息，以表示创建时所在的位置：
 
 {% block code_use_geoPoint %}{% endblock %}
@@ -309,7 +308,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 先从一个简单的日期类型入手，比如在 {{platform_title}} 中，默认的日期类型是 `{{dateType}}`，下面会详细讲解一个
  `{{dateType}}` 是如何被云端正确的按照日期格式存储的。
 
-为一个普通的 {{baseObjectName}} 的设置一个 `{{dateType}}` 的属性，然后调用保存的接口：
+为一个普通的 `{{baseObjectName}}` 的设置一个 `{{dateType}}` 的属性，然后调用保存的接口：
 
 {% block code_data_protocol_save_date %}{% endblock %}
 
@@ -337,14 +336,14 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 {% endblock %}
 
 ## 文件
-文件存储也是数据存储的一种方式，图像、音频、视频、通用文件等等都是数据的载体，另外很多开发者习惯了把复杂对象序列化之后保存成文件（如 `.json` 或者 `.xml` )。文件存储在 {{productName}} 中被单独封装成一个 {{fileObjectName}} 来实现文件的上传、下载等操作。
+文件存储也是数据存储的一种方式，图像、音频、视频、通用文件等等都是数据的载体，另外很多开发者习惯了把复杂对象序列化之后保存成文件（如 `.json` 或者 `.xml` )。文件存储在 {{productName}} 中被单独封装成一个 `{{fileObjectName}}` 来实现文件的上传、下载等操作。
 
 ### 文件上传
 文件的上传指的是开发者调用接口将文件存储在云端，并且返回文件最终的 URL 的操作。
 
 {% block text_create_avfile_by_stream_data %}
 #### 从数据流构建文件
-{{fileObjectName}} 支持图片、视频、音乐等常见的文件类型，以及其他任何二进制数据，在构建的时候，传入对应的数据流即可：
+`{{fileObjectName}}` 支持图片、视频、音乐等常见的文件类型，以及其他任何二进制数据，在构建的时候，传入对应的数据流即可：
 
 {% block code_create_avfile_by_stream_data %}{% endblock %}
 
@@ -356,7 +355,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 
 {% block text_create_avfile_from_local_path %}
 #### 从本地路径构建文件
-大多数的客户端应用程序都会跟本地文件系统产生交互，常用的操作就是读取本地文件，如下代码可以实现使用本地文件路径构建一个 {{fileObjectName}}：
+大多数的客户端应用程序都会跟本地文件系统产生交互，常用的操作就是读取本地文件，如下代码可以实现使用本地文件路径构建一个 `{{fileObjectName}}`：
 
 {% block code_create_avfile_from_local_path %}{% endblock %}
 
@@ -390,8 +389,9 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 客户端 SDK 接口可以下载文件并把它缓存起来，只要文件的 URL 不变，那么一次下载成功之后，就不会再重复下载，目的是为了减少客户端的流量。
 
 {% block code_download_file %}{% endblock %}
-
+{% if segment_code != 'python' %}
 请注意代码中**下载进度**数据的读取。
+{% endif %}
 {% endblock %}
 ### 图像缩略图
 
@@ -418,7 +418,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 {{relationObje
 <div class="callout callout-info">注意：默认情况下，文件的删除权限是关闭的，需要进入控制台，在 [`_File` > 其他 > 权限设置 > delete](/data.html?appid={{appid}}#/_File)  中开启。</div>
 
 ## 查询
-{{baseQueryClassName}} 是构建针对 {{baseObjectName}} 查询的基础类。
+`{{baseQueryClassName}}` 是构建针对 `{{baseObjectName}}` 查询的基础类。
 
 {% block text_avquery_constructors %}
 ### 创建查询实例
@@ -538,7 +538,7 @@ AND 操作是指只有满足了所有查询条件的对象才会被返回给客�
 
 {% block code_query_with_and %}{% endblock %}
 
-可以对新创建的 {{baseQueryClassName}} 添加额外的约束，多个约束将以 AND 运算符来联接。
+可以对新创建的 `{{baseQueryClassName}}` 添加额外的约束，多个约束将以 AND 运算符来联接。
 
 ### 查询结果
 
@@ -591,7 +591,7 @@ AND 操作是指只有满足了所有查询条件的对象才会被返回给客�
 
 {% block code_query_comment_by_todoFolder %}{% endblock %}
 
-#### {{relationObjectName}} 查询
+#### `{{relationObjectName}}` 查询
 假如用户可以给 TodoFolder 增加一个 Tag 选项，用以表示它的标签，而为了以后拓展 Tag 的属性，就新建了一个 Tag 对象，如下代码是创建 Tag 对象：
 
 {% block code_create_tag_object %}{% endblock %}
@@ -657,7 +657,7 @@ Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语�
 地理位置查询是较为特殊的查询，一般来说，常用的业务场景是查询距离 xx 米之内的某个位置或者是某个建筑物，甚至是以手机为圆心，查找方圆多少范围内餐厅，诸如此类，对此，{{productName}} 提供了一系列的方法来实现各种针对地理位置的查询。
 
 #### 查询位置附近的对象
-Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 {{geoPointObjectName}} 对象，现在已知了一个地理位置，现在要查询 `whereCreated` 靠近这个位置的 Todo 对象可以使用如下代码：
+Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObjectName}}` 对象，现在已知了一个地理位置，现在要查询 `whereCreated` 靠近这个位置的 Todo 对象可以使用如下代码：
 
 {% block code_query_geoPoint_near %}{% endblock %}
 
@@ -671,7 +671,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 {{geoPointObjectN
 
 使用地理位置需要注意以下方面：
 
-* 每个 {{baseObjectName}} 数据对象中只能有一个 {{geoPointObjectName}} 对象的属性。
+* 每个 `{{baseObjectName}}` 数据对象中只能有一个 `{{geoPointObjectName}}` 对象的属性。
 * 地理位置的点不能超过规定的范围。纬度的范围应该是在 `-90.0` 到 `90.0` 之间，经度的范围应该是在 `-180.0` 到 `180.0` 之间。如果添加的经纬度超出了以上范围，将导致程序错误。
 {% block text_platform_geoPoint_notice %}{% endblock %}
 
@@ -747,7 +747,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 {{geoPointObjectN
 {% block code_user_logIn_with_smsCode %}{% endblock %}
 
 #### SessionToken
-所有登录接口调用成功之后，云端会返回一个 SessionToken 给客户端，客户端在发送 Http 请求的时候，{{sdk_name}} 会在 Http 请求的 Header 里面自动添加上当前用户的 SessionToken 作为这次请求的发起者({{userObjectName}})的身份认证信息。
+所有登录接口调用成功之后，云端会返回一个 SessionToken 给客户端，客户端在发送 HTTP 请求的时候，{{sdk_name}} 会在 HTTP 请求的 Header 里面自动添加上当前用户的 SessionToken 作为这次请求的发起者 `{{userObjectName}}` 的身份认证信息。
 
 #### 账户锁定
 
@@ -774,13 +774,13 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 {{geoPointObjectN
 这一章节内容尤为重要，因为很多开发者会产生疑惑：为什么我不能修改任意一个用户的属性？
 这里需要解释的是：
 
-> 很多时候，就算是开发者也不要轻易修改用户的基本信息，比如用户的一些比较敏感的个人信息，例如手机号，社交账号等，这些都应该让用户在App中自行修改，所以为了用户数据的数据有且仅有自己在登录的情况下得以修改，{{productName}} 云端对所有针对 {{userObjectName}} 对象的数据做了验证。
+> 很多时候，就算是开发者也不要轻易修改用户的基本信息，比如用户的一些比较敏感的个人信息，例如手机号，社交账号等，这些都应该让用户在App中自行修改，所以为了用户数据的数据有且仅有自己在登录的情况下得以修改，{{productName}} 云端对所有针对 `{{userObjectName}}` 对象的数据做了验证。
 
 假如，刚才我们为当前用户添加了一个 age 属性，现在我们来修改它：
 
 {% block code_update_user_custom_properties %}{% endblock %}
 
-细心的开发者应该已经发现 {{userObjectName}} 在自定义属性上的使用与一般的 {{baseObjectName}} 没本质区别。
+细心的开发者应该已经发现 `{{userObjectName}}` 在自定义属性上的使用与一般的 `{{baseObjectName}}` 没本质区别。
 
 ### 重置密码
 
@@ -829,14 +829,14 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 {{geoPointObjectN
 
 {% endblock %}
 ### 用户的查询
-请注意，**新创建的应用的用户表 `_User` 默认关闭了查询权限**。你可以通过 Class 权限设置打开查询权限，请参考 [数据与安全 - Class 级别的权限](data_security.html#Class_级别的_ACL)。我们推荐开发者在 [云引擎](leanengine_overview.html) 中封装用户查询，只查询特定条件的用户，避免开放用户表的全部查询权限。
+请注意，**新创建的应用的用户表 `_User` 默认关闭了查询权限**。你可以通过 Class 权限设置打开查询权限，请参考 [数据与安全 {{middot}} Class 级别的权限](data_security.html#Class_级别的_ACL)。我们推荐开发者在 [云引擎](leanengine_overview.html) 中封装用户查询，只查询特定条件的用户，避免开放用户表的全部查询权限。
 
 查询用户代码如下：
 {% block code_query_user %}{% endblock %}
 
 ### 浏览器中查看用户表
 
-User 表是一个特殊的表，专门存储 AVUser 对象。在浏览器端，你会看到一个 _User 表。
+用户表是一个特殊的表，专门存储 AVUser 对象。在浏览器端，你会看到一个 `_User` 表。
 
 ## 角色
 关于用户与角色的关系，我们有一个更为详尽的文档介绍这部分的内容，并且针对权限管理有深入的讲解，详情请点击 {{link_to_acl_doc}}。

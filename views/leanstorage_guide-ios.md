@@ -24,6 +24,8 @@
 {% set byteType= "NSData" %}
 {% set link_to_acl_doc ="[iOS / OS X 权限管理使用指南](acl_guide-ios.html)"%}
 {% set funtionName_whereKeyHasPrefix = "whereKey:hasPrefix:" %}
+{% set saveOptions_query= "where" %}
+{% set saveOptions_fetchWhenSave= "fetch_when_save" %}
 
 {# --End--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 

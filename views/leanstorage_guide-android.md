@@ -24,6 +24,8 @@
 {% set byteType= "byte[]" %}
 {% set link_to_acl_doc= "[Android 权限管理使用指南](acl_guide-android.html)" %}
 {% set funtionName_whereKeyHasPrefix = "whereStartsWith()" %}
+{% set saveOptions_query= "query" %}
+{% set saveOptions_fetchWhenSave= "fetchWhenSave" %}
 
 
 {# --End--变量定义，主模板使用的单词，短语的定义所有子模板都必须赋值 #}

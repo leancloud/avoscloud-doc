@@ -24,6 +24,8 @@
 {% set byteType= "Buffer" %}
 {% set link_to_acl_doc ="[JavaScript 权限管理使用指南](acl_guide-js.html)" %}
 {% set funtionName_whereKeyHasPrefix = "startsWith" %}
+{% set saveOptions_query= "query" %}
+{% set saveOptions_fetchWhenSave= "fetchWhenSave" %}
 
 {% block text_for_ts_developer %}
 ## TypeScript 开发者
