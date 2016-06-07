@@ -1338,4 +1338,11 @@ class MyUser(leancloud.User):
 {% block link_to_status_system_doc %}（**Python 暂不支持**）{% endblock %}
 {% block link_to_sns_doc %}（**Python 文档待补充**）{% endblock %}
 {% block link_to_feedback_doc %}（**Python 暂不支持**）{% endblock %}
+
+
+{# 2016-06-07 以下三部分都不适用于 Python，所以清空内容。 #}
+{% block text_work_in_background %}{% endblock %}
+{% block text_data_protocol %}{% endblock %}
+{% block save_eventually %}{% endblock %}
+
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
