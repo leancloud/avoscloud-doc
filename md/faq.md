@@ -6,61 +6,6 @@
 
 LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内同时使用虚拟机和实体机的混合部署策略，来保证应用的访问体验和可靠性。
 
-### 获取客服支持有哪些途径
-
-* 到免费的[用户社区](https://forum.leancloud.cn/) 进行提问。
-* 购买 [技术支持](/bill.html#/bill/general)，进入 [工单系统](https://leanticket.cn/) 来提交问题。
-* 发送邮件到 <support@leancloud.rocks> 获取帮助。
-* 紧急情况拨打客服电话：010-82800646。
-
-### 计费是基于账号还是应用
-
-计费都基于用户账号，详细信息请参考 [价格](/pricing.html) 页面。
-
-### 如果没有缴费会怎么样
-
-账单逾期四周未缴，账户服务将被停止；应用数据被置于不可见模式，但仍会在 LeanCloud 云端保留一个月。如需要恢复服务和访问应用数据，请登录控制台，支付欠款。
-
-我们为账单支付提供一段缓冲期，请在收到账单的十天内完成缴费即可。在此期间，我们会通过邮件或者电话等方式与您联系，因此强烈建议完整填写 [开发者信息](/settings.html#/setting/info)，以免错过我们的提醒和最佳付款时机。
-
-### 如何付费
-
-* [支付宝充值](/bill.html#/bill/charge)
-
-  我们将每个月自动从您的账户余额里扣除上月账单的费用。每次扣费优先使用充值金额，其次是赠送金额。
-
-* 对公账户付款
-
-  公司税号：**110108597742364**<br/>
-  公司名称：**美味书签（北京）信息技术有限公司**<br/>
-  开户银行：**中国银行股份有限公司北京大运村支行**<br/>
-  银行账号：**344159259324**<br/>
-  银行地址：**北京市海淀区知春路 6 号锦秋国际大厦一层**<br/>
-  银行行号：**104100004013**
-
-### 如何申请开具发票
-
-* 申请开发票前，请先按系统要求，完善所有必填的用户信息。
-
-* 无论采取哪一种付款方式，只有当累计支付金额达到人民币 **1,000** 后系统才允许申请，单笔开票金额不低于人民币**壹仟元**。
-
-* 如有特别需求，如按月度账单金额结算，或先开发票后付款，请联系我们的市场部专员 <business@leancloud.rocks>，QQ 号：2607695496。
-
-* 开具发票时段为每月 10 日至 30 日，发票以快递寄送。如需开具增值税专用发票，也请联系我们的市场部专员。
-
-* 发票免费邮寄。
-
-
-### 哪里获取平台的更新信息
-
-通常情况下，我们新版本的更新周期为一到两周。获取更新信息可以通过：
-
-* [官方博客](http://blog.leancloud.cn/)（每次更新的详细信息都会发布在那里）
-* [官方微博](http://weibo.com/avoscloud)
-* 官方微信公众号：LeanCloud
-* 每月初，我们会将每月的更新摘要发送到您的注册邮箱。
-* 在控制台页面的右上方有 [消息中心](/info-center.html#/index)，请注意查看新通知。
-
 ### API 开放吗
 
 我们的 API 完全开放。我们提供的 SDK 也都是基于开放 API 实现的。详情请阅读 [REST API 详解](/docs/rest_api.html)。
@@ -298,7 +243,7 @@ JavaScript SDK 由于平台的特殊性（运行在单线程运行的浏览器�
 如果你的应用的确是内部应用（做好了相关的安全措施，外部访问不到），可以在 `AV.initialize`之后增加下面的代码来让 JavaScript SDK 发送 Master Key：
 ```
 AV._useMasterKey = true;
-``` 
+```
 
 ### Web 端会暴露 App Key 和 App Id，怎么保证安全性？
 首先请阅读「[安全总览](data_security.html)」来了解 LeanCloud 完整的安全体系。其中提到，可以使用「[安全域名](data_security.html#Web_应用安全设置) 」，在没有域名的情况下，可以使用 「[ACL](acl_guide-js.html)」。
@@ -403,7 +348,7 @@ LeanCloud 的美国节点即将提供 GCM 支持，如果应用的服务对象�
 
 ### 如何在本地调试依赖 LeanCache 的应用？
 首先你需要在本地运行一个 redis-server:
- 
+
 * Mac 运行 `brew install redis` 安装，然后用 `redis-server` 启动
 * Debian/Ubuntu 运行 `apt-get install redis-server`, CentOS/RHEL 运行 `yum install redis`
 * Windows 尚无官方支持，可以下载 [微软的分支版本](https://github.com/MSOpenTech/redis/releases) 安装包。
@@ -420,7 +365,7 @@ var client = require('redis').createClient(process.env['REDIS_URL_mycache']);
 
 ### 为什么在控制台通过在线定义函数或项目定义函数中的 Class Hook 没有被运行？
 首先确认一下 Hook 被调用的时机是否与你的理解一致：
- 
+
 * beforeSave - 对象保存（创建）之前
 * afterSave - 对象保存（创建）之后
 * beforeUpdate - 对象更新之前
@@ -445,7 +390,7 @@ var client = require('redis').createClient(process.env['REDIS_URL_mycache']);
 
 ### 使用命令行工具在本地调试时提示 `Error: listen EADDRINUSE :::3000`, 无法访问应用
 `listen EADDRINUSE :::3000` 表示你的程序默认使用的 3000 端口被其他应用占用了，可以按照下面的方法找到并关闭占用 3000 端口的程序：
- 
+
 * [Mac 使用 lsof 和 kill](http://stackoverflow.com/questions/3855127/find-and-kill-process-locking-port-3000-on-mac)
 * [Linux 使用 fuser](http://stackoverflow.com/questions/11583562/how-to-kill-a-process-running-on-particular-port-in-linux)
 * [Windows 使用 netstat 和 taskkill](http://stackoverflow.com/questions/6204003/kill-a-process-by-looking-up-the-port-being-used-by-it-from-a-bat)
@@ -458,14 +403,14 @@ avoscloud -P 3002
 
 ### 云函数如何获取 Header、如何响应 GET 方法？
 不建议在 Header 中传递信息，云函数可以说是 LeanCloud 所提供的一种 RPC 的封装，这种封装的目的是隐藏掉底层使用 HTTP 协议的细节，所以建议将所有的参数都放在 Body 中、只使用 POST 方法请求。
- 
+
 如果希望能够充分利用 HTTP 提供的语义化特征，可以考虑使用云引擎的「[网站托管](leanengine_webhosting_guide-node.html#Web_框架)」功能，自行来处理 HTTP 请求。
 
 ## 文件
 
 ### 文件存储有 CDN 加速吗？
 
-有的。我们的文件存储目前由 [七牛](http://qiniu.com) 提供，都有 CDN 加速访问。
+有的。
 
 ### 文件存储有大小限制吗？
 
@@ -473,7 +418,7 @@ avoscloud -P 3002
 
 ### 存储图片可以做缩略图等处理吗？
 
-可以。默认我们的 `AVFile` 类提供了缩略图获取方法，可以参见各个 SDK 的开发指南。如果要自己处理，可以通过获取 `AVFile` 的 `URL` 属性，使用 [七牛图片处理 API](http://docs.qiniu.com/api/v6/image-process.html) 执行处理，例如添加水印、裁剪等。
+可以。默认我们的 `AVFile` 类提供了缩略图获取方法，可以参见各个 SDK 的开发指南。如果要自己处理，可以通过获取 `AVFile` 的 `URL` 属性。
 
 ## 短信
 

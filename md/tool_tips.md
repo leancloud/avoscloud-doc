@@ -33,7 +33,7 @@
 ## 文件
 
 * 你可以在数据管理平台的 _File 表的 **url** 列点击上传按钮，直接上传文件。
-* 文件 API 提供元数据存储和缩略图功能，请参考 SDK 开发指南。更多缩略图选项可以使用 [七牛 API](http://docs.qiniu.com/api/v6/image-process.html) 做 URL 转换得到。
+* 文件 API 提供元数据存储和缩略图功能，请参考 SDK 开发指南。
 * 文件如果存储为其他对象的数组属性，那么需要在 query 或者 fetch 的时候 `includeKey` 该字段。
 * [云引擎命令行工具](leanengine_cli.html) 提供文件批量上传命令 upload，可以用于上传现有资源文件到 LeanCloud 平台。
 * 文件没有大小限制，文件在 SDK 下载成功后将自动缓存在本地。
@@ -113,4 +113,3 @@
 * 关注我们的 [博客](https://blog.leancloud.cn/) 和 [微博](http://weibo.com/avoscloud)，获取 LeanCloud 最新消息。
 * 在应用设置的基本设置菜单里，可以更改应用名称，提交应用图标，申请发布到 [应用墙](https://leancloud.cn/customers.html)。
 * 为你的应用添加用户反馈，请使用我们的 [用户反馈组件](feedback.html)。
-
