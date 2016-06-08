@@ -1,6 +1,6 @@
 # Unity 数据存储开发指南
 
-如果还没有安装 LeanCloud Unity SDK，请阅读 [快速入门](/start.html) 来获得该 SDK。我们的 SDK 兼容 Unity 4.2 及更高版本，支持使用 Unity 开发的 iOS、Android、Windows Phone 8、Windows Store、Windows Desktop，以及网页游戏。
+如果还没有安装 LeanCloud Unity SDK，请阅读 [快速入门](./start.html) 来获得该 SDK。我们的 SDK 兼容 Unity 4.2 及更高版本，支持使用 Unity 开发的 iOS、Android、Windows Phone 8、Windows Store、Windows Desktop，以及网页游戏。
 
 如果希望从演示项目中学习，请访问我们的 GitHub 资源库，下载 [Unity SDK Demos](https://github.com/leancloud/unity-sdk-demos) 。
 
@@ -12,7 +12,7 @@ LeanCloud Unity SDK 在很多重要的功能点上都采用了微软提供的 [�
 
 ## 快速入门
 
-建议在阅读本文之前，先阅读 [快速入门](/start.html)，了解如何配置和使用 LeanCloud。
+建议在阅读本文之前，先阅读 [快速入门](./start.html)，了解如何配置和使用 LeanCloud。
 
 ## 应用
 
@@ -53,7 +53,7 @@ gameScore["playerName"] = "Neal Caffrey";
 Task saveTask = gameScore.SaveAsync();
 ```
 
-运行以上代码后，要想确认保存动作是否已经生效，可以到 LeanCloud 应用管理平台的 [数据管理](/data.html?appid={{appid}})  页面来查看数据的存储情况。
+运行以上代码后，要想确认保存动作是否已经生效，可以到 LeanCloud 应用管理平台的 `数据管理`  页面来查看数据的存储情况。
 
 如果保存成功，`GameScore` 的数据列表应该显示出以下记录：
 
@@ -569,7 +569,7 @@ user.SignUpAsync().ContinueWith(t =>
 
 ### 手机号注册
 为了适应移动互联时代的需求，我们特地增加了手机号注册的功能，当然前提是会进行短信认证，就如同微信一样，注册的时候会发送6位数字的验证码到用户输入的手机上，然后再回调我们的验证接口就可以完成一次手机号的注册。
-在[应用设置](/app.html?appid={{appid}}#/permission)可以开启这一个功能。
+在`应用设置` 可以开启这一个功能。
 
 ```javascript
 验证注册用户手机号码
@@ -663,13 +663,13 @@ catch(AVException avException)
 ```
 
 ### 邮箱认证
-在移动互联时代，任何一个用户信息都是必须在双方统一认证之后才会被视为一种安全机制，比如邮箱的认证，同样，在`AVUser`这个特殊的`AVObject`拥有一个特殊字段`email`，可以在[数据管理](/data.html?appid={{appid}})的`_User`表看到这个默认的字段，这就是在注册是提供的邮箱，当在[应用设置](/app.html?appid={{appid}}#/permission)中勾选了
+在移动互联时代，任何一个用户信息都是必须在双方统一认证之后才会被视为一种安全机制，比如邮箱的认证，同样，在`AVUser`这个特殊的`AVObject`拥有一个特殊字段`email`，可以在`数据管理`的`_User`表看到这个默认的字段，这就是在注册是提供的邮箱，当在`应用设置`中勾选了
 
 ```javascript
 启用注册用户邮箱验证
 ```
 
-这样在注册用户的时候，LeanCloud默认就会发送一封邮件，进行验证，邮件的模板也可以在[邮件模板](/app.html?appid={{appid}}#/email)中进行设置。
+这样在注册用户的时候，LeanCloud默认就会发送一封邮件，进行验证，邮件的模板也可以在`邮件模板`中进行设置。
 
 注意，验证过的用户，TA的`emailVerified`将会置成`true`，反之`false`，但是如果**未启用注册用户邮箱验证**，这个字段会为空。
 
@@ -835,7 +835,7 @@ AVUser.LogInAsync("demoUser", "asvscloud").ContinueWith(t =>
 
 任何一个成熟的并且可控的系统中，必然会存在权限控制的问题，经典的案例就是论坛的斑竹可以删帖而普通游客只能看帖，如此一来，发展出来的[基于角色的访问控制](http://zh.wikipedia.org/wiki/%E4%BB%A5%E8%A7%92%E8%89%B2%E7%82%BA%E5%9F%BA%E7%A4%8E%E7%9A%84%E5%AD%98%E5%8F%96%E6%8E%A7%E5%88%B6)被普遍应用于各类传统的软件中，即便是互联网时代的今天，它依然是可以很简便地帮助开发者以及使用者理解和应用。
 
-基于以上这一点，LeanCloud在开发者创建一个应用的时候，默认地在服务端为该应用添加了一张`_Role`的表，开发者可以在[数据管理](/data.html?appid={{appid}})中看到这张表。
+基于以上这一点，LeanCloud在开发者创建一个应用的时候，默认地在服务端为该应用添加了一张`_Role`的表，开发者可以在`数据管理`中看到这张表。
 
 ### 默认访问权限
 在没有显式指定的情况下，LeanCloud 中的每一个对象都会有一个默认的 ACL 值。这个值代表了，所有的用户，对这个对象都是可读可写的。此时你可以在数据管理的表中 ACL 属性中看到这样的值:

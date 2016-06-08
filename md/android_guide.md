@@ -1,12 +1,12 @@
 # Android 开发指南
 
-如果你还没有安装 LeanCloud SDK，请前往 [快速入门指南](/start.html)。
+如果你还没有安装 LeanCloud SDK，请前往 [快速入门指南](./start.html)。
 
 如果你希望从项目里学习，请前往 [Android SDK Demos](https://github.com/leancloud/leancloud-demos#android) 。其中，我们推荐与本指南配套的 [LeanStorageDemo-Android](https://github.com/leancloud/LeanStorageDemo-Android) 项目。
 
 ## 快速入门
 
-建议您在阅读本文档之前，阅读我们提供的 [快速入门](/start.html) 文档，获取 LeanCloud 使用的配置和第一印象。
+建议您在阅读本文档之前，阅读我们提供的 [快速入门](./start.html) 文档，获取 LeanCloud 使用的配置和第一印象。
 
 ## SDK 安装
 
@@ -40,7 +40,7 @@ try {
 }
 ```
 
-成功运行以上代码后，数据就已经保存到 LeanCloud。为确认这一点，你可以用 LeanCloud 控制台的数据浏览器查看 [该应用的数据](/data.html?appid={{appid}})，找到这个对象：
+成功运行以上代码后，数据就已经保存到 LeanCloud。为确认这一点，你可以用 LeanCloud 控制台的数据浏览器查看 `该应用的数据`，找到这个对象：
 
 ```java
 objectId: "558e20cbe4b060308e3eb36c", content: "每个Java程序员必备的8个开发工具", pubUser: "LeanCloud官方客服", pubTimestamp: 1435541999,
@@ -1484,7 +1484,7 @@ AVUser.requestPasswordResetInBackground("myemail@example.com", new RequestPasswo
 
 ###  手机号码验证
 
-在 [控制台 > 设置 > 应用选项 > 用户账号](/app.html?appid={{appid}}#/permission) 中打开 **用户注册时，向注册手机号码发送验证短信** 选项后，当你在注册用户时，如果提供了手机号码，LeanCloud 会自动向该手机号码发送一个验证短信，用户在输入验证码以后，该用户就被表示为已经验证过手机。
+在 `控制台 > 设置 > 应用选项 > 用户账号` 中打开 **用户注册时，向注册手机号码发送验证短信** 选项后，当你在注册用户时，如果提供了手机号码，LeanCloud 会自动向该手机号码发送一个验证短信，用户在输入验证码以后，该用户就被表示为已经验证过手机。
 
 以下代码就可发送注册验证码到用户手机:
 ```java

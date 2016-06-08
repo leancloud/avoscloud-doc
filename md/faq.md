@@ -72,7 +72,7 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 403 错误分为两类：
 
 * 错误信息 `The user cannot be altered by a client without the session.`：用户没有登录，无法修改用户信息。
-* 错误信息 `Forbidden to write by class permissions.` 或者 `Forbidden to read by class permissions.`：想要修改的 class 表没有打开「读」或者「写」的权限。在 [数据](/data.html) 管理平台，点击相应的 class，在右侧选择 **其他** 下拉菜单，进入 **权限管理** 来设置 class 权限。
+* 错误信息 `Forbidden to write by class permissions.` 或者 `Forbidden to read by class permissions.`：想要修改的 class 表没有打开「读」或者「写」的权限。在 `数据` 管理平台，点击相应的 class，在右侧选择 **其他** 下拉菜单，进入 **权限管理** 来设置 class 权限。
 
 ![image](images/permission.png)
 
@@ -80,7 +80,7 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 应用 API 授权失败，请检查是否初始化了 App Id 和 App Key。
 
-* 如何进行初始化，请查看 [快速入门](/start.html)。
+* 如何进行初始化，请查看 [快速入门](./start.html)。
 * App Id 和 App Key 在应用的 **设置** 菜单里可以找到。
 
 ### 错误信息代码和详细解释在哪里
@@ -121,7 +121,7 @@ REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对
 
 原则：数据量少时，不建索引。多的时候请记住，因为索引也占空间，以此来换取更少的查询时间。针对每张表的情况，写少读多就多建索引, 写多读少就少建索引。
 提示：数据表的默认四个字段 objectId / ACL / createdAt / updatedAt 是自带索引的，但是在勾选时，可以作为联合索引来使用。并且，如果单表数据超过 1 万条以上，请联系我们来创建。
-操作：进入[控制台 > 存储](/data.html?appid={{appid}}#/_File)，选定一张表之后，点击右侧的「其他」下拉菜单，然后选择「索引」，然后根据你的查询需要建立好索引。
+操作：进入 `控制台 > 存储`，选定一张表之后，点击右侧的「其他」下拉菜单，然后选择「索引」，然后根据你的查询需要建立好索引。
 
 
 ### LeanCloud 查询支持 `Sum`, `Group By`, `Distinct` 这种函数吗？
@@ -377,7 +377,7 @@ var client = require('redis').createClient(process.env['REDIS_URL_mycache']);
 
 然后检查 Hook 函数是否被执行过：
 
-可以先在 Hook 函数的入口打印一行日志，然后进行操作，再到 [云引擎日志](/cloud.html?appid={{appid}}#/log) 中检查该行日志是否被打印出来，如果没有看到日志原因可能包括：
+可以先在 Hook 函数的入口打印一行日志，然后进行操作，再到 `云引擎日志` 中检查该行日志是否被打印出来，如果没有看到日志原因可能包括：
 
 * 代码没有被部署到正确的应用
 * 代码没有被部署到生产环境（或没有部署成功）

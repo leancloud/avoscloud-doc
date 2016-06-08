@@ -133,7 +133,7 @@ realtime.createIMClient('Tom').then(function(tom) {
 // https://jsplay.avosapps.com/fuq/embed?js,console
 ```
 
-执行完以上代码，在 LeanCloud 网站的 [控制台 /（选择应用）/ 存储 / 数据 / `_Conversation ` 表](/data.html?appid={{appid}}#/_Conversation) 中多了一行数据，其字段含义如下：
+执行完以上代码，在 LeanCloud 网站的 控制台 /（选择应用）/ 存储 / 数据 / `_Conversation ` 表 中多了一行数据，其字段含义如下：
 
 名称|类型|描述
 ---|---|---
@@ -1289,7 +1289,7 @@ tom.close().then(function() {
 
 为了满足开发者对权限和认证的要求，我们设计了操作签名的机制。签名启用后，所有的用户登录、对话创建/加入、邀请成员、踢出成员等登录都需要验证签名，这样开发者就对消息具有了完全的掌控。
 
-我们强烈推荐启用签名，具体步骤是 [控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission)，勾选 **聊天、推送** 下的 **聊天服务，启用签名认证**。
+我们强烈推荐启用签名，具体步骤是 `控制台 > 设置 > 应用选项`，勾选 **聊天、推送** 下的 **聊天服务，启用签名认证**。
 
 
 客户端这边究竟该如何使用呢？我们只需要实现 signature 工厂方法，然后作为参数实例化 IMClient 即可

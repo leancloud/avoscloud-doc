@@ -34,7 +34,7 @@
 avoscloud new
 ```
 
-然后进入 [LeanCloud 控制台](/app.html)，选择刚才创建的应用 Wechat，再选择 [**设置** > **应用 Key**](/app.html?appid={{appid}}#/general)，找到 App ID 以及 Master Key 并复制。
+然后进入 LeanCloud 控制台，选择刚才创建的应用 Wechat，再选择 `**设置** > **应用 Key**`，找到 App ID 以及 Master Key 并复制。
 
 回到命令行工具，它会要求你输入 App ID 以及 Master Key，输入完成之后，可以看见在 `/usr/leancloud/wechat/` 下已经创建了一个 LeanEngine 默认的模板项目，打开 `app.js` 文件。然后访问放在 GitHub 上的 [LeanEngine 微信自动问答机器人](https://github.com/leancloud/LeanEngine-WechatBot) 项目，打开该项目下的 `wechatBot.js` 文件（建议克隆到本地）。
 
@@ -128,7 +128,7 @@ app.use('/wechat', wechat);
 **微信的配置是实时验证的，假如你的服务器上并没有正确的进行验证，是无法配置成功**。因此，我们先部署到 LeanEngine 中，才能在微信这边保存设置。
 
 ## 部署项目
-回到 [LeanCloud 控制台的中 LeanEngine 设置界面](/cloud.html?appid={{appid}}#/conf)，找到设置二级域名的地方：
+回到 `LeanCloud 控制台的中 LeanEngine 设置界面`，找到设置二级域名的地方：
 
 ![domain_setting](http://ac-lhzo7z96.clouddn.com/1456826436084)
 

@@ -270,4 +270,4 @@ public class MyActivity extends Activity {
 intent.putExtra(AVConstants.PUSH_INTENT_KEY, 1);
 ```
 
-然后当 MyActiviy 里 `getIntent()` 拿到这个 **intent** 后，执行 `AVAnalytics.trackAppOpened(intent);` 时发现 `PUSH_INTENT_KEY` 存在且为 1，则认定其来自推送。该统计可以通过 [请求分析 > Push 打开](/apistat.html?appid={{appid}}#/_appOpenWithPush) 查看。
+然后当 MyActiviy 里 `getIntent()` 拿到这个 **intent** 后，执行 `AVAnalytics.trackAppOpened(intent);` 时发现 `PUSH_INTENT_KEY` 存在且为 1，则认定其来自推送。该统计可以通过 `请求分析 > Push 打开` 查看。

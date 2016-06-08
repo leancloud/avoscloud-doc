@@ -4,7 +4,7 @@
 
 离线分析的数据来源，对于普通表来说就是线上实时数据，而对于[日志表](https://blog.leancloud.cn/3838/)则是**前一天的数据备份（并非最新的在线数据）**，这一点需要大家注意。同时，离线分析仅支持 SELECT 语句，不支持 UPDATE、INSERT、DELETE 等语句，所以它不会更新或修改数据源，开发者可以放心使用。
 
-离线数据分析页面的访问路径为 [控制台 > **存储** > **离线数据分析**](/dataquery.html?appid={{appid}}#/)。如果该功能不能正常使用，请通过 [工单系统](https://leanticket.cn/) 或 [用户论坛](https://forum.leancloud.cn) 联系我们。
+离线数据分析页面的访问路径为 `控制台 > **存储** > **离线数据分析**`。如果该功能不能正常使用，请通过 [工单系统](https://leanticket.cn/) 或 [用户论坛](https://forum.leancloud.cn) 联系我们。
 
 ## 查询限制
 - `_Conversation` 表的 **m** 和 **mu** 字段往往包含大量数组元素，容易引起计算节点故障，因此我们限制了对这些字段的查询。
@@ -183,7 +183,7 @@ select count(*) as `count`, pubUser from Post group by pubUser
 
 ## 云引擎和 JavaScript SDK 调用
 
-JavaScript SDK 0.5.5 版本开始支持离线数据分析。**请注意，离线数据分析要求使用 Master Key，否则下面所述内容都没有权限运行，请参考 [《权限说明》](leanengine_guide-cloudcode.html#权限说明)。**
+JavaScript SDK 0.5.5 版本开始支持离线数据分析。**请注意，离线数据分析要求使用 Master Key，否则下面所述内容都没有权限运行，请参考 [《权限说明》](./leanengine_guide-cloudcode.html#权限说明)。**
 
 ### Job 启动
 

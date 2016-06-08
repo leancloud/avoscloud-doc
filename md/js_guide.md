@@ -133,7 +133,7 @@ post.save().then(function(post) {
 ```
 
 在代码运行以后，你可能会对后端发生了什么有兴趣，为了确认数据被保存了，你可以
-在 LeanCloud 的 [数据管理](/data.html?appid={{appid}})上查看你的数据。你大致可以看到如下的内容：
+在 LeanCloud 的 `数据管理` 上查看你的数据。你大致可以看到如下的内容：
 
 ```javascript
 objectId: '558e20cbe4b060308e3eb36c', content: '每个 JavaScript 程序员必备的 8 个开发工具', pubUser: 'LeanCloud官方客服', pubTimestamp: 1435541999,
@@ -1755,110 +1755,6 @@ user.updatePassword('当前密码', '新密码').then(function() {
   console.log(error);
 });
 ```
-
-### 短信验证手机号码
-
-如果用户注册提供了 `mobilePhoneNumber` 属性，并且你希望验证用户手机号码的真实性，你可能希望发送一条短信，并且让用户输入短信中的验证码来确认手机号码的真实性：
-
-```javascript
-var user = new AV.User();
-user.set('username', 'hjiang');
-user.set('password', '123456');
-user.setMobilePhoneNumber('186xxxxxxxx');
-user.signUp().then(function() {
-  // 成功
-}, function() {
-  // 失败
-});
-```
-
-为了发送短信，你需要在 [控制台 > 设置 > 应用选项 > 用户账号](/app.html?appid={{appid}}#/permission) 中启用 **用户注册时，向注册手机号码发送验证短信**。
-
-如果用户注册没有收到短信，你可以通过 `requestMobilePhoneVerify` 方法强制重新发送：
-
-```javascript
-AV.User.requestMobilePhoneVerify('186xxxxxxxx').then(function() {
-  //发送成功
-}, function(err) {
-   //发送失败
-});
-```
-
-当用户收到验证短信后，会有 6 位数字的验证码，让用户输入，并调用 `verifyMobilePhone` 来确认是否正确：
-
-```javascript
-AV.User.verifyMobilePhone('6位数字验证码').then(function() {
-  //验证成功
-}, function(err) {
-  //验证失败
-});
-```
-
-验证成功后，用户的 `mobilePhoneVerified` 属性变为 true，并且调用云引擎的 `AV.Cloud.onVerifed('sms', function)` 方法。
-
-
-### 手机号码和短信登录
-
-当用户有填写 `mobilePhoneNumber` 的时候，可以使用手机和密码登录：
-
-```javascript
-AV.User.logInWithMobilePhone('186xxxxxxxx', password).then(function(user) {
-  //登录成功
-}, function(err) {
-  //登录失败
-});
-```
-
-如果你在 [控制台 > 设置 > 应用选项 > 用户账号](/app.html?appid={{appid}}#/permission) 中打开了 **已验证手机号码的用户，允许以短信验证码登录**（需要先启用 **用户注册时，向注册手机号码发送验证短信**），那么可以通过请求发送短信验证码来登录：
-
-```javascript
-//请求登录验证码
-AV.User.requestLoginSmsCode('186xxxxxxxx').then(function() {
-  //发送成功
-}, function(err) {
-  //发送失败
-});
-
-//用户收到6位登录验证码后，输入验证码登录
-AV.User.logInWithMobilePhoneSmsCode('186xxxxxxxx', '6位登录验证码数字').then(function(user) {
-  //登录成功
-}, function(err) {
-  //登录失败
-});
-```
-
-### 手机号码一键登录
-
-很多情况下，我们希望用户直接输入手机号码，获取短信然后注册或者登录，如果没有注册过就注册，否则就直接登录，我们提供了一个 API `signUpOrlogInWithMobilePhone` 来实现。
-
-```javascript
-//获取短信
-//已在 应用选项 > 其他 中开启 "启用通用的短信验证码服务（开放 requestSmsCode 和 verifySmsCode 接口）"
-AV.Cloud.requestSmsCode('186xxxxxxxx').then(function() {
-  //发送成功
-}, function(err) {
-  //发送失败
-});
-```
-
-用户拿到短信后，使用下列代码注册或者登录：
-
-```javascript
-var user = new AV.User();
-user.signUpOrlogInWithMobilePhone({
-  mobilePhoneNumber: '186xxxxxxxx',
-  smsCode: '手机收到的 6 位验证码字符串',
-  ……其他属性，比如 username 等。
-}).then(function(user) {
-  //注册或者登录成功
-}, function(error) {
-  // 失败
-  console.log(error);
-});
-```
-
-如果是注册，属性里其他属性将作为新用户的属性保存，如果是登录，这些属性将覆盖服务端的属性。如果不提供 `username`，默认为手机号码。
-
 
 ### 当前用户
 

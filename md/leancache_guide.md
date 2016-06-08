@@ -23,7 +23,7 @@ LeanCache 使用 [Redis](http://redis.io/) 来提供高性能、高可用的 Key
 
 ## 创建实例
 
-进入 [控制台 > 存储 > 云引擎 > LeanCache](/cloud.html?appid={{appid}}#/cache)，点击 **创建实例**，如下图所示：
+进入 `控制台 > 存储 > 云引擎 > LeanCache`，点击 **创建实例**，如下图所示：
 
 <div style="max-width: 620px;"><img src="images/leancache_controller.png" class="img-responsive" alt=""></div>
 
@@ -54,7 +54,7 @@ LeanCache 使用 [Redis](http://redis.io/) 来提供高性能、高可用的 Key
 
 ## 删除实例
 
-进入 [控制台 > 存储 > 云引擎 > LeanCache](/cloud.html?appid={{appid}}#/cache)，在「当前应用的实例」下，点击每个实例右上角的齿轮图标（<i class="icon icon-gear"></i>），在出现的窗口底部，点击「删除」按钮。
+进入 `控制台 > 存储 > 云引擎 > LeanCache`，在「当前应用的实例」下，点击每个实例右上角的齿轮图标（<i class="icon icon-gear"></i>），在出现的窗口底部，点击「删除」按钮。
 
 删除「其他应用的可用实例」下的实例，有两种方式：点击每个实例的「隶属于」链接，切换到相应的应用下；或者从页面顶部的导航条，点击应用图标（<i class="icon icon-blank-app"></i>） 来切换应用。然后再按上一段的提示，进行删除操作。
 
@@ -211,8 +211,6 @@ LeanCache 采取按天扣费，使用时间不足一天按一天收费，次日�
 如果在系统扣费之时，账户没有充足余额，那么在扣费当天的上午 10 点，账户内所有应用使用的**全部实例会停止服务**，但数据仍会保留，期限为 1 个月。
 
 已停止服务的实例状态显示为 <span class="label label-warning">未运行</span>。要恢复服务，需要向账户充值。在账户余额补足后的 5 分钟内，已停止服务的所有实例将会自动恢复运行。
-
-<div class="callout callout-info">账户充值请到 [财务概况](/bill.html#/bill/general) 中进行。建议使用「支付宝」来实时充值，避免对公账户付款（银行转账）产生的到款延迟而影响服务开通的时间。</div>
 
 ### 删除无用实例
 

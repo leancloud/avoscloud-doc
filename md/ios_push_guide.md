@@ -57,7 +57,7 @@
 @end
 ```
 
-在 iOS 设备中，Installation 的类是 AVInstallation，并且是 AVObject 的子类，使用同样的 API 存储和查询。如果要访问当前应用的 Installation 对象，可以通过 `[AVInstallation currentInstallation]` 方法。当你第一次保存 AVInstallation 的时候，它会插入 `_Installation` 表，你可以在 [数据管理](/data.html?appid={{appid}}) 平台看到和查询。当 deviceToken 一被保存，你就可以向这台设备推送消息了。
+在 iOS 设备中，Installation 的类是 AVInstallation，并且是 AVObject 的子类，使用同样的 API 存储和查询。如果要访问当前应用的 Installation 对象，可以通过 `[AVInstallation currentInstallation]` 方法。当你第一次保存 AVInstallation 的时候，它会插入 `_Installation` 表，你可以在 `数据管理` 平台看到和查询。当 deviceToken 一被保存，你就可以向这台设备推送消息了。
 
 ```objc
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -116,7 +116,7 @@ AVInstallation *currentInstallation = [AVInstallation currentInstallation];
 [currentInstallation saveInBackground];
 ```
 
-订阅后要记得保存，即可在 [数据管理](/data.html?appid={{appid}})平台看到该 installation 的 channels 字段多了一个「Giants」。
+订阅后要记得保存，即可在 `数据管理` 平台看到该 installation 的 channels 字段多了一个「Giants」。
 
 退订：
 
@@ -165,7 +165,7 @@ AVPush *push = [[AVPush alloc] init];
 ...
 ```
 
-<div class="callout callout-info">为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 [控制台 / 消息 / 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 页面中体现。因此，在使用开发证书推送时，请合理设置推送条件。</div>
+<div class="callout callout-info">为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 `控制台 / 消息 / 推送记录` 页面中体现。因此，在使用开发证书推送时，请合理设置推送条件。</div>
 
 ## 高级定向发送
 
@@ -458,7 +458,7 @@ if (application.applicationState != UIApplicationStateBackground) {
 
 传递 nil 或者空白的参数给 `trackAppOpenedWithLaunchOptions:` 方法只是统计一次标准的应用打开事件（比如不是通过通知打开的应用）。
 
-你可以在 [控制台 /<span class="text-muted">（选择应用）</span>/ 分析 / 行为分析 / 应用使用](/stat.html?appid={{appid}}#/stat/appuse) 里看到通知和应用打开的情况。
+你可以在 `控制台 /<span class="text-muted">（选择应用）</span>/ 分析 / 行为分析 / 应用使用` 里看到通知和应用打开的情况。
 
 请注意，如果你的应用正在运行或者在后台，`application:didReceiveRemoteNotification:`方法将会处理收到的推送通知。
 

@@ -79,7 +79,7 @@ LeanCloud 实时通信服务的特性主要有：
 
 用户登录之后，与其他人进行消息沟通，即为开启了一个对话（Conversation）。开始聊天之前，需要先创建或者加入一个对话，然后再邀请其他人进来，之后所有参与者在这个对话内进行交流。所有消息都是由某一个 client 发往一个「对话」。
 
-系统每创建一个对话，就会在云端的 `_Conversation` 表中增加一条记录，可以进入 [控制台 > **存储** > **数据**](/data.html?appid={{appid}}#/) 来查看该数据。
+系统每创建一个对话，就会在云端的 `_Conversation` 表中增加一条记录，可以进入 `控制台 > **存储** > **数据**` 来查看该数据。
 
 `_Conversation` 表中字段名与对话的各个属性的对应关系为：
 
@@ -216,7 +216,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 
 #### 离线消息
 
-开发者可以通过 [**控制台** > **消息** > **实时消息** > **帮助**](/messaging.html?appid={{appid}}#/message/realtime/tool) 界面查询某个 Client ID 的在线状态和离线消息数。
+开发者可以通过 `**控制台** > **消息** > **实时消息** > **帮助**` 界面查询某个 Client ID 的在线状态和离线消息数。
 
 当用户重新登录后，LeanCloud 提供两种方式进行下发离线消息：
 
@@ -236,7 +236,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 
 由于不同平台的不同限制，且用户的消息正文可能还包含上层协议，所以我们允许用户在控制台中为应用设置一个静态的 APNs JSON，推送一条内容固定的通知。
 
-进入 [控制台 > 消息 > 实时消息 > 设置 > iOS 用户离线推送设置](/messaging.html?appid={{appid}}#/message/realtime/conf)，填入：
+进入 `控制台 > 消息 > 实时消息 > 设置 > iOS 用户离线推送设置`，填入：
 
 ```
 {"alert":"您有新的消息", "badge":"Increment"}`
@@ -294,7 +294,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 
 ## 权限和认证
 
-为了保证聊天通道的安全，我们设计了签名的概念。默认这一功能是关闭的，你可以在 [控制台 > **设置** > **应用选项**](/app.html?appid={{appid}}#/permission) 中勾选 **聊天服务，启用签名认证** 来强制启用签名。启用后，所有的用户登录、新建或加入对话、邀请/踢出对话成员等操作都需要包含签名，这样你可以对聊天过程进行充分的控制。
+为了保证聊天通道的安全，我们设计了签名的概念。默认这一功能是关闭的，你可以在 `控制台 > **设置** > **应用选项**` 中勾选 **聊天服务，启用签名认证** 来强制启用签名。启用后，所有的用户登录、新建或加入对话、邀请/踢出对话成员等操作都需要包含签名，这样你可以对聊天过程进行充分的控制。
 
 ![image](images/leanmessage_signature2.png)
 
@@ -325,7 +325,7 @@ clientid|登录时使用的 clientId
 timestamp|当前的 UTC 时间距离 unix epoch 的**秒数**
 nonce|随机字符串
 
->注意：签名的 key **必须** 是应用的 master key，你可以 [控制台 > 设置 > 应用 Key](/app.html?appid={{appid}}#/key) 里找到。**请保护好 master key，不要泄露给任何无关人员。**
+>注意：签名的 key **必须** 是应用的 master key，你可以 `控制台 > 设置 > 应用 Key` 里找到。**请保护好 master key，不要泄露给任何无关人员。**
 
 开发者可以实现自己的 SignatureFactory，调用远程服务器的签名接口获得签名。如果你没有自己的服务器，可以直接在 LeanCloud 云引擎上通过 **网站托管** 来实现自己的签名接口。在移动应用中直接做签名的作法 **非常危险**，它可能导致你的 **master key** 泄漏。
 
@@ -614,7 +614,7 @@ data | 消息内容
 
 #### Web Hook
 
-需要开发者自行在 [控制台> **消息** > **实时消息** > **设置** > **消息回调设置**](/messaging.html?appid={{appid}}#/message/realtime/conf) 定义，来实时接收用户发给系统对话的消息，消息的数据结构与上文所述的 `_SysMessage` 一致。
+需要开发者自行在 `控制台> **消息** > **实时消息** > **设置** > **消息回调设置**` 定义，来实时接收用户发给系统对话的消息，消息的数据结构与上文所述的 `_SysMessage` 一致。
 
 当有用户向系统对话发送消息时，我们会通过 HTTP POST 请求将 JSON 格式的数据发送到用户设置的 Web Hook 上。请注意，我们调用 Web Hook 时并不是一次调用只发送一条消息，而是会以批量的形式将消息发送过去。从下面的发送消息格式中能看到，JSON 的最外层是个 Array。
 
@@ -711,12 +711,12 @@ LeanCloud 实时通信服务是完全独立的实时通信业务抽象，专注�
 
 * 调用消息记录 API 查看消息是否到达了服务器端
 * 如果只有一个消息接收者，可以检查消息记录中对应条目的 `ack-at` 字段判断消息是否到达了客户端
-* 在 [控制台 > **消息** > **实时消息** > **帮助**](/messaging.html?appid={{appid}}#/message/realtime/tool) 页面的文本框里输入对应的 Client ID，查看是否在线，以及是否有离线消息。
+* 在 `控制台 > **消息** > **实时消息** > **帮助**` 页面的文本框里输入对应的 Client ID，查看是否在线，以及是否有离线消息。
 
 
 ### 为什么我的 iPhone 收不到离线消息推送
 
-请先参考 [聊天消息没有收到](#聊天消息没有收到)。在 [控制台 > **消息** > **实时消息** > **设置** > **iOS 用户离线推送设置** > **推送内容**](/messaging.html?appid={{appid}}#/message/realtime/conf) 填写「您有新的未读消息」后，当对方不在线的时候，便会触发一个 APNs 的推送。首先，请确保控制台能向 iOS 推送消息，也即如下图所示的推送能顺利到达 iOS 系统，请参考 [iOS 推送开发文档](ios_push_guide.html)。
+请先参考 [聊天消息没有收到](#聊天消息没有收到)。在 `控制台 > **消息** > **实时消息** > **设置** > **iOS 用户离线推送设置** > **推送内容**` 填写「您有新的未读消息」后，当对方不在线的时候，便会触发一个 APNs 的推送。首先，请确保控制台能向 iOS 推送消息，也即如下图所示的推送能顺利到达 iOS 系统，请参考 [iOS 推送开发文档](ios_push_guide.html)。
 
 ![image](images/realtime_faq_push.png)
 

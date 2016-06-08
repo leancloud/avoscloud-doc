@@ -4,9 +4,9 @@ LeanCloud Unity SDK 提供一套接口方便开发者可以对了解游戏在客
 
 ## 使用统计功能
 
-在使用统计 SDK 之前需要初始化 SDK，参数包括 App ID 以及 App Key ，你可以在 [设置](/app.html?appid={{appid}}#/key) 查询到这些参数，如果在应用的其他地方已经进行初始化了，无需重复。Unity 的初始化方法请参照：[Unity 指南](/docs/unity_guide.html)。
+在使用统计 SDK 之前需要初始化 SDK，参数包括 App ID 以及 App Key ，你可以在 `设置`查询到这些参数，如果在应用的其他地方已经进行初始化了，无需重复。Unity 的初始化方法请参照：[Unity 指南](/docs/unity_guide.html)。
 
-统计功能默认为打开，并且可以在线配置。进入应用的 [控制台 / 分析 / 统计设置<span class="text-muted">（左下角）</span> / 数据发送策略](/stat.html?appid={{appid}}#/statconfig/trans_strategoy) 在线更改 SDK 端的数据报告发送策略。
+统计功能默认为打开，并且可以在线配置。进入应用的 `控制台 / 分析 / 统计设置<span class="text-muted">（左下角）</span> / 数据发送策略` 在线更改 SDK 端的数据报告发送策略。
 
 默认 **启动时发送** 策略：应用程序每次会在启动时会向服务器发送一次消息，在应用程序过程中产生的所有统计信息（包括自定义事件和本次使用时长）都会在下次启动时候发送。如果应用程序启动时处在不联网状态，那么消息将会缓存在本地，下次再尝试发送。
 
@@ -110,7 +110,7 @@ void OnGUI()
 
 ## 设置数据发送策略
 
-你可以进入 [控制台 / 分析 / 统计设置<span class="text-muted">（左下角）</span> / 数据发送策略](/stat.html?appid={{appid}}#/statconfig/trans_strategoy) 在线更改 SDK 端的数据报告发送策略。在没有取到在线配置的发送策略的情况下，会使用默认的发送策略。
+你可以进入 `控制台 / 分析 / 统计设置<span class="text-muted">（左下角）</span> / 数据发送策略` 在线更改 SDK 端的数据报告发送策略。在没有取到在线配置的发送策略的情况下，会使用默认的发送策略。
 
 以下均为在线配置中的可选策略：
 

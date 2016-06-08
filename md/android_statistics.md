@@ -2,7 +2,7 @@
 
 ## 安装与初始化
 
-首先在 [控制台](https://leancloud.cn/applist.html#/apps) 上创建新的应用，然后 [下载 LeanCloud Android SDK](sdk_down.html) 以及相应的 Demo。
+首先在 `控制台` 上创建新的应用，然后 [下载 LeanCloud Android SDK](sdk_down.html) 以及相应的 Demo。
 
 ### 导入 SDK
 
@@ -166,7 +166,7 @@ public class MyListFragment extends ListFragment {
   * `WRITE_EXTERNAL_STORAGE`
 * 确认所有的 Activity 中都调用了 onResume 和 onPause 方法。
 * 确认测试手机（或者模拟器）已成功连入网络。
-* 启动应用程序，几分钟之内你应该已经可以在 [控制台 / 分析](/stat.html?appid={{appid}}#/statrealtime) 中的相应菜单中看到报表了。
+* 启动应用程序，几分钟之内你应该已经可以在 `控制台 / 分析` 中的相应菜单中看到报表了。
 
 ## 数据时效性
 
@@ -221,7 +221,7 @@ AVAnalytics.onEvent(Context context, String eventName, String label, int count)
 参数 count 是对应事件（和对应标签）被触发的次数。
 
 ## 设置数据发送策略
-你可以进入应用的 [**分析** > **统计设置**<span class="text-muted">（左下角）</span> > **数据发送策略**](/stat.html?appid={{appid}}&os=android#/statconfig/trans_strategoy) 在线更改 SDK 端的数据报告发送策略。在没有取到在线配置的发送策略的情况下，会使用默认的发送策略。
+你可以进入应用的 `**分析** > **统计设置**<span class="text-muted">（左下角）</span> > **数据发送策略**` 在线更改 SDK 端的数据报告发送策略。在没有取到在线配置的发送策略的情况下，会使用默认的发送策略。
 
 以下均为在线配置中的可选策略。
 
