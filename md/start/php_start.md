@@ -36,7 +36,7 @@ require_once("vendor/autoload.php");               // composer 安装
 require_once("vendor/leancloud/src/autoload.php"); // 手动安装
 ```
 
-如果已经创建应用，可以在 [**控制台** > **应用设置**](/app.html?appid={{appid}}#/key)
+如果已经创建应用，可以在 **控制台** > **应用设置**
 里面找到应用的 id 和 key。然后需要对应用初始化：
 
 ```php
@@ -96,7 +96,7 @@ $obj->save();
 $obj->destroy();
 ```
 
-大功告成，访问 [**控制台** > **数据管理**](/data.html?appid={{appid}}#/TestObject)
+大功告成，访问 **控制台** > **数据管理**
 可以看到上面创建的 TestObject 的相关数据。
 
 请参考详细的 [API 文档](/api-docs/php)。
@@ -108,10 +108,10 @@ $obj->destroy();
 错误原因是 Windows curl 没有证书无法发送 https 请求，解决方案有两种：
 
 1. 将证书文件 `curl-ca-bundle.crt` 置于与 `curl.exe` 相同的目录，通常情况下位于 `C:\Windows\system32`。
-1.  将证书文件 `curl-ca-bundle.crt` 置于自定义的目录，然后在 `php.ini` 中明确设置证书的位置：
+2. 将证书文件 `curl-ca-bundle.crt` 置于自定义的目录，然后在 `php.ini` 中明确设置证书的位置：
 
   ```
 [PHP]
 curl.cainfo={自定义的目录路径}/ca-bundle.crt
   ```
-  
+

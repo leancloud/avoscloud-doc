@@ -132,7 +132,7 @@ iOS 从 8.0 开始支持动态库，如果你的项目只支持 iOS 8 及以上�
 [AVAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
 ```
 
-创建应用后，可以在 [控制台 > 应用设置](/app.html?appid={{appid}}#/key) 里面找到应用对应的 id 和 key。
+创建应用后，可以在 `控制台 > 应用设置` 里面找到应用对应的 id 和 key。
 
 修改编译选项 **Architectures** 值为 **Standard architectures(armv7,arm64)**：
 
@@ -152,7 +152,7 @@ AVObject *testObject = [AVObject objectWithClassName:@"TestObject"];
 [testObject save];
 ```
 
-运行 app，一个类名为 `TestObject` 的新对象会被发送到 LeanCloud 并保存下来。当做完这一切，访问 [控制台 > 数据管理](/data.html?appid={{appid}}#/TestObject) 可以看到上面创建的 TestObject 的相关数据。
+运行 app，一个类名为 `TestObject` 的新对象会被发送到 LeanCloud 并保存下来。当做完这一切，访问 `控制台 > 数据管理` 可以看到上面创建的 TestObject 的相关数据。
 
 
 #### 社交组件
