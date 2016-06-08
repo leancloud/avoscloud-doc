@@ -420,6 +420,4 @@ avoscloud -P 3002
 
 可以。默认我们的 `AVFile` 类提供了缩略图获取方法，可以参见各个 SDK 的开发指南。如果要自己处理，可以通过获取 `AVFile` 的 `URL` 属性。
 
-## 短信
 
-详情请参照[短信收发常见问题一览](/docs/rest_sms_api.html#常见问题_FAQ)
