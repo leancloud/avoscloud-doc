@@ -688,7 +688,7 @@ ioType|AVIMMessageIOType 枚举|消息传输方向，有两种取值：<br/><br/
 * **clientIds** － 表示对话初始成员，可不填。如果填写了初始成员，则 LeanCloud 云端会直接给这些成员发出邀请，省掉再专门发一次邀请请求。
 * **attributes** － 表示额外属性，Dictionary，支持任意的 key/value，可不填。
 * **options** － 对话选项：
-    1. `AVIMConversationOptionTransient`：聊天室，具体可以参见[创建开放聊天室](#创建开放聊天室)；
+    1. `AVIMConversationOptionTransient`：聊天室，具体可以参见[创建聊天室](#创建聊天室)；
     2. `AVIMConversationOptionNone`：普通对话；
     3. `AVIMConversationOptionUnique`：根据成员（clientIds）创建原子对话。如果没有这个选项，服务端会为相同的 clientIds 创建新的对话。clientIds 即 \_Conversation 表的 **m** 字段。
     

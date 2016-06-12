@@ -25,11 +25,11 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 ### 如何付费
 
-* [支付宝充值](/bill.html#/bill/charge)
+* 支付宝充值
 
-  我们将每个月自动从您的账户余额里扣除上月账单的费用。每次扣费优先使用充值金额，其次是赠送金额。
+  进入 [控制台 > 财务 > 账务概况](/bill.html#/bill/general)，点击「充值」或「购买」按钮时将会出现「支付宝充值」窗口。 我们将每个月自动从您的账户余额里扣除上月账单的费用。每次扣费优先使用充值金额，其次是赠送金额。
 
-* 对公账户付款
+* 对公账户汇款
 
   公司税号：**110108597742364**<br/>
   公司名称：**美味书签（北京）信息技术有限公司**<br/>
@@ -37,6 +37,8 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
   银行账号：**344159259324**<br/>
   银行地址：**北京市海淀区知春路 6 号锦秋国际大厦一层**<br/>
   银行行号：**104100004013**
+  
+  <div class="callout callout-danger">请务必在汇款附言里中注明您的 LeanCloud 用户名，或注册邮箱，或您的应用名称，以便我们账务确认汇款的来源和用途，及时入账。</div>
 
 ### 如何申请开具发票
 
@@ -300,7 +302,7 @@ LeanCloud 依赖的 Framework 包括：
 
 ### 有没有同步 API
 
-JavaScript SDK 由于平台的特殊性（运行在单线程运行的浏览器或者 Node.js 环境中），不提供同步 API，所有需要网络交互的 API 都需要以 callback 的形式调用。我们提供了 [Promise 模式](js_guide.html#Promise) 来减少 callback 嵌套过多的问题。
+JavaScript SDK 由于平台的特殊性（运行在单线程运行的浏览器或者 Node.js 环境中），不提供同步 API，所有需要网络交互的 API 都需要以 callback 的形式调用。我们提供了 [Promise 模式](leanstorage_guide-js.html#Promise) 来减少 callback 嵌套过多的问题。
 
 ### 在 AV.initialize 中用了 Master Key，但发出去的 AJAX 请求返回 206
 目前 JavaScript SDK 在浏览器（而不是 Node）中工作时，是不会发送 Master Key 的，因为我们不鼓励在浏览器中使用 Master Key，Master Key 代表着对数据的最高权限，只应当在后端程序中使用。

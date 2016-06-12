@@ -349,6 +349,7 @@ module.exports = function(grunt) {
           $('#content ' + dom).each(function() {
             if($(this).text().trim().length > 0) {
               var version = crypto.createHash('md5').update($(this).text()).digest('hex');
+              $(this).attr('id', version);
               $(this).attr('version', version);
             }
           });

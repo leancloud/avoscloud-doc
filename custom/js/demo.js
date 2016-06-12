@@ -34,7 +34,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         type: 'ios'
       }, {
         name: 'FreeChat',
-        desc: '这个示例项目演示了 LeanCloud 实时通信 SDK 的使用方法，包括单聊、群聊、开放聊天室，也支持图片、文字、语音等消息类型',
+        desc: '这个示例项目演示了 LeanCloud 实时通信 SDK 的使用方法，包括单聊、群聊、聊天室，也支持图片、文字、语音等消息类型',
         downPath: '',
         mdPath: 'https://github.com/leancloud/FreeChat',
         type: 'ios'

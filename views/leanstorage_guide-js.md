@@ -24,6 +24,8 @@
 {% set byteType= "Buffer" %}
 {% set link_to_acl_doc ="[JavaScript 权限管理使用指南](acl_guide-js.html)" %}
 {% set funtionName_whereKeyHasPrefix = "startsWith" %}
+{% set saveOptions_query= "query" %}
+{% set saveOptions_fetchWhenSave= "fetchWhenSave" %}
 
 {% block text_for_ts_developer %}
 ## TypeScript 开发者
@@ -49,15 +51,6 @@
 关于在 ES6 编译模式下如何使用 TypeScript 中的 [async/await](https://blogs.msdn.microsoft.com/typescript/2015/11/03/what-about-asyncawait/) 请参考这篇[文章](/*todo*/)：
 
 注意：因为 TypeScript SDK 是基于 JavaScript SDK 编写的定义文件，因此并不是所有 JavaScript SDK 的接口都有对应 TypeScript 的版本，示例代码会持续更新。
-
-### TypeScript SDK 安装
-#### 通过 typings 工具安装
-
-> Todo
-
-#### 直接引用 d.ts 文件
-
-> Todo
 
 {% endblock %}
 
@@ -314,6 +307,23 @@ testObject.save().then(function(testObject) {
 ```
 {% endblock %}
 
+{% block code_fetch_todo_by_objectId %}
+
+```js
+  // 第一个参数是 className，第二个参数是 objectId
+  var todo = AV.Object.createWithoutData('Todo', '5745557f71cfe40068c6abe0');
+  var title = todo.get('title');// 读取 title
+  var content = todo.get('content');// 读取 content
+```
+```ts
+  // 第一个参数是 className，第二个参数是 objectId
+  let todo : AV.Object = AV.Object.createWithoutData('Todo','5745557f71cfe40068c6abe0');
+  let title = todo.get('title');// 读取 title
+  let content = todo.get('content');// 读取 content
+```
+
+{% endblock %}
+
 {% block code_save_callback_get_objectId %}
 
 ```js
@@ -482,6 +492,27 @@ testObject.save().then(function(testObject) {
     if(error) throw error;
   });
 ```
+{% endblock %}
+
+{% block code_update_todo_content_with_objectId %}
+
+```js
+  // 第一个参数是 className，第二个参数是 objectId
+  var todo = AV.Object.createWithoutData('Todo', '5745557f71cfe40068c6abe0');
+  // 修改属性
+  todo.set('content', '每周工程师会议，本周改为周三下午3点半。');
+  // 保存到云端
+  todo.save();
+```
+```ts
+  // 第一个参数是 className，第二个参数是 objectId
+  let todo : AV.Object = AV.Object.createWithoutData('Todo','5745557f71cfe40068c6abe0');
+  // 修改属性
+  todo.set('content','每周工程师会议，本周改为周三下午3点半。');
+  // 保存到云端
+  todo.save();
+```
+
 {% endblock %}
 
 {% block code_update_object_by_cql %}
@@ -1220,11 +1251,19 @@ function uploadFile (req, res) {
   var query = new AV.Query('Todo');
   var reminderFilter = [new Date('2015-11-11 08:30:00')];
   query.containsAll('reminders', reminderFilter);
+  
+  // 也可以使用 equals 接口实现这一需求
+  var targetDateTime = new Date('2015-11-11 08:30:00');
+  query.equalTo('reminders', targetDateTime);
 ```
 ```ts
   let query: AV.Query= new AV.Query('Todo');
   let reminderFilter: Array<Date> = [new Date('2015-11-11 08:30:00')];
   query.containsAll('reminders',reminderFilter);
+  
+  // 也可以使用 equals 接口实现这一需求
+  let targetDateTime : Date =  new Date('2015-11-11 08:30:00');
+  query.equalTo('reminders',targetDateTime);
 ```
 {% endblock %}
 
@@ -1259,12 +1298,12 @@ function uploadFile (req, res) {
 {% block code_query_comment_by_todoFolder %}
 
 ```js
-  var query = new AV.Query('Todo');
+  var query = new AV.Query('Comment');
   var todoFolder = AV.Object.createWithoutData('Todo', '5735aae7c4c9710060fbe8b0');
   query.equalTo('targetTodoFolder', todoFolder);
 ```
 ```ts
-  let query: AV.Query= new AV.Query('Todo');
+  let query: AV.Query= new AV.Query('Comment');
   let todoFolder : AV.Object = AV.Object.createWithoutData('Todo','5735aae7c4c9710060fbe8b0');
   query.equalTo('targetTodoFolder',todoFolder);
 ```
@@ -2073,4 +2112,541 @@ AV.User.logInWithMobilePhoneSmsCode('13577778888','238825').then((success)=>{
 {% block link_to_in_app_search_doc %}[JavaScript 应用内搜索指南](app_search_guide.html){% endblock %}
 {% block link_to_status_system_doc %}[JavaScript 应用内社交模块](status_system.html#JavaScript_SDK){% endblock %}
 
+{% block text_js_promise %}
+## Promise
+
+除了回调函数之外，每一个在 LeanCloud JavaScript SDK 中的异步方法都会返回一个
+ `Promise`。使用 `Promise`，你的代码可以比原来的嵌套 callback 的方法看起来优雅得多。
+
+```javascript
+// 这是一个比较完整的例子，具体方法可以看下面的文档
+// 查询某个 AV.Object 实例，之后进行修改
+var query = new AV.Query('TestObject');
+query.equalTo('name', 'hjiang');
+// find 方法是一个异步方法，会返回一个 Promise，之后可以使用 then 方法
+query.find().then(function(results) {
+  // 返回一个符合条件的 list
+  var obj = results[0];
+  obj.set('phone', '182xxxx5548');
+  // save 方法也是一个异步方法，会返回一个 Promise，所以在此处，你可以直接 return 出去，后续操作就可以支持链式 Promise 调用
+  return obj.save();
+}).then(function() {
+  // 这里是 save 方法返回的 Promise
+  console.log('设置手机号码成功');
+}).catch(function(error) {
+  // catch 方法写在 Promise 链式的最后，可以捕捉到全部 error
+  console.log(error);
+});
+```
+
+### then 方法
+
+每一个 Promise 都有一个叫 `then` 的方法，这个方法接受一对 callback。第一个 callback 在 promise 被解决（`resolved`，也就是正常运行）的时候调用，第二个会在 promise 被拒绝（`rejected`，也就是遇到错误）的时候调用。
+
+```javascript
+obj.save().then(function(obj) {
+  //对象保存成功
+}, function(error) {
+  //对象保存失败，处理 error
+});
+```
+
+其中第二个参数是可选的。
+
+### try、catch 和 finally 方法
+
+你还可以使用 `try,catch,finally` 三个方法，将逻辑写成：
+
+```javascript
+obj.save().try(function(obj) {
+  //对象保存成功
+}).catch(function(error) {
+  //对象保存失败，处理 error
+}).finally(function(){
+  //无论成功还是失败，都调用到这里
+});
+```
+
+类似语言里的 `try ... catch ... finally` 的调用方式来简化代码。
+
+为了兼容其他 Promise 库，我们提供了下列别名：
+
+* `AV.Promise#done` 等价于 `try` 方法
+* `AV.Promise#fail` 等价于 `catch` 方法
+* `AV.Promise#always` 等价于 `finally` 方法
+
+因此上面例子也可以写成：
+
+```javascript
+obj.save().done(function(obj) {
+  //对象保存成功
+}).fail(function(error) {
+  //对象保存失败，处理 error
+}).always(function(){
+  //无论成功还是失败，都调用到这里
+});
+```
+
+### 将 Promise 组织在一起
+
+Promise 比较神奇，可以代替多层嵌套方式来解决发送异步请求代码的调用顺序问题。如果一个 Promise 的回调会返回一个 Promise，那么第二个 then 里的 callback 在第一个 then
+的 callback 没有解决前是不会解决的，也就是所谓 **Promise Chain**。
+
+```javascript
+var query = new AV.Query('Student');
+query.addDescending('gpa');
+query.find().then(function(students) {
+  students[0].set('valedictorian', true);
+  return students[0].save();
+
+}).then(function(valedictorian) {
+  return query.find();
+
+}).then(function(students) {
+  students[1].set('salutatorian', true);
+  return students[1].save();
+
+}).then(function(salutatorian) {
+  // Everything is done!
+
+});
+```
+
+### 错误处理
+
+如果任意一个在链中的 Promise 返回一个错误的话，所有的成功的 callback 在接下
+来都会被跳过直到遇到一个处理错误的 callback。
+
+处理 error 的 callback 可以转换 error 或者可以通过返回一个新的 Promise 的方式来处理它。你可以想象成拒绝的 promise 有点像抛出异常，而 error callback 函数则像是一个 catch 来处理这个异常或者重新抛出异常。
+
+```javascript
+var query = new AV.Query('Student');
+query.addDescending('gpa');
+query.find().then(function(students) {
+  students[0].set('valedictorian', true);
+  // 强制失败
+  return AV.Promise.error('There was an error.');
+
+}).then(function(valedictorian) {
+  // 这里的代码将被忽略
+  return query.find();
+
+}).then(function(students) {
+  // 这里的代码也将被忽略
+  students[1].set('salutatorian', true);
+  return students[1].save();
+}, function(error) {
+  // 这个错误处理函数将被调用，并且错误信息是 'There was an error.'.
+  // 让我们处理这个错误，并返回一个“正确”的新 Promise
+  return AV.Promise.as('Hello!');
+
+}).then(function(hello) {
+  // 最终处理结果
+}, function(error) {
+  // 这里不会调用，因为前面已经处理了错误
+});
+```
+
+通常来说，在正常情况的回调函数链的末尾，加一个错误处理的回调函数，是一种很
+常见的做法。
+
+利用 `try,catch` 方法可以将上述代码改写为：
+
+```javascript
+var query = new AV.Query('Student');
+query.addDescending('gpa');
+query.find().try(function(students) {
+  students[0].set('valedictorian', true);
+  // 强制失败
+  return AV.Promise.error('There was an error.');
+
+}).try(function(valedictorian) {
+  // 这里的代码将被忽略
+  return query.find();
+
+}).try(function(students) {
+  // 这里的代码也将被忽略
+  students[1].set('salutatorian', true);
+  return students[1].save();
+
+}).catch(function(error) {
+  // 这个错误处理函数将被调用，并且错误信息是 'There was an error.'.
+  // 让我们处理这个错误，并返回一个“正确”的新 Promise
+  return AV.Promise.as('Hello!');
+}).try(function(hello) {
+  // 最终处理结果
+}).catch(function(error) {
+  // 这里不会调用，因为前面已经处理了错误
+});
+```
+
+### 创建 Promise
+
+在开始阶段,你可以只用系统（譬如 find 和 save 方法等）返回的 promise。但是，在更高级
+的场景下，你可能需要创建自己的 promise。在创建了 Promise 之后，你需要调用 `resolve` 或者 `reject` 来触发它的 callback.
+
+```javascript
+var successful = new AV.Promise();
+successful.resolve('The good result.');
+
+var failed = new AV.Promise();
+failed.reject('An error message.');
+```
+
+如果你在创建 promise 的时候就知道它的结果，下面有两个很方便的方法可以使用：
+
+```javascript
+var successful = AV.Promise.as('The good result.');
+
+var failed = AV.Promise.error('An error message.');
+```
+
+除此之外，你还可以为 `AV.Promise` 提供一个函数，这个函数接收 `resolve` 和 `reject` 方法，运行实际的业务逻辑。例如：
+
+```javascript
+var promise = new AV.Promise(function(resolve, reject){
+  resolve(42);
+});
+
+promise.then(functon(ret){
+  //print 42.
+  console.log(ret);
+});
+```
+
+尝试下两个一起用：
+
+```javascript
+var promise = new AV.Promise(function(resolve, reject) {
+  setTimeout(function() {
+    if (Date.now() % 2) {
+     resolve('奇数时间');
+    } else {
+     reject('偶数时间');
+    }
+  }, 2000);
+});
+
+promise.then(function(value) {
+  // 奇数时间
+  console.log(value);
+}, function(value) {
+  // 偶数时间
+  console.log(value);
+});
+```
+
+### 顺序的 Promise
+
+在你想要某一行数据做一系列的任务的时候，Promise 链是很方便的，每一个任务都等着前
+一个任务结束。比如，假设你想要删除你的博客上的所有评论：
+
+>特别说明：下文出现在代码里的 `_.xxx` 表示引用了 [underscore.js](http://underscorejs.org/) 这个类库的方法，underscore.js 是一个非常方便的 JS 类库，提供了很多工具方法。
+
+```javascript
+var query = new AV.Query('Comment');
+query.equalTo('post', post); // 假设 post 是一个已经存在的实例
+
+query.find().then(function(results) {
+  // Create a trivial resolved promise as a base case.
+  var promise = AV.Promise.as();
+  _.each(results, function(result) {
+    // For each item, extend the promise with a function to delete it.
+    promise = promise.then(function() {
+      // Return a promise that will be resolved when the delete is finished.
+      return result.destroy();
+    });
+  });
+  return promise;
+
+}).then(function() {
+  // Every comment was deleted.
+});
+```
+
+### 并行的 Promise
+
+你也可以用 Promise 来并行的进行多个任务，这时需要使用 when 方法，你可以一次同时开始几个操作。使用 `AV.Promise.when` 来创建一个新的 promise，它会在所有输入的 `Promise` 被 resolve 之后才被 resolve。即便一些输入的 promise 失败了，其他的 Promise 也会被成功执行。你可以在 callback 的参数部分检查每一个 promise 的结果。并行地进行操作会比顺序进行更快，但是也会消耗更多的系统资源和带宽。
+
+简单例子：
+
+```javascript
+function timerPromisefy(delay) {
+  return new AV.Promise(function (resolve) {
+    //延迟 delay 毫秒，然后调用 resolve
+    setTimeout(function () {
+      resolve(delay);
+    }, delay);
+   });
+}
+
+var startDate = Date.now();
+
+AV.Promise.when(
+  timerPromisefy(1),
+  timerPromisefy(32),
+  timerPromisefy(64),
+  timerPromisefy(128)
+).then(function (r1, r2, r3, r4) {
+  //r1,r2,r3,r4 分别为1,32,64,128
+  //大概耗时在 128 毫秒
+  console.log(new Date() - startDate);
+});
+
+//尝试下其中一个失败的例子
+var startDate = Date.now();
+AV.Promise.when(
+  timerPromisefy(1),
+  timerPromisefy(32),
+  AV.Promise.error('test error'),
+  timerPromisefy(128)
+).then(function () {
+  //不会执行
+}, function(errors){
+  //大概耗时在 128 毫秒
+  console.log(new Date() - startDate);
+  console.dir(errors);  //print [ , , 'test error',  ]
+});
+```
+
+下面例子执行一次批量删除某个 Post 的评论：
+
+```javascript
+var query = new AV.Query('Comment');
+query.equalTo('post', post);  // 假设 post 是一个已经存在的实例
+
+query.find().then(function(results) {
+  // Collect one promise for each delete into an array.
+  var promises = [];
+  _.each(results, function(result) {
+    // Start this delete immediately and add its promise to the list.
+    promises.push(result.destroy());
+  });
+  // Return a new promise that is resolved when all of the deletes are finished.
+  return AV.Promise.when(promises);
+
+}).then(function() {
+  // Every comment was deleted.
+});
+```
+
+`when` 会在错误处理器中返回所有遇到的错误信息，以数组的形式提供。
+
+除了 `when` 之外，还有一个类似的方法是 `AV.Promise.all`，这个方法和 `when` 的区别在于：
+
+它只接受数组形式的 promise 输入，并且如果有任何一个 promise 失败，它就会直接调用错误处理器，而不是等待所有 promise 完成，其次是它的 resolve 结果返回的是数组。例如：
+
+```javascript
+AV.Promise.all([
+  timerPromisefy(1),
+  timerPromisefy(32),
+  timerPromisefy(64),
+  timerPromisefy(128)
+]).then(function (values) {
+  //values 数组为 [1, 32, 64, 128]
+});
+//测试下失败的例子
+AV.Promise.all([
+  timerPromisefy(1),
+  timerPromisefy(32),
+  AV.Promise.error('test error'),
+  timerPromisefy(128)
+]).then(function () {
+  //不会执行
+}, function(error){
+  console.dir(error);  //print 'test error'
+});
+
+//http://jsplay.avosapps.com/zuy/embed?js,console
+```
+
+### race 方法
+
+`AV.Promise.race` 方法接收一个 promise 数组输入，当这组 promise 中的任何一个 promise 对象如果变为 resolve 或者 reject 的话， 该函数就会返回，并使用这个 promise 对象的值进行 resolve 或者 reject。`race`，顾名思义就是在这些 promise 赛跑，谁先执行完成，谁就先 resolve。
+
+```javascript
+var p1 = AV.Promise.as(1);
+var p2 = AV.Promise.as(2);
+var p3 = AV.Promise.as(3);
+Promise.race([p1, p2, p3]).then(function (value) {
+  // 打印 1
+  console.log(value);
+});
+```
+
+### 创建异步方法
+
+有了上面这些工具以后，就很容易创建你自己的异步方法来返回 promise 了。譬如，你可以创建一个有 promise 版本的 setTimeout：
+
+```javascript
+var delay = function(millis) {
+  var promise = new AV.Promise();
+  setTimeout(function() {
+    promise.resolve();
+  }, millis);
+  return promise;
+};
+
+delay(100).then(function() {
+  // This ran after 100ms!
+});
+```
+
+### 兼容性
+
+在非 node.js 环境（例如浏览器环境）下，`AV.Promise` 并不兼容 [Promises/A+](https://promisesaplus.com/) 规范，特别是错误处理这块。
+如果你想兼容，可以手工启用：
+
+```javascript
+AV.Promise.setPromisesAPlusCompliant(true);
+```
+
+在 node.js 环境下如果启用兼容 Promises/A+， 可能在一些情况下 promise 抛出的错误无法通过 `process.on('uncaughtException')` 捕捉，你可以启用额外的 debug 日志：
+
+```javascript
+AV.Promise.setDebugError(true);
+```
+
+默认日志是关闭的。
+
+### JavaScript Promise 迷你书
+
+如果你想更深入地了解和学习 Promise，我们推荐[《JavaScript Promise迷你书（中文版）》](http://liubin.github.io/promises-book/)这本书。
+{% endblock %}
+
+{% block js_push_guide %}
+## Push 通知
+
+通过 JavaScript SDK 也可以向移动设备推送消息，使用也非常简单。
+
+如果想在 Web 端独立使用推送模块，包括通过 Web 端推送消息到各个设备、以及通过 Web 端也可以接收其他端的推送，可以了解下我们的 [JavaScript 推送 SDK 使用指南](./js_push.html) 来获取更详细的信息。
+
+一个简单例子推送给所有订阅了 `public` 频道的设备：
+
+```javascript
+AV.Push.send({
+  channels: [ 'Public' ],
+  data: {
+    alert: 'Public message'
+  }
+});
+```
+
+这就向订阅了 `public` 频道的设备发送了一条内容为 `public message` 的消息。
+
+如果希望按照某个 `_Installation` 表的查询条件来推送，例如推送给某个 `installationId` 的 Android 设备，可以传入一个 `AV.Query` 对象作为 `where` 条件：
+
+```javascript
+var query = new AV.Query('_Installation');
+query.equalTo('installationId', installationId);
+AV.Push.send({
+  where: query,
+  data: {
+    alert: 'Public message'
+  }
+});
+```
+
+此外，如果你觉得 AV.Query 太繁琐，也可以写一句 [CQL](./cql_guide.html) 来搞定：
+
+```javascript
+AV.Push.send({
+  cql: 'select * from _Installation where installationId="设备id"',
+  data: {
+    alert: 'Public message'
+  }
+});
+```
+
+`AV.Push` 的更多使用信息参考 API 文档 [AV.Push](/api-docs/javascript/symbols/AV.Push.html)。
+
+更多推送的查询条件和格式，请查阅我们的[Push Notification指南](./push_guide.html)来获取更详细的信息。
+
+iOS 设备可以通过 `prod` 属性指定使用测试环境还是生产环境证书：
+
+```javascript
+AV.Push.send({
+  prod: 'dev',
+  data: {
+    alert: 'Public message'
+  }
+});
+```
+
+`dev` 表示开发证书，`prod` 表示生产证书，默认生产证书。
+{% endblock %}
+
+
+{% block js_error_handling %}
+## 错误处理
+
+大部分 LeanCloud JavaScript 函数会通过一个有 callback 的对象来报告它们是否成功了，主要的两个 callback 是 success 和 error。
+
+在一个操作都没有错误发生的时候 success 会被调用。通常来说，它的参数在 save 或者 get 的情况下可能是 AV.Object，或者在 find 的情形下是一个 AV.Object 数组。
+
+error 会在任何一种在与 LeanCloud 的网络连接发生错误的时候调用。这些错误信息一般会反映连接到云端时出现的一些问题，或者处理请求的操作时遇到的一些问题。我们可以看下另一个例子。在下面的代码中我们想要获取一个不存在的 objectId。LeanCloud 会返回一个错误，所以这里就是我们怎样在你的 callback 里处理错误。
+
+```javascript
+// 你有一个 Class 名字为 Note
+var query = new AV.Query('Note');
+query.get('aBcDeFgH').then(function(results) {
+  // This function will *not* be called.
+  console.log('Everything went fine!');
+}, function(error) {
+  // This will be called.
+  // error is an instance of AV.Error with details about the error.
+  if (error.code === AV.Error.OBJECT_NOT_FOUND) {
+    console.log('Uh oh, we couldn\'t find the object!');
+  }
+});
+```
+
+查询在无法连接到 LeanCloud 的时候同样有可能失败。下面是同样的 callback，但是有一些其他的代码来处理这种情况：
+
+```javascript
+// 你有一个 Class 名字为 Note
+var query = new AV.Query('Note');
+query.get('thisObjectIdDoesntExist').then(function(results) {
+  // This function will *not* be called.
+  console.log('Everything went fine!');
+}, function(error) {
+  console.log(error);
+});
+```
+
+对于像是 save 或者是 signUp 这种方法会对一个特定的 AV.Object 起作用的方法来说，error 函数的第一个参数是 object 本身。第二个是一个 AV.Error 对象，详情请查看 JavaScript API 来得到所有的 AV.Error 的返回码。
+{% endblock %}
+
+{% block use_js_in_webview %}
+## WebView 中使用
+
+JS SDK 当然也支持在各种 WebView 中使用，可以将代码部署在 LeanCloud 的「云引擎」中。
+
+### Android 中使用
+
+如果是 Android WebView，在 Native 代码创建 WebView 的时候你需要打开几个选项，
+这些选项生成 WebView 的时候默认并不会被打开，需要配置：
+
+1. 因为我们 JS SDK 目前使用了 window.localStorage，所以你需要开启 WebView 的 localStorage；设置方式：
+
+  ```java
+  yourWebView.getSettings().setDomStorageEnabled(true);
+  ```
+2. 如果你希望直接调试手机中的 WebView，也同样需要在生成 WebView 的时候设置远程调试，具体使用方式请参考 [Google 官方文档](https://developer.chrome.com/devtools/docs/remote-debugging)。
+
+  ```java
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      yourWebView.setWebContentsDebuggingEnabled(true);
+  }
+  ```
+
+  注意：这种调试方式仅支持 Android 4.4 已上版本（含 4.4）
+3. 如果你是通过 WebView 来开发界面，Native 调用本地特性的 Hybrid 方式开发你的 App。比较推荐的开发方式是：通过 Chrome 的开发者工具开发界面部分，当界面部分完成，与 Native 再来做数据连调，这种时候才需要用 Remote debugger 方式在手机上直接调试 WebView。这样做会大大节省你开发调试的时间，不然如果界面都通过 Remote debugger 方式开发，可能效率较低。
+4. 为了防止通过 JavaScript 反射调用 Java 代码访问 Android 文件系统的安全漏洞，在 Android 4.2 以后的系统中间，WebView 中间只能访问通过 [@JavascriptInterface](http://developer.android.com/reference/android/webkit/JavascriptInterface.html) 标记过的方法。如果你的目标用户覆盖 4.2 以上的机型，请注意加上这个标记，以避免出现 **Uncaught TypeError**。
+{% endblock %}
+
+
+
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
+
+

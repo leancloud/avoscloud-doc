@@ -30,14 +30,14 @@
 ## 你是 JavaScript 前端开发者？
 
 * [快速入门](/start.html)
-<li><a href="js_guide.html">JavaScript 数据存储指南</a></li>
+<li><a href="leanstorage_guide-js.html">JavaScript 数据存储指南</a></li>
 <li><a href="https://github.com/leancloud/realtime-messaging-jssdk">JavaScript 实时通信 SDK</a></li>
 <li><a href="/api-docs/javascript/index.html" target="_blank">JavaScript SDK API</a></li>
 
 ## 你是后端逻辑开发者？
 
 * [开放 REST API 文档](./rest_api.html)
-<li><a href="js_guide.html">JavaScript 数据存储指南</a></li>
+<li><a href="leanstorage_guide-js.html">JavaScript 数据存储指南</a></li>
 <li><a href="leanengine_guide-node.html">云引擎指南（Node.js）</a></li>
 <li><a href="leanengine_guide-python.html">云引擎指南（Python）</a></li>
 <li><a href="leanengine_cli.html">云引擎命令行工具</a></li>
@@ -59,7 +59,7 @@
 <li><a href="leanstorage_guide-android.html">Android 数据存储指南</a></li>
 <li><a href="unity_guide.html">Unity3D 数据存储指南</a></li>
 <li><a href="dotnet_guide.html">.NET 数据存储指南</a></li>
-<li><a href="js_guide.html">JavaScript 数据存储指南</a></li>
+<li><a href="leanstorage_guide-js.html">JavaScript 数据存储指南</a></li>
 </ul>
 
 ## 你要实现聊天功能？

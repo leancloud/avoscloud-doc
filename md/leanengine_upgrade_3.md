@@ -63,7 +63,7 @@ npm install
 
 ## 增加 leanengine 依赖
 
-3.0 项目会依赖 [leanengine](https://github.com/leancloud/leanengine-node-sdk)，而不是 [avoscloud-sdk](https://github.com/leancloud/javascript-sdk)，可以认为前者是后者的增强，增加了云函数等支持。
+3.0 项目会依赖 [leanengine](https://github.com/leancloud/leanengine-node-sdk)，而不是 [leancloud-storage](https://github.com/leancloud/javascript-sdk)，可以认为前者是后者的增强，增加了云函数等支持。
 
 如果是按照 [创建 package.json 文件](#创建_package_json_文件) 章节描述的操作，`package.json` 文件应该已经有 `leanengine` 的依赖了。如果没有请在 `$PROJECT_DIR` 目录下执行：
 
@@ -87,7 +87,7 @@ npm install leanengine --save
   7 AV.initialize(APP_ID, APP_KEY, MASTER_KEY);
   8 // 如果不希望使用 masterKey 权限，可以将下面一行删除
   9 AV.Cloud.useMasterKey();
- 10 
+ 10
  11
  12 var app = require('./app');
  13
@@ -112,7 +112,7 @@ npm install leanengine --save
 
 第 14 ~ 19 行，引入 `app` 模块（具体见 [app 模块](#app_模块) 一节），然后使用环境变量提供的端口启动应用。
 
-* **提示**：2.0 项目引入自定义模块时都需要添加 `cloud/` 的前缀（比如 `cloud/app.js`）。Node.js 项目没有这样的引用方式，属于沙箱环境的限制。3.0 项目则使用更加通用的方式，以 `./` 或 `../` 开头来引用自定义模块，如用 `./app` 来引用 `$PROJECT_DIR/app.js` 文件。 
+* **提示**：2.0 项目引入自定义模块时都需要添加 `cloud/` 的前缀（比如 `cloud/app.js`）。Node.js 项目没有这样的引用方式，属于沙箱环境的限制。3.0 项目则使用更加通用的方式，以 `./` 或 `../` 开头来引用自定义模块，如用 `./app` 来引用 `$PROJECT_DIR/app.js` 文件。
 
 ## app 模块
 
@@ -183,7 +183,7 @@ app 模块保存在 `$PROJECT_DIR/app.js` 文件，是应用主要文件之一�
   9 app.set('views', path.join(__dirname, 'views')); // 设置模板目录
  10 app.set('view engine', 'ejs');    // 设置 template 引擎
  11 app.use(express.static('public'));
->12 app.use(bodyParser.json()); 
+>12 app.use(bodyParser.json());
 >13 app.use(bodyParser.urlencoded({ extended: false }));
 >14 app.use(cookieParser());
  15

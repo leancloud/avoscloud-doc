@@ -1,6 +1,6 @@
 {% extends "./sdk_setup.tmpl" %}
 
-{% block language %}JavaScript{% endblock %} 
+{% block language %}JavaScript{% endblock %}
 
 {% block libs_tool_automatic %}
 #### npm 安装
@@ -9,7 +9,7 @@ LeanCloud JavaScript SDK 也可在 Node.js 等服务器端环境运行，可以�
 
 ```
 # 存储服务
-$ npm install avoscloud-sdk --save
+$ npm install leancloud-storage --save
 # 实时消息服务
 $ npm install leancloud-realtime --save
 ```
@@ -25,7 +25,7 @@ $ npm install -g cnpm --registry=http://r.cnpmjs.org
 
 ```
 # 存储服务
-$ cnpm install avoscloud-sdk --save
+$ cnpm install leancloud-storage --save
 # 实时消息服务
 $ cnpm install leancloud-realtime --save
 ```
@@ -33,16 +33,35 @@ $ cnpm install leancloud-realtime --save
 #### bower 安装
 
 ```
-$ bower install leancloud-javascript-sdk --save
+$ bower install leancloud-storage --save
 ```
 
 #### CDN 加速
 
 ```html
-<script src="https://cdn1.lncld.net/static/js/av-mini-<版本号>.js"></script>
-<!-- 如果只用存储、推送等最核心的功能，可以使用精简版的 core.js -->
-<script src="https://cdn1.lncld.net/static/js/av-core-mini-<版本号>.js"></script>
+<script src="https://cdn1.lncld.net/static/js/av-min-1.0.0.js"></script>
 ```
+
+### TypeScript SDK 安装
+#### 通过 typings 工具安装
+
+首先需要安装 [typings 命令行工具](https://www.npmjs.com/package/typings)
+
+```sh
+npm install typings --global
+```
+
+然后再执行如下命令即可：
+
+```sh
+typings install leancloud-jssdk --save
+```
+
+
+#### 直接引用 d.ts 文件
+TypeScript 使用 JavaScript SDK 是通过定义文件来实现调用的，因此我们也将定义文件开源在 GitHub 上，地址是：
+[typed-leancloud-jssdk](https://github.com/leancloud/typed-leancloud-jssdk)
+
 
 #### Web 安全
 
@@ -51,42 +70,30 @@ $ bower install leancloud-javascript-sdk --save
 具体安全相关内容可以仔细阅读文档 [数据和安全](data_security.html) 。
 {% endblock %}
 
-{% block import_sdk %}
-LeanCloud JavaScript SDK 是分模块使用的，可根据下列表格对应选择所需要的模块：
-
-```
-├── av-core-mini.js      // LeanCloud 核心框架（压缩版，建议用于生产环境）
-├── av-core.js           // LeanCloud 核心框架（未压缩版）
-├── av-mini.js           // LeanCloud 接口框架（压缩版）
-├── av.js                // LeanCloud 接口框架（未压缩版）
-├── AV.push.min.js       // LeanCloud 推送模块（压缩版）
-├── AV.push.js           // LeanCloud 推送模板（未压缩版）
-├── AV.realtime.min.js   // LeanCloud 实时消息模块（压缩版）
-└── AV.realtime.js       // LeanCloud 实时消息模块（未压缩版）
-```
-
-**使用存储服务的时候，`av.js(min)` 和 `av-core.js(min)`  必须一起引用。**
-
-聊天和推送各自可以独立引用。
-
-{% endblock %}
-
 {% block init_with_app_keys %}
 如果是在前端项目里面使用 LeanCloud JavaScript SDK，那么可以在页面加载的时候调用一下初始化的函数：
 
 ```javascript
-//参数依次为 AppId, AppKey
-AV.initialize('{{appid}}', '{{appkey}}');
+var APP_ID = '{{appid}}';
+var APP_KEY = '{{appkey}}';
+AV.init({
+  appId: APP_ID,
+  appKey: APP_KEY
+});
 ```
 
 {% endblock %}
 
 {% block sdk_switching_node %}
 ```javascript
-//参数依次为 AppId, AppKey
-AV.initialize('{{appid}}', '{{appkey}}');
-// 启用美国节点
-AV.useAVCloudUS();
+var APP_ID = '{{appid}}';
+var APP_KEY = '{{appkey}}';
+AV.init({
+  appId: APP_ID,
+  appKey: APP_KEY,
+  // 启用美国节点
+  region: 'us'
+});
 ```
 {% endblock %}
 
@@ -97,10 +104,8 @@ var TestObject = AV.Object.extend('TestObject');
 var testObject = new TestObject();
 testObject.save({
   words: 'Hello World!'
-}, {
-  success: function(object) {
-    alert('LeanCloud Rocks!');
-  }
-});
+}).then(function(object) {
+  alert('LeanCloud Rocks!');
+})
 ```
 {% endblock %}

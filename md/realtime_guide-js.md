@@ -67,14 +67,14 @@ const realtime = new Realtime({
 ```
 
 ### leancloud-realtime-typed-messages
-如果需要使用 [富媒体消息](#富媒体消息) 中的 `ImageMessage`、`AudioMessage`、`VideoMessage`、`FileMessage` 或 `LocationMessage`，需要额外安装 leancloud-realtime-typed-messages 与 avoscloud-sdk：
+如果需要使用 [富媒体消息](#富媒体消息) 中的 `ImageMessage`、`AudioMessage`、`VideoMessage`、`FileMessage` 或 `LocationMessage`，需要额外安装 leancloud-realtime-typed-messages 与 leancloud-storage：
 ```bash
-npm install --save leancloud-realtime-typed-messages avoscloud-sdk
+npm install --save leancloud-realtime-typed-messages leancloud-storage
 ```
 
 在浏览器中使用时按照以下顺序加载：
 ```html
-<script src="./node_modules/avoscloud-sdk/dist/av.js"></script>
+<script src="./node_modules/leancloud-storage/dist/av.js"></script>
 <script src="./node_modules/leancloud-realtime/dist/realtime.browser.js"></script>
 <script src="./node_modules/leancloud-realtime-typed-messages/dist/typed-messages.js"></script>
 ```
@@ -94,7 +94,7 @@ realtime.register([ImageMessage]);
 
 如果是在 Node.js 中使用，需要按以下方法进行初始化：
 ```javascript
-var AV = require('avoscloud-sdk');
+var AV = require('leancloud-storage');
 var Realtime = require('leancloud-realtime').Realtime;
 var ImageMessage = require('leancloud-realtime-typed-messages').ImageMessage;
 
@@ -246,7 +246,7 @@ realtime.createIMClient('William').then(function(william) {
 
 ##### 图像消息、音频消息、视频消息、文件消息
 
-图像可以通过浏览器或 Node.js 提供的 API 获取，也可以用有效的图像 URL。先使用存储 SDK 的 `AV.File` 类 [构造出一个文件对象](js_guide.html#文件)，再调用其 `save` 方法将其保存到服务端，然后把它当做参数构造一个 `ImageMessage` 的实例，最后通过 `Conversation#send` 方法即可发送这条消息。
+图像可以通过浏览器或 Node.js 提供的 API 获取，也可以用有效的图像 URL。先使用存储 SDK 的 `AV.File` 类 [构造出一个文件对象](leanstorage_guide-js.html#文件)，再调用其 `save` 方法将其保存到服务端，然后把它当做参数构造一个 `ImageMessage` 的实例，最后通过 `Conversation#send` 方法即可发送这条消息。
 
 音频消息、视频消息、文件消息的构造与发送与图像消息类似，不再赘述。
 
@@ -301,7 +301,7 @@ file.save().then(function() {
 
 ##### 地理位置消息
 
-先使用存储 SDK 的 `AV.GeoPoint` 类 [构造出一个地理位置对象](js_guide.html#地理位置)，然后把它当做参数构造一个 `LocationMessage` 的实例，最后通过 `Conversation#send` 方法即可发送这条消息。
+先使用存储 SDK 的 `AV.GeoPoint` 类 [构造出一个地理位置对象](leanstorage_guide-js.html#地理位置)，然后把它当做参数构造一个 `LocationMessage` 的实例，最后通过 `Conversation#send` 方法即可发送这条消息。
 
 ```javascript
 var location = new AV.GeoPoint(31.3753285,120.9664658);
@@ -439,15 +439,15 @@ realtime.createIMClient('bob').then(function(bob) {
 暂未实现
 
 
-### 离线消息
+### 未读消息
 
-离线消息有两种处理方式，未读消息通知与离线消息推送。
+未读消息有两种处理方式，未读消息数量通知与离线消息通知。
 
-#### 未读消息通知
+#### 未读消息数量通知
 
-未读消息通知是默认的离线消息处理方式：当客户端上线时，会收到其参与过的会话的离线消息数量的通知，然后由客户端负责主动拉取未读的消息并手动标记为已读。
+未读消息数量通知是默认的未读消息处理方式：当客户端上线时，会收到其参与过的会话的未读消息数量的通知，然后由客户端负责主动拉取未读的消息并手动标记为已读。
 
-当收到未读消息通知时，SDK 会在 Client 上派发 `unreadmessages` 事件。
+当收到未读消息数量通知时，SDK 会在 Client 上派发 `unreadmessages` 事件。
 
 ```javascript
 client.on('unreadmessages', function unreadMessagesEventHandler(payload, conversation) {
@@ -484,11 +484,11 @@ client.markAllAsRead([conversation]).then(function() {
 }).catch(console.error.bind(console));
 ```
 
-#### 离线消息推送
+#### 离线消息通知
 
-离线消息推送方式是指，当客户端上线时，服务器会主动将所有离线时收到的消息推送过来，每个对话最多推送 20 条最近的消息。当收到未读消息时，SDK 会在 Client 上派发 `messages` 事件，与在线时收到消息无异。
+离线消息通知方式是指，当客户端上线时，服务器会主动将所有离线时收到的消息推送过来，每个对话最多推送 20 条最近的消息。当收到离线消息时，SDK 会在 Client 上派发 `messages` 事件，与在线时收到消息无异。
 
-要使用离线消息推送方式，需要在初始化 Realtime 时设置参数 `pushOfflineMessages` 为 `true`：
+要使用离线消息通知方式，需要在初始化 Realtime 时设置参数 `pushOfflineMessages` 为 `true`：
 
 ```javascript
 var realtime = new AV.Realtime({

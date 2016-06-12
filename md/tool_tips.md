@@ -93,7 +93,7 @@
 * 通过定义 [before 或者 after 函数](leanengine_guide-cloudcode.html#在_save_前修改对象)，在 AVObject 存储前后加入校验等额外逻辑。
 * 避免对象循环引用，将循环关系作为第三个对象存储。
 * 想建立一个应用网站？我们提供 [网站托管](leanengine_guide-cloudcode.html#Web_Hosting)。
-* 想用好云引擎，请先熟悉 [JavaScript SDK 开发指南](js_guide.html)。
+* 想用好云引擎，请先熟悉 [JavaScript SDK 开发指南](leanstorage_guide-js.html)。
 * 云引擎 Web 主机托管，可以绑定备案过的独立域名，请在 [工单系统](https://leanticket.cn/) 提出技术申请。
 * 云引擎 Web 主机托管，我们可以协助你完成域名的备案，请参考 [域名备案流程](leanengine_guide-cloudcode.html#域名备案流程)。
 

@@ -258,6 +258,11 @@ realtimeObj.on('membersleft', function(data) {
 realtimeObj.on('message', function(data) {
     console.log('某个当前用户在的 Conversation 接收到消息：', data);
 });
+
+//当聊天出现错误时会触发
+realtimeObj.on('error', function (error) {
+    console.error(error);
+});
 ```
 
 如果 A 创建了一个包含 B 的 Conversation ，并向其发送消息。
@@ -393,7 +398,7 @@ roomObj.send({
 
 ## 暂态对话
 
-标准的 Conversation（对话） 每个最多只能支持 500 个 client，假如想要创建一个有非常大量的用户的聊天室，可以使用方法来创建一个「暂态对话」（或者也叫开放聊天室）。但是这种方式创建的 Conversation 不支持消息回执等方法，具体请到「[实时通讯服务开发指南](realtime_v2.html)」中了解。
+标准的 Conversation（对话） 每个最多只能支持 500 个 client，假如想要创建一个有非常大量的用户的聊天室，可以使用方法来创建一个「暂态对话」（或者也叫聊天室）。但是这种方式创建的 Conversation 不支持消息回执等方法，具体请到「[实时通讯服务开发指南](realtime_v2.html)」中了解。
 
 具体如何创建，请看下面实例化一个 Conversation 的方法 [RealtimeObject.conv](#RealtimeObject_conv)。
 

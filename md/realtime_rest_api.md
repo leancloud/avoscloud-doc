@@ -1,5 +1,24 @@
 # 实时通信 REST API 使用指南
 
+## API 域名
+
+所有 API 访问都通过 HTTPS 进行。API 访问域名为：
+
+- **中国节点**：<https://api.leancloud.cn>
+- **美国节点**：<https://us-api.leancloud.cn>
+
+域名之后衔接 API 版本号，如 `/1.1/`，代表正在使用 1.1 版的 API。
+
+## 请求格式
+对于 POST 和 PUT 请求，请求的主体必须是 JSON 格式，而且 HTTP Header 的 Content-Type 需要设置为 `application/json`。
+
+请求的鉴权是通过 HTTP Header 里面包含的键值对来进行的，参数如下表：
+
+Key|Value|含义|来源
+---|----|---|---
+`X-LC-Id`|{{appid}}|当前应用的 App Id|可在控制台->设置页面查看
+`X-LC-Key`| {{appkey}}|当前应用的 App Key |可在控制台->设置页面查看
+
 ## 对话数据操作
 
 你可以通过 REST API 对对话（相应的聊天室、群组或单聊等）进行操作，例如提前创建聊天室，关联聊天室到其他数据实体。LeanCloud 实时通信系统采用透明的设计，对话数据在 LeanCloud 系统中是普通的数据表，表名为 `_Conversation`，你可以直接调用 [数据存储相关的 API 进行数据操作](./rest_api.html#对象-1)。`_Conversation` 表 包含一些内置的关键字段定义了对话的属性、成员等，你可以在 [实时通信概览 - 对话](./realtime_v2.html#对话_Conversation_) 了解。
@@ -19,7 +38,7 @@ curl -X POST \
 
 上面的例子会创建一个最简单的对话，包括两个 client ID 为 BillGates 和 SteveJobs 的初始成员。对话创建成功会返回 objectId，即实时通信中的对话 ID，客户端就可以通过这个 ID 发送消息了。
 
-常见的开放聊天室的场景，需要通过 REST API 预先创建聊天室，并把对话 ID 与应用内的某个对象关联（如视频、比赛等）。创建开放聊天室只需要包含一个 **tr** 参数，设置为 true 即可。
+常见的聊天室的场景，需要通过 REST API 预先创建聊天室，并把对话 ID 与应用内的某个对象关联（如视频、比赛等）。创建聊天室只需要包含一个 **tr** 参数，设置为 true 即可。
 
 ```sh
 curl -X POST \
@@ -233,7 +252,7 @@ curl -X POST \
 
 参数 | 约束 | 说明
 ---|---|---
-from_peer | |消息的发件人 id
+from_peer | |消息的发件人 client Id
 conv_id | |发送到对话 id
 transient | 可选|是否为暂态消息（**由于向后兼容的考虑，默认为 true**，请注意设置这个值。）
 message || 消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
@@ -245,9 +264,27 @@ no_sync | 可选|默认情况下消息会被同步给在线的 from_peer 用户�
 
 ### 系统对话给用户发消息
 
-利用 REST API 通过系统对话给用户发消息时，除了 conv_id 需要设置为对应系统对话的 ID 以外，还需要设置 to_peers（数组）指定实际接收消息的 Client ID。
+利用 REST API 通过系统对话给用户发消息时，除了 conv_id 需要设置为对应系统对话的 id 以外，还需要设置 to_peers（数组）指定实际接收消息的 client id。
 
-目前你可以在一次调用中传入至多 20 个 Client ID。
+目前你可以在一次调用中传入至多 20 个 client id。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '{"from_peer": "1a", "to_peers":["2c","3d","4f"],"message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "...", "transient": false}' \
+  https://leancloud.cn/1.1/rtm/messages
+```
+
+参数 | 约束 | 说明
+---|---|---
+from_peer | |消息的发件人 client id
+to_peers | 长度最长为 20 个 client id| 接受系统消息的 client id
+conv_id | |发送到对话 id
+transient | 可选|是否为暂态消息（**由于向后兼容的考虑，默认为 true**，请注意设置这个值。）
+message || 消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
+no_sync | 可选|默认情况下消息会被同步给在线的 from_peer 用户的客户端，设置为 true 禁用此功能。
 
 ### 系统对话发送广播消息
 
@@ -476,13 +513,13 @@ curl -X POST \
   }
 ```
 
-## 获取暂态对话的在线人数
+## 获取暂态对话（聊天室）的在线人数
 
 你可以通过这个 API 获得暂态对话的在线人数。由于暂态对话没有成员列表支持，所以通常使用这个 API 获得当前的在线人数。出于性能的考虑，这个 API 有一定的缓存时间，仅用作粗略计数。
 
 参数 | 说明
 --- | ---
-`gid` | 暂态对话的 id
+`gid` | 暂态对话（聊天室）的 id
 
 ```sh
 curl -X GET \

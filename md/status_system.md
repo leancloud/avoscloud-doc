@@ -894,7 +894,6 @@ GET /subscribe/statuses
 owner | JSON 序列化后的 owner 字符串，表示 inbox 所有者。
 inboxType | inbox 的类型，默认为 `default`，可为空。
 where  | 用于过滤 status 的 where 条件，也是 JSON 序列化后的字符串。
-order | 排序 status 的字段列表，必须是 status 本身的字段，默认 `-createdAt`。
 sinceId  | 查询返回的 status 的 messageId 必须大于 sinceId，默认为 0。
 maxId  | 查询返回的 status 的 messageId 必须小于等于 maxId，默认为 0。
 limit | 最多返回多少条 status，默认 100，最大 100。

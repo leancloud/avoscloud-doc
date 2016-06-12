@@ -14,6 +14,8 @@
 {% endblock %}
 
 {% block oneOnOneChat_sent %}
+<div class="callout callout-info">注意：**启用实时通信一定要正确配置** `AndroidManifest.xml`，请仔细阅读 [Android SDK 初始化配置](sdk_setup-android.html#初始化)。</div>
+
 ```
   public void sendMessageToJerryFromTom() {
     // Tom 用自己的名字作为clientId，获取AVIMClient对象实例
@@ -166,7 +168,7 @@ public class MyApplication extends Application{
 }
 
 - CustomMessageHandler.java
-public class CustomMessageHandler<AVIMTextMessage> implements AVTypedMessageHandler{
+public class CustomMessageHandler<AVIMTextMessage> implements AVIMTypedMessageHandler{
  
   @Override
   public void onMessage(AVIMTextMessage msg,AVIMConversation conv,AVIMClient client){
@@ -1526,6 +1528,10 @@ conversationQuery.whereEqualTo("topic", "DOTA2");
 
 {% endblock %}
 
+{% block conversation_query_content %}
+条件查询又分为：比较查询、正则匹配查询、包含查询、空值查询，以下会做分类演示。
+{% endblock %}
+
 {% block conversation_messageHistoryByLimit %}
 
 ```
@@ -1806,6 +1812,50 @@ tom.open(new AVIMClientCallback(){
 });
 ```
 {% endblock %}
+
+
+{% block conversation_query_exists %}
+#### 空值查询
+
+空值查询是指查询相关列是否为空值的方法，例如要查询 lm 列为空值的对话：
+
+```
+AVIMClient tom = AVIMClient.getInstance("Tom");
+tom.open(new AVIMClientCallback(){
+
+  @Override
+  public void done(AVIMClient client,AVIMException e){
+    if(e==null){
+    //登录成功
+    AVIMConversationQuery query = client.getQuery();
+    
+    //查询 lm 列为空的 Conversation 列表
+    query.whereDoesNotExist("lm");
+    
+    query.findInBackground(new AVIMConversationQueryCallback(){
+      @Override
+      public void done(List<AVIMConversation> convs,AVIMException e){
+        if(e==null){
+          if(convs!=null && !convs.isEmpty()){
+            //获取符合查询条件的Conversation列表
+          }
+        }
+      }
+    });
+    }
+  }
+});
+
+```
+
+如果要查询 lm 列不为空的对话，则替换为如下：
+
+```
+query.whereExists("lm");
+
+```
+{% endblock %}
+
 
 {% block conversation_query_combination %}
 

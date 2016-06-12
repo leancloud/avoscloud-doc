@@ -65,7 +65,7 @@ pod 'AVOSCloudCrashReporting' # 错误报告模块
 
 ##### 安装静态库
 
-<div class="callout callout-info">确保你正在使用最新版本的 Xcode（4.6+），并且面向 iOS 4.3 或者更高版本。我们推荐 Xcode 5 和 iOS 5 或以上系统。</div>
+<div class="callout callout-info">静态库支持 iOS 7.0 及以上系统。</div>
 
 首先，跟安装动态库一样，准备好待集成的模块。将它们放入同一个目录中：
 
