@@ -370,12 +370,12 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
   </thead>
   <tbody>
     <tr>
-      <td>/1.1/rtm/messages/logs/</td>
+      <td>/1.1/rtm/messages/logs</td>
       <td>GET</td>
       <td>获得应用聊天记录</td>
     </tr>
     <tr>
-      <td>/1.1/rtm/messages/</td>
+      <td>/1.1/rtm/messages</td>
       <td>POST</td>
       <td>通过 API 向用户发消息</td>
     </tr>
