@@ -136,6 +136,8 @@
 
   // 在 TypeScript 当中我们推荐如下创建对象的方式
   let todo = new AV.Object('Todo');
+  
+//https://github.com/leancloud/TypeScript-Sample-Code/blob/master/sample/Object/AVObject%23new.ts
 ```
 
 **注意**：`AV.Object.extend` 产生的对象需要作为全局变量保存，因为每调用
