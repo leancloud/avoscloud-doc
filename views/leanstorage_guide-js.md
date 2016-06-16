@@ -42,8 +42,10 @@
 {% block code_quick_save_a_todo %}
 
 ```js
-  var Todo = AV.Object.extend('Todo');// 声明一个 Todo 类型
-  var todo = new Todo();  // 新建一个 Todo 对象
+  // 声明一个 Todo 类型
+  var Todo = AV.Object.extend('Todo');
+  // 新建一个 Todo 对象
+  var todo = new Todo();
   todo.set('title', '工程师周会');
   todo.set('content', '每周工程师会议，周一下午2点');
   todo.save().then(function (todo) {
@@ -51,9 +53,25 @@
     console.log('New object created with objectId: ' + todo.id);
   }, function (error) {
     // 失败之后执行其他逻辑
-    // error 是 AV.Error 的实例，包含有错误码和描述信息.
     console.log('Failed to create new object, with error message: ' + error.message);
   });
+```
+```es7
+  // 声明一个 Todo 类型
+  const Todo = AV.Object.extend('Todo');
+  // 新建一个 Todo 对象
+  let todo = new Todo();
+  todo.set('title', '工程师周会');
+  todo.set('content', '每周工程师会议，周一下午2点');
+  try {
+    todo = await todo.save();
+    // 成功保存之后，执行其他逻辑.
+    console.log('New object created with objectId: ' + todo.id);
+  } catch (error) {
+    // 失败之后执行其他逻辑
+    // error 是 AV.Error 的实例，包含有错误码和描述信息.
+    console.log('Failed to create new object, with error message: ' + error.message);
+  }
 ```
 ```ts
   let todo = new AV.Object('Todo');
@@ -79,13 +97,27 @@
   var todo = new Todo();
   todo.set('title', '工程师周会');
   todo.set('content', '每周工程师会议，周一下午2点');
-  todo.set('location','会议室');// 只要添加这一行代码，服务端就会自动添加这个字段
+  // 只要添加这一行代码，服务端就会自动添加这个字段
+  todo.set('location','会议室');
   todo.save().then(function (todo) {
     // 成功保存之后，执行其他逻辑.
   }, function (error) {
     // 失败之后执行其他逻辑
-    // error 是 AV.Error 的实例，包含有错误码和描述信息.
   });
+```
+```es7
+  const Todo = AV.Object.extend('Todo');
+  const todo = new Todo();
+  todo.set('title', '工程师周会');
+  todo.set('content', '每周工程师会议，周一下午2点');
+  // 只要添加这一行代码，服务端就会自动添加这个字段
+  todo.set('location','会议室');
+  try {
+    await todo.save();
+    // 成功保存之后，执行其他逻辑
+  } catch (error) {
+    // 失败之后执行其他逻辑
+  }
 ```
 ```ts
   let todo = new AV.Object('Todo');
@@ -109,7 +141,13 @@
 
 ```js
   // AV.Object.extend('className') 所需的参数 className 则表示对应的表名
-  var Todo = AV.Object.extend('Todo');// 声明一个类型
+  // 声明一个类型
+  var Todo = AV.Object.extend('Todo');
+```
+```es7
+  // AV.Object.extend('className') 所需的参数 className 则表示对应的表名
+  // 声明一个类型
+  const Todo = AV.Object.extend('Todo');
 ```
 ```ts
   // AV.Object.extend('className') 所需的参数 className 则表示对应的表名
@@ -139,6 +177,17 @@
     console.log(error);
   });
 ```
+```es7
+  // 执行 CQL 语句实现新增一个 TodoFolder 对象
+  try {
+    const data = await AV.Query.doCloudQuery('insert into TodoFolder(name, priority) values("工作", 1)');
+    // data 中的 results 是本次查询返回的结果，AV.Object 实例列表
+    var results = data.results;
+  } catch (error) {
+    //查询失败，查看 error
+    console.log(error);
+  }
+```
 ```ts
   // 执行 CQL 语句实现新增一个 TodoFolder 对象
   AV.Query.doCloudQuery<any>('insert into TodoFolder(name, priority) values("工作", 1)').then(
@@ -154,28 +203,54 @@
 {% endblock %}
 
 {% block code_data_type %}
+
 ```js
-// 该语句应该只声明一次
-var TestObject = AV.Object.extend('DataTypeTest');
+  // 该语句应该只声明一次
+  var TestObject = AV.Object.extend('DataTypeTest');
 
-var number = 2014;
-var string = 'famous film name is ' + number;
-var date = new Date();
-var array = [string, number];
-var object = { number: number, string: string };
+  var number = 2014;
+  var string = 'famous film name is ' + number;
+  var date = new Date();
+  var array = [string, number];
+  var object = { number: number, string: string };
 
-var testObject = new TestObject();
-testObject.set('testNumber', number);
-testObject.set('testString', string);
-testObject.set('testDate', date);
-testObject.set('testArray', array);
-testObject.set('testObject', object);
-testObject.set('testNull', null);
-testObject.save().then(function(testObject) {
-  // 成功
-}, function(error) {
-  // 失败
-});
+  var testObject = new TestObject();
+  testObject.set('testNumber', number);
+  testObject.set('testString', string);
+  testObject.set('testDate', date);
+  testObject.set('testArray', array);
+  testObject.set('testObject', object);
+  testObject.set('testNull', null);
+  testObject.save().then(function(testObject) {
+    // 成功
+  }, function(error) {
+    // 失败
+  });
+```
+```es7
+  // 该语句应该只声明一次
+  const TestObject = AV.Object.extend('DataTypeTest');
+
+  const number = 2014;
+  const string = `famous film name is ${number}`;
+  const date = new Date();
+  const array = [string, number];
+  const object = { number, string };
+
+  let testObject = new TestObject();
+  testObject.set('testNumber', number);
+  testObject.set('testString', string);
+  testObject.set('testDate', date);
+  testObject.set('testArray', array);
+  testObject.set('testObject', object);
+  testObject.set('testNull', null);
+
+  try {
+    testObject = await testObject.save();
+    // 成功
+  } catch (error) {
+    // 失败
+  }
 ```
 ```ts
   let testNumber : number = 13;
@@ -208,15 +283,36 @@ testObject.save().then(function(testObject) {
 {% block code_save_todo_folder %}
 
 ```js
-   var TodoFolder = AV.Object.extend('TodoFolder');// 声明类型
-   var todoFolder = new TodoFolder();// 新建对象
-   todoFolder.set('name','工作');// 设置名称
-   todoFolder.set('priority',1);// 设置优先级
-   todoFolder.save().then(function (todo) {
-      console.log('objectId is ' + todo.id);
-    }, function (error) {
-      console.log(error);
-   });// 保存到云端
+  // 声明类型
+  var TodoFolder = AV.Object.extend('TodoFolder');
+  // 新建对象
+  var todoFolder = new TodoFolder();
+  // 设置名称
+  todoFolder.set('name','工作');
+  // 设置优先级
+  todoFolder.set('priority',1);
+  todoFolder.save().then(function (todo) {
+    console.log('objectId is ' + todo.id);
+  }, function (error) {
+    console.log(error);
+  });
+```
+```es7
+  // 声明类型
+  const TodoFolder = AV.Object.extend('TodoFolder');
+  // 新建对象
+  let todoFolder = new TodoFolder();
+  // 设置名称
+  todoFolder.set('name','工作');
+  // 设置优先级
+  todoFolder.set('priority',1);
+
+  try {
+    todoFolder = await todoFolder.save();
+    console.log(`objectId is ${todo.id}`);
+  } catch (error) {
+    console.log(error);
+  }
 ```
 ```ts
   let todoFolder:AV.Object = new AV.Object('TodoFolder');// 新建对象
@@ -234,21 +330,34 @@ testObject.save().then(function(testObject) {
 {% block code_saveoption_query_example %}
 
 ```js
-    new AV.Query('Wiki').first().then(function (data) {
-        var wiki = data;
-        var currentVersion = wiki.get('version');
-        wiki.set('version', currentVersion + 1);
-        wiki.save(null, {
-            query: new AV.Query('Wiki').equalTo('version', currentVersion)
-        }).then(function (data) {
-        }, function (error) {
-            if (error)
-                throw error;
-        });
+  new AV.Query('Wiki').first().then(function (data) {
+    var wiki = data;
+    var currentVersion = wiki.get('version');
+    wiki.set('version', currentVersion + 1);
+    wiki.save(null, {
+      query: new AV.Query('Wiki').equalTo('version', currentVersion)
+    }).then(function (data) {
     }, function (error) {
-        if (error)
-            throw error;
+      if (error) {
+        throw error;
+      }
     });
+  }, function (error) {
+    if (error) {
+      throw error;
+    }
+  });
+```
+```es7
+  try {
+    let wiki = await new AV.Query('Wiki').first();
+    const currentVersion = wiki.get('version');
+    wiki.set('version', currentVersion + 1);
+    const query = new AV.Query('Wiki').equalTo('version', currentVersion);
+    wiki = await wiki.save(null, { query });
+  } catch (error) {
+    throw error;
+  }
 ```
 ```ts
   new AV.Query('Wiki').first<AV.Object>().then((data) => {
@@ -279,6 +388,16 @@ testObject.save().then(function(testObject) {
     // 失败了
   });
 ```
+```es7
+  const query = new AV.Query('Todo');
+  try {
+    const data = await query.get('57328ca079bc44005c2472d0');
+    // 成功获得实例
+    // data 就是 id 为 57328ca079bc44005c2472d0 的 Todo 对象实例
+  } catch (error) {
+    // 失败了
+  }
+```
 ```ts
   var query = new AV.Query('Todo');
   query.get<AV.Object>('57328ca079bc44005c2472d0').then((data)=>{
@@ -298,6 +417,12 @@ testObject.save().then(function(testObject) {
   var title = todo.get('title');// 读取 title
   var content = todo.get('content');// 读取 content
 ```
+```es7
+  // 第一个参数是 className，第二个参数是 objectId
+  const todo = AV.Object.createWithoutData('Todo', '5745557f71cfe40068c6abe0');
+  const title = todo.get('title');// 读取 title
+  const content = todo.get('content');// 读取 content
+```
 ```ts
   // 第一个参数是 className，第二个参数是 objectId
   let todo : AV.Object = AV.Object.createWithoutData('Todo','5745557f71cfe40068c6abe0');
@@ -315,11 +440,26 @@ testObject.save().then(function(testObject) {
   todo.set('content', '每周工程师会议，周一下午2点');
   todo.save().then(function (todo) {
     // 成功保存之后，执行其他逻辑
-    var objectId = todo.id;// 获取 objectId
+    // 获取 objectId
+    var objectId = todo.id;
   }, function (error) {
     // 失败之后执行其他逻辑
-    // error 是 AV.Error 的实例，包含有错误码和描述信息.
+    console.log(error);
   });
+```
+```es7
+  let todo = new Todo();
+  todo.set('title', '工程师周会');
+  todo.set('content', '每周工程师会议，周一下午2点');
+  try {
+    todo = await todo.save();
+    // 成功保存之后，执行其他逻辑
+    // 获取 objectId
+    const objectId = todo.id;
+  } catch (error) {
+    // 失败之后执行其他逻辑
+    console.log(error);
+  }
 ```
 ```ts
   let todo : AV.Object = new AV.Object('Todo');
@@ -351,10 +491,37 @@ testObject.save().then(function(testObject) {
     var objectId = todo.id;
     var updatedAt = todo.updatedAt;
     var createdAt = todo.createdAt;
-    console.log(createdAt);//Wed May 11 2016 09:36:32 GMT+0800 (CST)
+
+    //Wed May 11 2016 09:36:32 GMT+0800 (CST)
+    console.log(createdAt);
   }, function (error) {
     // 失败了
+    console.log(error);
   });
+```
+```es7
+  const query = new AV.Query('Todo');
+  try {
+    let todo = await query.get('558e20cbe4b060308e3eb36c');
+
+    // 成功获得实例
+    // todo 就是 id 为 558e20cbe4b060308e3eb36c 的 Todo 对象实例
+    const priority = todo.get('priority');
+    const location = todo.get('location');
+    const title = todo.get('title');
+    const content = todo.get('content');
+
+    // 获取三个特殊属性
+    const objectId = todo.id;
+    const updatedAt = todo.updatedAt;
+    const createdAt = todo.createdAt;
+
+    //Wed May 11 2016 09:36:32 GMT+0800 (CST)
+    console.log(createdAt);
+  } catch (error) {
+    // 失败了
+    console.log(error);
+  }
 ```
 ```ts
   let query : AV.Query = new AV.Query('Todo');
@@ -387,6 +554,19 @@ testObject.save().then(function(testObject) {
 
   });
 ```
+```es7
+  // 使用已知 objectId 构建一个 AV.Object
+  let todo = new Todo();
+  todo.id = '5590cdfde4b00f7adb5860c8';
+  try {
+    todo = await todo.fetch()
+    // todo 是从服务器加载到本地的 Todo 对象
+    const priority = todo.get('priority');
+  } catch (error) {
+    // 失败了
+    console.log(error);
+  }
+```
 ```ts
   let todo : AV.Object = new AV.Object('Todo');
   todo.id = '57328ca079bc44005c2472d0';
@@ -402,12 +582,25 @@ testObject.save().then(function(testObject) {
 {% block code_object_fetchWhenSave %}
 
 ```js
-  todo.fetchWhenSave(true);//设置 fetchWhenSave 为 true
+  //设置 fetchWhenSave 为 true
+  todo.fetchWhenSave(true);
   todo.save().then(function () {
     // 保存成功
   }, function (error) {
-    // 失败
+    // 失败了
+    console.log(error);
   });
+```
+```es7
+  //设置 fetchWhenSave 为 true
+  todo.fetchWhenSave(true);
+  try {
+    await todo.save();
+    // 保存成功
+  } catch (error) {
+    // 失败了
+    console.log(error);
+  }
 ```
 ```ts
   let todo : AV.Object = new AV.Object('Todo');
@@ -429,8 +622,21 @@ testObject.save().then(function(testObject) {
   todo.fetch({include:'priority,location'},{}).then(function (todo) {
     // 获取到本地
   }, function (error) {
-
+    // 失败了
+    console.log(error);
   });
+```
+```es7
+  // 使用已知 objectId 构建一个 AV.Object
+  let todo = new Todo();
+  todo.id = '5590cdfde4b00f7adb5860c8';
+  try {
+    todo = await todo.fetch({ include: 'priority,location' }, {});
+    // 获取到本地
+  } catch (error) {
+    // 失败了
+    console.log(error);
+  }
 ```
 ```ts
   // 使用已知 objectId 构建一个 AV.Object
@@ -459,8 +665,25 @@ testObject.save().then(function(testObject) {
   todo.save().then(function () {
     // 保存成功
   }, function (error) {
-    // 失败
+    // 失败了
+    console.log(error);
   });
+```
+```es7
+  // 已知 objectId，创建 AVObject
+  // 第一个参数是 className，第二个参数是该对象的 objectId
+  const todo = AV.Object.createWithoutData('Todo', '558e20cbe4b060308e3eb36c');
+  // 更改属性
+  todo.set('location', '二楼大会议室');
+
+  try {
+    // 保存
+    await todo.save();
+    // 保存成功
+  } catch (error) {
+    // 失败了
+    console.log(error);
+  }
 ```
 ```ts
   // 已知 objectId，创建 AV.Object
@@ -487,6 +710,14 @@ testObject.save().then(function(testObject) {
   // 保存到云端
   todo.save();
 ```
+```es7
+  // 第一个参数是 className，第二个参数是 objectId
+  const todo = AV.Object.createWithoutData('Todo', '5745557f71cfe40068c6abe0');
+  // 修改属性
+  todo.set('content', '每周工程师会议，本周改为周三下午3点半。');
+  // 保存到云端
+  await todo.save();
+```
 ```ts
   // 第一个参数是 className，第二个参数是 objectId
   let todo : AV.Object = AV.Object.createWithoutData('Todo','5745557f71cfe40068c6abe0');
@@ -502,13 +733,25 @@ testObject.save().then(function(testObject) {
 
 ```js
   // 执行 CQL 语句实现更新一个 TodoFolder 对象
-  AV.Query.doCloudQuery('update TodoFolder set name="家庭" where objectId="558e20cbe4b060308e3eb36c"').then(function (data) {
+  AV.Query.doCloudQuery('update TodoFolder set name="家庭" where objectId="558e20cbe4b060308e3eb36c"')
+  .then(function (data) {
     // data 中的 results 是本次查询返回的结果，AV.Object 实例列表
     var results = data.results;
   }, function (error) {
     //查询失败，查看 error
     console.log(error);
   });
+```
+```es7
+  // 执行 CQL 语句实现更新一个 TodoFolder 对象
+  try {
+    const data = await AV.Query.doCloudQuery('update TodoFolder set name="家庭" where objectId="558e20cbe4b060308e3eb36c"');
+    // data 中的 results 是本次查询返回的结果，AV.Object 实例列表
+    const results = data.results;
+  } catch (error) {
+    //查询失败，查看 error
+    console.log(error);
+  }
 ```
 ```ts
   // 执行 CQL 语句实现更新一个 TodoFolder 对象
@@ -529,21 +772,39 @@ testObject.save().then(function(testObject) {
   var todo = AV.Object.createWithoutData('Todo', '57328ca079bc44005c2472d0');
   todo.set('views', 0);
   todo.save().then(function (todo) {
-      todo.increment("views", 1);
-      todo.fetchWhenSave(true);
-      // 也可以指定增加一个特定的值
-      // 例如一次性加 5
-      todo.increment("views", 5);
-      todo.save().then(function (data) {
-        // 因为使用了 fetchWhenSave 选项，save 调用之后，如果成功的话，对象的计数器字段是当前系统最新值。
-      }, function (error) {
-          if (error)
-              throw error;
-      });
+    todo.increment('views', 1);
+    todo.fetchWhenSave(true);
+    // 也可以指定增加一个特定的值
+    // 例如一次性加 5
+    todo.increment('views', 5);
+    todo.save().then(function (data) {
+      // 因为使用了 fetchWhenSave 选项，save 调用之后，如果成功的话，对象的计数器字段是当前系统最新值。
+    }, function (error) {
+      if (error) {
+        throw error;
+      }
+    });
   }, function (error) {
-      if (error)
-          throw error;
+    if (error) {
+      throw error;
+    }
   });
+```
+```es7
+  let todo = AV.Object.createWithoutData('Todo', '57328ca079bc44005c2472d0');
+  todo.set('views', 0);
+  try {
+    todo = await todo.save();
+    todo.increment('views', 1);
+    todo.fetchWhenSave(true);
+    // 也可以指定增加一个特定的值
+    // 例如一次性加 5
+    todo.increment('views', 5);
+    todo = await todo.save();
+    // 因为使用了 fetchWhenSave 选项，save 调用之后，如果成功的话，对象的计数器字段是当前系统最新值。
+  } catch (error) {
+    throw error;
+  }
 ```
 ```ts
   let todo:AV.Object = AV.Object.createWithoutData('Todo', '57328ca079bc44005c2472d0');
@@ -591,7 +852,27 @@ testObject.save().then(function(testObject) {
   todo.save().then(function (todo) {
    console.log(todo.id);
   }, function (error) {
+    // 失败了
+    console.log(error);
   });
+```
+```es7
+  const reminder1 = new Date('2015-11-11 07:10:00');
+  const reminder2 = new Date('2015-11-11 07:20:00');
+  const reminder3 = new Date('2015-11-11 07:30:00');
+
+  const reminders = [reminder1, reminder2, reminder3];
+
+  let todo = new AV.Object('Todo');
+  // 指定 reminders 是做一个 Date 对象数组
+  todo.addUnique('reminders', reminders);
+  try {
+    todo = await todo.save();
+    console.log(todo.id);
+  } catch (error) {
+    // 失败了
+    console.log(error);
+  }
 ```
 ```ts
   let reminder1: Date = new Date('2015-11-11 07:10:00');
@@ -611,12 +892,21 @@ testObject.save().then(function(testObject) {
 {% block code_delete_todo_by_objectId %}
 
 ```js
-    var todo = AV.Object.createWithoutData('Todo', '57328ca079bc44005c2472d0');
-    todo.destroy().then(function (success) {
+  var todo = AV.Object.createWithoutData('Todo', '57328ca079bc44005c2472d0');
+  todo.destroy().then(function (success) {
     // 删除成功
-    }, function (error) {
+  }, function (error) {
     // 删除失败
-    });
+  });
+```
+```es7
+  const todo = AV.Object.createWithoutData('Todo', '57328ca079bc44005c2472d0');
+  try {
+    await todo.destroy();
+    // 删除成功
+  } catch (error) {
+    // 删除失败
+  }
 ```
 ```ts
   let todo:AV.Object = AV.Object.createWithoutData('Todo', '57328ca079bc44005c2472d0');
@@ -1844,27 +2134,51 @@ function uploadFile (req, res) {
 
 ```js
   AV.User.signUpOrlogInWithMobilePhone('13577778888', '123456').then(function (success) {
+    // 成功
   }, function (error) {
+    // 失败
   });
 ```
 ```ts
-    AV.User.signUpOrlogInWithMobilePhone('13577778888','123456').then((success)=>{
-    },(error)=>{
-    });
+  try {
+    await AV.User.signUpOrlogInWithMobilePhone('13577778888','123456');
+    // 成功
+  } catch (error) {
+    // 失败
+  }
 ```
 {% endblock %}
 
 {% block code_user_signUp_with_username_and_password %}
 
 ```js
-  var user = new AV.User();// 新建 AVUser 对象实例
-  user.setUsername('Tom');// 设置用户名
-  user.setPassword('cat!@#123');// 设置密码
-  user.setEmail('tom@leancloud.cn');// 设置邮箱
+  // 新建 AVUser 对象实例
+  var user = new AV.User();
+  // 设置用户名
+  user.setUsername('Tom');
+  // 设置密码
+  user.setPassword('cat!@#123');
+  // 设置邮箱
+  user.setEmail('tom@leancloud.cn');
   user.signUp().then(function (loginedUser) {
       console.log(loginedUser);
   }, (function (error) {
   }));
+```
+```es7
+  // 新建 AVUser 对象实例
+  let user = new AV.User();
+  // 设置用户名
+  user.setUsername('Tom');
+  // 设置密码
+  user.setPassword('cat!@#123');
+  // 设置邮箱
+  user.setEmail('tom@leancloud.cn');
+  try {
+    user = await user.signUp();
+    console.log(loginedUser);
+  } catch (error) {
+  }
 ```
 ```ts
   let user : AV.User = new AV.User();// 新建 AVUser 对象实例
@@ -1884,9 +2198,9 @@ function uploadFile (req, res) {
 
 ```js
   AV.User.logIn('Tom', 'cat!@#123').then(function (loginedUser) {
-      console.log(loginedUser);
-  }, (function (error) {
-  }));
+    console.log(loginedUser);
+  }, function (error) {
+  });
 ```
 ```ts
   AV.User.logIn<AV.User>('Tom','cat!@#123').then((loginedUser)=>{
@@ -1933,6 +2247,12 @@ AV.User.requestLoginSmsCode('13577778888').then((success)=>{
   }, function (error) {
   });
 ```
+```es7
+  try {
+    await AV.User.logInWithMobilePhoneSmsCode('13577778888', '238825');
+  } catch (error) {
+  }
+```
 ```ts
 AV.User.logInWithMobilePhoneSmsCode('13577778888','238825').then((success)=>{
   },(error)=>{
@@ -1944,12 +2264,22 @@ AV.User.logInWithMobilePhoneSmsCode('13577778888','238825').then((success)=>{
 
 ```js
   AV.User.logIn('Tom', 'cat!@#123').then(function (loginedUser) {
-      console.log(loginedUser);
-      var username = loginedUser.getUsername();
-      var email = loginedUser.getEmail();
-      // 请注意，密码不会明文存储在云端，因此密码只能重置，不能查看
-  }, (function (error) {
-  }));
+    console.log(loginedUser);
+    var username = loginedUser.getUsername();
+    var email = loginedUser.getEmail();
+    // 请注意，密码不会明文存储在云端，因此密码只能重置，不能查看
+  }, function (error) {
+  });
+```
+```es7
+  try {
+    const loginedUser = await AV.User.logIn('Tom', 'cat!@#123');
+    const username = loginedUser.getUsername();
+    const email = loginedUser.getEmail();
+    // 请注意，密码不会明文存储在云端，因此密码只能重置，不能查看
+  } catch (error) {
+
+  }
 ```
 ```ts
   AV.User.logIn<AV.User>('Tom','cat!@#123').then((loginedUser)=>{
@@ -1966,11 +2296,22 @@ AV.User.logInWithMobilePhoneSmsCode('13577778888','238825').then((success)=>{
 
 ```js
   AV.User.logIn('Tom', 'cat!@#123').then(function (loginedUser) {
-      console.log(loginedUser);
-      loginedUser.set('age', 25);
-      loginedUser.save();
-  }, (function (error) {
-  }));
+    loginedUser.set('age', 25);
+    loginedUser.save();
+  }, function (error) {
+    // 失败了
+    console.log(error);
+  });
+```
+```es7
+  try {
+    const loginedUser = await AV.User.logIn('Tom', 'cat!@#123');
+    loginedUser.set('age', 25);
+    loginedUser.save();
+  } catch (error) {
+    // 失败了
+    console.log(error);
+  }
 ```
 ```ts
   AV.User.logIn<AV.User>('Tom','cat!@#123').then((loginedUser)=>{
@@ -1986,11 +2327,31 @@ AV.User.logInWithMobilePhoneSmsCode('13577778888','238825').then((success)=>{
 
 ```js
   AV.User.logIn('Tom', 'cat!@#123').then(function (loginedUser) {
-      console.log(loginedUser);
-      loginedUser.set('age', 25);
-      loginedUser.save();
-  }, (function (error) {
-  }));
+    // 25
+    console.log(loginedUser.get('age'));
+    loginedUser.set('age', 18);
+    return loginedUser.save();
+  }).then(function(loginedUser) {
+    // 18
+    console.log(loginedUser.get('age'));
+  }).catch(function(error) {
+    // 失败了
+    console.log(error);
+  });
+```
+```es7
+  try {
+    let loginedUser = await AV.User.logIn('Tom', 'cat!@#123');
+    // 25
+    console.log(loginedUser.get('age'));
+    loginedUser.set('age', 18);
+    let loginedUser = await loginedUser.save();
+    // 18
+    console.log(loginedUser.get('age'));
+  } catch (error) {
+    // 失败了
+    console.log(error);
+  }
 ```
 ```ts
   AV.User.logIn<AV.User>('Tom','cat!@#123').then((loginedUser)=>{
@@ -2557,47 +2918,6 @@ AV.Push.send({
 ```
 
 `dev` 表示开发证书，`prod` 表示生产证书，默认生产证书。
-{% endblock %}
-
-
-{% block js_error_handling %}
-## 错误处理
-
-大部分 LeanCloud JavaScript 函数会通过一个有 callback 的对象来报告它们是否成功了，主要的两个 callback 是 success 和 error。
-
-在一个操作都没有错误发生的时候 success 会被调用。通常来说，它的参数在 save 或者 get 的情况下可能是 AV.Object，或者在 find 的情形下是一个 AV.Object 数组。
-
-error 会在任何一种在与 LeanCloud 的网络连接发生错误的时候调用。这些错误信息一般会反映连接到云端时出现的一些问题，或者处理请求的操作时遇到的一些问题。我们可以看下另一个例子。在下面的代码中我们想要获取一个不存在的 objectId。LeanCloud 会返回一个错误，所以这里就是我们怎样在你的 callback 里处理错误。
-
-```javascript
-// 你有一个 Class 名字为 Note
-var query = new AV.Query('Note');
-query.get('aBcDeFgH').then(function(results) {
-  // This function will *not* be called.
-  console.log('Everything went fine!');
-}, function(error) {
-  // This will be called.
-  // error is an instance of AV.Error with details about the error.
-  if (error.code === AV.Error.OBJECT_NOT_FOUND) {
-    console.log('Uh oh, we couldn\'t find the object!');
-  }
-});
-```
-
-查询在无法连接到 LeanCloud 的时候同样有可能失败。下面是同样的 callback，但是有一些其他的代码来处理这种情况：
-
-```javascript
-// 你有一个 Class 名字为 Note
-var query = new AV.Query('Note');
-query.get('thisObjectIdDoesntExist').then(function(results) {
-  // This function will *not* be called.
-  console.log('Everything went fine!');
-}, function(error) {
-  console.log(error);
-});
-```
-
-对于像是 save 或者是 signUp 这种方法会对一个特定的 AV.Object 起作用的方法来说，error 函数的第一个参数是 object 本身。第二个是一个 AV.Error 对象，详情请查看 JavaScript API 来得到所有的 AV.Error 的返回码。
 {% endblock %}
 
 {% block use_js_in_webview %}

@@ -228,7 +228,8 @@ var codeBlockTabber = (function() {
       'lang-js': 'JavaScript',
       'lang-python': 'Python',
       'lang-java': 'Java',
-      'lang-ts':'TypeScript'
+      'lang-ts':'TypeScript',
+      'lang-es7': 'ECMAScript7'
     };
 
     $.each($codeBlocks, function () {
@@ -339,9 +340,9 @@ $(function() {
   setTimeout(function() {
     updateSidebarAffixShadowWidth();
   }, 400);
-  
+
   // set the title: LeanCloud 文档 - xxxxxxx
-  if ( window.location.pathname != '/' 
+  if ( window.location.pathname != '/'
     && window.location.pathname.toLowerCase() != '/index.html' ){
     $('title').text(function(){
     // do not use html()

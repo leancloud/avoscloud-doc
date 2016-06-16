@@ -3,6 +3,7 @@
 {% block language %}JavaScript{% endblock %}
 
 {% block libs_tool_automatic %}
+
 #### npm 安装
 
 LeanCloud JavaScript SDK 也可在 Node.js 等服务器端环境运行，可以使用 [云引擎](leanengine_overview.html) 来搭建服务器端。
@@ -41,6 +42,12 @@ $ bower install leancloud-storage --save
 ```html
 <script src="https://cdn1.lncld.net/static/js/av-min-1.0.0.js"></script>
 ```
+
+### ES6 与 ES7 支持
+
+随着 ECMAScript 6 标准的确定（也被称为 ES2015），以及 ECMAScript 7 新草案的不断发布，越来越多人已经开始尝试使用这些新语法来写自己的 JavaScript 程序。如果现阶段打算使用 ES6 直接来写浏览器端程序可能仍然会遇到兼容性问题，更多的是在 Nodejs 环境或通过编译的方式来实现兼容。
+
+目前比较流行的方案是通过 [Babel](http://babeljs.io/) 来实现预编译或构建一个拥有新特性的运行时环境。在所有环境中，都可以通过 babel 将代码编译为相应环境能够支持的代码版本，或者直接编译为 ES5 版本的 JavaScript 代码。在 Nodejs 环境中，可以通过使用 `require hook` 的方式直接载入一个拥有 babel 兼容代码的运行时环境，这样就不需再编译即可在 Nodejs 中直接使用 ES6\ES7，具体配置过程参考 babel 文档。
 
 ### TypeScript 支持
 
@@ -97,6 +104,12 @@ AV.init({
   appKey: APP_KEY
 });
 ```
+```es7
+const appId = '{{appid}}';
+const appKey = '{{appkey}}';
+AV.init({ appId, appKey });
+```
+
 {% endblock %}
 
 {% block sdk_switching_node %}
@@ -110,11 +123,21 @@ AV.init({
   region: 'us'
 });
 ```
+```es7
+const appId = '{{appid}}';
+const appKey = '{{appkey}}';
+AV.init({
+  appId,
+  appKey,
+  // 启用美国节点
+  region: 'us',
+});
+```
 {% endblock %}
 
 
 {% block save_a_hello_world %}
-```
+```javascript
 var TestObject = AV.Object.extend('TestObject');
 var testObject = new TestObject();
 testObject.save({
@@ -122,5 +145,11 @@ testObject.save({
 }).then(function(object) {
   alert('LeanCloud Rocks!');
 })
+```
+```es7
+const TestObject = AV.Object.extend('TestObject');
+const testObject = new TestObject();
+await testObject.save({ words: 'Hello World!' });
+alert('LeanCloud Rocks!');
 ```
 {% endblock %}
