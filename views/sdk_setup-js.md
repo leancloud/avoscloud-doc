@@ -49,6 +49,8 @@ $ bower install leancloud-storage --save
 
 目前比较流行的方案是通过 [Babel](http://babeljs.io/) 来实现预编译或构建一个拥有新特性的运行时环境。在所有环境中，都可以通过 babel 将代码编译为相应环境能够支持的代码版本，或者直接编译为 ES5 版本的 JavaScript 代码。在 Nodejs 环境中，可以通过使用 `require hook` 的方式直接载入一个拥有 babel 兼容代码的运行时环境，这样就不需再编译即可在 Nodejs 中直接使用 ES6\ES7，具体配置过程参考 babel 文档。
 
+ES7 中有许多很不错的新语法，其中一个就是 `async/await`。对于异步程序，JavaScript 中一直没有非常优雅的方式去书写，从 callback 到 Promise，目前可以通过 babel 尝试使用 async/await。详情参考 [blog](https://blog.leancloud.cn/3910/)
+
 ### TypeScript 支持
 
 伴随着 [Angular2](https://angular.io/) 以及  [ionic@2](http://ionicframework.com/docs/v2/) 的受欢迎，LeanCloud 也针对 JavaScript SDK 编写了一个 `d.ts` 定义文件提供给开发者使用。
