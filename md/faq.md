@@ -1,4 +1,4 @@
-# LeanCloud FAQ
+# TAB FAQ
 
 ## 账户和平台常见问题
 
