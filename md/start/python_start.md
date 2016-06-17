@@ -50,7 +50,7 @@ leancloud.init('{{appid}}', '{{appkey}}')
 from leancloud import Object
 from leancloud import LeanCloudError
 
-TestObject= Object.extend('TestObject')
+TestObject = Object.extend('TestObject')
 test_object = TestObject()
 test_object.set('foo', 'bar')
 try:
