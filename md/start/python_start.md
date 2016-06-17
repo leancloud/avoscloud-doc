@@ -32,7 +32,7 @@ easy_install leancloud-sdk
 
 #### 初始化
 
-创建应用后，可以在 [控制台 - 应用设置](/app.html?appid={{appid}}#/key) 里面找到应用对应的 id 和 key。
+创建应用后，可以在 `控制台 - 应用设置` 里面找到应用对应的 id 和 key。
 
 在使用 Leancloud Python SDK 之前，需要使用 id 和 key 对 SDK 进行初始化：
 
@@ -59,4 +59,4 @@ except LeanCloudError, e:
     print e
 ```
 
-大功告成，访问 [控制台 - 数据管理](/data.html?appid={{appid}}#/TestObject) 可以看到上面创建的 TestObject 的相关数据。
+大功告成，访问 `控制台 - 数据管理` 可以看到上面创建的 TestObject 的相关数据。

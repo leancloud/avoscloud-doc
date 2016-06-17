@@ -1,6 +1,6 @@
 # iOS 崩溃报告使用指南
 
-崩溃报告可以自动收集用户端产生的各种异常崩溃信息，包括完整的调用堆栈、设备信息、应用信息等等。如果还没有安装 LeanCloud iOS SDK，请阅读 [快速入门](/start.html) 来获得该 SDK，并在 Xcode 中运行和熟悉示例代码。
+崩溃报告可以自动收集用户端产生的各种异常崩溃信息，包括完整的调用堆栈、设备信息、应用信息等等。如果还没有安装 LeanCloud iOS SDK，请阅读 [快速入门](./start.html) 来获得该 SDK，并在 Xcode 中运行和熟悉示例代码。
 
 ## 启用
 
@@ -14,7 +14,7 @@
 [AVOSCloud setApplicationId:@"{{appid}}" clientKey:@"{{appkey}}"];
 ```
 
-崩溃报告打开后，应用的崩溃信息会发送到 LeanCloud 云端，具体内容可在 [控制台 / 分析 / 错误分析](/stat.html?appid={{appid}}#/stat/crashreport) 里看到。
+崩溃报告打开后，应用的崩溃信息会发送到 LeanCloud 云端，具体内容可在 `控制台 / 分析 / 错误分析` 里看到。
 
 ## 符号化
 
@@ -113,7 +113,7 @@ leancloud upload_symbol -r us \
 3. 等待应用崩溃；
 4. 再次运行应用。应用将在启动时自动将崩溃报告发送给 LeanCloud 云端。
 
-这时打开应用控制台的 [错误分析](/stat.html?appid={{appid}}#/stat/crashreport)，就会看到刚才的崩溃信息。
+这时打开应用控制台的 `错误分析`，就会看到刚才的崩溃信息。
 
 > 注意：崩溃信息可能会延迟几分钟显示。
 

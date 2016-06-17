@@ -21,7 +21,7 @@
 
 ## 创建项目
 
-在 [LeanCloud 控制台](/applist.html#/apps)中创建一个应用，暂且叫做「Weibo_OAuth」
+在 `LeanCloud 控制台` 中创建一个应用，暂且叫做「Weibo_OAuth」
 在本地创建一个项目文件夹（比如 `/usr/leancloud/weibo_oauth/`），并执行以下命令行：：
 
 ```bash
@@ -29,7 +29,7 @@ cd /usr/leancloud/weibo_oauth/
 avoscloud new
 ```
 
-然后进入 [LeanCloud 控制台](/app.html)，选择刚才创建的应用，再选择 [**设置** > **应用 Key**](https://leancloud.cn/app.html?appid={{appid}}#/general)，找到 App ID 以及 Master Key 并复制。
+然后进入 `LeanCloud 控制台`，选择刚才创建的应用，再选择 `**设置** > **应用 Key**`，找到 App ID 以及 Master Key 并复制。
 
 回到命令行工具，它会要求你输入 App ID 以及 Master Key，输入完成之后，可以看见在 `/usr/leancloud/weibo_oauth/` 下就创建了一个 LeanEngine 默认的模板项目，打开 `app.js` 文件，然后请打开如下 GitHub 上托管的完整的微博 OAuth 授权验证回调服务器项目：[使用 LeanEngine 托管国内 OAuth 回调服务器](https://github.com/leancloud/LeanEngine-OAuth-China/)，打开此项目下的 `app.js` 文件（建议克隆到本地）。
 
@@ -229,7 +229,7 @@ avoscloud
 
 ## 部署项目
 
-回到 LeanCloud 控制台，选择刚创建的应用，再选择 [**存储** > **云引擎** > **设置** > Web 主机域名](/cloud.html?appid={{appid}}#/conf)，在这里为该应用设置二级域名。 
+回到 LeanCloud 控制台，选择刚创建的应用，再选择 `**存储** > **云引擎** > **设置** > Web 主机域名`，在这里为该应用设置二级域名。 
 
 ![domain_setting](http://ac-lhzo7z96.clouddn.comweibotest/1456826436084)
 

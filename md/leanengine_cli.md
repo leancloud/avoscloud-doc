@@ -209,7 +209,7 @@ fi
 $ lean new
 ```
 
-窗口会提示输入应用的 Id 和 Master Key，该信息可以在 [控制台 / 设置 / 应用 Key](/app.html?appid={{appid}}#/key) 中找到。
+窗口会提示输入应用的 Id 和 Master Key，该信息可以在 `控制台 / 设置 / 应用 Key` 中找到。
 
 <div class="callout callout-info">复制粘贴 Master Key 后，窗口不会有任何显示，直接按回车键确认即可。</div>
 

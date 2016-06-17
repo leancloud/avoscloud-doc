@@ -266,11 +266,11 @@ if (vc) {
 
 ### 导入 SDK
 
-首先下载 Android SNS SDK。进入 [Android SDK 下载页面](sdk_down.html)，勾选 **社交模块**，点击下载。将下载文件中的 jar 包添加到你项目的 libs 目录。如果不知道如何安装 SDK，请查看 [快速入门](/start.html)。
+首先下载 Android SNS SDK。进入 [Android SDK 下载页面](sdk_down.html)，勾选 **社交模块**，点击下载。将下载文件中的 jar 包添加到你项目的 libs 目录。如果不知道如何安装 SDK，请查看 [快速入门](./start.html)。
 
 ### WebView 授权
 
-首先需要在 [应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns) 中间配置相应平台的 **AppKey** 与 **AppSecret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的「App 管理中心」，比如新浪开放平台。
+首先需要在 `应用控制台 > 组件 > 社交` 中间配置相应平台的 **AppKey** 与 **AppSecret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的「App 管理中心」，比如新浪开放平台。
 
 之后需要在 AndroidManifest.xml 中间添加相应的 Activity：
 
@@ -403,7 +403,7 @@ public class MyActivity extends Activity {
 
 你也可以将 SSO 登录后的账号信息与 LeanCloud 的 User 绑定。通过绑定，你可以在两种用户体系间建立联系，方便信息的共享和使用。
 
-如果你还未安装 LeanCloud Android SDK，请参阅 [快速入门](/start.html)。
+如果你还未安装 LeanCloud Android SDK，请参阅 [快速入门](./start.html)。
 
 SSO 登录过程与上述代码都相同，你只需要在 callback 中进行关联即可，示例代码如下：
 

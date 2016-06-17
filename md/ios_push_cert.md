@@ -97,7 +97,7 @@
 
 ## 上传证书
 
-1. 进入 [LeanCloud 应用控制台 > 消息 > 推送 > 设置](/messaging.html?appid={{appid}}#/message/push/conf)，然后就可以看到下面的页面：
+1. 进入 `LeanCloud 应用控制台 > 消息 > 推送 > 设置`，然后就可以看到下面的页面：
   
   ![Push certificate configure](images/ios_cert_v2/push_certificate_config.png)
 2. 根据你的证书类别进行上传。这里请注意区分证书的类别，<u>测试环境</u>证书和<u>生产环境</u>证书请勿混淆。

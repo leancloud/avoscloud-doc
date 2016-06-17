@@ -80,8 +80,6 @@
 * 在应用设置的应用选项菜单里，提供多种选项来保护你的应用。
 * 请不要泄露你的账号或者应用信息给他人，[定期更新账户密码](https://leancloud.cn/settings.html#/setting/password) 是一个好习惯。
 * 在应用设置的协作者菜单里，可以添加应用协作者，协作者将拥有该应用的绝大部分权限，因此请慎重添加。
-* **请在 [开发者信息](/settings.html#/setting/info) 填写更加详细的联系信息**，方便我们在紧急情况下联系你。
-* 马上创建一个 [团队](/settings.html#/setting/team)，协作开发应用。团队可以作为应用的协作者添加。
 
 ## 云引擎
 
@@ -99,9 +97,7 @@
 
 ## 其他
 
-* [邀请朋友](/settings.html#/setting/invite) 注册 LeanCloud，获取赠送金额。
-* 修改登录邮箱，请进入 [邮箱](/settings.html#/setting/mail) 菜单。
-* 查看 [快速入门文档](/start.html)，开始应用开发之旅。
+* 查看 [快速入门文档](./start.html)，开始应用开发之旅。
 * 通过 [工单系统](https://leanticket.cn/) 提交技术支持申请，获取 LeanCloud 工程师的帮助。
 * 在右上角用户名左侧的消息中心，可以看到 LeanCloud 最火热的新闻和教程。
 * 在工具栏的资源菜单里，可以找到 LeanCloud 移动客户端下载链接，在移动设备上查看应用分析数据。

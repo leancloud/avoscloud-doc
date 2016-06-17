@@ -23,7 +23,7 @@ $ cd python-getting-started
 $ avoscloud add <APP-NAME> <APP-ID>
 ```
 
-`<APP-NAME>` 是应用名称，`<APP-ID>` 是应用 ID。这些信息可以 [控制台 /（选择应用）/ 设置 / 基本信息](/app.html?appid={{appid}}#/general) 和 [应用 Key](/app.html?appid={{appid}}#/key) 中找到。
+`<APP-NAME>` 是应用名称，`<APP-ID>` 是应用 ID。这些信息可以 `控制台 /（选择应用）/ 设置 / 基本信息` 和 `应用 Key` 中找到。
 {% endblock %}
 
 {% block runtime_env %}**注意**：目前云引擎的 Python 版本为 2.7，请你最好使用此版本的 Python 进行开发。Python 3 的支持正在开发中。{% endblock %}
