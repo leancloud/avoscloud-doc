@@ -7,8 +7,12 @@
 @internal-link-color: #78909C;
 
 .header-link() {
-  color: #3090e4!important;
+  color: @brand-primary!important;
   border: none!important;
+
+  &:before {
+    content:none!important;
+  }
 }
 .dropdown_header() {
   text-transform: uppercase;
@@ -26,13 +30,13 @@ body {
 }
 
 .doc-content {
-  
+
   .link-block .dropdown-header {
     .dropdown_header;
     font-size: 12px;
     padding: 0;
   }
-  
+
   .img-bordered {
     /* use outline in place of border */
     outline: 1px solid #999;
@@ -85,14 +89,27 @@ body {
     padding-bottom: 2px;
   }
 
-  /* decrease levels of attention for internal links */
+  /* decrease levels of attention for in-page links */
   a[href^="#"] {
     color: @internal-link-color;
     text-decoration: none;
 
     &:hover {
       border-bottom: 1px solid @internal-link-color;
-      padding-bottom: 1px;
+    }
+    &:before {
+      content:  "\00a7"; /* section sign § */
+      padding: 0 2px;
+      font-style: italic;
+    }
+  }
+  /* resolves conflicts with code-lang-toggles */
+  .toggle-item a.toggle {
+    &:before {
+      content:  none;
+    }
+    &:hover{
+      border-bottom-color: @brand-primary;
     }
   }
 
@@ -214,7 +231,7 @@ body {
     tr:first-child th:first-child {
       border-top-left-radius: @table-inner-radius;
     }
-    
+
     tr:first-child td:last-child,
     tr:first-child th:last-child {
       border-top-right-radius: @table-inner-radius;
@@ -743,8 +760,8 @@ ul#toc,#toc li {
   border-right: 1px solid #999
 }
 #toc a.selected{
-  color: #3090e4;
-  border-right: 1px solid #3090e4;
+  color: @brand-primary;
+  border-right: 1px solid @brand-primary;
 }
 .page{
   margin: 25px 50px 0 250px;
