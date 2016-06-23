@@ -1,0 +1,457 @@
+{% extends "./leanengine_guide.tmpl" %}
+
+{% block quick_start_create_project %}
+从 Github 迁出实例项目，该项目可以作为一个你应用的基础：
+
+```
+$ git clone https://github.com/leancloud/php-getting-started.git
+$ cd php-getting-started
+```
+
+然后添加应用 appId 等信息到该项目：
+
+```
+$ lean app add <APP-NAME> <APP-ID>
+```
+
+`<APP-NAME>` 是应用名称，`<APP-ID>` 是应用 ID。这些信息可以 [控制台 /（选择应用）/ 设置 / 基本信息](/app.html?appid={{appid}}#/general) 和 [应用 Key](/app.html?appid={{appid}}#/key) 中找到。
+{% endblock %}
+
+{% block runtime_env %}
+**注意**：目前云引擎提供 PHP 5.5 的运行环境，请注意兼容性。
+{% endblock %}
+
+{% block demo %}
+* [php-getting-started](https://github.com/leancloud/php-getting-started)：这是一个非常简单的 PHP Web 的项目，可以作为大家的项目模板。（在线演示：<http://php-demo.leanapp.cn/>）
+{% endblock %}
+
+{% block run_in_local_command %}
+
+云引擎 PHP 环境使用 composer 包管理器来管理依赖，请参考文档[下载和安装 composer](http://docs.phpcomposer.com/00-intro.html#Installation-Windows)
+
+通过 composer 安装依赖：
+
+```
+$ composer install
+```
+
+启动应用：
+
+```
+$ lean up
+```
+{% endblock %}
+
+{% block ping %}
+云引擎中间件内置了该 URL 的处理，只需要将中间件添加到请求的处理链路中即可：
+
+```php
+require 'vendor/autoload.php';
+require 'cloud.php';
+
+use \LeanCloud\Engine\SlimEngine;
+
+$app = new \Slim\App();
+$app->add(new SlimEngine());
+```
+
+{% endblock %}
+
+{% block others_web_framework %}
+云引擎支持任意 Python 的 Web 框架，你可以使用你最熟悉的框架进行开发。但是请保证 `wsgi.py` 文件中有一个全局变量 `application`，值为一个 wsgi 函数。
+{% endblock %}
+
+{% block project_constraint %}
+云引擎 Python 项目必须有 `$PROJECT_DIR/wsgi.py` 与 `$PROJECT_DIR/requirements.txt` 文件，该文件为整个项目的启动文件。
+{% endblock %}
+
+{% block install_middleware %}
+通过 composer 安装 LeanCloud PHP SDK:
+
+```
+composer require leancloud/leancloud-sdk
+```
+{% endblock %}
+
+{% block init_middleware %}
+```php
+use \LeanCloud\LeanClient;
+use \LeanCloud\Storage\CookieStorage;
+use \LeanCloud\Engine\SlimEngine;
+
+$app = new \Slim\App();
+// 禁用 Slim 默认的 handler，使得错误栈被日志捕捉
+unset($app->getContainer()['errorHandler']);
+
+LeanClient::initialize(
+    getenv("LC_APP_ID"),
+    getenv("LC_APP_KEY"),
+    getenv("LC_APP_MASTER_KEY")
+);
+// 将 sessionToken 持久化到 cookie 中，以支持多实例共享会话
+LeanClient::setStorage(new CookieStorage());
+
+$app->add(new SlimEngine());
+```
+
+之后请在 wsgi.py 中将 engine 赋值给 application（而不是之前的 Flask 实例）。
+{% endblock %}
+
+{% block cloudFuncExample %}
+```php
+use \LeanCloud\Engine\Cloud;
+use \LeanCloud\LeanQuery;
+use \LeanCloud\CloudException;
+
+Cloud::define("averageStars", function($params, $user) {
+    $query = new LeanQuery("Review");
+    $query->equalTo("movie", $params["movie"]);
+    try {
+        $reviews = $query->find();
+    } catch (CloudException $ex) {
+        // 查询失败, 将错误输出到日志
+        error_log($ex->getMessage());
+        return 0;
+    }
+    $sum = 0;
+    forEach($reviews as $review) {
+        $sum += $review->get("stars");
+    }
+    if (count($reviews) > 0) {
+         return $sum / count($reviews);
+    } else {
+         return 0;
+    }
+});
+
+```
+{% endblock %}
+
+{% block cloudFuncParams %}
+客户端传递的参数，会被当作关键字参数传递进云函数。
+
+比如上面的例子，调用时传递的参数 `$params = array("movie" => "夏洛特烦恼", "stars" => 5 ...)`。
+
+如果是已登录的用户发起云引擎调用，可以通过 `LeanUser->getCurrentUser()` 拿到用户。如果通过 REST API 调用时模拟用户登录，需要增加一个头信息 `X-LC-Session: <sessionToken>`，该 `sessionToken` 在用户登录或注册时服务端会返回。
+
+当前用户(如果有登录)，会以第 2 个 `$user` 参数传递给函数。
+
+{% endblock %}
+
+{% block runFuncName %}`Cloud::run()`{% endblock %}
+
+{% block defineFuncName %}`Cloud::define()`{% endblock %}
+
+{% block runFuncExample %}
+```php
+use \LeanCloud\Engine\Cloud;
+
+result = Cloud::run("hello", array("name" => "dennis"));
+
+```
+{% endblock %}
+
+{% block runFuncApiLink %}[Cloud::run()](/api-docs/php/class-LeanCloud.Engine.Cloud.html#_run){% endblock %}
+
+{% block beforeSaveExample %}
+```php
+use \LeanCloud\Engine\Cloud;
+use \LeanCloud\Engine\FunctionError;
+
+// Review 为需要 hook 的类名称
+Cloud::beforeSave("Review", function($review, $user) {
+    $comment = $review->get("comment");
+    if ($comment) {
+        if (strlen($comment) > 140) {
+            // 修改数据
+            $review->set("comment", substr($comment, 0, 140) . "...");
+        }
+    } else {
+        // 返回错误，并取消数据保存
+        throw new FunctionError("No Comment!", 101);
+    }
+    // 如果正常返回，则数据会保存
+});
+
+```
+{% endblock %}
+
+{% block afterSaveExample %}
+```php
+Cloud::afterSave("comment", function($comment, $user) {
+    $query = new LeanQuery("Post");
+    $post = $query->get($comment->get("post")->getObjectId());
+    $post->increment("commentCount");
+    try {
+        $post->save();
+    } catch (CloudException $ex) {
+        throw new FunctionError("保存 Post 对象失败: " . $ex->getMessage());
+    }
+});
+```
+{% endblock %}
+
+{% block afterSaveExample2 %}
+```php
+Cloud::afterSave("_User", function($userObj, $currentUser) {
+    $userObj->set("from", "LeanCloud");
+    try {
+        $userObj->save();
+    } catch (CloudException $ex) {
+        throw new FunctionError("保存 User 对象失败: " . $ex->getMessage());
+    }
+});
+```
+{% endblock %}
+
+{% block beforeUpdateExample %}
+
+```php
+Cloud::beforeUpdate("Review", function($review, $user) {
+    // 对象的 updateKeys 字段记录了本次将要修改的字段名列表，
+    // 可用于检测并拒绝对某些字段的修改
+    if (in_array("comment", $review->updatedKeys) &&
+        strlen($review->get("comment")) > 140) {
+        throw new FunctionError("comment 长度不得超过 140 个字符");
+    }
+});
+```
+
+{% endblock %}
+
+{% block afterUpdateExample %}
+
+```php
+Cloud::afterUpdate("Article", function($article, $user) {
+    // 输出日志到控制台
+    error_log("Article {$article->getObjectId()} has been updated.");
+});
+
+```
+{% endblock %}
+
+{% block beforeDeleteExample %}
+```php
+Cloud::beforeDelete("Album", function($album, $user) {
+    $query = new LeanQuery("Photo");
+    $query->equalTo("album", $album);
+    try {
+        $count = $query->count();
+    } catch (CloudException $ex) {
+        // Delete 操作会被取消
+        throw new FunctionError("Error getting photo count: {$ex->getMessage()}");
+    }
+    if ($count > 0) {
+        // 取消 Delete 操作
+        throw new FunctionError("Cannot delete album that has photos.");
+    }
+});
+```
+{% endblock %}
+
+{% block afterDeleteExample %}
+```php
+Cloud::afterDelete("Album", function($album, $user) {
+    $query = new LeanQuery("Photo");
+    $query->equalTo("album", $album);
+    try {
+        // 删除相关的 photos
+        $photos = $query->find();
+        LeanObject::destroyAll($photos);
+    } catch (CloudException $ex) {
+        throw new FunctionError("删除关联 photos 失败: {$ex->getMessage()}");
+    }
+});
+```
+{% endblock %}
+
+{% block onVerifiedExample %}
+```php
+Cloud::onVerifed("sms", function($userObj, $meta) {
+    error_log("User {$user->getUsername()} verified by SMS");
+});
+```
+{% endblock %}
+
+{% block onLoginExample %}
+```php
+Cloud::onLogin(function($user) {
+    error_log("User {$user->getUsername()} is logging in.");
+    if ($user->get("blocked")) {
+        // 抛出异常禁止用户登录
+        throw new FunctionError("Forbidden");
+    }
+    // 如果正常执行，则用户将正常登录
+});
+```
+{% endblock %}
+
+{% block errorCodeExample %}
+错误响应码允许自定义。云引擎抛出的  `FunctionError`（数据存储 API 会抛出此异常）会直接将错误码和原因返回给客户端。若想自定义错误码，可以自行构造 `FunctionError`，将 `code` 与 `error` 传入。否则 `code` 为 1， `message` 为错误对象的字符串形式。
+
+```php
+Cloud::define("errorCode", function($params, $user) {
+    // 尝试登录一个不存在的用户，会返回 211 错误
+    LeanUser::logIn("not_this_user", "xxxxxx");
+});
+```
+{% endblock %}
+
+{% block errorCodeExample2 %}
+```php
+Cloud::define("customErrorCode", function($params, $user) {
+    // 返回 123 自定义错误信息
+    throw new FunctionError("自定义错误信息", 123);
+});
+```
+{% endblock %}
+
+{% block errorCodeExampleForHooks %}
+```php
+Cloud::beforeSave("Review", function($review, $user) {
+   $comment = $review->get("comment");
+   if (!$comment) {
+       // 抛出 JSON 字符串的错误信息
+       throw new FunctionError(json_encode(array(
+           "code" => 123,
+           "message" => "自定义错误信息",
+       )));
+   }
+});
+
+```
+{% endblock %}
+
+{% block http_client %}
+云引擎可以使用 Python 内置的 urllib，不过推荐您使用 [requests](http://docs.python-requests.org/) 等第三方模块来处理 HTTP 请求。
+{% endblock %}
+
+{% block timerExample %}
+```python
+@engine.define
+def log_timer():
+    print 'Log in timer.'
+```
+{% endblock %}
+
+{% block timerExample2 %}
+```python
+from leancloud import push
+
+@engine.define
+def push_timer():
+    data = {
+        'alert': 'Public message',
+    }
+    push.send(data, channels=['Public'])
+```
+{% endblock %}
+
+{% block masterKeyInit %}
+```python
+// 第一个参数为 App Id
+leancloud.init('{{appid}}', master_key='{{masterkey}}')
+```
+{% endblock %}
+
+{% block loggerExample %}
+```python
+@engine.define
+def log_something(**params):
+    print params
+```
+{% endblock %}
+
+{% block use_framework %}
+云引擎环境中可以使用大部分 Python Web Framework，比如 [Flask](http://flask.pocoo.org/)、[web.py](http://webpy.org/)、[bottle](http://bottlepy.org/)。
+
+事实上，您只需要提供一个兼容 WSGI 标准的框架，并且安装了云引擎的中间件，就可以在云引擎上运行。您提供的 WSGI 函数对象需要放在 `$PROJECT_DIR/wsgi.py` 文件中，并且变量名需要为 `application`。
+
+```python
+from leancloud import Engine
+
+
+def wsgi_func(environ, start_response):
+    // 定义一个简单的 WSGI 函数，或者您可以直接使用框架提供的
+    start_response('200 OK', [('Content-Type', 'text/plain')])
+    return ['Hello LeanCloud']
+
+
+application = Engine(wsgi_func)
+```
+
+将这段代码放到 `wsgi.py` 中，就可以实现一个最简单的动态路由。
+{% endblock %}
+
+{% block upload_file %}{% endblock %}
+
+{% block cookie_session %}
+{% endblock %}
+
+{% block custom_session %}
+{% endblock %}
+
+{% block https_redirect %}
+
+```python
+from leancloud import HttpsRedirectMiddleware
+
+# app 为您的 wsgi 函数
+app = HttpsRedirectMiddleware(app)
+engine = Engine(app)
+application = engine
+```
+
+{% endblock %}
+
+{% block get_env %}
+```python
+import os
+
+if os.environ.get('LC_APP_PROD') == '1':
+    # 当前为生产环境
+elif os.environ.get('LC_APP_PROD') == '0':
+    # 当前为预备环境
+else:
+    # 当前为开发环境
+```
+{% endblock %}
+
+{% block hookDeadLoop %}
+#### 防止死循环调用
+
+在实际使用中有这样一种场景：在 `Post` 类的 `{{hook_after_update}}` Hook 函数中，对传入的 `Post` 对象做了修改并且保存，而这个保存动作又会再次触发 `{{hook_after_update}}`，由此形成死循环。针对这种情况，我们为所有 Hook 函数传入的 `leancloud.Object` 对象做了处理，以阻止死循环调用的产生。
+
+不过请注意，以下情况还需要开发者自行处理：
+
+- 对传入的 `leancloud.Object` 对象进行 `fetch` 操作。
+- 重新构造传入的 `leancloud.Object` 对象，如使用 `leancloud.Object.create_without_data()` 方法。
+
+对于使用上述方式产生的对象，请根据需要自行调用以下 API：
+
+- `leancloud.Object.disable_before_hook()` 或 
+- `leancloud.Object.disable_after_hook()` 
+
+这样，对象的保存或删除动作就不会再次触发相关的 Hook 函数。
+
+```python
+@engine.after_update('Post')
+def after_post_update(post):
+    # 直接修改并保存对象不会再次触发 after update hook 函数
+    post.set('foo', 'bar')
+    post.save()
+
+    # 如果有 fetch 操作，则需要在新获得的对象上调用相关的 disable 方法
+    # 来确保不会再次触发 Hook 函数
+    post.fetch()
+    post.disable_after_hook()
+    post.set('foo', 'bar')
+
+    # 如果是其他方式构建对象，则需要在新构建的对象上调用相关的 disable 方法
+    # 来确保不会再次触发 Hook 函数
+    post = leancloud.Object.extend('Post').create_without_data(post.id)
+    post.disable_after_hook()
+    post.save()
+```
+
+{% endblock %}
