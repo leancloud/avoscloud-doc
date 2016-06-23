@@ -143,7 +143,7 @@ module.exports = function(grunt) {
     },
     comment:{
       md: {
-        src: 'dist/*.html'
+        src: ['dist/*.html', '!dist/demo.html']
       }
     },
     less: {
@@ -404,9 +404,6 @@ module.exports = function(grunt) {
     }).then(function() {
       //保证所有文档都处理完再进行任务完成回调
       grunt.log.writeln('version build allcompleted');
-      done();
-    }, function(err) {
-      grunt.log.error('err: %s', err.stack || err.message || err);
       done();
     }).catch(function(err){
       grunt.log.error('err: %s', err.stack || err.message || err);
