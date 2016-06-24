@@ -757,6 +757,16 @@ curl -X PUT \
 
 可以看到 URL 里多了个参数 where，值是 `%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D`，其实是 `{"balance":{"$gte": 30}}` 做了 url encode 的结果。更多 where 查询的例子参见下文的[查询](#查询)一节。
 
+如果条件不满足，更新将失败，同时返回专门的错误码 305：
+
+
+```json
+{
+  "code" : 305,
+  "error": "No effect on updating/deleting a document."
+}
+```
+
 **特别强调， where 一定要作为 URL 的 Query Parameters 传入。**
 
 ### 删除对象
@@ -794,7 +804,18 @@ curl -X DELETE \
   "https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c?where=%7B%22clicks%22%3A%200%7D"    
 ```
 
-可以看到 URL 里多了个参数 where，值是 `%7B%22clicks%22%3A%200%7D`，其实是 `{"clicks": 0}` 做了 url encode 的结果，这里的意思是我们删除点击量 clicks 为 0 的帖子。更多 where 查询的例子参见[查询](#查询)一节。
+可以看到 URL 里多了个参数 where，值是 `%7B%22clicks%22%3A%200%7D`，其实是 `{"clicks": 0}` 做了 url encode 的结果，这里的意思是我们只有当这个帖子的点击量 clicks 为 0 才删除。更多 where 查询的例子参见[查询](#查询)一节。
+
+如果条件不满足，删除将失败，同时返回专门的错误码 305：
+
+
+```json
+{
+  "code" : 305,
+  "error": "No effect on updating/deleting a document."
+}
+```
+
 
 **特别强调， where 一定要作为 URL 的 Query Parameters 传入。**
 
@@ -1979,7 +2000,7 @@ curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "X-LC-Session: qmdj8pdidnmyzp0c7yqil91oc" \
-  https://api.leancloud.cn/1.1/roles/55a483f0e4b05001a774b837    
+  https://api.leancloud.cn/1.1/roles/55a483f0e4b05001a774b837
 ```
 
 ### 安全性
