@@ -1,5 +1,15 @@
 {% extends "./leanengine_guide.tmpl" %}
 
+{% set environment        = "PHP" %}
+{% set hook_before_save   = "beforeSave" %}
+{% set hook_after_save    = "afterSave" %}
+{% set hook_before_update = "beforeUpdate" %}
+{% set hook_after_update  = "afterUpdate" %}
+{% set hook_before_delete = "beforeDelete" %}
+{% set hook_after_delete  = "afterDelete" %}
+{% set hook_on_verified   = "onVerified" %}
+{% set hook_on_login      = "onLogin" %}
+
 {% block quick_start_create_project %}
 从 Github 迁出实例项目，该项目可以作为一个你应用的基础：
 
