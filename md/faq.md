@@ -256,7 +256,7 @@ $ gem install cocoapods
 
 创建一个全新的空白项目，使用 CocoaPod 安装了 AVOSCloud 和 AVOSCloudIM 模块，此时项目大小超过了 80 MB。打包之后体积会不会缩小？大概会有多大呢？
 
-LeanCloud iOS SDK 二进制中包含了 i386/armv7/arm64 等 5 个 CPU slice。而发布后，non-arm 的符号会被 strip 掉。而且发布过程中，一些没有参与连接的符号会被删掉。因此最终的应用不会增加超过 10 MB 的大小。请放心使用。
+LeanCloud iOS SDK 二进制中包含了 i386、armv7、arm64 等 5 个 CPU slices。发布过程中，non-ARM 的符号和没有参与连接的符号会被 strip 掉。因此，最终应用体积不会增加超过 10 MB，请放心使用。
 
 ### 编译失败
 
