@@ -42,29 +42,6 @@ $ lean up
 ```
 {% endblock %}
 
-{% block ping %}
-云引擎中间件内置了该 URL 的处理，只需要将中间件添加到请求的处理链路中即可：
-
-```php
-require 'vendor/autoload.php';
-require 'cloud.php';
-
-use \LeanCloud\Engine\SlimEngine;
-
-$app = new \Slim\App();
-$app->add(new SlimEngine());
-```
-
-{% endblock %}
-
-{% block others_web_framework %}
-云引擎支持任意 Python 的 Web 框架，你可以使用你最熟悉的框架进行开发。但是请保证 `wsgi.py` 文件中有一个全局变量 `application`，值为一个 wsgi 函数。
-{% endblock %}
-
-{% block project_constraint %}
-云引擎 Python 项目必须有 `$PROJECT_DIR/wsgi.py` 与 `$PROJECT_DIR/requirements.txt` 文件，该文件为整个项目的启动文件。
-{% endblock %}
-
 {% block install_middleware %}
 通过 composer 安装 LeanCloud PHP SDK:
 
@@ -76,25 +53,17 @@ composer require leancloud/leancloud-sdk
 {% block init_middleware %}
 ```php
 use \LeanCloud\LeanClient;
-use \LeanCloud\Storage\CookieStorage;
-use \LeanCloud\Engine\SlimEngine;
-
-$app = new \Slim\App();
-// 禁用 Slim 默认的 handler，使得错误栈被日志捕捉
-unset($app->getContainer()['errorHandler']);
+use \LeanCloud\Engine\LeanEngine;
 
 LeanClient::initialize(
     getenv("LC_APP_ID"),
     getenv("LC_APP_KEY"),
     getenv("LC_APP_MASTER_KEY")
 );
-// 将 sessionToken 持久化到 cookie 中，以支持多实例共享会话
-LeanClient::setStorage(new CookieStorage());
 
-$app->add(new SlimEngine());
+$engine = new LeanEngine();
+$engine->start();
 ```
-
-之后请在 wsgi.py 中将 engine 赋值给 application（而不是之前的 Flask 实例）。
 {% endblock %}
 
 {% block cloudFuncExample %}
@@ -128,11 +97,14 @@ Cloud::define("averageStars", function($params, $user) {
 {% endblock %}
 
 {% block cloudFuncParams %}
-客户端传递的参数，会被当作关键字参数传递进云函数。
+客户端传递的参数，会被作为第一个参数(数组)传递进云函数。
 
-比如上面的例子，调用时传递的参数 `$params = array("movie" => "夏洛特烦恼", "stars" => 5 ...)`。
+比如上面的例子，调用时传递的参数为 `$params = array("movie" => "夏洛特烦恼", "stars" => 5 ...)`。
 
-如果是已登录的用户发起云引擎调用，可以通过 `LeanUser->getCurrentUser()` 拿到用户。如果通过 REST API 调用时模拟用户登录，需要增加一个头信息 `X-LC-Session: <sessionToken>`，该 `sessionToken` 在用户登录或注册时服务端会返回。
+如果是已登录的用户发起云引擎调用，可以通过
+`LeanUser->getCurrentUser()` 拿到用户。如果通过 REST API 调用时模拟用
+户登录，需要增加一个头信息 `X-LC-Session: <sessionToken>`，该
+`sessionToken` 在用户登录或注册时服务端会返回。
 
 当前用户(如果有登录)，会以第 2 个 `$user` 参数传递给函数。
 
@@ -311,7 +283,6 @@ Cloud::define("customErrorCode", function($params, $user) {
 Cloud::beforeSave("Review", function($review, $user) {
    $comment = $review->get("comment");
    if (!$comment) {
-       // 抛出 JSON 字符串的错误信息
        throw new FunctionError(json_encode(array(
            "code" => 123,
            "message" => "自定义错误信息",
@@ -322,65 +293,117 @@ Cloud::beforeSave("Review", function($review, $user) {
 ```
 {% endblock %}
 
+{% block project_constraint %}
+
+云引擎 PHP 项目必须有 `$PROJECT_DIR/public/index.php` 与
+`$PROJECT_DIR/composer.json` 文件，它们分别是项目的入口文件和依赖定义
+文件。
+
+{% endblock %}
+
+{% block ping %}
+云引擎中间件内置了该 URL 的处理，只需要将中间件添加到请求的处理链路中即可：
+
+```php
+require 'vendor/autoload.php';
+
+use \LeanCloud\Engine\LeanEngine;
+
+$engine= new LeanEngine();
+$engine->start();
+```
+
+{% endblock %}
+
+{% block others_web_framework %}
+
+云引擎 PHP 中间件不依赖任何框架，可以不使用任何框架开发。但是请确保有
+项目的入口文件 `public/index.php`，且云引擎中间件启用
+(`$engine->start()`) 要在所有路由之前。
+
+{% endblock %}
+
+
 {% block http_client %}
-云引擎可以使用 Python 内置的 urllib，不过推荐您使用 [requests](http://docs.python-requests.org/) 等第三方模块来处理 HTTP 请求。
+
+云引擎 PHP 环境可以使用内置的 curl 模块，不过我们推荐使用
+[guzzle](http://guzzlephp.org) 等第三方库来处理 HTTP 请求。
+
 {% endblock %}
 
 {% block timerExample %}
-```python
-@engine.define
-def log_timer():
-    print 'Log in timer.'
+```php
+Cloud::define("logTimer", function($params, $user) {
+    error_log("Log in timer");
+});
 ```
 {% endblock %}
 
 {% block timerExample2 %}
-```python
-from leancloud import push
+```php
+use \LeanCloud\LeanPush;
 
-@engine.define
-def push_timer():
-    data = {
-        'alert': 'Public message',
-    }
-    push.send(data, channels=['Public'])
+Cloud::define("pushTimer", function($params, $user) {
+    $push = new LeanPush(array("alert" => "Public message"));
+    $push->setChannels(array("Public"));
+    $push->send();
+});
 ```
 {% endblock %}
 
 {% block masterKeyInit %}
-```python
-// 第一个参数为 App Id
-leancloud.init('{{appid}}', master_key='{{masterkey}}')
+```php
+use \LeanCloud\LeanClient;
+LeanClient::initialize($appId, $appKey, $masterKey);
+LeanClient::useMasterKey(true);
 ```
 {% endblock %}
 
 {% block loggerExample %}
-```python
-@engine.define
-def log_something(**params):
-    print params
+```php
+Cloud::define("logSomething", function($params, $user) {
+    error_log(json_encode($params));
+});
 ```
 {% endblock %}
 
 {% block use_framework %}
-云引擎环境中可以使用大部分 Python Web Framework，比如 [Flask](http://flask.pocoo.org/)、[web.py](http://webpy.org/)、[bottle](http://bottlepy.org/)。
 
-事实上，您只需要提供一个兼容 WSGI 标准的框架，并且安装了云引擎的中间件，就可以在云引擎上运行。您提供的 WSGI 函数对象需要放在 `$PROJECT_DIR/wsgi.py` 文件中，并且变量名需要为 `application`。
+PHP 云引擎中间件并不依赖任何第三方框架，但我们推荐使用
+[Slim](http://www.slimframework.com/)。我们提供了 Adapter 可以方便地在
+Slim 应用中启用云引擎中间件：
 
-```python
-from leancloud import Engine
+```php
 
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+use \LeanCloud\LeanClient;
+use \LeanCloud\Storage\CookieStorage;
+use \LeanCloud\Engine\LeanEngine;
 
-def wsgi_func(environ, start_response):
-    // 定义一个简单的 WSGI 函数，或者您可以直接使用框架提供的
-    start_response('200 OK', [('Content-Type', 'text/plain')])
-    return ['Hello LeanCloud']
+$app = new \Slim\App();
 
+// 禁用 Slim 默认的 handler，使得错误栈被日志捕捉
+unset($app->getContainer()['errorHandler']);
 
-application = Engine(wsgi_func)
+LeanClient::initialize(
+    getenv("LC_APP_ID"),
+    getenv("LC_APP_KEY"),
+    getenv("LC_APP_MASTER_KEY")
+);
+// 将 sessionToken 持久化到 cookie 中，以支持多实例共享会话
+LeanClient::setStorage(new CookieStorage());
+
+// SlimEngine::enableHttpsRedirect();
+$app->add(new SlimEngine());
+
+$app->get('/hello/{name}', function (Request $request, Response $response) {
+    $name = $request->getAttribute('name');
+    $response->getBody()->write("Hello, $name");
+    return $response;
+});
+
 ```
-
-将这段代码放到 `wsgi.py` 中，就可以实现一个最简单的动态路由。
 {% endblock %}
 
 {% block upload_file %}{% endblock %}
@@ -393,27 +416,28 @@ application = Engine(wsgi_func)
 
 {% block https_redirect %}
 
-```python
-from leancloud import HttpsRedirectMiddleware
+```php
+// 启用 https 转发
+LeanEngine::enableHttpsRedirect();
 
-# app 为您的 wsgi 函数
-app = HttpsRedirectMiddleware(app)
-engine = Engine(app)
-application = engine
+// Slim 应用中可以使用
+// SlimEngine:enableHttpsRedirect();
+
+$engine = new LeanEngine();
+$engine->start();
 ```
-
 {% endblock %}
 
 {% block get_env %}
-```python
-import os
+```php
 
-if os.environ.get('LC_APP_PROD') == '1':
-    # 当前为生产环境
-elif os.environ.get('LC_APP_PROD') == '0':
-    # 当前为预备环境
-else:
-    # 当前为开发环境
+if (getenv("LC_APP_PROD") == 1) {
+    // 当前为生产环境
+} else if (getenv("LC_APP_PROD" == 0)) {
+    // 当前为预备环境
+} else {
+    // 当前为开发环境
+}
 ```
 {% endblock %}
 
