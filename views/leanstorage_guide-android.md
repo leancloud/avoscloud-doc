@@ -704,7 +704,7 @@ fetchAllInBackground()
 
 ```java
         AVQuery<AVObject> query = new AVQuery<>("Todo");
-        query.whereMatches("title","^((?!机票).)*quot");
+        query.whereMatches("title","^((?!机票).)*$");
 ```
 {% endblock %}
 

@@ -705,7 +705,7 @@ import leancloud
 Todo = leancloud.Object.extend('Todo')
 query = Todo.query
 
-query.matched('title', '^((?!机票).)*')
+query.matched('title', '^((?!机票).)*$')
 ```
 {% endblock %}
 
