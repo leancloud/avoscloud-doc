@@ -1286,6 +1286,47 @@ AV.User.requestLoginSmsCode('13577778888').then(function (success) {
 ```
 {% endblock %}
 
+{% block code_user_logIn_with_snsPlatform %}
+#### 绑定第三方平台账户
+
+通过 `AV.User._logInWith(platform, options)` 来将微博、微信等第三方平台号绑定到 AV.User 上，例如：
+
+```javascript
+AV.User._logInWith('weibo', {
+  'authData': {
+    'uid': '123456789',
+    'access_token': '2.00vs3XtCI5FevCff4981adb5jj1lXE',
+    'expiration_in': '36000'
+  }
+}).then(function(user) {
+  //返回绑定后的用户
+  console.log(user);
+}, function(error) {
+  console.log(error);
+});
+```
+
+其中 `authData` 是微博端返回的用户信息 JSON 对象，更多平台支持和格式信息请参考 [REST API 用户账户连接](./rest_api.html#用户账户连接)。
+
+要把这些授权信息绑定到一个已经存在的 `AV.User` 上，可以通过  `_linkWith` 方法：
+
+```javascript
+var user = ...已存在的处于登录状态的 AV.User 对象 ...
+user._linkWith('weibo', {
+ 'authData': {
+    'uid': '123456789',
+    'access_token': '2.00vs3XtCI5FevCff4981adb5jj1lXE',
+    'expiration_in': '36000'
+  }
+}).then(function(user) {
+  //返回绑定后的用户
+  console.log(user);
+}, function(error) {
+  console.log(error);
+});
+```
+{% endblock %}
+
 {% block code_get_user_properties %}
 
 ```js
