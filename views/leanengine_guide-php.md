@@ -32,7 +32,7 @@ $ lean app add <APP-NAME> <APP-ID>
 {% endblock %}
 
 {% block demo %}
-* [php-getting-started](https://github.com/leancloud/php-getting-started)：这是一个非常简单的 PHP Web 的项目，可以作为大家的项目模板。（在线演示：<http://php-demo.leanapp.cn/>）
+* [php-getting-started](https://github.com/leancloud/php-getting-started)：这是一个非常简单的 PHP Web 的项目，可以作为大家的项目模板。（在线演示：<http://php-todo-demo.leanapp.cn/>）
 {% endblock %}
 
 {% block run_in_local_command %}
