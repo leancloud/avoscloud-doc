@@ -470,11 +470,7 @@ fetchAllInBackground()
         object.saveInBackground();
 ```
 
-此外，HashMap 和 ArrayList 支持嵌套，这样在一个 AVObject 中就可以使用它们来储存更多的结构化数据。
-
-我们**不推荐**在 `AVObject` 中使用 `byte[]` 类型来储存大块的二进制数据，比如图片或整个文件。**每个 `AVObject` 的大小都不应超过 128 KB**。如果需要储存更多的数据，建议使用 `AVFile`。更多细节可以阅读本文 [文件](#文件) 部分。
-
-若想了解更多有关 LeanStorage 如何解析处理数据的信息，请查看专题文档《[数据与安全](./data_security.html)》。
+此外，HashMap 和 ArrayList 支持嵌套，这样在一个 `AVObject` 中就可以使用它们来储存更多的结构化数据。
 {% endblock %}
 
 {% block code_create_geoPoint %}

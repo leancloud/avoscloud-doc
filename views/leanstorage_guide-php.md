@@ -4,8 +4,8 @@
 
 {% set productName ="LeanStorage" %}
 {% set platform_title ="PHP" %}
-{% set segment_code ="PHP" %}
-{% set sdk_name ="PHP SDK" %}
+{% set segment_code = platform_title | lower %}
+{% set sdk_name = platform_title + " SDK" %}
 {% set baseObjectName ="LeanObject" %}
 {% set objectIdName ="objectId" %}
 {% set updatedAtName ="updatedAt" %}
@@ -24,13 +24,14 @@
 {% set funtionName_whereKeyHasPrefix = "startsWith()" %}
 {% set saveOptions_query= "where" %}
 {% set saveOptions_fetchWhenSave= "fetch_when_save" %}
-{% set link_to_acl_doc = "[" + sdk_name + " 权限管理使用指南](acl_guide-python.html)" %}
-{% block code_create_todo_object %}
+{% set link_to_acl_doc = "（PHP 文档待补充）" %}
+{% set link_to_sms_guide_doc = "（PHP 文档待补充）" %}
 
 {# --End--变量定义，主模板使用的单词，短语的定义所有子模板都必须赋值 #}
 
 {# --Start--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
 
+{% block code_create_todo_object %}
 ```php
 // "Todo" 对应的就是控制台中的 Class Name
 $todo = new LeanObject("Todo");
@@ -55,6 +56,10 @@ try {
 ```
 {% endblock %}
 
+{% block text_and_link_to_install_doc %}
+请阅读 [{{platform_title}} 安装指南](start.html)。
+{% endblock %}
+
 {% block code_save_object_by_cql %}
 
 ```php
@@ -69,12 +74,14 @@ try {
 
 {% endblock %}
 
+{% block section_saveOptions %}{% endblock %}
 {% block code_saveoption_query_example %}
 
 ```php
 // PHP 有待支持
 ```
 {% endblock %}
+
 
 {% block code_quick_save_a_todo_with_location %}
 
@@ -153,6 +160,8 @@ $todo->getCreatedAt();
 
 ```
 {% endblock %}
+
+{% block text_refresh_object%}{% endblock %}
 
 {% block code_fetch_todo_by_objectId %}
 ```php
@@ -366,12 +375,7 @@ $testObject->set("testAssociativeArray",
 $testObject->save();
 ```
 
-此外，Array 和 Associative Array 支持嵌套，这样在一个 LeanObject 中就可以使用它们来储存更多的结构化数据。
-
-我们**不推荐**在 `LeanObject` 中使用 `LeanBytes` 来储存大块的二进制数据，比如图片或整个文件。**每个 `LeanObject` 的大小都不应超过 128 KB**。如果需要储存更多的数据，建议使用 `LeanFile`。更多细节可以阅读本文 [文件](#文件) 部分。
-
-若想了解更多有关 LeanStorage 如何解析处理数据的信息，请查看专题文档《[数据与安全](./data_security.html)》。
-
+此外，Array 和 Associative Array 支持嵌套，这样在一个 `LeanObject` 中就可以使用它们来储存更多的结构化数据。
 {% endblock %}
 
 {% block code_create_geoPoint %}
@@ -479,9 +483,7 @@ $file->destroy();
 
 {% endblock %}
 
-{% block code_cache_operations_file %}
-// PHP 不支持
-{% endblock %}
+{% block code_cache_operations_file %}{% endblock %}
 
 {% block code_create_query_by_className %}
 
@@ -856,18 +858,10 @@ $todos = LeanQuery::doCloudQuery("select * from Todo where status = ? and priori
 ```
 {% endblock %}
 
-{% block code_set_cache_policy %}
-
-```php
-// PHP 暂不支持
-```
-{% endblock %}
-
-{% block table_cache_policy %}
-{% endblock %}
-
-{% block code_cache_operation %}
-{% endblock %}
+{% block text_query_cache_intro %}{% endblock %}
+{% block code_set_cache_policy %}{% endblock %}
+{% block table_cache_policy %}{% endblock %}
+{% block code_cache_operation %}{% endblock %}
 
 {% block code_query_geoPoint_near %}
 
@@ -893,11 +887,7 @@ $query->withinKilometers("whereCreated", $point, 2.0);
 ```
 {% endblock %}
 
-{% block link_to_acl_doc %}(**PHP 文档待补充**){% endblock %}
-
 {% block link_to_relation_guide_doc %}(**PHP 文档待补充**){% endblock %}
-
-{% block link_to_sms_guide_doc %}(**PHP 有待补充**){% endblock %}
 
 {% block code_send_sms_code_for_loginOrSignup %}
 
@@ -923,6 +913,9 @@ $user->setEmail("tom@leancloud.cn"); // 设置邮箱
 $user->signUp();
 ```
 {% endblock %}
+
+{# 2016-06-28 请不要删除 text_using_async_methods，并保持空白。 #}
+{% block text_using_async_methods %}{% endblock %}
 
 {% block code_user_logIn_with_username_and_password %}
 
@@ -1056,7 +1049,7 @@ $student->save();
 
 1. 首先声明一个子类继承自 `LeanObject`；
 2. 子类中声明静态字段 `protected static $className`，对应云端的数据表名；
-3. 建议不要重载构造函数 `__construct()`，如果一定需要构造，请确保其接受 2 个参数：`$className` 和 `$objectId`；
+3. 建议不要重载构造函数 `__construct()`，如果一定需要构造，请确保其接受 2 个参数 `$className` 和 `$objectId`；
 4. 将子类注册到 `LeanObject`，如 `Student::registerClass();`。
 
 下面是实现 `Student` 子类化的例子:
