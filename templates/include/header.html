@@ -15,28 +15,25 @@
                       <div class="name">文档首页</div>
                     </a>
                   </li>
-
-
+                  <li><a href="/docs/sdk_down.html">SDK 下载</a></li>
                   <li ng-class="{active:currentHtmlPage=='help.html'}">
                       <a class="nav-key-6 dropdown-toggle" title="帮助" data-toggle="dropdown">
-                          <i class="icon icon-dashbd-icon icon-question"></i>
+                          <i class="icon icon-dashbd-icon icon-info"></i>
                           <i class="dashboard-subnav-text">帮助</i>
                       </a>
                       <ul class="dropdown-menu">
                           {% if layout!="board-nologin.swig" %}
                             <!-- <li><a href="start.html">快速入门</a></li> -->
                           {% endif %}
-                          <li><a href="/docs">文档</a></li>
-                          <li><a href="/docs/sdk_down.html">SDK 下载</a></li>
-                          <li><a href="http://ticket.leancloud.cn/tickets">技术支持</a></li>
-                          <li role="presentation" class="divider"></li>
-                          <li><a href="/pricing.html">价格</a></li>
-                          <li><a href="/apps.html">移动端 App</a></li>
+                          <li><a href="https://leanticket.cn/t/leancloud">技术支持</a></li>
                           <li><a href="http://forum.leancloud.cn">社区</a></li>
                           <li><a href="http://blog.leancloud.cn/">Blog</a></li>
                           <li role="presentation" class="divider"></li>
                           <li><a href="https://leancloud.cn/apionline/">在线 API 工具</a></li>
                           <li><a href="http://drop.avosapps.com/">iOS 测试包分发</a></li>
+                          <li role="presentation" class="divider"></li>
+                          <li><a href="/apps.html">LeanCloud App</a></li>
+                          <li><a href="/pricing.html">价格</a></li>
                           <!-- <li><a href="#" data-toggle="modal" data-target="#modal-shortcuts">快捷键</a></li> -->
                       </ul>
                   </li>
@@ -101,7 +98,10 @@
             <li><a href="leanstorage_guide-ios.html">数据存储开发指南</a></li>
             <li><a href="ios_push_guide.html">消息推送开发指南</a></li>
             <li><a href="ios_push_cert.html">iOS 推送证书设置指南</a></li>
+            <li role="separator" class="divider"></li>
             <li><a href="realtime_guide-ios.html">实时通信开发指南</a></li>
+            <li><a href="chatkit-ios.html">ChatKit 使用指南</a></li>
+            <li role="separator" class="divider"></li>
             <li><a href="relation_guide-ios.html">关系建模指南</a></li>
             <li><a href="acl_guide-ios.html">权限管理使用指南</a></li>
             <li><a href="ios_statistics.html">统计分析开发指南</a></li>
@@ -225,7 +225,7 @@
             <li><a href="sns.html">第三方平台账号登录 SNS 开发指南</a></li>
             <li><a href="feedback.html">用户反馈开发指南</a></li>
             <li class="divider"></li>
-            <li><a href="sdk_down.html">SDK 下载</a></li>
+            <li><a href="tutorials.html">教程</a></li>
            <li><a href="demo.html">Demo</a></li>
            <li><a href="http://leancloud.sexy" target="_blank">第三方库</a></li>
           </ul>
