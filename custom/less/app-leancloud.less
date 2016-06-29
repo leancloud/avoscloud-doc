@@ -1,28 +1,31 @@
 // Bootstrap Loader
 // Load Bootstrap from app/components/bootstrap/
-@import "bootstrap/bootstrap";
+@import "loader-bootstrap";
 
-// Custom theme for Bootstrap
+// Global config, custom theme for Bootstrap
 // Load custom Bootstrap theme, all Bootstrap related customizations are defined here
 @import "theme-core";
 
 // Plug-ins
 // Plug-ins are third-party libraries related stylesheets
-// @import "plugin-daterangepicker-bs3";
-// @import "plugin-bootstrap-datetimepicker";
-// @import "plugin-slick-grid";
-// @import "plugin-slick-default-theme";
-// @import "plugin-slick-custom";
-// @import "plugin-angular-motion";
-// @import "plugin-angularstrap";
+@import "plugin-animate-lite";
+@import "plugin-daterangepicker-bs3";
+@import "plugin-bootstrap-datetimepicker";
+@import "plugin-slick-grid";
+@import "plugin-slick-default-theme";
+@import "plugin-slick-custom";
+@import "plugin-angular-motion";
+@import "plugin-angularstrap";
 @import "plugin-solarized-light";
-// @import "plugin-odometer-theme-default";
-// @import "plugin-bootstrap-slider";
-// @import "plugin-nprogress";
+@import "plugin-odometer-theme-default";
+@import "plugin-bootstrap-slider";
+@import "plugin-nprogress";
+@import "plugin-notify";
+@import "plugin-introjs";
 
 // Plug-ins Customizations
 // Override plug-in styles
-// @import "plugin-slick-grid-custom";
+@import "plugin-slick-grid-custom";
 
 // Components
 // Components are defined by functions
@@ -39,6 +42,7 @@
 @import "ui-notifications";
 @import "ui-label";
 @import "ui-switch";
+@import "ui-layout";
 
 // Sections
 // Sections are defined by pages, modules overrides should be also defined in specific pages
@@ -54,7 +58,9 @@
 @import "section-settings";
 @import "section-search";
 @import "section-footer";
-// @import "section-homepage";
+@import "section-homepage";
 
-// Docs specified styles
-@import "section-docs";
+
+
+// Themes
+// Themes for different platforms

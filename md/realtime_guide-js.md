@@ -13,7 +13,7 @@
 JavaScript 实时通信 SDK 支持如下运行时：
 
 - 浏览器/WebView
-  - IE 11 / Edge
+  - IE 10+ / Edge
   - Chrome 31+
   - Firefox latest
   - iOS 8.0+
@@ -23,15 +23,13 @@ JavaScript 实时通信 SDK 支持如下运行时：
   - iOS 0.22+
   - Android 0.25+
 
-如果需要支持 IE10 或以下版本，请使用 versoin 2。
-
 ### 文档贡献
 我们欢迎和鼓励大家对本文档的不足提出修改建议。请访问我们的 [Github 文档仓库](https://github.com/leancloud/docs) 来提交 Pull Request。
 
 ## 安装和初始化
 首先使用 npm 安装 SDK：
 ```bash
-npm install leancloud-realtime@next --save
+npm install leancloud-realtime --save
 ```
 
 然后在浏览器中加载以下 script：

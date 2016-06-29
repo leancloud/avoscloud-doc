@@ -302,7 +302,7 @@ Windows Phone 设备类似，也支持 `title` 和 `alert`，同时支持 `wp-pa
 }
 ```
 
-如果是 `dev` 值就表示使用开发证书，`prod` 值表示使用生产证书，默认使用**生产证书**。注意，当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
+如果是 `dev` 值就表示使用开发证书，`prod` 值表示使用生产证书。如果未设置 `prod` 属性，且使用的不是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html) ，我们默认使用**生产证书**来发推送。如果未设置 `prod` 属性，且使用的是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html) ，则需要在发推送之前执行 [AV.setProduction](https://leancloud.cn/api-docs/javascript/symbols/AV.html#.setProduction) 函数才会使用生产证书发推送，否则会以开发证书发推送。注意，当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
 
 #### 推送查询条件
 

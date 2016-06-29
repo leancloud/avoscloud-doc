@@ -104,11 +104,7 @@ var initGitHubLinks = function() {
   var currentPath = window.location.pathname.match(/.*\/(.+).html/i)[1];
   $('#content').prepend("<div class=docs-meta>\
       <span class='icon icon-github'></span>\
-      <a href='http://github.com/leancloud/docs/blob/master/md/" + currentPath + ".md'>在 GitHub 查看</a>\
-      |\
-      <a href='http://github.com/leancloud/docs/commits/master/md/" + currentPath + ".md'>文件历史</a>\
-      |\
-      <a href='http://github.com/leancloud/docs/edit/master/md/" + currentPath + ".md'>编辑</a>\
+      <a href='https://github.com/leancloud/docs#贡献'>编辑</a>\
     </div>");
   $('.sidebar-wrapper #toc').append("<li class=sidebar-meta><a href='#' class=do-expand-all>展开所有</a> <a href='#top' class=back-to-top>返回顶部</a></li>");
 };
@@ -228,7 +224,8 @@ var codeBlockTabber = (function() {
       'lang-js': 'JavaScript',
       'lang-python': 'Python',
       'lang-java': 'Java',
-      'lang-ts':'TypeScript'
+      'lang-ts':'TypeScript',
+      'lang-es7': 'ECMAScript7'
     };
 
     $.each($codeBlocks, function () {
@@ -339,9 +336,9 @@ $(function() {
   setTimeout(function() {
     updateSidebarAffixShadowWidth();
   }, 400);
-  
+
   // set the title: LeanCloud 文档 - xxxxxxx
-  if ( window.location.pathname != '/' 
+  if ( window.location.pathname != '/'
     && window.location.pathname.toLowerCase() != '/index.html' ){
     $('title').text(function(){
     // do not use html()

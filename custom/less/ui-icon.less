@@ -14,11 +14,11 @@ Sep 16, 2015
 
 @font-face {
   font-family:"ui-icon";
-  src:url("../fonts/ui-icon.eot?bffe8af34d2bf84821bbad913efb4362");
+  src:url("../fonts/ui-icon.eot?c828c17750fc67b556111b1291095ecb");
   src:url("../fonts/ui-icon.eot?#iefix") format("embedded-opentype"),
-		url("../fonts/ui-icon.woff2?bffe8af34d2bf84821bbad913efb4362") format("woff2"),
-		url("../fonts/ui-icon.woff?bffe8af34d2bf84821bbad913efb4362") format("woff"),
-		url("../fonts/ui-icon.svg?bffe8af34d2bf84821bbad913efb4362#ui-icon") format("svg");
+		url("../fonts/ui-icon.woff2?c828c17750fc67b556111b1291095ecb") format("woff2"),
+		url("../fonts/ui-icon.woff?c828c17750fc67b556111b1291095ecb") format("woff"),
+		url("../fonts/ui-icon.svg?c828c17750fc67b556111b1291095ecb#ui-icon") format("svg");
   font-weight:normal;
   font-style:normal;
 }
@@ -119,11 +119,13 @@ Sep 16, 2015
 .icon-inbox-files-bold, 
 .icon-inbox-files, 
 .icon-info, 
+.icon-internal, 
 .icon-key-bold, 
 .icon-key, 
 .icon-keyhole, 
 .icon-layer-alt, 
 .icon-layer-bold, 
+.icon-layer-thin, 
 .icon-lightning, 
 .icon-list-selected, 
 .icon-list, 
@@ -810,7 +812,7 @@ Sep 16, 2015
 }
 
 
-.icon-key-bold {
+.icon-internal {
   &:before {
     content:"\f14d";
   }
@@ -818,7 +820,7 @@ Sep 16, 2015
 }
 
 
-.icon-key {
+.icon-key-bold {
   &:before {
     content:"\f14e";
   }
@@ -826,7 +828,7 @@ Sep 16, 2015
 }
 
 
-.icon-keyhole {
+.icon-key {
   &:before {
     content:"\f14f";
   }
@@ -834,7 +836,7 @@ Sep 16, 2015
 }
 
 
-.icon-layer-alt {
+.icon-keyhole {
   &:before {
     content:"\f150";
   }
@@ -842,7 +844,7 @@ Sep 16, 2015
 }
 
 
-.icon-layer-bold {
+.icon-layer-alt {
   &:before {
     content:"\f151";
   }
@@ -850,7 +852,7 @@ Sep 16, 2015
 }
 
 
-.icon-lightning {
+.icon-layer-bold {
   &:before {
     content:"\f152";
   }
@@ -858,7 +860,7 @@ Sep 16, 2015
 }
 
 
-.icon-list-selected {
+.icon-layer-thin {
   &:before {
     content:"\f153";
   }
@@ -866,7 +868,7 @@ Sep 16, 2015
 }
 
 
-.icon-list {
+.icon-lightning {
   &:before {
     content:"\f154";
   }
@@ -874,7 +876,7 @@ Sep 16, 2015
 }
 
 
-.icon-location-arrow {
+.icon-list-selected {
   &:before {
     content:"\f155";
   }
@@ -882,7 +884,7 @@ Sep 16, 2015
 }
 
 
-.icon-lock {
+.icon-list {
   &:before {
     content:"\f156";
   }
@@ -890,7 +892,7 @@ Sep 16, 2015
 }
 
 
-.icon-locked-on {
+.icon-location-arrow {
   &:before {
     content:"\f157";
   }
@@ -898,7 +900,7 @@ Sep 16, 2015
 }
 
 
-.icon-locked {
+.icon-lock {
   &:before {
     content:"\f158";
   }
@@ -906,7 +908,7 @@ Sep 16, 2015
 }
 
 
-.icon-log {
+.icon-locked-on {
   &:before {
     content:"\f159";
   }
@@ -914,7 +916,7 @@ Sep 16, 2015
 }
 
 
-.icon-magic {
+.icon-locked {
   &:before {
     content:"\f15a";
   }
@@ -922,7 +924,7 @@ Sep 16, 2015
 }
 
 
-.icon-magnet {
+.icon-log {
   &:before {
     content:"\f15b";
   }
@@ -930,7 +932,7 @@ Sep 16, 2015
 }
 
 
-.icon-map-location {
+.icon-magic {
   &:before {
     content:"\f15c";
   }
@@ -938,7 +940,7 @@ Sep 16, 2015
 }
 
 
-.icon-megaphone-bold {
+.icon-magnet {
   &:before {
     content:"\f15d";
   }
@@ -946,7 +948,7 @@ Sep 16, 2015
 }
 
 
-.icon-mobile {
+.icon-map-location {
   &:before {
     content:"\f15e";
   }
@@ -954,7 +956,7 @@ Sep 16, 2015
 }
 
 
-.icon-multi-lang {
+.icon-megaphone-bold {
   &:before {
     content:"\f15f";
   }
@@ -962,7 +964,7 @@ Sep 16, 2015
 }
 
 
-.icon-outbound {
+.icon-mobile {
   &:before {
     content:"\f160";
   }
@@ -970,7 +972,7 @@ Sep 16, 2015
 }
 
 
-.icon-package {
+.icon-multi-lang {
   &:before {
     content:"\f161";
   }
@@ -978,7 +980,7 @@ Sep 16, 2015
 }
 
 
-.icon-path {
+.icon-outbound {
   &:before {
     content:"\f162";
   }
@@ -986,7 +988,7 @@ Sep 16, 2015
 }
 
 
-.icon-pen {
+.icon-package {
   &:before {
     content:"\f163";
   }
@@ -994,7 +996,7 @@ Sep 16, 2015
 }
 
 
-.icon-phone-bold {
+.icon-path {
   &:before {
     content:"\f164";
   }
@@ -1002,7 +1004,7 @@ Sep 16, 2015
 }
 
 
-.icon-phone {
+.icon-pen {
   &:before {
     content:"\f165";
   }
@@ -1010,7 +1012,7 @@ Sep 16, 2015
 }
 
 
-.icon-pie-chart {
+.icon-phone-bold {
   &:before {
     content:"\f166";
   }
@@ -1018,7 +1020,7 @@ Sep 16, 2015
 }
 
 
-.icon-piggy-bank {
+.icon-phone {
   &:before {
     content:"\f167";
   }
@@ -1026,7 +1028,7 @@ Sep 16, 2015
 }
 
 
-.icon-plan {
+.icon-pie-chart {
   &:before {
     content:"\f168";
   }
@@ -1034,7 +1036,7 @@ Sep 16, 2015
 }
 
 
-.icon-plane {
+.icon-piggy-bank {
   &:before {
     content:"\f169";
   }
@@ -1042,7 +1044,7 @@ Sep 16, 2015
 }
 
 
-.icon-play-bold {
+.icon-plan {
   &:before {
     content:"\f16a";
   }
@@ -1050,7 +1052,7 @@ Sep 16, 2015
 }
 
 
-.icon-play {
+.icon-plane {
   &:before {
     content:"\f16b";
   }
@@ -1058,7 +1060,7 @@ Sep 16, 2015
 }
 
 
-.icon-plug {
+.icon-play-bold {
   &:before {
     content:"\f16c";
   }
@@ -1066,7 +1068,7 @@ Sep 16, 2015
 }
 
 
-.icon-presentation-bold {
+.icon-play {
   &:before {
     content:"\f16d";
   }
@@ -1074,7 +1076,7 @@ Sep 16, 2015
 }
 
 
-.icon-push-bold {
+.icon-plug {
   &:before {
     content:"\f16e";
   }
@@ -1082,7 +1084,7 @@ Sep 16, 2015
 }
 
 
-.icon-push {
+.icon-presentation-bold {
   &:before {
     content:"\f16f";
   }
@@ -1090,7 +1092,7 @@ Sep 16, 2015
 }
 
 
-.icon-question {
+.icon-push-bold {
   &:before {
     content:"\f170";
   }
@@ -1098,7 +1100,7 @@ Sep 16, 2015
 }
 
 
-.icon-radar {
+.icon-push {
   &:before {
     content:"\f171";
   }
@@ -1106,7 +1108,7 @@ Sep 16, 2015
 }
 
 
-.icon-refresh {
+.icon-question {
   &:before {
     content:"\f172";
   }
@@ -1114,7 +1116,7 @@ Sep 16, 2015
 }
 
 
-.icon-rewind {
+.icon-radar {
   &:before {
     content:"\f173";
   }
@@ -1122,20 +1124,15 @@ Sep 16, 2015
 }
 
 
-.icon-rss {
+.icon-refresh {
   &:before {
     content:"\f174";
   }
-}
-
-.icon-faq {
-  &:before {
-    content:"\f170";
-  }
+  
 }
 
 
-.icon-satellite {
+.icon-rewind {
   &:before {
     content:"\f175";
   }
@@ -1143,7 +1140,7 @@ Sep 16, 2015
 }
 
 
-.icon-schema-free {
+.icon-rss {
   &:before {
     content:"\f176";
   }
@@ -1151,7 +1148,7 @@ Sep 16, 2015
 }
 
 
-.icon-search-bold {
+.icon-satellite {
   &:before {
     content:"\f177";
   }
@@ -1159,7 +1156,7 @@ Sep 16, 2015
 }
 
 
-.icon-search {
+.icon-schema-free {
   &:before {
     content:"\f178";
   }
@@ -1167,7 +1164,7 @@ Sep 16, 2015
 }
 
 
-.icon-server-rack-bold {
+.icon-search-bold {
   &:before {
     content:"\f179";
   }
@@ -1175,7 +1172,7 @@ Sep 16, 2015
 }
 
 
-.icon-share-bold {
+.icon-search {
   &:before {
     content:"\f17a";
   }
@@ -1183,7 +1180,7 @@ Sep 16, 2015
 }
 
 
-.icon-share {
+.icon-server-rack-bold {
   &:before {
     content:"\f17b";
   }
@@ -1191,7 +1188,7 @@ Sep 16, 2015
 }
 
 
-.icon-signpost {
+.icon-share-bold {
   &:before {
     content:"\f17c";
   }
@@ -1199,7 +1196,7 @@ Sep 16, 2015
 }
 
 
-.icon-slider-alt {
+.icon-share {
   &:before {
     content:"\f17d";
   }
@@ -1207,7 +1204,7 @@ Sep 16, 2015
 }
 
 
-.icon-slider-nav-left {
+.icon-signpost {
   &:before {
     content:"\f17e";
   }
@@ -1215,7 +1212,7 @@ Sep 16, 2015
 }
 
 
-.icon-slider-nav-right {
+.icon-slider-alt {
   &:before {
     content:"\f17f";
   }
@@ -1223,7 +1220,7 @@ Sep 16, 2015
 }
 
 
-.icon-slider {
+.icon-slider-nav-left {
   &:before {
     content:"\f180";
   }
@@ -1231,7 +1228,7 @@ Sep 16, 2015
 }
 
 
-.icon-smile-bold {
+.icon-slider-nav-right {
   &:before {
     content:"\f181";
   }
@@ -1239,7 +1236,7 @@ Sep 16, 2015
 }
 
 
-.icon-smile {
+.icon-slider {
   &:before {
     content:"\f182";
   }
@@ -1247,7 +1244,7 @@ Sep 16, 2015
 }
 
 
-.icon-sms {
+.icon-smile-bold {
   &:before {
     content:"\f183";
   }
@@ -1255,7 +1252,7 @@ Sep 16, 2015
 }
 
 
-.icon-stopwatch {
+.icon-smile {
   &:before {
     content:"\f184";
   }
@@ -1263,7 +1260,7 @@ Sep 16, 2015
 }
 
 
-.icon-target {
+.icon-sms {
   &:before {
     content:"\f185";
   }
@@ -1271,7 +1268,7 @@ Sep 16, 2015
 }
 
 
-.icon-team-bold {
+.icon-stopwatch {
   &:before {
     content:"\f186";
   }
@@ -1279,7 +1276,7 @@ Sep 16, 2015
 }
 
 
-.icon-team {
+.icon-target {
   &:before {
     content:"\f187";
   }
@@ -1287,7 +1284,7 @@ Sep 16, 2015
 }
 
 
-.icon-timer {
+.icon-team-bold {
   &:before {
     content:"\f188";
   }
@@ -1295,7 +1292,7 @@ Sep 16, 2015
 }
 
 
-.icon-trash {
+.icon-team {
   &:before {
     content:"\f189";
   }
@@ -1303,7 +1300,7 @@ Sep 16, 2015
 }
 
 
-.icon-twitter {
+.icon-timer {
   &:before {
     content:"\f18a";
   }
@@ -1311,7 +1308,7 @@ Sep 16, 2015
 }
 
 
-.icon-user {
+.icon-trash {
   &:before {
     content:"\f18b";
   }
@@ -1319,7 +1316,7 @@ Sep 16, 2015
 }
 
 
-.icon-users-bold {
+.icon-twitter {
   &:before {
     content:"\f18c";
   }
@@ -1327,7 +1324,7 @@ Sep 16, 2015
 }
 
 
-.icon-users {
+.icon-user {
   &:before {
     content:"\f18d";
   }
@@ -1335,7 +1332,7 @@ Sep 16, 2015
 }
 
 
-.icon-wandoujia {
+.icon-users-bold {
   &:before {
     content:"\f18e";
   }
@@ -1343,7 +1340,7 @@ Sep 16, 2015
 }
 
 
-.icon-wechat-alt {
+.icon-users {
   &:before {
     content:"\f18f";
   }
@@ -1351,7 +1348,7 @@ Sep 16, 2015
 }
 
 
-.icon-weibo {
+.icon-wandoujia {
   &:before {
     content:"\f190";
   }
@@ -1359,7 +1356,7 @@ Sep 16, 2015
 }
 
 
-.icon-window {
+.icon-wechat-alt {
   &:before {
     content:"\f191";
   }
@@ -1367,7 +1364,7 @@ Sep 16, 2015
 }
 
 
-.icon-wrench {
+.icon-weibo {
   &:before {
     content:"\f192";
   }
@@ -1375,9 +1372,25 @@ Sep 16, 2015
 }
 
 
-.icon-yen-bold {
+.icon-window {
   &:before {
     content:"\f193";
+  }
+  
+}
+
+
+.icon-wrench {
+  &:before {
+    content:"\f194";
+  }
+  
+}
+
+
+.icon-yen-bold {
+  &:before {
+    content:"\f195";
   }
   
 }
@@ -1538,145 +1551,149 @@ Sep 16, 2015
 
 @icon-info: "\f14c";
 
-@icon-key-bold: "\f14d";
+@icon-internal: "\f14d";
 
-@icon-key: "\f14e";
+@icon-key-bold: "\f14e";
 
-@icon-keyhole: "\f14f";
+@icon-key: "\f14f";
 
-@icon-layer-alt: "\f150";
+@icon-keyhole: "\f150";
 
-@icon-layer-bold: "\f151";
+@icon-layer-alt: "\f151";
 
-@icon-lightning: "\f152";
+@icon-layer-bold: "\f152";
 
-@icon-list-selected: "\f153";
+@icon-layer-thin: "\f153";
 
-@icon-list: "\f154";
+@icon-lightning: "\f154";
 
-@icon-location-arrow: "\f155";
+@icon-list-selected: "\f155";
 
-@icon-lock: "\f156";
+@icon-list: "\f156";
 
-@icon-locked-on: "\f157";
+@icon-location-arrow: "\f157";
 
-@icon-locked: "\f158";
+@icon-lock: "\f158";
 
-@icon-log: "\f159";
+@icon-locked-on: "\f159";
 
-@icon-magic: "\f15a";
+@icon-locked: "\f15a";
 
-@icon-magnet: "\f15b";
+@icon-log: "\f15b";
 
-@icon-map-location: "\f15c";
+@icon-magic: "\f15c";
 
-@icon-megaphone-bold: "\f15d";
+@icon-magnet: "\f15d";
 
-@icon-mobile: "\f15e";
+@icon-map-location: "\f15e";
 
-@icon-multi-lang: "\f15f";
+@icon-megaphone-bold: "\f15f";
 
-@icon-outbound: "\f160";
+@icon-mobile: "\f160";
 
-@icon-package: "\f161";
+@icon-multi-lang: "\f161";
 
-@icon-path: "\f162";
+@icon-outbound: "\f162";
 
-@icon-pen: "\f163";
+@icon-package: "\f163";
 
-@icon-phone-bold: "\f164";
+@icon-path: "\f164";
 
-@icon-phone: "\f165";
+@icon-pen: "\f165";
 
-@icon-pie-chart: "\f166";
+@icon-phone-bold: "\f166";
 
-@icon-piggy-bank: "\f167";
+@icon-phone: "\f167";
 
-@icon-plan: "\f168";
+@icon-pie-chart: "\f168";
 
-@icon-plane: "\f169";
+@icon-piggy-bank: "\f169";
 
-@icon-play-bold: "\f16a";
+@icon-plan: "\f16a";
 
-@icon-play: "\f16b";
+@icon-plane: "\f16b";
 
-@icon-plug: "\f16c";
+@icon-play-bold: "\f16c";
 
-@icon-presentation-bold: "\f16d";
+@icon-play: "\f16d";
 
-@icon-push-bold: "\f16e";
+@icon-plug: "\f16e";
 
-@icon-push: "\f16f";
+@icon-presentation-bold: "\f16f";
 
-@icon-question: "\f170";
+@icon-push-bold: "\f170";
 
-@icon-radar: "\f171";
+@icon-push: "\f171";
 
-@icon-refresh: "\f172";
+@icon-question: "\f172";
 
-@icon-rewind: "\f173";
+@icon-radar: "\f173";
 
-@icon-rss: "\f174";
+@icon-refresh: "\f174";
 
-@icon-satellite: "\f175";
+@icon-rewind: "\f175";
 
-@icon-schema-free: "\f176";
+@icon-rss: "\f176";
 
-@icon-search-bold: "\f177";
+@icon-satellite: "\f177";
 
-@icon-search: "\f178";
+@icon-schema-free: "\f178";
 
-@icon-server-rack-bold: "\f179";
+@icon-search-bold: "\f179";
 
-@icon-share-bold: "\f17a";
+@icon-search: "\f17a";
 
-@icon-share: "\f17b";
+@icon-server-rack-bold: "\f17b";
 
-@icon-signpost: "\f17c";
+@icon-share-bold: "\f17c";
 
-@icon-slider-alt: "\f17d";
+@icon-share: "\f17d";
 
-@icon-slider-nav-left: "\f17e";
+@icon-signpost: "\f17e";
 
-@icon-slider-nav-right: "\f17f";
+@icon-slider-alt: "\f17f";
 
-@icon-slider: "\f180";
+@icon-slider-nav-left: "\f180";
 
-@icon-smile-bold: "\f181";
+@icon-slider-nav-right: "\f181";
 
-@icon-smile: "\f182";
+@icon-slider: "\f182";
 
-@icon-sms: "\f183";
+@icon-smile-bold: "\f183";
 
-@icon-stopwatch: "\f184";
+@icon-smile: "\f184";
 
-@icon-target: "\f185";
+@icon-sms: "\f185";
 
-@icon-team-bold: "\f186";
+@icon-stopwatch: "\f186";
 
-@icon-team: "\f187";
+@icon-target: "\f187";
 
-@icon-timer: "\f188";
+@icon-team-bold: "\f188";
 
-@icon-trash: "\f189";
+@icon-team: "\f189";
 
-@icon-twitter: "\f18a";
+@icon-timer: "\f18a";
 
-@icon-user: "\f18b";
+@icon-trash: "\f18b";
 
-@icon-users-bold: "\f18c";
+@icon-twitter: "\f18c";
 
-@icon-users: "\f18d";
+@icon-user: "\f18d";
 
-@icon-wandoujia: "\f18e";
+@icon-users-bold: "\f18e";
 
-@icon-wechat-alt: "\f18f";
+@icon-users: "\f18f";
 
-@icon-weibo: "\f190";
+@icon-wandoujia: "\f190";
 
-@icon-window: "\f191";
+@icon-wechat-alt: "\f191";
 
-@icon-wrench: "\f192";
+@icon-weibo: "\f192";
 
-@icon-yen-bold: "\f193";
+@icon-window: "\f193";
+
+@icon-wrench: "\f194";
+
+@icon-yen-bold: "\f195";
 

@@ -2,7 +2,7 @@
 
 ## 简介
 
-使用本模块，你不仅可以精准统计每个分发渠道所获取的新增用户、活跃用户、留存率等指标，还可以自定义事件来深度追踪用户的使用细节、用户属性以及行为特征，直观解读用户的操作流程，为业务分析和用户体验优化获取最真实的样本数据。 
+使用本模块，你不仅可以精准统计每个分发渠道所获取的新增用户、活跃用户、留存率等指标，还可以自定义事件来深度追踪用户的使用细节、用户属性以及行为特征，直观解读用户的操作流程，为业务分析和用户体验优化获取最真实的样本数据。
 
 ## 特性
 
@@ -37,7 +37,7 @@ Release 地址: [https://github.com/leancloud/js-analytics-sdk/releases](https:/
 var appId = '{{appid}}';
 var appKey = '{{appkey}}';
 
-// 实例化统计分析功能
+// 实例化统计分析功能（注意：实例化后，SDK 会自动开始统计 PV、UV、停留页面时长等信息）
 var analytics = AV.analytics({
 
     // 设置 AppId
@@ -234,4 +234,4 @@ var analytics = AV.analytics({
 
 如果当前页面中存在 **日期选择** 选项（通常在页面右上角），你可以以此判断当前的统计结果是否有延迟。如果 **结束日期** 显示为 **当日日期** 或在其下拉菜单中有「今日」选项，即为实时数据；反之则为离线数据（如下图所示），要推迟一天才能看到当日的情况。
 
-<img src="../images/analytics_datepicker_for_offline_data.png" alt="" width="231" height="256">
+<img src="images/analytics_datepicker_for_offline_data.png" alt="" width="231" height="256">

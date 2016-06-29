@@ -130,4 +130,4 @@ void OnGUI()
 
 如果当前页面中存在 **日期选择** 选项（通常在页面右上角），你可以以此判断当前的统计结果是否有延迟。如果 **结束日期** 显示为 **当日日期** 或在其下拉菜单中有「今日」选项，即为实时数据；反之则为离线数据（如下图所示），要推迟一天才能看到当日的情况。
 
-<img src="../images/analytics_datepicker_for_offline_data.png" alt="" width="231" height="256">
+<img src="images/analytics_datepicker_for_offline_data.png" alt="" width="231" height="256">

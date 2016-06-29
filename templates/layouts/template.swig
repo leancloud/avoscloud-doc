@@ -31,7 +31,7 @@
     <!-- .col-md-3 -->
 
     <div class="col-sm-9 sidebar-gruntfile-trigger">
-      <div class="doc-content with-comment" id="content">
+      <div class="doc-content with-links with-comment" id="content">
         {{body}}
       </div>
     </div>

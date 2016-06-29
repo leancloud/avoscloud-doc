@@ -52,7 +52,7 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$com
             });
         }
         var win;
-        var commentHost = 'https://comment.avosapps.com';
+        var commentHost = 'https://comment.leanapp.cn';
         $scope.commentHost = commentHost;
         var docVersion = $('html').first().attr('version');
 

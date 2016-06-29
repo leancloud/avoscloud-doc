@@ -2148,37 +2148,38 @@ body {
 
 
 .crossfade-bg-0 {
-  background: linear-gradient(to bottom, fade(#087bf0, 15%), fade(#179ed3, 0));
+  background: linear-gradient(to bottom, #fff, fade(#fff, 0));
   // There's no `crossfade-bg-0` state on initial load, so set it visible as it's the first landing screen.
   opacity: 1;
 }
 
 .crossfade-bg-1 {
-  background: linear-gradient(to bottom, fade(#00a762, 15%), fade(#92da76, 0));
+  background: linear-gradient(to bottom, #fff, fade(#fff, 0));
 }
 
 .crossfade-bg-2 {
-  background: linear-gradient(to bottom, fade(#f19520, 15%), fade(#ebd800, 0));
+  background: linear-gradient(to bottom, #fff, fade(#fff, 0));
 }
 
 .crossfade-bg-3 {
-  background: linear-gradient(to bottom, fade(#f15220, 15%), fade(#eba900, 0));
+  background: linear-gradient(to bottom, #fff, fade(#fff, 0));
 }
 
 .crossfade-bg-4 {
-  background: linear-gradient(to bottom, fade(#d82121, 15%), fade(#e63079, 0));
+  background: linear-gradient(to bottom, #fff, fade(#fff, 0));
 }
 
 .crossfade-bg-5 {
-  background: linear-gradient(to bottom, fade(#ab00cc, 15%), fade(#a000eb, 0));
+  background: linear-gradient(to bottom, #fff, fade(#fff, 0));
 }
 
+// About page
 .crossfade-bg-6 {
   background: linear-gradient(to bottom, fade(#0ff, 40%), fade(#25acf2, 0));
 }
 
 .crossfade-bg-7 {
-  background: linear-gradient(to bottom, fade(#b1c0ca, 40%), fade(#abc3cf, 0));
+  background: linear-gradient(to bottom, #fff, fade(#abc3cf, 0));
 }
 
 // Customers
@@ -5005,13 +5006,9 @@ body.news {
 .hero-heading {
 
   .form-pricing-region-switcher-wrap {
-    display: none;
+    display: block;
     width: 120px;
     margin: 0 auto;
-
-    @media (max-width: @screen-xs-max) {
-      display: block;
-    }
   }
 }
 

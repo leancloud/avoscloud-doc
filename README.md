@@ -12,21 +12,46 @@ LeanCloud 开发者文档
 
 这个项目是 LeanCloud [文档](http://leancloud.cn/docs/)上的所有文档的 Markdown 格式的源码，最终将渲染成你在网站上看到的 [HTML 文档](http://leancloud.cn/docs/)。
 
-因此 Markdown 文件里部分链接写的是最终渲染后的链接，如果直接点击会发现 404 错误。敬请谅解。
+因此 Markdown 文件里部分链接写的是最终渲染后的链接，如果直接点击会发现 404 错误。
 
 ## 贡献
 
-我们欢迎所有用户为我们贡献或者修正错误。您只要 [fork](https://github.com/leancloud/docs/fork) 这个项目，并提交 [Pull Request](https://github.com/leancloud/docs/pulls) 即可。
+我们欢迎所有用户为我们贡献或者修正错误，LeanCloud 衷心感谢您的贡献。
 
-我们所有文档的源文件都在 `/md` 或 `/views` 目录中（内容使用 Markdown 语法），相关图片放在 `/images` 目录下。需要注意：
+可以按照以下步骤贡献：
+
+- `fork` 这个项目
+- `npm install` 安装相关依赖
+- 执行 `grunt server` 可以本地预览
+- 修改 `/views` 目录中的文档
+  - `/views` 中是模板文件，会被编译为 `/md` 目录中对应的文档文件
+  - 如果 `/views` 中没有相应文档，可以直接修改 `/md` 目录中对应的文档（历史遗留问题）
+  - 相关图片放在 `/images` 目录中
+  - 模板是支持嵌套的，如 views 中 a.md 是可以被嵌套在 a.tmpl 中的，具体阅读下面关于模板的文档
+- 提交修改并发起 `Pull Request`
+
+项目的目录结构说明如下：
 
 ```
-.
-├── archive //已下线存档的文档，请勿更新
-├── private //未完成、未发布的文档临时保存在这里，以便让重建全站文档索引的系统任务忽略这些文件。
+├── README.md                          // 说明文档
+├── archive                            // 已下线存档的文档，请勿更新
+├── custom                             // 文档页面样式及 JavaScript 代码
+├── images                             // 文档中引用的所有图片
+├── md                                 // Markdown 格式的全部文档（部分是通过 views 目录中的模板编译生成）
+├── dist                               // 编译之后生成的文件将会在此目录下
+├── private                            // 未完成、未发布的文档临时保存在这里，以便让重建全站文档索引的系统任务忽略这些文件
+├── react                              // 文档评论功能所需要用的 React 组件
+├── server_public                      // 文档评论功能所需要用的 React 组件
+├── templates                          // 文档网站的页面模板
+├── views                              // Markdown 格式文档的模板文件，使用时会被编译到 md 目录中
+├── app.coffee
+├── app.json
+├── CHANGELOG.md                       // changelog 记录
+├── circle.yml
+├── CONTRIBUTING.md                    // 贡献指南
+├── package.json
+└── ...
 ```
-
-LeanCloud 衷心感谢您的贡献。
 
 ## 预览
 
@@ -101,7 +126,7 @@ $ grunt server
 其他常用的 [nunjucks 模板方法](https://mozilla.github.io/nunjucks/templating.html) 还有：
 
 ```
-{# 这是注释，用 <!-- --> 无效 #} 
+{# 这是注释，用 <!-- --> 无效 #}
 
 {% if numUsers < 5 %}...{% endif %}
 {% if i != "String" %}...{% endif %}
@@ -110,8 +135,8 @@ $ grunt server
 {% if (x < 5 or y < 5) and foo %}...{% endif %}
 
 // 复用文档片断
-{% macro ... %}  
-{% include ... %} 
+{% macro ... %}
+{% include ... %}
 ```
 
 ### 辅助工具
@@ -142,7 +167,7 @@ $ grunt server
 * 所有 `.md` 格式文档需要更新到 `/md` 目录下
 * 更新文档只需要修改或创建相应的 `.md` 文件，然后提交 Pull Request 即可
 * 由于文档会采用 AngularJS 渲染，当文档中需要显示 `{{content}}` 这种格式时，外面需要加上 `<span ng-non-bindable></span>`，以不被 AngularJS 渲染
-* 图片资源放在当前 repo 的 `/images` 文件夹下，引用方式类似 
+* 图片资源放在当前 repo 的 `/images` 文件夹下，引用方式类似
   ```
 ![image](images/cloud_code_menu.png)
   ```

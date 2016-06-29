@@ -1,6 +1,6 @@
 // storage/nav.html
 .storage-data-list { // ul
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: 320px;
 
   > li {
@@ -234,6 +234,7 @@ select.input-sm.cloud-stat-condition {
 
   float: left;
   padding-right: 10px;
+  white-space: nowrap;
 
   .no-timestamp & {
     width: (@cloud-log-level-width + 10px);
