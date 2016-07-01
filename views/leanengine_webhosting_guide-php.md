@@ -269,3 +269,13 @@ if ($env === "development") {
 }
 ```
 {% endblock %}
+
+{% block loggerExample %}
+```php
+Cloud::define("logSomething", function($params, $user) {
+    error_log(json_encode($params));
+});
+```
+{% endblock %}
+
+{% block section_timezone %}{% endblock %}

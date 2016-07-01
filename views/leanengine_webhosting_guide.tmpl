@@ -215,6 +215,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA5EZmrZZjbKb07yipeSkL+Hm+9mZAqyMfPu6BTAib+RVy
 
 **注意**：日志单行最大 4096 个字符，多余部分会被丢弃；日志输出频率大于 600 条/分钟，多余的部分会被丢弃。
 
+{% block section_timezone %}
 ## 时区问题
 
 因为某些原因，云引擎 2.0 默认使用的是 UTC 时间，这给很多开发者带来了困惑，所以我们着重讨论下时区问题。
@@ -256,6 +257,7 @@ console.log('getHours', time.hours());
 为了方便大家的使用，更加符合通常的习惯，云引擎运行时环境（无沙箱的 Node.js 环境和 Python 环境）都是使用**东八区**作为默认时区。当然，我们仍然建议程序的时间字符串带有时区标志。
 
 {% block introduceCloudCodeV2 %}{% endblock %}
+{% endblock %}
 
 ## 绑定独立域名
 
@@ -425,4 +427,4 @@ WAP<br/>
 
 由我们和备案接入商来完成。备案完成后，我们再执行绑定操作。
 
-以上任何一个步骤有疑问都可以直接发邮件给 support@leancloud.rocks 进行询问，我们会有专人负责跟进和回答相关问题。
+以上任何一个步骤有疑问都可以联系 <support@leancloud.rocks> 进行咨询。

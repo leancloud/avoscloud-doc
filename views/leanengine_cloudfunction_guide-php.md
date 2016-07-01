@@ -318,19 +318,10 @@ Cloud::define("pushTimer", function($params, $user) {
 {% endblock %}
 
 {% block masterKeyInit %}
-
 ```php
 //参数依次为 AppId, AppKey, MasterKey
 use \LeanCloud\LeanClient;
 LeanClient::initialize($appId, $appKey, $masterKey);
 LeanClient::useMasterKey(true);
-```
-{% endblock %}
-
-{% block loggerExample %}
-```php
-Cloud::define("logSomething", function($params, $user) {
-    error_log(json_encode($params));
-});
 ```
 {% endblock %}
