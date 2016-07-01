@@ -57,7 +57,7 @@ try {
 {% endblock %}
 
 {% block text_and_link_to_install_doc %}
-请阅读 [{{platform_title}} 安装指南](start.html)。
+请阅读 [{{platform_title}} 安装指南](sdk_setup-php.html)。
 {% endblock %}
 
 {% block code_save_object_by_cql %}
