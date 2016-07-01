@@ -46,10 +46,13 @@
 
 我们将按照顺序逐一介绍各类的使用方法。
 
+{% block section_sdk_setup %}
 ## SDK 安装
 
 {% block text_and_link_to_install_doc %}
 请阅读 [{{platform_title}} 安装指南](sdk_setup-{{segment_code}}.html)。
+{% endblock %}
+
 {% endblock %}
 
 {% block text_web_security %}{% endblock %}
@@ -57,6 +60,17 @@
 ## 对象
 
 `{{baseObjectName}}` 是 {{productName}} 对复杂对象的封装，每个 `{{baseObjectName}}` 包含若干属性值对，也称键值对（key-value）。属性的值是与 JSON 格式兼容的数据。通过 REST API 保存对象需要将对象的数据通过 JSON 来编码。这个数据是无模式化的（Schema Free），这意味着你不需要提前标注每个对象上有哪些 key，你只需要随意设置 key-value 对就可以，云端会保存它。
+
+### 数据类型
+`{{baseObjectName}}` 支持以下数据类型：
+
+{% block code_data_type %}{% endblock %}
+
+{% block section_dataType_largeData %}
+我们**不推荐**在 `{{baseObjectName}}` 中使用 `{{byteType}}` 来储存大块的二进制数据，比如图片或整个文件。**每个 `{{baseObjectName}}` 的大小都不应超过 128 KB**。如果需要储存更多的数据，建议使用 [`{{fileObjectName}}`](#文件)。
+{% endblock %}
+
+若想了解更多有关 LeanStorage 如何解析处理数据的信息，请查看专题文档《[数据与安全](./data_security.html)》。
 
 ### 构建对象
 构建一个 `{{baseObjectName}}` 可以使用如下方式：
@@ -117,17 +131,6 @@ description     objectId
 
 {% block code_saveoption_query_example %}{% endblock %}
 {% endblock %}
-
-### 数据类型
-`{{baseObjectName}}` 支持以下数据类型：
-
-{% block code_data_type %}{% endblock %}
-
-{% block section_dataType_largeData %}
-我们**不推荐**在 `{{baseObjectName}}` 中使用 `{{byteType}}` 来储存大块的二进制数据，比如图片或整个文件。**每个 `{{baseObjectName}}` 的大小都不应超过 128 KB**。如果需要储存更多的数据，建议使用 [`{{fileObjectName}}`](#文件)。
-{% endblock %}
-
-若想了解更多有关 LeanStorage 如何解析处理数据的信息，请查看专题文档《[数据与安全](./data_security.html)》。
 
 ### 获取对象
 每个被成功保存在云端的对象会有一个唯一的 Id 标识 `{{objectIdName}}`，因此获取对象的最基本的方法就是根据 `{{objectIdName}}` 来查询：
@@ -234,6 +237,10 @@ description     objectId
 #### 使用 CQL 语法删除对象
 {{productName}} 提供了类似 SQL 语法中的 Delete 方式删除一个对象，例如删除一个 Todo 对象可以使用下面的代码：
 {% block code_delete_todo_by_cql %}{% endblock %}
+
+{% block section_delete_options %}
+{% block code_delete_options %}{% endblock %}
+{% endblock %}
 
 ### 批量操作
 
@@ -829,10 +836,13 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {% block code_current_user %}{% endblock %}
 
+{% block text_current_user_remains_if_not_being_logged_out %}
 如果不调用 [登出](#登出) 方法，当前用户的缓存将永久保存在客户端。
+{% endblock %}
 
 #### 登出
-用户登出系统，SDK 会自动的清理缓存信息。
+
+用户登出系统时，SDK 会自动清理缓存信息。
 
 {% block code_current_user_logout %}{% endblock %}
 

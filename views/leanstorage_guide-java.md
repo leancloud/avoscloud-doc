@@ -586,7 +586,8 @@
 ```java
     AVQuery<AVObject> query = new AVQuery<>("Todo");
     query.whereNotContainedIn("title", Arrays.asList("出差", "休假"));
-    List<AVObject> todos = query.find(); // 标题不是“出差”和“休假”的 Todo 对象列表
+    // 标题不是「出差」和「休假」的 Todo 对象列表
+    List<AVObject> todos = query.find(); 
 ```
 {% endblock %}
 
@@ -1168,6 +1169,7 @@ for (Student a : results) {
     // ...
 }
 ```
+
 ### AVUser 的子类化
 
 AVUser 作为 AVObject 的子类，同样允许子类化，你可以定义自己的 User 对象，不过比起 AVObject 子类化会更简单一些，只要继承 AVUser 就可以了：
@@ -1202,15 +1204,13 @@ MyUser cloudUser = AVUser.logIn(username, password,
     MyUser.class);
 ```
 
-**注：由于 fastjson 内部的 bug，请在定义 AVUser 时不要定义跟 AVRelation 相关的 get 方法，如果一定要定义的话，请通过在 Class 上添加@JSONType(ignores = {"属性名"})的方式，将其注释为非序列化字段**。
+<div class="callout callout-info">由于 fastjson 内部的 bug，请在定义 AVUser 时<u>不要定义</u>跟 AVRelation 相关的 `get` 方法。如果一定要定义的话，请通过在 Class 上添加 `@JSONType(ignores = {"属性名"})` 的方式，将其注释为非序列化字段。</div>
 {% endblock %}
 
 {% block link_to_in_app_search_doc %}
-
 （**Java 暂不支持**）
 {% endblock %}
 
 {% block link_to_status_system_doc %}
-
 （**Java 暂不支持**）
 {% endblock %}

@@ -816,7 +816,6 @@ function uploadFile (req, res) {
 
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
 ```js
   var query = new AV.Query('Todo');
   var regExp = new RegExp('^((?!机票).)*$', 'i');
@@ -826,7 +825,6 @@ function uploadFile (req, res) {
 
 
 {% block code_query_with_not_contains_keyword %}
-
 ```js
   var query = new AV.Query('Todo');
   var filterArray = ['出差', '休假'];
@@ -836,7 +834,6 @@ function uploadFile (req, res) {
 
 
 {% block code_query_array_contains_using_equalsTo %}
-
 ```js
   var query = new AV.Query('Todo');
   var reminderFilter = [new Date('2015-11-11 08:30:00')];
@@ -850,7 +847,6 @@ function uploadFile (req, res) {
 
 
 {% block code_query_array_contains_all %}
-
 ```js
   var query = new AV.Query('Todo');
   var reminderFilter = [new Date('2015-11-11 08:30:00'), new Date('2015-11-11 09:30:00')];
@@ -860,7 +856,6 @@ function uploadFile (req, res) {
 
 
 {% block code_query_whereHasPrefix %}
-
 ```js
   // 找出开头是「早餐」的 Todo
   var query = new AV.Query('Todo');
@@ -870,7 +865,6 @@ function uploadFile (req, res) {
 
 
 {% block code_query_comment_by_todoFolder %}
-
 ```js
   var query = new AV.Query('Comment');
   var todoFolder = AV.Object.createWithoutData('Todo', '5735aae7c4c9710060fbe8b0');
