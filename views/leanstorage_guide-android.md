@@ -752,7 +752,7 @@ fetchAllInBackground()
         Date reminder2 = getDateWithDateString("2015-11-11 09:30:00");
 
         AVQuery<AVObject> query = new AVQuery<>("Todo");
-        query.whereEqualTo("reminders", Arrays.asList(reminder1, reminder2));
+        query.whereContainsAll("reminders", Arrays.asList(reminder1, reminder2));
 
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
