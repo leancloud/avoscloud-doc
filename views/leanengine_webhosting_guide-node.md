@@ -213,7 +213,7 @@ app.use(AV.Cloud.CookieSession({ secret: 'my secret', maxAge: 3600000, fetchUser
 * **name**：Cookie 的名字，默认为 `avos.sess`。
 * **maxAge**：设置 Cookie 的过期时间。
 
-**注意**：在 Node SDK 1.x 之后我们不再允许通过 `AV.User.current()` 获取登录用户的信息（详见 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk.html)）：
+**注意**：在 Node SDK 1.x 之后我们不再允许通过 `AV.User.current()` 获取登录用户的信息（详见 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk-upgrade-1.html#废弃_currentUser)）：
 
 * 在云引擎方法中，通过 `request.currentUser` 获取用户信息。
 * 在网站托管中，通过 `request.currentUser` 获取用户信息。
