@@ -84,6 +84,26 @@ AV.Cloud.run('averageStars', paramsJson, {
 ```
 {% endblock %}
 
+{% block cloudFuncTimeout %}
+### 云函数超时
+
+云函数超时时间为 15 秒，如果超过阈值，{{leanengine_middleware}} 将强制响应：
+
+* 客户端收到 HTTP status code 为 503 响应，body 为 `The request timed out on the server.`。
+* 服务端会出现类似这样的日志：`LeanEngine function timeout, url=/1.1/functions/<cloudFunc>, timeout=15000`。
+
+另外还需要注意：虽然 {{leanengine_middleware}} 已经响应，但此时云函数可能仍在执行，但执行完毕后的响应是无意义的（不会发给客户端，会在日志中打印一个 `Can't set headers after they are sent` 的异常）。
+
+#### 超时的处理方案
+
+我们建议将代码中的任务转化为异步队列处理，以优化运行时间，避免云函数或 [定时任务](#定时任务) 发生超时。比如：
+
+- 在存储服务中创建一个队列表，包含 `status` 列；
+- 接到任务后，向队列表保存一条记录，`status` 值设置为「处理中」，然后直接 response，也可以把队列对象 id 返回，如 `response.success(id);`；
+- 当业务处理完毕，根据处理结果更新刚才的队列对象状态，将 `status` 字段设置为「完成」或者「失败」；
+- 在任何时候，在控制台通过队列 id 可以获取某个任务的执行结果，判断任务状态。
+{% endblock %}
+
 {% block beforeSaveExample %}
 
 ```javascript

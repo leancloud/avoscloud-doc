@@ -16,7 +16,7 @@
 
 - [Node.js](leanengine_webhosting_guide-node.html)
 - [Python](leanengine_guide-python.html)
-<!-- - PHP：[云引擎开发指南-PHP](leanengine_guide_v2-php.html) -->
+- [PHP](leanengine_webhosting_guide-php.html)
 
 ## 项目约束
 
@@ -77,16 +77,13 @@
 你需要先在这些平台上创建一个项目（如果已有代码，请不需要选择「Initialize this repository with a README」），在网站的个人设置中填写本地机器的 SSH 公钥（以 GitHub 为例，在 Settings => SSH and GPG keys 中点击 New SSH key），然后在项目目录执行：
 
 ```sh
-git init
-git add .
-git commit -m 'first commit'
-git remote add origin git@github.com:leancloud/node-js-getting-started.git
+git remote add origin git@github.com:<username>/<repoName>.git
 git push -u origin master
 ```
 
-然后到云引擎的设置界面填写你的 Git 仓库地址，如果是公开仓库建议填写 https 地址，例如 `https://github.com/leancloud/node-js-getting-started.git`。
+然后到云引擎的设置界面填写你的 Git 仓库地址，如果是公开仓库建议填写 https 地址，例如 `https://github.com/<username>/<repoName>.git`。
 
-如果是私有仓库需要填写 ssh 地址 `git@github.com:leancloud/node-js-getting-started.git`，还需要你将云引擎分配给你的公钥填写到第三方托管平台的 Deploy keys 中，以 GitHub 为例，在项目的 Settings => Deploy keys 中点击 Add deploy key。
+如果是私有仓库需要填写 ssh 地址 `git@github.com:<username>/<repoName>.git`，还需要你将云引擎分配给你的公钥填写到第三方托管平台的 Deploy keys 中，以 GitHub 为例，在项目的 Settings => Deploy keys 中点击 Add deploy key。
 
 设置好之后，今后需要部署代码时就可以在云引擎的部署界面直接点击「部署」了，默认会部署 master 分支的代码，你也可以在部署时填写分支、标签或具体的 Commit。
 
@@ -218,6 +215,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA5EZmrZZjbKb07yipeSkL+Hm+9mZAqyMfPu6BTAib+RVy
 
 **注意**：日志单行最大 4096 个字符，多余部分会被丢弃；日志输出频率大于 600 条/分钟，多余的部分会被丢弃。
 
+{% block section_timezone %}
 ## 时区问题
 
 因为某些原因，云引擎 2.0 默认使用的是 UTC 时间，这给很多开发者带来了困惑，所以我们着重讨论下时区问题。
@@ -259,6 +257,7 @@ console.log('getHours', time.hours());
 为了方便大家的使用，更加符合通常的习惯，云引擎运行时环境（无沙箱的 Node.js 环境和 Python 环境）都是使用**东八区**作为默认时区。当然，我们仍然建议程序的时间字符串带有时区标志。
 
 {% block introduceCloudCodeV2 %}{% endblock %}
+{% endblock %}
 
 ## 绑定独立域名
 
@@ -428,4 +427,4 @@ WAP<br/>
 
 由我们和备案接入商来完成。备案完成后，我们再执行绑定操作。
 
-以上任何一个步骤有疑问都可以直接发邮件给 support@leancloud.rocks 进行询问，我们会有专人负责跟进和回答相关问题。
+以上任何一个步骤有疑问都可以联系 <support@leancloud.rocks> 进行咨询。

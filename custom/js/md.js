@@ -223,6 +223,7 @@ var codeBlockTabber = (function() {
       'lang-javascript': 'JavaScript',
       'lang-js': 'JavaScript',
       'lang-python': 'Python',
+      'lang-php': 'PHP',
       'lang-java': 'Java',
       'lang-ts':'TypeScript',
       'lang-es7': 'ECMAScript7'

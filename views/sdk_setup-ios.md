@@ -145,11 +145,11 @@ import AVOSCloudIM
 {% block sdk_switching_node %}
 
 ```
+//如果使用美国站点，请加上这行代码，并且写在初始化前面
+[AVOSCloud setServiceRegion:AVServiceRegionUS];
 // applicationId 即 App Id，clientKey 是 App Key。
 [AVOSCloud setApplicationId:@"{{appid}}"
                   clientKey:@"{{appkey}}"];
-//如果使用美国站点，请加上这行代码 
-[AVOSCloud setServiceRegion:AVServiceRegionUS];
 ```
 {% endblock %}
 

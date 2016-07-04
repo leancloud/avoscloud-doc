@@ -470,11 +470,7 @@ fetchAllInBackground()
         object.saveInBackground();
 ```
 
-此外，HashMap 和 ArrayList 支持嵌套，这样在一个 AVObject 中就可以使用它们来储存更多的结构化数据。
-
-我们**不推荐**在 `AVObject` 中使用 `byte[]` 类型来储存大块的二进制数据，比如图片或整个文件。**每个 `AVObject` 的大小都不应超过 128 KB**。如果需要储存更多的数据，建议使用 `AVFile`。更多细节可以阅读本文 [文件](#文件) 部分。
-
-若想了解更多有关 LeanStorage 如何解析处理数据的信息，请查看专题文档《[数据与安全](./data_security.html)》。
+此外，HashMap 和 ArrayList 支持嵌套，这样在一个 `AVObject` 中就可以使用它们来储存更多的结构化数据。
 {% endblock %}
 
 {% block code_create_geoPoint %}
@@ -704,19 +700,19 @@ fetchAllInBackground()
 
 ```java
         AVQuery<AVObject> query = new AVQuery<>("Todo");
-        query.whereMatches("title","^((?!机票).)*quot");
+        query.whereMatches("title","^((?!机票).)*$");
 ```
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword %}
-
 ```java
         AVQuery<AVObject> query = new AVQuery<>("Todo");
         query.whereNotContainedIn("title", Arrays.asList("出差", "休假"));
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
-                List<AVObject> nearbyTodos = list;// 离这个位置最近的 10 个 Todo 对象
+                // 标题不是「出差」和「休假」的 Todo 对象列表
+                List<AVObject> todos = list;
             }
         });
 ```
@@ -756,7 +752,7 @@ fetchAllInBackground()
         Date reminder2 = getDateWithDateString("2015-11-11 09:30:00");
 
         AVQuery<AVObject> query = new AVQuery<>("Todo");
-        query.whereEqualTo("reminders", Arrays.asList(reminder1, reminder2));
+        query.whereContainsAll("reminders", Arrays.asList(reminder1, reminder2));
 
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
@@ -801,10 +797,10 @@ fetchAllInBackground()
         tag1.put("name", "今日必做");// 设置 Tag 名称
 
         AVObject tag2 = new AVObject("Tag");// 构建对象
-        tag1.put("name", "老婆吩咐");// 设置 Tag 名称
+        tag2.put("name", "老婆吩咐");// 设置 Tag 名称
 
         AVObject tag3 = new AVObject("Tag");// 构建对象
-        tag1.put("name", "十分重要");// 设置 Tag 名称
+        tag3.put("name", "十分重要");// 设置 Tag 名称
 
         AVObject todoFolder = new AVObject("TodoFolder");// 构建对象
         todoFolder.put("name", "家庭");// 设置 Todo 名称
@@ -1569,12 +1565,15 @@ MyUser cloudUser = AVUser.logIn(username, password,
         MyUser.class);
 ```
 
-**注：由于 fastjson 内部的 bug，请在定义 AVUser 时不要定义跟 AVRelation 相关的 get 方法，如果一定要定义的话，请通过在 Class 上添加@JSONType(ignores = {"属性名"})的方式，将其注释为非序列化字段**。
-
+<div class="callout callout-info">由于 fastjson 内部的 bug，请在定义 AVUser 时<u>不要定义</u>跟 AVRelation 相关的 `get` 方法。如果一定要定义的话，请通过在 Class 上添加 `@JSONType(ignores = {"属性名"})` 的方式，将其注释为非序列化字段。</div>
 {% endblock %}
+
 {% block link_to_in_app_search_doc %}[Android 应用内搜索指南](app_search_guide.html){% endblock %}
+
 {% block link_to_status_system_doc %}[Android 应用内社交模块](status_system.html#Android_SDK){% endblock %}
+
 {% block link_to_sns_doc %}[Android SNS 开发指南](sns.html#Android_SNS_组件){% endblock %}
+
 {% block link_to_feedback_doc %}[Android 用户反馈指南](feedback.html#Android_反馈组件){% endblock %}
 
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

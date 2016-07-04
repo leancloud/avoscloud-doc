@@ -26,6 +26,6 @@ md/realtime_guide*.md
 md/relation_guide*.md
 md/sdk_setup*.md
 md/sms_guide*.md
-md/test.md
+md/test*.md
 
 views/test.md

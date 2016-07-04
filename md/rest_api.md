@@ -740,11 +740,9 @@ curl -X PUT \
   https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
-#### 有条件更新对象
+#### 按条件更新对象
 
-设想一个场景，我们想要将某个账户对象 Account 的余额扣除一定金额，但是要求余额要大于等于被扣除的金额，那么就需要在更新的时候加上条件 `balance >= amount`。
-
-有条件的更新，可以通过请求加上 `where` 参数实现：
+假设我们要从某个账户对象 Account 的余额扣除一定金额，但是要求余额要大于等于被扣除的金额，那么就需要在更新的时候加上条件 `balance >= amount`，并通过 `where` 参数来实现：
 
 ```sh
 curl -X PUT \
@@ -755,9 +753,9 @@ curl -X PUT \
   "https://api.leancloud.cn/1.1/classes/Account/558e20cbe4b060308e3eb36c?where=%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D"    
 ```
 
-可以看到 URL 里多了个参数 where，值是 `%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D`，其实是 `{"balance":{"$gte": 30}}` 做了 url encode 的结果。更多 where 查询的例子参见下文的[查询](#查询)一节。
+可以看到 URL 里多了个参数 where，值是 `%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D`，其实是 `{"balance":{"$gte": 30}}` 做了 url encode 的结果。更多 where 查询的例子参见下文的 [查询](#查询) 一节。
 
-如果条件不满足，更新将失败，同时返回专门的错误码 305：
+如果条件不满足，更新将失败，同时返回错误码 `305`：
 
 
 ```json
@@ -791,10 +789,9 @@ curl -X PUT \
   https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
-#### 有条件删除对象
+#### 按条件删除对象
 
-
-有条件的删除，可以通过请求加上 `where` 参数实现：
+为请求增加 `where` 参数即可以按指定的条件来删除对象：
 
 ```sh
 curl -X DELETE \
@@ -804,9 +801,9 @@ curl -X DELETE \
   "https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c?where=%7B%22clicks%22%3A%200%7D"    
 ```
 
-可以看到 URL 里多了个参数 where，值是 `%7B%22clicks%22%3A%200%7D`，其实是 `{"clicks": 0}` 做了 url encode 的结果，这里的意思是我们只有当这个帖子的点击量 clicks 为 0 才删除。更多 where 查询的例子参见[查询](#查询)一节。
+可以看到 URL 里多了个参数 where，值是 `%7B%22clicks%22%3A%200%7D`，其实是 `{"clicks": 0}` 做了 url encode 的结果，这里的意思是我们只有当这个帖子的点击量 clicks 为 0 才删除。更多 where 查询的例子参见 [查询](#查询) 一节。
 
-如果条件不满足，删除将失败，同时返回专门的错误码 305：
+如果条件不满足，删除将失败，同时返回错误码 `305`：
 
 
 ```json

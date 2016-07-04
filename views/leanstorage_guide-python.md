@@ -705,7 +705,7 @@ import leancloud
 Todo = leancloud.Object.extend('Todo')
 query = Todo.query
 
-query.matched('title', '^((?!机票).)*')
+query.matched('title', '^((?!机票).)*$')
 ```
 {% endblock %}
 
@@ -717,7 +717,7 @@ import leancloud
 Todo = leancloud.Object.extend('Todo')
 query = Todo.query
 
-query.not_contained_in('title', ['工程师周会'])
+query.not_contained_in('title', ['出差','休假'])
 ```
 {% endblock %}
 
