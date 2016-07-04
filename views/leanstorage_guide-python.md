@@ -499,6 +499,13 @@ todo.save()
 ```
 {% endblock %}
 
+{% block object_extra %}
+
+### 线程安全
+
+`leancloud.Object` 目前不是线程安全的，因此请避免多个线程修改同一个 `leancloud.Object` 实例的操作。如果遇到必须多线程操作的情况，需要根据情况加锁。
+
+{% endblock %}
 
 {% block code_data_protocol_save_date %}{% endblock %}
 
