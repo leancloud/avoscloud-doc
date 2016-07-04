@@ -519,6 +519,7 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 ```objc
     AVFile *file =[AVFile fileWithURL:@"http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"];
     [file getData];// 注意这一步很重要，这是把图片从原始地址拉去到本地
+    [file save];
 ```
 {% endblock %}
 

@@ -379,7 +379,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% block text_create_avfile_from_url %}
 #### 从网络路径构建文件
-从一个已知的  构建文件也是很多应用的需求，例如，从网页上拷贝了一个图像的链接，希望 SDK 能够读取并且上传到自己的应用内，之后的使用中不必担心原网址失效，而造成 UI 的缺失。
+从一个已知的  构建文件也是很多应用的需求，例如，从网页上拷贝了一个图像的链接，代码如下：
 
 {% block code_create_avfile_from_url %}{% endblock %}
 
@@ -409,6 +409,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 请注意代码中**下载进度**数据的读取。
 {% endif %}
 {% endblock %}
+
 ### 图像缩略图
 
 保存图像时，如果想在下载原图之前先得到缩略图，方法如下：
@@ -420,6 +421,8 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 `{{fileObjectName}}` 的 `metaData` 属性，可以用来保存和获取该文件对象的元数据信息：
 
 {% block code_file_metadata %}{% endblock %}
+
+{% block text_file_query %}{% endblock %}
 
 ### 删除
 
