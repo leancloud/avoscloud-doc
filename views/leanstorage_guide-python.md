@@ -561,6 +561,8 @@ url = avatar.url
 ```
 {% endblock %}
 
+{% block text_download_progress %}{% endblock %}
+
 {% block code_file_image_thumbnail %}
 ```python
 import leancloud

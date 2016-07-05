@@ -31,7 +31,7 @@ LeanCloud 允许你对两种目标设置 ACL：
 #### Class 级别的 ACL
 创建 Class 的时候，控制台会弹出一个窗口，如下图：
 
-![image](images/security/acl_template.png)
+<div style="width: 600px;"><img src="images/security/acl_template.png" class="img-responsive" /></div>
 
 在这里选择一个默认的 ACL 权限。
 

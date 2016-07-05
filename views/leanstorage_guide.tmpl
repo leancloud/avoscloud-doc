@@ -379,7 +379,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% block text_create_avfile_from_url %}
 #### 从网络路径构建文件
-从一个已知的  构建文件也是很多应用的需求，例如，从网页上拷贝了一个图像的链接，代码如下：
+从一个已知的 URL 构建文件也是很多应用的需求。例如，从网页上拷贝了一个图像的链接，代码如下：
 
 {% block code_create_avfile_from_url %}{% endblock %}
 
@@ -405,9 +405,8 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 客户端 SDK 接口可以下载文件并把它缓存起来，只要文件的 URL 不变，那么一次下载成功之后，就不会再重复下载，目的是为了减少客户端的流量。
 
 {% block code_download_file %}{% endblock %}
-{% if segment_code != 'python' %}
-请注意代码中**下载进度**数据的读取。
-{% endif %}
+{% block text_download_progress %}请注意代码中**下载进度**数据的读取。{% endblock %}
+
 {% endblock %}
 
 ### 图像缩略图
