@@ -82,9 +82,9 @@ dependencies {
   ```bash
   git clone https://github.com/leancloud/LeanCloudChatKit-Android.git`
   ```
-3. 将文件夹 `ChatKit` 复制到 `ChatDemo` 根目录；
-4. 修改 `ChatDemo/settings.gradle` 加入 `include ':ChatKit'`；
-5. 修改 `ChatDemo/app/build.gradle`，在 **dependencies** 中添加 `compile project(":ChatKit")`。
+3. 将文件夹 `leancloudchatkit` 复制到 `ChatDemo` 根目录；
+4. 修改 `ChatDemo/settings.gradle` 加入 `include ':leancloudchatkit'`；
+5. 修改 `ChatDemo/app/build.gradle`，在 **dependencies** 中添加 `compile project(":leancloudchatkit")`。
 
 最后只要 Sync Project，这样 ChatKit 就算是导入到项目中了。
 
