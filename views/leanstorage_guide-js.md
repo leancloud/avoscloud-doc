@@ -900,7 +900,7 @@ function uploadFile (req, res) {
 
 ```js
   var query = new AV.Query('Comment');
-  var todoFolder = AV.Object.createWithoutData('Todo', '5735aae7c4c9710060fbe8b0');
+  var todoFolder = AV.Object.createWithoutData('TodoFolder', '5735aae7c4c9710060fbe8b0');
   query.equalTo('targetTodoFolder', todoFolder);
   
   // 想在查询的同时获取关联对象的属性则一定要使用 `include` 接口用来指定返回的 `key`
