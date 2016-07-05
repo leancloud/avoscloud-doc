@@ -38,10 +38,20 @@ git clone --depth=1 https://github.com/leancloud/ChatKit-OC
     <img src="images/chatkit-ios/chatkit-screenshot-06.png" class="img-responsive" />
   </div>
 </div>
-
-图片消息支持多图联播，支持多种分享 |文本消息支持图文混排| 文本消息支持双击全屏展示
--------------|-------------|-------------
-![enter image description here](images/chatkit-ios/chatkit-screenshot-07.png) | ![enter image description here](images/chatkit-ios/chatkit-screenshot-08.png) | ![enter image description here](images/chatkit-ios/chatkit-screenshot-09.png)
+<div class="row" style="margin-top: 5rem;">
+  <div class="col-sm-4">
+    <p>图片消息支持多图联播，支持多种分享</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-07.jpg" class="img-responsive" />
+  </div>
+  <div class="col-sm-4">
+    <p>文本消息支持图文混排</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-08.png" class="img-responsive" />
+  </div>
+  <div class="col-sm-4">
+    <p>文本消息支持双击全屏展示</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-09.png" class="img-responsive img-bordered" />
+  </div>
+</div>
 
 ## 项目结构
 
@@ -117,9 +127,9 @@ git clone --depth=1 https://github.com/leancloud/ChatKit-OC
  * `ChatKit-OC` 为Demo 演示部分，其中 `LCChatKitExample` 这个类提供了很多胶水函数，可完成初步的集成。
  
  
- ## 使用 ChatKit
+ ## 使用方法
 
-  为了让这个库更易入手，避免引入过多公开的类和概念，我们采用了类似「组件化」的方式进行构建——将你在使用 ChatKit 库时所需要用到的所有方法都放在了 `LCChatKit` 这一个类中。它是一个 Mediator，是整个库的入口，也是中枢。
+为了让这个库更易入手，避免引入过多公开的类和概念，我们采用了类似「组件化」的方式进行构建，即将你在使用 ChatKit 库时所需要用到的所有方法都放在了 `LCChatKit` 这一个类中。它是一个 Mediator，是整个库的入口，也是中枢。
  
  使用 ChatKit 大体有几个步骤：
 
@@ -127,35 +137,37 @@ git clone --depth=1 https://github.com/leancloud/ChatKit-OC
  2. 调用 `-[LCChatKit sharedInstance]` 来初始化一个单例对象。
  3. 调用 `-[[LCChatKit sharedInstance] openWithClientId:callback:]` 开启 LeanCloud 的 IM 服务 LeanMessage，开始聊天。
  4. 调用 `-[[LCChatKit sharedInstance] closeWithCallback:]` 关闭 LeanCloud 的 IM 服务，结束聊天。
- 5. 实现 `-[[LCChatKit sharedInstance] setFetchProfilesBlock:]`，设置用户体系，里面要实现如何根据 userId 获取到一个 User 对象的逻辑。 ChatKit 会在需要用到 User 信息时调用你设置的这个逻辑。 `LCCKUserSystemService.h` 文件中给出了例子，演示了如何集成 LeanCloud 原生的用户系统 `AVUser`。
- 6. 如果你实现了 `-[[LCChatKit sharedInstance] setGenerateSignatureBlock:]` 方法，那么 ChatKit 会自动为以下行为添加签名：open（开启会话）、start（创建会话）、kick（踢人）、invite（邀请）。反之不会。
+ 5. 实现 `-[[LCChatKit sharedInstance] setFetchProfilesBlock:]`，设置用户体系，里面要实现如何根据 userId 获取到一个 User 对象的逻辑。ChatKit 会在需要用到 User 信息时调用你设置的这个逻辑。 `LCCKUserSystemService.h` 文件中给出了例子，演示了如何集成 LeanCloud 原生的用户系统 `AVUser`。
+ 6. 如果你实现了 `-[[LCChatKit sharedInstance] setGenerateSignatureBlock:]` 方法，那么 ChatKit 会自动为以下行为添加签名：`open`（开启会话）、`start`（创建会话）、`kick`（踢人）、`invite`（邀请）。反之不会。
 
 下面按步骤进行详细的介绍。
 
-### 使用 CocoaPods 导入 ChatKit
+### CocoaPods 导入
 
-在 `Podfile` 中进行如下导入：
+在文件 `Podfile` 中加入以下内容：
 
 ```shell
 pod 'ChatKit'
 ```
 
-然后使用 `cocoaPods` 进行安装。如果尚未安装 CocoaPods，运行以下命令进行安装：
+然后使用 CocoaPods 进行安装。如果尚未安装 CocoaPods，运行以下命令进行安装：
 
-```Objective-C
+```shell
 gem install cocoapods
 ```
 
 安装成功后就可以安装依赖了。建议使用如下方式：
 
-```Objective-C
+```shell
  # 禁止升级 CocoaPods 的 spec 仓库，否则会卡在 Analyzing dependencies，非常慢
  pod update --verbose --no-repo-update
 ```
  
 如果提示找不到库，则可去掉 `--no-repo-update`。
 
-### 第二步：使用胶水函数完成快速集成
+如果不想使用 CocoaPods 进行集成，也可以选择使用 [源码集成](#手动集成)。
+
+### 胶水函数快速集成
 
 ChatKit 提供了一个快速集成的演示类 `LCChatKitExample`，路径如下：
 
@@ -208,7 +220,7 @@ ChatKit 提供了一个快速集成的演示类 `LCChatKitExample`，路径如�
 + (void)invokeThisMethodInApplicationWillTerminate:(UIApplication *)application;
 ```
 
-### 最近联系人界面和聊天界面
+### 最近联系人界面
 
 主流的社交聊天软件，例如微信和 QQ 都会把最近联系人界面作为登录后的首页，可见其重要性。因此我们在 ChatKit 也提供了对话列表 `LCIMConversationListController` 页面，初始化方法非常简单：
 
@@ -217,6 +229,8 @@ LCCKConversationListViewController *firstViewController = [[LCCKConversationList
 ```
  
 最近联系人界面的数据，依赖于本地数据库。这些数据会在聊天过程中自动进行更新，你无需进行繁琐的数据库操作。
+
+### 聊天界面
 
 <div class="callout callout-info">ChatKit 中的对话是一个 `AVIMConversation` 对象， LeanMessage
 用它来管理对话成员，发送消息，不区分群聊、单聊。Demo 中采用了判断会话人数的方式来区分群聊、单聊。</div>
@@ -235,20 +249,20 @@ LCCKConversationViewController *conversationViewController = [[LCCKConversationV
 
 这里注意，通过 `peerId` 初始化，内部实现时，如果不是好友关系，会先建立好友关系、创建会话，所以调用该方法前请自行判断是否具有好友关系。同理，通过 `conversationId` 初始化群聊，内部实现时，如果不是群成员会先把当前用户加入群，并开启群聊。
 
-## 手动集成
+### 手动集成
 
-如果你不想使用 CocoaPods 进行集成，也可以选择使用源码集成。集成的步骤如下：
+如果你不想使用 CocoaPods 进行集成，也可以选择使用源码集成。步骤如下：
 
 第一步：
 
-将上文[「项目结构」](https://leancloud.cn/docs/chatkit-ios.html#项目结构)中提到的ChatKit 这个「核心库文件夹」拖拽到工程中。
+将 [项目结构](#项目结构) 中提到的 ChatKit 这个「核心库文件夹」拖拽到项目中。
 
 第二步：
 
 添加 ChatKit 依赖的第三方库以及对应版本：
 
- - [AVOSCloud](https://leancloud.cn/docs/sdk_down.html) v3.3.5
- - [AVOSCloudIM](https://leancloud.cn/docs/sdk_down.html) v3.3.5
+ - [AVOSCloud](sdk_down.html) v3.3.5
+ - [AVOSCloudIM](sdk_down.html) v3.3.5
  - [MJRefresh](https://github.com/CoderMJLee/MJRefresh) 3.1.9
  - [Masonry](https://github.com/SnapKit/Masonry) v1.0.1 
  - [SDWebImage](https://github.com/rs/SDWebImage) v3.8.0
