@@ -672,7 +672,7 @@ curl -X GET \
 
 ``` json
 {
-results: [
+"results": [
   {  
     "tags":[  
           "clojure",
@@ -689,7 +689,7 @@ results: [
   },
   ……
 ],
-sid: null}
+"sid": null}
 ```
 
 除了可以通过指定 `like` 这样的相关性文本来指定查询相似的文档之外，还可以通过 likeObjectIds 指定一个对象的 objectId 列表，来查询相似的对象：
