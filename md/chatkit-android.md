@@ -18,10 +18,10 @@ git clone git@github.com:leancloud/LeanCloudChatKit-Android.git
 
 「ChatKit-Android」Project 包含两个模块：
 
-- **leancloudimkit**<br/>
+- **leancloudchatkit**<br/>
   是一个封装了 LeanCloud 实时通讯的 UI lib，其目的是让开发者更快速地接入 LeanCloud 实时通讯的功能。
-- **imkitapplication**<br/>
-  为 Demo 项目，它是一个简单的示例项目，用来指导开发者如何使用 leancloudimkit。
+- **chatkitapplication**<br/>
+  为 Demo 项目，它是一个简单的示例项目，用来指导开发者如何使用 leancloudchatkit。
 
 然后，请确保电脑上已经连接了一台真机或者虚拟机用作调试。
 
@@ -30,7 +30,7 @@ git clone git@github.com:leancloud/LeanCloudChatKit-Android.git
 
 ## 使用 ChatKit
 
-开发者可以将 ChatKit 导入到自己的 Project 中使用。下面我们将新建一个 Project 用以导入 ChatKit。导入方式有三种：
+开发者可以将 ChatKit 导入到自己的 Project 中使用。下面我们将新建一个 Project（名为 ChatDemo） 用以导入 ChatKit。导入方式有三种：
 - [通过 Gradle 导入](#Gradle_导入)
 - [通过源代码导入](#源代码导入)
 - 通过 Jar 包导入<span class="text-muted">（因为通过 Jar 包导入仍然要拷贝资源文件，所以这里不推荐此种方式。）</span>
@@ -79,20 +79,22 @@ dependencies {
 
 1. 浏览器访问 <https://github.com/leancloud/LeanCloudChatKit-Android>；
 2. 执行以下命令行，将项目 clone 到本地（如 ChatKit 文件夹中，或者直接下载 zip 包自行解压缩到此文件夹下）：
-  ```bash
+```bash
   git clone https://github.com/leancloud/LeanCloudChatKit-Android.git`
-  ```
-3. 将文件夹 `ChatKit` 复制到 `ChatDemo` 根目录；
-4. 修改 `ChatDemo/settings.gradle` 加入 `include ':ChatKit'`；
-5. 修改 `ChatDemo/app/build.gradle`，在 **dependencies** 中添加 `compile project(":ChatKit")`。
+```
+1. 将文件夹 `leancloudchatkit` 复制到 `ChatDemo` 根目录；
+2. 修改 `ChatDemo/settings.gradle` 加入 `include ':leancloudchatkit'`；
+3. 修改 `ChatDemo/app/build.gradle`，在 **dependencies** 中添加 `compile project(":leancloudchatkit")`。
 
 最后只要 Sync Project，这样 ChatKit 就算是导入到项目中了。
 
 ### 自定义使用
 
-一、实现自己的 Application
+#### 一、实现自己的 Application
 
-ChatDemo 中新建一个 Java Class，名字叫做 **ChatDemoApplication**，让它继承自 Application 类，代码如下：
+ChatKit 在使用之前需要进行初始化，就像直接使用 LeanCloud 基础 SDK 时需要调用 `AVOSCloud.initialize(appId, appKey)` 一样。初始化逻辑应该放在 Application.onCreate 方法中实现。
+
+ChatDemo 中新建一个 Class，名字叫做 **ChatDemoApplication**，让它继承自 Application 类，代码如下：
 
 ```java
 public class ChatDemoApplication extends Application {
@@ -111,7 +113,7 @@ public class ChatDemoApplication extends Application {
 }
 ```
 
-二、在 `AndroidMainfest.xml` 中配置 ChatDemoApplication
+#### 二、在 `AndroidMainfest.xml` 中配置 ChatDemoApplication
 
 ```xml
 <application
@@ -121,9 +123,23 @@ public class ChatDemoApplication extends Application {
 </application>
 ```
 
-三、实现自己的用户体系
+#### 三、实现自己的用户体系
 
-ChatDemo 中新建一个 Java Class，名字叫做 **CustomUserProvider**，代码如下：
+一般来说，聊天界面是相对复杂的，除了要支持文字、表情、图片、语音等消息格式，还有用户信息的展示。在 ChatKit 里面，我们认为文字、表情、图片、语音等消息的发送、接收、展示是聊天系统应该解决的；但是在 LeanCloud 的消息流中，只含有参与者的 `clientId` 这一唯一标识，一个参与者在聊天界面上展示的时候，至少需要头像、昵称等信息，额外的用户展现信息则需要各个产品的用户系统来支持。
+
+所以，为了保证通用性和扩展性，让开发者可以更容易将聊天界面嵌入自己 app，ChatKit 设计上抽象出了一个「用户体系」的接口，需要开发者自己提供用户信息的获取方式。该接口只有一个方法需要开发者实现：
+
+```java
+/**
+ * 用户体系的接口，开发者需要实现此接口来接入 LCChatKit
+ */
+public interface LCChatProfileProvider {
+  // 根据传入的 clientId list，查找、返回用户的 Profile 信息(id、昵称、头像)
+  public void fetchProfiles(List<String> userIdList, LCChatProfilesCallBack profilesCallBack);
+}
+```
+
+为此，我们在 ChatDemo 中新建一个 Class，名字叫做 **CustomUserProvider**，代码如下：
 
 ```java
 public class CustomUserProvider implements LCChatProfileProvider {
@@ -171,7 +187,19 @@ public class CustomUserProvider implements LCChatProfileProvider {
 }
 ```
 
-四、打开实时通讯，并且跳转到聊天页面。
+#### 四、打开实时通讯，并且跳转到聊天页面。
+
+我们支持通过两种方式来打开聊天界面：
+
+##### 1，通过指定另一个参与者的 clientId 的方式，开启一对一的聊天；
+
+此时，通过调用 `intent.putExtra(LCIMConstants.PEER_ID, "peermemberId")` 来传递另一参与者的 clientId。
+
+##### 2，通过指定一个已经存在的 AVIMConversation id 的方式，开启单人、多人或者开放式聊天室；
+
+此时，通过调用 `LCIMConstants.CONVERSATION_ID, "particularConversationId")` 来传递特定对话 Id。
+
+下面的代码展示了如果通过第一种方式来开启聊天界面：
 
 ```java
 LCChatKit.getInstance().open("Tom", new AVIMClientCallback() {
@@ -199,11 +227,11 @@ ChatKit 中开发者常需要关注的业务逻辑组件（Interface）和界面
 
 `LCChatKitUser` 是 ChatKit 封装的参与聊天的用户，它提供了如下属性：
 
-名称 | 描述
---- | ---
-`userId` | 用户在单个应用内唯一的 ID
-`avatarUrl` | 用户的头像
-`name` | 用户名
+| 名称          | 描述                                       |
+| ----------- | ---------------------------------------- |
+| `userId`    | 用户在单个应用内唯一的 ID，也是调用 LCChatKit.open 时传入的 userId。 |
+| `avatarUrl` | 用户头像的 url                                |
+| `name`      | 用户名                                      |
 
 使用这些默认的属性基本可以满足一个聊天应用的需求，同时开发者可以通过继承 `LCChatKitUser` 类实现更多属性。具体用法请参考 Demo 中的 `MembersAdapter.java`。
 
