@@ -360,7 +360,7 @@ dependencies {
 
 #### 具体使用
 
-在 `AVOSCloud.initialize` 时调用 `AVMixpushManager.registerXiaomiPush(context, miAppId, miAppKey)` 即可。
+在 `AVOSCloud.initialize` 时调用 `AVMixpushManager.registerXiaomiPush(context, miAppId, miAppKey, profile)` 即可（关于 profile 可以参看 [详情](../push_guide.html#Android_混合推送多配置区分)）。
 
 注意，LeanCloud 云端只有在以下三个条件都满足的情况下，才会使用小米推送。
 
@@ -452,7 +452,7 @@ dependencies {
 
 #### 具体使用
 
-在 `AVOSCloud.initialize` 时调用 `registerHuaweiPush(context)` 即可。
+在 `AVOSCloud.initialize` 时调用 `registerHuaweiPush(context, profile)` 即可（关于 profile 可以参看 [详情](../push_guide.html#Android_混合推送多配置区分)）。
 
 注意，LeanCloud 云端只有在以下两个条件都满足的情况下，才会使用华为推送。
 
