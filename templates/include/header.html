@@ -6,7 +6,6 @@
                   <a href="/applist.html" class="nav-logo font-logo">L<span class="visible-xs-inline">eanCloud</span></a>
                 </li>
             </ul>
-
             <div class="navbar-app-actions-wrap">
                 <ul class="nav navbar-nav navbar-app-actions" >
                   <li class="dropdown dropdown-toggle-app-name" >
@@ -31,18 +30,27 @@
                           <li role="presentation" class="divider"></li>
                           <li><a href="https://leancloud.cn/apionline/">在线 API 工具</a></li>
                           <li><a href="http://drop.avosapps.com/">iOS 测试包分发</a></li>
+                          <li><a href="http://leancloud.sexy" target="_blank">第三方库</a></li>
                           <li role="presentation" class="divider"></li>
                           <li><a href="/apps.html">LeanCloud App</a></li>
                           <li><a href="/pricing.html">价格</a></li>
                           <!-- <li><a href="#" data-toggle="modal" data-target="#modal-shortcuts">快捷键</a></li> -->
                       </ul>
                   </li>
-
+                  {% if isHome != true %}
+                  <!-- hide search input on the home page -->
+                  <li>
+                    <form class="navbar-form navbar-right" role="search" action="/search.html" method="get">
+                      <div class="form-group">
+                        <input name="q" type="text" class="form-control" placeholder="搜索&hellip;">
+                      </div>
+                    </form>
+                  </li>
+                  {% endif %}
                 </ul>
             </div>
 
             <ul class="nav navbar-nav navbar-user-actions navbar-right" ng-cloak>
-
 
                 <li class="dropdown" ng-show="user.username">
                     <a role="button" class="dropdown-toggle user-name" data-toggle="dropdown">
@@ -109,6 +117,13 @@
             <li><a href="ios_crashreporting_guide.html">崩溃报告使用指南</a></li>
             <li><a href="ios_os_x_faq.html">FAQ</a></li>
             <li><a href="/api-docs/iOS/index.html" target="_blank">SDK API</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-hover="dropdown" href="#">Swift</a>
+          <ul class="dropdown-menu">
+            <li><a href="sdk_setup-swift.html">SDK 安装指南</a></li>
+            <li><a href="leanstorage_guide-swift.html">数据存储开发指南</a></li>
           </ul>
         </li>
         <li class="dropdown">
@@ -235,12 +250,6 @@
           </ul>
         </li>
       </ul>
-      <form class="navbar-form navbar-right" role="search" action="/search.html" method="get">
-        <div class="form-group">
-          <input name="q" type="text" class="form-control" placeholder="搜索&hellip;">
-        </div>
-        <!-- <button type="submit" class="btn btn-default">Submit</button> -->
-      </form>
       <!-- <ul class="nav navbar-nav navbar-right">
         <li>
           <form action="/search.html" method="get" target="_blank" class="search-form">
