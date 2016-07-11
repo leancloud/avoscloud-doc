@@ -83,8 +83,6 @@
   var Todo = AV.Object.extend('Todo');
 ```
 
-
-
 **注意**：`AV.Object.extend` 产生的对象需要作为全局变量保存，因为每调用
 一次，就会产生一个新的类的实例，并且和之前创建的实例形成一个链表。
 如果你的应用时不时出现 `Maximum call stack size exceeded` 错误，请
@@ -1273,6 +1271,25 @@ function uploadFile (req, res) {
   }, (function (error) {
   }));
 ```
+{% endblock %}
+
+{% block text_logInOrSignUp_with_authData %}
+#### 第三方帐号登录
+许多应用场景下为了减免用户注册的繁琐流程，在登陆界面给出第三方社交帐号登录的按钮选项（例如，微信，QQ，微博，豆瓣，Twitter，FaceBook等）是一个较好的用户体验设计 ，而 LeanCloud 封装的 {{userObjectName}} 对象也支持通过第三方帐号的 accessToken 信息创建一个用户，例如，使用微信授权信息创建 {{userObjectName}} 代码如下：
+
+```js
+  AV.User.signUpOrlogInWithAuthData({
+      "openid": "oPrJ7uM5Y5oeypd0fyqQcKCaRv3o",
+      "access_token": "OezXcEiiBSKSxW0eoylIeNFI3H7HsmxM7dUj1dGRl2dXJOeIIwD4RTW7Iy2IfJePh6jj7OIs1GwzG1zPn7XY_xYdFYvISeusn4zfU06NiA1_yhzhjc408edspwRpuFSqtYk0rrfJAcZgGBWGRp7wmA",
+      "expires_at": "2016-01-06T11:43:11.904Z"
+  }, 'weixin').then(function (s) {
+  }, function (e) {
+     
+  });
+```
+
+其他的平台可以参考如上代码。
+
 {% endblock %}
 
 {% block code_user_logIn_with_username_and_password %}

@@ -741,7 +741,9 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {{link_to_blog_password_reset}}
 
-#### 设置手机号码
+{% block text_logInOrSignUp_with_authData %}{% endblock %}
+
+#### 设置手机号码
 
 微信、陌陌等流行应用都会建议用户将账号和一个手机号绑定，这样方便进行身份认证以及日后的密码找回等安全模块的使用。我们也提供了一整套发送短信验证码以及验证手机号的流程，这部分流程以及代码演示请参考 {{ link_to_sms_guide_doc }}。
 
