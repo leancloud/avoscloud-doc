@@ -773,6 +773,8 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {% block code_user_logIn_with_smsCode %}{% endblock %}
 
+{% block code_user_logIn_with_snsPlatform %}{% endblock %}
+
 #### SessionToken
 所有登录接口调用成功之后，云端会返回一个 SessionToken 给客户端，客户端在发送 HTTP 请求的时候，{{sdk_name}} 会在 HTTP 请求的 Header 里面自动添加上当前用户的 SessionToken 作为这次请求的发起者 `{{userObjectName}}` 的身份认证信息。
 
