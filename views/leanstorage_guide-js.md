@@ -1129,10 +1129,10 @@ function uploadFile (req, res) {
 
 ```js
   var priorityQuery = new AV.Query('Todo');
-  priorityQuery.greaterThanOrEqualTo('priority', 3);
+  priorityQuery.lessThan('priority', 3);
 
   var statusQuery = new AV.Query('Todo');
-  statusQuery.equalTo('status', 1);
+  statusQuery.equalTo('status', 0);
 
   var query = AV.Query.and(priorityQuery, statusQuery);
   // 返回 priority 小于 3 并且 status 等于 0 的 Todo
