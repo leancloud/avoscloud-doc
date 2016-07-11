@@ -499,6 +499,13 @@ todo.save()
 ```
 {% endblock %}
 
+{% block object_extra %}
+
+### 线程安全
+
+`leancloud.Object` 目前不是线程安全的，因此请避免多个线程修改同一个 `leancloud.Object` 实例的操作。如果遇到必须多线程操作的情况，需要根据情况加锁。
+
+{% endblock %}
 
 {% block code_data_protocol_save_date %}{% endblock %}
 
@@ -560,6 +567,8 @@ object_id = avatar.id  # 一旦保存成功即可获取到文件的 objectId
 url = avatar.url
 ```
 {% endblock %}
+
+{% block text_download_progress %}{% endblock %}
 
 {% block code_file_image_thumbnail %}
 ```python
@@ -717,7 +726,7 @@ import leancloud
 Todo = leancloud.Object.extend('Todo')
 query = Todo.query
 
-query.not_contained_in('title', ['工程师周会'])
+query.not_contained_in('title', ['出差','休假'])
 ```
 {% endblock %}
 

@@ -69,7 +69,7 @@
 .runbtn {
   -webkit-appearance: none;
   border: 0;
-  padding: 3px 6px;
+  padding: 3px;
   color: #c29218;
   background: transparent;
   border-radius: 4px;
@@ -93,15 +93,21 @@
 @btn-active-color: #f9b813;
 
 .copybtn {
+
   &.zeroclipboard-is-hover {
     color: @btn-active-color;
   }
 }
 
 .runbtn {
+
   &:hover, &:focus {
     color: @btn-active-color;
     text-decoration: none;
+  }
+
+  &:after {
+    display: none !important;
   }
 }
 

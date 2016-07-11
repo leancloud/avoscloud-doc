@@ -75,5 +75,15 @@
   </div>
 </div>
 
+### 为网站加入收款功能
+
+<p class="text-muted">快速接入各类支付平台，轻松收款。</p>
+
+使用 BeeCloud 支付 SDK，在 LeanCloud 云引擎上轻松搞定收款功能。
+
+![BeeCloud 支付平台](images/beecloud-payplatforms.png)
+
+<a href="pay-beecloud.html" class="btn btn-default">阅读</a>
+
 <!-- shared links, DO NOT REMOVE -->
 <!-- [云引擎]: leanengine_overview.html -->

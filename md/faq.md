@@ -37,7 +37,7 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
   银行账号：**344159259324**<br/>
   银行地址：**北京市海淀区知春路 6 号锦秋国际大厦一层**<br/>
   银行行号：**104100004013**
-  
+
   <div class="callout callout-danger">请务必在汇款附言里中注明您的 LeanCloud 用户名，或注册邮箱，或您的应用名称，以便我们账务确认汇款的来源和用途，及时入账。</div>
 
 ### 如何申请开具发票
@@ -316,7 +316,7 @@ JavaScript SDK 由于平台的特殊性（运行在单线程运行的浏览器�
 如果你的应用的确是内部应用（做好了相关的安全措施，外部访问不到），可以在 `AV.initialize`之后增加下面的代码来让 JavaScript SDK 发送 Master Key：
 ```
 AV._useMasterKey = true;
-``` 
+```
 
 ### Web 端会暴露 App Key 和 App Id，怎么保证安全性？
 首先请阅读「[安全总览](data_security.html)」来了解 LeanCloud 完整的安全体系。其中提到，可以使用「[安全域名](data_security.html#Web_应用安全设置) 」，在没有域名的情况下，可以使用 「[ACL](acl_guide-js.html)」。
@@ -417,7 +417,7 @@ LeanCloud 的美国节点即将提供 GCM 支持，如果应用的服务对象�
 
 ### 如何在本地调试依赖 LeanCache 的应用？
 首先你需要在本地运行一个 redis-server:
- 
+
 * Mac 运行 `brew install redis` 安装，然后用 `redis-server` 启动
 * Debian/Ubuntu 运行 `apt-get install redis-server`, CentOS/RHEL 运行 `yum install redis`
 * Windows 尚无官方支持，可以下载 [微软的分支版本](https://github.com/MSOpenTech/redis/releases) 安装包。
@@ -434,7 +434,7 @@ var client = require('redis').createClient(process.env['REDIS_URL_mycache']);
 
 ### 为什么在控制台通过在线定义函数或项目定义函数中的 Class Hook 没有被运行？
 首先确认一下 Hook 被调用的时机是否与你的理解一致：
- 
+
 * beforeSave - 对象保存（创建）之前
 * afterSave - 对象保存（创建）之后
 * beforeUpdate - 对象更新之前
@@ -459,7 +459,7 @@ var client = require('redis').createClient(process.env['REDIS_URL_mycache']);
 
 ### 使用命令行工具在本地调试时提示 `Error: listen EADDRINUSE :::3000`, 无法访问应用
 `listen EADDRINUSE :::3000` 表示你的程序默认使用的 3000 端口被其他应用占用了，可以按照下面的方法找到并关闭占用 3000 端口的程序：
- 
+
 * [Mac 使用 lsof 和 kill](http://stackoverflow.com/questions/3855127/find-and-kill-process-locking-port-3000-on-mac)
 * [Linux 使用 fuser](http://stackoverflow.com/questions/11583562/how-to-kill-a-process-running-on-particular-port-in-linux)
 * [Windows 使用 netstat 和 taskkill](http://stackoverflow.com/questions/6204003/kill-a-process-by-looking-up-the-port-being-used-by-it-from-a-bat)
@@ -472,14 +472,22 @@ avoscloud -P 3002
 
 ### 云函数如何获取 Header、如何响应 GET 方法？
 不建议在 Header 中传递信息，云函数可以说是 LeanCloud 所提供的一种 RPC 的封装，这种封装的目的是隐藏掉底层使用 HTTP 协议的细节，所以建议将所有的参数都放在 Body 中、只使用 POST 方法请求。
- 
+
 如果希望能够充分利用 HTTP 提供的语义化特征，可以考虑使用云引擎的「[网站托管](leanengine_webhosting_guide-node.html#Web_框架)」功能，自行来处理 HTTP 请求。
 
 ## 文件
 
 ### 文件存储有 CDN 加速吗？
 
-有的。我们的文件存储目前由 [七牛](http://qiniu.com) 提供，都有 CDN 加速访问。
+国内节点本身就提供 CDN 加速访问。
+
+美国节点没有现成的 CDN 加速，需要用户自行配置。下面以 CloudFront 加速服务为例，简述一下配置过程。
+
+1. 阅读官方指南 [Getting Started with CloudFront](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html)。
+2. 创建一个 AWS 账户，以使用 CloudFront 服务和付费。
+3. S3 的公共访问权限（read permission）已经配置好，指南中有关 S3 配置的部分（[Step 2: Upload your content to Amazon S3 and grant object permissions](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html#GettingStartedUploadContent)）可以跳过。
+4. CloudFront 配置时的 **Origin Domain Name** 请从 `AVFile` 的 URL 中获取，其他均可保持默认。
+
 
 ### 文件存储有大小限制吗？
 

@@ -265,6 +265,30 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
   </tbody>
 </table>
 
+### 数据 Schema
+
+<table>
+  <thead>
+    <tr>
+      <th>URL</th>
+      <th>HTTP</th>
+      <th>功能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>/1.1/schemas</td>
+      <td>GET</td>
+      <td>获取应用的所有 Class 的 Schema</td>
+    </tr>
+    <tr>
+      <td>/1.1/schemas/&lt;className&gt;</td>
+      <td>POST</td>
+      <td>获取应用指定的 Class 的 Schema</td>
+    </tr>
+  </tbody>
+</table>
+
 ### 云函数
 
 <table>
@@ -2291,6 +2315,47 @@ curl -X DELETE \
   -H "X-LC-Key: {{appkey}}" \
   https://api.leancloud.cn/1.1/installations/51fcb74ee4b074ac5c34cf85
 ```
+
+## 数据 Schema
+
+为了方便开发者使用、自行研发一些代码生成工具或者内部使用的管理平台。我们提供了获取数据 Class Schema 的开放 API，基于安全考虑，强制要求使用 Master Key 才可以访问。
+
+查询一个应用下面所有 Class 的 Schema:
+
+```sh
+curl -X GET \
+   -H "X-LC-Id: {{appid}}" \
+   -H "X-LC-Key: {{masterkey}},master" \
+   https://api.leancloud.cn/1.1/schemas
+```
+
+返回的 JSON 数据包含了每个 Class 对应的 Schema:
+
+```json
+{
+  "_User":{
+    "username"     : {"type":"String"},
+    "password"     : {"type":"String"},
+    "objectId"     : {"type":"String"},
+    "emailVerified": {"type":"Boolean"},
+    "email"        : {"type":"String"},
+    "createdAt"    : {"type":"Date"},
+    "updatedAt"    : {"type":"Date"},
+    "authData"     : {"type":"Object"}
+  }
+  ……其他 class……
+}
+```
+
+也可以单独获取某个 Class 的 Schema:
+
+```sh
+curl -X GET \
+   -H "X-LC-Id: {{appid}}" \
+   -H "X-LC-Key: {{masterkey}},master" \
+   https://api.leancloud.cn/1.1/schemas/_User
+```
+
 
 ## 云函数
 

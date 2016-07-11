@@ -493,6 +493,7 @@ sid: "cXVlcnlUaGVuRmV0Y2g7Mzs0NDpWX0NFUmFjY1JtMnpaRDFrNUlBcTNnOzQzOlZfQ0VSYWNjUm
 
 参数|约束|说明
 ---|---|---
+`skip`||跳过的文档数目，默认为 0
 `limit`||返回集合大小，默认 100，最大 1000
 `sid`|可选|第一次查询结果中返回的 sid 值，用于分页，对应于 elasticsearch 中的 scoll id。
 `q`|必须|查询文本，支持类似 google 的搜索语法。
@@ -653,3 +654,70 @@ age:<=10
 ```
 
 `order` 和  `mode` 含义跟上述复杂排序里的一致，`unit` 用来指定距离单位，例如 `km` 表示千米，`m` 表示米，`cm` 表示厘米等。
+
+## moreLikeThis 相关性查询
+
+除了 `/1.1/search/select` 之外，我们还提供了 `/1.1/search/mlk` 的 API 接口，用于相似文档的查询，可以用来实现相关性推荐。
+
+假设我们有一个 Class 叫 `Post` 是用来保存博客文章的，我们想基于它的标签字段 `tags` 做相关性推荐，可以通过：
+
+``` sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  "https://leancloud.cn/1.1/search/mlk?like=clojure&clazz=Post&fields=tags"
+```
+
+我们设定了 `like` 参数为 `clojure`，查询的相关性匹配字段 `fields` 是 `tags`，也就是从 `Post` 里查找 `tags` 字段跟 `clojure` 这个文本相似的对象，返回类似：
+
+``` json
+{
+"results": [
+  {  
+    "tags":[  
+          "clojure",
+           "数据结构与算法"
+     ],
+     "updatedAt":"2016-07-07T08:54:50.268Z",
+     "_deeplink":"cn.leancloud.qfo17qmvr8w2y6g5gtk5zitcqg7fyv4l612qiqxv8uqyo61n:\/\/leancloud\/classes\/Article\/577e18b50a2b580057469a5e",
+     "_app_url":"https:\/\/leancloud.cn\/1\/go\/cn.leancloud.qfo17qmvr8w2y6g5gtk5zitcqg7fyv4l612qiqxv8uqyo61n\/classes\/Article\/577e18b50a2b580057469a5e",
+     "objectId":"577e18b50a2b580057469a5e",
+     "_highlight":null,
+     "createdAt":"2016-07-07T08:54:13.250Z",
+     "className":"Article",
+     "title":"clojure persistent vector"
+  },
+  ……
+],
+"sid": null}
+```
+
+除了可以通过指定 `like` 这样的相关性文本来指定查询相似的文档之外，还可以通过 likeObjectIds 指定一个对象的 objectId 列表，来查询相似的对象：
+
+```
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  "https://leancloud.cn/1.1/search/mlk?likeObjectIds=577e18b50a2b580057469a5e&clazz=Post&fields=tags"
+```
+
+这次我们换成了查找和 `577e18b50a2b580057469a5e` 这个 objectId 指代的对象相似的对象。
+
+更详细的查询参数说明：
+
+参数|约束|说明
+---|---|---
+`skip`|可选|跳过的文档数目，默认为 0
+`limit`|可选|返回集合大小，默认 100，最大 1000
+`fields`|可选|相似搜索匹配的字段列表，用逗号隔开，默认为所有索引字段 `_all`
+`like`|可选|**和 `likeObjectIds` 参数二者必须提供其中之一**。代表相似的文本关键字。
+`likeObjectIds`|可选|**和 `like` 参数二者必须提供其中之一**。代表相似的对象 objectId 列表，用逗号隔开。
+`clazz`|必须|类名
+`include`|可选|关联查询内联的 Pointer 字段列表，逗号隔开，形如 `user,comment` 的字符串。**仅支持 include Pointer 类型**。
+`min_term_freq`|可选|文档中一个词语至少出现次数，小于这个值的词将被忽略，默认是 2，如果返回文档数目过少，可以尝试调低此值。
+`min_doc_freq`|可选|词语至少出现的文档个数，少于这个值的词将被忽略，默认值为 5，同样，如果返回文档数目过少，可以尝试调低此值。
+`max_doc_freq`|可选|词语最多出现的文档个数，超过这个值的词将被忽略，防止一些无意义的热频词干扰结果，默认无限制。
+
+更多内容参考 [ElasticSearch 文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-mlt-query.html)。
+
+

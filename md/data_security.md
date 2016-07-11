@@ -29,7 +29,13 @@ ACL 工作的前提是**用户（User）**和**角色（Role）**。**用户（�
 
 LeanCloud 允许你对两种目标设置 ACL：
 #### Class 级别的 ACL
-你可以对整个 Class 设置权限，让它对（部分）用户只读或者只写。进入 [控制台 > 存储 > 数据](/data.html?appid={{appid}}#/)，选择一个 Class，再点击右侧菜单中的 **其他** > **权限设置**。
+创建 Class 的时候，控制台会弹出一个窗口，如下图：
+
+<div style="width: 600px;"><img src="images/security/acl_template.png" class="img-responsive" /></div>
+
+在这里选择一个默认的 ACL 权限。
+
+另外，针对已经存在的 Class 你可以更新整个 Class 权限。进入 [控制台 > 存储 > 数据](/data.html?appid={{appid}}#/)，选择一个 Class，再点击右侧菜单中的 **其他** > **权限设置**。
 
 ![image](images/cla_permission.png)
 

@@ -12,7 +12,7 @@ LeanCache 使用 [Redis](http://redis.io/) 来提供高性能、高可用的 Key
 
 <div style="max-width:620px"><img src="images/leancache_arch.png" class="img-responsive" alt=""></div>
 
-恰当使用 LeanCache 不仅可以极大地提高应用的服务性能，还能**降低成本**，因为某些高频率的查询不需要走存储服务（存储服务按调用次数收费）。
+恰当使用 LeanCache 不仅可以极大地提高应用的服务性能，还能**降低成本**，因为某些高频率的查询不需要走存储服务（存储服务按调用次数收费）。我们在 [LeanCache Node.js Demos](https://github.com/leancloud/lean-cache-demos) 这个仓库中包含了一些常见的使用场景的示例，可供大家参考。
 
 ## 主要特性
 
@@ -216,7 +216,7 @@ LeanCache 采取按天扣费，使用时间不足一天按一天收费，次日�
 
 - **多实例之间的数据共享**：云引擎支持多实例运行，自行维护的 HashTable 数据无法[跨实例共享](#多应用间共享使用)。
 - **数据持久化存储**：在程序重启或重新部署后数据不会丢失，Redis 会帮你完成数据持久化的工作。LeanCache 还会为你的 Redis 做热备，具有非常高的[可靠性](#可靠性)。
-- **原子操作和性能**：Redis 提供了常见的数据结构和大量原子操作，其文档中列出了每个操作符的时间复杂度，而自行实现的 HashTable 的性能则很大程度依赖于具体语言的实现（例如 V8 的 Array 实际上是通过 Hash Map 实现的）。
+- **原子操作和性能**：Redis 提供了常见的数据结构和大量原子操作，其文档中列出了每个操作符的时间复杂度，而自行实现的 HashTable 的性能则很大程度依赖于具体语言的实现。
 
 ### 报错：Redis connection gone from end event
 

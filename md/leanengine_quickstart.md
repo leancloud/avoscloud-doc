@@ -9,14 +9,14 @@
 在本地创建项目需要使用 LeanCloud 官方命令行工具，请根据 [云引擎命令行工具使用详解-安装](https://leancloud.cn/docs/leanengine_cli.html#安装) 部分安装该工具，并确保你已经在本地机器上可以成功运行命令行工具：
 
 ```
-$ lean -h
+lean -h
 ```
 如果一切正常，你应该看到命令行工具的帮助信息。
 
 使用命令行工具创建的项目模板是一个空项目：
 
 ```
-$ lean new
+lean new
 ```
 然后根据提示输入相关信息即可。
 
@@ -24,51 +24,43 @@ $ lean new
 
 从 Github 迁出示例项目，该项目可以作为一个你应用的基础：
 
+```javascript
+git clone https://github.com/leancloud/node-js-getting-started.git
+cd node-js-getting-started
 ```
-$ git clone https://github.com/leancloud/node-js-getting-started.git
-$ cd node-js-getting-started
+```python
+git clone https://github.com/leancloud/python-getting-started.git
+cd python-getting-started
+```
+```php
+git clone https://github.com/leancloud/slim-getting-started.git
+cd slim-getting-started
 ```
 
 然后添加应用 appId 等信息到该项目：
 
 ```
-$ lean app add <appName> <appId>
+lean app add <appName> <appId>
 ```
-
-以上两种方式创建的项目结构如下：
-
-
-```
-.
-├── README.md
-├── app.js
-├── cloud.js
-├── package.json
-├── public
-│   └── stylesheets
-│       └── style.css
-├── routes
-│   └── todos.js
-├── server.js
-└── views
-    ├── error.ejs
-    ├── index.ejs
-    └── todos.ejs
-```
-
 
 ## 本地运行
 
 首先在当前项目的目录下安装必要的依赖，执行如下命令行：
 
+```javascript
+npm install
 ```
-$ npm install
+```python
+sudo pip install -Ur requirements.txt
+```
+```php
+composer install
 ```
 
 然后启动应用：
 
 ```
-$ lean up
+lean up
 ```
 
 
@@ -82,7 +74,7 @@ $ lean up
 
 打开浏览器访问 <http://localhost:3000> 会显示如下内容：
 
-```
+```javascript
 LeanEngine
 
 这是 LeanEngine 的示例应用
@@ -91,15 +83,49 @@ LeanEngine
 
 一个简单的「TODO 列表」示例
 ```
+```python
+LeanEngine
 
-访问的页面在代码 `./app.js` 中定义：
+这是 LeanEngine 的示例应用
 
-```js
-...
+一个简单的动态路由示例
+
+一个简单的「TODO 列表」示例
+```
+
+访问页面的路由定义如下：
+
+```javascript
+// ./app.js
+// ...
+
 app.get('/', function(req, res) {
   res.render('index', { currentTime: new Date() });
 });
-...
+
+// ...
+```
+```python
+# ./app.py
+# ...
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+# ...
+```
+```php
+// ./src/app.php
+// ...
+
+$app->get('/', function (Request $request, Response $response) {
+    return $this->view->render($response, "index.phtml", array(
+        "currentTime" => new \DateTime(),
+    ));
+});
+
+// ...
 ```
 
 ### 新建一个 Todo
@@ -115,7 +141,7 @@ app.get('/', function(req, res) {
 使用免费版的应用可以直接部署到生产环境：
 
 ```
-$ lean deploy
+lean deploy
 ```
 
 如果你设置了 [二级域名](leanengine_webhosting_guide-node.html#设置域名)，即可通过 `http://${your_app_domain}.leanapp.cn` 访问你应用的生产环境。
@@ -123,5 +149,5 @@ $ lean deploy
 如果是专业版应用，`lean deploy` 会先部署到预备环境（`http://stg-${your_app_domain}.leanapp.cn`），你可以再运行一下 `lean publish` 来部署到生产环境：
 
 ```
-$ lean deploy
+lean publish
 ```

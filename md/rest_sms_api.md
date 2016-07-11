@@ -1,6 +1,6 @@
 # 短信服务 REST API 详解
 
-[REST API](/rest_api.html) 可以让任何支持发送 HTTP 请求的设备与 LeanCloud 进行交互。使用我们的短信服务 REST API 可以完成很多事情，比如：
+[REST API](rest_api.html) 可以让任何支持发送 HTTP 请求的设备与 LeanCloud 进行交互。使用我们的短信服务 REST API 可以完成很多事情，比如：
 
 * 给指定手机号码发送短信验证码
 * 验证手机号和短信验证码是否匹配
@@ -13,7 +13,7 @@
 
 ## 快速参考
 
-所有 API 访问都需要使用 HTTPS 协议，在 https://leancloud.cn 域名下。相对路径前缀 **/1.1/** 代表现在使用的是第 1.1 版的 API。如需在线测试 API，请在浏览器中打开 <https://leancloud.cn/apionline/>。
+所有 API 访问都需要使用 HTTPS 协议，在 `https://leancloud.cn` 域名下。相对路径前缀 `/1.1/` 代表使用版本号为 1.1 的 API。如需在线测试 API，请在浏览器中打开 <https://leancloud.cn/apionline/>。
 
 我们的短信服务 REST API 包括：
 

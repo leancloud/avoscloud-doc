@@ -688,6 +688,30 @@ function uploadFile (req, res) {
 
 {% block text_upload_file_with_progress %}{% endblock %}
 {% block text_download_file_with_progress %}{% endblock %}
+
+{% block text_file_query %}
+
+### 文件查询
+文件的查询依赖于文件在系统中的关系模型，例如，用户的头像，有一些用户习惯直接在 `_User` 表中直接使用一个 `avatar` 列，然后里面存放着一个 url 指向一个文件的地址，但是，我们更推荐用户使用 Pointer 来关联一个 {{userObjectName}} 和 {{fileObjectName}}，代码如下：
+
+{% block code_user_pointer_file %}
+
+```js
+    var data = { base64: '文件的 base64 编码' };
+    var avatar = new AV.File('avatar.png', data);
+    
+    var user = new AV.User();
+    var randomUsername = 'Tom';
+    user.setUsername(randomUsername)
+    user.setPassword('leancloud');
+    user.set('avatar',avatar);
+    user.signUp().then(function (u){
+    });
+```
+{% endblock %}
+
+{% endblock %}
+
 {% block code_file_image_thumbnail %}
 
 ```js
@@ -816,7 +840,6 @@ function uploadFile (req, res) {
 
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
 ```js
   var query = new AV.Query('Todo');
   var regExp = new RegExp('^((?!机票).)*$', 'i');
@@ -854,7 +877,7 @@ function uploadFile (req, res) {
 ```js
   var query = new AV.Query('Todo');
   var reminderFilter = [new Date('2015-11-11 08:30:00'), new Date('2015-11-11 09:30:00')];
-  query.equalTo('reminders', reminderFilter);
+  query.containsAll('reminders', reminderFilter);
 ```
 {% endblock %}
 
@@ -865,6 +888,10 @@ function uploadFile (req, res) {
   // 找出开头是「早餐」的 Todo
   var query = new AV.Query('Todo');
   query.startsWith('content', '早餐');
+  
+  // 找出包含 「bug」 的 Todo
+  var query = new AV.Query('Todo');
+  query.contains('content', 'bug');
 ```
 {% endblock %}
 
@@ -873,8 +900,11 @@ function uploadFile (req, res) {
 
 ```js
   var query = new AV.Query('Comment');
-  var todoFolder = AV.Object.createWithoutData('Todo', '5735aae7c4c9710060fbe8b0');
+  var todoFolder = AV.Object.createWithoutData('TodoFolder', '5735aae7c4c9710060fbe8b0');
   query.equalTo('targetTodoFolder', todoFolder);
+  
+  // 想在查询的同时获取关联对象的属性则一定要使用 `include` 接口用来指定返回的 `key`
+  query.include('targetTodoFolder');
 ```
 {% endblock %}
 

@@ -18,7 +18,7 @@ Installation 表示一个允许推送的设备的唯一标示，对应 [数据�
 ---|---|---
 badge|iOS|呈现在应用图标右上角的红色圆形数字提示，例如待更新的应用数、未读信息数目等。
 channels| |设备订阅的频道
-deviceProfile|iOS|在应用有多个推送证书的场景下，deviceProfile 用于指定该设备对应的证书名。
+deviceProfile||在应用有多个 iOS 推送证书或多个 Android 混合推送配置的场景下，deviceProfile 用于指定该设备对应的证书名或配置名。
 deviceToken|iOS|APNS 推送的唯一标识符
 deviceType| |设备类型，目前支持 "ios"、"android"、"wp"、"web"。
 ID|Windows Phone|仅对微软平台的设备（微软平板和手机）有效
@@ -49,6 +49,8 @@ errors| | 本次推送过程中的错误信息。
 
 这里重点说明一下 **devices** 这个属性，它的值表示我们查找出来的符合条件的 Installation 数量。当值为 0 时，表示没有找到任何符合目标条件的设备，这时自然所有人都收不到推送通知；当值不为 0 时，仅仅说明找到了这么多符合条件的设备，但并不保证这些设备都能收到推送通知。
 
+注意：我们只保留最近一周的推送记录，并会对过期的推送记录定时进行清理。推送记录清理和推送消息过期时间无关，也就是说即使推送记录被清理，没有过期的推送消息依然是有效的，目标用户依然是能够收到消息。推送过期时间设置请参看[推送消息](#推送消息)一节。
+
 ## iOS 消息推送
 
 请阅读 [iOS 推送开发文档](./ios_push_guide.html)。
@@ -56,6 +58,12 @@ errors| | 本次推送过程中的错误信息。
 ## Android 消息推送
 
 请阅读 [Android 推送开发文档](./android_push_guide.html)。
+
+## Android 混合推送
+
+在部分 Android ROM 上，由于系统对后台进程控制较严，Android 推送的到达率会受到影响。为此我们专门设计了一套称为混合推送的推送机制，用以提高在这部分 Android ROM 上推送的到达率。
+
+关于混合推送的接入方法和使用方式请阅读 [Android 混合推送使用文档](./android_push_guide.html#混合推送)。
 
 ## Windows Phone 消息推送
 
@@ -177,6 +185,7 @@ expiration_time|消息过期的绝对日期时间
 prod|**仅对 iOS 有效**。设置使用开发证书（**dev**）还是生产证书（**prod**）。当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
 push_time|定期推送时间
 where|检索 _Installation 表使用的查询条件，JSON 对象。
+silent|只对 Android 推送有效。用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒。
 
 #### 开发证书推送
 
@@ -303,6 +312,10 @@ Windows Phone 设备类似，也支持 `title` 和 `alert`，同时支持 `wp-pa
 ```
 
 如果是 `dev` 值就表示使用开发证书，`prod` 值表示使用生产证书。如果未设置 `prod` 属性，且使用的不是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html) ，我们默认使用**生产证书**来发推送。如果未设置 `prod` 属性，且使用的是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html) ，则需要在发推送之前执行 [AV.setProduction](https://leancloud.cn/api-docs/javascript/symbols/AV.html#.setProduction) 函数才会使用生产证书发推送，否则会以开发证书发推送。注意，当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
+
+#### Android 混合推送多配置区分
+
+如果使用了混合推送功能且设置了多个混合推送配置，需要在 `_Installation` 表保存设备信息时将当前设备所对应的混合推送配置名存入 `deviceProfile` 。推送时我们会按照每个目标设备在 `_Installation` 表 `deviceProfile` 字段指定的配置名来发混合推送。如果 `deviceProfile` 为空，我们会默认使用名为 **_default** 的混合推送配置名来发推送。
 
 #### 推送查询条件
 
@@ -638,11 +651,19 @@ curl -X DELETE \
   https://leancloud.cn/1.1/scheduledPushMessages/:id
 ```
 
+## 限制
+
+* Apple 对推送消息大小有限制，对 iOS 推送请尽量缩小要发送的数据大小，否则会被截断。详情请参看 [APNs 文档](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/APNsProviderAPI.html#//apple_ref/doc/uid/TP40008194-CH101-SW1)。
+* 如果使用了 Android 的混合推送，请注意小米推送和华为推送均对消息大小有限制。为保证推送消息能被正常发送，我们要求 data + channels 参数须小于 4096 字节，超过限制会导致推送无法正常发送，请尽量减小发送数据大小。
+* 对于 slient 参数不为 true 的通知栏消息来说，title 必须小于 16 个字符，alert 必须小于 128 个字符。对于小米推送如果没有填写 title 我们会取 alert 中前五个字符作为 title。
+
+如果推送失败，在 [控制台 / 消息 / 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 的“状态”一栏中会看到错误提示。
+
 ## Installation 自动过期和清理
 
-每当用户打开应用，我们都会更新该设备的 _Installation 表中的 `updatedAt` 时间戳。用户如果长期没有更新 _Installation 的 `updatedAt` 时间戳，也就意味着该用户长期没有打开过应用。当超过 360 天没有打开过应用时，我们会将这个用户在 _Installation 表中的记录删除。不过请不要担心，当用户再次打开应用的时候，仍然会自动创建一个新的 Installation 用于推送。
+每当用户打开应用，我们都会更新该设备的 `_Installation` 表中的 `updatedAt` 时间戳。如果用户长期没有更新 `_Installation` 表的 `updatedAt` 时间戳，也就意味着该用户长期没有打开过应用。当超过 360 天没有打开过应用时，我们会将这个用户在 `_Installation` 表中的记录删除。不过请不要担心，当用户再次打开应用的时候，仍然会自动创建一个新的 Installation 用于推送。
 
-对于 iOS 设备，除了上述过期机制外还多拥有一套过期机制。当我们根据 Apple 推送服务的反馈获取到某设备的 deviceToken 已过期时，我们也会将这个设备在 _Installation 表中的信息删除，并标记这个已过期的 deviceToken 为无效，丢弃后续所有发送到该 deviceToken 的消息。
+对于 iOS 设备，除了上述过期机制外还多拥有一套过期机制。当我们根据 Apple 推送服务的反馈获取到某设备的 deviceToken 已过期时，我们也会将这个设备在 `_Installation` 表中的信息删除，并标记这个已过期的 deviceToken 为无效，丢弃后续所有发送到该 deviceToken 的消息。
 
 ## 推送问题排查
 
