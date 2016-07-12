@@ -103,7 +103,7 @@
     }
 ```
 {% endblock %}
-{% block text_save_options %}{% endblock %}
+{% block section_saveOptions %}{% endblock %}
 {% block code_saveoption_query_example %}
 {% endblock %}
 
@@ -707,7 +707,7 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 {% block code_query_greaterThanOrEqualTo %}
 
 ```swift
-  query.whereKey("priority", LCQuery.Constraint.GreaterThanOrEqualTo(value: LCNumber(1)))
+  query.whereKey("priority", LCQuery.Constraint.GreaterThanOrEqualTo(value: LCNumber(2)))
 ```
 {% endblock %}
 
@@ -1084,7 +1084,8 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
     }
 ```
 
-在上面的代码中，`nearbyTodos` 返回的是与 `point` 这一点按距离排序（由近到远）的对象数组。注意：**如果在此之后又使用了 `orderByAscending:` 或 `orderByDescending:` 方法，则按距离排序会被新排序覆盖。**
+在上面的代码中，`nearbyTodos` 返回的是与 `point` 这一点按距离排序（由近到远）的对象数组。注意：**如果在此之后又使用了排序方法，则按距离排序会被新排序覆盖。**
+
 {% endblock %}
 
 {% block text_platform_geoPoint_notice %}
@@ -1153,11 +1154,11 @@ LCUser.logIn(username: "Tom", password: "leancloud", completion: { ( result ) in
 
 {% block code_get_user_properties %}
 
-<div class="callout callout-info">注意：**当前版本的 Swift SDK 并没有实现本地的持久化存储， 因此只能在登录成功之后访问 `LCUser.current`**</div>
+<div class="callout callout-info">当前版本的 Swift SDK 尚未实现本地的持久化存储， 因此只能在登录成功之后访问 `LCUser.current`。</div>
 
 ```swift
-    let username = LCUser.current?.username// 当前用户名
-    let email = LCUser.current?.email// 当前用户的邮箱
+    let username = LCUser.current?.username // 当前用户名
+    let email = LCUser.current?.email // 当前用户的邮箱
 
     // 请注意，以下代码无法获取密码
     let password = LCUser.current?.password
@@ -1208,7 +1209,7 @@ LCUser.logIn(username: "Tom", password: "leancloud", completion: { ( result ) in
   if (currentUser != nil) {
       // 跳转到首页
   } else {
-      //缓存用户对象为空时，可打开用户注册界面…
+      // 缓存用户对象为空时，可打开用户注册界面…
   }
 ```
 {% endblock %}

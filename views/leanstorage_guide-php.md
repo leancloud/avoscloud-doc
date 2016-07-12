@@ -821,7 +821,7 @@ $query->find();
 
 ```php
 $priorityQuery = new LeanQuery("Todo");
-$priorityQuery->greaterThanOrEqualTo("priority", 3);
+$priorityQuery->lessThan("priority", 3);
 
 $statusQuery = new LeanQuery("Todo");
 $statusQuery->equalTo("status", 0);

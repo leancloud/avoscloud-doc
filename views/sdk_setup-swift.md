@@ -35,7 +35,7 @@ https://ruby.taobao.org
 use_frameworks! # LeanCloud Swift SDK can only be integrated as framework.
 
 target '你的项目名称' do
-	pod 'LeanCloud', :git => 'git@github.com:leancloud/swift-sdk.git', :tag => '0.0.1.alpha.8'
+	pod 'LeanCloud', :git => 'git@github.com:leancloud/swift-sdk.git', :tag => '0.0.1.beta'
 end
 ```
 
