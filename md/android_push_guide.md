@@ -284,7 +284,7 @@ intent.putExtra(AVConstants.PUSH_INTENT_KEY, 1);
 
 ```
 dependencies {
-    compile ('cn.leancloud.android:avoscloud-mixpush:v3.+')
+    compile ('cn.leancloud.android:avoscloud-mixpush:v3.+@aar')
 }
 ```
 
@@ -384,7 +384,7 @@ dependencies {
 
 ```
 dependencies {
-    compile ('cn.leancloud.android:avoscloud-mixpush:v3.+')
+    compile ('cn.leancloud.android:avoscloud-mixpush:v3.+@aar')
 }
 ```
 
