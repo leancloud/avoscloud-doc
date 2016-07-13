@@ -8,6 +8,8 @@ LeanCache 使用 [Redis](http://redis.io/) 来提供高性能、高可用的 Key
 * 需要同步锁或者队列处理，比如秒杀、抢红包等场景。
 * 多个云引擎节点的协同和通信。
 
+<div class="callout callout-danger">注意：**抢红包，游戏排名，秒杀购物等场景强烈建议使用 LeanCache。**</div>
+
 下图为 LeanCache 和云引擎配合使用的架构：
 
 <div style="max-width:620px"><img src="images/leancache_arch.png" class="img-responsive" alt=""></div>

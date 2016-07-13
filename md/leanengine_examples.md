@@ -29,6 +29,8 @@
 
 ## LeanCache 常见场景示例
 
+<div class="callout callout-danger">注意：**抢红包，游戏排名，秒杀购物等场景强烈建议使用 LeanCache。**</div>
+
 [LeanCache Node.js Demos](https://github.com/leancloud/lean-cache-demos) 是 [LeanCache](https://leancloud.cn/docs/leancache_guide.html) 的示例项目，使用 Node.js 和 Express 实现，包含了一些典型的使用场景：
 
 * **关联数据缓存**：缓存一些数据量少、查询频繁、不常修改、关联结构复杂的关联数据。
