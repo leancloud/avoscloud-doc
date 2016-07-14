@@ -504,7 +504,7 @@
 {% endblock %}
 
 {% block sdk_init_user_masterKey %}
-在 `NodeJS` 运行时中可以使用如下代码初始化 SDK：
+在 Node.js 运行时中可以使用如下代码初始化 SDK：
 
 ```js
   AV.initialize(APP_ID, APP_KEY, MASTER_KEY);

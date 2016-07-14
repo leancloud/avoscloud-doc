@@ -303,9 +303,10 @@ digital_post.save()
 {% endblock %}
 
 {% block sdk_init_user_masterKey %}
-在 `Python` 中可以使用如下代码初始化 SDK：
+在 Python 中可以使用如下代码初始化 SDK：
 
 ```py
+  # 第一个参数是 AppId，第二个是 Master Key。 
   leancloud.init("appId", master_key="masterKey")
 ```
 {% endblock %}

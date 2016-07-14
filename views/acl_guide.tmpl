@@ -254,7 +254,7 @@ ACL 可以满足常见的需求，但是 `_User` 表比较特殊，它会忽略 
 {% if runAtServer %}
 {% block sdk_init_user_masterKey %}{% endblock %}
 {% elif runAtClient %}
-但是 {{platform}} 是纯客户端使用的，在 SDK 初始化的时候不允许传入 Master Key，我们只推荐在服务端使用 Master Key 发送请求。因此我们推荐有自定义管理后台需求的应用可以使用 [LeanEngine](http://localhost:4000/leanengine_overview.html) 开发和托管。 
+但是 {{platform}} 是纯客户端使用的，在 SDK 初始化的时候不允许传入 Master Key，我们只推荐在服务端使用 Master Key 发送请求。因此我们推荐有自定义管理后台需求的应用可以使用 [LeanEngine](https://leancloud.cn/docs/leanengine_overview.html) 开发和托管。 
 {% else %}
 {% endif %}
 {% endblock %}
