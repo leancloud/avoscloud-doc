@@ -388,7 +388,7 @@ $ lean app list
 如果你想将 new_app 发布到其他 LeanCloud 应用，你可以通过 `add` 命令来添加一个应用：
 
 ```sh
-$ lean app add other_app <other app 的应用 id>
+$ lean app add new_app <new app 的应用 id>
 ```
 
 `add` 接收两个参数，第一个是应用的名称，用于后续的显示和切换，第二个是新应用的 id，可以在应用设置的应用 Key 信息里找到。
