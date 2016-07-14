@@ -25,12 +25,48 @@ git clone --depth=1 https://github.com/leancloud/ChatKit-OC
 - 推、拉展示本对话中的最新消息，需要对 LeanCloud 实时通信接口比较熟悉；
 
 我们在 ChatKit 中重点完成了这两个页面的开发，大家可以看看效果：
-
-#### 最近联系人列表页
-![images](images/chatkit-ios/chatkit-contacter.png)
-
-#### 聊天界面
-![images](images/chatkit-ios/chatkit-conversation.png)
+<div class="row">
+  <div class="col-sm-4">
+    <p>最近联系人</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-01.png" class="img-responsive img-bordered" />
+  </div>
+  <div class="col-sm-4">
+    <p>语音消息，根据语音长度调整宽度</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-02.png" class="img-responsive" />
+  </div>
+  <div class="col-sm-4">
+    <p>图片消息，尺寸自适应</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-03.png" class="img-responsive" />
+  </div>
+</div>
+<div class="row" style="margin-top: 5rem;">
+  <div class="col-sm-4">
+    <p>地理位置消息</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-04.png" class="img-responsive" />
+  </div>
+  <div class="col-sm-4">
+    <p>失败消息本地缓存，可重发</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-05.png" class="img-responsive" />
+  </div>
+  <div class="col-sm-4">
+    <p>上传图片，进度条提示</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-06.png" class="img-responsive" />
+  </div>
+</div>
+<div class="row" style="margin-top: 5rem;">
+  <div class="col-sm-4">
+    <p>图片消息支持多图联播，支持多种分享</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-07.jpg" class="img-responsive" />
+  </div>
+  <div class="col-sm-4">
+    <p>文本消息支持图文混排</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-08.png" class="img-responsive" />
+  </div>
+  <div class="col-sm-4">
+    <p>文本消息支持双击全屏展示</p>
+    <img src="images/chatkit-ios/chatkit-screenshot-09.png" class="img-responsive img-bordered" />
+  </div>
+</div>
 
 ## 项目结构
 
@@ -117,7 +153,7 @@ git clone --depth=1 https://github.com/leancloud/ChatKit-OC
  3. 调用 `-[[LCChatKit sharedInstance] openWithClientId:callback:]` 开启 LeanCloud 的 IM 服务 LeanMessage，开始聊天。
  4. 调用 `-[[LCChatKit sharedInstance] closeWithCallback:]` 关闭 LeanCloud 的 IM 服务，结束聊天。
  5. 实现 `-[[LCChatKit sharedInstance] setFetchProfilesBlock:]`，设置用户体系，里面要实现如何根据 userId 获取到一个 User 对象的逻辑。ChatKit 会在需要用到 User 信息时调用你设置的这个逻辑。 `LCCKUserSystemService.h` 文件中给出了例子，演示了如何集成 LeanCloud 原生的用户系统 `AVUser`。
- 6. 如果你实现了 `-[[LCChatKit sharedInstance] setGenerateSignatureBlock:]` 方法，那么 ChatKit 会自动为以下行为添加签名：`open`（开启会话）、`start`（创建会话）、`kick`（踢人）、`invite`（邀请）。反之不会。
+ 6. 如果你实现了 `-[[LCChatKit sharedInstance] setGenerateSignatureBlock:]` 方法，那么 ChatKit 会自动为以下行为添加签名：`open`（开启聊天）、`start`（创建对话）、`kick`（踢人）、`invite`（邀请）。反之不会。
 
 下面按步骤进行详细的介绍。
 
@@ -211,10 +247,10 @@ LCCKConversationListViewController *firstViewController = [[LCCKConversationList
 
 #### 由最近联系人进入聊天界面
 
-按照上面的步骤，我们可以非常方便的打开最近联系人页面。但是我们会发现，点击其中的某个联系人／聊天群组，我们并不能直接进入聊天界面。要做到这一点，我们需要给 LCChatKit 设置上事件响应函数，示例代码如下：
+按照上面的步骤，我们可以非常方便地打开最近联系人页面。但是我们会发现，点击其中的某个联系人／聊天群组，我们并不能直接进入聊天界面。要做到这一点，我们需要给 LCChatKit 设置上事件响应函数，示例代码如下：
 
 ```objective-c
-[[LCChatKit sharedInstance] setDidSelectItemBlock:^(NSIndexPath *indexPath, AVIMConversation *conversation, LCCKConversationListViewController *controller) {
+[[LCChatKit sharedInstance] setDidSelectConversationListItemBlock:^(NSIndexPath *indexPath, AVIMConversation *conversation, LCCKConversationListViewController *controller) {
     NSLog(@"conversation selected");
     LCCKConversationViewController *conversationVC = [[LCCKConversationViewController alloc] initWithConversationId:conversation.conversationId];
     [controller.navigationController pushViewController:conversationVC animated:YES];
@@ -225,34 +261,34 @@ LCCKConversationListViewController *firstViewController = [[LCCKConversationList
 
 ```objective-c
 /*!
- *  选中某个会话后的回调 (比较常见的需求)
- *  @param conversation 被选中的会话
+ *  选中某个对话后的回调 (比较常见的需求)
+ *  @param conversation 被选中的对话
  */
 typedef void(^LCCKConversationsListDidSelectItemBlock)(NSIndexPath *indexPath, AVIMConversation *conversation, LCCKConversationListViewController *controller);
 /*!
- *  设置选中某个会话后的回调
+ *  设置选中某个对话后的回调
  */
-- (void)setDidSelectItemBlock:(LCCKConversationsListDidSelectItemBlock)didSelectItemBlock;
+- (void)setDidSelectConversationListItemBlock:(LCCKConversationsListDidSelectItemBlock)didSelectItemBlock;
 
 /*!
- *  删除某个会话后的回调 (一般不需要做处理)
- *  @param conversation 被选中的会话
+ *  删除某个对话后的回调 (一般不需要做处理)
+ *  @param conversation 被选中的对话
  */
 typedef void(^LCCKConversationsListDidDeleteItemBlock)(NSIndexPath *indexPath, AVIMConversation *conversation, LCCKConversationListViewController *controller);
 /*!
- *  设置删除某个会话后的回调
+ *  设置删除某个对话后的回调
  */
-- (void)setDidDeleteItemBlock:(LCCKConversationsListDidDeleteItemBlock)didDeleteItemBlock;
+- (void)setDidDeleteConversationListItemBlock:(LCCKConversationsListDidDeleteItemBlock)didDeleteItemBlock;
 
 /*!
- *  会话左滑菜单设置block (最近联系人页面有复杂的手势操作时，可以通过这里扩展实现)
+ *  对话左滑菜单设置block (最近联系人页面有复杂的手势操作时，可以通过这里扩展实现)
  *  @return  需要显示的菜单数组
- *  @param conversation, 会话
+ *  @param conversation, 对话
  *  @param editActions, 默认的菜单数组，成员为 UITableViewRowAction 类型
  */
 typedef NSArray *(^LCCKConversationEditActionsBlock)(NSIndexPath *indexPath, NSArray<UITableViewRowAction *> *editActions, AVIMConversation *conversation, LCCKConversationListViewController *controller);
 /*!
- *  可以通过这个block设置会话列表中每个会话的左滑菜单，这个是同步调用的，需要尽快返回，否则会卡住UI
+ *  可以通过这个block设置对话列表中每个对话的左滑菜单，这个是同步调用的，需要尽快返回，否则会卡住UI
  */
 - (void)setConversationEditActionBlock:(LCCKConversationEditActionsBlock)conversationEditActionBlock;
 ```
@@ -262,7 +298,7 @@ typedef NSArray *(^LCCKConversationEditActionsBlock)(NSIndexPath *indexPath, NSA
 ### 聊天界面
 
 <div class="callout callout-info">ChatKit 中的对话是一个 `AVIMConversation` 对象， LeanMessage
-用它来管理对话成员，发送消息，不区分群聊、单聊。Demo 中采用了判断会话人数的方式来区分群聊、单聊。</div>
+用它来管理对话成员，发送消息，不区分群聊、单聊。Demo 中采用了判断对话人数的方式来区分群聊、单聊。</div>
 
 聊天界面有两种初始化方式：
 
