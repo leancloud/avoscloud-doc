@@ -491,4 +491,4 @@ $ lean search 云引擎 命令行
 
 ## 贡献
 
-`leancloud-cli` 本身是开源，基于 [GNU LGPL](https://www.gnu.org/licenses/lgpl.html) 协议，源码托管在 Github: <https://github.com/leancloud/leancloud-cli-command>，欢迎大家贡献。
+`leancloud-cli` 本身是开源，基于 [GNU LGPL](https://www.gnu.org/licenses/lgpl.html) 协议，源码托管在 Github: <https://github.com/leancloud/avoscloud-code-command>，欢迎大家贡献。
