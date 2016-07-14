@@ -6,6 +6,14 @@
 
 [leanengine-todo-demo](https://github.com/leancloud/leanengine-todo-demo) 这是一个稍微复杂点的项目，演示了基本的用户注册、会话管理、业务数据的增删查改、简单的 ACL 使用。这个项目可以作为初学云引擎和 [JavaScript SDK](leanstorage_guide-js.html) 使用。（在线演示：<http://todo-demo.leanapp.cn/>）
 
+## OAuth 授权验证回调服务器
+
+开发过微博应用或者是接入过 QQ 登录的应用都需要在后台设置一个回调服务器地址，用来接收回调信息，关于为什么需要回调服务器这个请阅读 [OAuth 2 官方文档](http://oauth.net/2/)。
+
+许多用户在 LeanEngine 上托管了自己的网站，因为他们在制作登录页面的时候，需要实现微博登录等等第三方登录的功能，因此如果在 LeanEngine 部署回调服务器可以节省成本，快速实现需求。
+
+如何开发 OAuth 授权验证回调服务器，请查看 [微博 OAuth 授权验证回调服务器开发指南](webhosting_oauth.html)。
+
 ## 微信自动问答机器人
 
 微信开发是时下大热的开发趋势。很多团队在进行市场推广以及用户渗透的时候，要借助微信用户群做一些符合自己需求的定向开发。例如，航空公司可以通过微信公众号向乘客推送行程信息，银行可以及时发送消费和余额变动信息等。借助云引擎提供的代码托管功能，你可以设置让微信后台将用户所发送信息转发至云引擎，使用部署在上面的代码进行处理后，再调用微信接口进行回复。
@@ -19,13 +27,19 @@
 
 如何开发这个微信公众号请查看 [微信公众平台开发指南](webhosting_weixin.html)。
 
-## OAuth 授权验证回调服务器
+## 完整 Web 项目 Demo
 
-开发过微博应用或者是接入过 QQ 登录的应用都需要在后台设置一个回调服务器地址，用来接收回调信息，关于为什么需要回调服务器这个请阅读 [OAuth 2 官方文档](http://oauth.net/2/)。
+该项目产品逻辑不算复杂，使用者可以分享自己生成的照片页面到微信朋友圈中，如果有人喜欢，那么可以点击喜欢按钮，并且可以生成自己的页面。如果彼此喜欢，就可以给双方发送一条短信。
 
-许多用户在 LeanEngine 上托管了自己的网站，因为他们在制作登录页面的时候，需要实现微博登录等等第三方登录的功能，因此如果在 LeanEngine 部署回调服务器可以节省成本，快速实现需求。
+可以扫描二维码体验
 
-如何开发 OAuth 授权验证回调服务器，请查看 [微博 OAuth 授权验证回调服务器开发指南](webhosting_oauth.html)。
+![image](http://ac-kckdyoqh.clouddn.com/02143398c35fcb54.png)
+
+产品主界面效果图
+
+![image](http://ac-kckdyoqh.clouddn.com/3cf08487dffd0cc1.png)
+
+服务端完全使用 LeanCloud，托管于 LeanEngine 的 Nodejs 环境。Web App 是通过自定义的 API，纯前端调用的方式实现。服务端技术栈主要是 Nodejs + Express，前端技术栈主要是 Vuejs。代码全部采用 ES6 的语法编写，服务端使用 async/await 来处理异步等。
 
 ## LeanCache 常见场景示例
 
