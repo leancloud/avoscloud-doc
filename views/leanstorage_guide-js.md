@@ -1229,7 +1229,7 @@ function uploadFile (req, res) {
 {% endblock %} code_object_fetch_with_keys
 
 
-{% block link_to_relation_guide_doc %}[JavaScript 关系建模指南](relation_guide-js.html){% endblock %}
+{% block link_to_relation_guide_doc %}《（待补充）JavaScript 关系建模指南》{% endblock %}
 
 {% set link_to_sms_guide_doc = '[JavaScript 短信服务使用指南](sms_guide-js.html#注册验证)' %}
 

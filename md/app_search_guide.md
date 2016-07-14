@@ -657,7 +657,7 @@ age:<=10
 
 ## moreLikeThis 相关性查询
 
-除了 `/1.1/search/select` 之外，我们还提供了 `/1.1/search/mlk` 的 API 接口，用于相似文档的查询，可以用来实现相关性推荐。
+除了 `/1.1/search/select` 之外，我们还提供了 `/1.1/search/mlt` 的 API 接口，用于相似文档的查询，可以用来实现相关性推荐。
 
 假设我们有一个 Class 叫 `Post` 是用来保存博客文章的，我们想基于它的标签字段 `tags` 做相关性推荐，可以通过：
 
@@ -665,7 +665,7 @@ age:<=10
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  "https://leancloud.cn/1.1/search/mlk?like=clojure&clazz=Post&fields=tags"
+  "https://leancloud.cn/1.1/search/mlt?like=clojure&clazz=Post&fields=tags"
 ```
 
 我们设定了 `like` 参数为 `clojure`，查询的相关性匹配字段 `fields` 是 `tags`，也就是从 `Post` 里查找 `tags` 字段跟 `clojure` 这个文本相似的对象，返回类似：
@@ -698,7 +698,7 @@ curl -X GET \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  "https://leancloud.cn/1.1/search/mlk?likeObjectIds=577e18b50a2b580057469a5e&clazz=Post&fields=tags"
+  "https://leancloud.cn/1.1/search/mlt?likeObjectIds=577e18b50a2b580057469a5e&clazz=Post&fields=tags"
 ```
 
 这次我们换成了查找和 `577e18b50a2b580057469a5e` 这个 objectId 指代的对象相似的对象。
