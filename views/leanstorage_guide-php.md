@@ -679,10 +679,12 @@ $commentQuery = new LeanQuery("Comment");
 $commentQuery->descend("createdAt");
 $commentQuery->limit(10);
 $commentQuery->_include("targetTodoFolder"); // 关键代码，用 _include 告知服务端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
+$commentQuery->_include("targetTodoFolder.targetAVUser");// 关键代码，同上，会返回 targetAVUser 对应的对象的详细信息，而不仅仅是 objectId
 $comments = $commentQuery->find();
 // 最近的十条评论, 其 targetTodoFolder 字段也有相应数据
 forEach($comments as $comment) {
     $folder = $comment->get("targetTodoFolder");
+    $user = $folder->get("targetAVUser");
 }
 ```
 {% endblock %}

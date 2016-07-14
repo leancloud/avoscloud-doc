@@ -870,7 +870,7 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 ```swift
     let query = LCQuery(className: "Comment")
     query.whereKey("targetTodoFolder", LCQuery.Constraint.Included)// 关键代码，用 includeKey 告知云端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
-    
+    query.whereKey("targetTodoFolder.targetAVUser", LCQuery.Constraint.Included)// 关键代码，同上，会返回 targetAVUser 对应的对象的详细信息，而不仅仅是 objectId
     query.whereKey("createdAt", LCQuery.Constraint.Descending)
     query.limit = 10
     query.find { (result) in
@@ -879,6 +879,7 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
         for comment in comments!{
             print(comment.objectId?.value)
             let todoFolder = comment.get("targetTodoFolder")
+            let avUser = todoFolder.get("targetAVUser")
         }
     }
 ```

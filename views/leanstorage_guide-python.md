@@ -866,12 +866,15 @@ import leancloud
 comment_query = leancloud.Query('Comment')
 comment_query.add_descending('createdAt')
 comment_query.limit(10)
-# 关键代码，用 includeKey 告知服务端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
+# 关键代码，用 include 告知服务端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
 comment_query.include('targetTodoFolder')
+# 关键代码，同上，会返回 targetAVUser 对应的对象的详细信息，而不仅仅是 objectId
+comment_query.include('targetTodoFolder.targetAVUser')
 comment_list = comment_query.find()
 
 for comment in comment_list:
     todo_folder = comment.get('targetTodoFolder')  # 返回一个 TodoFolder 的对象
+    todo_user = todo_folder.get('targetAVUser') # 返回一个 AVUser 的对象
     todo_name = todo_folder.get('name')
 ```
 {% endblock %}

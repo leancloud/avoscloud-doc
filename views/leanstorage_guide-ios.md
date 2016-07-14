@@ -884,12 +884,13 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     [commentQuery orderByDescending:@"createdAt"];
     commentQuery.limit = 10;
     [commentQuery includeKey:@"targetTodoFolder"];// 关键代码，用 includeKey 告知云端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
-
+    [commentQuery includeKey:@"targetTodoFolder.targetAVUser"];// 关键代码，同上，会返回 targetAVUser 对应的对象的详细信息，而不仅仅是 objectId
     [commentQuery findObjectsInBackgroundWithBlock:^(NSArray *comments, NSError *error) {
         // comments 是最近的十条评论, 其 targetTodoFolder 字段也有相应数据
         for (AVObject *comment in comments) {
             // 并不需要网络访问
             AVObject *todoFolder = [comment objectForKey:@"targetTodoFolder"];
+            AVUser *avUser = [todoFolder objectForKey:@"targetAVUser"];
         }
     }];
 ```

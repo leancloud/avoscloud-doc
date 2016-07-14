@@ -637,7 +637,7 @@ AND 操作是指只有满足了所有查询条件的对象才会被返回给客�
 关于关联数据的建模是一个复杂的过程，很多开发者因为在存储方式上的选择失误导致最后构建查询的时候难以下手，不但客户端代码冗余复杂，而且查询效率低，为了解决这个问题，我们专门针对关联数据的建模推出了一个详细的文档予以介绍，详情请阅读 {% block link_to_relation_guide_doc %}{% endblock %}。
 
 #### 关联属性查询
-正如在 [Pointer](#Pointer) 中保存 Comnent 的 targetTodoFolder 属性一样，假如查询到了一些 Comment 对象，想要一并查询出每一条 Comment 对应的 TodoFolder 对象的时候可以使用如下代码：
+正如在 [Pointer](#Pointer) 中保存 Comment 的 targetTodoFolder 属性一样，假如查询到了一些 Comment 对象，想要一并查询出每一条 Comment 对应的 TodoFolder 对象的时候，可以加上 include 关键字查询条件。同理，假如 TodoFolder 表里还有 pointer 型字段 targetAVUser 时，再加上一个递进的 include 查询条件，即可一并查询出每一条 TodoFolder 对应的 AVUser 对象。代码如下：
 
 {% block code_query_comment_include_todoFolder %}{% endblock %}
 

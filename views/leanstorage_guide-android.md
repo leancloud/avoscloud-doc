@@ -852,7 +852,8 @@ fetchAllInBackground()
         AVQuery<AVObject> commentQuery = new AVQuery<>("Comment");
         commentQuery.orderByDescending("createdAt");
         commentQuery.limit(10);
-        commentQuery.include("targetTodoFolder");// 关键代码，用 includeKey 告知服务端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
+        commentQuery.include("targetTodoFolder");// 关键代码，用 include 告知服务端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
+        commentQuery.include("targetTodoFolder.targetAVUser");// 关键代码，同上，会返回 targetAVUser 对应的对象的详细信息，而不仅仅是 objectId
         commentQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
@@ -860,6 +861,7 @@ fetchAllInBackground()
                 for (AVObject comment : list) {
                     // 并不需要网络访问
                     AVObject todoFolder = comment.getAVObject("targetTodoFolder");
+                    AVUser avUser = todoFolder.getAVUser("targetAVUser");
                 }
             }
         });
