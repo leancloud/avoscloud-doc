@@ -1,7 +1,7 @@
 {% extends "./acl_guide.tmpl" %}
 
 {% set runAtServer = "true" %}
-{% set language = "JavaScript" %}
+{% set language = "JavaScript SDK" %}
 {% set platform = "浏览器端" %}
 {% block for_front_js %}
 ### 云引擎使用 ACL
