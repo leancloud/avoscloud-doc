@@ -40,7 +40,7 @@ $ bower install leancloud-storage --save
 #### CDN 加速
 
 ```html
-<script src="https://cdn1.lncld.net/static/js/av-min-1.0.0.js"></script>
+<script src="https://cdn1.lncld.net/static/js/av-min-1.2.1.js"></script>
 ```
 
 ### ES6 与 ES7 支持
