@@ -39,7 +39,7 @@
 
 ![image](http://ac-kckdyoqh.clouddn.com/3cf08487dffd0cc1.png)
 
-服务端完全使用 LeanCloud，托管于 LeanEngine 的 Nodejs 环境。Web App 是通过自定义的 API，纯前端调用的方式实现。服务端技术栈主要是 Nodejs + Express，前端技术栈主要是 Vuejs。代码全部采用 ES6 的语法编写，服务端使用 async/await 来处理异步等。
+服务端完全使用 LeanCloud，托管于 LeanEngine 的 Node.js 环境。Web App 是通过自定义的 API，纯前端调用的方式实现。服务端技术栈主要是 Node.js + Express，前端技术栈主要是 Vue.js。代码全部采用 ES6 的语法编写，服务端使用 async/await 来处理异步等。
 
 ## LeanCache 常见场景示例
 
