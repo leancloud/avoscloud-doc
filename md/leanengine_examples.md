@@ -27,22 +27,6 @@
 
 如何开发这个微信公众号请查看 [微信公众平台开发指南](webhosting_weixin.html)。
 
-## 完整 Web 项目 Demo
-
-该项目产品逻辑不算复杂，使用者可以分享自己生成的照片页面到微信朋友圈中，如果有人喜欢，那么可以点击喜欢按钮，并且可以生成自己的页面。如果彼此喜欢，就可以给双方发送一条短信。
-
-可以扫描二维码体验
-
-![image](http://ac-kckdyoqh.clouddn.com/02143398c35fcb54.png)
-
-产品主界面效果图
-
-![image](http://ac-kckdyoqh.clouddn.com/3cf08487dffd0cc1.png)
-
-服务端完全使用 LeanCloud，托管于 LeanEngine 的 Node.js 环境。Web App 是通过自定义的 API，纯前端调用的方式实现。服务端技术栈主要是 Node.js + Express，前端技术栈主要是 Vue.js。代码全部采用 ES6 的语法编写，服务端使用 async/await 来处理异步等。
-
-详细代码，请到相应的 [GitHub 仓库](https://github.com/wangxiao/romantic)中了解。
-
 ## LeanCache 常见场景示例
 
 <div class="callout callout-danger">抢红包、游戏排名、秒杀购物等场景，强烈建议使用 LeanCache。</div>
