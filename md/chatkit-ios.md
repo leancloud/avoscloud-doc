@@ -82,38 +82,15 @@ git clone --depth=1 https://github.com/leancloud/ChatKit-OC
 │       │   │   ├── Controller
 │       │   │   ├── Model
 │       │   │   ├── Tool
-│       │   │   │   ├── Categories
-│       │   │   │   └── DisableImageMemoryCache
 │       │   │   └── View
-│       │   │       ├── ChatBar
-│       │   │       └── ChatMessageCell
 │       │   └── ConversationList
 │       │       ├── Controller
 │       │       ├── Model
 │       │       └── View
 │       ├── Resources  # 资源文件，如图片、音频等
-│       │   ├── BarButtonIcon.bundle
-│       │   ├── ChatKeyboard.bundle
-│       │   ├── Common.bundle
-│       │   ├── DateTools.bundle
-│       │   ├── Emoji.bundle
-│       │   ├── MBProgressHUD.bundle
-│       │   ├── MessageBubble.bundle
-│       │   ├── Placeholder.bundle
-│       │   ├── VoiceMessageSource.bundle
-│       │   └── localization
-│       │       ├── en.lproj
-│       │       └── zh-Hans.lproj
 │       ├── Tool
 │       │   ├── Service
 │       │   └── Vendor
-│       │       ├── DateTools
-│       │       ├── LCCKAlertController
-│       │       ├── LCCKDeallocBlockExecutor
-│       │       ├── LCCKTableViewRowAction
-│       │       └── VoiceLib
-│       │           └── lame.framework
-│       │               └── Headers
 │       └── View
 └── ChatKit-OC  # Demo演示
     ├── ChatKit-OC.xcodeproj
@@ -250,7 +227,7 @@ LCCKConversationListViewController *firstViewController = [[LCCKConversationList
 按照上面的步骤，我们可以非常方便地打开最近联系人页面。但是我们会发现，点击其中的某个联系人／聊天群组，我们并不能直接进入聊天界面。要做到这一点，我们需要给 LCChatKit 设置上事件响应函数，示例代码如下：
 
 ```objective-c
-[[LCChatKit sharedInstance] setDidSelectConversationListItemBlock:^(NSIndexPath *indexPath, AVIMConversation *conversation, LCCKConversationListViewController *controller) {
+[[LCChatKit sharedInstance] setDidSelectConversationsListCellBlock:^(NSIndexPath *indexPath, AVIMConversation *conversation, LCCKConversationListViewController *controller) {
     NSLog(@"conversation selected");
     LCCKConversationViewController *conversationVC = [[LCCKConversationViewController alloc] initWithConversationId:conversation.conversationId];
     [controller.navigationController pushViewController:conversationVC animated:YES];
@@ -268,7 +245,7 @@ typedef void(^LCCKConversationsListDidSelectItemBlock)(NSIndexPath *indexPath, A
 /*!
  *  设置选中某个对话后的回调
  */
-- (void)setDidSelectConversationListItemBlock:(LCCKConversationsListDidSelectItemBlock)didSelectItemBlock;
+- (void)setDidSelectConversationsListCellBlock:(LCCKConversationsListDidSelectItemBlock)didSelectItemBlock;
 
 /*!
  *  删除某个对话后的回调 (一般不需要做处理)
@@ -278,7 +255,7 @@ typedef void(^LCCKConversationsListDidDeleteItemBlock)(NSIndexPath *indexPath, A
 /*!
  *  设置删除某个对话后的回调
  */
-- (void)setDidDeleteConversationListItemBlock:(LCCKConversationsListDidDeleteItemBlock)didDeleteItemBlock;
+- (void)setDidDeleteConversationsListCellBlock:(LCCKConversationsListDidDeleteItemBlock)didDeleteItemBlock;
 
 /*!
  *  对话左滑菜单设置block (最近联系人页面有复杂的手势操作时，可以通过这里扩展实现)
