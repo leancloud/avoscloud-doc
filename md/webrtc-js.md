@@ -19,7 +19,7 @@ IE|不支持
 
 ## Demo
 
-- [视频通话 App](https://leancloud.github.io/js-realtime-sdk/demo/video-calling/) （[源码](https://github.com/leeyeh/js-realtime-sdk/tree/master/demo/video-calling)） 
+- [视频通话 App](https://leancloud.github.io/js-realtime-sdk/demo/video-calling/) （[源码](https://github.com/leeyeh/js-realtime-sdk/tree/master/demo/video-calling)）
 
 ## 安装和初始化
 
@@ -63,12 +63,12 @@ WebRTC 客户端是通过「单点登录」模式连接实时通信服务的，�
 
 ```javascriptjava
 tom.on('conflict', function() {
-  // 弹出提示，告知当前用户的 Client Id 在其他设备上登陆了
+  // 弹出提示，告知当前用户的 Client Id 在其他设备上登录了
 });
 ```
 
 ### 签名
-与 IM 户端一样，WebRTC 客户端支持通过签名对登录进行鉴权。具体的签名方法请参考 [JavaScript 实时通信开发指南 - 安全与签名](realtime_guide-js.html#安全与签名)
+与 IM 客户端一样，WebRTC 客户端支持通过签名对登录进行鉴权。具体的签名方法请参考 [JavaScript 实时通信开发指南 - 安全与签名](realtime_guide-js.html#安全与签名)
 
 ## 获取本地流媒体
 在开始拨打电话之前，需要先得到摄像头的流媒体（[MediaStream](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaStream)），可以通过 `navigator.mediaDevices.getUserMedia` 方法来获取：
@@ -122,7 +122,7 @@ tom.call('Jerry', stream).then(function(outgoingCall) {
 如果呼叫成功，Promise 的成功回调中可以得到一个 `OutgoingCall` 类型的呼出通话对象，我们稍后会用到这个对象。如果呼叫失败，Promise 的失败回调会被执行，可能失败的原因包括：
 
 - Jerry 不在线
-- 「加入会话」签名失败（如果配置了，请检查创建客户端时配置的会话鉴权方法）
+- 「加入对话」签名失败（如果配置了，请检查创建客户端时配置的对话鉴权方法）
 - 超时
 
 这时如果 Jerry 在线，客户端 `jerry` 会派发 `call` 事件，事件回调中可以得到一个 `IncomingCall` 类型的呼入通话对象。
@@ -184,7 +184,7 @@ Tom 会收到该通话被「接听」的通知：
 outgoingCall.on('accept', function() {});
 ```
 
-到目前为止，Tom 与 Jerry 都还只持有自己本地的流媒体，`outgoingCall` 与 `incomingCall` 的状态都还是 `calling`。接下来在 SDK 内部，Tom 与 Jerry 会进行一些数据的交换与协商，在协商成功后，双方会收到通话「接通」的通知，这这个事件的回调中可以拿到对方的流媒体：
+到目前为止，Tom 与 Jerry 都还只持有自己本地的流媒体，`outgoingCall` 与 `incomingCall` 的状态都还是 `calling`。接下来在 SDK 内部，Tom 与 Jerry 会进行一些数据的交换与协商，在协商成功后，双方会收到通话「接通」的通知，在这个事件的回调中可以拿到对方的流媒体：
 
 ```javascript
 // Tom
@@ -208,7 +208,7 @@ incomingCall.on('connect', function(stream) {
 outgoingCall.close().then(function() {});
 ```
 
-Tom 会收到该通话被「挂断」的通知：
+Jerry 会收到该通话被「挂断」的通知：
 
 ```javascript
 // Jerry
@@ -217,18 +217,18 @@ incomingCall.on('close', function() {});
 
 此刻双方通话的状态均变为 `closed`。
 
-需要注意的是，本地的流媒体不会被自动停止（既结束通话不会自动关闭摄像头），停止流媒体的方法请参考 [获取本地流媒体](#获取本地流媒体)。
+需要注意的是，本地的流媒体不会被自动停止（即结束通话不会自动关闭摄像头），停止流媒体的方法请参考 [获取本地流媒体](#获取本地流媒体)。
 
 ## 多人通话
 
-SDK 只提供一对一的「通话」抽象，多人通话是通过多人之间分别一对一通话实现的。由于 WebRTC 是点对点的通讯方式，不存在中心节点，所以 n 个人之间的通话每个客户端都需要与另外 n-1 个客户端建立连接，由于客户端性能与带宽的限制，我们推荐将多人会话的人数控制在 4 个以下。
+SDK 只提供一对一的「通话」抽象，多人通话是通过多人之间分别一对一通话实现的。由于 WebRTC 是点对点的通讯方式，不存在中心节点，所以 n 个人之间的通话每个客户端都需要与另外 n-1 个客户端建立连接，由于客户端性能与带宽的限制，我们推荐将多人对话的人数控制在 4 个以下。
 
-具体的，Tom 可以使用实时通讯 SDK 创建一个暂态聊天室，并监听聊天室的 `memberjoin` 事件，当 Jerry 加入聊天室时，聊天室中所有成员自动「呼叫」Jerry，Jerry 自动「接通」呼入的所有通话，即可实现聊天室形式的多人通话。
+具体来说，Tom 可以使用实时通讯 SDK 创建一个聊天室，并监听聊天室的 `memberjoined` 事件，当 Jerry 加入聊天室时，聊天室中所有成员自动「呼叫」Jerry，Jerry 自动「接通」呼入的所有通话，即可实现聊天室形式的多人通话。
 
 <!-- LeanCloud 同时也提供了一对多的「直播」模型，请参考 LiveKit 文档。  -->
 
 ## 指定 TURN 服务器
-WebRTC 的流媒体是直接在两个客户端之间直接传递的，这意味着不需要服务器支持，但也意味着平均有 15% 左右的连接因为防火墙等问题无法建立。针对这种情况，WebRTC 支持在无法建立点对点连接时通过提供 TURN 服务器进行流媒体的转发，如果你自建了 TURN 服务器或者接入了 TURN 服务商，可以在创建 WebRTC 客户端的时候通过 `clientOptions.RTCConfiguration` 参数指定 `iceServers` 为你的 TURN 服务器地址。
+WebRTC 的流媒体是直接在两个客户端之间直接传递的，这意味着不需要服务器支持，但也意味着平均有 15% 左右的连接因为防火墙等原因无法建立。针对这种情况，WebRTC 支持在无法建立点对点连接时通过提供 TURN 服务器进行流媒体的转发，如果你自建了 TURN 服务器或者接入了 TURN 服务商，可以在创建 WebRTC 客户端的时候通过 `clientOptions.RTCConfiguration` 参数指定 `iceServers` 为你的 TURN 服务器地址。
 
 关于 TURN 服务器的详细说明，请参考：
 
