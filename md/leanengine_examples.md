@@ -41,6 +41,8 @@
 
 服务端完全使用 LeanCloud，托管于 LeanEngine 的 Node.js 环境。Web App 是通过自定义的 API，纯前端调用的方式实现。服务端技术栈主要是 Node.js + Express，前端技术栈主要是 Vue.js。代码全部采用 ES6 的语法编写，服务端使用 async/await 来处理异步等。
 
+详细代码，请到相应的 [GitHub 仓库](https://github.com/wangxiao/romantic)中了解。
+
 ## LeanCache 常见场景示例
 
 <div class="callout callout-danger">抢红包、游戏排名、秒杀购物等场景，强烈建议使用 LeanCache。</div>
