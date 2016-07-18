@@ -1,5 +1,8 @@
 {% extends "./acl_guide.tmpl" %}
-{% block language_version %}iOS / OS X{% endblock %}
+
+{% set language = "Objective-C SDK" %}
+{% set runAtClient = "true" %}
+{% set platform = "iOS / OS X" %}
 {% block link_to_acl_quickStart %}[权限管理以及 ACL 快速指南](acl_quick_start-ios.html){% endblock %}
 {% block create_post_set_acl_for_single_user %}
 
@@ -52,7 +55,7 @@
 
 {% block create_role_administrator %}
 
-```
+```objc
     // 设定角色本身的 ACL 
     AVACL *roleACL = [AVACL ACL];
     [roleACL setPublicReadAccess:YES];
@@ -67,7 +70,7 @@
 
 {% block query_role_administrator %}
 
-```
+```objc
     // 构建角色的查询，并且查看该角色所对应的用户
     AVQuery *roleQuery= [AVRole query];
     [roleQuery whereKey:@"name" equalTo:@"Administrator"];
@@ -84,7 +87,7 @@
 
 {% block query_role_of_user %}
 
-```
+```objc
     AVQuery *roleQuery= [AVRole query];
     [roleQuery whereKey:@"users" equalTo: [AVUser currentUser]];
     [roleQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -95,7 +98,7 @@
 
 {% block query_user_of_role %}
 
-```
+```objc
     AVRole *moderatorRole=//根据 id 查询或者根据 name 查询出一个实例
     AVRelation *userRelation =[moderatorRole users];
     AVQuery *userQuery= [userRelation query];
@@ -107,7 +110,7 @@
 
 {% block set_acl_for_role %}
 
-```
+```objc
     // 新建一个帖子对象
     AVObject *post = [AVObject objectWithClassName:@"Post"];
     [post setObject:@"夏天吃什么夜宵比较爽？" forKey:@"title"];
@@ -136,7 +139,7 @@
 
 {% block add_role_for_user %}
 
-```
+```objc
     AVQuery *roleQuery= [AVRole query];
     [roleQuery whereKey:@"name" equalTo:@"Administrator"];
     [roleQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -166,7 +169,7 @@
 
 {% block remove_role_from_user %}
 
-```
+```objc
     AVQuery *roleQuery= [AVRole query];
     [roleQuery whereKey:@"name" equalTo:@"Moderator"];
     [roleQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -188,7 +191,7 @@
 
 {% block asign_role_to_parent %}
 
-```
+```objc
     AVRole *administratorRole = //从服务端查询出 Administrator 角色实例
     AVRole *moderatorRole = //从服务端查询出 Moderator 角色实例
     
@@ -204,7 +207,7 @@
 
 {% block share_role %}
 
-```
+```objc
     // 新建 3个角色实例
     AVRole *photographicRole = //创建或者从服务端查询出 Photographic 角色实例
     AVRole *mobileRole = //创建或从服务端查询出 Mobile 角色实例

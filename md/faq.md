@@ -287,6 +287,10 @@ LeanCloud 依赖的 Framework 包括：
 
 ![image](images/geopoint_faq.png)
 
+### 如何先验证手机号码再注册
+
+请参考 [存储开发指南 &middot; 手机号码登录](leanstorage_guide-ios.html#手机号码登录")。
+
 
 ## Android SDK
 
@@ -302,6 +306,11 @@ LeanCloud 依赖的 Framework 包括：
 可能有以下两种原因导致这种情况：
 * SDK 版本过旧，installationId 的生成逻辑在版本更迭中有修改。请更新至最新版本。
 * 代码混淆引起的，注意在 proguard 文件中添加 [LeanCloud SDK 的混淆排除](android_faq.html#代码混淆怎么做)。
+
+### 如何先验证手机号码再注册
+
+请参考 [存储开发指南 &middot; 手机号码登录](leanstorage_guide-android.html#手机号码登录")。
+
 
 
 ## JavaScript SDK
@@ -321,6 +330,11 @@ AV._useMasterKey = true;
 ### Web 端会暴露 App Key 和 App Id，怎么保证安全性？
 首先请阅读「[安全总览](data_security.html)」来了解 LeanCloud 完整的安全体系。其中提到，可以使用「[安全域名](data_security.html#Web_应用安全设置) 」，在没有域名的情况下，可以使用 「[ACL](acl_guide-js.html)」。
 理论上所有客户端都是不可信任的，所以需要在服务端对安全性进行设计。如果需要高级安全，可以使用 ACL 方式来管理，如果需要更高级的自定义方式，可以使用 [LeanEngine（云引擎）](leanengine_overview.html)。
+
+### 如何先验证手机号码再注册
+
+请参考 [存储开发指南 &middot; 手机号码登录](leanstorage_guide-js.html#手机号码登录")。
+
 
 ## 消息推送
 

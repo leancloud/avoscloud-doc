@@ -1,7 +1,7 @@
 {% set appid = '{{appid}}' %}
 {% set appkey = '{{appkey}}' %}
 {% set masterkey = '{{masterkey}}' %}
-# {% block language_version %}{% endblock %} 权限管理使用指南
+# {{language}} 权限管理使用指南
 
 
 数据安全在应用开发的任何阶段都应该被重视。因此本文档我们详细介绍了在选择 LeanCloud 作为后端服务之后，如何使用 LeanCloud 提供的安全功能模块为开发者的应用以及数据提供安全保障。
@@ -245,6 +245,20 @@ update | 保存一个已经存在并且被修改的对象
 登录用户 | 用户登录之后，具有权限
 指定用户| 可以指定具体的用户（`AVUser`）也可以指定具体的角色（`AVRole`）
 
+{% block use_masterKey %}
+## 超级权限
+ACL 可以满足常见的需求，但是 `_User` 表比较特殊，它会忽略 ACL 的设置，表现为：任何用户都无法修改其他用户的属性，比如当前登录的用户是 A，而他想通过请求去修改 B 用户的用户名，密码或者其他自定义属性，是不会生效的。
+
+但是有时一些应用的需求较为特殊，比如，论坛的管理员可以修改某些用户的昵称，性别（假设昵称和性别是存储在 `_User` 的 `gender`,`age` 的字段上），此时通过设置管理员拥有该用户的 ACL 写的权限是无法实现预想效果的。因此，我们提供了一种方式去提高操作的权限，在 SDK 中的实现方式是在初始化的时候，增加一个 Master Key 的字段作为提高权限的接口。Master Key 可以在 `控制台` -> `设置` -> `应用 Key` 中获取。 
+
+{% if runAtServer %}
+{% block sdk_init_user_masterKey %}{% endblock %}
+{% elif runAtClient %}
+但是 {{platform}} 是纯客户端使用的，在 SDK 初始化的时候不允许传入 Master Key，我们只推荐在服务端使用 Master Key 发送请求。因此我们推荐有自定义管理后台需求的应用可以使用 [LeanEngine](https://leancloud.cn/docs/leanengine_overview.html) 开发和托管。 
+{% else %}
+{% endif %}
+{% endblock %}
+
 ## 最佳实践
 
 本章节的目的是介绍如何在 [云引擎](acl_guide_leanengine.html) 里面使用 ACL 。
@@ -252,9 +266,6 @@ update | 保存一个已经存在并且被修改的对象
 我们先来探索一个需求：某个应用它拥有众多客户端，iOS、Andorid、Windows 等，还有 Web 版，未来可能还会有手环，手表客户端，那么关于 ACL 的代码会遍布在所有客户端，那么开发者就会需要不断的升级和维护逻辑十分类似的客户端代码，到了这一步，我们更推荐，开发者在服务端定义一段 ACL 的逻辑，统一处理 ACL 权限分配的问题。
 
 【总结】假如应用的平台比较固定，那么就可以考虑采取本文前面所介绍的客户端代码实现 ACL 代码。如果应用的平台比较多，多平台多客户端就推荐使用 [云引擎 Hook 函数使用 ACL](acl_guide_leanengine.html)。
-
-
-
 
 
 

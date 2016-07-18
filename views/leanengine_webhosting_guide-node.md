@@ -311,6 +311,14 @@ app.use(AV.Cloud.HttpsRedirect());
 **提示**：如果 {{productName}} 不支持所指定的版本，则会默认使用 {{platformName}} 0.12 版本。
 {% endblock %}
 
+{% block code_calling_custom_variables %}
+```javascript
+// 在云引擎 Node.js 环境中使用自定义的环境变量
+var MY_CUSTOM_VARIABLE = process.env.MY_CUSTOM_VARIABLE;
+console.log(MY_CUSTOM_VARIABLE);
+```
+{% endblock %}
+
 {% block get_env %}
 ```javascript
 var NODE_ENV = process.env.NODE_ENV || 'development';

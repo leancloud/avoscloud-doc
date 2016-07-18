@@ -66,6 +66,8 @@
 
 按照一般的实践，可以将一些配置项存储在环境变量中，这样可以在不修改代码的情况下，修改环境变量并重新部署，来改变程序的行为；或者可以将一些第三方服务的 Secret Key 存储在环境变量中，避免这些密钥直接出现在代码中。
 
+{% block code_calling_custom_variables %}{% endblock %}
+
 ## 存储数据
 
 {% block use_leanstorage %}{% endblock %}

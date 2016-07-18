@@ -64,17 +64,17 @@ const realtime = new Realtime({
 });
 ```
 
-### leancloud-realtime-typed-messages
-如果需要使用 [富媒体消息](#富媒体消息) 中的 `ImageMessage`、`AudioMessage`、`VideoMessage`、`FileMessage` 或 `LocationMessage`，需要额外安装 leancloud-realtime-typed-messages 与 leancloud-storage：
+### 富媒体消息插件
+如果需要使用 [富媒体消息](#富媒体消息) 中的 `ImageMessage`、`AudioMessage`、`VideoMessage`、`FileMessage` 或 `LocationMessage`，需要额外安装 leancloud-realtime-plugin-typed-messages 与 leancloud-storage：
 ```bash
-npm install --save leancloud-realtime-typed-messages leancloud-storage
+npm install --save leancloud-realtime-plugin-typed-messages leancloud-storage
 ```
 
 在浏览器中使用时按照以下顺序加载：
 ```html
 <script src="./node_modules/leancloud-storage/dist/av.js"></script>
 <script src="./node_modules/leancloud-realtime/dist/realtime.browser.js"></script>
-<script src="./node_modules/leancloud-realtime-typed-messages/dist/typed-messages.js"></script>
+<script src="./node_modules/leancloud-realtime-plugin-typed-messages/dist/typed-messages.js"></script>
 ```
 然后依次进行初始化：
 ```javascript
@@ -84,23 +84,21 @@ AV.initialize('{{appid}}', '{{appkey}}');
 var Realtime = AV.Realtime;
 var realtime = new Realtime({
   appId: '{{appid}}',
+  plugins: [AV.TypedMessagesPlugin], // 注册富媒体消息插件
 });
-// 注册需要用到的富媒体消息类型
-var ImageMessage = AV.ImageMessage;
-realtime.register([ImageMessage]);
 ```
 
 如果是在 Node.js 中使用，需要按以下方法进行初始化：
 ```javascript
 var AV = require('leancloud-storage');
 var Realtime = require('leancloud-realtime').Realtime;
-var ImageMessage = require('leancloud-realtime-typed-messages').ImageMessage;
+var TypedMessagesPlugin = require('leancloud-realtime-plugin-typed-messages').TypedMessagesPlugin;
 
 AV.initialize('{{appid}}', '{{appkey}}');
 var realtime = new Realtime({
   appId: '{{appid}}',
+  plugins: [TypedMessagesPlugin], // 注册富媒体消息插件
 });
-realtime.register([ImageMessage]);
 ```
 
 ## 单聊
@@ -236,7 +234,7 @@ realtime.createIMClient('William').then(function(william) {
 - 文件消息：`FileMessage`
 - 位置消息：`LocationMessage`
 
-除了 `TextMessage` 已经内置，其他的消息类型需要额外安装 leancloud-realtime-typed-messages，具体的安装与使用方法参见 [leancloud-realtime-typed-messages](#leancloud_realtime_typed_messages)。
+除了 `TextMessage` 已经内置，其他的消息类型需要额外安装插件 leancloud-realtime-plugin-typed-messages，具体的安装与初始化方法参见 [安装 - 富媒体消息插件](#富媒体消息插件)。
 
 ### 富媒体消息
 
@@ -318,8 +316,11 @@ conversation.send(message).then(function() {
 实时通信 SDK 提供的所有富媒体消息类都是从 TypedMessage 派生出来的。发送的时候可以直接调用 `conversation.send()` 函数。在接收端，SDK 会在 IMClient 实例上派发 `message` 事件，接收端处理富媒体消息的示例代码如下：
 
 ```javascript
-// 需要先注册所有可能会收到的消息类型
-realtime.register([AV.FileMessage, AV.ImageMessage, AV.AudioMessage, AV.VideoMessage, AV.LocationMessage]);
+// 在初始化 Realtime 时，需加载 TypedMessagesPlugin
+// var realtime = new Realtime({
+//   appId: appId,
+//   plugins: [AV.TypedMessagesPlugin,]
+// });
 // 注册 message 事件的 handler
 client.on('message', function messageEventHandler(message, conversation) {
   // 请按自己需求改写
@@ -568,7 +569,7 @@ client.on('message', function(message) {
 
 * 申明新的消息类型，继承自 TypedMessage 或其子类，然后：
   * 对 class 使用 `messageType(123)` 装饰器，具体消息类型的值（这里是 `123`）由开发者自己决定（LeanCloud 内建的 [消息类型使用负数](#消息类详解)，所有正数都预留给开发者扩展使用）。
-  * 对 class 使用 `messageField(['fieldName'])` 装饰器来申明需要发送的字段。
+  * 对 class 使用 `messageField(['fieldName'])` 装饰器来声明需要发送的字段。
 * 调用 `Realtime#register()` 函数注册这个消息类型。
 
 举个例子，实现一个在 [暂态消息](#暂态消息) 中提出的 OperationMessage：
@@ -1416,9 +1417,89 @@ tom.on('conflict', function() {
 });
 ```
 
-
-
 如上述代码中，当前用户被服务端强行下线时，SDK 会在 client 上派发 `conflict` 事件，客户端在做展现的时候也可以做出类似于 QQ 一样友好的通知。
+
+## 插件
+
+SDK 支持通过插件来对功能进行扩展，比如在解析消息前对原始消息进行修改，为内部的类添加方法，注册自定义消息等。
+
+### 插件列表
+
+请参阅 [https://github.com/leancloud/js-realtime-sdk/wiki/Plugins]()。
+
+### 使用插件
+
+Realtime 支持在初始化时传入指定一个 plugins 数组：
+
+```javascript
+var Realtime = require('leancloud-realtime').Realtime;
+var WebRTCPlugin = require('leancloud-realtime-plugin-webrtc').WebRTCPlugin;
+
+var realtime = new Realtime({
+  appId: appId,
+  plugins: [WebRTCPlugin],
+});
+```
+
+插件的具体使用方式请参考具体插件的文档。
+
+### 创建插件
+
+#### 扩展点
+
+一个插件是由一个或多个扩展点组成的字典（Object）。扩展点可以分为三类：
+
+第一类扩展点是 SDK 内部类实例化之后的回调，包括 `onRealtimeCreated`、`onIMClientCreated` 与 `onConversationCreated`。这些扩展点可以通过一个方法（function）进行扩展，该方法接受一个对应的实例并对其进行一些操作。我们称这一类方法为 Decorator。插件可以利用这些扩展点为内部类添加新的方法或修改原有的方法。
+
+下面这个例子利用了 `onConversationCreate` 扩展点，修改了 Conversation 的 quit 方法，在调用 quit 方法时统一弹出一个确认窗口。
+
+```javascript
+var ConfirmOnQuitPlugin = {
+  name: 'leancloud-realtime-plugin-confirm-on-quit',
+  onConversationCreate: function onConversationCreate(conversation) {
+    var originalQuit = conversation.quit;
+    conversation.quit = function() {
+      var confirmed = window.confirm('退出会话？退出后将无法收到消息。');
+      if (confirmed) {
+        return originalQuit.apply(this, arguments);
+      } else {
+        return Promise.reject(new Error('user canceled'));
+      }
+    }
+  }
+};
+```
+
+第二类扩展点允许你在某些事件前、后注入逻辑。这些扩展点可以通过一个方法（function）进行扩展，该方法接受一个对象，返回一个同类型对象（如果该方法是异步的，则返回一个 Promise）。我们称这一类方法为 Middleware。
+以消息解析为例，可以将 SDK 从接收原始消息 - 解析消息 - 派发的富媒体消息的过程看成一条管道，这些扩展点允许你在这个管道中加入一段你的节点，这个节点就是 Middleware。如果指定了多个 Middleware，这些 Middleware 会按照顺序依次执行，前一个 Middleware 的返回值会作为参数传给后一个 Middleware。
+
+目前可扩展的点有:
+
+- `beforeMessageParse`: 在解析消息前对原始消息进行处理，参数是 json 格式的原始消息
+- `afterMessageParse`: 在解析消息后对消息进行处理，参数是对应的富媒体消息类的实例
+
+举个例子，有一些对话中存在一些 FileMessage 类型的历史消息，由于某种原因缺少了必须的 file.id 字段，会导致解析到这些消息时 SDK 抛出异常。这时可以通过 `beforeMessageParse` 扩展点来在 SDK 解析消息前「修补」这个问题。
+
+```javascript
+var EnsureFileIdPlugin = {
+  name: 'leancloud-realtime-plugin-ensure-file-id',
+  beforeMessageParse: function onConversationCreate(message) {
+    if (!message._lcfile.id) message._lcfile.id = '';
+    return message;
+  }
+};
+```
+
+第三类扩展点是一个特殊的扩展点：`messageClasses`，这是一个由自定义消息类型组成的数组，数组中的自定义消息类型会被自动注册（通过 Realtime#register）。在富文本消息一节中用到的 TypedMessagesPlugin 就是使用了这个扩展点的插件。
+
+如果有必要，我们会在未来开放更多的扩展点。
+
+#### 插件规范
+
+如果你的插件可能会被其他开发者用到，我们推荐你将其封装为一个 package 并发布到 npm 上，发布的插件请遵循以下规范：
+
+- package 名称以 `leancloud-realtime-plugin-` 为前缀；
+- 插件对象需要有 `name` 字段，用于在日志中显示异常的插件名称，建议与 package 名称相同。
 
 ## 从 v2 迁移
 如果你的应用正在使用 JavaScript SDK version 2 并希望升级到 version 3，请参考 [《JavaScript 实时通信 SDK v3 迁移指南》](./realtime_js-v3-migration-guide.html)。

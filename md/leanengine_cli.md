@@ -2,7 +2,7 @@
 
 ## 介绍
 
-云引擎命令行工具（在 NPM 上包名为 avoscloud-code）是用来管理、部署云引擎项目的命令行工具。通过它你可以部署、发布、回滚云引擎代码，并且可以对同一个云引擎项目做多应用管理，还可以查看云引擎日志，批量上传文件到 LeanCloud 平台上等。
+云引擎命令行工具（在 NPM 上包名为 leancloud-cli）是用来管理、部署云引擎项目的命令行工具。通过它你可以部署、发布、回滚云引擎代码，并且可以对同一个云引擎项目做多应用管理，还可以查看云引擎日志，批量上传文件到 LeanCloud 平台上等。
 
 ## 安装 Node.js 运行环境
 
@@ -39,7 +39,7 @@ brew install nodejs
 ## 安装命令行工具
 
 ```sh
-npm install -g avoscloud-code
+npm install -g leancloud-cli
 ```
 
 若在 Linux/Mac 上将 Node.js 安装到了整个系统，请在命令前添加 `sudo`；若在 Windows 上选择了「为所有用户安装 Node.js」，请以管理员权限打开一个命令行窗口再安装。
@@ -47,14 +47,14 @@ npm install -g avoscloud-code
 NPM 官方仓库在国内比较慢，请耐心等待。你也可以从国内的 [cnpm](https://npm.taobao.org/) 安装，速度会更快：
 
 ```sh
-npm install -g avoscloud-code --registry=https://registry.npm.taobao.org
+npm install -g leancloud-cli --registry=https://registry.npm.taobao.org
 ```
 
 ### Bash Completion
 
 该功能可以让你在使用 lean 命令时得到自动补全（用 `tab` 补全），不安装也不会影响正常使用，Mac 用户需要先按照下一小节的方法安装 `bash-completion`。
 
-下载 [avoscloud_completion.sh](https://raw.githubusercontent.com/leancloud/avoscloud-code-command/master/avoscloud_completion.sh) 保存到某个目录，例如通常保存为 `~/.leancloud_completion.sh`，然后在 `~/.bashrc` 或者 `~/.bash_profile` 文件中添加：
+下载 [avoscloud_completion.sh](https://raw.githubusercontent.com/leancloud/leancloud-cli-command/master/avoscloud_completion.sh) 保存到某个目录，例如通常保存为 `~/.leancloud_completion.sh`，然后在 `~/.bashrc` 或者 `~/.bash_profile` 文件中添加：
 
 ```sh
 source ~/.leancloud_completion.sh
@@ -83,7 +83,7 @@ fi
 **移除命令行工具：**
 
 ```sh
-npm uninstall -g avoscloud-code
+npm uninstall -g leancloud-cli
 ```
 
 移除之后，确认命令行工具不可运行，即执行 lean 命令时会有如下提示：
@@ -105,7 +105,7 @@ npm cache clean
 cnpm cache clean
 ```
 
-然后使用 `npm` 重新安装 avoscloud-code 命令行工具。
+然后使用 `npm` 重新安装 leancloud-cli 命令行工具。
 
 ## 使用
 
@@ -388,7 +388,7 @@ $ lean app list
 如果你想将 new_app 发布到其他 LeanCloud 应用，你可以通过 `add` 命令来添加一个应用：
 
 ```sh
-$ lean app add other_app <other app 的应用 id>
+$ lean app add new_app <new app 的应用 id>
 ```
 
 `add` 接收两个参数，第一个是应用的名称，用于后续的显示和切换，第二个是新应用的 id，可以在应用设置的应用 Key 信息里找到。
@@ -491,4 +491,4 @@ $ lean search 云引擎 命令行
 
 ## 贡献
 
-`avoscloud-code` 本身是开源，基于 [GNU LGPL](https://www.gnu.org/licenses/lgpl.html) 协议，源码托管在 Github: <https://github.com/leancloud/avoscloud-code-command>，欢迎大家贡献。
+`leancloud-cli` 本身是开源，基于 [GNU LGPL](https://www.gnu.org/licenses/lgpl.html) 协议，源码托管在 Github: <https://github.com/leancloud/avoscloud-code-command>，欢迎大家贡献。
