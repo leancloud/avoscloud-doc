@@ -714,8 +714,8 @@ curl -X GET \
 `likeObjectIds`|可选|**和 `like` 参数二者必须提供其中之一**。代表相似的对象 objectId 列表，用逗号隔开。
 `clazz`|必须|类名
 `include`|可选|关联查询内联的 Pointer 字段列表，逗号隔开，形如 `user,comment` 的字符串。**仅支持 include Pointer 类型**。
-`min_term_freq`|可选|文档中一个词语至少出现次数，小于这个值的词将被忽略，默认是 2，如果返回文档数目过少，可以尝试调低此值。
-`min_doc_freq`|可选|词语至少出现的文档个数，少于这个值的词将被忽略，默认值为 5，同样，如果返回文档数目过少，可以尝试调低此值。
+`min_term_freq`|可选|**文档中一个词语至少出现次数，小于这个值的词将被忽略，默认是 2**，如果返回文档数目过少，可以尝试调低此值。
+`min_doc_freq`|可选|**词语至少出现的文档个数，少于这个值的词将被忽略，默认值为 5**，同样，如果返回文档数目过少，可以尝试调低此值。
 `max_doc_freq`|可选|词语最多出现的文档个数，超过这个值的词将被忽略，防止一些无意义的热频词干扰结果，默认无限制。
 
 更多内容参考 [ElasticSearch 文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-mlt-query.html)。
