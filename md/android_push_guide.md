@@ -276,7 +276,7 @@ intent.putExtra(AVConstants.PUSH_INTENT_KEY, 1);
 
 1. **注册小米账号**：在 [小米开放平台][xiaomi] 上注册小米开发者账号并完成实名认证（[详细流程](http://dev.xiaomi.com/doc/?p=90)）。
 2. **创建小米推送服务应用**（[详细流程](http://dev.xiaomi.com/doc/?p=1621)）。
-3. **设置小米的 AppId 及 AppKey**：在 [小米开放平台][xiaomi] > **管理控制台** > **消息推送** > **相关应用** 可以查到具体的小米推送服务应用的 AppId 及 AppKey。将此 AppId 及 AppKey 通过 [LeanCloud 控制台][leancloud-console] > **消息** > **推送** > **设置** > **混合推送**，与 LeanCloud 应用关联。
+3. **设置小米的 AppId 及 AppSecret**：在 [小米开放平台][xiaomi] > **管理控制台** > **消息推送** > **相关应用** 可以查到具体的小米推送服务应用的 AppId 及 AppSecret。将此 AppId 及 AppSecret 通过 [LeanCloud 控制台][leancloud-console] > **消息** > **推送** > **设置** > **混合推送**，与 LeanCloud 应用关联。
 
 #### 接入 SDK
 
