@@ -1,24 +1,22 @@
 {% extends "./leanengine_cloudfunction_guide.tmpl" %}
 
-{% set platformName = 'Node.js' %}
-{% set productName = 'LeanEngine' %}
-{% set storageName = 'LeanStorage' %}
-{% set leanengine_middleware = '[LeanEngine Node.js SDK](https://github.com/leancloud/leanengine-node-sdk)' %}
-
-{% set sdk_guide_link = '[JavaScript SDK](./leanstorage_guide-js.html)' %}
-{% set cloud_func_file = '`$PROJECT_DIR/cloud.js`' %}
-{% set runFuncName = '`AV.Cloud.run`' %}
-{% set defineFuncName = '`AV.Cloud.define`' %}
-{% set runFuncApiLink = '[AV.Cloud.run](/api-docs/javascript/symbols/AV.Cloud.html#.run)' %}
-
-{% set hook_before_save   = "beforeSave" %}
-{% set hook_after_save    = "afterSave" %}
+{% set platformName = "Node.js" %}
+{% set productName = "LeanEngine" %}
+{% set storageName = "LeanStorage" %}
+{% set leanengine_middleware = "[LeanEngine Node.js SDK](https://github.com/leancloud/leanengine-node-sdk)" %}
+{% set sdk_guide_link = "[JavaScript SDK](./leanstorage_guide-js.html)" %}
+{% set cloud_func_file = "`$PROJECT_DIR/cloud.js`" %}
+{% set runFuncName = "`AV.Cloud.run`" %}
+{% set defineFuncName = "`AV.Cloud.define`" %}
+{% set runFuncApiLink = "[AV.Cloud.run](/api-docs/javascript/symbols/AV.Cloud.html#.run)" %}
+{% set hook_before_save = "beforeSave" %}
+{% set hook_after_save = "afterSave" %}
 {% set hook_before_update = "beforeUpdate" %}
-{% set hook_after_update  = "afterUpdate" %}
+{% set hook_after_update = "afterUpdate" %}
 {% set hook_before_delete = "beforeDelete" %}
-{% set hook_after_delete  = "afterDelete" %}
-{% set hook_on_verified   = "onVerified" %}
-{% set hook_on_login      = "onLogin" %}
+{% set hook_after_delete = "afterDelete" %}
+{% set hook_on_verified = "onVerified" %}
+{% set hook_on_login = "onLogin" %}
 
 {% block cloudFuncExample %}
 
@@ -43,6 +41,7 @@ AV.Cloud.define('averageStars', function(request, response) {
 {% endblock %}
 
 {% block cloudFuncParams %}
+
 Request 和 Response 会作为两个参数传入到云函数中：
 
 `Request` 上的属性包括：
@@ -59,6 +58,7 @@ Request 和 Response 会作为两个参数传入到云函数中：
 {% endblock %}
 
 {% block runFuncExample %}
+
 ```js
 var paramsJson = {
   movie: "夏洛特烦恼"
@@ -85,6 +85,7 @@ AV.Cloud.run('averageStars', paramsJson, {
 {% endblock %}
 
 {% block cloudFuncTimeout %}
+
 ### 云函数超时
 
 云函数超时时间为 15 秒，如果超过阈值，{{leanengine_middleware}} 将强制响应：
@@ -170,7 +171,7 @@ AV.Cloud.beforeUpdate('Review', function(request, response) {
       response.success();
     } else {
       // 拒绝过长的修改
-      response.error('commit 长度不得超过 140 字符');
+      response.error('comment 长度不得超过 140 字符');
     }
   } else {
     response.success();
@@ -264,6 +265,7 @@ AV.Cloud.onLogin(function(request, response) {
 {% endblock %}
 
 {% block errorCodeExample %}
+
 错误响应码允许自定义。云引擎方法最终的错误对象如果有 `code` 和 `message` 属性，则响应的 body 以这两个属性为准，否则 `code` 为 1， `message` 为错误对象的字符串形式。比如：
 
 ```
@@ -278,6 +280,7 @@ AV.Cloud.define('errorCode', function(request, response) {
 {% endblock %}
 
 {% block errorCodeExample2 %}
+
 ```
 AV.Cloud.define('customErrorCode', function(request, response) {
   response.error({code: 123, message: 'custom error message'});
@@ -286,6 +289,7 @@ AV.Cloud.define('customErrorCode', function(request, response) {
 {% endblock %}
 
 {% block errorCodeExampleForHooks %}
+
 ```
 AV.Cloud.beforeSave('Review', function(request, response) {
   // 使用 JSON.stringify() 将 object 变为字符串
@@ -298,6 +302,7 @@ AV.Cloud.beforeSave('Review', function(request, response) {
 {% endblock %}
 
 {% block online_editor %}
+
 ## 在线编写云函数
 
 很多人使用 {{productName}} 是为了在服务端提供一些个性化的方法供各终端调用，而不希望关心诸如代码托管、npm 依赖管理等问题。为此我们提供了在线维护云函数的功能。
@@ -356,10 +361,63 @@ AV.Cloud.useMasterKey();
 {% endblock %}
 
 {% block loggerExample %}
+
 ```javascript
 AV.Cloud.define('Logger', function(request, response) {
   console.log(request.params);
   response.success();
 });
 ```
+{% endblock %}
+
+{% block hookDeadLoop %}
+
+### 防止死循环调用
+
+在实际使用中有这样一种场景：在 `Post` 类的 `afterUpdate` Hook 函数中，对传入的 `Post` 对象做了修改并且保存，而这个保存动作又会再次触发 `afterUpdate`，由此形成死循环。针对这种情况，我们为所有 Hook 函数传入的 `request.object` 对象做了处理，以阻止死循环调用的产生。
+
+不过请注意，以下情况还需要开发者自行处理：
+
+- 对传入的 `request.object` 对象进行 `fetch` 操作。
+- 重新构造传入的 `request.object` 对象，如使用 `AV.Object.createWithoutData()` 方法。
+
+对于使用上述方式产生的对象，请根据需要自行调用以下 API：
+
+- `object.disableBeforeHook()` 或
+- `object.disableAfterHook()`
+
+这样，对象的保存或删除动作就不会再次触发相关的 Hook 函数。
+
+```javascript
+AV.Cloud.afterUpdate('Post', function(request) {
+  // 直接修改并保存对象不会再次触发 afterUpdate Hook 函数
+  request.object.set('foo', 'bar');
+  request.object.save().then(function(obj) {
+    // 你的业务逻辑
+  }).catch(console.error);
+
+  // 如果有 fetch 操作，则需要在新获得的对象上调用相关的 disable 方法
+  // 来确保不会再次触发 Hook 函数
+  request.object.fetch().then(function(obj) {
+    obj.disableAfterHook();
+    obj.set('foo', 'bar');
+    return obj.save();
+  }).then(function(obj) {
+    // 你的业务逻辑
+  }).catch(console.error);
+
+  // 如果是其他方式构建对象，则需要在新构建的对象上调用相关的 disable 方法
+  // 来确保不会再次触发 Hook 函数
+  var obj = AV.Object.createWithoutData('Post', request.object.id);
+  obj.disableAfterHook();
+  obj.set('foo', 'bar');
+  obj.save().then(function(obj) {
+    // 你的业务逻辑
+  }).catch(console.error);
+});
+```
+
+**提示**：云引擎 Node.js 环境从 [0.3.0](https://github.com/leancloud/leanengine-node-sdk/blob/master/CHANGELOG.md#v030-20151231) 开始支持 `object.disableBeforeHook()` 和 `object.disableAfterHook()`。
+
+
 {% endblock %}

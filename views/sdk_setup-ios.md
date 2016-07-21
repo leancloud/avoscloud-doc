@@ -4,7 +4,7 @@
 {% set code_import_sdk_core = "#import <AVOSCloud/AVOSCloud.h>" %}
 
 {% block libs_tool_automatic %}
-[CocoaPods](http://www.cocoapods.org/) 是开发 OS X 和 iOS 应用程序的一个第三方库的依赖管理工具，通过它可以定义自己的依赖关系（称作 pods），并且随着时间的推移，它会让整个开发环境中对第三方库的版本管理变得非常方便。具体可以参考 [CocoaPods 安装和使用教程](http://code4app.com/article/cocoapods-install-usage)。
+通过 [CocoaPods](http://www.cocoapods.org) 来安装可以最大化地简化安装过程。
 
 首先确保开发环境中已经安装了 Ruby（一般安装了 Xcode，Ruby 会被自动安装上），如果没有安装请执行以下命令行：
 
