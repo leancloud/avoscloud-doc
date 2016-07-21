@@ -201,6 +201,7 @@ Hook 函数本质上是云函数，但它有固定的名称，定义之后会**�
 - 通过控制台进行 [数据导入](dashboard_guide.html#本地数据导入_LeanCloud) 不会触发以下任何 hook 函数。
 - 使用 Hook 函数需要 [防止死循环调用](#防止死循环调用)。
 - `_Installation` 表暂不支持 Hook 函数。
+- Hook 函数只对当前应用的 Class 生效，[对绑定后的目标 Class 无效](app_data_share.html#云引擎_Hook_函数)。
 
 ### {{hook_before_save}}
 在创建新对象之前，可以对数据做一些清理或验证。例如，一条电影评论不能过长，否则界面上显示不开，需要将其截断至 140 个字符：
