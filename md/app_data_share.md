@@ -23,15 +23,16 @@
 
 但是，如果想修改 Schema（增加、删除列）、批量修改数据（删除 class 或者清除所有数据）、修改索引都需要到目标 Class 才可以操作，这是为了防止将一个 Class 共享给多个应用之后，意外修改破坏了其他应用。
 
-### Class 关联
+## Class 关联
 
 只有名称相同的 Class 进行绑定后才可以使用关联 Relation。
 
-比如将应用 A 的 Class `Action` 绑定到应用 B 的 `Action`，就可以创建 Relation。而将应用 A 的 Class `Action` 绑定到应用 B 的 `APP_B_Action`，则无法创建 Relation 关联。如果无法让应用之间的 Class 名称保持一致，就需要自行创建中间表来维护关联条件了。 
+例如：将应用 A 的 Class `Action` 绑定到应用 B 的 `Action`，就可以创建 Relation。而将应用 A 的 Class `Action` 绑定到应用 B 的 `APP_B_Action`，则无法创建 Relation 关联。如果无法让应用之间的 Class 名称保持一致，就需要自行创建中间表来维护关联条件了。
 
+## 云引擎 Hook 函数
 
+每个 Class 只能触发**其所属应用**的 hook 函数，不会触发所绑定的应用的 hook。
 
+例如：应用 A 的 Class `Action_A` 已与应用 B 的 `Action_B` 进行了绑定，应用 B 为 `Action_B` 设置了 `afterSave` hook。当向 `Action_A` 中写入数据时并不会触发 `Action_B` 的 `afterSave`。
 
-
-
-
+如果想让 `Action_A` 也触发相同的 hook 逻辑，则需要在应用 A 中部署同样的 `afterSave` hook。
