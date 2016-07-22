@@ -1765,7 +1765,7 @@ AVIMClient *currentClient = [[AVIMClient alloc] initWithClientId:@"Tom" tag:@"Mo
 将 `force` 设置为 `YES` 表示强制登录；设置为 `NO` 表示非强制登录。例如，如果希望实现强制登录，代码可以写成：
 
 ```objc
-self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+ self.client = [[AVIMClient alloc] initWithClientId:@"Tom" tag:@"Mobile"];
 
 AVIMClientOpenOption *option = [[AVIMClientOpenOption alloc] init];
 option.force = YES;
