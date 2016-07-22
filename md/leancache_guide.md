@@ -2,7 +2,7 @@
 
 <div style="max-width:200px;margin: 0 0 20px 0;"><img src="images/redislogo.svg" class="img-responsive" alt=""></div>
 
-LeanCache 使用 [Redis](http://redis.io/) 来提供高性能、高可用的 Key-Value 内存存储，主要用作缓存数据的存储，也可以用作持久化数据的存储。它非常适合用于以下场景：
+LeanCache 使用 [Redis](http://redis.io/) （3.0.x）来提供高性能、高可用的 Key-Value 内存存储，主要用作缓存数据的存储，也可以用作持久化数据的存储。它非常适合用于以下场景：
 
 * 某些数据量少，但是读写比例很高，比如某些应用的菜单可以通过后台调整，所有用户会频繁读取该信息。
 * 需要同步锁或者队列处理，比如秒杀、抢红包等场景。
