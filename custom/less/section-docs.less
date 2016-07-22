@@ -902,8 +902,29 @@ ul#toc,#toc li {
 .dl-cell {
   padding: 15px;
   margin-bottom: 20px;
+  margin-left: 20px;
   border: 1px solid @gray-lighter;
   border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 400px;
+  max-width: 600px;
+
+  .desc {
+    flex:1;
+    margin-bottom: 20px;
+    p{
+      margin: 0;
+    }
+  }
+  .download-option-wrap{
+    display:flex;
+    flex-wrap:wrap;
+  }
+  .download-option{
+    white-space: nowrap;
+  }
 
   h2 {
     margin: 0 0 10px !important;
@@ -922,7 +943,6 @@ ul#toc,#toc li {
 
   .dl-cell-btn {
     margin-right: 10px;
-    float: left;
 
     @media (max-width: @screen-xs-max) {
       margin-right: 0;
@@ -943,9 +963,6 @@ ul#toc,#toc li {
         color: @gray-lighter;
       }
 
-      .btn {
-        padding-left: 0;
-      }
 
       .icon-github {
         font-size: 20px;
