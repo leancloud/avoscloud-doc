@@ -36,6 +36,10 @@ cd python-getting-started
 git clone https://github.com/leancloud/slim-getting-started.git
 cd slim-getting-started
 ```
+```java
+git clone https://github.com/leancloud/java-war-getting-started.git
+cd java-war-getting-started
+```
 
 然后添加应用 appId 等信息到该项目：
 
@@ -55,6 +59,9 @@ sudo pip install -Ur requirements.txt
 ```
 ```php
 composer install
+```
+```java
+mvn package
 ```
 
 然后启动应用：
@@ -84,6 +91,24 @@ LeanEngine
 一个简单的「TODO 列表」示例
 ```
 ```python
+LeanEngine
+
+这是 LeanEngine 的示例应用
+
+一个简单的动态路由示例
+
+一个简单的「TODO 列表」示例
+```
+```php
+LeanEngine
+
+这是 LeanEngine 的示例应用
+
+当前时间：2016-07-25T14:55:17+08:00
+
+一个简单的「TODO 列表」示例
+```
+```java
 LeanEngine
 
 这是 LeanEngine 的示例应用
@@ -124,6 +149,16 @@ $app->get('/', function (Request $request, Response $response) {
         "currentTime" => new \DateTime(),
     ));
 });
+
+// ...
+```
+```java
+// ./src/main/webapp/WEB-INF/web.xml
+// ...
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
 
 // ...
 ```
