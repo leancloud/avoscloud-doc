@@ -38,6 +38,7 @@ npm install leancloud-realtime --save
 ```
 最后进行初始化：
 ```javascript
+// 在浏览器中直接加载时，SDK 暴露的所有的成员都挂载在 AV 命名空间下
 var Realtime = AV.Realtime;
 var realtime = new Realtime({
   appId: '{{appid}}',
@@ -64,6 +65,8 @@ const realtime = new Realtime({
 });
 ```
 
+SDK 暴露（export）的成员完整列表请参见：[SDK API 文档](https://leancloud.github.io/js-realtime-sdk/docs/module-leancloud-realtime.html)
+
 ### 富媒体消息插件
 如果需要使用 [富媒体消息](#富媒体消息) 中的 `ImageMessage`、`AudioMessage`、`VideoMessage`、`FileMessage` 或 `LocationMessage`，需要额外安装 leancloud-realtime-plugin-typed-messages 与 leancloud-storage：
 ```bash
@@ -86,6 +89,8 @@ var realtime = new Realtime({
   appId: '{{appid}}',
   plugins: [AV.TypedMessagesPlugin], // 注册富媒体消息插件
 });
+// 在浏览器中直接加载时，富媒体消息插件暴露的所有的成员都挂载在 AV 命名空间下
+var imageMessage = new AV.ImageMessage(file);
 ```
 
 如果是在 Node.js 中使用，需要按以下方法进行初始化：
@@ -93,13 +98,18 @@ var realtime = new Realtime({
 var AV = require('leancloud-storage');
 var Realtime = require('leancloud-realtime').Realtime;
 var TypedMessagesPlugin = require('leancloud-realtime-plugin-typed-messages').TypedMessagesPlugin;
+var ImageMessage = require('leancloud-realtime-plugin-typed-messages').ImageMessage;
 
 AV.initialize('{{appid}}', '{{appkey}}');
 var realtime = new Realtime({
   appId: '{{appid}}',
   plugins: [TypedMessagesPlugin], // 注册富媒体消息插件
 });
+var imageMessage = new ImageMessage(file);
 ```
+
+富媒体消息插件暴露（export）的成员完整列表请参见： [富媒体消息插件 API 文档](https://leancloud.github.io/js-realtime-sdk/plugins/typed-messages/docs/module-leancloud-realtime-plugin-typed-messages.html)
+
 
 ## 单聊
 
@@ -967,8 +977,6 @@ query.limit(20).containsMembers(['Tom']).find().then(function(conversations) {
 
 #### 条件查询
 
-##### 构建查询
-
 对话的条件查询需要注意的对话属性的存储结构，在对话的属性一章节我们介绍的对话的几个基本属性，这些属性都是 SDK 提供的默认属性，根据默认属性查询的构建如下：
 
 
@@ -1002,7 +1010,7 @@ query.greaterThan('attr.level', 5);
 
 条件查询又分为：比较查询、正则匹配查询、包含查询，以下会做分类演示。
 
-#### 比较查询
+##### 比较查询
 
 比较查询在一般的理解上都包含以下几种：
 
@@ -1039,7 +1047,7 @@ query.greaterThan('attr.age',18);
 ```
 
 
-#### 正则匹配查询
+##### 正则匹配查询
 
 
 匹配查询是指在 `ConversationQuery` 的查询条件中使用正则表达式来匹配数据。
@@ -1055,7 +1063,7 @@ query.matches('attr.language',/[\\u4e00-\\u9fa5]/);
 ```
 
 
-#### 包含查询
+##### 包含查询
 
 包含查询是指方法名字包含 `Contains` 单词的方法，例如查询关键字包含「教育」的对话：
 
@@ -1077,7 +1085,7 @@ query.withMembers(['Bob', 'Jerry']);
 ```
 
 
-#### 组合查询
+##### 组合查询
 
 组合查询的概念就是把诸多查询条件合并成一个查询，再交给 SDK 去云端进行查询。
 
@@ -1090,6 +1098,34 @@ query.withMembers(['Bob', 'Jerry']);
 query.contains('attr.keywords', '教育').lessThan('attr.age', 18);
 ```
 
+#### 查询结果选项
+
+##### 排序
+
+`ConversationQuery` 支持使用 `ascending`、`addAscending`、`descending`、`addDescending` 方法来对查询结果进行排序：
+
+```javascript
+// 对查询结果按照 name 升序，然后按照创建时间降序排序
+query.addAscending('name').addDescending('createdAt');
+```
+
+##### 精简模式
+
+普通对话最多可以容纳 500 个成员，在有些业务逻辑不需要对话的成员列表的情况下，可以使用 `ConversationQuery` 的 `compact` 方法指定查询为「精简模式」，返回的查询结果中则不会有成员列表（`members` 字段会是空数组），这有助于提升应用的性能同时减少流量消耗。
+
+```javascript
+query.compact(true);
+```
+
+##### 对话的最后一条消息
+
+对于一个聊天应用，一个典型的需求是在对话的列表界面显示最后一条消息，默认情况下，`ConversationQuery` 的查询结果是不带最后一条消息的，使用 `withLastMessagesRefreshed` 方法可以指定让查询结果带上最后一条消息：
+
+```javascript
+query.withLastMessagesRefreshed(true);
+```
+
+需要注意的是，这个选项真正的意义是「刷新对话的最后一条消息」。这意味着由于 SDK 缓存机制的存在，将这个选项设置为 `false` 查询得到的对话也还是有可能会存在最后一条消息的。
 
 #### 缓存查询
 
