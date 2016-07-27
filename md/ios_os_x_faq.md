@@ -68,3 +68,28 @@ pod 'AVOSCloudSNS'
 5. 执行 `pod install` 命令，安装新的动态库。
 
 完成以上几个步骤后，就能在真机上调试应用了。
+
+## 在使用 IM 服务时，是否允许在 `AVIMClientStatusOpened`  状态下进行  `openClient`  操作
+
+
+允许，SDK 会在进行 `openClient` 操作前判断当前 client 的状态，如果已经处于 `AVIMClientStatusOpened` 状态，则会直接执行相应的 callback 操作。
+
+比如以下操作也是允许的：
+
+
+ ```Objective-C
+//启动聊天
+- (void)startChat{
+    [self.imClient openWithClientId:kMyClient tag:kMyTag callback:^(BOOL succeeded, NSError *error) {
+        if (!succeeded) {
+            //登录失败，重新尝试登录
+            [self performSelector:@selector(startChat) withObject:nil afterDelay:2];
+        }else{
+            //登录成功 开始获取会话
+            [self getConversation];
+        }
+    }];
+}
+ ```
+
+
