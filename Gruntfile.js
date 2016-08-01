@@ -113,6 +113,7 @@ module.exports = function(grunt) {
         },
         layoutdir: 'templates/layouts/',
         layout: ['template.swig'],
+        node: grunt.option('theme'),
         flatten: true
       },
       md: {
@@ -228,8 +229,15 @@ module.exports = function(grunt) {
     nunjucks: {
       precompile: {
         baseDir: 'views',
-        src: 'views/*.md',
-        destDir: 'md'
+        src: ['views/*.md', 'views/start/*.md'],
+        destDir: 'md',
+        options:{
+          data:{
+            node: grunt.option('theme'),
+            appid: '{{appid}}',
+            appkey: '{{appkey}}'
+          }
+        }
       }
     },
 

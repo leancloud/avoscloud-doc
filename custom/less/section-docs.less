@@ -329,6 +329,7 @@ body {
   h4,
   h5,
   h6 {
+    .header-link;
 
     a[href^="#"] {
       position: relative;
@@ -373,6 +374,7 @@ body {
       position: relative;
 
       input {
+        width: 110px;
         border: none;
         border-radius: 0;
         height: 32px;
@@ -603,53 +605,34 @@ body {
   }
 }
 
-// Sidebar gradient mask
-.sidebar-affix-shadow {
-  .clearfix;
-
-  @media (max-width: @screen-xs-max) {
-    display: none;
+.sidebar-loading {
+  @size: 18px;
+  @weight: 2px;
+  @keyframes spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 
-  &:before,
-  &:after {
-    content: '';
-    position: fixed;
-    width: 100%;
-    z-index: 100;
-    // scrollbar width + border-right with
-    margin-left: -6px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity .2s ease;
-  }
+  position: fixed;
+  border-radius: 50%;
+  width: @size;
+  height: @size;
+  border: @weight solid fade(@gray, 10%);
+  border-top-color: @brand-primary;
+  top: 20px;
+  right: 20px;
+  animation: spin 1s infinite linear;
+  transition: opacity .2s ease .6s;
+  pointer-events: none;
+  opacity: 0;
 
-  &:before {
-    height: 30px;
-    top: 0;
-    background: linear-gradient(to bottom, #fff 0%, rgba(255, 255, 255, 0) 100%);
-  }
-
-  &:after {
-    height: 40px;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 100%);
+  &.on {
     opacity: 1;
   }
 
-  &.on {
-
-    &:before,
-    &:after {
-      opacity: 1;
-    }
-  }
-
-  &.bottom {
-
-    &:after {
-      opacity: 0 !important;
-    }
+  @media (max-width: @screen-sm-max) {
+    top: 10px;
+    right: 0;
   }
 }
 
@@ -902,8 +885,29 @@ ul#toc,#toc li {
 .dl-cell {
   padding: 15px;
   margin-bottom: 20px;
+  margin-left: 20px;
   border: 1px solid @gray-lighter;
   border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 400px;
+  max-width: 600px;
+
+  .desc {
+    flex:1;
+    margin-bottom: 20px;
+    p{
+      margin: 0;
+    }
+  }
+  .download-option-wrap{
+    display:flex;
+    flex-wrap:wrap;
+  }
+  .download-option{
+    white-space: nowrap;
+  }
 
   h2 {
     margin: 0 0 10px !important;
@@ -922,7 +926,6 @@ ul#toc,#toc li {
 
   .dl-cell-btn {
     margin-right: 10px;
-    float: left;
 
     @media (max-width: @screen-xs-max) {
       margin-right: 0;
@@ -943,9 +946,6 @@ ul#toc,#toc li {
         color: @gray-lighter;
       }
 
-      .btn {
-        padding-left: 0;
-      }
 
       .icon-github {
         font-size: 20px;
@@ -1265,6 +1265,10 @@ blockquote{
     font-size: @head-size;
     line-height: @head-size;
   }
+
+  .tc-footer{
+     position: relative;
+   }
 
   .comment-body {
     width: 100%;

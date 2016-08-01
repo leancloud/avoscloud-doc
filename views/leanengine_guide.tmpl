@@ -34,7 +34,11 @@
 
 {% block run_in_local_command %}{% endblock %}
 
+{% if node=='qcloud' %}
+窗口会提示输入 Master Key，该信息可以在 `控制台 / 设置 / 应用 Key` 中找到。
+{% else %}
 窗口会提示输入 Master Key，该信息可以在 [控制台 / 设置 / 应用 Key](/app.html?appid={{appid}}#/key) 中找到。
+{% endif %}
 
 <div class="callout callout-info">复制粘贴 Master Key 后，窗口不会有任何显示，直接按回车键确认即可。</div>
 
@@ -216,7 +220,12 @@ Hook 函数本质上是云函数，但它有固定的名称，定义之后会**�
 
 {% block afterSaveExample2 %}{% endblock %}
 
-如果 `afterSave` 函数调用失败，save 请求仍然会返回成功应答给客户端。`afterSave` 发生的任何错误，都将记录到云引擎日志里，可以到 [控制台 / 存储 / 云引擎 / 日志](https://leancloud.cn/cloud.html?appid={{appid}}#/log) 中查看。
+如果 `afterSave` 函数调用失败，save 请求仍然会返回成功应答给客户端。`afterSave` 发生的任何错误，都将记录到云引擎日志里。
+{% if node=='qcloud' %}
+可以到 `控制台 / 存储 / 云引擎 / 日志` 中查看。
+{% else %}
+可以到 [控制台 / 存储 / 云引擎 / 日志](https://leancloud.cn/cloud.html?appid={{appid}}#/log) 中查看。
+{% endif %}
 
 #### {{hook_before_update}}
 
@@ -344,7 +353,11 @@ AV.Cloud.afterUpdate('Post', function(request) {
 
 ## 云引擎管理控制台
 
+{% if node=='qcloud' %}
+首先，请进入 `控制台 /（选择应用）/ 存储 / 云引擎` 界面，可以看到左侧菜单：
+{% else %}
 首先，请进入 [控制台 /（选择应用）/ 存储 / 云引擎](/cloud.html?appid={{appid}}#/leannode) 界面，可以看到左侧菜单：
+{% endif %}
 
 菜单项|说明
 ---|---
@@ -506,7 +519,11 @@ git push -u origin master
 
 ![image](images/csdn_code3.png)
 
+{% if node=='qcloud' %}
+下一步，部署源码到预备环境，进入 `云引擎 / Git 部署` 菜单，点击「部署到开发环境」的部署按钮：
+{% else %}
 下一步，部署源码到预备环境，进入 [云引擎 / Git 部署](/cloud.html?appid={{appid}}#/deploy) 菜单，点击「部署到开发环境」的部署按钮：
+{% endif %}
 
 ![image](images/cloud_code_5.png)
 
@@ -587,9 +604,15 @@ ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA5EZmrZZjbKb07yipeSkL+Hm+9mZAqyMfPu6BTAib+RVy
 
 {% block timerExample %}{% endblock %}
 
+{% if node=='qcloud' %}
+部署云引擎之后，进入 `控制台 > 存储 > 云引擎 > 定时任务`，在右侧页面中选择 **创建定时器**，然后设定其所执行的函数名称、执行环境等等。
+
+定时器创建后，其状态为**未运行**，需要点击 <span class="label label-default">启用</span> 来激活。之后其执行日志可以通过 `其它 > 日志` 查看。
+{% else %}
 部署云引擎之后，进入 [控制台 > 存储 > 云引擎 > 定时任务](/cloud.html?appid={{appid}}#/task)，在右侧页面中选择 **创建定时器**，然后设定其所执行的函数名称、执行环境等等。
 
 定时器创建后，其状态为**未运行**，需要点击 <span class="label label-default">启用</span> 来激活。之后其执行日志可以通过 [其它 > 日志](/cloud.html?appid={{appid}}#/log) 查看。
+{% endif %}
 
 定时任务分为两类：
 
@@ -645,7 +668,11 @@ Cron 表达式的基本语法为：
 
 ### 错误信息
 
+{% if node=='qcloud' %}
+定时器执行后的日志会记录在 ｀控制台 > 存储 > 云引擎 > 其它 > 日志｀ 中，以下为常见的错误信息及原因。
+{% else %}
 定时器执行后的日志会记录在 [控制台 > 存储 > 云引擎 > 其它 > 日志](/cloud.html?appid={{appid}}#/log) 中，以下为常见的错误信息及原因。
+{% endif %}
 
 - **timerAction timed-out and no fallback available.**<br/>
   某个定时器触发的云函数，因 15 秒内没有响应而超时。
@@ -676,7 +703,11 @@ Cron 表达式的基本语法为：
 
 ## 日志
 
+{% if node=='qcloud' %}
+`云引擎 / 日志`，可以查看云引擎的部署和运行日志，还可以选择查看的日志级别：
+{% else %}
 [云引擎 / 日志](/cloud.html?appid={{appid}}#/log)，可以查看云引擎的部署和运行日志，还可以选择查看的日志级别：
+{% endif %}
 
 ![image](images/cloud_code_11.png)
 
@@ -696,7 +727,11 @@ Cron 表达式的基本语法为：
 
 ### 设置域名
 
+{% if node=='qcloud' %}
+首先，你需要到 `云引擎 / 设置` 页面找到 **Web 主机域名**，在这里填写你的域名：
+{% else %}
 首先，你需要到 [云引擎 / 设置](/cloud.html?appid={{appid}}#/conf) 页面找到 **Web 主机域名**，在这里填写你的域名：
+{% endif %}
 
 ![image](images/cloud_code_web_setting.png)
 

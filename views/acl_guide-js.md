@@ -1,6 +1,8 @@
 {% extends "./acl_guide.tmpl" %}
 
-{% block language_version %}JavaScript{% endblock %}
+{% set runAtServer = "true" %}
+{% set language = "JavaScript SDK" %}
+{% set platform = "浏览器端" %}
 {% block for_front_js %}
 ### 云引擎使用 ACL
 文档中使用的 `AV.User.current()` 这个方法仅仅针对浏览器端有效，在**云引擎中该接口无法使用**。
@@ -16,20 +18,6 @@
 
   // 新建一个 ACL 实例
   var acl = new AV.ACL();
-  acl.setPublicReadAccess(true);
-  acl.setWriteAccess(AV.User.current(),true);
-
-  // 将 ACL 实例赋予 Post 对象
-  post.setACL(acl);
-  post.save();
-```
-```ts
-  // 新建一个帖子对象
-  let post : AV.Object = new AV.Object("Post");
-  post.set('title','大家好，我是新人');
-
-  // 新建一个 ACL 实例
-  let acl : AV.ACL = new AV.ACL();
   acl.setPublicReadAccess(true);
   acl.setWriteAccess(AV.User.current(),true);
 
@@ -61,29 +49,6 @@
     // 保存到云端
     post.save();
   }, function(error) {
-    // 编写处理 error 的逻辑
-  });
-```
-```ts
-  // 创建一个针对 User 的查询
-  let query = new AV.Query(AV.User);
-  query.get<AV.User>('55098d49e4b02ad5826831f6').then((otherUser) =>{
-    // 新建一个帖子对象
-    let post = new AV.Object('Post');
-    post.set('title','大家好，我是新人');
-
-    // 新建一个 ACL 实例
-    var acl = new AV.ACL();
-    acl.setPublicReadAccess(true);
-    acl.setWriteAccess(AV.User.current(),true);
-    acl.setWriteAccess(otherUser,true);
-
-    // 将 ACL 实例赋予 Post 对象
-    post.setACL(acl);
-
-    // 保存到云端
-    post.save();
-  },error =>{
     // 编写处理 error 的逻辑
   });
 ```
@@ -535,6 +500,15 @@
             // 保存失败
       });
    });
+```
+{% endblock %}
+
+{% block sdk_init_user_masterKey %}
+在 Node.js 运行时中可以使用如下代码初始化 SDK：
+
+```js
+  AV.initialize(APP_ID, APP_KEY, MASTER_KEY);
+  AV.Cloud.useMasterKey();
 ```
 {% endblock %}
 

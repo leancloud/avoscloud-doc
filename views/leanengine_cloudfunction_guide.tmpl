@@ -19,6 +19,15 @@
 
 如果还不知道如何创建云引擎项目，本地调试并部署到云端，请阅读 [云引擎快速入门](leanengine_quickstart.html)。
 
+## 多语言支持
+
+云引擎支持多种语言的运行环境，你可以选择自己熟悉的语言开发应用：
+
+- [Node.js](leanengine_cloudfunction_guide-node.html)
+- [Python](leanengine_guide-python.html)
+- [PHP](leanengine_cloudfunction_guide-php.html)
+- [Java](leanengine_cloudfunction_guide-java.html)
+
 ## 云函数
 
 示例项目中 {{ cloud_func_file }} 文件定义了一个很简单的 `hello` 云函数。现在让我们看一个明显较复杂的例子来展示云引擎的用途。在云端进行计算的一个重要理由是，你不需要将大量的数据发送到设备上做计算，而是将这些计算放到服务端，并返回结果这一点点信息就好。
@@ -201,6 +210,7 @@ Hook 函数本质上是云函数，但它有固定的名称，定义之后会**�
 - 通过控制台进行 [数据导入](dashboard_guide.html#本地数据导入_LeanCloud) 不会触发以下任何 hook 函数。
 - 使用 Hook 函数需要 [防止死循环调用](#防止死循环调用)。
 - `_Installation` 表暂不支持 Hook 函数。
+- Hook 函数只对当前应用的 Class 生效，[对绑定后的目标 Class 无效](app_data_share.html#云引擎_Hook_函数)。
 
 ### {{hook_before_save}}
 在创建新对象之前，可以对数据做一些清理或验证。例如，一条电影评论不能过长，否则界面上显示不开，需要将其截断至 140 个字符：
@@ -217,7 +227,11 @@ Hook 函数本质上是云函数，但它有固定的名称，定义之后会**�
 
 {% block afterSaveExample2 %}{% endblock %}
 
+{% if node=='qcloud' %}
+如果 `afterSave` 函数调用失败，save 请求仍然会返回成功应答给客户端。`afterSave` 发生的任何错误，都将记录到云引擎日志里，可以到 `控制台 > 存储 > 云引擎 > 日志` 中查看。
+{% else %}
 如果 `afterSave` 函数调用失败，save 请求仍然会返回成功应答给客户端。`afterSave` 发生的任何错误，都将记录到云引擎日志里，可以到 [控制台 > 存储 > 云引擎 > 日志](https://leancloud.cn/cloud.html?appid={{appid}}#/log) 中查看。
+{% endif %}
 
 ### {{hook_before_update}}
 
@@ -272,53 +286,6 @@ Hook 函数本质上是云函数，但它有固定的名称，定义之后会**�
 - `_conversationRemove`
 
 {% block hookDeadLoop %}
-
-### 防止死循环调用
-
-在实际使用中有这样一种场景：在 `Post` 类的 `afterUpdate` Hook 函数中，对传入的 `Post` 对象做了修改并且保存，而这个保存动作又会再次触发 `afterUpdate`，由此形成死循环。针对这种情况，我们为所有 Hook 函数传入的 `request.object` 对象做了处理，以阻止死循环调用的产生。
-
-不过请注意，以下情况还需要开发者自行处理：
-
-- 对传入的 `request.object` 对象进行 `fetch` 操作。
-- 重新构造传入的 `request.object` 对象，如使用 `AV.Object.createWithoutData()` 方法。
-
-对于使用上述方式产生的对象，请根据需要自行调用以下 API：
-
-- `object.disableBeforeHook()` 或
-- `object.disableAfterHook()`
-
-这样，对象的保存或删除动作就不会再次触发相关的 Hook 函数。
-
-```javascript
-AV.Cloud.afterUpdate('Post', function(request) {
-  // 直接修改并保存对象不会再次触发 afterUpdate Hook 函数
-  request.object.set('foo', 'bar');
-  request.object.save().then(function(obj) {
-    // 你的业务逻辑
-  }).catch(console.error);
-
-  // 如果有 fetch 操作，则需要在新获得的对象上调用相关的 disable 方法
-  // 来确保不会再次触发 Hook 函数
-  request.object.fetch().then(function(obj) {
-    obj.disableAfterHook();
-    obj.set('foo', 'bar');
-    return obj.save();
-  }).then(function(obj) {
-    // 你的业务逻辑
-  }).catch(console.error);
-
-  // 如果是其他方式构建对象，则需要在新构建的对象上调用相关的 disable 方法
-  // 来确保不会再次触发 Hook 函数
-  var obj = AV.Object.createWithoutData('Post', request.object.id);
-  obj.disableAfterHook();
-  obj.set('foo', 'bar');
-  obj.save().then(function(obj) {
-    // 你的业务逻辑
-  }).catch(console.error);
-});
-```
-
-**提示**：云引擎 Node.js 环境从 [0.3.0](https://github.com/leancloud/leanengine-node-sdk/blob/master/CHANGELOG.md#v030-20151231) 开始支持 `object.disableBeforeHook()` 和 `object.disableAfterHook()`。
 {% endblock %}
 
 ### Hook 函数错误响应码
@@ -343,11 +310,19 @@ Hook 函数的超时时间为 3 秒。如果 Hook 函数被其他的云函数调
 
 定时任务是普通的云函数，也会遇到 [超时问题](#云函数超时)，具体请参考 [超时处理方案](#超时的处理方案)。
 
+{% if node=='qcloud' %}
+部署云引擎之后，进入 `控制台 > 存储 > 云引擎 > 定时任务`，点击 **创建定时器**，然后设定执行的函数名称、执行环境等等。例如定义一个打印循环打印日志的任务 `log_timer`：
+{% else %}
 部署云引擎之后，进入 [控制台 > 存储 > 云引擎 > 定时任务](/cloud.html?appid={{appid}}#/task)，点击 **创建定时器**，然后设定执行的函数名称、执行环境等等。例如定义一个打印循环打印日志的任务 `log_timer`：
+{% endif %}
 
 {% block timerExample %}{% endblock %}
 
+{% if node=='qcloud' %}
+定时器创建后，其状态为**未运行**，需要点击 <span class="label label-default">启用</span> 来激活。之后其执行日志可以通过 `日志` 查看。
+{% else %}
 定时器创建后，其状态为**未运行**，需要点击 <span class="label label-default">启用</span> 来激活。之后其执行日志可以通过 [日志](/cloud.html?appid={{appid}}#/log) 查看。
+{% endif %}
 
 定时任务分为两类：
 
@@ -407,7 +382,11 @@ Cron 表达式的基本语法为：
 
 ### 错误信息
 
+{% if node=='qcloud' %}
+定时器执行后的日志会记录在 `控制台 > 存储 > 云引擎 > 其它 > 日志` 中，以下为常见的错误信息及原因。
+{% else %}
 定时器执行后的日志会记录在 [控制台 > 存储 > 云引擎 > 其它 > 日志](/cloud.html?appid={{appid}}#/log) 中，以下为常见的错误信息及原因。
+{% endif %}
 
 - **timerAction timed-out and no fallback available.**<br/>
   某个定时器触发的云函数，因 15 秒内没有响应而超时（可参考 [对云函数调用超时的处理](#超时的处理方案)）。

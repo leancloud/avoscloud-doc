@@ -11,15 +11,23 @@
 
 {% block libs_tool_automatic %}{% endblock %}
 
+{% block text_manual_setup %}
 ### 手动安装
 
 <a class="btn btn-default" target="_blank" href="sdk_down.html">下载 SDK</a>
 
 {% block import_sdk %}{% endblock %}
 
+{% endblock %}
+
 ## 初始化
 
-首先来获取 App ID 以及 App Key。打开 [控制台 / 设置 / 应用 Key](/app.html?appid={{appid}}#/key)，如下图：
+首先来获取 App ID 以及 App Key。
+{% if node=='qcloud' %}
+打开 `控制台 / 设置 / 应用 Key`，如下图：
+{% else %}
+打开 [控制台 / 设置 / 应用 Key](/app.html?appid={{appid}}#/key)，如下图：
+{% endif %}
 
 ![setting_app_key](images/setting_app_key.png)
 {% block init_with_app_keys %}{% endblock %}
@@ -58,7 +66,11 @@ PING api.leancloud.cn (120.132.49.239): 56 data bytes
 
 {% block save_a_hello_world %}{% endblock %}
 
+{% if node=='qcloud' %}
+然后打开 `控制台 > 存储 > 数据 > TestObject`，如果看到如下内容，说明 SDK 已经正确地执行了上述代码，安装完毕。
+{% else %}
 然后打开 [控制台 > 存储 > 数据 > TestObject](/data.html?appid={{appid}}#/TestObject)，如果看到如下内容，说明 SDK 已经正确地执行了上述代码，安装完毕。
+{% endif %}
 
 ![testobject_saved](images/testobject_saved.png)
 

@@ -73,7 +73,10 @@ app.get('/1.1/_ops/functions/metadatas', function(req, res) {
 {% endblock %}
 
 {% block supported_frameworks %}
+
 {{fullName}} 支持任意 [Node.js](https://nodejs.org) 的 Web 框架，你可以使用你最熟悉的框架进行开发，或者不使用任何框架，直接使用 Node.js 的 http 模块进行开发。但是请保证通过执行 `server.js` 能够启动你的项目，启动之后程序监听的端口为 `process.env.LEANCLOUD_APP_PORT`。
+
+#### Express
 
 ```js
 var express = require('express');
@@ -82,6 +85,20 @@ var AV = require('leanengine');
 var app = express();
 
 app.use(AV.express());
+app.listen(process.env.LEANCLOUD_APP_PORT);
+```
+
+#### Koa
+
+使用 [Koa](http://koajs.com/) 时建议按照 [运行环境定制](#运行环境定制) 将 Node.js 的版本设置为 `4.x`。
+
+```js
+var koa = require('koa');
+var AV = require('leanengine');
+
+var app = koa();
+
+app.use(AV.koa());
 app.listen(process.env.LEANCLOUD_APP_PORT);
 ```
 {% endblock %}
@@ -204,6 +221,13 @@ var app = express();
 app.use(AV.Cloud.CookieSession({ secret: 'my secret', maxAge: 3600000, fetchUser: true }));
 ```
 
+Koa 需要添加一个 `framework: 'koa'` 的参数：
+
+```javascript
+var app = koa();
+app.use(AV.Cloud.CookieSession({ framework: 'koa', secret: 'my secret', maxAge: 3600000, fetchUser: true }));
+```
+
 你需要传入一个 secret 用于加密 Cookie（必须提供），这个中间件会将 `AV.User` 的登录状态信息记录到 Cookie 中，用户下次访问时自动检查用户是否已经登录，如果已经登录，可以通过 `req.currentUser` 获取当前登录用户。
 
 `AV.Cloud.CookieSession` 支持的选项包括：
@@ -286,9 +310,19 @@ app.get('/logout', function(req, res) {
 {% endblock %}
 
 {% block https_redirect %}
+
+Express:
+
 ```javascript
 app.enable('trust proxy');
 app.use(AV.Cloud.HttpsRedirect());
+```
+
+Koa:
+
+```javascript
+app.proxy = true;
+app.use(AV.Cloud.HttpsRedirect({framework: 'koa'}));
 ```
 {% endblock %}
 
@@ -306,9 +340,19 @@ app.use(AV.Cloud.HttpsRedirect());
 ...
 ```
 
+你还可以将版本设置为 `*` 来指定总是使用最新版本的 Node.js（目前是 Node.js 6）。
+
 **提示**：{{productName}} 0.12 和 4.x 差异较大，建议升级后充分测试。
 
 **提示**：如果 {{productName}} 不支持所指定的版本，则会默认使用 {{platformName}} 0.12 版本。
+{% endblock %}
+
+{% block code_calling_custom_variables %}
+```javascript
+// 在云引擎 Node.js 环境中使用自定义的环境变量
+var MY_CUSTOM_VARIABLE = process.env.MY_CUSTOM_VARIABLE;
+console.log(MY_CUSTOM_VARIABLE);
+```
 {% endblock %}
 
 {% block get_env %}
@@ -322,4 +366,46 @@ if (NODE_ENV === 'development') {
   // 当前环境为「预备环境」
 }
 ```
+{% endblock %}
+
+{% block section_timezone %}
+## 时区问题
+
+因为某些原因，云引擎 2.0 默认使用的是 UTC 时间，这给很多开发者带来了困惑，所以我们着重讨论下时区问题。
+
+比如有这样一个时间：`2015-05-05T06:15:22.024Z` (ISO 8601 表示法)，最后末尾的 `Z` 表示该时间是 UTC 时间。
+
+上面的时间等价于：`2015-05-05T14:15:22.024+0800`，注意此时末尾是 `+0800` 表示该时间是东八区时间。这两个时间的「小时」部分相差了 8 小时。
+
+### 时区问题产生的原因
+
+很多开发者在时间处理上会忽略「时区」标志，导致最后总是莫名其妙的出现 8 小时的偏差。
+
+【场景一】某开发者开发的应用使用云引擎的主机托管功能做了一个网站，其中有时间格式的表单提交。某用户使用浏览器访问该网站，提交表单，时间格式为：`2015-05-05 14:15:22.024`，注意该时间没有「时区」标志。因为这个时间是浏览器生成的，而该用户浏览器上的时间通常是东八区时间，所以该业务数据希望表达的时间是「东八区的 14 点」。
+
+该时间 `2015-05-05 14:15:22.024` 提交到服务器，被转换为 Date 类型（JavaScript 代码：`new Date('2015-05-05 14:15:22.024')`）。因为云引擎 2.0 使用的是 UTC 时间，所以该时间会被处理为 `2015-05-05T14:15:22.024Z`，即「UTC 时间的 14 点」。导致最后获得的时间和期望时间相差了 8 小时。
+
+解决上面的办法很简单：时间格式带上时区标志。即浏览器上传时间时使用 `2015-05-05T14:15:22.024+0800`，这样不管服务端默认使用什么时区，带有时区的时间格式转换的 Date 都不会有歧义。
+
+【场景二】从数据库获取某记录的 `createdAt` 属性，假设值为：`2015-04-09T03:35:09.678Z`。因为云引擎默认时区是 UTC，所以一些时间函数的返回结果如下：
+
+函数|结果
+---|---
+`toISOString`|2015-04-09T03:35:09.678Z
+`toLocaleString`|Thu Apr 09 2015 03:35:09 GMT+0000 (UTC)
+`toUTCString`|Thu, 09 Apr 2015 03:35:09 GMT
+`toString`|Thu Apr 09 2015 03:35:09 GMT+0000 (UTC)
+`getHours`|3，如果将 getHours 的结果返回给浏览器，或者作为业务数据使用，则会出现 8 小时的偏差。
+
+如果需要获取小时数据，解决办法是使用第三方的组件，比如 [moment-timezone](http://momentjs.com/timezone/)，通过下面的方式可以获得东八区的小时时间：
+
+```javascript
+var time = moment(obj.createdAt).tz('Asia/Shanghai');
+console.log('toString', time.toString());
+console.log('getHours', time.hours());
+```
+
+### 云引擎 2.0 和云引擎时区的差异
+
+为了方便大家的使用，更加符合通常的习惯，云引擎运行时环境（无沙箱的 Node.js 环境和 Python 环境）都是使用**东八区**作为默认时区。当然，我们仍然建议程序的时间字符串带有时区标志。
 {% endblock %}

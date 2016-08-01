@@ -28,11 +28,9 @@ $ cd python-getting-started
 1. 申请渠道参数，并配置 BeeCloud 各个支付渠道的参数，此处请参考 [BeeCloud 文档 &middot; 渠道参数帮助页](https://beecloud.cn/doc/payapply/?index=0)。BeeCloud 中配置参数需要<u>完成企业认证</u>后才能填写！
 1. 激活「秒支付 Button」功能，进入 APP > **设置**  > **秒支付 Button**：
   
-  ![](http://7xavqo.com1.z0.glb.clouddn.com/spay-button-before.png)
+  ![](http://beeclouddoc.qiniudn.com/jsbutton_leancloud1.png)
 
-  点选 **支付渠道** 开启该支付渠道。同时还可以调整你需要的渠道菜单的显示顺序，点击 **保存** 后会生成 appid 对应的 script 标签。需要将此 script 标签放到<u>任何需要使用秒支付 Button 的网页里</u>。
-
-  ![](http://7xavqo.com1.z0.glb.clouddn.com/spay-button-after.png) 
+  拖动 **支付渠道** 开启该支付渠道。同时还可以调整你需要的渠道菜单的显示顺序，点击 **保存** 后会生成 appid 对应的 script 标签。需要将此 script 标签放到<u>任何需要使用秒支付 Button 的网页里</u>。
 
 ## 接入秒支付 Button 实现收款
 
@@ -44,7 +42,6 @@ $ cd python-getting-started
 
 ```html
 <script id='spay-script' src='https://jspay.beecloud.cn/1/pay/jsbutton/returnscripts?appId=xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx'></script>
-    <script>
 ```
 
 然后调用 script 中包含的 `BC.Click()` 方法，进行支付。
@@ -134,7 +131,7 @@ JavaScript 传递的参数中 sign 比较特殊，用来保证订单信息的完
         if (typeof BC == "undefined") {
             if (document.addEventListener) { // 大部分浏览器
                 document.addEventListener('beecloud:onready', bcPay, false);
-            } else if (document.attachEvent) { // 兼容 IE 11 之前的版本
+            } else if (document.attachEvent) { // 兼容 IE11 之前的版本
                 document.attachEvent('beecloud:onready', bcPay);
             }
         } else {
@@ -298,7 +295,7 @@ def app_accept_webhook():
 <dt>是否支持个人开发者？</dt>
 <dd>不支持。目前 BeeCloud 的服务仅支持证照齐全的企业，主要因为个人无法在支付渠道方（例如支付宝
 、微信支付等）开通账号。</dd>
-<dt>微信公众号支付无法调用</dt>
+<dt>微信公众号支付无法调起</dt>
 <dd>请按照以下步骤进行排查：
 <ol><li>检查微信公众号后台是否正确设置了支付域名。</li>
 <li>检查微信公众号后台是否正确设置了用户信息获取授权域名。</li>

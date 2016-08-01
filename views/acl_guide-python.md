@@ -1,6 +1,8 @@
 {% extends "./acl_guide.tmpl" %}
 
-{% block language_version %}Python{% endblock %}
+{% set language = "Python" %}
+{% set runAtServer = "true" %}
+{% set platform = "Python SDK" %}
 {% block link_to_acl_quickStart %}[权限管理以及 ACL 快速指南](acl_quick_start-python.html){% endblock %}
 {% block create_post_set_acl_for_single_user %}
 
@@ -298,4 +300,13 @@ mobile_post.save()
 digital_post.save()
 ```
 
+{% endblock %}
+
+{% block sdk_init_user_masterKey %}
+在 Python 中可以使用如下代码初始化 SDK：
+
+```py
+  # 第一个参数是 AppId，第二个是 Master Key。 
+  leancloud.init("appId", master_key="masterKey")
+```
 {% endblock %}

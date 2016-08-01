@@ -89,7 +89,11 @@ xml2js: "0.4.4"
 {% block download_skeleton %}
 ### 下载项目框架
 
+{% if node=='qcloud' %}
+你可以在 `云引擎 / 设置` 页面下载到项目框架：
+{% else %}
 你可以在 [云引擎 / 设置](/cloud.html?appid={{appid}}#/conf) 页面下载到项目框架：
+{% endif %}
 
 ![image](images/cloud_code_skeleton.png)
 
@@ -869,7 +873,11 @@ name.isACoolName('Skippy'); // 返回true;
 name.coolNames; // 未定义.
 ```
 
+{% if node=='qcloud' %}
+提示，你可以利用 `console.log` 来打印这几个调用的返回值到日志，在 `控制台 / 存储 / 云引擎 / 日志` 中查看。
+{% else %}
 提示，你可以利用 `console.log` 来打印这几个调用的返回值到日志，在 [控制台 / 存储 / 云引擎 / 日志](/cloud.html?appid={{appid}}#/log) 中查看。
+{% endif %}
 
 name 模块包含一个名为 `isACoolName` 的函数。`require` 接收的路径是相对于你的云引擎项目的根路径，并且只限 `cloud/` 目录下的模块可以被加载。
 

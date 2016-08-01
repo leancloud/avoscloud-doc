@@ -44,7 +44,10 @@ def _prepare_local_docs(target):
     else:
       local("npm install -d");
       # local("cnpm install -d");
-    local("grunt build")
+    if target == 'qcloud':
+      local("grunt build --theme=qcloud");
+    else:
+      local("grunt build ");
 #    local("mkdir dist/api")
 #    local("cp -rfv api/* dist/api/");
     local("cd dist ; tar zcvf leancloud-docs.tar.gz ./* ; cd ..")

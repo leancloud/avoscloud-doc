@@ -1,7 +1,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+{% if node == 'qcloud' %}
+<link rel="icon" href="images/tab.ico" type="image/x-icon">
+{% endif %}
 <title>LeanCloud 文档</title>
 <script src="//cdn1.lncld.net/static/js/av-mini-0.5.4.js"></script>
 <!-- build:js custom/js/docs-all.js -->
@@ -22,5 +24,20 @@
 <script src="custom/js/demo.js"></script>
 <!-- endbuild -->
 
+<script type='text/javascript'>
+      var _vds = _vds || [];
+      window._vds = _vds;
+      (function(){
+        _vds.push(['setAccountId', 'a268202b003f2516']);
+        (function() {
+          var vds = document.createElement('script');
+          vds.type='text/javascript';
+          vds.async = true;
+          vds.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'dn-growing.qbox.me/vds.js';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(vds, s);
+        })();
+      })();
+  </script>
 
 <link rel="stylesheet" type="text/css" href="custom/css/app-docs.css?githubv1">

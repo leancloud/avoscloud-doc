@@ -259,7 +259,7 @@ PHP 云引擎暂不支持其它版本。
 
 {% block get_env %}
 ```php
-$env = getenv("LC_APP_ENV");
+$env = getenv("LEANCLOUD_APP_ENV");
 if ($env === "development") {
     // 当前环境为「开发环境」，是由命令行工具启动的
 } else if ($env === "production") {
