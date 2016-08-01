@@ -2081,7 +2081,7 @@ tom.open(new AVIMClientCallback(){
       List<String> targetIds, String action) throws SignatureException;
 ```
 
-`createSignature` 函数会在用户登录的时候被调用，`createConversationSignature` 会在对话创建/加入、邀请成员、踢出成员等操作时被调用。
+`createSignature` 函数会在用户登录、对话创建的时候被调用，`createConversationSignature` 会在对话加入成员、邀请成员、踢出成员等操作时被调用。
 
 你需要做的就是按照前文所述的签名算法实现签名，其中 `Signature` 声明如下：
 
