@@ -683,7 +683,7 @@ curl -X DELETE \
 {% endif %}
 * Apple 对推送消息大小有限制，对 iOS 推送请尽量缩小要发送的数据大小，否则会被截断。详情请参看 [APNs 文档](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/APNsProviderAPI.html#//apple_ref/doc/uid/TP40008194-CH101-SW1)。
 * 如果使用了 Android 的混合推送，请注意小米推送和华为推送均对消息大小有限制。为保证推送消息能被正常发送，我们要求 data + channels 参数须小于 4096 字节，超过限制会导致推送无法正常发送，请尽量减小发送数据大小。
-* 对于 slient 参数不为 true 的通知栏消息来说，title 必须小于 16 个字符，alert 必须小于 128 个字符。对于小米推送如果没有填写 title 我们会取 alert 中前五个字符作为 title。
+* 对于 silent 参数不为 true 的通知栏消息来说，title 必须小于 16 个字符，alert 必须小于 128 个字符。对于小米推送如果没有填写 title 我们会取 alert 中前五个字符作为 title。
 
 {% if node=='qcloud' %}
 如果推送失败，在 `控制台 / 消息 / 推送记录` 的“状态”一栏中会看到错误提示。
