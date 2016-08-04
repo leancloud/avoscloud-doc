@@ -808,7 +808,7 @@
 
 {% block link_to_relation_guide_doc %}
 
-[Java 数据库设计指南](relation_guide-java.html)
+[Java 数据模型设计指南](relation_guide-java.html)
 {% endblock %}
 
 {% block code_query_comment_include_todoFolder %}
