@@ -2,7 +2,7 @@
 
 {% set runAtServer = "true" %}
 {% set language = "JavaScript SDK" %}
-{% set platform = "浏览器端" %}
+{% set platform = "JavaScript" %}
 {% block for_front_js %}
 ### 云引擎使用 ACL
 文档中使用的 `AV.User.current()` 这个方法仅仅针对浏览器端有效，在**云引擎中该接口无法使用**。

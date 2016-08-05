@@ -4,6 +4,13 @@
 
 # {{platform}} 数据模型设计指南
 
+## 其他语言代码示例
+{% if platform != 'iOS / OS X' %}* [iOS / OS X](relation_guide-ios.html){% else %}* iOS / OS X{% endif %}
+{% if platform != 'Android' %}* [Android](relation_guide-android.html){% else %}* Android{% endif %}
+{% if platform != 'JavaScript' %}* [JavaScript](relation_guide-js.html){% else %}* JavaScript{% endif %}
+{% if platform != 'Python' %}* [Python](relation_guide-python.html){% else %}* Python{% endif %}
+
+## 简介
 数据对象之间存在 3 种类型的关系。一对一关系将一个对象与另一个对象关联，一对多关系是一个对象关联多个对象，多对多关系则用来实现大量对象之间的复杂关系。我们支持 4 种方式来构建对象之间的关系：
 
 1. Pointers（适合一对一、一对多关系）
