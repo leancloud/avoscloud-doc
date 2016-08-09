@@ -368,6 +368,31 @@ if (NODE_ENV === 'development') {
 ```
 {% endblock %}
 
+{% block loggerExample %}
+```javascript
+console.log('hello');
+console.error('some error!')
+```
+{% endblock %}
+
+{% block loggerExtraDescription %}
+你可以通过设置一个 `DEBUG=leancloud:request` 的环境变量来打印由 LeanCloud SDK 发出的网络请求。在本地调试时你可以通过这样的命令启动程序：
+
+```bash
+env DEBUG=leancloud:request lean up
+```
+
+当有对 LeanCloud 的调用时，你可以看到类似这样的日志：
+
+```
+leancloud:request request(0) +0ms GET https://api.leancloud.cn/1.1/classes/Todo?&where=%7B%7D&order=-createdAt { where: '{}', order: '-createdAt' }
+leancloud:request response(0) +220ms 200 {"results":[{"content":"1","createdAt":"2016-08-09T06:18:13.028Z","updatedAt":"2016-08-09T06:18:13.028Z","objectId":"57a975a55bbb5000643fb690"}]}
+```
+
+我们不建议在线上生产环境开启这个日志，否则将会打印大量的日志。
+
+{% endblock %}
+
 {% block section_timezone %}
 ## 时区问题
 
