@@ -1165,7 +1165,7 @@ function uploadFile (req, res) {
 {% block code_query_by_cql %}
 
 ```js
-  var cql = 'select * from %@ where status = 1';
+  var cql = 'select * from Todo where status = 1';
   AV.Query.doCloudQuery(cql).then(function (data) {
       // results 即为查询结果，它是一个 AV.Object 数组
       var results = data.results;
@@ -1185,7 +1185,7 @@ function uploadFile (req, res) {
 
 ```js
   // 带有占位符的 cql 语句
-  var cql = 'select * from %@ where status = ? and priority = ?';
+  var cql = 'select * from Todo where status = ? and priority = ?';
   var pvalues = [0, 1];
   AV.Query.doCloudQuery(cql, pvalues).then(function (data) {
       // results 即为查询结果，它是一个 AV.Object 数组
@@ -1293,6 +1293,17 @@ function uploadFile (req, res) {
 
 其他的平台可以参考如上代码。
 
+{% endblock %}
+
+{% block code_send_verify_email %}
+
+```js
+  AV.User.requestEmailVerfiy('abc@xyz.com').then(function (result) {
+      console.log(JSON.stringify(result));
+  }, function (error) {
+      console.log(JSON.stringify(error));
+  });
+```
 {% endblock %}
 
 {% block code_user_logIn_with_username_and_password %}

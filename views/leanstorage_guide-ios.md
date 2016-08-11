@@ -1177,6 +1177,16 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 
 {% set link_to_sms_guide_doc = '[iOS / OS X 短信服务使用指南](sms_guide-ios.html#注册验证)' %}
 
+{% block code_send_verify_email %}
+
+```objc
+    [AVUser requestEmailVerify:@"abc@xyz.com" withBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"请求重发验证邮件成功");
+        }
+    }];
+```
+{% endblock %}
 {% block code_send_sms_code_for_loginOrSignup %}
 
 ```objc

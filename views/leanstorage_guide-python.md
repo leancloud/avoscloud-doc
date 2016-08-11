@@ -1210,6 +1210,13 @@ leancloud.User.request_password_reset('tom-test@gmail.com')
 ```
 {% endblock %}
 
+{% block code_send_verify_email %}
+
+```python
+   //待补充
+```
+{% endblock %}
+
 {% block code_reset_password_by_mobilephoneNumber %}
 
 ``` python
@@ -1381,5 +1388,6 @@ class MyUser(leancloud.User):
 {% block text_work_in_background %}{% endblock %}
 {% block text_data_protocol %}{% endblock %}
 {% block save_eventually %}{% endblock %}
+
 
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

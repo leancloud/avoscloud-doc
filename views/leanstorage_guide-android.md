@@ -1317,6 +1317,13 @@ fetchAllInBackground()
 ```
 {% endblock %}
 
+{% block code_send_verify_email %}
+
+```java
+   //待补充
+```
+{% endblock %}
+
 {% block code_reset_password_by_email %}
 
 ``` java

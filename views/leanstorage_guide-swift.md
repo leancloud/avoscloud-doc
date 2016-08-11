@@ -1123,6 +1123,22 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 ```
 {% endblock %}
 
+{% block code_send_verify_email %}
+
+```swift
+    LCUser.requestVerificationMail(email: "abc@xyz.com") { result in
+        switch result {
+        case .Success:
+            // ...
+            break
+        case .Failure(let error):
+            // ...
+            break
+        }
+    }
+```
+{% endblock %}
+
 {% block code_user_logIn_with_username_and_password %}
 
 ```swift
