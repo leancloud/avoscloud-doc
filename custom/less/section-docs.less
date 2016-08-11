@@ -7,7 +7,7 @@
 @internal-link-color: #78909C;
 
 .header-link() {
-  color: @brand-primary!important;
+  color: @brand-primary;
   border: none!important;
 
   &:before {
@@ -170,11 +170,8 @@ body {
       font-style: normal;
     }
   }
-}
 
-// Tables
-.doc-content {
-
+  // Tables
   table {
     display: table;
     margin: 1.8em 0;
@@ -227,14 +224,9 @@ body {
     tbody > tr:first-child th {
       border-bottom: none;
     }
-
   }
 
-}
-
-// Headings
-.doc-content {
-
+  // Headings
   > h1 {
     font-size: 32px;
     font-weight: 300;
@@ -349,6 +341,7 @@ body {
     }
   }
 }
+
 
 // Nav
 .dashboard-subnav.navbar {

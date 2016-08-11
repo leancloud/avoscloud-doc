@@ -3,6 +3,19 @@
 {% set platform    = "JavaScript" %}
 {% set ops_include = "includeKey" %}
 
+{% block code_save_student_family_address %}
+
+```js
+    // 学生 Tom
+    var studentTom = new AV.Object('Student');
+    studentTom.set('name', 'Tom');
+    var addr = { "city": "北京", "address": "西城区西长安街 1 号", "postcode":"100017" };
+    studentTom.set('address', addr);
+    studentTom.save();
+```
+
+{% endblock %}
+
 {% block code_city_point_to_province %}
 
 ```js

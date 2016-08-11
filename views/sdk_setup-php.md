@@ -15,24 +15,24 @@ composer require leancloud/leancloud-sdk
 
 {% block init_with_app_keys %}
 
-然后导入 `LeanClient`，并调用 `initialize` 方法进行初始化：
+然后导入 `Client`，并调用 `initialize` 方法进行初始化：
 
 ```php
-use \LeanCloud\LeanClient;
+use \LeanCloud\Client;
 // 参数依次为 AppId, AppKey, MasterKey
-LeanClient::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
+Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
 ```
 {% endblock %}
 
 {% block sdk_switching_node %}
 ```php
-use \LeanCloud\LeanClient;
+use \LeanCloud\Client;
 // 参数依次为 AppId, AppKey, MasterKey
-LeanClient::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
+Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
 // 启用美国节点
-// LeanClient::useRegion("US");
+// Client::useRegion("US");
 // 启用国内节点 (默认启用)
-LeanClient::useRegion("CN");
+Client::useRegion("CN");
 ```
 {% endblock %}
 
@@ -43,12 +43,12 @@ LeanClient::useRegion("CN");
 
 require 'vendor/autoload.php';
 
-use \LeanCloud\LeanClient;
-use \LeanCloud\LeanObject;
+use \LeanCloud\Client;
+use \LeanCloud\Object;
 // 参数依次为 AppId, AppKey, MasterKey
-LeanClient::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
+Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
 
-$testObject = new LeanObject("TestObject");
+$testObject = new Object("TestObject");
 $testObject->set("words", "Hello World!");
 try {
     $testObject->save();

@@ -114,55 +114,12 @@ Object 类型简单地表示每个字段的值都可以由能 JSON 编码的内�
 
 LeanCloud 中有 4 种方式来构建对象之间的关系：
 
-### Pointer
-就是将一个对象 A 存为另一个对象 B 的属性值，这适合用来处理一对一或者一对多的关联关系。譬如
+- **Pointer**——就是将一个对象 A 存为另一个对象 B 的属性值，这适合用来处理一对一或者一对多的关联关系。
+- **Array**——就是将多个对象 A、B、C 存为另一个对象 D 的属性值，这适合用来处理一对多或者多对多的关联关系。
+- **AVRelation**——这是一个专门的关联类，用来建立两种对象之间的关联关系，适合多对多的场景。
+- **关联表**——使用专门的类，来为两种对象建立关联关系，与 AVRelation 相比它还可以添加更多的附加信息。譬如我们为用户之间关注/被关注的关系建模，就像流行的社交网络那样，一个用户可以关注别的用户。在这里，我们不仅想知道用户 A 是否关注了用户 B，我们还想知道什么时候用户 A 开始关注的用户 B，这时候就适合建立专门的关联表。关联表适合多对多的关联关系。
 
-```
-AVObject *game= [AVObject objectWithClassName:@"Game"];
-[game setObject:[AVUser currentUser] forKey:@"createdBy"];
-```
-
-### Array
-就是将多个对象 A、B、C 存为另一个对象 D 的属性值，这适合用来处理一对多或者多对多的关联关系。譬如：
-
-```
-AVObject *scimitar = ...
-AVObject *plasmaRifle = ...
-AVObject *grenade = ...
-AVObject *bunnyRabbit = ...
-
-NSArray *weapons = @[scimitar, plasmaRifle, grenade, bunnyRabbit];
-
-// 将武器数组存入单个属性之中
-[[AVUser currentUser] setObject:weapons forKey:@"weaponsList"];
-```
-
-### AVRelation
-这是一个专门的关联类，用来建立两种对象之间的关联关系，适合多对多的场景。譬如：
-
-```
-// 三个作者
-AVObject *authorOne = …
-AVObject *authorTwo = …
-AVObject *authorThree = …
-
-// 一本书籍
-AVObject *book= [AVObject objectWithClassName:@"Book"];
-
-// 建立书籍到作者的关联
-AVRelation *relation = [book relationforKey:@"authors"];
-[relation addObject:authorOne];
-[relation addObject:authorTwo];
-[relation addObject:authorThree];
-
-// 保存
-[book saveInBackground];
-```
-
-### 关联表
-使用专门的类，来为两种对象建立关联关系，与 AVRelation 相比它还可以添加更多的附加信息。譬如我们为用户之间关注/被关注的关系建模，就像流行的社交网络那样，一个用户可以关注别的用户。在这里，我们不仅想知道用户 A 是否关注了用户 B，我们还想知道什么时候用户 A 开始关注的用户 B，这时候就适合建立专门的关联表。关联表适合多对多的关联关系。
-
-详细情况请参考我们的技术文章[数据模型设计指南](./relation_guide.html)。
+详细情况请参考我们的技术文章——《数据模型设计指南（[iOS/OSX 篇](./relation_guide-ios.html) / [Android 篇](./relation_guide-android.html) / [JavaScript 篇](./relation_guide-js.html) / [Python 篇](./relation_guide-python.html)）》。
 
 ## 数据查询：AVQuery
 
@@ -179,15 +136,9 @@ AVObject 保存到 LeanCloud 云端之后，如何再次获取到它们呢？这
 
 ## 文件存储：AVFile
 
-除了应用内数据存储之外，LeanCloud 云端也支持「文件」类数据的存储。这里的「文件」指的是图片、音乐、视频等常见的文件类型，以及其他任何二进制数据。因为 AVObject 有大小限制，所以超过 **128KB** 的数据不能直接存储到 AVObject 里面；而且，更重要的是，对于图片、音乐、视频类数据，因为他们的体积太大，为了终端用户有快捷的下载体验，都需要额外的 CDN 加速服务，这时候，就需要使用特别的类型「文件」来存储。
+除了应用内数据存储之外，LeanCloud 云端也支持「文件」类数据的存储。这里的「文件」指的是图片、音乐、视频等常见的文件类型，以及其他任何二进制数据。因为 AVObject 有大小限制，所以超过 **128 KB** 的数据不能直接存储到 AVObject 里面；而且，更重要的是，对于图片、音乐、视频类数据，因为他们的体积太大，为了终端用户有快捷的下载体验，都需要额外的 CDN 加速服务，这时候，就需要使用特别的类型「文件」来存储。
 
-LeanCloud 平台用「AVFile」来表示文件。要存储一个文件到 LeanCloud 云端，调用过程也非常简单，譬如：
-
-```
-NSData *data = [@"Working with LeanCloud is great!" dataUsingEncoding:NSUTF8StringEncoding];
-AVFile *file = [AVFile fileWithName:@"resume.txt" data:data];
-[file saveInBackground];
-```
+LeanCloud 平台用「AVFile」来表示文件。要存储一个文件到 LeanCloud 云端，调用过程非常简单。
 
 ## 主要性能指标
 

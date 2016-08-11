@@ -3,7 +3,7 @@
 {% set platformName = 'PHP' %}
 {% set productName = 'LeanEngine' %}
 {% set storageName = 'LeanStorage' %}
-{% set leanengine_middleware = '[LeanEngine PHP SDK](https://github.com/leancloud/php-sdk)' %}
+{% set leanengine_middleware = '[LeanCloud PHP SDK](https://github.com/leancloud/php-sdk)' %}
 
 {% set sdk_guide_link = '[PHP SDK](./leanstorage_guide-php.html)' %}
 {% set cloud_func_file = '`$PROJECT_DIR/cloud.php`' %}
@@ -24,11 +24,11 @@
 
 ```php
 use \LeanCloud\Engine\Cloud;
-use \LeanCloud\LeanQuery;
+use \LeanCloud\Query;
 use \LeanCloud\CloudException;
 
 Cloud::define("averageStars", function($params, $user) {
-    $query = new LeanQuery("Review");
+    $query = new Query("Review");
     $query->equalTo("movie", $params["movie"]);
     try {
         $reviews = $query->find();
@@ -64,7 +64,7 @@ Cloud::define("averageStars", function($params, $user) {
 传递给云函数的参数依次为：
 
 * `$params: array`：客户端发送的参数。
-* `$user: LeanUser`：客户端所关联的用户（根据客户端发送的 `LC-Session` 头）。
+* `$user: User`：客户端所关联的用户（根据客户端发送的 `LC-Session` 头）。
 * `$meta: array`：有关客户端的更多信息，目前只有一个 `$meta['remoteAddress']` 属性表示客户端的 IP。
 
 {% endblock %}
@@ -105,7 +105,7 @@ Cloud::beforeSave("Review", function($review, $user) {
 
 ```php
 Cloud::afterSave("Comment", function($comment, $user) {
-    $query = new LeanQuery("Post");
+    $query = new Query("Post");
     $post = $query->get($comment->get("post")->getObjectId());
     $post->increment("commentCount");
     try {
@@ -161,7 +161,7 @@ Cloud::afterUpdate("Article", function($article, $user) {
 
 ```php
 Cloud::beforeDelete("Album", function($album, $user) {
-    $query = new LeanQuery("Photo");
+    $query = new Query("Photo");
     $query->equalTo("album", $album);
     try {
         $count = $query->count();
@@ -181,12 +181,12 @@ Cloud::beforeDelete("Album", function($album, $user) {
 
 ```php
 Cloud::afterDelete("Album", function($album, $user) {
-    $query = new LeanQuery("Photo");
+    $query = new Query("Photo");
     $query->equalTo("album", $album);
     try {
         // 删除相关的 photos
         $photos = $query->find();
-        LeanObject::destroyAll($photos);
+        Object::destroyAll($photos);
     } catch (CloudException $ex) {
         throw new FunctionError("删除关联 photos 失败: {$ex->getMessage()}");
     }
@@ -221,17 +221,17 @@ Cloud::onLogin(function($user) {
 {% block hookDeadLoop %}
 #### 防止死循环调用
 
-在实际使用中有这样一种场景：在 `Post` 类的 `{{hook_after_update}}` Hook 函数中，对传入的 `Post` 对象做了修改并且保存，而这个保存动作又会再次触发 `{{hook_after_update}}`，由此形成死循环。针对这种情况，我们为所有 Hook 函数传入的 `LeanObject` 对象做了处理，以阻止死循环调用的产生。
+在实际使用中有这样一种场景：在 `Post` 类的 `{{hook_after_update}}` Hook 函数中，对传入的 `Post` 对象做了修改并且保存，而这个保存动作又会再次触发 `{{hook_after_update}}`，由此形成死循环。针对这种情况，我们为所有 Hook 函数传入的 `Object` 对象做了处理，以阻止死循环调用的产生。
 
 不过请注意，以下情况还需要开发者自行处理：
 
-- 对传入的 `LeanObject` 对象进行 `fetch` 操作。
-- 重新构造传入的 `LeanObject` 对象，如使用 `LeanObject::create()` 方法。
+- 对传入的 `Object` 对象进行 `fetch` 操作。
+- 重新构造传入的 `Object` 对象，如使用 `Object::create()` 方法。
 
 对于使用上述方式产生的对象，请根据需要自行调用以下 API：
 
-- `LeanObject->disableBeforeHook()` 或
-- `LeanObject->disableAfterHook()`
+- `Object->disableBeforeHook()` 或
+- `Object->disableAfterHook()`
 
 这样，对象的保存或删除动作就不会再次触发相关的 Hook 函数。
 
@@ -250,7 +250,7 @@ Cloud::afterUpdate("Post", function($post, $user) {
 
     // 如果是其他方式构建对象，则需要在新构建的对象上调用相关的 disable 方法
     // 来确保不会再次触发 Hook 函数
-    $post = LeanObject::create("Post", $post->getObjectId());
+    $post = Object::create("Post", $post->getObjectId());
     $post->disableAfterHook();
     $post->save();
 });
@@ -263,7 +263,7 @@ Cloud::afterUpdate("Post", function($post, $user) {
 ```php
 Cloud::define("errorCode", function($params, $user) {
     // 尝试登录一个不存在的用户，会返回 211 错误
-    LeanUser::logIn("not_this_user", "xxxxxx");
+    User::logIn("not_this_user", "xxxxxx");
 });
 ```
 {% endblock %}
@@ -307,10 +307,10 @@ Cloud::define("logTimer", function($params, $user) {
 {% block timerExample2 %}
 
 ```php
-use \LeanCloud\LeanPush;
+use \LeanCloud\Push;
 
 Cloud::define("pushTimer", function($params, $user) {
-    $push = new LeanPush(array("alert" => "Public message"));
+    $push = new Push(array("alert" => "Public message"));
     $push->setChannels(array("Public"));
     $push->send();
 });
@@ -320,8 +320,8 @@ Cloud::define("pushTimer", function($params, $user) {
 {% block masterKeyInit %}
 ```php
 //参数依次为 AppId, AppKey, MasterKey
-use \LeanCloud\LeanClient;
-LeanClient::initialize($appId, $appKey, $masterKey);
-LeanClient::useMasterKey(true);
+use \LeanCloud\Client;
+Client::initialize($appId, $appKey, $masterKey);
+Client::useMasterKey(true);
 ```
 {% endblock %}
