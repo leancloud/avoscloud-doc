@@ -1101,7 +1101,7 @@ query.within_kilometers('whereCreated', point, 10)
 ```
 {% endblock %} code_object_fetch_with_keys
 
-{% block link_to_relation_guide_doc %}[Python 关系建模指南](relation_guide-python.html){% endblock %}
+{% block link_to_relation_guide_doc %}[Python 数据模型设计指南](relation_guide-python.html){% endblock %}
 
 {% block link_to_sms_guide_doc %}{% endblock %}
 

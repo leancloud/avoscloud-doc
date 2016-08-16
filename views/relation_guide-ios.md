@@ -3,6 +3,22 @@
 {% set platform    = "iOS / OS X" %}
 {% set ops_include = "includeKey" %}
 
+{% block code_save_student_family_address %}
+
+```objc
+    AVObject *studentTom = [[AVObject alloc] initWithClassName:@"Student"];// 学生 Tom
+    [studentTom setObject:@"Tom" forKey:@"name"];
+    NSDictionary *addr = [NSDictionary dictionaryWithObjectsAndKeys:
+                          @"北京", @"city",
+                          @"西城区西长安街 1 号", @"address",
+                          @"100017", @"postcode",
+                          nil];
+    [studentTom setObject:addr forKey:@"address"];
+    [studentTom saveInBackground];// 保存到云端
+```
+
+{% endblock %}
+
 {% block code_city_point_to_province %}
 
 ```objc

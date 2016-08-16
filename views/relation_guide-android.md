@@ -3,6 +3,21 @@
 {% set platform    = "Android" %}
 {% set ops_include = "include" %}
 
+{% block code_save_student_family_address %}
+
+```java
+    final AVObject studentTom = new AVObject("Student");// 学生 Tom
+    studentTom.put("name", "Tom");
+    HashMap<Object, Object> addr = new HashMap<>();
+    addr.put("city", "北京");
+    addr.put("address", "西城区西长安街 1 号");
+    addr.put("postcode", "100017");
+    studentTom.put("address", addr);
+    studentTom.saveInBackground();
+```
+
+{% endblock %}
+
 {% block code_city_point_to_province %}
 
 ```java

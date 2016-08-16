@@ -1173,7 +1173,7 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 ```
 {% endblock %} code_object_fetch_with_keys
 
-{% block link_to_relation_guide_doc %}[iOS / OS X 关系建模指南](relation_guide-ios.html){% endblock %}
+{% block link_to_relation_guide_doc %}[iOS / OS X 数据模型设计指南](relation_guide-ios.html){% endblock %}
 
 {% set link_to_sms_guide_doc = '[iOS / OS X 短信服务使用指南](sms_guide-ios.html#注册验证)' %}
 

@@ -95,16 +95,16 @@ $ composer require leancloud/leancloud-sdk
 * 初始化：在正式使用数据存储之前，你需要使用自己的应用 key 进行初始化中间件：
 
 ```php
-use \LeanCloud\LeanClient;
+use \LeanCloud\Client;
 
-LeanClient::initialize(
+Client::initialize(
     getenv("LC_APP_ID"),
     getenv("LC_APP_KEY"),
     getenv("LC_APP_MASTER_KEY")
 );
 
 // 如果不希望使用 masterKey 权限，可以将下面一行删除
-LeanClient::useMasterKey(true);
+Client::useMasterKey(true);
 ```
 {% endblock %}
 
@@ -141,7 +141,7 @@ $resp = $client->post("http://www.example.com/create_post", array(
 ```php
 $app->post("/upload", function($req, $res) {
     if (isset($_FILES["iconImage"]) && $_FILES["iconImage"]["size"] != 0) {
-        $file = LeanFile::createWithLocalFile(
+        $file = File::createWithLocalFile(
             $_FILES["iconImage"]["tmp_name"],
             $_FILES["iconImage"]["type"]
         );
@@ -157,15 +157,15 @@ $app->post("/upload", function($req, $res) {
 {% block cookie_session %}
 ### 处理用户登录和登出
 
-云引擎提供了一个 `LeanCloud\Storage\CookieStorage` 模块，用 Cookie 来维护用户（`LeanUser`）的登录状态，要使用它可以在 `app.php` 中添加下列代码：
+云引擎提供了一个 `LeanCloud\Storage\CookieStorage` 模块，用 Cookie 来维护用户（`User`）的登录状态，要使用它可以在 `app.php` 中添加下列代码：
 
 ```php
 use \LeanCloud\Storage\CookieStorage;
 // 将会话状态存储到 cookie 中
-LeanClient::setStorage(new CookieStorage(60 * 60 * 24, "/"));
+Client::setStorage(new CookieStorage(60 * 60 * 24, "/"));
 ```
 
-CookieStorage 支持传入秒作为过期时间, 以及路径作为 cookie 的作用域。默认过期时间为 7 天。然后我们可以通过 `LeanUser::getCurrentUser()` 来获取当前登录用户。
+CookieStorage 支持传入秒作为过期时间, 以及路径作为 cookie 的作用域。默认过期时间为 7 天。然后我们可以通过 `User::getCurrentUser()` 来获取当前登录用户。
 
 你可以这样简单地实现一个具有登录功能的站点：
 
@@ -178,7 +178,7 @@ $app->get('/login', function($req, $res) {
 $app->post('/login', function($req, $res) {
     $params = $req->getQueryParams();
     try {
-        LeanUser::logIn($params["username"], $params["password"]);
+        User::logIn($params["username"], $params["password"]);
         // 跳转到个人资料页面
         return $res->withRedirect('/profile');
     } catch (Exception $ex) {
@@ -190,7 +190,7 @@ $app->post('/login', function($req, $res) {
 // 查看个人资料
 $app->get('/profile', function($req, $res) {
     // 判断用户是否已经登录
-    $user = LeanUser::getCurrentUser();
+    $user = User::getCurrentUser();
     if ($user) {
         // 如果已经登录，发送当前登录用户信息。
         return $res->getBody()->write($user->getUsername());
@@ -202,7 +202,7 @@ $app->get('/profile', function($req, $res) {
 
 // 登出账号
 $app->get('/logout', function($req, $res) {
-    LeanUser::logOut();
+    User::logOut();
     return $res->redirect("/");
 });
 ```
@@ -232,10 +232,10 @@ $app->get('/logout', function($req, $res) {
 
 ```php
 // 在项目启动时启用 CookieStorage
-LeanClient::setStorage(new CookieStorage());
+Client::setStorage(new CookieStorage());
 
 // 在项目中可以使用 CookieStorage 存储属性
-$cookieStorage = LeanClient::getStorage();
+$cookieStorage = Client::getStorage();
 $cookieStorage->set("key", "val");
 ```
 

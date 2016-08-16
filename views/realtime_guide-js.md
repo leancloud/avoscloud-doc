@@ -152,7 +152,6 @@ m|Array|对话中成员的列表
 lm|Date|对话中最后一条消息发送的时间
 c|String|对话的创建者的 ClientId
 mu|Array|对话中设置了静音的成员，仅针对 iOS 以及 Windows Phone 用户有效。
-attr|Object|开发者设置的对话的自定义属性
 
 >提示：每次调用 `createConversation()` 方法，都会生成一个新的 Conversation 实例，即便使用相同 members 和 name 也是如此。如果想要不重复创建相同成员的对话，请参阅 [常见问题](#常见问题) 。
 
@@ -446,11 +445,32 @@ realtime.createIMClient('bob').then(function(bob) {
 ```
 
 
-
 ### 消息送达回执
 
-暂未实现
+是指消息被对方收到之后，云端会发送一个回执通知给发送方，表明消息已经送达。
 
+发送时标记消息为「需要回执」：
+
+```javascript
+var message = new AV.TextMessage('very important message');
+message.setNeedReceipt(true);
+conversation.send(message);
+```
+
+当消息的接收方收到消息后，服务端会通知消息的发送方「消息已送达」，发送方的 SDK 会在 conversation 上派发一个 `receipt` 事件：
+
+```javascript
+conversation.on('receipt', function(payload) {
+  // payload.message 为送达的消息，与先前发送的是同一实例
+  // message.status 更新为 MessageStatus.DELIVERED
+  // message.deliveredAt 为消息送达的时间
+  console.log(payload.message); 
+});
+```
+
+需要注意的是：
+
+> 只有在发送时设置了「需要回执」标记，云端才会发送回执，默认不发送回执。该回执并不代表用户已读。
 
 ### 未读消息
 
@@ -519,14 +539,16 @@ var realtime = new AV.Realtime({
 
 
 
-消息类均包含以下公用属性：
+消息类均包含以下属性：
 
-属性|描述|类型
+属性|类型|描述
 ---|---|---
-from|String|指消息发送者的 clientId
+from|String|消息发送者的 clientId
 cid|String|消息所属对话 id
 id|String|消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 id
 timestamp|Date|消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。
+deliveredAt|Date|消息送达时间
+status|Symbol|消息状态，其值为枚举 [`MessageStatus`](https://leancloud.github.io/js-realtime-sdk/docs/module-leancloud-realtime.html#.MessageStatus) 的成员之一：<br/><br/>`MessageStatus.NONE`（未知）<br/>`MessageStatus.SENDING`（发送中）<br/>`MessageStatus.SENT`（发送成功）<br/>`MessageStatus.DELIVERED`（已送达）<br/>`MessageStatus.FAILED`（失败）
 
 我们为每一种富媒体消息定义了一个消息类型，实时通信 SDK 自身使用的类型是负数（如下面列表所示），所有正数留给开发者自定义扩展类型使用，0 作为「没有类型」被保留起来。
 
@@ -641,9 +663,7 @@ realtime.createIMClient('Jerry').then(function(jerry) {
 jerry.createConversation({
   members: ['Bob', 'Harry', 'William'],
   name: '周末滑雪',
-  attributes: {
-    location: '42.86335,140.6843287',
-  },
+  location: '42.86335,140.6843287',
   transient: false,
   unique: false,
 });
@@ -652,9 +672,10 @@ jerry.createConversation({
 
 * members - 对话的初始成员列表。在对话创建成功后，这些成员会收到和邀请加入对话一样的相应通知。
 * name - 对话的名字，主要是用于标记对话，让用户更好地识别对话。
-* attributes - 额外属性
 * transient - 是否为 [暂态对话](#聊天室)
 * unique - 是否创建唯一对话，当其为 true 时，如果当前已经有**相同成员**的对话存在则返回该对话，否则会创建新的对话。该值默认为 false。
+
+ option 参数中所有其他的字段都会作为对话的自定义属性保存。
 
 <div class="callout callout-info">由于暂态对话不支持创建唯一对话，所以将 `transient` 和 `unique` 同时设为 true 时并不会产生预期效果。</div>
 
@@ -828,7 +849,6 @@ Conversation 属性名 | _Conversation 字段|含义
 `name` |  `name` |成员共享的统一的名字
 `members`|`m` |成员列表
 `creator` | `c` |对话创建者
-`attributes`| `attr`|自定义属性
 `transient`|`tr`|是否为聊天室（暂态对话）
 `mutedMembers`|`mu`|静音该对话的成员
 `muted`|N/A|当前用户是否静音该对话
@@ -865,7 +885,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 ```javascript
 black.getConversation(CONVERSATION_ID).then(function(conversation) {
-  conversation.setName('聪明的喵星人');
+  conversation.name = '聪明的喵星人';
   return conversation.save();
 }).then(function(conversation) {
   console.log('更新成功。name: ' + conversation.name);
@@ -907,7 +927,7 @@ black.getConversation(CONVERSATION_ID).then(function(conversation) {
 
 #### 自定义属性
 
-通过该属性，开发者可以随意存储自己的键值对，为对话添加自定义属性，来满足业务逻辑需求。
+开发者可以为对话添加自定义属性，来满足业务逻辑需求。
 
 给某个对话加上两个自定义的属性：type = "private"（类型为私有）、pinned = true（置顶显示）：
 
@@ -916,10 +936,8 @@ black.getConversation(CONVERSATION_ID).then(function(conversation) {
 tom.createConversation({
   members: ['Jerry'],
   name: '猫和老鼠',
-  attributes: {
-    type: 'private',
-    pinned: true,
-  },
+  type: 'private',
+  pinned: true,
 }).then(function(conversation) {
   console.log('创建成功。id: ' + conversation.id);
 }).catch(console.error.bind(console));
@@ -928,7 +946,7 @@ tom.createConversation({
 
 
 
-**自定义属性在 SDK 级别是对所有成员可见的**。如果要控制所谓的可见性，开发者需要自己维护这一属性的读取权限。要对自定义属性进行查询，请参见 [对话的查询](#对话的查询)。
+**自定义属性在 SDK 级别是对所有成员可见的**。要对属性进行查询，请参见 [对话的查询](#对话的查询)。
 
 ### 对话的查询
 
@@ -955,7 +973,7 @@ tom.getConversation(CONVERSATION_ID).then(function(conversation) {
 
 ```javascript
 tom.getQuery().containsMembers(['Tom']).find().then(function(conversations) {
-  // 按每个对话的最后更新日期（收到最后一条消息的时间）倒序排列
+  // 默认按每个对话的最后更新日期（收到最后一条消息的时间）倒序排列
   conversations.map(function(conversation) {
     console.log(conversation.lastMessageAt.toString(), conversation.members);
   });
@@ -981,9 +999,6 @@ query.limit(20).containsMembers(['Tom']).find().then(function(conversations) {
 
 #### 条件查询
 
-对话的条件查询需要注意的对话属性的存储结构，在对话的属性一章节我们介绍的对话的几个基本属性，这些属性都是 SDK 提供的默认属性，根据默认属性查询的构建如下：
-
-
 
 ```javascript
 // 查询对话名称为「LeanCloud 粉丝群」的对话
@@ -996,20 +1011,6 @@ query.contains('name', 'LeanCloud');
 var yesterday = new Date(Date.now() - 24 * 3600 * 1000);
 query.greaterThan('lm', yesterday);
 ```
-针对默认属性的查询可以如上进行构建。
-
-
-相对于默认属性的查询，开发者自定义属性的查询需要在构建查询的时在关键字（key）前加上一个特殊的前缀：`attr`：
-
-
-
-```javascript
-// 查询话题为 DOTA2 对话
-query.equalTo('attr.topic', 'DOTA2');
-// 查询等级大于 5 的对话
-query.greaterThan('attr.level', 5);
-```
-
 
 
 条件查询又分为：比较查询、正则匹配查询、包含查询，以下会做分类演示。
@@ -1025,11 +1026,9 @@ query.greaterThan('attr.level', 5);
 
 
 ```javascript
-query.equalTo('attr.topic','movie');
+// topic 是自定义属性
+query.equalTo('topic','movie');
 ```
-
-
-目前条件查询只针对 `Conversation` 对象的自定义属性进行操作，也就是针对 `_Conversation` 表中的 `attr` 字段进行查询。
 
 
 
@@ -1038,7 +1037,8 @@ query.equalTo('attr.topic','movie');
 
 
 ```javascript
-query.notEqualTo('attr.type','private');
+// type 是自定义属性
+query.notEqualTo('type','private');
 ```
 
 
@@ -1047,7 +1047,8 @@ query.notEqualTo('attr.type','private');
 
 
 ```javascript
-query.greaterThan('attr.age',18);
+// age 是自定义属性
+query.greaterThan('age',18);
 ```
 
 
@@ -1062,8 +1063,8 @@ query.greaterThan('attr.age',18);
 
 
 ```javascript
-// attr.language 是中文字符
-query.matches('attr.language',/[\\u4e00-\\u9fa5]/);
+// 自定义属性 language 是中文字符
+query.matches('language',/[\\u4e00-\\u9fa5]/);
 ```
 
 
@@ -1074,8 +1075,8 @@ query.matches('attr.language',/[\\u4e00-\\u9fa5]/);
 
 
 ```javascript
-// attr.keywords 包含「教育」
-query.contains('attr.keywords','教育');
+// 自定义属性 keywords 包含「教育」
+query.contains('keywords','教育');
 ```
 
 
@@ -1098,8 +1099,8 @@ query.withMembers(['Bob', 'Jerry']);
 
 
 ```javascript
-// 查询 attr.keywords 包含「教育」且 attr.age 小于 18 的对话
-query.contains('attr.keywords', '教育').lessThan('attr.age', 18);
+// 查询 keywords 包含「教育」且 age 小于 18 的对话
+query.contains('keywords', '教育').lessThan('age', 18);
 ```
 
 #### 查询结果选项
@@ -1195,7 +1196,7 @@ conversation.count().then(function(count) {
 ```javascript
 var query = tom.getQuery();
 query
-  .equalTo('attr.topic', '奔跑吧，兄弟')
+  .equalTo('topic', '奔跑吧，兄弟')
   .equalTo('tr', true)
   .find()
   .then(function(conversations) {
@@ -1264,16 +1265,14 @@ JavaScript SDK 没有客户端聊天记录缓存机制
 
 ### 网络状态响应
 
+>注意：在网络中断的情况下，所有的消息收发和对话操作都会失败。开发者应该监听与网络状态相关的事件并更新 UI，以免影响用户的使用体验。
+
 当网络连接出现中断、恢复等状态变化时，SDK 会在 Realtime 实例上派发以下事件：
-
-
 
 * `disconnect`：网络连接断开，此时聊天服务不可用。
 * `schedule`：计划在一段时间后尝试重连，此时聊天服务仍不可用。
 * `retry`：正在重连。
 * `reconnect`：网络连接恢复，此时聊天服务可用。
-
-在网络中断的情况下，所有的消息收发和对话操作都会出现问题。
 
 ```javascript
 realtime.on('disconnect', function() {
@@ -1290,23 +1289,33 @@ realtime.on('reconnect', function() {
 });
 ```
 
-在 `schedule` 与 `retry` 事件之间，开发者可以调用 `Realtime#retry()` 方法手动进行重连。下面显示的是一次典型的断线重连过程中 SDK 在 Realtime 实例上派发的事件：
 
-```
-disconnect
-schedule (attempt=0, delay=1000)
-retry (attempt=0)
-schedule (attempt=1, delay=2000)
-retry (attempt=1)
-schedule (attempt=2, delay=4000)
-// call realtime.retry()
-retry (attempt=0)
-schedule (attempt=1, delay=2000)
-retry (attempt=1)
-reconnect
-```
 
->注意：网络状态在短时间内很可能会发生频繁变化，但这并不代表对话的接收与发送一定会受到影响，因此开发者在处理此类事件响应时，比如更新 UI，要适当加入更多的逻辑判断，以免影响用户的使用体验。
+在 `schedule` 与 `retry` 事件之间，开发者可以调用 `Realtime#retry()` 方法手动进行重连。
+
+在断线重连的过程中，SDK 也会在所有的 IMClient 实例上派发同名的事件。Realtime 与 IMClient 上的同名事件是先后同步派发的，唯一的例外是 `reconnect` 事件。在网络连接恢复，Realtime 上派发了 `reconnect` 事件之后，IMClient 会尝试重新登录，成功后再派发 `reconnect` 事件。所以，Realtime 的 `reconnect` 事件意味着 Realtime 实例的 API 能够正常使用了，IMClient 的 `reconnect` 事件意味着 IMClient 实例的 API 能够正常使用了。
+
+下面显示的是一次典型的断线重连过程中 SDK 派发的事件：
+
+```c
+// 连接断开，计划 1s 后重连
+[Realtime & IMClient] disconnect
+[Realtime & IMClient] schedule (attempt=0, delay=1000)
+// 1s 后，尝试重连
+[Realtime & IMClient] retry (attempt=0)
+// 重连失败，计划 2s 后进行第二次重连
+[Realtime & IMClient] schedule (attempt=1, delay=2000)
+// 在 2s 内，手动调用 realtime.retry() 进行重连，重连次数重置
+[Realtime & IMClient] retry (attempt=0)
+// 重连失败，计划 2s 后进行第二次重连
+[Realtime & IMClient] schedule (attempt=1, delay=2000)
+// 2s 后，尝试第二次重连
+[Realtime & IMClient] retry (attempt=1)
+// 连接恢复，此时可以创建新的客户端了
+[Realtime] reconnect
+// 客户端重新登录上线，此时该客户端可以收发消息了
+[IMClient] reconnect
+```
 
 ## 退出登录
 

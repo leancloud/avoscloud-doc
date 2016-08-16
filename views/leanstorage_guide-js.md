@@ -697,7 +697,7 @@ function uploadFile (req, res) {
 ```js
     var data = { base64: '文件的 base64 编码' };
     var avatar = new AV.File('avatar.png', data);
-    
+
     var user = new AV.User();
     var randomUsername = 'Tom';
     user.setUsername(randomUsername)
@@ -886,7 +886,7 @@ function uploadFile (req, res) {
   // 找出开头是「早餐」的 Todo
   var query = new AV.Query('Todo');
   query.startsWith('content', '早餐');
-  
+
   // 找出包含 「bug」 的 Todo
   var query = new AV.Query('Todo');
   query.contains('content', 'bug');
@@ -900,7 +900,7 @@ function uploadFile (req, res) {
   var query = new AV.Query('Comment');
   var todoFolder = AV.Object.createWithoutData('TodoFolder', '5735aae7c4c9710060fbe8b0');
   query.equalTo('targetTodoFolder', todoFolder);
-  
+
   // 想在查询的同时获取关联对象的属性则一定要使用 `include` 接口用来指定返回的 `key`
   query.include('targetTodoFolder');
 ```
@@ -991,7 +991,7 @@ function uploadFile (req, res) {
           var comment = comments[i];
           // 并不需要网络访问
           var todoFolder = comment.get('targetTodoFolder');
-          var avUser = todoFolder.get('targetAVUser'); 
+          var avUser = todoFolder.get('targetAVUser');
       }
   }, function (error) {
   });
@@ -1231,7 +1231,7 @@ function uploadFile (req, res) {
 {% endblock %} code_object_fetch_with_keys
 
 
-{% block link_to_relation_guide_doc %}《（待补充）JavaScript 关系建模指南》{% endblock %}
+{% block link_to_relation_guide_doc %}[JavaScript 数据模型设计指南](relation_guide-js.html){% endblock %}
 
 {% set link_to_sms_guide_doc = '[JavaScript 短信服务使用指南](sms_guide-js.html#注册验证)' %}
 
@@ -1287,7 +1287,7 @@ function uploadFile (req, res) {
       "expires_at": "2016-01-06T11:43:11.904Z"
   }, 'weixin').then(function (s) {
   }, function (e) {
-     
+
   });
 ```
 

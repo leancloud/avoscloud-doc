@@ -467,7 +467,7 @@ AVQuery *query = [AVRelation reverseQuery:user.className relationKey:@"likes" ch
 
 要了解 `AVQuery` 更多的用法，请阅读本文 [查询](#查询) 部分。`AVRelation` 的行为接近于 `AVObject` 中的 `NSArray`，所以在对象数组上的任何操作也同样适用于 `AVRelation`。
 
-**请阅读《[关系建模指南](./relation_guide.html)》来进一步了解关系类型。**
+**请阅读《[数据模型设计指南](./relation_guide.html)》来进一步了解关系类型。**
 
 ### 批量操作
 

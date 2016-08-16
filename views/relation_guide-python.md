@@ -3,6 +3,23 @@
 {% set platform = 'Python' %}
 {% set ops_include = "include" %}
 
+{% block code_save_student_family_address %}
+
+```python
+import leancloud
+
+student_tom = leancloud.Object.extend("Student")()
+student_tom.set('name', 'Tom')
+
+addr = { "city": "北京", "address": "西城区西长安街 1 号", "":"100017" };
+student_tom.set('address', addr)
+
+# 保存在云端
+student_tom.save()
+```
+
+{% endblock %}
+
 {% block code_city_point_to_province %}
 
 ```python

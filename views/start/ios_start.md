@@ -17,7 +17,7 @@ pod 'AVOSCloudCrashReporting' # 错误报告模块
 首先，将指定版本的源码 clone 到您的项目根目录：
 
 ```sh
-git clone --depth 1 git@github.com:leancloud/objc-sdk.git leancloud-objc-sdk
+git clone --depth 1 https://github.com/leancloud/objc-sdk.git leancloud-objc-sdk
 ```
 
 如果您希望使用 CrashReporting 模块，还需要进一步 clone submodule：
@@ -25,8 +25,7 @@ git clone --depth 1 git@github.com:leancloud/objc-sdk.git leancloud-objc-sdk
 ```sh
 cd leancloud-objc-sdk
 
-git submodule init
-git submodule update
+git submodule update --init
 ```
 
 将 `AVOS/AVOS.xcodeproj` 项目文件拖进您的项目，作为 subproject。就像下面这样：

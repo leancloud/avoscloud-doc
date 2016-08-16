@@ -1188,7 +1188,7 @@ fetchAllInBackground()
 {% endblock %} code_object_fetch_with_keys
 
 
-{% block link_to_relation_guide_doc %}[Android 关系建模指南](relation_guide-android.html){% endblock %}
+{% block link_to_relation_guide_doc %}[Android 数据模型设计指南](relation_guide-android.html){% endblock %}
 
 {% set link_to_sms_guide_doc = '[短信服务使用指南 &middot; 注册验证](sms_guide-android.html#注册验证)' %}
 
