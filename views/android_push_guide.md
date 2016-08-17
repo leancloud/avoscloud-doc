@@ -373,6 +373,10 @@ dependencies {
 
 如果以上条件不符合，SDK 会有日志输出，开发者可以根据日志判断是什么原因导致注册失败。开发者可以通过查看控制台 `_Installation` 表的相关记录的 **vendor** 字段来判断是否注册成功。
 
+#### 小米推送通知栏消息的点击事件
+
+当小米通知栏消息被点击后，如果已经设置了[自定义 Receiver](#自定义 Receiver)，则 sdk 会发送一个 action 为 “com.avos.avoscloud.mi_notification_action” Broadcast，如有需要开发者可以通过订阅此消息获取点击事件。否则会默认打开 [启动推送服务](#启动推送服务) 对应设置的 Activity。
+
 
 ### 华为推送
 
