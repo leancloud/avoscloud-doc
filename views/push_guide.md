@@ -253,7 +253,7 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
     "alert":      "消息内容",
     "title":      "显示在通知栏的标题",
     "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
-    "silent":     "用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒"
+    "silent":     布尔类型，用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
   }
 }
 ```
@@ -266,7 +266,8 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
     "alert":      "消息内容",
     "title":      "显示在通知栏的标题",
     "action":     "com.your_company.push",
-    "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
+    "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
+    "silent":     布尔类型，用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
   }
 }
 ```
@@ -299,7 +300,8 @@ Windows Phone 设备类似，也支持 `title` 和 `alert`，同时支持 `wp-pa
       "alert":             "消息内容",
       "title":             "显示在通知栏的标题",
       "action":            "com.your_company.push",
-      "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
+      "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
+      "silent":            布尔类型，用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
     },
     "wp":{
       "alert":             "消息内容",
@@ -325,9 +327,21 @@ Windows Phone 设备类似，也支持 `title` 和 `alert`，同时支持 `wp-pa
 
 如果是 `dev` 值就表示使用开发证书，`prod` 值表示使用生产证书。如果未设置 `prod` 属性，且使用的不是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html)，我们默认使用**生产证书**来发推送。如果未设置 `prod` 属性，且使用的是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html) ，则需要在发推送之前执行 [AV.setProduction](https://leancloud.cn/api-docs/javascript/symbols/AV.html#.setProduction) 函数才会使用生产证书发推送，否则会以开发证书发推送。注意，当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
 
+#### Android 推送区分透传和通知栏消息
+
+Android 推送（包括 Android 混合推送）均支持透传和通知栏两种消息类型。透传消息是指消息到达设备后会先交给 LeanCloud Android SDK，再由 SDK 将消息通过自定义 Receiver 传递给开发者，收到消息后的行为由开发者定义的 Receiver 来决定，SDK 不会自动弹出通知栏提醒。而通知栏消息是指消息到达设备后会立即自动弹出通知栏提醒。
+
+自定义 Receiver 的设置请参看文档：[自定义 Receiver ](https://leancloud.cn/docs/android_push_guide.html#自定义_Receiver)。
+
+发送推送请求时，data 内能够带上 silent 参数，LeanCloud 推送服务通过该参数区分透传和通知栏消息。如果 silent 是 true 则表示这个消息是透传消息，反之 silent 为 false 表示消息是通知栏消息。如果不传递该参数则默认 silent 为 false。另外请注意如果希望接收透传消息请不要忘记自行实现自定义 Receiver。
+
+推送请求中的 data 参数编写详情请参看[消息内容 Data](#消息内容 Data)。
+
 #### Android 混合推送多配置区分
 
 如果使用了混合推送功能且设置了多个混合推送配置，需要在 `_Installation` 表保存设备信息时将当前设备所对应的混合推送配置名存入 `deviceProfile`。推送时我们会按照每个目标设备在 `_Installation` 表 `deviceProfile` 字段指定的配置名来发混合推送。如果 `deviceProfile` 为空，我们会默认使用名为 `_default` 的混合推送配置名来发推送。
+
+注意:如果无法保证 `_Installation` 表中所有设备记录的 `deviceProfile` 字段都不为空，请一定保证名为 `_default` 的混合推送配置存在且被正确配置。否则 `deviceProfile` 为空的设备会因为没有对应的 `_default` 配置而无法完成推送。
 
 #### 推送查询条件
 
