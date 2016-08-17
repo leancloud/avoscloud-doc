@@ -329,11 +329,11 @@ Windows Phone 设备类似，也支持 `title` 和 `alert`，同时支持 `wp-pa
 
 #### Android 推送区分透传和通知栏消息
 
-Android 推送（包括 Android 混合推送）均支持透传和通知栏两种消息类型。透传消息是指消息到达设备后会先交给 LeanCloud Android SDK，再由 SDK 将消息通过自定义 Receiver 传递给开发者，收到消息后的行为由开发者定义的 Receiver 来决定，SDK 不会自动弹出通知栏提醒。而通知栏消息是指消息到达设备后会立即自动弹出通知栏提醒。
+Android 推送（包括 Android 混合推送）支持透传和通知栏两种消息类型。透传消息是指消息到达设备后会先交给 LeanCloud Android SDK，再由 SDK 将消息通过自定义 Receiver 传递给开发者，收到消息后的行为由开发者定义的 Receiver 来决定，SDK 不会自动弹出通知栏提醒。而通知栏消息是指消息到达设备后会立即自动弹出通知栏提醒。
 
 自定义 Receiver 的设置请参看文档：[自定义 Receiver ](https://leancloud.cn/docs/android_push_guide.html#自定义_Receiver)。
 
-发送推送请求时，data 内能够带上 silent 参数，LeanCloud 推送服务通过该参数区分透传和通知栏消息。如果 silent 是 true 则表示这个消息是透传消息，反之 silent 为 false 表示消息是通知栏消息。如果不传递该参数则默认 silent 为 false。另外请注意如果希望接收透传消息请不要忘记自行实现自定义 Receiver。
+LeanCloud 推送服务通过推送请求中 data 参数内的 silent 字段区分透传和通知栏消息。如果 silent 是 true 则表示这个消息是透传消息，反之 silent 为 false 表示消息是通知栏消息。如果不传递 silent 则默认其值为 false。另外请注意如果希望接收透传消息请不要忘记自行实现自定义 Receiver。
 
 推送请求中的 data 参数编写详情请参看[消息内容 Data](#消息内容 Data)。
 
