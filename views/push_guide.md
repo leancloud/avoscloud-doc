@@ -341,7 +341,7 @@ Android 推送（包括 Android 混合推送）均支持透传和通知栏两种
 
 如果使用了混合推送功能且设置了多个混合推送配置，需要在 `_Installation` 表保存设备信息时将当前设备所对应的混合推送配置名存入 `deviceProfile`。推送时我们会按照每个目标设备在 `_Installation` 表 `deviceProfile` 字段指定的配置名来发混合推送。如果 `deviceProfile` 为空，我们会默认使用名为 `_default` 的混合推送配置名来发推送。
 
-注意:如果无法保证 `_Installation` 表中所有设备记录的 `deviceProfile` 字段都不为空，请一定保证名为 `_default` 的混合推送配置存在且被正确配置。否则 `deviceProfile` 为空的设备会因为没有对应的 `_default` 配置而无法完成推送。
+注意:如果无法保证 `_Installation` 表中所有设备记录的 `deviceProfile` 字段都不为空，请一定保证名为 `_default` 的混合推送配置在 [控制台 / 消息 / 推送设置](/messaging.html?appid={{appid}}#/message/push/conf) 内存在且被正确配置。否则 `deviceProfile` 为空的设备会因为没有对应的 `_default` 配置而无法完成推送。
 
 #### 推送查询条件
 
