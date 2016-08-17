@@ -407,6 +407,9 @@ dependencies {
 再添加 service 与 receiver。开发者要将其中的 `<包名>` 替换为自己的应用的 package：
 
 ```xml
+<!-- 必须，用于华为 Android 6.0 系统的动态权限页面-->
+<activity android:name="com.huawei.android.pushselfshow.permission.RequestPermissionsActivity"/>
+
 <receiver android:name="com.avos.avoscloud.AVHwPushMessageReceiver" >
   <intent-filter>
       <!-- 必须，用于接收 token -->
