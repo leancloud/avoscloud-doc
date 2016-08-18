@@ -218,7 +218,7 @@
 ## 206
 
 * 信息 - `The user cannot be altered by a client without the session.`
-* 含义 - 没有提供 session，无法修改用户信息，这通常是因为没有登录的用户想修改信息。修改用户信息必须登录，除非在云引擎里，或者使用 master key 调用 REST API。
+* 含义 - 没有提供 session，无法修改用户信息，这通常是因为没有登录的用户想修改信息。修改用户信息必须登录，除非在云引擎里使用 master key 来更改。
 
 ## 207
 
