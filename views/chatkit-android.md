@@ -273,7 +273,7 @@ LCChatKit.getInstance().open("Tom", new AVIMClientCallback() {
 ```
 具体的显示效果如下：
 
-<img class="img-bordered" src="https://dn-lhzo7z96.qbox.me/1464320206432">
+<img src="images/chatkit_android_conversation_list.png">
 
 ### 聊天界面
 
@@ -298,7 +298,7 @@ LCChatKit.getInstance().open("Tom", new AVIMClientCallback() {
 ```
 具体的显示效果如下：
 
-<img class="img-bordered" src="https://dn-lhzo7z96.qbox.me/1461816927540">
+<img src="images/chatkit_android_conversation.png">
 
 ## 常见问题
 
