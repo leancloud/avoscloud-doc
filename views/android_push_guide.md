@@ -375,7 +375,7 @@ dependencies {
 
 #### 小米推送通知栏消息的点击事件
 
-当小米通知栏消息被点击后，如果已经设置了[自定义 Receiver](#自定义 Receiver)，则 sdk 会发送一个 action 为 “com.avos.avoscloud.mi_notification_action” Broadcast，如有需要开发者可以通过订阅此消息获取点击事件。否则会默认打开 [启动推送服务](#启动推送服务) 对应设置的 Activity。
+当小米通知栏消息被点击后，如果已经设置了 [自定义 Receiver](#自定义_Receiver)，则 SDK 会发送一个 action 为 `com.avos.avoscloud.mi_notification_action` 的 broadcast。如有需要，开发者可以通过订阅此消息获取点击事件，否则 SDK 会默认打开 [启动推送服务](#启动推送服务) 对应设置的 Activity。
 
 
 ### 华为推送

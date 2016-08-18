@@ -37,9 +37,9 @@ timeZone| |设备设定的时区
 ### Notification
 
 {% if node=='qcloud' %}
-对应 `控制台 / 消息 / 推送记录` 里的一条记录，表示一条推送消息，它包括下列属性：
+对应 **控制台 > 消息 > 推送记录** 里的一条记录，表示一条推送消息，它包括下列属性：
 {% else %}
-对应 [控制台 / 消息 / 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 里的一条记录，表示一条推送消息，它包括下列属性：
+对应 [控制台 > 消息 > 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 里的一条记录，表示一条推送消息，它包括下列属性：
 {% endif %}
 
 
@@ -253,7 +253,7 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
     "alert":      "消息内容",
     "title":      "显示在通知栏的标题",
     "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
-    "silent":     布尔类型，用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
+    "silent":     true/false // 用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
   }
 }
 ```
@@ -267,7 +267,7 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
     "title":      "显示在通知栏的标题",
     "action":     "com.your_company.push",
     "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
-    "silent":     布尔类型，用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
+    "silent":     true/false // 用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
   }
 }
 ```
@@ -301,7 +301,7 @@ Windows Phone 设备类似，也支持 `title` 和 `alert`，同时支持 `wp-pa
       "title":             "显示在通知栏的标题",
       "action":            "com.your_company.push",
       "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
-      "silent":            布尔类型，用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
+      "silent":            true/false // 用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
     },
     "wp":{
       "alert":             "消息内容",
@@ -325,23 +325,21 @@ Windows Phone 设备类似，也支持 `title` 和 `alert`，同时支持 `wp-pa
 }
 ```
 
-如果是 `dev` 值就表示使用开发证书，`prod` 值表示使用生产证书。如果未设置 `prod` 属性，且使用的不是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html)，我们默认使用**生产证书**来发推送。如果未设置 `prod` 属性，且使用的是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html) ，则需要在发推送之前执行 [AV.setProduction](https://leancloud.cn/api-docs/javascript/symbols/AV.html#.setProduction) 函数才会使用生产证书发推送，否则会以开发证书发推送。注意，当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
+如果是 `dev` 值就表示使用开发证书，`prod` 值表示使用生产证书。如果未设置 `prod` 属性，且使用的不是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html)，我们默认使用**生产证书**来发推送。如果未设置 `prod` 属性，且使用的是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html) ，则需要在发推送之前执行 [AV.setProduction](https://leancloud.cn/api-docs/javascript/symbols/AV.html#.setProduction) 函数才会使用生产证书发推送，否则会以开发证书发推送。注意，当设备设置了 `deviceProfile` 时我们优先按照 `deviceProfile` 指定的证书推送。
 
 #### Android 推送区分透传和通知栏消息
 
-Android 推送（包括 Android 混合推送）支持透传和通知栏两种消息类型。透传消息是指消息到达设备后会先交给 LeanCloud Android SDK，再由 SDK 将消息通过自定义 Receiver 传递给开发者，收到消息后的行为由开发者定义的 Receiver 来决定，SDK 不会自动弹出通知栏提醒。而通知栏消息是指消息到达设备后会立即自动弹出通知栏提醒。
+Android 推送（包括 Android 混合推送）支持透传和通知栏两种消息类型。透传消息是指消息到达设备后会先交给 LeanCloud Android SDK，再由 SDK 将消息通过 [自定义 Receiver](#自定义_Receiver) 传递给开发者，收到消息后的行为由开发者定义的 Receiver 来决定，SDK 不会自动弹出通知栏提醒。而通知栏消息是指消息到达设备后会立即自动弹出通知栏提醒。
 
-自定义 Receiver 的设置请参看文档：[自定义 Receiver ](https://leancloud.cn/docs/android_push_guide.html#自定义_Receiver)。
+LeanCloud 推送服务通过推送请求中 `data` 参数内的 `silent` 字段区分透传和通知栏消息。如果 `silent` 是 `true` 则表示这个消息是透传消息，为 `false` 表示消息是通知栏消息。如果不传递 `silent` 则默认其值为 `false`。另外请注意，如果希望接收透传消息请不要忘记自行实现 [自定义 Receiver](#自定义_Receiver)。
 
-LeanCloud 推送服务通过推送请求中 data 参数内的 silent 字段区分透传和通知栏消息。如果 silent 是 true 则表示这个消息是透传消息，反之 silent 为 false 表示消息是通知栏消息。如果不传递 silent 则默认其值为 false。另外请注意如果希望接收透传消息请不要忘记自行实现自定义 Receiver。
-
-推送请求中的 data 参数编写详情请参看[消息内容 Data](#消息内容 Data)。
+推送请求中的 `data` 参数请参考 [消息内容 Data](#消息内容_Data)。
 
 #### Android 混合推送多配置区分
 
 如果使用了混合推送功能且设置了多个混合推送配置，需要在 `_Installation` 表保存设备信息时将当前设备所对应的混合推送配置名存入 `deviceProfile`。推送时我们会按照每个目标设备在 `_Installation` 表 `deviceProfile` 字段指定的配置名来发混合推送。如果 `deviceProfile` 为空，我们会默认使用名为 `_default` 的混合推送配置名来发推送。
 
-注意: 如果无法保证 `_Installation` 表中所有设备记录的 `deviceProfile` 字段都不为空，请一定保证名为 `_default` 的混合推送配置在 [控制台 / 消息 / 推送设置](/messaging.html?appid={{appid}}#/message/push/conf) 内存在且被正确配置。否则 `deviceProfile` 为空的设备会因为没有对应的 `_default` 配置而无法完成推送。
+<div class="callout callout-info">如果无法保证 `_Installation` 表中所有设备记录的 `deviceProfile` 字段都不为空，请一定保证名为 `_default` 的混合推送配置在 [控制台 > 消息 > 推送设置](/messaging.html?appid={{appid}}#/message/push/conf) 中存在且被正确配置。否则 `deviceProfile` 为空的设备会因为没有对应的 `_default` 配置而**无法完成推送。**</div>
 
 #### 推送查询条件
 
@@ -495,7 +493,7 @@ curl -X POST \
   https://leancloud.cn/1.1/push
 ```
 
-用 where 查询的都是 _Installations 表中的属性。这里假设该表存储了 inStock 的布尔属性。
+用 `where` 查询的都是 `_Installations` 表中的属性。这里假设该表存储了 `inStock` 的布尔属性。
 
 * 根据地理信息位置做推送：
 
@@ -526,7 +524,7 @@ curl -X POST \
   https://leancloud.cn/1.1/push
 ```
 
-上面的例子假设 installation 有个 owner 属性指向 _User 表的记录，并且用户有个 location 属性是 GeoPoint 类型，我们就可以根据地理信息位置做推送。
+上面的例子假设 installation 有个 owner 属性指向 `_User` 表的记录，并且用户有个 `location` 属性是 GeoPoint 类型，我们就可以根据地理信息位置做推送。
 
 #### 使用 CQL 查询推送
 
@@ -622,9 +620,9 @@ curl -X GET \
 ### 推送状态查看和取消
 
 {% if node=='qcloud' %}
-在发推送的过程中，我们会随着推送任务的执行更新推送状态到 `控制台 / 消息 / 推送记录` 中，可以在这里查看推送的最新状态。对不同推送状态的说明请参看 [Notification 表详解](#Notification)。
+在发推送的过程中，我们会随着推送任务的执行更新推送状态到 **控制台 > 消息 > 推送记录** 中，可以在这里查看推送的最新状态。对不同推送状态的说明请参看 [Notification 表详解](#Notification)。
 {% else %}
-在发推送的过程中，我们会随着推送任务的执行更新推送状态到 [控制台 / 消息 / 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 中，可以在这里查看推送的最新状态。对不同推送状态的说明请参看 [Notification 表详解](#Notification)。
+在发推送的过程中，我们会随着推送任务的执行更新推送状态到 [控制台 > 消息 > 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 中，可以在这里查看推送的最新状态。对不同推送状态的说明请参看 [Notification 表详解](#Notification)。
 {% endif %}
 
 在一条推送记录状态到达 **done** 即完成推送之前，其状态信息旁边会显示 “取消推送” 按钮，点击后就能将本次推送取消。并且取消了的推送会从推送记录中删除。
@@ -691,18 +689,18 @@ curl -X DELETE \
 
 ## 限制
 {% if node=='qcloud' %}
-* 为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 `控制台 / 消息 / 推送记录` 页面中体现。因此，在使用开发证书推送时，请合理设置推送条件。
+* 为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 **控制台 > 消息 > 推送记录** 页面中体现。因此在使用开发证书推送时，请合理设置推送条件。
 {% else %}
-* 为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 [控制台 / 消息 / 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 页面中体现。因此，在使用开发证书推送时，请合理设置推送条件。
+* 为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 [控制台 > 消息 > 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 页面中体现。因此，在使用开发证书推送时，请合理设置推送条件。
 {% endif %}
 * Apple 对推送消息大小有限制，对 iOS 推送请尽量缩小要发送的数据大小，否则会被截断。详情请参看 [APNs 文档](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/APNsProviderAPI.html#//apple_ref/doc/uid/TP40008194-CH101-SW1)。
 * 如果使用了 Android 的混合推送，请注意小米推送和华为推送均对消息大小有限制。为保证推送消息能被正常发送，我们要求 data + channels 参数须小于 4096 字节，超过限制会导致推送无法正常发送，请尽量减小发送数据大小。
 * 对于 silent 参数不为 true 的通知栏消息来说，title 必须小于 16 个字符，alert 必须小于 128 个字符。对于小米推送如果没有填写 title 我们会取 alert 中前五个字符作为 title。
 
 {% if node=='qcloud' %}
-如果推送失败，在 `控制台 / 消息 / 推送记录` 的“状态”一栏中会看到错误提示。
+如果推送失败，在 **控制台 > 消息 > 推送记录** 的 **状态** 一栏中会看到错误提示。
 {% else %}
-如果推送失败，在 [控制台 / 消息 / 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 的“状态”一栏中会看到错误提示。
+如果推送失败，在 [控制台 > 消息 > 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 的 **状态** 一栏中会看到错误提示。
 {% endif %}
 
 ## Installation 自动过期和清理

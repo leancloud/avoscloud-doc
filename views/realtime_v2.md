@@ -75,7 +75,8 @@ LeanCloud 实时通信服务的特性主要有：
 
 #### 在线状态
 
-我们目前在 SDK 和 REST API 上提供主动查询的机制帮助开发者查询目标用户的在线状态。
+我们目前在 SDK 和 [REST API](realtime_rest_api.html#查询在线状态
+) 上提供主动查询的机制帮助开发者查询目标用户的在线状态。
 
 ### 对话（Conversation）
 

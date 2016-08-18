@@ -3,9 +3,9 @@
 ## 安装与初始化
 
 {% if node=='qcloud' %}
-首先在 `控制台` 上创建新的应用，然后 [下载 LeanCloud Android SDK](sdk_down.html) 以及相应的 Demo。
+首先在控制台上创建新的应用，然后 [下载 LeanCloud Android SDK](sdk_down.html) 以及相应的 Demo。
 {% else %}
-首先在 [控制台](https://leancloud.cn/applist.html#/apps) 上创建新的应用，然后 [下载 LeanCloud Android SDK](sdk_down.html) 以及相应的 Demo。
+首先在 [控制台](/applist.html#/apps) 上创建新的应用，然后 [下载 LeanCloud Android SDK](sdk_down.html) 以及相应的 Demo。
 {% endif %}
 
 ### 导入 SDK
@@ -15,7 +15,7 @@
 
 ![image](images/android_statistics_ide.png)
 
-### 配置 AndroidManifest.xml 文件
+### 配置 `AndroidManifest.xml` 文件
 
 请务必确保你的应用拥有如下权限：
 
@@ -178,7 +178,7 @@ public class MyListFragment extends ListFragment {
 
 ## 数据时效性
 
-在控制台的 **分析** 页面中，有些报告可以展示实时数据，有些报告则依靠 [离线数据](leaninsight_guide.html) 进行分析，因此有时你会看不到当天的数据。
+在控制台的 **分析** 页面中，有些报告可以展示实时数据，有些报告则依靠内部离线数据进行分析，因此有时你会看不到当天的数据。
 
 如果当前页面中存在 **日期选择** 选项（通常在页面右上角），你可以以此判断当前的统计结果是否有延迟。如果 **结束日期** 显示为<u>当天日期</u>或在其下拉菜单中有「今日」的选项，则为实时数据。如下图所示，菜单中无「今日」，所以可以判断这是离线数据，统计结果要延迟一天。
 

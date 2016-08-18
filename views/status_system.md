@@ -813,7 +813,7 @@ POST /statuses
 
 属性|说明
 ---|---
-query|查询 target 的条件，包括下列属性：<ul><li><strong>where</strong>：查询条件，可为空 `{}`，表示查询全表。</li><li><strong>className</strong>：target 的 className</li><li><strong>key</strong>：查询指定的列作为 inbox 的 owner 属性存储，如果不指定，默认将为整个对象作为 ointer 存储到 owner。</li></ul>
+query|查询 target 的条件，包括下列属性：<ul><li><strong>where</strong>：查询条件，可为空 `{}`，表示查询全表。</li><li><strong>className</strong>：target 的 className</li><li><strong>keys</strong>：查询指定的列作为 inbox 的 owner 属性存储，如果不指定，默认将为整个对象作为 pointer 存储到 owner。</li></ul>
 data|status 的 数据 JSON 对象，用户自定义。如果包含 source（指向发送者的 Pointer），并且 inboxType 设为 default，该 status 会同时往发送者的 inbox 投递。
 inboxType|字符串，指定接收这条 status 的 inbox 类型，可为空，默认为 `default`。
 
