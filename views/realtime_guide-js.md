@@ -26,46 +26,54 @@ JavaScript 实时通信 SDK 支持如下运行时：
 ### 文档贡献
 我们欢迎和鼓励大家对本文档的不足提出修改建议。请访问我们的 [Github 文档仓库](https://github.com/leancloud/docs) 来提交 Pull Request。
 
+### API 文档
+
+[https://leancloud.github.io/js-realtime-sdk/docs/]()
+
 ## 安装和初始化
-首先使用 npm 安装 SDK：
+### 安装
+建议使用 npm 安装 SDK，在终端运行以下命令：
 ```bash
 npm install leancloud-realtime --save
 ```
 
-然后在浏览器中加载以下 script：
+### 引用
+SDK 暴露（export）了以下成员：[SDK API 文档](https://leancloud.github.io/js-realtime-sdk/docs/module-leancloud-realtime.html)。
+
+如果是在浏览器中使用，需要加载以下 script：
 ```html
 <script src="./node_modules/leancloud-realtime/dist/realtime.browser.js"></script>
 ```
-最后进行初始化：
+在浏览器中直接加载时，SDK 暴露的所有的成员都挂载在 `AV` 命名空间下:
 ```javascript
-// 在浏览器中直接加载时，SDK 暴露的所有的成员都挂载在 AV 命名空间下
 var Realtime = AV.Realtime;
-var realtime = new Realtime({
-  appId: '{{appid}}',
-  region: 'cn', // 美国节点为 "us"
-});
+var TextMessage = AV.TextMessage;
 ```
 
-如果是在 Node.js 中使用，需要按以下方法进行初始化：
+如果是在 Node.js 或其他支持 CommonJS 模块规范的环境中使用，需要按以下方法进行 require：
 ```javascript
 var Realtime = require('leancloud-realtime').Realtime;
+var TextMessage = require('leancloud-realtime').TextMessage;
+```
+
+### 初始化
+按照上面的方式拿到 `Realtime` 类后，可以按照下面用法初始化一个 `realtime` 实例，在下面的文档中如果出现了未定义的 `realtime` 指的均是这个实例。
+
+```javascript
 var realtime = new Realtime({
   appId: '{{appid}}',
   region: 'cn', // 美国节点为 "us"
 });
 ```
 
-如果是在 React Native 中使用，需要在初始化时指定 noBinary 为 true：
+在 React Native 中使用时需要在初始化时指定 noBinary 为 true：
 ```javascript
-import { Realtime } from 'leancloud-realtime';
 const realtime = new Realtime({
   appId: '{{appid}}',
   region: 'cn', // 美国节点为 "us"
   noBinary: true,
 });
 ```
-
-SDK 暴露（export）的成员完整列表请参见：[SDK API 文档](https://leancloud.github.io/js-realtime-sdk/docs/module-leancloud-realtime.html)
 
 ### 富媒体消息插件
 如果需要使用 [富媒体消息](#富媒体消息) 中的 `ImageMessage`、`AudioMessage`、`VideoMessage`、`FileMessage` 或 `LocationMessage`，需要额外安装 leancloud-realtime-plugin-typed-messages 与 leancloud-storage：
@@ -93,14 +101,16 @@ var realtime = new Realtime({
 var imageMessage = new AV.ImageMessage(file);
 ```
 
-如果是在 Node.js 中使用，需要按以下方法进行初始化：
+如果是在 Node.js 或其他支持 CommonJS 模块规范的环境中使用，需要按以下方法进行引用与初始化：
 ```javascript
 var AV = require('leancloud-storage');
 var Realtime = require('leancloud-realtime').Realtime;
 var TypedMessagesPlugin = require('leancloud-realtime-plugin-typed-messages').TypedMessagesPlugin;
 var ImageMessage = require('leancloud-realtime-plugin-typed-messages').ImageMessage;
 
+// 初始化存储 SDK
 AV.initialize('{{appid}}', '{{appkey}}');
+// 初始化实时通讯 SDK
 var realtime = new Realtime({
   appId: '{{appid}}',
   plugins: [TypedMessagesPlugin], // 注册富媒体消息插件
@@ -464,7 +474,7 @@ conversation.on('receipt', function(payload) {
   // payload.message 为送达的消息，与先前发送的是同一实例
   // message.status 更新为 MessageStatus.DELIVERED
   // message.deliveredAt 为消息送达的时间
-  console.log(payload.message); 
+  console.log(payload.message);
 });
 ```
 
@@ -675,7 +685,7 @@ jerry.createConversation({
 * transient - 是否为 [暂态对话](#聊天室)
 * unique - 是否创建唯一对话，当其为 true 时，如果当前已经有**相同成员**的对话存在则返回该对话，否则会创建新的对话。该值默认为 false。
 
- option 参数中所有其他的字段都会作为对话的自定义属性保存。
+option 参数中所有其他的字段（如上面例子中的 `location`）都会作为对话的自定义属性保存。
 
 <div class="callout callout-info">由于暂态对话不支持创建唯一对话，所以将 `transient` 和 `unique` 同时设为 true 时并不会产生预期效果。</div>
 

@@ -4,7 +4,7 @@
 JavaScript 实时通讯 WebRTC 插件能帮助你实现 Web 端点对点实时音视频通话功能。基于 LeanCloud 实时通讯服务与 WebRTC 标准，支持最多 4 人之间的实时音视频通话（目前仅支持 Web 端之间的通话）。
 
 ## 兼容性
-WebRTC 插件基于 WebRTC 实现。WebRTC 是一组开源的 API，用于实现实时音视频通话并且已成为 W3C 标准草案。目前主流浏览器对 WebRTC 标准的支持情况如下：
+WebRTC 插件基于 WebRTC 实现。WebRTC 是一组开放的 API，用于实现实时音视频通话并且已成为 W3C 标准草案。目前主流浏览器对 WebRTC 标准的支持情况如下：
 
 浏览器|支持情况
 ----|:----:
@@ -19,7 +19,11 @@ IE|不支持
 
 ## Demo
 
-- [视频通话 App](https://leancloud.github.io/js-realtime-sdk/demo/video-calling/) （[源码](https://github.com/leeyeh/js-realtime-sdk/tree/master/demo/video-calling)）
+- [视频通话 App](https://leancloud.github.io/js-realtime-sdk/demo/webrtc/) （[源码](https://github.com/leeyeh/js-realtime-sdk/tree/master/demo/webrtc)）
+
+## API 文档
+
+[https://leancloud.github.io/js-realtime-sdk/plugins/webrtc/docs/]()
 
 ## 安装和初始化
 
