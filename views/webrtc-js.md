@@ -23,7 +23,7 @@ IE|不支持
 
 ## API 文档
 
-[https://leancloud.github.io/js-realtime-sdk/plugins/webrtc/docs/]()
+[https://leancloud.github.io/js-realtime-sdk/plugins/webrtc/docs/](https://leancloud.github.io/js-realtime-sdk/plugins/webrtc/docs/)
 
 ## 安装和初始化
 

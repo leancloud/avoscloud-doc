@@ -28,7 +28,7 @@ JavaScript 实时通信 SDK 支持如下运行时：
 
 ### API 文档
 
-[https://leancloud.github.io/js-realtime-sdk/docs/]()
+[https://leancloud.github.io/js-realtime-sdk/docs/](https://leancloud.github.io/js-realtime-sdk/docs/)
 
 ## 安装和初始化
 ### 安装
