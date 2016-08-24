@@ -1190,7 +1190,7 @@ fetchAllInBackground()
 
 {% block link_to_relation_guide_doc %}[Android 数据模型设计指南](relation_guide-android.html){% endblock %}
 
-{% set link_to_sms_guide_doc = '[短信服务使用指南 &middot; 注册验证](sms_guide-android.html#注册验证)' %}
+{% set link_to_sms_guide_doc = '[短信服务使用指南 · 注册验证](sms_guide-android.html#注册验证)' %}
 
 {% block code_send_sms_code_for_loginOrSignup %}
 
@@ -1320,7 +1320,14 @@ fetchAllInBackground()
 {% block code_send_verify_email %}
 
 ```java
-   //待补充
+  AVUser.requestEmailVerfiy("abc@xyz.com", new RequestEmailVerifyCallback() {
+    @Override
+    public void done(AVException e) {
+      if (e == null) {
+        // 求重发验证邮件成功
+      }
+    }
+  });
 ```
 {% endblock %}
 
