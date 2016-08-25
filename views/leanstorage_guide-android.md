@@ -1080,6 +1080,14 @@ fetchAllInBackground()
                 avCloudQueryResult.getCount();
             }
         });
+
+        // 请注意：如果 Todo 是 AVObject 的子类，则第三个参数需要传 Todo.class
+        AVQuery.doCloudQueryInBackground(cql, new CloudQueryCallback<AVCloudQueryResult>() {
+            @Override
+            public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
+                Todo todo = (Todo) avCloudQueryResult.getResults().get(0);
+            }
+        }, Todo.class);
 ```
 {% endblock %}
 
