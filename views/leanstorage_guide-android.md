@@ -1081,7 +1081,7 @@ fetchAllInBackground()
             }
         });
 
-        // 请注意：如果 Todo 是 AVObject 的子类，则第三个参数需要传 Todo.class
+        // 请注意：如果 Todo 是 AVObject 的子类，则需要传入第三个参数 Todo.class，否则会遇到 ClassCastException 的错误
         AVQuery.doCloudQueryInBackground(cql, new CloudQueryCallback<AVCloudQueryResult>() {
             @Override
             public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
