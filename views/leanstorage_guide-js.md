@@ -194,8 +194,12 @@
 ```js
   // 第一个参数是 className，第二个参数是 objectId
   var todo = AV.Object.createWithoutData('Todo', '5745557f71cfe40068c6abe0');
-  var title = todo.get('title');// 读取 title
-  var content = todo.get('content');// 读取 content
+  todo.fetch().then(function () {
+    var title = todo.get('title');// 读取 title
+    var content = todo.get('content');// 读取 content
+  }, function (error) {
+
+  });
 ```
 {% endblock %}
 
