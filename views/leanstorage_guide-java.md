@@ -983,6 +983,20 @@ Java SDK 不支持缓存策略。
 ```
 {% endblock %}
 
+{% block code_send_verify_email %}
+
+```java
+  AVUser.requestEmailVerfiy("abc@xyz.com", new RequestEmailVerifyCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null) {
+                    // 求重发验证邮件成功
+                }
+            }
+        });
+```
+{% endblock %}
+
 {% block code_reset_password_by_email %}
 
 ```java

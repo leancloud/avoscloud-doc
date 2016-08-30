@@ -1,19 +1,27 @@
 {% extends "./leanengine_guide.tmpl" %}
+{% set environment = '2.0（已不推荐使用）' %}
+{% set hook_before_save = "beforeSave" %}
+{% set hook_after_save = "afterSave" %}
+{% set hook_before_update = "beforeUpdate" %}
+{% set hook_after_update = "afterUpdate" %}
+{% set hook_before_delete = "beforeDelete" %}
+{% set hook_after_delete = "afterDelete" %}
+{% set hook_on_verified = "onVerified" %}
+{% set hook_on_login = "onLogin" %}
 
 {% block updateToLeanEngine %}
-## 云引擎 2.0 环境已不推荐使用
+如果项目中有 `cloud/main.js` 文件，即为云引擎 2.0 环境。
 
-### 如何判断当前运行环境
-如果项目中有 `cloud/main.js` 文件，即为云引擎 2.0 环境，该环境以后不会增加任何新功能，我们强烈建议你升级到云引擎环境。
+<div class="callout callout-danger">云引擎 2.0 环境已经停止维护，因此我们强烈建议用户升级到更高版本的云引擎环境。</div>
 
-### 升级到云引擎
+## 升级
 
-云引擎 2.0 和云引擎的差别主要是**应用的目录结构**。因为云引擎没有沙箱环境，所以不强制 `cloud` 和 `config` 等目录结构，只要是一个普通的 Node.js 项目即可。而 SDK 将作为一个普通组件添加到项目中，所以使用方面也有一些变化：
+云引擎 2.0 和后续版本（3.0+）的差别主要是**应用的目录结构**。因为后续版本不再使用沙箱环境，所以不强制 `cloud` 和 `config` 等目录结构，只要是一个普通的 Node.js 项目即可。而 SDK 将作为一个普通组件添加到项目中，所以使用方面也有一些变化：
 
-* 需要自己初始化 AV 对象：云引擎 2.0 的环境会直接将 AV 对象初始化并保存在沙箱环境上下文中，所以不需要任何声明而直接使用。我们认为这样违背了编程规则，所以云引擎环境需要自行初始化 AV 对象，而且可以根据需要来决定此过程是否使用 master key 。
-* 时区：云引擎 2.0 默认使用 UTC 时区，这给很多开发者带来了困惑。所以云引擎默认情况使用东八区时区，在 [时区问题](#时区问题) 部分详细讨论这个问题。
-* `avos-express-cookie-session` 的改变：该组件不再依赖 `cookie-parse`，而且引入方式发生变化，详情见 [处理用户登录和登出](#处理用户登录和登出)。
-* 运行环境判断：云引擎 2.0 使用 `__production` 全局变量判断当前环境是「预备环境」还是「生产环境」，而云引擎尊重 Node.js 的习惯，使用 `NODE_ENV` 这个变量来进行区分，`test` 为预备环境，`production` 为生产环境。详情见 [运行环境区分](#运行环境区分)。
+- **需要自己初始化 AV 对象**<br/>云引擎 2.0 会直接将 AV 对象初始化并保存在沙箱环境上下文中，所以不需要任何声明而直接使用。我们认为这样违背了编程规则，所以云引擎环境需要自行初始化 AV 对象，而且可以根据需要来决定此过程是否使用 master key。
+- **时区**<br/>云引擎 2.0 默认使用 UTC 时区，这给很多开发者带来了困惑。所以后续版本默认情况下使用东八区时区，在 [时区问题](#时区问题) 部分详细讨论这个问题。
+- **`avos-express-cookie-session` 的改变**<br/>该组件不再依赖 `cookie-parse`，而且引入方式发生变化，详情见 [处理用户登录和登出](#处理用户登录和登出)。
+- **运行环境判断**<br/>云引擎 2.0 使用 `__production` 全局变量判断当前环境是「预备环境」还是「生产环境」。而后续版本尊重 Node.js 的习惯，使用 `NODE_ENV` 这个变量来进行区分，`staging` 为预备环境，`production` 为生产环境。详情见 [运行环境区分](#运行环境区分)。
 
 请参见详细的 [升级指南](leanengine_upgrade_3.html)。
 {% endblock %}
@@ -33,13 +41,11 @@ $ cd <appName>
 {% endblock %}
 
 {% block introduceCloudCodeV2 %}
-## 云引擎 2.0 版
+## 升级到云引擎 2.0
 
-2014 年 8 月 14 号，云引擎推出 2.0 版本，最主要特性：可以自由添加和使用三方类库，去除一些对模块的限制。从 14 号开始，新创建的应用都将使用云引擎2.0版本。
+2014 年 8 月 14 号，云引擎推出 2.0 版本，其最主要特性包括可以自由添加和使用三方类库以及去除一些对模块的限制。2014 年 8 月 14 号以后创建的应用都将使用云引擎 2.0 版本。
 
-### 升级到 2.0
-
-1. 时区问题：2.0 版彻底修复了时区问题，应用不再需要自己对时间做 8 小时的时区修正。所以需要确认，在迁移到云引擎 2.0 之前，移除代码中之前对时间修正的部分代码。
+1. 时区问题：2.0 版彻底修复了时区问题，应用不再需要自己对时间做 8 小时的时区修正。所以需要确认，在迁移之前，移除代码中之前对时间修正的部分代码。
   > 需要注意的是，云引擎 2.0 使用的默认时区仍然为 UTC 时区，在 [时区问题](#时区问题) 部分详细讨论。
 1. 引入 package.json（可选）：如果项目需要引入其他三方类库，可以像标准 Node.js 项目一样，在项目根目录添加一个 `package.json` 配置文件，下面是一个简单的样例：
 
@@ -75,7 +81,7 @@ xml2js: "0.4.4"
 
 **注意**：`express` 目前只支持 `3.4.x` 版本，即使 `package.json` 指定其他版本也是无效的。
 
-在以上问题都确认后，就可以进行升级动作。升级操作完成后，因为缓存的原因，需要等待最多 5 分钟，平台将自动迁移完成，在 5 分钟迁移时间内，老的云引擎将继续提供服务，因此无需担心迁移期间服务暂停。
+在以上问题都确认后，就可以进行升级动作。升级操作完成后，因为缓存的原因，需要等待最多 5 分钟，平台将自动迁移完成。在迁移过程中服务不会暂停，请不用担心。
 
 ### 最新特性
 
@@ -87,17 +93,7 @@ xml2js: "0.4.4"
 {% endblock %}
 
 {% block download_skeleton %}
-### 下载项目框架
-
-{% if node=='qcloud' %}
-你可以在 `云引擎 / 设置` 页面下载到项目框架：
-{% else %}
-你可以在 [云引擎 / 设置](/cloud.html?appid={{appid}}#/conf) 页面下载到项目框架：
-{% endif %}
-
-![image](images/cloud_code_skeleton.png)
-
-点击 **下载项目框架（基本版）** 链接，会自动下载一个初始的项目框架，下载后的文件是一个 zip 打包文件，请解压该文件，会看到一个以**应用名称**命名的目录，目录结构是这样：
+### 项目框架结构
 
 ```
 <appName>
@@ -110,7 +106,7 @@ xml2js: "0.4.4"
     └── index.html
 ```
 
-其中，cloud 目录下有一个 `main.js`，这就是你的业务逻辑代码存放的地方，初始内容定义了一个函数，代码如下：
+其中，cloud 目录下有一个 `main.js`，这就是你的业务逻辑代码存放的地方，简单举个例子：
 
 ```javascript
 // Use AV.Cloud.define to define as many cloud functions as you want.
@@ -120,18 +116,14 @@ AV.Cloud.define('hello', function(request, response) {
 });
 ```
   
-这段代码定义了一个名为`hello`的函数，它简单的返回应答`Hello world!`。
+这段代码定义了一个名为 `hello` 的函数，它简单的返回应答 `Hello world!`。
 
-* config 目录下是项目的配置文件 `global.json`，已经按照你的项目信息（主要是 appId 和 appKey）帮你自动配置好了。
+* config 目录下是项目的配置文件 `global.json`，包含了 appId 和 appKey 等项目信息。
 * public 目录，用于存放 [网站托管](#网站托管) 功能的静态资源文件，具体请看后面的介绍。
 
-### 下载网站托管项目框架
+### 网站托管的项目框架结构
 
-进入控制台：**云引擎** / **设置** / **下载项目框架** / **Web 主机版**：
-
-![image](images/cloud_code_skeleton.png)
-
-下载后的代码结构类似云引擎（基本版），只是在 `Cloud` 目录下多了 `app.js` 文件和 `views` 目录：
+在 `Cloud` 目录下多了 `app.js` 文件和 `\views` 目录：
 
 ```
 <appName>
@@ -153,7 +145,7 @@ AV.Cloud.define('hello', function(request, response) {
 require('cloud/app.js');
 ```
 
-代码部署的过程跟云引擎部署是一样的，具体见 [部署](#部署)。
+代码部署的过程请参考 [部署](#部署)。
 {% endblock %}
 
 {% block demo %}
@@ -181,7 +173,7 @@ $ avoscloud
 {% endblock %}
 
 {% block install_middleware_cloudcode %}
-因为云引擎 2.0 是运行在沙箱环境，所以不需要安装和初始化，直接可以在项目中使用。
+因为云引擎 2.0 运行在沙箱环境，所以不需要安装和初始化，直接可以在项目中使用。
 {% endblock %}
 
 {% set sdk_guide_link = '[JavaScript SDK](./leanstorage_guide-js.html)' %}
@@ -292,7 +284,7 @@ AV.Cloud.afterSave('_User', function(request) {
 {% endblock %}
 
 {% block beforeUpdate %}
-云引擎 2.0 没有支持这个 Hook，你需要升级到云引擎来使用它，请参见详细的 [升级指南](leanengine_upgrade_3.html)。
+云引擎 2.0 不支持这个 Hook，你需要升级到后续版本来使用它，请参见详细的 [升级指南](leanengine_upgrade_3.html)。
 {% endblock %}
 
 {% block afterUpdateExample %}
@@ -532,13 +524,13 @@ AV.Cloud.httpRequest({
 
 传给 success 和 error 函数的应答对象包括下列属性：
 
-* **status**：HTTP 状态码
-* **headers**：HTTP 应答头部信息
-* **text**：原始的应答 body 内容。
-* **buffer**：原始的应答 Buffer 对象
-* **data**：解析后的应答内容，如果云引擎可以解析返回的 `Content-Type`的话（例如 JSON 格式，就可以被解析为一个 JSON 对象）。
+- `status`：HTTP 状态码
+- `headers`：HTTP 应答头部信息
+- `text`：原始的应答 body 内容。
+- `buffer`：原始的应答 Buffer 对象
+- `data`：解析后的应答内容，如果云引擎可以解析返回的 `Content-Type` 的话（例如 JSON 格式，就可以被解析为一个 JSON 对象）。
 
-如果你不想要 text（会消耗资源做字符串拼接），只需要 buffer，那么可以设置请求的 text 选项为 false：
+如果你不想要 text（会消耗资源做字符串拼接）只需要 buffer，那么可以设置请求的 text 选项为 false：
 
 ```javascript
 AV.Cloud.httpRequest({
@@ -703,7 +695,7 @@ var ip = req.headers['x-real-ip']
 app.use(express.bodyParser());
 ```
 
-使用表单上传文件，假设文件字段名叫iconImage:
+使用表单上传文件，假设文件字段名叫 iconImage：
 
 ```html
 <form enctype="multipart/form-data" method="post" action="/upload">
@@ -742,7 +734,7 @@ app.post('/upload', function(req, res){
 
 ### 处理用户登录和登出
 
-假设你创建了一个支持web主机功能的云引擎项目，在 app.js 里添加下列代码：
+假设你创建了一个支持 web 主机功能的云引擎项目，在 app.js 里添加下列代码：
 
 ```javascript
 var express = require('express');
@@ -770,8 +762,8 @@ app.use(avosExpressCookieSession({ cookie: { maxAge: 3600000 }, fetchUser: true}
 
 **注意**：我们通常不建议在云引擎环境中通过 `AV.User.current()` 获取登录用户的信息，虽然这样做不会有问题，也不会有串号的风险，但由于这个功能依赖 Node.js 的 Domain 模块，而 Node.js 4.x 已经不推荐使用 Domain 模块了，所以在云引擎中获取 currentUser 的机制后续会发生改变。因此，我们建议：
 
-* 在云引擎方法中通过 request.user 获取用户信息。
-* 在网站托管中通过 req.AV.user 获取用户信息。
+* 在云引擎方法中通过 `request.user` 获取用户信息。
+* 在网站托管中通过 `req.AV.user` 获取用户信息。
 * 在后续的方法调用显示传递 user 对象。
 
 登录很简单：
@@ -813,7 +805,7 @@ app.get('/logout', function(req, res) {
 });
 ```
 
-登录页面大概是这样 login.ejs:
+登录页面大概是这样 `login.ejs`：
 
 ```html
 <html>
@@ -830,7 +822,7 @@ app.get('/logout', function(req, res) {
   </html>
 ```
 
-注意： express 框架的 `express.session.MemoryStore` 在我们云引擎中是无法正常工作的，因为我们的云引擎是多主机，多进程运行，因此内存型 session 是无法共享的，建议用 [express.js &middot; cookie-session 中间件](https://github.com/expressjs/cookie-session)。
+注意： express 框架的 `express.session.MemoryStore` 在云引擎中是无法正常工作的，因为云引擎是多主机多进程运行，因此内存型 session 是无法共享的，建议用 [express.js &middot; cookie-session 中间件](https://github.com/expressjs/cookie-session)。
 {% endblock %}
 
 {% block https_redirect %}
@@ -883,7 +875,7 @@ name 模块包含一个名为 `isACoolName` 的函数。`require` 接收的路�
 
 ### 可用的第三方模块
 
-因为云引擎 1.0 运行在沙箱环境，我们只允许使用部分类库，这个名单如下：
+因为云引擎 1.0 运行在沙箱环境，我们只允许使用部分类库，名单如下：
 
 ```
 qiniu

@@ -961,6 +961,13 @@ $currentUser->getPassword(); // 无 getPassword() 方法
 ```
 {% endblock %}
 
+{% block code_send_verify_email %}
+
+```php
+User::requestEmailVerify("abc@xyz.com");
+```
+{% endblock %}
+
 {% block code_set_user_custom_properties %}
 
 ```php

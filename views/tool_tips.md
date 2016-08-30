@@ -100,7 +100,7 @@
 * 想建立一个应用网站？我们提供 [网站托管](leanengine_guide-cloudcode.html#Web_Hosting)。
 * 想用好云引擎，请先熟悉 [JavaScript SDK 开发指南](leanstorage_guide-js.html)。
 * 云引擎 Web 主机托管，可以绑定备案过的独立域名，请在 [工单系统](https://leanticket.cn/t/leancloud) 提出技术申请。
-* 云引擎 Web 主机托管，我们可以协助你完成域名的备案，请参考 [域名备案流程](leanengine_guide-cloudcode.html#域名备案流程)。
+* 云引擎 Web 主机托管，我们可以协助你完成域名的备案，请参考 [域名备案](leanengine_guide-cloudcode.html#域名备案)。
 
 ## 其他
 {% if node!='qcloud' %}

@@ -1,3 +1,4 @@
+{% set masterkey = '{{masterkey}}' %}
 # REST API 使用详解
 
 REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 进行交互，你可以使用 REST API 做很多事情，比如：
@@ -1508,16 +1509,15 @@ Location: https://api.leancloud.cn/1.1/users/55a47496e4b05001a7732c5f
 
 ### 登录
 
-在你允许用户注册之后，在以后你需要让他们用自己的用户名和密码登录。为了做到这一点，发送一个 GET 请求到 /1.1/login，加上 username 和 password 作为 URL 编码后的参数。
+在你允许用户注册之后，在以后你需要让他们用自己的用户名和密码登录。为了做到这一点，发送一个 POST 请求到 /1.1/login，加上 username 和 password 作为 body。
 
 ```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -G \
-  --data-urlencode 'username=hjiang' \
-  --data-urlencode 'password=f32@ds*@&dsa' \
-  https://api.leancloud.cn/1.1/login
+curl -X POST \
+-H "Content-Type: application/json" \
+-H "X-LC-Id: {{appid}}" \
+-H "X-LC-Key: {{appkey}}" \
+-d '{"username":"hjiang","password":"f32@ds*@&dsa"}' \
+https://api.leancloud.cn/1.1/login
 ```
 
 返回的主体是一个 JSON 对象包括所有除了 password 以外的自定义字段。它同样包含了 createdAt、updateAt、objectId 和 sessionToken 字段。

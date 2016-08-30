@@ -298,13 +298,13 @@ var codeBlockTabber = (function() {
         var nextHeight = 0;
         var heightOffset = 0;
 
-        // sum all heights of previous visble code blocks with multilang enabled
+        // sum all heights of previous visible code blocks with multilang enabled
         $(this).closest('.code-lang-toggles').prevAll('.codeblock-toggle-enabled:visible').each(function () {
           prevHeihgt += $(this).outerHeight(true);
         });
 
-        // sum all heights of previous hidden code blocks with multilang enabled
-        $(this).closest('.code-lang-toggles').prevAll('.codeblock-toggle-enabled').not(':visible').each(function () {
+        // sum all heights of previous hidden code blocks with multilang enabled, also excludes unrelated (non-targetLang) codeblocks
+        $(this).closest('.code-lang-toggles').prevAll('.codeblock-toggle-enabled').not(':visible').find('.' + targetLang).parent().each(function () {
           nextHeight += $(this).outerHeight(true);
         });
 

@@ -373,6 +373,10 @@ dependencies {
 
 如果以上条件不符合，SDK 会有日志输出，开发者可以根据日志判断是什么原因导致注册失败。开发者可以通过查看控制台 `_Installation` 表的相关记录的 **vendor** 字段来判断是否注册成功。
 
+#### 小米推送通知栏消息的点击事件
+
+当小米通知栏消息被点击后，如果已经设置了 [自定义 Receiver](#自定义_Receiver)，则 SDK 会发送一个 action 为 `com.avos.avoscloud.mi_notification_action` 的 broadcast。如有需要，开发者可以通过订阅此消息获取点击事件，否则 SDK 会默认打开 [启动推送服务](#启动推送服务) 对应设置的 Activity。
+
 
 ### 华为推送
 
@@ -407,6 +411,9 @@ dependencies {
 再添加 service 与 receiver。开发者要将其中的 `<包名>` 替换为自己的应用的 package：
 
 ```xml
+<!-- 必须，用于华为 Android 6.0 系统的动态权限页面-->
+<activity android:name="com.huawei.android.pushselfshow.permission.RequestPermissionsActivity"/>
+
 <receiver android:name="com.avos.avoscloud.AVHwPushMessageReceiver" >
   <intent-filter>
       <!-- 必须，用于接收 token -->

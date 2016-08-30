@@ -1940,7 +1940,7 @@ private void TomQueryWithLimit() {
     public void done(AVIMClient client, AVIMException e) {
       if (e == null) {
         //登录成功
-        AVIMConversationQuery query = tom.getConversationQuery();
+        AVIMConversationQuery query = tom.getQuery();
         query.setLimit(1);
         //获取第一个对话
         query.findInBackground(new AVIMConversationQueryCallback() {

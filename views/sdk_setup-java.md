@@ -56,8 +56,21 @@ public static void main(String[] args){
 		<dependency>
 			<groupId>cn.leancloud.java</groupId>
 			<artifactId>java-sdk</artifactId>
-			<version>0.1.0</version>
+			<version>[0.1.0,0.2.0)</version>
 		</dependency>
 	</dependencies>
+```
+
+或者通过 gradle 配置相关依赖
+```groovy
+repositories {
+  maven {
+    url "http://mvn.leancloud.cn/nexus/content/repositories/releases"
+  }
+}
+
+dependencies {
+  compile("cn.leancloud.java:java-sdk:0.1.+")
+}
 ```
 {% endblock %}

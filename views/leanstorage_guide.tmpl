@@ -1,7 +1,7 @@
 {% set appid = '{{appid}}' %}
 {% set appkey = '{{appkey}}' %}
 {% set masterkey = '{{masterkey}}' %}
-{% set middot = '&middot;' | safe %}
+{% set middot = '·' %}
 {% set link_to_blog_password_reset = '关于自定义邮件模板和验证链接，请参考《[自定义应用内用户重设密码和邮箱验证页面](https://blog.leancloud.cn/607/)》。' %}
 
 #  {{platform_title}} 数据存储开发指南
@@ -289,7 +289,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 简单的说， Pointer 就是一个外键的指针，只是在 LeanCloud 控制台做了显示优化。
 
-现在有一个新的需求：用户可以分享自己的 TodoFolder 到广场上，而其他用户看见可以给与评论，比如某一个宅男分享了自己列出的一个想买的游戏列表（TodoFolder 包含多个游戏名字），而我们用 Comment 对象来保存其他用户的评论以及是否点赞等相关信息，代码如下：
+现在有一个新的需求：用户可以分享自己的 TodoFolder 到广场上，而其他用户看见可以给与评论，比如某玩家分享了自己想买的游戏列表（TodoFolder 包含多个游戏名字），而我们用 Comment 对象来保存其他用户的评论以及是否点赞等相关信息，代码如下：
 
 {% block code_pointer_comment_one_to_many_todoFolder %}{% endblock %}
 
@@ -708,6 +708,18 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 {% block text_platform_geoPoint_notice %}{% endblock %}
 
 {% block text_js_promise %}{% endblock %}
+
+### 查询性能优化
+
+影响查询性能的因素很多。特别是当查询结果的数量超过 10 万，查询性能可能会显著下降或出现瓶颈。以下列举一些容易降低性能的查询方式，开发者可以据此进行有针对性的调整和优化，或尽量避免使用。
+
+- 不等于和不包含查询（无法使用索引）
+- 通配符在前面的字符串查询（无法使用索引）
+- 有条件的 count（需要扫描所有数据）
+- skip 跳过较多的行数（相当于需要先查出被跳过的那些行）
+- 无索引的排序（另外除非复合索引同时覆盖了查询和排序，否则只有其中一个能使用索引）
+- 无索引的查询（另外除非复合索引同时覆盖了所有条件，否则未覆盖到的条件无法使用索引，如果未覆盖的条件区分度较低将会扫描较多的数据）
+
 ## 用户
 
 用户系统几乎是每款应用都要加入的功能。除了基本的注册、登录和密码重置，移动端开发还会使用手机号一键登录、短信验证码登录等功能。{{productName}} 提供了一系列接口来帮助开发者快速实现各种场景下的需求。
@@ -754,9 +766,15 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {% block text_logInOrSignUp_with_authData %}{% endblock %}
 
-#### 设置手机号码
+#### 设置手机号码
 
 微信、陌陌等流行应用都会建议用户将账号和一个手机号绑定，这样方便进行身份认证以及日后的密码找回等安全模块的使用。我们也提供了一整套发送短信验证码以及验证手机号的流程，这部分流程以及代码演示请参考 {{ link_to_sms_guide_doc }}。
+
+#### 验证邮箱
+
+许多应用会通过验证邮箱来确认用户注册的真实性。如果在 [应用控制台 > 应用设置 > 应用选项](https://leancloud.cn/app.html?appid={{appid}}#/permission) 中勾选了 **用户注册时，发送验证邮件**，那么当一个 AVUser 在注册时设置了邮箱，云端就会向该邮箱自动发送一封包含了激活链接的验证邮件，用户打开该邮件并点击激活链接后便视为通过了验证。有些用户可能在注册之后并没有点击激活链接，而在未来某一个时间又有验证邮箱的需求，这时需要调用如下接口让云端重新发送验证邮件：
+
+{% block code_send_verify_email %}{% endblock %}
 
 ### 登录
 

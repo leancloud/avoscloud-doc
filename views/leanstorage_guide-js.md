@@ -194,8 +194,12 @@
 ```js
   // 第一个参数是 className，第二个参数是 objectId
   var todo = AV.Object.createWithoutData('Todo', '5745557f71cfe40068c6abe0');
-  var title = todo.get('title');// 读取 title
-  var content = todo.get('content');// 读取 content
+  todo.fetch().then(function () {
+    var title = todo.get('title');// 读取 title
+    var content = todo.get('content');// 读取 content
+  }, function (error) {
+
+  });
 ```
 {% endblock %}
 
@@ -1165,7 +1169,7 @@ function uploadFile (req, res) {
 {% block code_query_by_cql %}
 
 ```js
-  var cql = 'select * from %@ where status = 1';
+  var cql = 'select * from Todo where status = 1';
   AV.Query.doCloudQuery(cql).then(function (data) {
       // results 即为查询结果，它是一个 AV.Object 数组
       var results = data.results;
@@ -1185,7 +1189,7 @@ function uploadFile (req, res) {
 
 ```js
   // 带有占位符的 cql 语句
-  var cql = 'select * from %@ where status = ? and priority = ?';
+  var cql = 'select * from Todo where status = ? and priority = ?';
   var pvalues = [0, 1];
   AV.Query.doCloudQuery(cql, pvalues).then(function (data) {
       // results 即为查询结果，它是一个 AV.Object 数组
@@ -1293,6 +1297,17 @@ function uploadFile (req, res) {
 
 其他的平台可以参考如上代码。
 
+{% endblock %}
+
+{% block code_send_verify_email %}
+
+```js
+  AV.User.requestEmailVerfiy('abc@xyz.com').then(function (result) {
+      console.log(JSON.stringify(result));
+  }, function (error) {
+      console.log(JSON.stringify(error));
+  });
+```
 {% endblock %}
 
 {% block code_user_logIn_with_username_and_password %}

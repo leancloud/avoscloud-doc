@@ -235,7 +235,8 @@ module.exports = function(grunt) {
           data:{
             node: grunt.option('theme'),
             appid: '{{appid}}',
-            appkey: '{{appkey}}'
+            appkey: '{{appkey}}',
+            masterkey: '{{masterkey}}'
           }
         }
       }
@@ -392,7 +393,7 @@ module.exports = function(grunt) {
     }
     var self = this;
     // 查询所有已存在的 snippet version，
-    // 用来判断哪些是新的 snipeet，然后将其 version 和 content 添加到数据库
+    // 用来判断哪些是新的 snippet，然后将其 version 和 content 添加到数据库
     var snippetsVersion = [];
     var getSnippetsVersion = function(skip) {
       return AV.Query.doCloudQuery('select snippetVersion from Snippet limit ?, ?', [skip, 1000]).then(function(result) {

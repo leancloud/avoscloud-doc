@@ -2,7 +2,7 @@
 
 ## 如何判断当前是预备环境还是生产环境？
 
-请参考文档 [云引擎开发指南 Node.js](leanengine_webhosting_guide-node.html#预备环境和生产环境) / [Python](/leanengine_guide-python.html#运行环境区分) - 运行环境区分。
+请参考 [网站托管开发指南 · 预备环境和生产环境](leanengine_webhosting_guide-node.html#预备环境和生产环境) / [Python · 运行环境区分](/leanengine_guide-python.html#运行环境区分)。
 
 ## 怎么添加第三方模块
 
@@ -45,13 +45,9 @@ var async = require('async');
 
 我们在 [JavaScript 指南 - AV.Object](./leanstorage_guide-js.html#AV_Object) 章节中也进行了描述。
 
-## 目前支持哪些语言？
+## 如何进行域名备案和域名绑定？
 
-我们提供了 JavaScript SDK，支持 Node.js 和 Python 环境，未来可能会引入 PHP 等其他语言。
-
-## Web Hosting 备案如何操作？
-
-只有网站类的才需要备案，并且在主域名已备案的情况下，二级子域名不需要备案。 如果主站需要托管在我们这边，且还没有备案过，我们可以协助你完成备案，请参考文档 [绑定独立域名 Node.js](leanengine_webhosting_guide-node.html#绑定独立域名) / [Python](leanengine_guide-python.html#绑定独立域名)。
+只有网站类的才需要备案，并且在主域名已备案的情况下，二级子域名不需要备案。如果主站需要托管在我们这边，且还没有备案过，请进入 **应用控制台 > 账号设置 >** [域名备案](/settings.html#/setting/domainrecord) 和 [域名绑定](/settings.html#/setting/domainbind)，按照步骤提示操作即可。
 
 ## 调用云引擎方法如何收费？
 

@@ -273,7 +273,7 @@ LCChatKit.getInstance().open("Tom", new AVIMClientCallback() {
 ```
 具体的显示效果如下：
 
-<img class="img-bordered" src="https://dn-lhzo7z96.qbox.me/1464320206432">
+<img src="images/chatkit_android_conversation_list.png">
 
 ### 聊天界面
 
@@ -298,7 +298,15 @@ LCChatKit.getInstance().open("Tom", new AVIMClientCallback() {
 ```
 具体的显示效果如下：
 
-<img class="img-bordered" src="https://dn-lhzo7z96.qbox.me/1461816927540">
+<img src="images/chatkit_android_conversation.png">
+
+### 联系人列表页面
+
+因为 ChatKit 是与应用的用户体系完全解耦的，所以 ChatKit 中并没有包含联系人列表页面，但部分开发者可能有此需求，所以 chatkitapplication 实现了一个基于 LCChatProfileProvider 的联系人列表页面，具体代码可以参考 [ContactFragment.java](https://github.com/leancloud/LeanCloudChatKit-Android/blob/master/chatkitapplication/src/main/java/cn/leancloud/chatkitapplication/ContactFragment.java)，
+具体效果如下：
+
+<img src="images/chatkit_android_contact_list.png">
+
 
 ## 常见问题
 
