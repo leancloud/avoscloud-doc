@@ -17,6 +17,14 @@
 {% set hook_after_delete = "afterDelete" %}
 {% set hook_on_verified = "onVerified" %}
 {% set hook_on_login = "onLogin" %}
+{% set hook_message_received = "_messageReceived" %}
+{% set hook_receiver_offline = "_receiversOffline" %}
+{% set hook_message_sent = "_messageSent" %}
+{% set hook_conversation_start = "_conversationStart" %}
+{% set hook_conversation_started = "_conversationStarted" %}
+{% set hook_conversation_add = "_conversationAdd" %}
+{% set hook_conversation_remove = "_conversationRemove" %}
+{% set hook_conversation_update = "_conversationUpdate" %}
 
 {% block cloudFuncExample %}
 
@@ -370,6 +378,85 @@ AV.Cloud.useMasterKey();
 AV.Cloud.define('Logger', function(request, response) {
   console.log(request.params);
   response.success();
+});
+```
+{% endblock %}
+
+
+{% block code_hook_message_received %}
+
+```js
+AV.Cloud.define("_messageReceived", (request, response) => {
+	// request.params = {
+	// 	fromPeer: 'Tom',
+	// 	receipt: false,
+	// 	groupId: null,
+	// 	system: null,
+	// 	content: '{"_lctext":"耗子，起床！","_lctype":-1}',
+	// 	convId: '5789a33a1b8694ad267d8040',
+	// 	toPeers: ['Jerry'],
+	// 	__sign: '1472200796787,a0e99be208c6bce92d516c10ff3f598de8f650b9',
+	// 	bin: false,
+	// 	transient: false,
+	// 	sourceIP: '121.239.62.103',
+	// 	timestamp: 1472200796764
+	// };
+	console.log('_messageReceived start');
+	let content = JSON.parse(request.params.content);
+	let text = content._lctext;
+	console.log('text', text);
+	let processedContent = text.replace('XX中介', '**');
+	// 必须含有以下语句给服务端一个正确的返回，否则会引起异常
+	response.success({
+		content: processedContent
+	});
+	console.log('_messageReceived end');
+});
+```
+{% endblock %}
+
+{% block code_hook_receiver_offline %}
+
+```js
+AV.Cloud.define('_receiversOffline', (request, response) => {
+	console.log('_receiversOffline start');
+	let params = request.params;
+	let content = params.content;
+	let shortContent = content;
+	// params.content 为消息的内容
+	if (shortContent.length > 6) {
+		shortContent = content.slice(0, 6);
+	}
+	console.log('shortContent', shortContent);
+	let json = {
+		// 自增未读消息的数目，不想自增就设为数字
+		badge: "Increment",
+		sound: "default",
+		// 使用开发证书
+		_profile: "dev",
+		alert: shortContent
+	};
+
+	let pushMessage = JSON.stringify(json);
+
+	response.success({
+		"pushMessage": pushMessage
+	});
+	console.log('_receiversOffline end');
+});
+```
+{% endblock %}
+
+
+{% block code_hook_message_sent %}
+
+```js
+AV.Cloud.define('_messageSent', (request, response) => {
+	console.log('_messageSent start');
+	let params = request.params;
+	console.log(params);
+	response.success({});
+	console.log('_messageSent end');
 });
 ```
 {% endblock %}

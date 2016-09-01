@@ -19,6 +19,14 @@
 {% set hook_after_delete  = "afterDelete" %}
 {% set hook_on_verified   = "onVerified" %}
 {% set hook_on_login      = "onLogin" %}
+{% set hook_message_received = "_messageReceived" %}
+{% set hook_receiver_offline = "_receiversOffline" %}
+{% set hook_message_sent = "_messageSent" %}
+{% set hook_conversation_start = "_conversationStart" %}
+{% set hook_conversation_started = "_conversationStarted" %}
+{% set hook_conversation_add = "_conversationAdd" %}
+{% set hook_conversation_remove = "_conversationRemove" %}
+{% set hook_conversation_update = "_conversationUpdate" %}
 
 {% block cloudFuncExample %}
 
