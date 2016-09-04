@@ -420,7 +420,7 @@ body {
 
 // Homepage
 .doc-home-title {
-  padding: 60px 0 80px;
+  padding: 50px 0 90px;
   font-weight: 300;
 
   h1, h2, h3, h4 {
@@ -441,8 +441,16 @@ body {
   }
 
   .hero-search {
-    max-width: 400px;
+    max-width: 500px;
     margin: 15px auto;
+
+    .algolia-autocomplete {
+      display: block!important;
+    }
+    .ds-dropdown-menu {
+      left: 0;
+      right: 0!important;
+    }
   }
 
   .faq-title {
