@@ -1383,7 +1383,7 @@ var signatureFactory = function(clientId) {
  * @param {String} conversationId
  * @param {String} clientId 当前用户 ID
  * @param {String[]} targetIds 此次操作的目标用户 IDs
- * @param {String} action  此次行为的动作，可能的值为 crete（创建会话）、add（加群和邀请）和 remove（踢出群）之一
+ * @param {String} action  此次行为的动作，可能的值为 create（创建会话）、add（加群和邀请）和 remove（踢出群）之一
  * @return {Object} signatureResult
  * @return {String} signatureResult.signature
  * @return {Number} signatureResult.timestamp

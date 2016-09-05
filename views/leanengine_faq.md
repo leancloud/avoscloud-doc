@@ -41,7 +41,10 @@ var async = require('async');
 
 ## Maximum call stack size exceeded 如何解决？
 
-`AV.Object.extend` 产生的对象需要作为全局变量保存（即定义在 AV.Cloud.define 方法之外）。因为每调用一次，就会产生一个新的类的实例，并且和之前创建的实例形成一个链表。调用次数过多后（几万次）就会堆栈溢出。如果你的应用时不时出现 **Maximum call stack size exceeded** 错误，请确认是否误用了 `AV.Object.extend` 方法。
+如果你的应用时不时出现 `Maximum call stack size exceeded` 异常，可能是因为在 hook 中调用了 `AV.Object.extend`。有两种方法可以避免这种异常：
+ 
+- 升级 leanengine 到 v1.2.2 或以上版本
+- 在 hook 外定义 Class（即定义在 `AV.Cloud.define` 方法之外），确保不会对一个 Class 执行多次 `AV.Object.extend`
 
 我们在 [JavaScript 指南 - AV.Object](./leanstorage_guide-js.html#AV_Object) 章节中也进行了描述。
 

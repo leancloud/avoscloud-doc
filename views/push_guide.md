@@ -22,7 +22,6 @@ Installation 表示一个允许推送的设备的唯一标示，对应 [数据�
 ---|---|---
 badge|iOS|呈现在应用图标右上角的红色圆形数字提示，例如待更新的应用数、未读信息数目等。
 channels| |设备订阅的频道
-deviceProfile||在应用有多个 iOS 推送证书或多个 Android 混合推送配置的场景下，deviceProfile 用于指定该设备对应的证书名或配置名。
 deviceProfile||在应用有多个 iOS 推送证书或多个 Android 混合推送配置的场景下，deviceProfile 用于指定当前设备使用的证书名或配置名。其值需要与 [控制台 > 消息 > 设置](/messaging.html?appid={{appid}}#/message/push/conf) 内配置的证书名或配置名对应，否则将无法完成推送。使用方法请参考 [iOS 测试和生产证书区分](#iOS_测试和生产证书区分) 和 [Android 混合推送多配置区分](#Android_混合推送多配置区分)。
 deviceToken|iOS|APNS 推送的唯一标识符
 deviceType| |设备类型，目前支持 "ios"、"android"、"wp"、"web"。

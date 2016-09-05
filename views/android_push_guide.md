@@ -316,20 +316,21 @@ dependencies {
   android:process=":pushservice"/>
 
 <service
-  android:name="com.xiaomi.push.service.XMService"
+  android:name="com.xiaomi.push.service.XMJobService"
   android:enabled="true"
   android:exported="false"
   android:permission="android.permission.BIND_JOB_SERVICE"
-  android:process=":pushservice"/>
+  android:process=":pushservice" />
 
 <service
   android:name="com.xiaomi.mipush.sdk.PushMessageHandler"
   android:enabled="true"
   android:exported="true"/>
+  
 <service
   android:name="com.xiaomi.mipush.sdk.MessageHandleService"
   android:enabled="true"/>
-<!--注：此 service 必须在 2.2.5 及后续版本中加入 -->
+  
 <receiver
   android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
   android:exported="true">
@@ -338,6 +339,7 @@ dependencies {
       <category android:name="android.intent.category.DEFAULT"/>
   </intent-filter>
 </receiver>
+
 <receiver
   android:name="com.xiaomi.push.service.receivers.PingReceiver"
   android:exported="false"
@@ -346,6 +348,7 @@ dependencies {
       <action android:name="com.xiaomi.push.PING_TIMER"/>
   </intent-filter>
 </receiver>
+
 <receiver
   android:name="com.avos.avoscloud.AVMiPushMessageReceiver"
   android:exported="true">

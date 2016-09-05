@@ -83,10 +83,18 @@
   var Todo = AV.Object.extend('Todo');
 ```
 
-**注意**：`AV.Object.extend` 产生的对象需要作为全局变量保存，因为每调用
-一次，就会产生一个新的类的实例，并且和之前创建的实例形成一个链表。
-如果你的应用时不时出现 `Maximum call stack size exceeded` 错误，请
-确认是否误用了该方法。
+**注意**：如果你的应用时不时出现 `Maximum call stack size exceeded` 异常，可能是因为在循环或回调中调用了 `AV.Object.extend`。有两种方法可以避免这种异常：
+
+- 升级 SDK 到 v1.4.0 或以上版本
+- 在循环或回调外声明 Class，确保不会对一个 Class 执行多次 `AV.Object.extend`
+
+从 v1.4.0 开始，SDK 支持使用 ES6 中的 extends 语法来声明一个继承自 `AV.Object` 的类，上述的 Todo 声明也可以写作：
+
+```js
+class Todo extends AV.Object {}
+// 需要向 SDK 注册这个 Class
+AV.Object.register(Todo);
+```
 {% endblock %}
 
 {% block code_save_object_by_cql %}
