@@ -374,13 +374,13 @@ AV.Cloud.define('customErrorCode', function(req, res) {
 AV.Cloud.httpRequest({
   url: 'http://www.google.com/'
 }).then(function(httpResponse) {
+
+  // 返回的 HTTP 状态码是成功的状态码（例如 200、201 等 2xx）时会被调用
   console.log(httpResponse.text);
 }, function(httpResponse) {
   console.error('Request failed with response code ' + httpResponse.status);
 });
 ```
-
-当返回的 HTTP 状态码是成功的状态码（例如 200、201 等 2xx）。
 
 ### 查询参数
 
