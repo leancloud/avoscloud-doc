@@ -21,12 +21,9 @@ AV.Cloud.beforeSave('Post', function(request, response) {
   // 如果之前已经存在 Administrator 角色，就参照下面代码查询出 Administrator 的 AV.Role 的实例
   /*
     var roleQuery = new AV.Query(AV.Role);
-    roleQuery.equalTo('name','Administrator');
-    roleQuery.find({
-    success:function(results){
+    roleQuery.equalTo('name', 'Administrator');
+    roleQuery.find().then(function(results) {
       var administratorRole = results[0];
-    }, error:function(error){
-      
     });
   */
   var post = request.object;
@@ -38,14 +35,14 @@ AV.Cloud.beforeSave('Post', function(request, response) {
     acl.setRoleWriteAccess('Administrator',true);
     // 如果是查询出来的 AV.Role 实例可以如下书写，效果是等价的
     //  acl.setRoleWriteAccess(administratorRole,true);
-      
+
     post.setACL(acl);
-    
+
     // 保存到数据库中
     response.success();
   } else {
     // 不保存数据，并返回错误
-    response.error('未发现有效的 Post 对象；');    
+    response.error('未发现有效的 Post 对象；');
   }
 });
 ```
@@ -60,7 +57,7 @@ AV.Cloud.beforeSave('Post', function(request, response) {
  AVObject *post = [AVObject objectWithClassName:@"Post"];
  [post setObject:@"大家好，我是新人" forKey:@"title"];
  [post setObject:@"我喜欢看新闻和阅读报纸，请多多关照" forKey:@"content"]
- 
+
  [post saveInBackground];
 ```
 
@@ -68,9 +65,9 @@ AV.Cloud.beforeSave('Post', function(request, response) {
 
 ```java
  // 新建一个帖子对象
- AVObject post=new AVObject("Post");
- post.put("title","大家好，我是新人");
- 
+ AVObject post=new AVObject('Post');
+ post.put('title', '大家好，我是新人');
+
  post.saveInBackground();// 保存
 ```
 
@@ -78,7 +75,7 @@ AV.Cloud.beforeSave('Post', function(request, response) {
 
 ```json
 {"*":{"read":true},"role:Administrator":{"write":true}}
-``` 
+```
 
 如此做，客户端的代码就只要针对 `Post` 进行新增，无需在 iOS，Android 以及其他客户端中添加 `Administrator` 针对 `Post` 的 ACL 赋值的代码。
 

@@ -96,13 +96,10 @@ AVCloud.callFunctionInBackground("averageStars", dicParameters, new FunctionCall
 var paramsJson = {
   movie: "夏洛特烦恼"
 };
-AV.Cloud.run('averageStars', paramsJson, {
-  success: function(data) {
-    // 调用成功，得到成功的应答 data
-  },
-  error: function(err) {
-    // 处理调用失败
-  }
+AV.Cloud.run('averageStars', paramsJson).then(function(data) {
+  // 调用成功，得到成功的应答 data
+}, function(err) {
+  // 处理调用失败
 });
 ```
 ```php

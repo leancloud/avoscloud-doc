@@ -24,17 +24,14 @@
 AV.Cloud.define('averageStars', function(request, response) {
   var query = new AV.Query('Review');
   query.equalTo('movie', request.params.movie);
-  query.find({
-    success: function(results) {
-      var sum = 0;
-      for (var i = 0; i < results.length; ++i) {
-        sum += results[i].get('stars');
-      }
-      response.success(sum / results.length);
-    },
-    error: function() {
-      response.error('查询失败');
+  query.find().then(function(results) {
+    var sum = 0;
+    for (var i = 0; i < results.length; i++ ) {
+      sum += results[i].get('stars');
     }
+    response.success(sum / results.length);
+  }).catch(function(error) {
+    response.error('查询失败');
   });
 });
 ```
@@ -61,25 +58,22 @@ Request 和 Response 会作为两个参数传入到云函数中：
 
 ```js
 var paramsJson = {
-  movie: "夏洛特烦恼"
+  movie: '夏洛特烦恼',
 };
-AV.Cloud.run('averageStars', paramsJson, {
-  success: function(data) {
-    // 调用成功，得到成功的应答data
-  },
-  error: function(err) {
-    // 处理调用失败
-  }
+AV.Cloud.run('averageStars', paramsJson).then(function(data) {
+  // 调用成功，得到成功的应答 data
+}, function(error) {
+  // 处理调用失败
 });
 ```
 
 云引擎中默认会直接进行一次本地的函数调用，而不是像客户端一样发起一个 HTTP 请求。如果你希望发起 HTTP 请求来调用云函数，可以传入一个 `remote: true` 的选项（与 success 和 error 回调同级），当你在云引擎之外运行 Node SDK 时这个选项非常有用：
 
 ```js
-AV.Cloud.run('averageStars', paramsJson, {
-  remote: true,
-  success: function(data) {},
-  error: function(err) {}
+AV.Cloud.run('averageStars', paramsJson).then(function(data) {
+  // 成功
+}, function(error) {
+  // 失败
 });
 ```
 {% endblock %}
@@ -130,14 +124,9 @@ AV.Cloud.beforeSave('Review', function(request, response) {
 ```javascript
 AV.Cloud.afterSave('Comment', function(request) {
   var query = new AV.Query('Post');
-  query.get(request.object.get('post').id, {
-    success: function(post) {
-      post.increment('comments');
-      post.save();
-    },
-    error: function(error) {
-      throw 'Got an error ' + error.code + ' : ' + error.message;
-    }
+  query.get(request.object.get('post').id).then(function(post) {
+    post.increment('comments');
+    post.save();
   });
 });
 ```
@@ -149,13 +138,8 @@ AV.Cloud.afterSave('Comment', function(request) {
 AV.Cloud.afterSave('_User', function(request) {
   console.log(request.object);
   request.object.set('from','LeanCloud');
-  request.object.save(null, {
-    success:function(user)  {
-      console.log('ok!');
-    },
-    error:function(user, error) {
-      console.log('error', error);
-    }
+  request.object.save().then(function(user)  {
+    console.log('ok!');
   });
 });
 ```
@@ -199,19 +183,16 @@ AV.Cloud.beforeDelete('Album', function(request, response) {
   var query = new AV.Query('Photo');
   var album = AV.Object.createWithoutData('Album', request.object.id);
   query.equalTo('album', album);
-  query.count({
-    success: function(count) {
-      if (count > 0) {
-        //还有照片，不能删除，调用error方法
-        response.error('Can\'t delete album if it still has photos.');
-      } else {
-        //没有照片，可以删除，调用success方法
-        response.success();
-      }
-    },
-    error: function(error) {
-      response.error('Error ' + error.code + ' : ' + error.message + ' when getting photo count.');
+  query.count().then(function(count) {
+    if (count > 0) {
+      //还有照片，不能删除，调用error方法
+      response.error('Can\'t delete album if it still has photos.');
+    } else {
+      //没有照片，可以删除，调用success方法
+      response.success();
     }
+  }, function(error) {
+    response.error('Error ' + error.code + ' : ' + error.message + ' when getting photo count.');
   });
 });
 ```
@@ -224,14 +205,11 @@ AV.Cloud.afterDelete('Album', function(request) {
   var query = new AV.Query('Photo');
   var album = AV.Object.createWithoutData('Album', request.object.id);
   query.equalTo('album', album);
-  query.find({
-    success: function(posts) {
+  query.find().then(function(posts) {
     //查询本相册的照片，遍历删除
     AV.Object.destroyAll(posts);
-    },
-    error: function(error) {
-      console.error('Error finding related comments ' + error.code + ': ' + error.message);
-    }
+  }).then(function(error) {
+    console.error('Error finding related comments ' + error.code + ': ' + error.message);
   });
 });
 ```
