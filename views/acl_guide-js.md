@@ -5,7 +5,7 @@
 {% set platform = "JavaScript" %}
 {% block for_front_js %}
 ### 云引擎使用 ACL
-文档中使用的 `AV.User.current()` 这个方法仅仅针对浏览器端有效，在**云引擎中该接口无法使用**。
+文档中使用的 `AV.User.current()` 这个方法仅仅针对浏览器端有效，在**云引擎中该接口无法使用**。云引擎中获取用户信息，请参考云引擎文档[处理用户登录和登出](leanengine_webhosting_guide-node.html#处理用户登录和登出)
 {% endblock %}
 {% block link_to_acl_quickStart %}[权限管理以及 ACL 快速指南](acl_quick_start-js.html){% endblock %}
 {% block create_post_set_acl_for_single_user %}
@@ -61,10 +61,10 @@
   var roleAcl = new AV.ACL();
   roleAcl.setPublicReadAccess(true);
   roleAcl.setPublicWriteAccess(false);
-  
+
   // 当前用户是该角色的创建者，因此具备对该角色的写权限
   roleAcl.setWriteAccess(AV.User.current(), true);
-  
+
   var administratorRole = new AV.Role('Administrator', roleAcl);//新建角色
   administratorRole.save().then(function (role) {
       // 创建成功
@@ -79,7 +79,7 @@
   let roleAcl = new AV.ACL();
   roleAcl.setPublicReadAccess(true);
   roleAcl.setPublicWriteAccess(false);
-  
+
   // 当前用户是该角色的创建者，因此具备对该角色的写权限
   roleAcl.setWriteAccess(AV.User.current(),true);
 
@@ -198,22 +198,22 @@
   var Post = AV.Object.extend("Post");
   var post = new Post();
   post.set("title", "大家好，我是新人");
-  
+
   // 新建一个角色，并把为当前用户赋予该角色
   var administratorRole = new AV.Role("Administrator");//新建角色
 
   var relation= administratorRole.getUsers();
   administratorRole.getUsers().add(AV.User.current());//为当前用户赋予该角色
   administratorRole.save().then(function(administratorRole) {//角色保存成功
-  
+
     // 新建一个 ACL 实例
     var acl = new AV.ACL();
     acl.setPublicReadAccess(true);
     acl.setRoleWriteAccess(administratorRole,true);
-    
+
     // 将 ACL 实例赋予 Post 对象
     post.setACL(acl);
-    
+
     post.save(null, {
       success: function(post) {
   },
@@ -281,7 +281,7 @@
                administratorRole.save();
             }
           },error:function(errorForUserQuery){
-            
+
           }
         });
       } else{
@@ -292,7 +292,7 @@
         administratorRole.save();//保存
       }
     },error:function(error){
-      
+
     }
   });
 ```
@@ -356,12 +356,12 @@
                moderatorRole.save();
             }
           },error:function(errorForUserQuery){
-            
+
           }
         });
       }
     },error:function(error){
-      
+
     }
   });
 ```
@@ -451,45 +451,45 @@
      digitalRole.getRoles().add(photographicRole);
      digitalRole.getRoles().add(mobileRole);
      digitalRole.save();//保存
-     
+
       // 新建一个帖子对象
       var Post = AV.Object.extend("Post");
-      
+
       // 新建摄影器材板块的帖子
       var photographicPost = new Post();
       photographicPost.set("title", "我是摄影器材板块的帖子！");
-      
+
       // 新建手机平板板块的帖子
       var mobilePost = new Post();
       mobilePost.set("title", "我是手机平板板块的帖子！");
-      
+
       // 新建电子数码板块的帖子
       var digitalPost = new Post();
       digitalPost.set("title", "我是电子数码板块的帖子！");
-      
-      
+
+
       // 新建一个摄影器材版主可写的 ACL 实例
       var photographicACL = new AV.ACL();
       photographicACL.setPublicReadAccess(true);
       photographicACL.setRoleWriteAccess(photographicRole,true);
-      
+
       // 新建一个手机平板版主可写的 ACL 实例
       var mobileACL = new AV.ACL();
       mobileACL.setPublicReadAccess(true);
       mobileACL.setRoleWriteAccess(mobileRole,true);
-      
+
       // 新建一个手机平板版主可写的 ACL 实例
       var digitalACL = new AV.ACL();
       digitalACL.setPublicReadAccess(true);
       digitalACL.setRoleWriteAccess(digitalRole,true);
-      
+
       // photographicPost 只有 photographicRole 可以读写
       // mobilePost 只有 mobileRole 可以读写
       // 而 photographicRole，mobileRole，digitalRole 均可以对 digitalPost 进行读写
       photographicPost.setACL(photographicACL);
       mobilePost.setACL(mobileACL);
       digitalPost.setACL(digitalACL);
-      
+
       AV.Promise.when(
         photographicPost.save(),
         mobilePost.save(),
