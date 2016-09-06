@@ -132,6 +132,27 @@ r = redis.from_url(os.environ.get("REDIS_URL_<实例名称>"))
 
 旧版云引擎环境不支持 LeanCache，建议升级到云引擎 3.0 Node.js 环境，升级文档详见 [云引擎 2.0 升级 3.0 指南](leanengine_upgrade_3.html)。
 
+### 在本地调试依赖 LeanCache 的应用
+
+目前不支持直接连接线上的 LeanCache 进行调试，所以需要先在本地安装好 Redis。
+
+* Mac 上运行 `brew install redis` 来安装 Redis，然后使用 `redis-server` 启动服务。
+* Debian/Ubuntu 上运行 `apt-get install redis-server`
+* CentOS/RHEL 运行 `yum install redis`
+* Windows 尚无官方支持，可以下载 [微软的分支版本](https://github.com/MSOpenTech/redis/releases) 安装包。
+
+默认情况下，在本地运行时程序没有 LeanCache 的环境变量，因此会使用本地的 Redis 服务器地址。
+
+```javascript
+// 在本地 process.env['REDIS_URL_<实例名称>'] 为 undefined，会连接默认的 127.0.0.1:6379
+var client = require('redis').createClient(process.env['REDIS_URL_<实例名称>']);
+```
+
+如果部署到预备或生产环境时遇到类似 `redis err: Error: Redis connection to 127.0.0.1:6379 failed - connect ECONNREFUSED 127.0.0.1:6379` 错误，请核实以上代码中 `REDIS_URL_<实例名称>` 这个环境变量的值是否替换正确，也可参考 [在云引擎中使用（Node.js 环境）](#在云引擎中使用_Node_js_环境_) 的示例。
+
+更详细的 Redis 操作说明请参考 [Redis 官方文档](http://redis.io/documentation)。
+
+
 ### 多应用间共享使用
 
 LeanCache 实例在开发者账户内全局可见，并不与某个应用固定绑定。所以在某个应用内创建的 LeanCache 实例，其他应用也一样可以使用，其调用方法和上述例子一样。
