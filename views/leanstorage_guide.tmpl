@@ -659,7 +659,7 @@ Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语�
 
 {% block code_query_by_cql %}{% endblock %}
 
-通常，查询语句会使用变量参数。为此，我们提供了与 Java JDBC 所使用的 PreparedStatement 占位符查询相类似的语法结构。
+通常查询语句会使用变量参数，为此我们提供了与 Java JDBC 所使用的 PreparedStatement 占位符查询相类似的语法结构。
 
 查询 status = 0、priority = 1 的 Todo：
 
@@ -726,12 +726,38 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 `{{userObjectName}}` 是用来描述一个用户的特殊对象，与之相关的数据都保存在 `_User` 数据表中。
 
+### 用户的属性
+
+#### 默认属性
+用户名、密码、邮箱是默认提供的三个属性，访问方式如下：
+
+{% block code_get_user_properties %}{% endblock %}
+
+请注意代码中，密码是仅仅是在注册的时候可以设置的属性（这部分代码可参照 [用户名和密码注册](#用户名和密码注册)），它在注册完成之后并不会保存在本地（SDK 不会以明文保存密码这种敏感数据），所以在登录之后，再访问密码这个字段是为**空的**。
+
+#### 自定义属性
+用户对象和普通对象一样也支持添加自定义属性。例如，为当前用户添加年龄属性：
+
+{% block code_set_user_custom_properties %}{% endblock %}
+
+#### 属性的修改
+
+很多开发者都有这样的疑问：为什么我不能修改任意一个用户的属性？原因如下。
+
+> 很多时候，就算是开发者也不要轻易修改用户的基本信息，例如用户的手机号、社交账号等个人信息都比较敏感，应该由用户在 App 中自行修改。所以为了保证用户的数据仅在用户自己已登录的状态下才能修改，云端对所有针对 `{{userObjectName}}` 对象的数据操作都要做验证。
+
+假如，刚才我们为当前用户添加了一个 age 属性，现在我们来修改它：
+
+{% block code_update_user_custom_properties %}{% endblock %}
+
+细心的开发者应该已经发现 `{{userObjectName}}` 在自定义属性上的使用与一般的 `{{baseObjectName}}` 没本质区别。
+
 ### 注册
 
 {% block text_send_sms_code_for_loginOrSignup %}
 
 {% if node=='qcloud' %}
-> 注意：TAB 中暂时未开放短信功能，所以所有与短信相关的 API 暂时不能调用。
+<div class="callout callout-danger">注意：TAB 暂时未开放短信功能，所以所有与短信相关的 API 操作（如使用手机号进行注册）暂时不能调用。</div>
 {% endif %}
 
 #### 手机号码登录
@@ -748,7 +774,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 {% endblock %}
 #### 用户名和密码注册
 
-采用「用户名 + 密码」注册时需要注意：密码是以明文方式通过 HTTPS 加密传输给云端，云端会以密文存储密码，并且我们的加密算法是无法通过所谓「彩虹表撞库」获取的，这一点请开发者放心。换言之，用户的密码只可能用户本人知道，开发者不论是通过控制台还是 API 都是无法获取的。另外我们需要强调**在客户端，应用切勿再次对密码加密，这会导致重置密码等功能失效。**
+采用「用户名 + 密码」注册时需要注意：密码是以明文方式通过 HTTPS 加密传输给云端，云端会以密文存储密码，并且我们的加密算法是无法通过所谓「彩虹表撞库」获取的，这一点请开发者放心。换言之，用户的密码只可能用户本人知道，开发者不论是通过控制台还是 API 都是无法获取。另外我们需要强调<u>在客户端，应用切勿再次对密码加密，这会导致重置密码等功能失效</u>。
 
 例如，注册一个用户的示例代码如下（用户名 `Tom` 密码 `cat!@#123`）：
 
@@ -772,23 +798,23 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 #### 验证邮箱
 
-许多应用会通过验证邮箱来确认用户注册的真实性。如果在 [应用控制台 > 应用设置 > 应用选项](https://leancloud.cn/app.html?appid={{appid}}#/permission) 中勾选了 **用户注册时，发送验证邮件**，那么当一个 AVUser 在注册时设置了邮箱，云端就会向该邮箱自动发送一封包含了激活链接的验证邮件，用户打开该邮件并点击激活链接后便视为通过了验证。有些用户可能在注册之后并没有点击激活链接，而在未来某一个时间又有验证邮箱的需求，这时需要调用如下接口让云端重新发送验证邮件：
+许多应用会通过验证邮箱来确认用户注册的真实性。如果在 [应用控制台 > 应用设置 > 应用选项](https://leancloud.cn/app.html?appid={{appid}}#/permission) 中勾选了 **用户注册时，发送验证邮件**，那么当一个 `AVUser` 在注册时设置了邮箱，云端就会向该邮箱自动发送一封包含了激活链接的验证邮件，用户打开该邮件并点击激活链接后便视为通过了验证。有些用户可能在注册之后并没有点击激活链接，而在未来某一个时间又有验证邮箱的需求，这时需要调用如下接口让云端重新发送验证邮件：
 
 {% block code_send_verify_email %}{% endblock %}
 
 ### 登录
 
-{% if node=='qcloud' %}
-> 注意：TAB 中暂时未开放短信功能，所以所有与短信相关的 API 暂时不能调用。
-{% endif %}
-
 我们提供了多种登录方式，以满足不同场景的应用。
 
-#### 用户名密码登录
+{% if node=='qcloud' %}
+<div class="callout callout-danger">注意：TAB 暂时未开放短信功能，所以所有与短信相关的 API 操作（如使用手机号和验证码进行登录）暂时不能调用。</div>
+{% endif %}
+
+#### 用户名和密码登录
 
 {% block code_user_logIn_with_username_and_password %}{% endblock %}
 
-#### 手机号密码登录
+#### 手机号和密码登录
 
 请确保已详细阅读了 {{ link_to_sms_guide_doc }} 这一小节的内容，才可以顺利理解手机号匹配密码登录的流程以及适用范围。
 
@@ -796,9 +822,9 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {% block code_user_logIn_with_mobilephonenumber_and_password %}{% endblock %}
 
-#### 手机号验证码登录
+#### 手机号和验证码登录
 
-中国电信、中国联通、中国移动，这三大运营商的官网登录均支持「手机号 + 密码」和「手机号 + 随机验证码」的登录方式，我们也提供了这些方式。
+中国电信、中国联通、中国移动，这三大运营商的官网均支持「手机号 + 密码」和「手机号 + 随机验证码」的登录方式，我们也提供了这些方式。
 
 首先，调用发送登录验证码的接口：
 
@@ -808,41 +834,30 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {% block code_user_logIn_with_smsCode %}{% endblock %}
 
+{% block text_current_user %}
+#### 当前用户
+
+打开微博或者微信，它不会每次都要求用户都登录，这是因为它将用户数据缓存在了客户端。
+同样，只要是调用了登录相关的接口，LeanCloud SDK 都会自动缓存登录用户的数据。
+例如，判断当前用户是否为空，为空就跳转到登录页面让用户登录，如果不为空就跳转到首页：
+
+{% block code_current_user %}{% endblock %}
+
+{% block text_current_user_remains_if_not_being_logged_out %}
+如果不调用 [登出](#登出) 方法，当前用户的缓存将永久保存在客户端。
+{% endblock %}
+
 #### SessionToken
-所有登录接口调用成功之后，云端会返回一个 SessionToken 给客户端，客户端在发送 HTTP 请求的时候，{{sdk_name}} 会在 HTTP 请求的 Header 里面自动添加上当前用户的 SessionToken 作为这次请求的发起者 `{{userObjectName}}` 的身份认证信息。
+
+所有登录接口调用成功之后，云端会返回一个 SessionToken 给客户端，客户端在发送 HTTP 请求的时候，{{sdk_name}} 会在 HTTP 请求的 Header 里面自动添加上当前用户的 SessionToken 作为这次请求发起者 `{{userObjectName}}` 的身份认证信息。
+
+如果在控制台的 [应用选项](/app.html?appid={{appid}}#/permission) 中勾选了 **密码修改后，强制客户端重新登录**，那么当用户密码再次被修改后，已登录的用户对象就会失效，开发者需要使用更改后的密码重新调用登录接口，使 SessionToken 得到更新，否则后续操作会遇到 [403 (Forbidden)](error_code.html#_403) 的错误。
 
 #### 账户锁定
 
 输入错误的密码或验证码会导致用户登录失败。如果在 15 分钟内，同一个用户登录失败的次数大于 6 次，该用户账户即被云端暂时锁定，此时云端会返回错误码 `{"code":1,"error":"登录失败次数超过限制，请稍候再试，或者通过忘记密码重设密码。"}`，开发者可在客户端进行必要提示。
 
 锁定将在最后一次错误登录的 15 分钟之后由云端自动解除，开发者无法通过 SDK 或 REST API 进行干预。在锁定期间，即使用户输入了正确的验证信息也不允许登录。这个限制在 SDK 和云引擎中都有效。
-
-### 用户的属性
-
-#### 默认属性
-用户名，密码，邮箱是默认提供的三个属性，访问方式如下：
-
-{% block code_get_user_properties %}{% endblock %}
-
-请注意代码中，密码是仅仅是在注册的时候可以设置的属性，这部分代码参照[用户名和密码注册](#用户名和密码注册)，它在注册完成之后并不会保存在本地（SDK 绝不会明文保存密码这种敏感数据），所以在**登录之后，再访问密码这个字段是为空的。**
-
-#### 自定义属性
-用户对象和普通对象一样也支持添加自定义属性。
-例如，为 当前用户添加年龄属性：
-
-{% block code_set_user_custom_properties %}{% endblock %}
-
-#### 属性的修改
-这一章节内容尤为重要，因为很多开发者会产生疑惑：为什么我不能修改任意一个用户的属性？
-这里需要解释的是：
-
-> 很多时候，就算是开发者也不要轻易修改用户的基本信息，比如用户的一些比较敏感的个人信息，例如手机号，社交账号等，这些都应该让用户在App中自行修改，所以为了用户数据的数据有且仅有自己在登录的情况下得以修改，{{productName}} 云端对所有针对 `{{userObjectName}}` 对象的数据做了验证。
-
-假如，刚才我们为当前用户添加了一个 age 属性，现在我们来修改它：
-
-{% block code_update_user_custom_properties %}{% endblock %}
-
-细心的开发者应该已经发现 `{{userObjectName}}` 在自定义属性上的使用与一般的 `{{baseObjectName}}` 没本质区别。
 
 ### 重置密码
 
@@ -853,7 +868,6 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 重置密码的过程很简单，用户只需要输入注册的电子邮件地址即可：
 
 {% block code_reset_password_by_email %}{% endblock %}
-
 
 密码重置流程如下：
 
@@ -867,7 +881,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 #### 手机号码重置密码
 
 {% if node=='qcloud' %}
-> 注意：TAB 中暂时未开放短信功能，所以所有与短信相关的 API 暂时不能调用。
+<div class="callout callout-danger">注意：TAB 暂时未开放短信功能，所以所有与短信相关的 API 操作暂时不能调用。</div>
 {% endif %}
 
 与使用 [邮箱重置密码](#邮箱重置密码) 类似，「手机号码重置密码」使用下面的方法来获取短信验证码：
@@ -877,18 +891,6 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 注意！用户需要先绑定手机号码，然后使用短信验证码来重置密码：
 
 {% block code_reset_password_by_mobilephoneNumber_verify %}{% endblock %}
-
-{% block text_current_user %}
-### 当前用户
-打开微博或者微信，它不会每次都要求用户都登录，原因是因为在客户端做了用户数据的缓存。
-因此，只要是调用了登录相关的接口，SDK 都会自动缓存登录用户的数据。
-例如，判断当前用户是否为空，为空就跳转到登录页面让用户登录，如果不为空就跳转到首页：
-
-{% block code_current_user %}{% endblock %}
-
-{% block text_current_user_remains_if_not_being_logged_out %}
-如果不调用 [登出](#登出) 方法，当前用户的缓存将永久保存在客户端。
-{% endblock %}
 
 #### 登出
 
