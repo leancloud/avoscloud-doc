@@ -2195,6 +2195,20 @@ public class AVImClientManager extends AVIMClientEventHandler {
 
 {% endblock %}
 
+{% block client_auto_open %}
+### 自动登录
+
+如果开发者希望控制 App 重新启动后是否由 SDK 自动登录实时通讯，这可通过如下接口实现：
+
+```
+AVIMClient.setAutoOpen(false);
+```
+
+如果为 true，SDK 会在 App 重新启动后进行实时通讯的自动重连，如果为 false，则 App 重新启动后不会做自动重连操作，默认值为 true。
+
+注意：此设置并不影响在 app 声明周期内因网络获取他问题造成的重连。
+{% endblock %}
+
 {% block code_set_query_policy %}
 
 ```java
