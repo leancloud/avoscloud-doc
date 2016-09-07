@@ -1308,13 +1308,13 @@ AVIMConversation.updateOnlineStatusPolicy(boolean pubStatus, boolean subStatus, 
 
 * pubStatus - 是否公开自己的上下线状态，只有公开自己的状态，才会给会话中其他成员发布自己的状态
 * subStatus - 是否订阅别人的上下线状态，只有订阅别人的状态，才会收到别人发布的状态
-* ttl - 离线后的上下线通知的有效时间，单位为秒
+* ttl - 离线后订阅、公开状态的有效时间，在有效时间内重连成功无需重新设置订阅、公开状态，单位为秒
 * callback - 执行结果的回调
 
 当同一 conversation 里的成员上下线时则会通过 AVIMConversationEventHandler 的代理方法 onOnlineStatus 来通知开发者。
 
 ```
-public void onOnlineStatus(AVIMClient client, AVIMConversation conversation, List<String> peerIdList, boolean isOnline) {
+public void onOnlineStatus(AVIMClient client, AVIMConversation conversation, List<String> clientIdList, boolean isOnline) {
 
 }
 ```
@@ -1323,7 +1323,7 @@ public void onOnlineStatus(AVIMClient client, AVIMConversation conversation, Lis
 
 * client - 当前发生上下线通知的 AVIMClient
 * conversation - 当前发生上下线通知的 AVIMConversation
-* peerIdList - 具体触发上下线的 clientId 列表
+* clientIdList - 具体触发上下线的 clientId 列表
 * isOnline - 为 true 的话则为上线通，false 为下线通知
 
 `AVIMConversationEventHandler` 的实现和定义在[自身主动加入](#自身主动加入)里面有详细的代码和介绍。
