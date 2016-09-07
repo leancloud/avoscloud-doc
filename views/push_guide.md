@@ -205,7 +205,7 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
 
 我们建议给 iOS 设备的推送都设置过期时间，这样才能保证在推送的当时，如果用户与 APNs 之间的连接恰好断开（如关闭了手机网络、设置了飞行模式等)，在连接恢复之后消息过期之前，用户仍然可以收到推送消息。可以参考 [Stackoverflow &middot; Push notification is not being delivered when iPhone comes back online](http://stackoverflow.com/questions/24026544/push-notification-is-not-being-delivered-when-iphone-comes-back-online)。
 
-过期时间的用法请参考 [过期时间和定期推送](#过期时间和定期推送)。
+过期时间的用法请参考 [过期时间和定期推送](#过期时间和定时推送)。
 
 #### 消息内容 Data
 
