@@ -17,7 +17,7 @@
 {% set hook_after_delete = "afterDelete" %}
 {% set hook_on_verified = "onVerified" %}
 {% set hook_on_login = "onLogin" %}
-{% set hook_message_received = "_messageReceived" %}
+{% set hook_message_received = "IMHookType.messageReceived" %}
 {% set hook_receiver_offline = "_receiversOffline" %}
 {% set hook_message_sent = "_messageSent" %}
 {% set hook_conversation_start = "_conversationStart" %}
@@ -215,6 +215,88 @@ EngineRequestContext 则可以获取额外的一些 metaData 信息
       return user;
     }
   }
+```
+{% endblock %}
+{% block code_hook_message_received %}
+
+```java
+  @IMHook(type = IMHookType.messageReceived)
+  public static Map<String, Object> onMessageReceived(Map<String, Object> params) {
+    // 打印整个 Hook 函数的参数
+    System.out.println(params);
+    Map<String, Object> result = new HashMap<String, Object>();
+    // 获取消息内容
+    String content = (String)params.get("content");
+    // 转化成 Map 格式
+    Map<String,Object> contentMap = (Map<String,Object>)JSON.parse(content); 
+    // 读取文本内容
+    String text = (String)(contentMap.get("_lctext").toString());
+    // 过滤广告内容
+    String processedContent = text.replace("XX中介", "**");
+    // 将过滤之后的内容发还给服务端
+    result.put("content",processedContent);
+    return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_receiver_offline %}
+
+```java
+   @IMHook(type = IMHookType.receiversOffline)
+   public static Map<String, Object> onReceiversOffline(Map<String, Object> params) {
+     String alert = (String)params.get("content");
+     if(alert.length() > 6){
+       alert = alert.substring(0, 6);
+     }
+     System.out.println(alert);
+     Map<String, Object> result = new HashMap<String, Object>();
+     JSONObject object = new JSONObject();
+     object.put("badge", "Increment");
+     object.put("sound", "default");
+     object.put("_profile", "dev");
+     object.put("alert", alert);
+     result.put("pushMessage", object);
+     return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_conversation_start %}
+
+```java
+  @IMHook(type = IMHookType.conversationStart)
+  public static Map<String, Object> onConversationStart(Map<String, Object> params) {
+    System.out.println(params);
+    Map<String, Object> result = new HashMap<String, Object>();
+    // 如果创建者是 black 可以拒绝创建对话
+    if ("black".equals(params.get("initBy"))) {
+      result.put("reject", true);
+      result.put("code", 9890);
+    }
+    return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_conversation_started %}
+
+```java
+  @IMHook(type = IMHookType.conversationStarted)
+  public static Map<String, Object> onConversationStarted(Map<String, Object> params) throws Exception {
+    System.out.println(params);
+    Map<String, Object> result = new HashMap<String, Object>();
+    String convId = (String)params.get("convId");
+    System.out.println(convId);
+    return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_conversation_add %}
+
+```java
+
 ```
 {% endblock %}
 

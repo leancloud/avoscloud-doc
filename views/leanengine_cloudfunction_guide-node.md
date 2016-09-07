@@ -454,13 +454,147 @@ AV.Cloud.define('_receiversOffline', (request, response) => {
 AV.Cloud.define('_messageSent', (request, response) => {
 	console.log('_messageSent start');
 	let params = request.params;
-	console.log(params);
+	console.log('params', params);
 	response.success({});
 	console.log('_messageSent end');
+
+	// 在云引擎中打印的日志如下：
+	// _messageSent start
+	// params { fromPeer: 'Tom',
+	//   receipt: false,
+	//   onlinePeers: [],
+	//   content: '12345678',
+	//   convId: '5789a33a1b8694ad267d8040',
+	//   msgId: 'fptKnuYYQMGdiSt_Zs7zDA',
+	//   __sign: '1472703266575,30e1c9b325410f96c804f737035a0f6a2d86d711',
+	//   bin: false,
+	//   transient: false,
+	//   sourceIP: '114.219.127.186',
+	//   offlinePeers: [ 'Jerry' ],
+	//   timestamp: 1472703266522 }
+	// _messageSent end
 });
 ```
 {% endblock %}
 
+{% block code_hook_conversation_start %}
+
+```js
+AV.Cloud.define('_conversationStart', (request, response) => {
+	console.log('_conversationStart start');
+	let params = request.params;
+	console.log('params', params);
+	response.success({});
+	console.log('_conversationStart end');
+
+	// 在云引擎中打印的日志如下：
+	//_conversationStart start
+	// params {
+	// 	initBy: 'Tom',
+	// 	members: ['Tom', 'Jerry'],
+	// 	attr: {
+	// 		name: 'Tom & Jerry'
+	// 	},
+	// 	__sign: '1472703266397,b57285517a95028f8b7c34c68f419847a049ef26'
+	// }
+	//_conversationStart end
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_started %}
+
+```js
+AV.Cloud.define('_conversationStarted', (request, response) => {
+	console.log('_conversationStarted start');
+	let params = request.params;
+	console.log('params', params);
+	response.success({});
+	console.log('_conversationStarted end');
+	
+	// 在云引擎中打印的日志如下：
+	// _conversationStarted start
+	// params {
+	// 	convId: '5789a33a1b8694ad267d8040',
+	// 	__sign: '1472723167361,f5ceedde159408002fc4edb96b72aafa14bc60bb'
+	// }
+	// _conversationStarted end
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_add %}
+
+```js
+AV.Cloud.define('_conversationAdd', (request, response) => {
+	console.log('_conversationAdd start');
+	let params = request.params;
+	console.log('params', params);
+	response.success({});
+	console.log('_conversationAdd end');
+
+	// 在云引擎中打印的日志如下：
+	// _conversationAdd start
+	// params {
+	// 	initBy: 'Tom',
+	// 	members: ['Mary'],
+	// 	convId: '5789a33a1b8694ad267d8040',
+	// 	__sign: '1472786231813,a262494c252e82cb7a342a3c62c6d15fffbed5a0'
+	// }
+	// _conversationAdd end
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_remove %}
+
+```js
+AV.Cloud.define('_conversationRemove', (request, response) => {
+	console.log('_conversationRemove start');
+	let params = request.params;
+	console.log('params', params);
+	response.success({});
+	console.log('removed client Id:', params.members[0]);
+	console.log('_conversationRemove end');
+
+	// 在云引擎中打印的日志如下：
+	// _conversationRemove start
+	// params {
+	// 	initBy: 'Tom',
+	// 	members: ['Jerry'],
+	// 	convId: '57c8f3ac92509726c3dadaba',
+	// 	__sign: '1472787372605,abdf92b1c2fc4c9820bc02304f192dab6473cd38'
+	// }
+	//removed client Id: Jerry
+	// _conversationRemove end
+});
+```
+{% endblock %}
+{% block code_hook_conversation_update %}
+
+```js
+AV.Cloud.define('_conversationUpdate', (request, response) => {
+	console.log('_conversationUpdate start');
+	let params = request.params;
+	console.log('params', params);
+	console.log('name', params.attr.name);
+	response.success({});
+	console.log('_conversationUpdate end');
+
+	// 在云引擎中打印的日志如下：
+	// _conversationUpdate start
+	// params {
+	// 	convId: '57c9208292509726c3dadb4b',
+	// 	initBy: 'Tom',
+	// 	attr: {
+	// 		name: '聪明的喵星人',
+	// 		type: 'public'
+	// 	},
+	// name 聪明的喵星人
+	// _conversationUpdate end
+});
+```
+{% endblock %}
 {% block hookDeadLoop %}
 
 ### 防止死循环调用
