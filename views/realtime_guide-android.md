@@ -2019,7 +2019,7 @@ private void TomQueryWithLimit() {
 {% block message_priority %}
 ### 聊天室消息等级
 
-为了保证消息的时效性，当聊天室消息过多时，服务器端会根据消息等级来丢弃部分不重要的消息。可通过调用 `AVIMMessage` 的如下方法来设置消息等级：
+为了保证消息的时效性，当聊天室消息过多导致客户端连接堵塞时，服务器端会根据消息等级来丢弃部分不重要的消息。可通过调用 `AVIMMessage` 的如下方法来设置消息等级：
 
 ```
  public void setPriority(AVIMMessagePriorityType priority)
