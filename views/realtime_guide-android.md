@@ -2027,7 +2027,7 @@ private void TomQueryWithLimit() {
 
 `AVIMMessagePriorityType` 包含以下枚举值：
 * Default - 默认值
-* High - 高等级（针对对时效性要求比较高的消息，比如直播聊天室中的礼物、弹幕等类型消息）
+* High - 高等级（针对时效性要求比较高的消息，比如直播聊天室中的礼物、弹幕等类型消息）
 * Normal - 正常等级
 * Low - 低等级（针对时效性要求比较低的消息，比如直播聊天室中的普通消息）
 
