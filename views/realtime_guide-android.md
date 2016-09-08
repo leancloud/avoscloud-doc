@@ -2021,6 +2021,7 @@ private void TomQueryWithLimit() {
 
 * `onConnectionPaused()` 指网络连接断开事件发生，此时聊天服务不可用。
 * `onConnectionResume()` 指网络连接恢复正常，此时聊天服务变得可用。
+* `onClientOffline()` 指[单点登录](#单点登录)被踢下线的事件。
 
 在网络中断的情况下，所有的消息收发和对话操作都会出现问题。
 
@@ -2181,6 +2182,16 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
 {% block disconnected_by_server_with_same_tag %}
 
 ```java
+public class MyApplication extends Application{
+  public void onCreate(){
+   ...
+   AVOSCloud.initialize(this,"{{appid}}","{{appkey}}");
+   // 自定义实现的 AVIMClientEventHandler 需要注册到 SDK 后，SDK 才会通过回调 onClientOffline 来通知开发者
+   AVIMClient.setClientEventHandler(new AVImClientManager());
+   ...
+  }
+}
+
 public class AVImClientManager extends AVIMClientEventHandler {
   ...
   @Override
