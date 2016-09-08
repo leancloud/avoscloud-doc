@@ -2016,6 +2016,25 @@ private void TomQueryWithLimit() {
 ```
 {% endblock %}
 
+{% block message_priority %}
+### 聊天室消息等级
+
+为了保证消息的时效性，当聊天室消息过多时，服务器端会根据消息等级来丢弃部分不重要的消息。可通过调用 `AVIMMessage` 的如下方法来设置消息等级：
+
+```
+ public void setPriority(AVIMMessagePriorityType priority)
+```
+
+`AVIMMessagePriorityType` 包含以下枚举值：
+* Default - 默认值
+* High - 高等级（针对对时效性要求比较高的消息，比如直播聊天室中的礼物、弹幕等类型消息）
+* Normal - 正常等级
+* Low - 低等级（针对时效性要求比较低的消息，比如直播聊天室中的普通消息）
+
+注意：此功能仅针对聊天室消息，普通会话消息不需要设置此等级，因为普通会话消息不会被丢弃。
+
+{% endblock %}
+
 {% block networkStatus %}
 与网络相关的通知（网络断开、恢复等）会由 `AVIMClientEventHandler` 做出响应，接口函数有：
 
