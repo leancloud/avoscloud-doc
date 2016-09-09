@@ -425,7 +425,7 @@ LeanCloud 的美国节点即将提供 GCM 支持，如果应用的服务对象�
 
 ### 云引擎都支持哪些语言
 
-目前支持 Node.js 和 Python 运行环境，未来可能还会引入 PHP 等其他语言。
+目前支持 Node.js、Python、Java 和 PHP 运行环境，未来可能还会引入其他语言。
 
 ### 云引擎如何上传文件
 
@@ -444,40 +444,22 @@ LeanCloud 的美国节点即将提供 GCM 支持，如果应用的服务对象�
 
 请参考这篇博文 [《为云引擎托管网站启用 HTTPS》](http://blog.leancloud.cn/blog/2013/12/20/wei-yun-dai-ma-tuo-guan-wang-zhan-qi-yong-https/)。
 
-### 云引擎 Web Hosting 备案
+### 云引擎网站托管备案
 
-只有网站类的才需要备案，并且在主域名已备案的情况下，二级子域名不需要备案。
-
-如果主站需要托管在我们这边，而且主站还没经过备案，请参考文档 [云引擎指南 - 域名备案流程](leanengine_guide-cloudcode.html#域名备案流程) 部分来了解具体的备案流程。
-
-### 如何在本地调试依赖 LeanCache 的应用？
-首先你需要在本地运行一个 redis-server:
-
-* Mac 运行 `brew install redis` 安装，然后用 `redis-server` 启动
-* Debian/Ubuntu 运行 `apt-get install redis-server`, CentOS/RHEL 运行 `yum install redis`
-* Windows 尚无官方支持，可以下载 [微软的分支版本](https://github.com/MSOpenTech/redis/releases) 安装包。
-
-默认情况下，在本地运行时程序没有 LeanCache 的环境变量，因此会使用本地的 Redis 服务器。
-
-```javascript
-// `process.env['REDIS_URL_mycache']` 为 undefined, 会连接默认的 127.0.0.1:6379
-var client = require('redis').createClient(process.env['REDIS_URL_mycache']);
-```
-> 相关文档
-* [Redis 官方文档](http://redis.io/documentation)
-* [LeanCache 使用指南](leancache_guide.html)
+只有网站类的才需要备案，并且在主域名已备案的情况下，二级子域名不需要备案。详细流程请参见 [应用控制台 > 账户设置 > 域名备案](/settings.html#/setting/domainrecord)。
 
 ### 为什么在控制台通过在线定义函数或项目定义函数中的 Class Hook 没有被运行？
+
 首先确认一下 Hook 被调用的时机是否与你的理解一致：
 
-* beforeSave - 对象保存（创建）之前
-* afterSave - 对象保存（创建）之后
-* beforeUpdate - 对象更新之前
-* afterUpdate - 对象更新之后
-* beforeDelete - 对象删除之前
-* afterDelete - 对象删除之后
-* onVerified - 用户通过邮箱或手机验证后
-* onLogin - 用户在进行登录操作时
+* `beforeSave`：对象保存或创建之前
+* `afterSave`：对象保存或创建之后
+* `beforeUpdate`：对象更新之前
+* `afterUpdate`：对象更新之后
+* `beforeDelete`：对象删除之前
+* `afterDelete`：对象删除之后
+* `onVerified`：用户通过邮箱或手机验证后
+* `onLogin`：用户在进行登录操作时
 
 然后检查 Hook 函数是否被执行过：
 
@@ -493,23 +475,27 @@ var client = require('redis').createClient(process.env['REDIS_URL_mycache']);
 
 如果日志已打出，则继续检查函数是否成功，检查控制台上是否有错误信息被打印出。如果是 before 类 Hook，需要保证 Hook 函数在 15 秒内调用 `response.success` 或 `response.error`， 否则会被系统认为超时。
 
-> 相关文档
+相关文档：
+
 * [云引擎指南：Hook 函数](leanengine_cloudfunction_guide-node.html#Hook_函数)
 
-### 使用命令行工具在本地调试时提示 `Error: listen EADDRINUSE :::3000`, 无法访问应用
+### 命令行工具在本地调试时提示 `Error: listen EADDRINUSE :::3000`，无法访问应用
+
 `listen EADDRINUSE :::3000` 表示你的程序默认使用的 3000 端口被其他应用占用了，可以按照下面的方法找到并关闭占用 3000 端口的程序：
 
-* [Mac 使用 lsof 和 kill](http://stackoverflow.com/questions/3855127/find-and-kill-process-locking-port-3000-on-mac)
-* [Linux 使用 fuser](http://stackoverflow.com/questions/11583562/how-to-kill-a-process-running-on-particular-port-in-linux)
-* [Windows 使用 netstat 和 taskkill](http://stackoverflow.com/questions/6204003/kill-a-process-by-looking-up-the-port-being-used-by-it-from-a-bat)
+* [Mac 使用 `lsof` 和 `kill`](http://stackoverflow.com/questions/3855127/find-and-kill-process-locking-port-3000-on-mac)
+* [Linux 使用 `fuser`](http://stackoverflow.com/questions/11583562/how-to-kill-a-process-running-on-particular-port-in-linux)
+* [Windows 使用 `netstat` 和 `taskkill`](http://stackoverflow.com/questions/6204003/kill-a-process-by-looking-up-the-port-being-used-by-it-from-a-bat)
 
 也可以修改命令行工具默认使用的 3000 端口：
 ```
 avoscloud -P 3002
 ```
-`avoscloud -h` 可以获取帮助信息
+
+`avoscloud -h` 可以获取帮助信息。
 
 ### 云函数如何获取 Header、如何响应 GET 方法？
+
 不建议在 Header 中传递信息，云函数可以说是 LeanCloud 所提供的一种 RPC 的封装，这种封装的目的是隐藏掉底层使用 HTTP 协议的细节，所以建议将所有的参数都放在 Body 中、只使用 POST 方法请求。
 
 如果希望能够充分利用 HTTP 提供的语义化特征，可以考虑使用云引擎的「[网站托管](leanengine_webhosting_guide-node.html#Web_框架)」功能，自行来处理 HTTP 请求。
@@ -541,5 +527,5 @@ avoscloud -P 3002
 
 {% if node!='qcloud' %}
 ## 短信
-详情请参照[短信收发常见问题一览](/docs/rest_sms_api.html#常见问题_FAQ)
+请参见 [短信收发常见问题一览](/docs/rest_sms_api.html#常见问题_FAQ)。
 {% endif %}

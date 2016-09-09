@@ -709,11 +709,11 @@ option 参数中所有其他的字段（如上面例子中的 `location`）都�
 
 ```javascript
 // 有用户被添加至某个对话
-jerry.on('memberjoined', function memberjoinedEventHandler(payload, conversation) {
+jerry.on('membersjoined', function membersjoinedEventHandler(payload, conversation) {
   console.log(payload.members, payload.invitedBy, conversation.id);
 });
 // 有成员被从某个对话中移除
-jerry.on('memberleft', function memberleftEventHandler(payload, conversation) {
+jerry.on('membersleft', function membersleftEventHandler(payload, conversation) {
   console.log(payload.members, payload.kickedBy, conversation.id);
 });
 // 当前用户被添加至某个对话
@@ -730,11 +730,11 @@ jerry.on('kicked', function kickedEventHandler(payload, conversation) {
 
 ```javascript
 // 有用户被添加至某个对话
-conversation.on('memberjoined', function memberjoinedEventHandler(payload) {
+conversation.on('membersjoined', function membersjoinedEventHandler(payload) {
   console.log(payload.members, payload.invitedBy);
 });
 // 有成员被从某个对话中移除
-conversation.on('memberleft', function memberleftEventHandler(payload) {
+conversation.on('membersleft', function membersleftEventHandler(payload) {
   console.log(payload.members, payload.kickedBy);
 });
 // 当前用户被添加至某个对话
@@ -785,7 +785,7 @@ conversation.add(['Mary']).then(function(conversation) {
 
 邀请者|被邀请者|其他人
 ---|---|---
-`memberjoined`|`invited` 与 `memberjoined`|`memberjoined`
+`membersjoined`|`invited` 与 `membersjoined`|`membersjoined`
 
 
 >注意：如果在进行邀请操作时，被邀请者不在线，那么通知消息并不会被离线缓存，所以等到 Ta 再次上线的时候将不会收到通知。
@@ -831,7 +831,7 @@ realtime.createIMClient('William').then(function(william) {
 
 操作者|被移除者|其他人
 ---|---|---
-`memberleft`|`kicked`|`memberleft`
+`membersleft`|`kicked`|`membersleft`
 
 
 >注意：如果在进行踢人操作时，被踢者不在线，那么通知消息并不会被离线缓存，所以等到 Ta 再次上线的时候将不会收到通知。
@@ -1383,7 +1383,7 @@ var signatureFactory = function(clientId) {
  * @param {String} conversationId
  * @param {String} clientId 当前用户 ID
  * @param {String[]} targetIds 此次操作的目标用户 IDs
- * @param {String} action  此次行为的动作，可能的值为 crete（创建会话）、add（加群和邀请）和 remove（踢出群）之一
+ * @param {String} action  此次行为的动作，可能的值为 create（创建会话）、add（加群和邀请）和 remove（踢出群）之一
  * @return {Object} signatureResult
  * @return {String} signatureResult.signature
  * @return {Number} signatureResult.timestamp

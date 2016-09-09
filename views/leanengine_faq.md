@@ -2,7 +2,7 @@
 
 ## 如何判断当前是预备环境还是生产环境？
 
-请参考文档 [云引擎开发指南 Node.js](leanengine_webhosting_guide-node.html#预备环境和生产环境) / [Python](/leanengine_guide-python.html#运行环境区分) - 运行环境区分。
+请参考 [网站托管开发指南 · 预备环境和生产环境](leanengine_webhosting_guide-node.html#预备环境和生产环境) / [Python · 运行环境区分](/leanengine_guide-python.html#运行环境区分)。
 
 ## 怎么添加第三方模块
 
@@ -41,17 +41,16 @@ var async = require('async');
 
 ## Maximum call stack size exceeded 如何解决？
 
-`AV.Object.extend` 产生的对象需要作为全局变量保存（即定义在 AV.Cloud.define 方法之外）。因为每调用一次，就会产生一个新的类的实例，并且和之前创建的实例形成一个链表。调用次数过多后（几万次）就会堆栈溢出。如果你的应用时不时出现 **Maximum call stack size exceeded** 错误，请确认是否误用了 `AV.Object.extend` 方法。
+如果你的应用时不时出现 `Maximum call stack size exceeded` 异常，可能是因为在 hook 中调用了 `AV.Object.extend`。有两种方法可以避免这种异常：
+ 
+- 升级 leanengine 到 v1.2.2 或以上版本
+- 在 hook 外定义 Class（即定义在 `AV.Cloud.define` 方法之外），确保不会对一个 Class 执行多次 `AV.Object.extend`
 
 我们在 [JavaScript 指南 - AV.Object](./leanstorage_guide-js.html#AV_Object) 章节中也进行了描述。
 
-## 目前支持哪些语言？
+## 如何进行域名备案和域名绑定？
 
-我们提供了 JavaScript SDK，支持 Node.js 和 Python 环境，未来可能会引入 PHP 等其他语言。
-
-## Web Hosting 备案如何操作？
-
-只有网站类的才需要备案，并且在主域名已备案的情况下，二级子域名不需要备案。 如果主站需要托管在我们这边，且还没有备案过，我们可以协助你完成备案，请参考文档 [绑定独立域名 Node.js](leanengine_webhosting_guide-node.html#绑定独立域名) / [Python](leanengine_guide-python.html#绑定独立域名)。
+只有网站类的才需要备案，并且在主域名已备案的情况下，二级子域名不需要备案。如果主站需要托管在我们这边，且还没有备案过，请进入 **应用控制台 > 账号设置 >** [域名备案](/settings.html#/setting/domainrecord) 和 [域名绑定](/settings.html#/setting/domainbind)，按照步骤提示操作即可。
 
 ## 调用云引擎方法如何收费？
 

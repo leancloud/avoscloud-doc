@@ -1,9 +1,3 @@
-{% set optional = '{{ optional|tojson|safe }}' %}
-{# 2016-08-18: uuid 可能与 nunjunks 内部变量冲突，在 {{ 后先加了一个全角空格来修复 #}
-{% set uid      = '{{　uuid }}' %}
-{% set sign     = '{{ sign }}' %}
-{% set openid   = '{{ openid }}' %}
-
 # 为网站快速加入收款功能
 
 网络支付是时下大热的开发趋势，但市面上支付渠道繁多，接入复杂，深坑不断，大大阻碍了开发者的开发进度。[BeeCloud][beecloud] 为开发者提供了一站式支付的解决方案，能便捷快速地实现各种支付渠道的接入，包括微信支付、支付宝、银联、易宝支付、百度钱包、京东支付、快钱、PayPal、Visa、MasterCard。  
@@ -118,16 +112,16 @@ JavaScript 传递的参数中 sign 比较特殊，用来保证订单信息的完
         BC.click({
             "title": "product",
             "amount": 1,
-            "out_trade_no": "{{ uid }}", //唯一订单号
-            "sign" : "{{ sign }}",
-            "openid" : "{{ openid }}",
+            "out_trade_no": "<uuid变量值>", //唯一订单号
+            "sign" : "<sign变量值>",
+            "openid" : "<openid变量值>",
             "return_url" : "http://leancloud.beecloud.cn/demo/jsbutton/payresult",
             /**
              * optional 为自定义参数对象，目前只支持基本类型 key-value 的 map，不支持嵌套对象；
              * 回调时如果有 optional 则会传递给 Webhook 地址，Webhook 的使用请查阅文档
              * 由于 flask 的模板会将 map 转义，所以需要 tojson|safe 标签防止转义
              */
-            "optional": {{ optional }},
+            "optional": <optional对象|tojson|safe>,
             "debug" : false
         });
     }

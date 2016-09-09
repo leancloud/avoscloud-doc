@@ -19,7 +19,7 @@ IE|不支持
 
 ## Demo
 
-- [视频通话 App](https://leancloud.github.io/js-realtime-sdk/demo/webrtc/) （[源码](https://github.com/leeyeh/js-realtime-sdk/tree/master/demo/webrtc)）
+- [视频通话 App](https://leancloud.github.io/js-realtime-sdk/demo/webrtc/) （[源码](https://github.com/leancloud/js-realtime-sdk/tree/master/demo/webrtc)）
 
 ## API 文档
 

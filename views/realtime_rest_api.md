@@ -157,7 +157,7 @@ appid:peerid:convid:nonce:signature_ts
 --- | ---
 conv-id | 用于查询的对话 id
 from | 消息来自 id
-data | 消息内容
+data | 消息内容，字符串形式的 JSON，格式请参考 [富媒体消息格式](realtime_rest_api.html#富媒体消息格式说明)。
 timestamp | 消息到达服务器的 Unix 时间戳（毫秒）
 msg-id | 消息 id
 is-conv | 是否是 v2 中对话模型的消息
@@ -331,6 +331,31 @@ Push 的格式与[推送 REST API 消息内容](push_guide.html#消息内容_Dat
    "badge": "Increment",
    "_profile": "dev"
 }
+```
+
+### 删除系统对话广播消息
+
+调用此 API 将删除已发布的广播消息。
+
+``sh
+curl -X DETELE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'mid=message-id' \
+  https://leancloud.cn/1.1/rtm/broadcast
+```
+
+参数 | 说明
+--- | ---
+mid | 要删除的消息 id，字符串
+
+返回：
+
+空 JSON 对象。
+
+```json
+{}
 ```
 
 ### 富媒体消息格式说明
@@ -597,6 +622,33 @@ curl -X POST \
 client_id | 要禁言的 id，字符串
 conv_id | 禁言的对话，字符串
 ttl | 禁言的时间，秒数，最长 24 小时
+
+返回：
+
+空 JSON 对象。
+
+```json
+{}
+```
+
+## 解除禁言
+
+使用这个 API 可以在禁言期限到期之前，解除被禁言的 Client ID。
+
+```sh
+curl -X DETELE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'conv_id=some-conv-id' \
+  --data-urlencode 'client_id=some-client-id' \
+  https://leancloud.cn/1.1/rtm/conversation/blacklist
+```
+
+参数 | 说明
+--- | ---
+client_id | 要解除禁言的 id，字符串
+conv_id | 禁言的对话，字符串
 
 返回：
 

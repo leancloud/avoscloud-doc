@@ -33,23 +33,23 @@
 
 #### 使用 Eclipse 启动应用
 
-首先确保 Eclipse 已经安装 Maven 插件，并将项目以 `Maven Project` 方式导入 Eclipse 中，在 `Package Explorer` 视图右键点击项目，选择 `Run As` -> `Maven build...`，将 `Main` 标签页的 `Goals` 设置为 `jetty:run`，将 `Environment` 标签页增加一些列环境变量和相应的值：
+首先确保 Eclipse 已经安装 Maven 插件，并将项目以 **Maven Project** 方式导入 Eclipse 中，在 **Package Explorer** 视图右键点击项目，选择 **Run As** > **Maven build...**，将 **Main** 标签页的 **Goals** 设置为 `jetty:run`，将 **Environment** 标签页增加以下环境变量和相应的值：
 
-* LEANCLOUD_APP_ENV = development
-* LEANCLOUD_APP_ID = {{appid}}
-* LEANCLOUD_APP_KEY = {{appkey}}
-* LEANCLOUD_APP_MASTER_KEY = {{masterkey}}
-* LEANCLOUD_APP_PORT = 3000
+- LEANCLOUD_APP_ENV = `development`
+- LEANCLOUD_APP_ID = `{{appid}}`
+- LEANCLOUD_APP_KEY = `{{appkey}}`
+- LEANCLOUD_APP_MASTER_KEY = `{{masterkey}}`
+- LEANCLOUD_APP_PORT = `3000`
 
 #### 命令行设置环境变量启动
 
 可以使用类似下面的命令来启动应用：
 
 ```
-LEANCLOUD_APP_ENV=development \
-  LEANCLOUD_APP_ID={{appid}} \
-  LEANCLOUD_APP_KEY={{appkey}} \
-  LEANCLOUD_APP_MASTER_KEY={{masterkey}} \
+  LEANCLOUD_APP_ENV="development" \
+  LEANCLOUD_APP_ID="{{appid}}" \
+  LEANCLOUD_APP_KEY="{{appkey}}" \
+  LEANCLOUD_APP_MASTER_KEY="{{masterkey}}" \
   LEANCLOUD_APP_PORT=3000 \
   mvn jetty:run
 ```

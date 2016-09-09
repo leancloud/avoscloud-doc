@@ -1,3 +1,4 @@
+{% set masterkey = '{{masterkey}}' %}
 # REST API 使用详解
 
 REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 进行交互，你可以使用 REST API 做很多事情，比如：

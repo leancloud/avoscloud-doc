@@ -2021,6 +2021,7 @@ private void TomQueryWithLimit() {
 
 * `onConnectionPaused()` 指网络连接断开事件发生，此时聊天服务不可用。
 * `onConnectionResume()` 指网络连接恢复正常，此时聊天服务变得可用。
+* `onClientOffline()` 指[单点登录](#单点登录)被踢下线的事件。
 
 在网络中断的情况下，所有的消息收发和对话操作都会出现问题。
 
@@ -2181,6 +2182,16 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
 {% block disconnected_by_server_with_same_tag %}
 
 ```java
+public class MyApplication extends Application{
+  public void onCreate(){
+   ...
+   AVOSCloud.initialize(this,"{{appid}}","{{appkey}}");
+   // 自定义实现的 AVIMClientEventHandler 需要注册到 SDK 后，SDK 才会通过回调 onClientOffline 来通知开发者
+   AVIMClient.setClientEventHandler(new AVImClientManager());
+   ...
+  }
+}
+
 public class AVImClientManager extends AVIMClientEventHandler {
   ...
   @Override
@@ -2193,6 +2204,20 @@ public class AVImClientManager extends AVIMClientEventHandler {
 }
 ```
 
+{% endblock %}
+
+{% block client_auto_open %}
+### 自动登录
+
+如果开发者希望控制 App 重新启动后是否由 SDK 自动登录实时通讯，这可通过如下接口实现：
+
+```
+AVIMClient.setAutoOpen(false);
+```
+
+如果为 true，SDK 会在 App 重新启动后进行实时通讯的自动重连，如果为 false，则 App 重新启动后不会做自动重连操作，默认值为 true。
+
+注意：此设置并不影响在 App 生命周期内因网络获取等问题造成的重连。
 {% endblock %}
 
 {% block code_set_query_policy %}

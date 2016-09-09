@@ -50,7 +50,7 @@ def _prepare_local_docs(target):
       local("grunt build ");
 #    local("mkdir dist/api")
 #    local("cp -rfv api/* dist/api/");
-    local("cd dist ; tar zcvf leancloud-docs.tar.gz ./* ; cd ..")
+#    local("cd dist ; tar zcvf leancloud-docs.tar.gz ./* ; cd ..")
     local("cp -rfv %s/dist/* %s" % (project_dir, tmp_dir))
 
 def _start_on_boot(name, dist):
