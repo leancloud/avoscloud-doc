@@ -296,7 +296,64 @@ EngineRequestContext 则可以获取额外的一些 metaData 信息
 {% block code_hook_conversation_add %}
 
 ```java
+  @IMHook(type = IMHookType.conversationAdd)
+  public static Map<String, Object> onConversationAdd(Map<String, Object> params) {
+    System.out.println(params);
+    String[] members = (String[])params.get("members");
+    Map<String, Object> result = new HashMap<String, Object>();
+    System.out.println("members");
+    System.out.println(members);
+    // 以下代码表示此次操作的发起人如果是 black 就拒绝此次操作，members 不会被加入到当前对话中
+    if ("black".equals(params.get("initBy"))) {
+      result.put("reject", true);
+      // 这个数字是由开发者自定义
+      result.put("code", 9890);
+    }
+    return result;
+  }
+```
+{% endblock %}
 
+{% block code_hook_conversation_remove %}
+
+```java
+  @IMHook(type = IMHookType.conversationRemove)
+  public static Map<String, Object> onConversationRemove(Map<String, Object> params) {
+    System.out.println(params);
+    String[] members = (String[])params.get("members");
+    Map<String, Object> result = new HashMap<String, Object>();
+    System.out.println("members");
+    // 以下代码表示此次操作的发起人如果是 black 就拒绝此次操作，members 不会被不会被删除
+    if ("black".equals(params.get("initBy"))) {
+      result.put("reject", true);
+      // 这个数字是由开发者自定义
+      result.put("code", 9892);
+    }
+    return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_conversation_update %}
+
+```java
+  @IMHook(type = IMHookType.conversationUpdate)
+  public static Map<String, Object> onConversationUpdate(Map<String, Object> params) {
+    System.out.println(params);
+    Map<String, Object> result = new HashMap<String, Object>();
+    Map<String,Object> attr = (Map<String,Object>)params.get("attr");
+    System.out.println(attr);
+    //Map<String,Object> attrMap = (Map<String,Object>)JSON.parse(attr);
+    String name = (String)attr.get("name");
+    //System.out.println(attrMap);
+    System.out.println(name);
+    // 以下代码表示此次操作的发起人如果是 black 就拒绝此次操作，对话的属性不会被修改
+    if ("black".equals(params.get("initBy"))) {
+      result.put("reject", true);
+      result.put("code", 9893);
+    } 
+    return result;
+  }
 ```
 {% endblock %}
 
