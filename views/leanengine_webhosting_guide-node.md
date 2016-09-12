@@ -7,137 +7,290 @@
 {% set sdk_name = 'JavaScript' %}
 {% set leanengine_middleware = '[LeanEngine Node.js SDK](https://github.com/leancloud/leanengine-node-sdk)' %}
 
-
-{% block custom_api_random_string %}
-打开 `./app.js` ，添加如下代码：
-
-```js
-app.get('/time', function(req, res) {
-  res.send({ currentTime: new Date() });
-});
-```
-{% endblock %}
-
 {% block project_constraint %}
-{{fullName}} 项目必须有 `$PROJECT_DIR/server.js` 文件，该文件为整个项目的启动文件。
+<script>$(window).load(function() {$('.do-expand-all').click();})</script>
 
-**注意：** 项目中 **不能** 有 `$PROJECT_DIR/cloud/main.js` 文件，否则会被识别为 [2.0 版本](./leanengine_guide-cloudcode.html#项目约束) 的项目。
-{% endblock %}
+你的项目根目录项目 **必须** 有一个 `package.json` 文件，才会正确地被云引擎识别为 Node.js 项目。
 
-{% block project_start %}
-### 项目启动
+<div class="callout callout-info">因为一些历史遗留问题，请确保你的项目中 **没有** 名为 `cloud/main.js` 的文件。</div>
 
-如果 `$PROJECT_DIR/package.json` 文件有自定义的启动脚本：
+### package.json
 
-```
+Node.js 的 `package.json` 中可以指定 [很多选项](https://docs.npmjs.com/files/package.json)，它通常看起来是这样：
+
+```json
 {
-  ...
-  "scripts": {
-    ...
-    "start": "node server.js",
-    ...
-  },
-  ...
+    "name": "node-js-getting-started",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "engine": {
+        "node": "4.x"
+    },
+    "dependencies": {
+        "express": "4.12.3",
+        "leanengine": "1.2.2"
+    }
 }
 ```
 
-则会使用 `npm start` 方式启动。这意味着可以使用 [npm scripts](https://docs.npmjs.com/misc/scripts) 来定制启动过程。
+其中云引擎会尊重的选项包括：
 
-**提示：** 有些遗留项目可能会将 `start` 脚本写成 `node ./app.js` 从而导致启动检测失败，所以将脚本改成 `node server.js` 或者你确认的启动方式即可。
+* `scripts.start` 启动项目时使用的命令；默认为 `node server.js`，如果你希望为 node 附加启动选项（如 `--es_staging`）或使用其他的文件作为入口点，可以修改该选项。
+* `scripts.prepublish` 会在项目部署最后运行一次；可以将构建命令（如 `gulp build`）写在这里。
+* `engines.node` 指定所需的 Node.js 版本；出于兼容性考虑默认版本仍为比较旧的 `0.12`，**因此建议大家自行指定一个更高的版本，建议使用 `4.x` 版本进行开发**，你也可以设置为 `*` 表示总是使用最新版本的 Node.js。
+* `dependencies` 项目所依赖的包；云引擎会在部署时用 `npm install --production` 为你安装这里列出的所有依赖。
+* `devDependencies` 项目开发时所依赖的包；云引擎目前 **不会** 安装这里的依赖。
 
-如果没有 `start` 脚本，则默认使用 `node server.js` 来启动，所以需要保证存在 `$PROJECT_DIR/server.js` 文件。 {% endblock %}
+建议你参考我们的 [项目模板](https://github.com/leancloud/node-js-getting-started/blob/master/package.json) 来编写自己的 `package.json`。
+{% endblock %}
 
-{% block ping %}
-{{leanengine_middleware}} 内置了该 URL 的处理，只需要将中间件添加到请求的处理链路中即可：
+{% block project_start %}
+{% endblock %}
 
-```
-app.use(AV.express());
-```
-
-如果未使用 {{leanengine_middleware}}，则需要自己实现该 URL 的处理，比如这样：
-
-```
-// 健康监测 router
-app.use('/__engine/1/ping', function(req, res) {
-  res.end(JSON.stringify({
-    "runtime": "nodejs-" + process.version,
-    "version": "custom"
-  }));
-});
-
-// 云函数列表
-app.get('/1.1/_ops/functions/metadatas', function(req, res) {
-  res.end(JSON.stringify([]));
-});
-```
+{% block custom_runtime %}
 {% endblock %}
 
 {% block supported_frameworks %}
+Node SDK 为 [express](http://expressjs.com/) 和 [koa](http://koajs.com/) 提供了集成支持，如果你使用这两个框架，只需通过下面的方式加载 Node SDK 提供的中间件即可。
 
-{{fullName}} 支持任意 [Node.js](https://nodejs.org) 的 Web 框架，你可以使用你最熟悉的框架进行开发，或者不使用任何框架，直接使用 Node.js 的 http 模块进行开发。但是请保证通过执行 `server.js` 能够启动你的项目，启动之后程序监听的端口为 `process.env.LEANCLOUD_APP_PORT`。
+你可以在你的项目根目录运行 `npm install leanengine@next --save` 来安装 Node SDK。
 
-#### Express
+### Express
 
 ```js
 var express = require('express');
 var AV = require('leanengine');
 
-var app = express();
+AV.init({
+  appId: process.env.LEANCLOUD_APP_ID || '{{appid}}',
+  appKey: process.env.LEANCLOUD_APP_KEY || '{{appkey}}',
+  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || '{{masterkey}}'
+});
 
+var app = express();
 app.use(AV.express());
 app.listen(process.env.LEANCLOUD_APP_PORT);
 ```
 
-#### Koa
+你可以使用 express 的路由定义功能来提供自定义的 HTTP API：
 
-使用 [Koa](http://koajs.com/) 时建议按照 [运行环境定制](#运行环境定制) 将 Node.js 的版本设置为 `4.x`。
+```js
+app.get('/', function(req, res) {
+  res.render('index', {title: 'Hello world'});
+});
+
+app.get('/time', function(req, res) {
+  res.json({
+    time: new Date()
+  });
+});
+
+app.get('/todos', function(req, res) {
+  new AV.Query('Todo').find().then(function(todos) {
+    res.json(todos);
+  }).catch(function(err) {
+    res.status(500).json({
+      error: err.message
+    });
+  });
+});
+
+```
+
+更多最佳实践请参考我们的 [项目模板](https://github.com/leancloud/node-js-getting-started) 和 [云引擎项目示例](leanengine_examples.html)。
+
+### Koa
 
 ```js
 var koa = require('koa');
 var AV = require('leanengine');
 
-var app = koa();
+AV.init({
+  appId: process.env.LEANCLOUD_APP_ID || '{{appid}}',
+  appKey: process.env.LEANCLOUD_APP_KEY || '{{appkey}}',
+  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || '{{masterkey}}'
+});
 
+var app = koa();
 app.use(AV.koa());
 app.listen(process.env.LEANCLOUD_APP_PORT);
 ```
-{% endblock %}
 
-{% block code_get_client_ip_address %}
+你可以使用 koa 来渲染页面、提供自定义的 HTTP API：
+
 ```js
-app.get('/', function(req, res) {
-  console.log(req.headers['x-real-ip']);// 打印 IP 地址
-  res.render('index', { currentTime: new Date() });
+app.use(function *(next) {
+  if (this.url === '/') {
+    // https://github.com/tj/co-views
+    yield coViews('views')('index', {title: 'Hello world'});
+  } else {
+    yield next;
+  }
 });
+
+app.use(function *(next) {
+  if (this.url === '/time') {
+    this.body = {
+      time: new Date()
+    };
+  } else {
+    yield next;
+  }
+});
+
+app.use(function *(next) {
+  if (this.url === '/todos') {
+    return new AV.Query('Todo').find().then(todos => {
+      this.body = todos;
+    });
+  } else {
+    yield next;
+  }
+});
+
+```
+
+使用 Koa 时建议按照前面 [package.json](#package.json) 一节将 Node.js 的版本设置为 `4.x` 以上。
+
+### 其他 Web 框架
+
+你也可以使用其他的 Web 框架进行开发，但你需要自行去实现 [健康监测](#健康监测) 中提到的逻辑。下面是一个使用 Node.js 内建的 [http](https://nodejs.org/api/http.html) 实现的最简示例，可供参考：
+
+```js
+require('http').createServer(function(req, res) {
+  if (req.url == '/') {
+    res.statusCode = 200;
+    res.end();
+  } else {
+    res.statusCode = 404;
+    res.end();
+  }  
+}).listen(process.env.LEANCLOUD_APP_PORT);
 ```
 {% endblock %}
 
 {% block use_leanstorage %}
-云引擎使用 {{leanengine_middleware}} 来代替 [JavaScript 存储 SDK](https://github.com/leancloud/javascript-sdk) 。前者包含了后者，并增加了云函数和 Hook 函数的支持，因此开发者可以直接使用 [LeanCloud 的存储服务](leanstorage_guide-js.html) 来存储自己的数据。
+云引擎中的 Node SDK 是对 [JavaScript 存储 SDK](https://github.com/leancloud/javascript-sdk) 的拓展，增加了服务器端需要的云函数和 Hook 相关支持，在云引擎中你需要用 `leanengine` 这个包来操作 [LeanCloud 的存储服务](leanstorage_guide-js.html) 中的数据，你可以在你的项目根目录运行 `npm install leanengine@next --save` 来安装 Node SDK。
 
-如果使用项目框架作为基础开发，{{leanengine_middleware}} 默认是配置好的，可以根据示例程序的方式直接使用。
-
-如果是自定义项目，则需要自己配置：
-
-* 配置依赖：在项目根目录下执行以下命令来增加 {{leanengine_middleware}} 的依赖：
-
-```
-$ npm install leanengine@next --save
-```
-
-* 初始化：在正式使用数据存储之前，你需要使用自己的应用 key 进行初始化中间件：
+Node SDK 的 [API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/master/API.md) 和 [更新日志](https://github.com/leancloud/leanengine-node-sdk/releases) 都在 GitHub 上。
 
 ```js
 var AV = require('leanengine');
 
 AV.init({
-  appId: process.env.LEANCLOUD_APP_ID || '{{appid}}', // 你的 app id
-  appKey: process.env.LEANCLOUD_APP_KEY || '{{appkey}}', // 你的 app key
-  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || '{{masterkey}}' // 你的 master key
+  appId: process.env.LEANCLOUD_APP_ID || '{{appid}}',
+  appKey: process.env.LEANCLOUD_APP_KEY || '{{appkey}}',
+  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || '{{masterkey}}'
 });
 
-// 如果不希望使用 masterKey 权限，可以将下面一行删除
+// 你可以使用 useMasterKey 在云引擎中开启 masterKey 权限，将会跳过 ACL 和其他权限限制。
 AV.Cloud.useMasterKey();
+
+// 使用 JavaScript 的 API 查询云存储中的数据。
+new AV.Query('Todo').find().then(function(todos) {
+  console.log(todos);
+}).catch(function(err) {
+  console.log(err)
+});
+```
+
+Node SDK 有过两个大版本：
+
+* `0.x`：最初的版本，对 Node.js 4.x 及以上版本兼容不佳，建议用户参考 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk-upgrade-1.html) 来更新
+* `1.x`：**推荐使用** 的版本，彻底废弃了全局的 currentUser，依赖的 JavaScript 也升级到了 1.x 分支，支持了 Koa 和 Node.js 4.x 及以上版本。
+
+## 本地运行和调试
+
+在你首次启动应用之前需要先安装依赖：
+
+```sh
+npm install
+```
+
+然后便可以在项目根目录，用我们的命令行工具来启动本地调试了：
+
+```sh
+lean up
+```
+
+更多有关命令行工具和本地调试的内容请看 [云引擎命令行工具使用详解](leanengine_cli.html)。
+
+{% endblock %}
+
+{% block get_env %}
+```javascript
+var NODE_ENV = process.env.NODE_ENV || 'development';
+if (NODE_ENV === 'development') {
+  // 当前环境为「开发环境」，是由命令行工具启动的
+} else if(NODE_ENV == 'production') {
+  // 当前环境为「生产环境」，是线上正式运行的环境
+} else {
+  // 当前环境为「预备环境」
+}
+```
+{% endblock %}
+
+{% block cookie_session %}
+云引擎提供了一个 `AV.Cloud.CookieSession` 中间件，用 Cookie 来维护用户（`AV.User`）的登录状态，要使用这个中间件可以在 `app.js` 中添加下列代码：
+
+```javascript
+app.use(AV.Cloud.CookieSession({ secret: 'my secret', maxAge: 3600000, fetchUser: true }));
+```
+
+Koa 需要添加一个 `framework: 'koa'` 的参数：
+
+```javascript
+app.use(AV.Cloud.CookieSession({ framework: 'koa', secret: 'my secret', maxAge: 3600000, fetchUser: true }));
+```
+
+你需要传入一个 secret 用于签名 Cookie（必须提供），这个中间件会将 `AV.User` 的登录状态信息记录到 Cookie 中，用户下次访问时自动检查用户是否已经登录，如果已经登录，可以通过 `req.currentUser` 获取当前登录用户。
+
+`AV.Cloud.CookieSession` 支持的选项包括：
+
+* **fetchUser**：**是否自动 fetch 当前登录的 AV.User 对象。默认为 false。**  
+  如果设置为 true，每个 HTTP 请求都将发起一次 LeanCloud API 调用来 fetch 用户对象。如果设置为 false，默认只可以访问 `req.currentUser` 的 `id`（`_User` 表记录的 ObjectId）和 `sessionToken` 属性，你可以在需要时再手动 fetch 整个用户。
+* **name**：Cookie 的名字，默认为 `avos.sess`。
+* **maxAge**：设置 Cookie 的过期时间。
+
+在 Node SDK 1.x 之后我们不再允许通过 `AV.User.current()` 获取登录用户的信息（详见 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk-upgrade-1.html#废弃_currentUser)），而是需要你：
+
+* 在云引擎方法中，通过 `request.currentUser` 获取用户信息。
+* 在网站托管中，通过 `request.currentUser` 获取用户信息。
+* 在后续的方法调用显示传递 user 对象。
+
+你可以这样简单地实现一个具有登录功能的站点：
+
+```javascript
+// 处理登录请求（可能来自登录界面中的表单）
+app.post('/login', function(req, res) {
+  AV.User.logIn(req.body.username, req.body.password).then(function(user) {
+    res.saveCurrentUser(user); // 保存当前用户到 Cookie
+    res.redirect('/profile'); // 跳转到个人资料页面
+  }, function(error) {
+    //登录失败，跳转到登录页面
+    res.redirect('/login');
+  });
+})
+
+// 查看个人资料
+app.get('/profile', function(req, res) {
+  // 判断用户是否已经登录
+  if (req.currentUser) {
+    // 如果已经登录，发送当前登录用户信息。
+    res.send(req.currentUser);
+  } else {
+    // 没有登录，跳转到登录页面。
+    res.redirect('/login');
+  }
+});
+
+// 登出账号
+app.get('/logout', function(req, res) {
+  req.currentUser.logOut();
+  res.clearCurrentUser(); // 从 Cookie 中删除用户
+  res.redirect('/profile');
+});
 ```
 {% endblock %}
 
@@ -171,7 +324,15 @@ request({
   }
 });
 ```
+{% endblock %}
 
+{% block code_get_client_ip_address %}
+```js
+app.get('/', function(req, res) {
+  console.log(req.headers['x-real-ip']);// 打印 IP 地址
+  res.render('index', { currentTime: new Date() });
+});
+```
 {% endblock %}
 
 {% block upload_file_special_middleware %}
@@ -207,110 +368,35 @@ app.post('/upload', function(req, res){
 ```
 {% endblock %}
 
-{% block cookie_session %}
-### 处理用户登录和登出
-
-云引擎提供了一个 `AV.Cloud.CookieSession` 中间件，用 Cookie 来维护用户（`AV.User`）的登录状态，要使用这个中间件可以在 `app.js` 中添加下列代码：
-
-```javascript
-var express = require('express');
-var AV = require('leanengine');
-
-var app = express();
-// 加载 cookieSession 以支持 AV.User 的会话状态
-app.use(AV.Cloud.CookieSession({ secret: 'my secret', maxAge: 3600000, fetchUser: true }));
-```
-
-Koa 需要添加一个 `framework: 'koa'` 的参数：
-
-```javascript
-var app = koa();
-app.use(AV.Cloud.CookieSession({ framework: 'koa', secret: 'my secret', maxAge: 3600000, fetchUser: true }));
-```
-
-你需要传入一个 secret 用于加密 Cookie（必须提供），这个中间件会将 `AV.User` 的登录状态信息记录到 Cookie 中，用户下次访问时自动检查用户是否已经登录，如果已经登录，可以通过 `req.currentUser` 获取当前登录用户。
-
-`AV.Cloud.CookieSession` 支持的选项包括：
-
-* **fetchUser**：**是否自动 fetch 当前登录的 AV.User 对象。默认为 false。**  
-  如果设置为 true，每个 HTTP 请求都将发起一次 LeanCloud API 调用来 fetch 用户对象。如果设置为 false，默认只可以访问 `req.currentUser` 的 `id`（`_User` 表记录的 ObjectId）和 `sessionToken` 属性，你可以在需要时再手动 fetch 整个用户。
-* **name**：Cookie 的名字，默认为 `avos.sess`。
-* **maxAge**：设置 Cookie 的过期时间。
-
-**注意**：在 Node SDK 1.x 之后我们不再允许通过 `AV.User.current()` 获取登录用户的信息（详见 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk-upgrade-1.html#废弃_currentUser)）：
-
-* 在云引擎方法中，通过 `request.currentUser` 获取用户信息。
-* 在网站托管中，通过 `request.currentUser` 获取用户信息。
-* 在后续的方法调用显示传递 user 对象。
-
-你可以这样简单地实现一个具有登录功能的站点：
-
-```javascript
-// 渲染登录页面
-app.get('/login', function(req, res) {
-  res.render('login.ejs');
-});
-
-// 处理登录请求（可能来自登录界面中的表单）
-app.post('/login', function(req, res) {
-  AV.User.logIn(req.body.username, req.body.password).then(function(user) {
-    console.log('signin successfully: %j', user);
-    res.saveCurrentUser(user); // 保存当前用户到 Cookie.
-    res.redirect('/profile'); // 跳转到个人资料页面
-  },function(error) {
-    //登录失败，跳转到登录页面
-    res.redirect('/login');
-  });
-})
-
-// 查看个人资料
-app.get('/profile', function(req, res) {
-  // 判断用户是否已经登录
-  if (req.currentUser) {
-    // 如果已经登录，发送当前登录用户信息。
-    res.send(req.currentUser);
-  } else {
-    // 没有登录，跳转到登录页面。
-    res.redirect('/login');
-  }
-});
-
-// 登出账号
-app.get('/logout', function(req, res) {
-  req.currentUser.logOut();
-  res.clearCurrentUser(); // 从 Cookie 中删除用户
-  res.redirect('/profile');
-});
-```
-
-一个简单的登录页面（`login.ejs`）可以是这样：
-
-```html
-<html>
-    <head></head>
-    <body>
-      <form method="post" action="/login">
-        <label>Username</label>
-        <input name="username"></input>
-        <label>Password</label>
-        <input name="password" type="password"></input>
-        <input class="button" type="submit" value="登录">
-      </form>
-    </body>
-  </html>
-```
-
-{% endblock %}
-
 {% block custom_session %}
-### 自定义 session
 有时候你需要将一些自己需要的属性保存在 session 中，你可以增加通用的 `cookie-session` 组件，详情可以参考 [express.js &middot; cookie-session](https://github.com/expressjs/cookie-session)。该组件和 `AV.Cloud.CookieSession` 组件可以并存。
 
 注意：express 框架的 `express.session.MemoryStore` 在我们云引擎中是无法正常工作的，因为我们的云引擎是多主机、多进程运行，因此内存型 session 是无法共享的，建议用 [express.js &middot; cookie-session 中间件](https://github.com/expressjs/cookie-session)。
 {% endblock %}
 
-{% block https_redirect %}
+{% block leancache %}
+首先添加相关依赖到 `package.json` 中：
 
+```json
+"dependencies": {
+  ...
+  "redis": "2.2.x",
+  ...
+}
+```
+
+然后可以使用下列代码获取 Redis 连接：
+
+```js
+var client = require('redis').createClient(process.env['REDIS_URL_<实例名称>']);
+// 建议增加 client 的 on error 事件处理，否则可能因为网络波动或 redis server 主从切换等原因造成短暂不可用导致应用进程退出。
+client.on('error', function(err) {
+  return console.error('redis err: %s', err);
+});
+```
+{% endblock %}
+
+{% block https_redirect %}
 Express:
 
 ```javascript
@@ -326,27 +412,6 @@ app.use(AV.Cloud.HttpsRedirect({framework: 'koa'}));
 ```
 {% endblock %}
 
-
-{% block custom_runtime %}
-目前{{fullName}}在项目框架中使用 {{platformName}} 4.x，开发者最好使用此版本进行开发。
-
-对于早期云引擎项目如果想使用 Node.js 4.x 版本，请在项目的 `package.json` 中为指定 `engine` 的版本，例如：
-
-```
-...
-"engines": {
-  "node": "4.x"
-},
-...
-```
-
-你还可以将版本设置为 `*` 来指定总是使用最新版本的 Node.js（目前是 Node.js 6）。
-
-**提示**：{{productName}} 0.12 和 4.x 差异较大，建议升级后充分测试。
-
-**提示**：如果 {{productName}} 不支持所指定的版本，则会默认使用 {{platformName}} 0.12 版本。
-{% endblock %}
-
 {% block code_calling_custom_variables %}
 ```javascript
 // 在云引擎 Node.js 环境中使用自定义的环境变量
@@ -355,30 +420,17 @@ console.log(MY_CUSTOM_VARIABLE);
 ```
 {% endblock %}
 
-{% block get_env %}
-```javascript
-var NODE_ENV = process.env.NODE_ENV || 'development';
-if (NODE_ENV === 'development') {
-  // 当前环境为「开发环境」，是由命令行工具启动的
-} else if(NODE_ENV == 'production') {
-  // 当前环境为「生产环境」，是线上正式运行的环境
-} else {
-  // 当前环境为「预备环境」
-}
-```
-{% endblock %}
-
 {% block loggerExample %}
 ```javascript
 console.log('hello');
-console.error('some error!')
+console.error('some error!');
 ```
 {% endblock %}
 
 {% block loggerExtraDescription %}
 你可以通过设置一个 `DEBUG=leancloud:request` 的环境变量来打印由 LeanCloud SDK 发出的网络请求。在本地调试时你可以通过这样的命令启动程序：
 
-```bash
+```sh
 env DEBUG=leancloud:request lean up
 ```
 
@@ -394,43 +446,16 @@ leancloud:request response(0) +220ms 200 {"results":[{"content":"1","createdAt":
 {% endblock %}
 
 {% block section_timezone %}
-## 时区问题
+需要注意 JavaScript 中 Date 类型的不同方法，一部分会返回 UTC 时间、一部分会返回当地时间（在中国区是北京时间）：
 
-因为某些原因，云引擎 2.0 默认使用的是 UTC 时间，这给很多开发者带来了困惑，所以我们着重讨论下时区问题。
+函数|时区|结果
+---|---|---
+`toISOString`|UTC 时间|2015-04-09T03:35:09.678Z
+`toJSON`（JSON 序列化时）|UTC 时间|2015-04-09T03:35:09.678Z
+`toUTCString`|UTC 时间|Thu, 09 Apr 2015 03:35:09 GMT
+`getHours`|UTC 时间|3
+`toString`（`console.log` 打印时）|当地时间|Thu Apr 09 2015 03:35:09 GMT+0000 (UTC)
+`toLocaleString`|当地时间|Thu Apr 09 2015 03:35:09 GMT+0000 (UTC)
 
-比如有这样一个时间：`2015-05-05T06:15:22.024Z` (ISO 8601 表示法)，最后末尾的 `Z` 表示该时间是 UTC 时间。
-
-上面的时间等价于：`2015-05-05T14:15:22.024+0800`，注意此时末尾是 `+0800` 表示该时间是东八区时间。这两个时间的「小时」部分相差了 8 小时。
-
-### 时区问题产生的原因
-
-很多开发者在时间处理上会忽略「时区」标志，导致最后总是莫名其妙的出现 8 小时的偏差。
-
-【场景一】某开发者开发的应用使用云引擎的主机托管功能做了一个网站，其中有时间格式的表单提交。某用户使用浏览器访问该网站，提交表单，时间格式为：`2015-05-05 14:15:22.024`，注意该时间没有「时区」标志。因为这个时间是浏览器生成的，而该用户浏览器上的时间通常是东八区时间，所以该业务数据希望表达的时间是「东八区的 14 点」。
-
-该时间 `2015-05-05 14:15:22.024` 提交到服务器，被转换为 Date 类型（JavaScript 代码：`new Date('2015-05-05 14:15:22.024')`）。因为云引擎 2.0 使用的是 UTC 时间，所以该时间会被处理为 `2015-05-05T14:15:22.024Z`，即「UTC 时间的 14 点」。导致最后获得的时间和期望时间相差了 8 小时。
-
-解决上面的办法很简单：时间格式带上时区标志。即浏览器上传时间时使用 `2015-05-05T14:15:22.024+0800`，这样不管服务端默认使用什么时区，带有时区的时间格式转换的 Date 都不会有歧义。
-
-【场景二】从数据库获取某记录的 `createdAt` 属性，假设值为：`2015-04-09T03:35:09.678Z`。因为云引擎默认时区是 UTC，所以一些时间函数的返回结果如下：
-
-函数|结果
----|---
-`toISOString`|2015-04-09T03:35:09.678Z
-`toLocaleString`|Thu Apr 09 2015 03:35:09 GMT+0000 (UTC)
-`toUTCString`|Thu, 09 Apr 2015 03:35:09 GMT
-`toString`|Thu Apr 09 2015 03:35:09 GMT+0000 (UTC)
-`getHours`|3，如果将 getHours 的结果返回给浏览器，或者作为业务数据使用，则会出现 8 小时的偏差。
-
-如果需要获取小时数据，解决办法是使用第三方的组件，比如 [moment-timezone](http://momentjs.com/timezone/)，通过下面的方式可以获得东八区的小时时间：
-
-```javascript
-var time = moment(obj.createdAt).tz('Asia/Shanghai');
-console.log('toString', time.toString());
-console.log('getHours', time.hours());
-```
-
-### 云引擎 2.0 和云引擎时区的差异
-
-为了方便大家的使用，更加符合通常的习惯，云引擎运行时环境（无沙箱的 Node.js 环境和 Python 环境）都是使用**东八区**作为默认时区。当然，我们仍然建议程序的时间字符串带有时区标志。
+提醒大家需要在向用户展示时注意区分，否则就会出现时间「偏差八小时」的现象。
 {% endblock %}
