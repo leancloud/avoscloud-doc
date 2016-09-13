@@ -225,6 +225,194 @@ Cloud::onLogin(function($user) {
 ```
 {% endblock %}
 
+{% block code_hook_message_received %}
+
+```php
+Cloud::define("_messageReceived", function($params, $user) {
+	// params = {
+	// 	fromPeer: 'Tom',
+	// 	receipt: false,
+	// 	groupId: null,
+	// 	system: null,
+	// 	content: '{"_lctext":"耗子，起床！","_lctype":-1}',
+	// 	convId: '5789a33a1b8694ad267d8040',
+	// 	toPeers: ['Jerry'],
+	// 	__sign: '1472200796787,a0e99be208c6bce92d516c10ff3f598de8f650b9',
+	// 	bin: false,
+	// 	transient: false,
+	// 	sourceIP: '121.239.62.103',
+	// 	timestamp: 1472200796764
+	// };
+
+	error_log('_messageReceived start');
+	$content = json_decode($params["content"], true);
+	$text = $content["_lctext"];
+	error_log($text);
+    $processedContent = preg_replace("XX中介", "**", $text);
+    return array("content" => $processedContent);
+});
+```
+{% endblock %}
+
+{% block code_hook_receiver_offline %}
+
+```php
+Cloud::define('_receiversOffline', function($params, $user) {
+	error_log('_receiversOffline start');
+	// content 为消息的内容
+    $shortContent = $params["content"];
+    if (strlen($shortContent) > 6) {
+        $shortContent = substr($shortContent, 0, 6);
+    }
+
+	$json = array(
+        // 自增未读消息的数目，不想自增就设为数字
+        "badge" => "Increment",
+        "sound" => "default",
+        // 使用开发证书
+        "_profile" => "dev",
+        "alert" => shortContent
+    );
+
+	$pushMessage = json_encode($json);
+    return array(
+        "pushMessage" => $pushMessage,
+    );
+});
+```
+{% endblock %}
+
+
+{% block code_hook_message_sent %}
+
+```php
+Cloud::define('_messageSent', function($params, $user) {
+	error_log('_messageSent start');
+	error_log('params' . json_encode($params));
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	// _messageSent start
+	// params { fromPeer: 'Tom',
+	//   receipt: false,
+	//   onlinePeers: [],
+	//   content: '12345678',
+	//   convId: '5789a33a1b8694ad267d8040',
+	//   msgId: 'fptKnuYYQMGdiSt_Zs7zDA',
+	//   __sign: '1472703266575,30e1c9b325410f96c804f737035a0f6a2d86d711',
+	//   bin: false,
+	//   transient: false,
+	//   sourceIP: '114.219.127.186',
+	//   offlinePeers: [ 'Jerry' ],
+	//   timestamp: 1472703266522 }
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_start %}
+
+```php
+Cloud::define('_conversationStart', function($params, $user) {
+	error_log('_conversationStart start');
+	error_log('params' . json_encode($params));
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	//_conversationStart start
+	// params {
+	// 	initBy: 'Tom',
+	// 	members: ['Tom', 'Jerry'],
+	// 	attr: {
+	// 		name: 'Tom & Jerry'
+	// 	},
+	// 	__sign: '1472703266397,b57285517a95028f8b7c34c68f419847a049ef26'
+	// }
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_started %}
+
+```php
+Cloud::define('_conversationStarted', function($params, $user) {
+	error_log('_conversationStarted start');
+	error_log('params' . json_encode($params));
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	// _conversationStarted start
+	// params {
+	// 	convId: '5789a33a1b8694ad267d8040',
+	// 	__sign: '1472723167361,f5ceedde159408002fc4edb96b72aafa14bc60bb'
+	// }
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_add %}
+
+```php
+Cloud::define('_conversationAdd', function($params, $user) {
+	error_log('_conversationAdd start');
+	error_log('params' . json_encode($params));
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	// _conversationAdd start
+	// params {
+	// 	initBy: 'Tom',
+	// 	members: ['Mary'],
+	// 	convId: '5789a33a1b8694ad267d8040',
+	// 	__sign: '1472786231813,a262494c252e82cb7a342a3c62c6d15fffbed5a0'
+	// }
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_remove %}
+
+```php
+Cloud::define('_conversationRemove', function($params, $user) {
+
+	error_log('_conversationRemove start');
+	error_log('params' . json_encode($params));
+	error_log('removed client Id:' . $params['members'][0]);
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	// _conversationRemove start
+	// params {
+	// 	initBy: 'Tom',
+	// 	members: ['Jerry'],
+	// 	convId: '57c8f3ac92509726c3dadaba',
+	// 	__sign: '1472787372605,abdf92b1c2fc4c9820bc02304f192dab6473cd38'
+	// }
+	//removed client Id: Jerry
+});
+```
+{% endblock %}
+{% block code_hook_conversation_update %}
+
+```php
+Cloud::define('_conversationUpdate', function($params, $user) {
+	error_log('_conversationUpdate start');
+	error_log('params' . json_encode($params));
+    error_log('name' . $params['attr']['name']);
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	// _conversationUpdate start
+	// params {
+	// 	convId: '57c9208292509726c3dadb4b',
+	// 	initBy: 'Tom',
+	// 	attr: {
+	// 		name: '聪明的喵星人',
+	// 		type: 'public'
+	// 	},
+	// name 聪明的喵星人
+});
+```
+{% endblock %}
 
 {% block hookDeadLoop %}
 #### 防止死循环调用
