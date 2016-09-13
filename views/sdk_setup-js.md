@@ -34,14 +34,25 @@ $ cnpm install leancloud-realtime --save
 #### bower 安装
 
 ```
+# 存储服务
 $ bower install leancloud-storage --save
+# 实时消息服务
+$ bower install leancloud-realtime --save
 ```
+[什么是 bower ?](http://bower.io/)
 
 #### CDN 加速
 
 ```html
 <script src="https://cdn1.lncld.net/static/js/av-min-1.2.1.js"></script>
 ```
+
+#### Github 仓库地址
+
+可以直接通过 Github 仓库使用，也可以通过 Github 给我们提出您的建议
+
+- ** 存储服务 leancloud-storage ** Github 仓库地址：[https://github.com/leancloud/javascript-sdk](https://github.com/leancloud/javascript-sdk)
+- ** 实时通讯 leancloud-realtime ** Github 仓库地址：[https://github.com/leancloud/js-realtime-sdk](https://github.com/leancloud/js-realtime-sdk)
 
 ### ES6 与 ES7 支持
 
