@@ -9,7 +9,7 @@
 LeanCloud JavaScript SDK 也可在 Node.js 等服务器端环境运行，可以使用 [云引擎](leanengine_overview.html) 来搭建服务器端。
 
 ```
-# 存储服务
+# 存储服务（包括推送和统计）
 $ npm install leancloud-storage --save
 # 实时消息服务
 $ npm install leancloud-realtime --save
@@ -25,7 +25,7 @@ $ npm install -g cnpm --registry=http://r.cnpmjs.org
 然后执行：
 
 ```
-# 存储服务
+# 存储服务（包括推送和统计）
 $ cnpm install leancloud-storage --save
 # 实时消息服务
 $ cnpm install leancloud-realtime --save
@@ -34,7 +34,7 @@ $ cnpm install leancloud-realtime --save
 #### bower 安装
 
 ```
-# 存储服务
+# 存储服务（包括推送和统计）
 $ bower install leancloud-storage --save
 # 实时消息服务
 $ bower install leancloud-realtime --save
