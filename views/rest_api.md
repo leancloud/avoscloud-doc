@@ -1193,7 +1193,7 @@ curl -X GET \
   https://api.leancloud.cn/1.1/classes/Post
 ```
 
-我们都知道，微博里面有用户互相关注的功能，如果我们用 `_Followee` 和 `_Follower` 这两个类来存储用户之间的关注关系（`_Follower` 记录用户的粉丝，`_Followee` 记录用户关注的人，我们的 [应用内社交组件](./status_system.html) 已经实现了这样的模型，这里直接使用其后台表结构），我们可以创建一个查询来找到某个用户关注的人发布的微博（`Post` 表中有一个字段 `author` 指向发布者），查询看起来应该是这样：
+我们都知道，微博里面有用户互相关注的功能，如果我们用 `_Followee` 和 `_Follower` 这两个类来存储用户之间的关注关系（`_Follower` 记录用户的粉丝，`_Followee` 记录用户关注的人，{% if node != 'qcloud' %}我们的 [应用内社交组件](./status_system.html) 已经实现了这样的模型，这里直接使用其后台表结构），{% endif %}我们可以创建一个查询来找到某个用户关注的人发布的微博（`Post` 表中有一个字段 `author` 指向发布者），查询看起来应该是这样：
 
 ```sh
 curl -X GET \
@@ -2564,6 +2564,7 @@ curl -X GET \
 1. 每一个 AVObject 类只能包含一个 AVGeoPoint 对象的键值。
 2. Points 不应该等于或者超出它的界. 纬度不应该是 -90.0 或者 90.0，经度不应该是 -180.0 或者 180.0。试图在 GeoPoint 上使用超出范围内的经度和纬度会导致问题.
 
+{% if node != 'qcloud' %}{% endif %}
 ## 用户反馈组件 API
 
 如果使用我们的用户反馈组件，可以通过下列 API 来提交一条新的用户反馈：
@@ -2582,6 +2583,7 @@ curl -X POST \
 ```
 
 提交后的用户反馈在可以在组件菜单的用户反馈里看到。
+{% endif %}
 
 {% if node!='qcloud' %}
 ## 短信验证 API
@@ -2920,11 +2922,11 @@ tag|可选|事件属性的简写方式，等同于属性里面添加：`{event: 
   "duration": 60000 // 使用时长，单位毫秒
 }
 ```
-
+{% if node != 'qcloud' %}
 ## 事件流 API
 
 请参考 [事件流 REST API](./status_system.html#REST_API)。
-
+{% endif %}
 ## 应用内搜索 API
 
 请参考 [搜索 API](./app_search_guide.html#搜索_api)。

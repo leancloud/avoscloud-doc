@@ -919,21 +919,26 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 应用内搜索是一个针对应用数据进行全局搜索的接口，它基于搜索引擎构建，提供更强大的搜索功能。要深入了解其用法和阅读示例代码，请阅读 {% block link_to_in_app_search_doc %}{% endblock %}。
 {% endblock %}
 
+{% if node != 'qcloud' %}
 {% block module_in_app_social %}
 ## 应用内社交
 应用内社交，又称「事件流」，在应用开发中出现的场景非常多，包括用户间关注（好友）、朋友圈（时间线）、状态、互动（点赞）、私信等常用功能，请参考 {% block link_to_status_system_doc %}{% endblock %}。
 {% endblock %}
+{% endif %}
 
+{% if node != 'qcloud' %}
 {% block text_sns %}
 ## 第三方账户登录
 社交账号的登录方便了应用开发者在提升用户体验，我们特地开发了一套支持第三方账号登录的组件，请参考 {% block link_to_sns_doc %}{% endblock %}。
-
 {% endblock %}
+{% endif %}
 
+{% if node != 'qcloud' %}
 {% block text_feedback %}
 ## 用户反馈
 用户反馈是一个非常轻量的模块，可以用最少两行的代码来实现一个支持文字和图片的用户反馈系统，并且能够方便的在我们的移动 App 中查看用户的反馈，请参考 {% block link_to_feedback_doc %}{% endblock %}。
 {% endblock %}
+{% endif %}
 
 {% block js_push_guide %}{% endblock %}
 

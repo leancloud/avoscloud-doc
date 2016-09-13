@@ -15,8 +15,10 @@
 * 我们的用户账户系统都自动做了密码加密存储，基于 SHA-512 加密算法，使用随机生成的 salt 加密。
 * 我们提供短信服务，你可以使用短息服务发送手机验证码、手机登录验证码等。具体参考各 SDK 开发指南。
 * 我们提供了 iOS、Android、Windows Phone、JavaScript、Unity3D 等平台的 SDK，进入 [SDK 下载页面](sdk_down.html)。
+{% if node != 'qcloud' %}
 * 如果你想做一个形如微博的 Feed 系统，也许你可以尝试使用我们的 [事件流系统](status_system.html)。
 * 我们提供简易的 [SNS 组件](sns.html)，用于第三方登录和分享。
+{% endif %}
 * [Android 应用代码混淆注意事项](android_faq.html#代码混淆怎么做)
 * [基于 LeanCloud 的一对多、多对多关系数据建模](https://blog.leancloud.cn/1723/)
 * [使用 LeanCloud JavaScript SDK 和 AngularJS 创建 一个 Todo Demo](https://blog.leancloud.cn/1541/)
@@ -103,9 +105,10 @@
 * 云引擎 Web 主机托管，我们可以协助你完成域名的备案，请在 [应用控制台 > 账户设置 > 域名备案](/settings.html#/setting/domainrecord) 操作。
 
 ## 其他
-{% if node!='qcloud' %}
+{% if node !='qcloud' %}
 * [邀请朋友](/settings.html#/setting/invite) 注册 LeanCloud，获取赠送金额。
 * 修改登录邮箱，请进入 [邮箱](/settings.html#/setting/mail) 菜单。
+* 为你的应用添加用户反馈，请使用我们的 [用户反馈组件](feedback.html)。
 {% endif %}
 * 查看 [快速入门文档](./start.html)，开始应用开发之旅。
 * 通过 [工单系统](https://leanticket.cn/t/leancloud) 提交技术支持申请，获取 LeanCloud 工程师的帮助。
@@ -118,5 +121,4 @@
 * 所有 SDK 都提供 [API 文档](index.html)，开发指南没有覆盖的 API 介绍都可以在里面找到解释。
 * 关注我们的 [博客](https://blog.leancloud.cn/) 和 [微博](http://weibo.com/avoscloud)，获取 LeanCloud 最新消息。
 * 在应用设置的基本设置菜单里，可以更改应用名称，提交应用图标，申请发布到 [应用墙](https://leancloud.cn/customers.html)。
-* 为你的应用添加用户反馈，请使用我们的 [用户反馈组件](feedback.html)。
 
