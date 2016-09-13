@@ -17,7 +17,7 @@
 {% set hook_after_delete = "afterDelete" %}
 {% set hook_on_verified = "onVerified" %}
 {% set hook_on_login = "onLogin" %}
-{% set hook_message_received = "IMHookType.messageReceived" %}
+{% set hook_message_received = "_messageReceived" %}
 {% set hook_receiver_offline = "_receiversOffline" %}
 {% set hook_message_sent = "_messageSent" %}
 {% set hook_conversation_start = "_conversationStart" %}
@@ -272,6 +272,7 @@ EngineRequestContext 则可以获取额外的一些 metaData 信息
     // 如果创建者是 black 可以拒绝创建对话
     if ("black".equals(params.get("initBy"))) {
       result.put("reject", true);
+      // 这个数字是由开发者自定义的
       result.put("code", 9890);
     }
     return result;
@@ -323,7 +324,7 @@ EngineRequestContext 则可以获取额外的一些 metaData 信息
     String[] members = (String[])params.get("members");
     Map<String, Object> result = new HashMap<String, Object>();
     System.out.println("members");
-    // 以下代码表示此次操作的发起人如果是 black 就拒绝此次操作，members 不会被不会被删除
+    // 以下代码表示此次操作的发起人如果是 black 就拒绝此次操作，members 不会被删除
     if ("black".equals(params.get("initBy"))) {
       result.put("reject", true);
       // 这个数字是由开发者自定义
