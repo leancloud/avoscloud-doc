@@ -151,7 +151,7 @@ app.use(function *(next) {
 
 ```
 
-使用 Koa 时建议按照前面 [package.json](#package.json) 一节将 Node.js 的版本设置为 `4.x` 以上。
+使用 Koa 时建议按照前面 [package.json](#package_json) 一节将 Node.js 的版本设置为 `4.x` 以上。
 
 ### 其他 Web 框架
 
