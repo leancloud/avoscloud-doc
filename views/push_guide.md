@@ -209,7 +209,7 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
 
 #### 消息内容 Data
 
-对于 iOS 设备，data 属性可以是：
+对于 iOS 设备，data 内属性可以是：
 
 ```
 {
@@ -219,30 +219,61 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
    "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
    "sound":             "声音文件名，前提在应用里存在",
    "content-available": "如果使用 Newsstand，设置为 1 来开始一次后台下载",
+   "mutable-content":   "用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用", 
    "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
   }
 }
 ```
 
-并且 iOS 设备支持 `alert` 本地化消息推送：
+并且 iOS 设备支持 `alert` 本地化消息推送，只需要将上面 `alert` 参数从 String 替换为一个由本地化消息推送属性组成的 JSON 即可：
 
 ```
 {
   "data":{
     "alert": {
-      "title":           "标题",
-      "title-loc-key":   "",
-      "body":            "消息内容",
-      "action-loc-key":  "",
-      "loc-key":         "",
-      "loc-args":        [""],
-      "launch-image":    ""
+      "title":               "标题",
+      "title-loc-key":       "",
+      "sub-title":           "附标题",
+      "sub-title-loc-key":   "", 
+      "body":                "消息内容",
+      "action-loc-key":      "",
+      "loc-key":             "",
+      "loc-args":            [""],
+      "launch-image":        ""
      }
    }
 }
 ```
 
-详情参考 [Apple 文档](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html)。
+data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/TheNotificationPayload.html)。
+
+另外，我们也支持按照上述 Apple 官方文档的方式构造推送参数，如：
+
+```
+{
+  "data":{
+    "aps": {
+      "alert": {
+        "title":               "标题",
+        "title-loc-key":       "",
+        "sub-title":           "附标题",
+        "sub-title-loc-key":   "", 
+        "body":                "消息内容",
+        "action-loc-key":      "",
+        "loc-key":             "",
+        "loc-args":            [""],
+        "launch-image":        ""
+      }
+      "category":          "通知分类名称",
+      "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
+      "sound":             "声音文件名，前提在应用里存在",
+      "content-available": "如果使用 Newsstand，设置为 1 来开始一次后台下载",
+      "mutable-content":   "用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用", 
+    }
+    "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
+  }
+}
+```
 
 如果是 Android 设备，默认的消息栏通知 `data` 支持下列属性：
 
