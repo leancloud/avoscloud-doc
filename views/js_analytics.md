@@ -8,9 +8,9 @@
 
 * 该 SDK 可以使用在 Web 页面及 WebApp 等场景中，各种移动端浏览器，及各种 WebView，包括 Phonegap、Cordova 和微信的 WebView。
 
-* 使用简单，功能强大。只需要加载，实例化之后，SDK 既可以自动统计，LeanCloud 的后台会自动来分析，最终可以在应用的「分析」中看到诸如访问时长、用户增长、用户留存率和实时在线用户量等各种统计数据。
+* 使用简单，功能强大。只需要加载，实例化之后，开启 SDK 相关统计方法，LeanCloud 的后台会自动来分析，最终可以在控制台相关应用的「分析」中看到诸如访问时长、用户增长、用户留存率和实时在线用户量等各种统计数据。
 
-* 支持 WebApp，支持 Web 前端路由，完全自动统计。
+* 支持 WebApp，支持 Web 前端路由。
 
 ## 安装
 
@@ -34,6 +34,12 @@ AV.init({
     appKey: appKey,
     region: region,
 });
+
+// 开启统计 Pageview（页面访问）
+AV.Analyse.recordPageview();
+
+// 开启统计 Session-view（会话访问）
+AV.Analyse.recordSessionView();
 
 // 发送统计自定义事件
 AV.Analyse.send({
@@ -116,6 +122,26 @@ AV.Analyse.send({
     // 发送失败
     console.log(err);
 });
+```
+
+### AV.Analyse.recordPageview()
+
+描述：开启统计 Pageview（页面访问）
+
+例子：
+
+```javascript
+AV.Analyse.recordPageview();
+```
+
+### AV.Analyse.recordSessionView()
+
+描述：开启统计 Session-view（会话访问）
+
+例子：
+
+```javascript
+AV.Analyse.recordSessionView();
 ```
 
 ## 数据时效性
