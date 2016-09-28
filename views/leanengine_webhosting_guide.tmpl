@@ -34,7 +34,7 @@
 除此之外，为了支持云引擎的云函数和 Hook 功能，管理程序会使用 `/1.1/functions/_ops/metadatas` 这个 URL 和 {{platformName}} SDK 交互，请确保将这个 URL 交给 {{platformName}} SDK 处理，或 **返回一个 HTTP 404 表示不使用云函数** 和 Hook 相关的功能。
 
 {% block ping %}
-关于如何加载 {{platformName}} SDK，见下面的 [Web 框架](#Web 框架) 和 [LeanCloud SDK](#LeanCloud SDK) 小节。
+关于如何加载 {{platformName}} SDK，见下面的 [Web 框架](#Web_框架) 和 [LeanCloud SDK](#LeanCloud_SDK) 小节。
 {% endblock %}
 
 ## Web 框架
@@ -115,7 +115,7 @@ git push -u origin master
 
 ### 获取客户端 IP
 
-如果你想获取客户端的 IP，可以直接从用户请求的 HTTP 头的 `x-real-ip` 字段获取，实例代码如下：
+如果你想获取客户端的 IP，可以直接从用户请求的 HTTP 头的 `x-real-ip` 字段获取，示例代码如下：
 
 {% block code_get_client_ip_address %}{% endblock %}
 
@@ -158,6 +158,8 @@ git push -u origin master
 {% block https_redirect %}{% endblock %}
 
 部署并发布到生产环境之后，访问你的 {{productName}} 网站二级域名都会强制通过 HTTPS 访问。
+
+{% block extra_examples %}{% endblock %}
 
 ## 线上环境
 
@@ -205,9 +207,9 @@ git push -u origin master
 
 云引擎实现了一个缓存机制来加快构建的速度，所谓构建就是指你的应用在云引擎上安装依赖的过程，目测存在两种机制。
 
-Node.js 采用的：如果 `package.json` 和上次构建相比没有修改，就直接采用上次安装的依赖，只将新的应用代码替换上去。
+Node.js、Java 采用的：如果 `package.json` 或 `pom.xml` 和上次构建相比没有修改，就直接采用上次安装的依赖，只将新的应用代码替换上去。
 
-Python、PHP、Java 采用的：每次构建结束时将依赖目录打包，下次构建时将上次的依赖包解压到原处，再运行包管理器来安装依赖，可以复用已有的依赖项。
+Python、PHP 采用的：每次构建结束时将依赖目录打包，下次构建时将上次的依赖包解压到原处，再运行包管理器来安装依赖，可以复用已有的依赖项。
 
 如果你遇到了与依赖安装有关的问题，可以在控制台部署时勾选「下载最新依赖」，或通过命令行工具部署时添加 `--noCache` 选项。
 

@@ -48,7 +48,7 @@ public static void main(String[] args){
 		<repository>
 			<id>leancloud</id>
 			<name>LeanCloud</name>
-			<url>http://mvn.leancloud.cn/nexus/content/repositories/releases</url>
+			<url>http://mvn.leancloud.cn/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
 
@@ -56,7 +56,7 @@ public static void main(String[] args){
 		<dependency>
 			<groupId>cn.leancloud.java</groupId>
 			<artifactId>java-sdk</artifactId>
-			<version>[0.1.0,0.2.0)</version>
+			<version>[0.1.6,0.2.0)</version>
 		</dependency>
 	</dependencies>
 ```
@@ -65,7 +65,7 @@ public static void main(String[] args){
 ```groovy
 repositories {
   maven {
-    url "http://mvn.leancloud.cn/nexus/content/repositories/releases"
+    url "http://mvn.leancloud.cn/nexus/content/groups/public/"
   }
 }
 

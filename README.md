@@ -42,7 +42,7 @@ LeanCloud 开发者文档
 
 为避免在所提交 PR 中出现与修改内容无关的 Merge pull request 的 commits，推荐使用以下流程提交 PR：
 
-1. 本地切换到 master 分支 
+1. 本地切换到 master 分支
 1. rebase
 1. 新建分支 new branch 进行修改
 1. 提交 PR，如有相关的 issue 在注释中增加 `Fixes #???`。问号为 issue 的编号。
@@ -184,6 +184,6 @@ $ grunt server
 
 有问题请与 <wchen@leancloud.rocks> 联系。
 
-## 协议
+## License
 
-[LGPL-3.0](https://www.gnu.org/licenses/lgpl.html)
+LGPL-3.0

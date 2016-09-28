@@ -119,14 +119,14 @@ Java 云引擎只支持 1.8 运行环境和 war 包运行
 		<repository>
 			<id>leancloud</id>
 			<name>LeanCloud</name>
-			<url>http://mvn.leancloud.cn/nexus/content/repositories/</url>
+			<url>http://mvn.leancloud.cn/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
-       <dependencies>
+	<dependencies>
 		<dependency>
 			<groupId>cn.leancloud</groupId>
 			<artifactId>leanengine</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>[0.1.6,0.2.0)</version>
 		</dependency>
 	</dependencies>
 ```
@@ -134,15 +134,16 @@ Java 云引擎只支持 1.8 运行环境和 war 包运行
 * 初始化：在正式使用数据存储之前，你需要使用自己的应用 key 进行初始化中间件：
 
 ```java
-var AV = require('leanengine');
+import com.avos.avoscloud.internal.impl.JavaRequestSignImplementation;
+import cn.leancloud.LeanEngine;
 
-AVOSCloud.initialize(System.getenv("LEANCLOUD_APP_ID"), // 你的 app id
-                                  System.getenv("LEANCLOUD_APP_KEY"), // 你的 app key
-                                  System.getenv("LEANCLOUD_APP_MASTER_KEY") // 你的 master key
-);
+String appId = System.getenv("LEANCLOUD_APP_ID");
+String appKey = System.getenv("LEANCLOUD_APP_KEY");
+String appMasterKey = System.getenv("LEANCLOUD_APP_MASTER_KEY");
+LeanEngine.initialize(appId, appKey, appMasterKey);
 
 // 如果不希望使用 masterKey 权限，可以将下面一行删除
-    EngineRequestSign.instance().setUserMasterKey(true);
+JavaRequestSignImplementation.instance().setUseMasterKey(true);
 ```
 {% endblock %}
 

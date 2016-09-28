@@ -103,36 +103,7 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
     <dict>
         <key>NSExceptionDomains</key>
         <dict>
-
-            <!-- 集成新浪微博对应的HTTP白名单-->
-            <key>weibo.cn</key>
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
-                <false/>
-            </dict>
-            <key>weibo.com</key>
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSThirdPartyExceptionAllowsInsecureHTTPLoads</key>
-                <true/>
-                <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
-                <false/>
-            </dict>
-            <!-- 新浪微博-->
-
-            <!-- 集成微信、QQ、Qzone、腾讯微博授权对应的HTTP白名单-->
-            <key>qq.com</key>
-            <dict>
-                <key>NSIncludesSubdomains</key>
-                <true/>
-                <key>NSThirdPartyExceptionAllowsInsecureHTTPLoads</key>
-                <true/>
-                <key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
-                <false/>
-            </dict>
+        
             <key>idqqimg.com</key>
             <dict>
                 <key>NSIncludesSubdomains</key>

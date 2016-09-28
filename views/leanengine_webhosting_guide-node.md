@@ -329,8 +329,8 @@ request({
 {% block code_get_client_ip_address %}
 ```js
 app.get('/', function(req, res) {
-  console.log(req.headers['x-real-ip']);// 打印 IP 地址
-  res.render('index', { currentTime: new Date() });
+  console.log(req.headers['x-real-ip']);
+  res.send(req.headers['x-real-ip']);
 });
 ```
 {% endblock %}
@@ -371,7 +371,7 @@ app.post('/upload', function(req, res){
 {% block custom_session %}
 有时候你需要将一些自己需要的属性保存在 session 中，你可以增加通用的 `cookie-session` 组件，详情可以参考 [express.js &middot; cookie-session](https://github.com/expressjs/cookie-session)。该组件和 `AV.Cloud.CookieSession` 组件可以并存。
 
-注意：express 框架的 `express.session.MemoryStore` 在我们云引擎中是无法正常工作的，因为我们的云引擎是多主机、多进程运行，因此内存型 session 是无法共享的，建议用 [express.js &middot; cookie-session 中间件](https://github.com/expressjs/cookie-session)。
+<div class="callout callout-info">express 框架的 `express.session.MemoryStore` 在云引擎中是无法正常工作的，因为云引擎是多主机、多进程运行，因此内存型 session 是无法共享的，建议用 [express.js &middot; cookie-session 中间件](https://github.com/expressjs/cookie-session)。</div>
 {% endblock %}
 
 {% block leancache %}
@@ -410,6 +410,43 @@ Koa:
 app.proxy = true;
 app.use(AV.Cloud.HttpsRedirect({framework: 'koa'}));
 ```
+{% endblock %}
+
+{% block extra_examples %}
+### 多进程运行
+
+因为 Node.js 本身的单线程模型，无法充分利用多个 CPU 核心，所以如果你使用了 2CPU 或以上的实例，需要自行使用 Node.js 的 [cluster](https://nodejs.org/api/cluster.html) 配置多进程运行，创建一个 `server-cluster.js`：
+
+```javascript
+var cluster = require('cluster');
+
+// 取决于你的实例的可用 CPU 数量
+var workers = 2;
+
+if (cluster.isMaster) {
+  for (var i = 0; i < workers; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log('worker %s died, restarting...', worker.process.pid);
+    cluster.fork();
+  });
+} else {
+  require('./server.js')
+}
+```
+
+然后在 `package.json` 中将 `scripts.start` 改为 `node server-cluster.js` 即可：
+
+```json
+"scripts": {
+  "start": "node server-cluster.js"
+}
+```
+
+<div class="callout callout-info">多进程运行要求你的程序中没有在内存中维护全局状态（例如锁），建议在首次切换到多进程或多实例运行时进行充分的测试。</div>
+
 {% endblock %}
 
 {% block code_calling_custom_variables %}
