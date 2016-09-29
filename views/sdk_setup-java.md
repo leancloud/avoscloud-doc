@@ -1,5 +1,6 @@
 {% extends "./sdk_setup.tmpl" %}
 
+{% set java_sdk_latest_version = '0.1.6' %}
 
 {% block language %}Java{% endblock %}
 
@@ -44,33 +45,19 @@ public static void main(String[] args){
 通过 maven 配置相关依赖
 
 ``` xml
-	<repositories>
-		<repository>
-			<id>leancloud</id>
-			<name>LeanCloud</name>
-			<url>http://mvn.leancloud.cn/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
 		<dependency>
 			<groupId>cn.leancloud.java</groupId>
 			<artifactId>java-sdk</artifactId>
-			<version>[0.1.6,0.2.0)</version>
+			<version>{{java_sdk_latest_version}}</version>
 		</dependency>
 	</dependencies>
 ```
 
 或者通过 gradle 配置相关依赖
 ```groovy
-repositories {
-  maven {
-    url "http://mvn.leancloud.cn/nexus/content/groups/public/"
-  }
-}
-
 dependencies {
-  compile("cn.leancloud.java:java-sdk:0.1.+")
+  compile("cn.leancloud.java:java-sdk:{{java_sdk_latest_version}}")
 }
 ```
 {% endblock %}

@@ -4,6 +4,7 @@
 {% set platformName = "Java" %}
 {% set sdk_name = "Java" %}
 {% set leanengine_middleware = "[LeanEngine Java SDK](https://github.com/leancloud/leanengine-java-sdk)" %}
+{% set leanengine_java_sdk_latest_version = '0.1.10' %}
 
 {% block project_constraint %}
 你的项目需要遵循一定格式才会被云引擎识别并运行。
@@ -115,18 +116,11 @@ Java 云引擎只支持 1.8 运行环境和 war 包运行
 * 配置依赖：在 pom.xml 中增加依赖配置来增加 {{leanengine_middleware}} 的依赖：
 
 ```xml
-	<repositories>
-		<repository>
-			<id>leancloud</id>
-			<name>LeanCloud</name>
-			<url>http://mvn.leancloud.cn/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>cn.leancloud</groupId>
 			<artifactId>leanengine</artifactId>
-			<version>[0.1.6,0.2.0)</version>
+			<version>{{leanengine_java_sdk_latest_version}}</version>
 		</dependency>
 	</dependencies>
 ```
