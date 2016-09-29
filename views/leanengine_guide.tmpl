@@ -152,8 +152,6 @@ curl -X POST -H "Content-Type: application/json; charset=utf-8"   \
 
 {% block cloudFuncExample %}{% endblock %}
 
-`averageStars` 和 `hello` 函数的唯一区别是在调用函数时，我们必须给 `request.params.movie` 提供参数。
-
 ### REST API 调用云函数
 
 云函数可以被各种客户端 SDK 调用（详见各 SDK 的「调用云引擎」部分），也可以通过 REST API 来调用。例如，用一部电影名称去调用 `averageStars` 函数：
@@ -713,7 +711,7 @@ Cron 表达式的基本语法为：
 
 {% block loggerExample %}{% endblock %}
 
-**注意**：日志单行最大 4096 个字符，多余部分会被丢弃；日志输出频率大于 600 条/分钟，多余的部分会被丢弃。
+**注意**：日志单行最大 4096 个字符，多余部分会被丢弃；日志输出频率大于 600 行/分钟，多余的部分会被丢弃。
 
 ## 网站托管
 

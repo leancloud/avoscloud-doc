@@ -967,6 +967,15 @@ fetchAllInBackground()
 ```
 {% endblock %}
 
+{% block code_query_select_pointer_keys %}
+
+```java
+    query.selectKeys(Arrays.asList("owner.username"));
+```
+
+{% endblock %}
+
+
 {% block code_query_orderby %}
 ``` java
         // 按时间，升序排列

@@ -1086,6 +1086,13 @@ function uploadFile (req, res) {
 ```
 {% endblock %}
 
+{% block code_query_select_pointer_keys %}
+
+```js
+    query.select('owner.username');
+```
+
+{% endblock %}
 
 {% block code_query_count %}
 

@@ -14,7 +14,7 @@ end
 task :deploy, [:type] => [] do |t, args|
   case args[:type]
   when "us-w1"
-    exec "fab -H ubuntu@us-w1-app1.leancloud.cn,ubuntu@us-w1-app2.leancloud.cn deploy_docs:target=us"
+    exec "fab -H ubuntu@us-w1-backend4.leancloud.cn,ubuntu@us-w1-app1.leancloud.cn,ubuntu@us-w1-app2.leancloud.cn deploy_docs:target=us"
   when "cn-n1"
     exec "fab -H ubuntu@web1.avoscloud.com,ubuntu@web2.avoscloud.com,ubuntu@web3.avoscloud.com,ubuntu@web4.avoscloud.com,ubuntu@web5.avoscloud.com,ubuntu@web6.avoscloud.com,ubuntu@web7.avoscloud.com,ubuntu@web8.avoscloud.com deploy_docs"
   when "cn-e1"

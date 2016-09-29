@@ -8,6 +8,9 @@
 {% set leanengine_middleware = '[LeanCloud PHP SDK](https://github.com/leancloud/php-sdk)' %}
 
 {% block custom_api_random_string %}
+{{productName}} 允许开发者自定义基于 HTTP（HTTPS） 的 API。
+例如，开发者如果想实现一个获取服务端时间的 API，可以在代码中如下做：
+
 打开 `./app.php` ，添加如下代码：
 
 ```php
@@ -20,11 +23,20 @@ $app->get('/time', function($req, $res) {
     return $response;
 });
 ```
+
+然后打开浏览器，访问 <http://localhost:3000/time>，浏览器应该会返回如下类似的内容：
+
+```json
+{"currentTime":"2016-02-01T09:43:26.223Z"}
+```
+
+部署到云端后，你可以通过 `http://{{var_app_domain}}.leanapp.cn/time` 来访问该 API。你的 iOS 或者 Android 的程序就可以构建一个 HTTP 请求获取服务端时间了。当然还是建议使用各 SDK 内置的获取服务器时间的 API，这里的例子只是演示。
 {% endblock %}
 
 {% block project_constraint %}
-{{fullName}} 项目必须有 `$PROJECT_DIR/public/index.php` 文件，该文件为整个项目的启动文件。
+你的项目需要遵循一定格式才会被云引擎识别并运行。
 
+{{fullName}} 项目必须有 `$PROJECT_DIR/public/index.php` 文件，该文件为整个项目的启动文件。
 {% endblock %}
 
 {% block project_start %}
@@ -155,8 +167,6 @@ $app->post("/upload", function($req, $res) {
 {% endblock %}
 
 {% block cookie_session %}
-### 处理用户登录和登出
-
 云引擎提供了一个 `LeanCloud\Storage\CookieStorage` 模块，用 Cookie 来维护用户（`User`）的登录状态，要使用它可以在 `app.php` 中添加下列代码：
 
 ```php
@@ -227,7 +237,6 @@ $app->get('/logout', function($req, $res) {
 {% endblock %}
 
 {% block custom_session %}
-### 自定义 session
 有时候你需要将一些自己需要的属性保存在会话中，我们建议使用 CookieStorage 来保存：
 
 ```php
@@ -254,7 +263,7 @@ $app->add(new SlimEngine());
 
 
 {% block custom_runtime %}
-PHP 云引擎暂不支持其它版本。
+PHP 云引擎目前只提供了 5.5 版本。
 {% endblock %}
 
 {% block get_env %}

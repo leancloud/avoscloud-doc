@@ -16,34 +16,56 @@ LeanCloud 开发者文档
 
 ## 贡献
 
-我们欢迎所有用户为我们贡献或者修正错误，LeanCloud 衷心感谢您的贡献。
+我们欢迎所有用户提交 PR 或 issue 为我们贡献或者修正错误，LeanCloud 衷心感谢您的贡献。
 
-可以按照以下步骤贡献：
+**贡献方法及注意事项**：
 
 - `fork` 这个项目
 - `npm install` 安装相关依赖
 - 执行 `grunt server` 可以本地预览
 - 修改 `/views` 目录中的文档
-  - `/views` 中是模板文件，会被编译为 `/md` 目录中对应的文档文件
-  - 如果 `/views` 中没有相应文档，可以直接修改 `/md` 目录中对应的文档（历史遗留问题）
-  - 相关图片放在 `/images` 目录中
-  - 模板是支持嵌套的，如 views 中 a.md 是可以被嵌套在 a.tmpl 中的，具体阅读下面关于模板的文档
+  - `/views` 中是模板文件，会被编译为 `/md` 目录中对应的文档文件。
+  - 模板支持嵌套，如 `/views` 中 `a.md` 是可以被嵌套在 `a.tmpl` 中，方法参见下文 [一套模板多份渲染]（#一套模板多份渲染）。
+  - 相关图片放在 `/images` 目录中，引用格式为 `![图片文字说明](images/livekit-gifts.png)`。
+  - 由于文档会经过 Nunjucks 和 AngularJS 渲染，当文档中需要显示 `{{content}}` 这种格式时，需要：
+    - 在文档开头增加 `{% set content = '{{content}}'  %}`，如果没有声明 Nunjucks 会将其渲染为空白。
+    - 在正文中加上 `<span ng-non-bindable>{{content}}</span>`，避免被 AngularJS 渲染。
+- 新增一个文档
+  - 命名使用中划线和小写字母，如 `livekit-android.md`、`quick-start-ios.md`。
+  - 如需要，更新文档首页 `templates/pages/index.html` 和顶部导航菜单 `templates/include/header.html`。
+- 修改文中标题或文件名称
+  - 确认要修改的标题 h1-h6 或文件名称有没有被 `/views` 和 `/templates` 目录下任何文件所引用，以免产生断链。
+  - 系统自动生成的 h1-h6 标题的 id，会将所有空格、中西文标点替换为下划线，如 `## 调用 Console.log()` 会生成  `<h2  id="调用_Console_log__">`，在引用时需要留意，包括大小写。  
 - 提交修改并发起 `Pull Request`
 
-项目的目录结构说明如下：
+## 内部贡献
+
+为避免在所提交 PR 中出现与修改内容无关的 Merge pull request 的 commits，推荐使用以下流程提交 PR：
+
+1. 本地切换到 master 分支
+1. rebase
+1. 新建分支 new branch 进行修改
+1. 提交 PR，如有相关的 issue 在注释中增加 `Fixes #???`。问号为 issue 的编号。
+
+合并 PR 时，如果 commits 历史不重要，可以选择 Squash and Merge 来合并，合并后删除相关的分支。
+
+PR 合并后，要让改动最终生效还需要通过 Jenkins 执行 `cn-avoscloud-docs-prod-ucloud` 任务进行发布。
+
+
+## 目录结构
 
 ```
 ├── README.md                          // 说明文档
 ├── archive                            // 已下线存档的文档，请勿更新
 ├── custom                             // 文档页面样式及 JavaScript 代码
 ├── images                             // 文档中引用的所有图片
-├── md                                 // Markdown 格式的全部文档（部分是通过 views 目录中的模板编译生成）
+├── md                                 // 临时目录（文档均为自动生成，因为不要修改）
 ├── dist                               // 编译之后生成的文件将会在此目录下
 ├── private                            // 未完成、未发布的文档临时保存在这里，以便让重建全站文档索引的系统任务忽略这些文件
 ├── react                              // 文档评论功能所需要用的 React 组件
 ├── server_public                      // 文档评论功能所需要用的 React 组件
-├── templates                          // 文档网站的页面模板
-├── views                              // Markdown 格式文档的模板文件，使用时会被编译到 md 目录中
+├── templates                          // 文档网站的 HTML 页面模板
+├── views                              // Markdown 格式文档的模板文件和源文件，使用时会被编译到 md 目录中
 ├── app.coffee
 ├── app.json
 ├── CHANGELOG.md                       // changelog 记录
@@ -162,23 +184,6 @@ $ grunt server
 
 有问题请与 <wchen@leancloud.rocks> 联系。
 
-## 注意事项
+## License
 
-* 所有 `.md` 格式文档需要更新到 `/md` 目录下
-* 更新文档只需要修改或创建相应的 `.md` 文件，然后提交 Pull Request 即可
-* 由于文档会采用 AngularJS 渲染，当文档中需要显示 `{{content}}` 这种格式时，外面需要加上 `<span ng-non-bindable></span>`，以不被 AngularJS 渲染
-* 图片资源放在当前 repo 的 `/images` 文件夹下，引用方式类似
-  ```
-![image](images/cloud_code_menu.png)
-  ```
-* 当增加一个全新的文档，需要更新文档首页 `templates/pages/index.html`，顶部菜单 `templates/include/header.html`
-
-
-## LeanCloud 内部员工发布新文档
-
-* 自己修改的文档，自己负责检查和发布
-* 通过 Jenkins 执行 `cn-avoscloud-docs-prod-ucloud` 任务发布即可
-
-## 协议
-
-[LGPL-3.0](https://www.gnu.org/licenses/lgpl.html)
+LGPL-3.0

@@ -587,7 +587,7 @@
     AVQuery<AVObject> query = new AVQuery<>("Todo");
     query.whereNotContainedIn("title", Arrays.asList("出差", "休假"));
     // 标题不是「出差」和「休假」的 Todo 对象列表
-    List<AVObject> todos = query.find(); 
+    List<AVObject> todos = query.find();
 ```
 {% endblock %}
 
@@ -1219,6 +1219,90 @@ MyUser cloudUser = AVUser.logIn(username, password,
 ```
 
 <div class="callout callout-info">由于 fastjson 内部的 bug，请在定义 AVUser 时<u>不要定义</u>跟 AVRelation 相关的 `get` 方法。如果一定要定义的话，请通过在 Class 上添加 `@JSONType(ignores = {"属性名"})` 的方式，将其注释为非序列化字段。</div>
+
+## 推送消息
+可以通过 AVPush 类，在 JavaSDK 中给客户端推送消息。
+
+### 推送给所有的设备
+
+```java
+AVPush push = new AVPush();
+JSONObject object = new JSONObject();
+object.put("alert", "这是向 Android 设备直接推送的消息");
+push.setPushToAndroid(true);
+push.setData(object);
+push.sendInBackground(new SendCallback() {
+    @Override
+    public void done(AVException e) {
+        if (e == null) {
+            // push successfully.
+        } else {
+            // something wrong.
+        }
+    });
+```
+
+### 发送给特定的用户
+
+发送给「public」频道的用户：
+
+```java
+AVQuery pushQuery = new AVQuery("_Installation");
+pushQuery.whereEqualTo("channels", "public");
+AVPush push = new AVPush();
+push.setQuery(pushQuery);
+push.setMessage("这是发给频道的消息.");
+push.setPushToAndroid(true);
+push.sendInBackground(new SendCallback() {
+    @Override
+    public void done(AVException e) {
+        if (e == null) {
+
+        }   else {
+
+        }
+    }
+});
+```
+
+发送给某个 Installation id 的用户，通常来说，你会通过 `_Installation` 关联到设备的登录用户 AVUser 上作为一个属性，然后就可以通过下列代码查询 InstallationId 的方式来发送消息给特定用户，实现类似私信的功能：
+
+```java
+AVQuery pushQuery = new AVQuery("_Installation");
+// 假设 THE_INSTALLATION_ID 是保存在用户表里的 installationId，
+// 可以在应用启动的时候获取并保存到用户表
+pushQuery.whereEqualTo("installationId", THE_INSTALLATION_ID);
+AVPush.sendMessageInBackground("这是发给指定 installation id 的消息",  pushQuery, new SendCallback() {
+    @Override
+    public void done(AVException e) {
+
+    }
+});
+```
+
+在 2.6.7 以后，我们加入了通过 CQL 来筛选推送目标，代码如下：
+
+```java
+    AVPush push = new AVPush();
+    JSONObject data =
+        new JSONObject(
+            "{\"action\": \"com.avos.UPDATE_STATUS\", \"name\": \"Vaughn\", \"newsItem\": \"Man bites dog\"  }");
+    push.setData(data);
+    // 假设 THE_INSTALLATION_ID 是保存在用户表里的 installationId，
+    // 可以在应用启动的时候获取并保存到用户表
+    push.setCloudQuery("select * from _Installation where installationId ='" + THE_INSTALLATION_ID
+        + "'");
+    push.sendInBackground(new SendCallback() {
+
+      @Override
+      public void done(AVException e) {
+
+      }
+    });
+```
+
+<div class="callout callout-info">CQL 与 AVQuery 同时只能设置一个，并且 `setPushTarget` 类函数（`setPushToAndroid` / `setPushToIOS` / `setPushToWindowsPhone`）只能与 AVQuery 一起使用。在设置 CQL 时，只能在 CQL 语句中设定目标机器的类型。</div>
+
 {% endblock %}
 
 {% block link_to_in_app_search_doc %}

@@ -96,13 +96,10 @@ AVCloud.callFunctionInBackground("averageStars", dicParameters, new FunctionCall
 var paramsJson = {
   movie: "夏洛特烦恼"
 };
-AV.Cloud.run('averageStars', paramsJson, {
-  success: function(data) {
-    // 调用成功，得到成功的应答 data
-  },
-  error: function(err) {
-    // 处理调用失败
-  }
+AV.Cloud.run('averageStars', paramsJson).then(function(data) {
+  // 调用成功，得到成功的应答 data
+}, function(err) {
+  // 处理调用失败
 });
 ```
 ```php
@@ -170,6 +167,18 @@ AVCloud.rpcFunctionInBackground("averageStars", movie,
 ```
 ```php
 // PHP 有待支持
+```
+```javascript
+// 假设已经有一个类型为 AV.Object 的 movie 对象
+var movie = new AV.Object('Movie');
+movie.set('title', '夏洛特烦恼');
+movie.save().then(/* ... */);
+
+AV.Cloud.rpc('averageStars', movie).then(function(object) {
+  // 成功，如果云函数返回的是一个 AV.Object，回调参数中的 object 也会是一个 AV.Object
+}, function(error) {
+  // 失败        
+});
 ```
 
 ### 切换云引擎环境
@@ -280,13 +289,47 @@ Hook 函数本质上是云函数，但它有固定的名称，定义之后会**�
 
 ### 实时通信 Hook 函数
 
-请阅读 [实时通信概览 &middot; 云引擎 Hook](realtime_v2.html#云引擎_Hook) 来了解以下函数的具体用法：
+请阅读 [实时通信概览 &middot; 云引擎 Hook](realtime_v2.html#云引擎_Hook) 来了解以下函数的相关参数和用法。
 
-- `_messageReceived`
-- `_receiversOffline`
-- `_conversationStart`
-- `_conversationAdd`
-- `_conversationRemove`
+#### {{hook_message_received}}
+在消息达到服务器、群组成员已解析完成、发送给收件人之前触发。例如，提前过滤掉聊天内容中的一些广告类的关键词：
+
+{% block code_hook_message_received %}{% endblock %}
+
+#### {{hook_receiver_offline}}
+在消息发送完成时触发、对话中某些用户却已经下线，此时可以根据发送的消息来生成离线消息推送的标题等等。例如截取所发送消息的前 6 个字符作为推送的标题：
+
+{% block code_hook_receiver_offline %}{% endblock %}
+
+#### {{hook_message_sent}}
+消息发送完成之后触发，例如消息发送完后，在云引擎中打印一下日志：
+
+{% block code_hook_message_sent %}{% endblock %}
+
+#### {{hook_conversation_start}}
+创建对话，在签名校验（如果开启）之后、实际创建之前触发。例如对话创建时，在云引擎中打印一下日志：
+
+{% block code_hook_conversation_start %}{% endblock %}
+
+#### {{hook_conversation_started}}
+创建对话完成触发。例如对话创建之后，在云引擎打印一下日志：
+
+{% block code_hook_conversation_started %}{% endblock %}
+
+#### {{hook_conversation_add}}
+向对话添加成员，在签名校验（如果开启）之后、实际加入之前，包括主动加入和被其他用户加入两种情况都会触发，**注意在创建对话时传入了其他用户的 Client Id 作为 Member 参数，不会触发 {{hook_conversation_add}} **。例如在云引擎中打印成员加入时的日志：
+
+{% block code_hook_conversation_add %}{% endblock %}
+
+#### {{hook_conversation_remove}}
+从对话中踢出成员，在签名校验（如果开启）之后、实际踢出之前触发，用户自己退出对话不会触发。例如在踢出某一个成员时，在云引擎日志中打印出该成员的 Client Id：
+
+{% block code_hook_conversation_remove %}{% endblock %}
+
+#### {{hook_conversation_update}}
+修改对话属性、设置或取消对话消息提醒，在实际修改之前触发。例如在更新发生时，在云引擎日志中打印出对话的名称：
+
+{% block code_hook_conversation_update %}{% endblock %}
 
 {% block hookDeadLoop %}
 {% endblock %}

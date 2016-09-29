@@ -15,6 +15,13 @@ module.exports = function(grunt) {
 
   require("time-grunt")(grunt);
 
+  var hostMap = {
+    'us': 'us-api.leancloud.cn',
+    'cn': 'api.leancloud.cn',
+    'qcloud': 'tab.leancloud.cn'
+  }
+  console.log('current theme --- '+grunt.option('theme'))
+
   // Project configuration.
   grunt.initConfig({
 
@@ -236,7 +243,8 @@ module.exports = function(grunt) {
             node: grunt.option('theme'),
             appid: '{{appid}}',
             appkey: '{{appkey}}',
-            masterkey: '{{masterkey}}'
+            masterkey: '{{masterkey}}',
+            host: hostMap[grunt.option('theme')] || 'api.leancloud.cn'
           }
         }
       }

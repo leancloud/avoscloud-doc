@@ -1,5 +1,5 @@
 {% extends "./sdk_setup.tmpl" %}
-
+{% set maven_uri = "http://mvn.leancloud.cn/nexus/content/repositories/public" %}
 {% block language %}Android{% endblock %}
 
 {% block libs_tool_automatic %}
@@ -32,7 +32,7 @@ buildscript {
         jcenter()
         //这里是 LeanCloud 的包仓库
         maven {
-            url "http://mvn.leancloud.cn/nexus/content/repositories/releases"
+            url "{{maven_uri}}"
         }
 
     }
@@ -46,7 +46,7 @@ allprojects {
         jcenter()
         //这里是 LeanCloud 的包仓库
         maven {
-            url "http://mvn.leancloud.cn/nexus/content/repositories/releases"
+            url "{{maven_uri}}"
         }
     }
 }

@@ -970,6 +970,14 @@ for todo in query_list:
 ```
 {% endblock %}
 
+{% block code_query_select_pointer_keys %}
+
+```python
+query.select('owner.username')
+```
+
+{% endblock %}
+
 {% block code_query_orderby %}
 ```python
 # 按时间，升序排列

@@ -16,7 +16,6 @@ npm-debug.log
 # use template
 # ------------
 md/*.md
-!md/pay-beecloud.md
 md/start/*.md
 
 views/test.md

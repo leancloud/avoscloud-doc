@@ -240,12 +240,9 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 
 对离线的 iOS 和 Windows Phone 用户，每次有离线消息时，我们会触发一个对应平台的推送通知。
 
-这部分平台的用户，在完成登录时，SDK 会自动关联当前的 Client ID 和设备。关联的方式是通过设备**订阅**名为 Client ID 的 Channel 实现的。开发者可以在数据存储
-的 `_Installation` 表中的 `channels` 字段查到这组关联关系。在实际离线推送时，系统根据用户 Client ID 找到对应的关联设备进行推送。
+这部分平台的用户，在完成登录时，SDK 会自动关联当前的 Client ID 和设备。关联的方式是通过设备**订阅**名为 Client ID 的 Channel 实现的。开发者可以在数据存储的 `_Installation` 表中的 `channels` 字段查到这组关联关系。在实际离线推送时，系统根据用户 Client ID 找到对应的关联设备进行推送。由于实时通信触发的推送量比较大，内容单一， 所以云端不会保留这部分记录，在 **控制台 > 消息 > 推送记录** 中也无法找到这些记录。您有三种方式自定义推送的内容：
 
-另外，由于实时通信触发的推送量比较大，内容单一，这部分记录不会保存到消息菜单的推送记录。
-
-##### 静态内容
+##### 静态内容方式
 
 由于不同平台的不同限制，且用户的消息正文可能还包含上层协议，所以我们允许用户在控制台中为应用设置一个静态的 APNs JSON，推送一条内容固定的通知。
 
@@ -265,9 +262,15 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 
 此外，您还可以设置声音等推送属性，具体的字段可以参考[推送 &middot; 消息内容 Data](./push_guide.html#消息内容_Data)。
 
-##### 动态内容
+##### 动态内容方式
 
 如果希望推送通知显示动态内容，比如消息的实际内容，或根据消息内容、对话信息等上下文信息来自定义内容，则需要通过 [云引擎 Hook `_receiversOffline`](#_receiversOffline) 来实现。
+
+##### 消息附件方式
+
+您可以在使用 SDK 发送消息时，通过 SDK 的 API 设置这条消息可能产生的推送内容。
+
+当同时使用以上多种方式的时候，设置的优先级为“动态内容方式” > “消息附件方式” > “静态内容方式”。
 
 ##### 其他设置
 
@@ -702,6 +705,7 @@ data | 消息内容
 ## 限制
 
 * 对于客户端主动发起的操作会按照操作类型限制其频率。发消息操作限制为 **每分钟 60 次**，历史消息查询操作限制为 **每分钟 120 次**，其它类型操作包括加入对话、离开对话、登录服务、退出服务等均限制为 **每分钟 30 次**。当调用超过限制时，云端会丢弃超出的消息。
+* 应用全局发送消息的速度默认为每分钟 3 万次，如果您的应用场景可能超过此限制，请[联系我们](/help.html)。
 * 客户端发送的单条消息大小不得超过 5 KB。
 * 目前单个普通对话的成员上限为 500 个，如果您通过数据存储 API 向 m 字段加入了超过 500 个 id，我们只会使用其中的前 500 个。
 * 请不要使用相同的 id 在大量设备上同时登录，如果系统检测到某个 id 同时在超过 5 个不同的 IP 上登录，会认为此 id 是重复使用的 id，之后此 id 当日的每次登录会按照 `id + IP` 的组合作为计费的独立用户。
@@ -725,6 +729,11 @@ data | 消息内容
 `4108`|`LOGIN_TIMEOUT`|登录超时，连接后长时间没有完成 session open。通常是登录被拒绝等原因，出现此问题可能是使用方式有误，可以 [创建工单](https://leanticket.cn/t/leancloud)，由我们技术顾问来给出建议。
 `4109`|`FRAME_TOO_LONG`|包过长。消息大小超过 5 KB，请缩短消息或者拆分消息。
 `4110`|`INVALID_ORIGIN`|设置安全域名后，当前登录的域名与安全域名不符合。
+`4111`|`SESSION_CONFLICT`|设置单设备登录后，客户端被其他设备挤下线。
+`4113`|`APP_QUOTA_EXCEEDED`|应用容量超限，当天登录用户数已经超过应用设定的最大值。
+`4114`|`UNPARSEABLE_RAW_MESSAGE`|客户端发送的序列化数据服务器端无法解析。
+`4115`|`KICKED_BY_APP`|客户端被 REST API 管理接口强制下线。
+`4116`|`MESSAGE_SENT_QUOTA_EXCEEDED`|应用单位时间内发送消息量超过限制，消息被拒绝。
 `4200`|`INTERNAL_ERROR`|服务器内部错误，如果反复出现请收集相关线索并 [创建工单](https://leanticket.cn/t/leancloud)，我们会尽快解决。
 `4201`|`SEND_MESSAGE_TIMEOUT`|通过 API 发送消息超时
 `4301`|`CONVERSATION_API_FAILED`|上游 API 调用异常，请查看报错信息了解错误详情
@@ -740,6 +749,9 @@ data | 消息内容
 `4311`|`CONVERSATION_LOG_FAILED`|拉取对话消息记录失败，常见与超时的情况
 `4312`|`CONVERSATION_LOG_REJECTED`|拉取对话消息记录被拒绝，当前用户不在对话中
 `4313`|`SYSTEM_CONVERSATION_REQUIRED`|该功能仅对系统对话有效
+`4314`|`NORMAL_CONVERSATION_REQUIRED`|该功能仅对普通对话有效
+`4315`|`CONVERSATION_BLACKLISTED`|当前用户被加入此对话的黑名单，无法发送消息
+`4316`|`TRANSIENT_CONVERSATION_REQUIRED`|该功能仅对暂态对话有效
 `4401`|`INVALID_MESSAGING_TARGET`|发送消息的对话不存在，或当前用户不在对话中
 `4402`|`MESSAGE_REJECTED_BY_APP`|发送的消息被应用的云引擎 Hook 拒绝
 

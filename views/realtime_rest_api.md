@@ -1,13 +1,6 @@
 # 实时通信 REST API 使用指南
 
-## API 域名
 
-所有 API 访问都通过 HTTPS 进行。API 访问域名为：
-
-- **中国节点**：<https://api.leancloud.cn>
-- **美国节点**：<https://us-api.leancloud.cn>
-
-域名之后衔接 API 版本号，如 `/1.1/`，代表正在使用 1.1 版的 API。
 
 ## 请求格式
 对于 POST 和 PUT 请求，请求的主体必须是 JSON 格式，而且 HTTP Header 的 Content-Type 需要设置为 `application/json`。
@@ -33,7 +26,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"name":"My Private Room","m": ["BillGates", "SteveJobs"]}' \
-  https://api.leancloud.cn/1.1/classes/_Conversation
+  https://{{host}}/1.1/classes/_Conversation
 ```
 
 上面的例子会创建一个最简单的对话，包括两个 client ID 为 BillGates 和 SteveJobs 的初始成员。对话创建成功会返回 objectId，即实时通信中的对话 ID，客户端就可以通过这个 ID 发送消息了。
@@ -46,7 +39,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"name": "OpenConf","tr": true}' \
-  https://api.leancloud.cn/1.1/classes/_Conversation
+  https://{{host}}/1.1/classes/_Conversation
 ```
 
 系统对话通常也需要通过 REST API 预先创建，创建时需要设置关键的 `sys` 属性：
@@ -57,7 +50,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"name": "Notification Channel","sys": true}' \
-  https://api.leancloud.cn/1.1/classes/_Conversation
+  https://{{host}}/1.1/classes/_Conversation
 ```
 
 ### 增删普通对话成员
@@ -72,7 +65,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"m": {"__op":"AddUnique","objects":["LarryPage"]}}' \
-  https://api.leancloud.cn/1.1/classes/_Conversation/5552c0c6e4b0846760927d5a
+  https://{{host}}/1.1/classes/_Conversation/5552c0c6e4b0846760927d5a
 ```
 
 将不再活跃的 SteveJobs 清除出对话（以对话 id 5552c0c6e4b0846760927d5a 为例）：
@@ -83,7 +76,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"m": {"__op":"Remove","objects":["SteveJobs"]}}' \
-  https://api.leancloud.cn/1.1/classes/_Conversation/5552c0c6e4b0846760927d5a
+  https://{{host}}/1.1/classes/_Conversation/5552c0c6e4b0846760927d5a
 ```
 
 对 `_Conversation` 表的查询等其他操作与普通表完全一致，可以参考 [REST API - 查询](./rest_api.html#查询) 的相应说明，这里不再赘述。
@@ -157,7 +150,7 @@ appid:peerid:convid:nonce:signature_ts
 --- | ---
 conv-id | 用于查询的对话 id
 from | 消息来自 id
-data | 消息内容
+data | 消息内容，字符串形式的 JSON，格式请参考 [富媒体消息格式](realtime_rest_api.html#富媒体消息格式说明)。
 timestamp | 消息到达服务器的 Unix 时间戳（毫秒）
 msg-id | 消息 id
 is-conv | 是否是 v2 中对话模型的消息
@@ -331,6 +324,31 @@ Push 的格式与[推送 REST API 消息内容](push_guide.html#消息内容_Dat
    "badge": "Increment",
    "_profile": "dev"
 }
+```
+
+### 删除系统对话广播消息
+
+调用此 API 将删除已发布的广播消息。
+
+``sh
+curl -X DETELE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'mid=message-id' \
+  https://leancloud.cn/1.1/rtm/broadcast
+```
+
+参数 | 说明
+--- | ---
+mid | 要删除的消息 id，字符串
+
+返回：
+
+空 JSON 对象。
+
+```json
+{}
 ```
 
 ### 富媒体消息格式说明
@@ -597,6 +615,33 @@ curl -X POST \
 client_id | 要禁言的 id，字符串
 conv_id | 禁言的对话，字符串
 ttl | 禁言的时间，秒数，最长 24 小时
+
+返回：
+
+空 JSON 对象。
+
+```json
+{}
+```
+
+## 解除禁言
+
+使用这个 API 可以在禁言期限到期之前，解除被禁言的 Client ID。
+
+```sh
+curl -X DETELE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'conv_id=some-conv-id' \
+  --data-urlencode 'client_id=some-client-id' \
+  https://leancloud.cn/1.1/rtm/conversation/blacklist
+```
+
+参数 | 说明
+--- | ---
+client_id | 要解除禁言的 id，字符串
+conv_id | 禁言的对话，字符串
 
 返回：
 

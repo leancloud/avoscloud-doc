@@ -115,7 +115,7 @@ AV.Cloud.define('hello', function(request, response) {
   response.success('Hello world!');
 });
 ```
-  
+
 这段代码定义了一个名为 `hello` 的函数，它简单的返回应答 `Hello world!`。
 
 * config 目录下是项目的配置文件 `global.json`，包含了 appId 和 appKey 等项目信息。
@@ -183,17 +183,14 @@ $ avoscloud
 AV.Cloud.define('averageStars', function(request, response) {
   var query = new AV.Query('Review');
   query.equalTo('movie', request.params.movie);
-  query.find({
-    success: function(results) {
-      var sum = 0;
-      for (var i = 0; i < results.length; ++i) {
-        sum += results[i].get('stars');
-      }
-      response.success(sum / results.length);
-    },
-    error: function() {
-      response.error('movie lookup failed');
+  query.find().then(function(results) {
+    var sum = 0;
+    for (var i = 0; i < results.length; ++i) {
+      sum += results[i].get('stars');
     }
+    response.success(sum / results.length);
+  }, function() {
+    response.error('movie lookup failed');
   });
 });
 ```
@@ -216,13 +213,10 @@ AV.Cloud.define('averageStars', function(request, response) {
 
 {% block runFuncExample %}
 ```javascript
-AV.Cloud.run('hello', {name: 'dennis'}, {
-  success: function(data){
-      //调用成功，得到成功的应答data
-  },
-  error: function(err){
-      //处理调用失败
-  }
+AV.Cloud.run('hello', {name: 'dennis'}).then(function(data){
+  //调用成功，得到成功的应答data
+}, function(err){
+  //处理调用失败
 });
 ```
 {% endblock %}
@@ -242,7 +236,7 @@ AV.Cloud.beforeSave('Review', function(request, response) {
     response.success();
   } else {
     // 不保存数据，并返回错误
-    response.error('No comment!');    
+    response.error('No comment!');
   }
 });
 ```
@@ -252,14 +246,11 @@ AV.Cloud.beforeSave('Review', function(request, response) {
 ```javascript
 AV.Cloud.afterSave('Comment', function(request) {
   var query = new AV.Query('Post');
-  query.get(request.object.get('post').id, {
-    success: function(post) {
-      post.increment('comments');
-      post.save();
-    },
-    error: function(error) {
-      throw 'Got an error ' + error.code + ' : ' + error.message;
-    }
+  query.get(request.object.get('post').id).then(function(post) {
+    post.increment('comments');
+    post.save();
+  }, function(error) {
+    throw 'Got an error ' + error.code + ' : ' + error.message;
   });
 });
 ```
@@ -271,14 +262,11 @@ AV.Cloud.afterSave('_User', function(request) {
   //输出信息请到「应用控制台 / 存储 / 云引擎 / 日志」中查看
   console.log(request.object);
   request.object.set('from','LeanCloud');
-  request.object.save(null,{success:function(user)
-    {
-      console.log('ok!');
-    },error:function(user,error)
-    {
-      console.log('error',error);
-    }
-    });
+  request.object.save().then(function(user) {
+    console.log('ok!');
+  }, function(user, error) {
+    console.log('error', error);
+  });
 });
 ```
 {% endblock %}
@@ -302,19 +290,16 @@ AV.Cloud.beforeDelete('Album', function(request, response) {
   var query = new AV.Query('Photo');
   var album = AV.Object.createWithoutData('Album', request.object.id);
   query.equalTo('album', album);
-  query.count({
-    success: function(count) {
-      if (count > 0) {
-        //还有照片，不能删除，调用error方法
-        response.error('Can\'t delete album if it still has photos.');
-      } else {
-        //没有照片，可以删除，调用success方法
-        response.success();
-      }
-    },
-    error: function(error) {
-      response.error('Error ' + error.code + ' : ' + error.message + ' when getting photo count.');
+  query.count().then(function(count) {
+    if (count > 0) {
+      //还有照片，不能删除，调用error方法
+      response.error('Can\'t delete album if it still has photos.');
+    } else {
+      //没有照片，可以删除，调用success方法
+      response.success();
     }
+  }, function(error) {
+    response.error('Error ' + error.code + ' : ' + error.message + ' when getting photo count.');
   });
 });
 ```
@@ -326,14 +311,11 @@ AV.Cloud.afterDelete('Album', function(request) {
   var query = new AV.Query('Photo');
   var album = AV.Object.createWithoutData('Album', request.object.id);
   query.equalTo('album', album);
-  query.find({
-    success: function(posts) {
+  query.find().then(function(posts) {
     //查询本相册的照片，遍历删除
     AV.Object.destroyAll(posts);
-    },
-    error: function(error) {
-      console.error('Error finding related comments ' + error.code + ': ' + error.message);
-    }
+  }, function(error) {
+    console.error('Error finding related comments ' + error.code + ': ' + error.message);
   });
 });
 ```
@@ -390,17 +372,15 @@ AV.Cloud.define('customErrorCode', function(req, res) {
 
 ```javascript
 AV.Cloud.httpRequest({
-  url: 'http://www.google.com/',
-  success: function(httpResponse) {
-    console.log(httpResponse.text);
-  },
-  error: function(httpResponse) {
-    console.error('Request failed with response code ' + httpResponse.status);
-  }
+  url: 'http://www.google.com/'
+}).then(function(httpResponse) {
+
+  // 返回的 HTTP 状态码是成功的状态码（例如 200、201 等 2xx）时会被调用
+  console.log(httpResponse.text);
+}, function(httpResponse) {
+  console.error('Request failed with response code ' + httpResponse.status);
 });
 ```
-
-当返回的 HTTP 状态码是成功的状态码（例如 200、201等），则 `success` 函数会被调用，反之  `error` 函数将被调用。
 
 ### 查询参数
 
@@ -411,13 +391,11 @@ AV.Cloud.httpRequest({
   url: 'http://www.google.com/search',
   params: {
     q : 'Sean Plott'
-  },
-  success: function(httpResponse) {
-    console.log(httpResponse.text);
-  },
-  error: function(httpResponse) {
-    console.error('Request failed with response code ' + httpResponse.status);
   }
+}).then(function(httpResponse) {
+  console.log(httpResponse.text);
+}, function(httpResponse) {
+  console.error('Request failed with response code ' + httpResponse.status);
 });
 ```
 
@@ -427,12 +405,10 @@ AV.Cloud.httpRequest({
 AV.Cloud.httpRequest({
   url: 'http://www.google.com/search',
   params: 'q=Sean Plott',
-  success: function(httpResponse) {
-    console.log(httpResponse.text);
-  },
-  error: function(httpResponse) {
-    console.error('Request failed with response code ' + httpResponse.status);
-  }
+}).then(function(httpResponse) {
+  console.log(httpResponse.text);
+}, function(httpResponse) {
+  console.error('Request failed with response code ' + httpResponse.status);
 });
 ```
 
@@ -445,13 +421,11 @@ AV.Cloud.httpRequest({
   url: 'http://www.example.com/',
   headers: {
     'Content-Type': 'application/json'
-  },
-  success: function(httpResponse) {
-    console.log(httpResponse.text);
-  },
-  error: function(httpResponse) {
-    console.error('Request failed with response code ' + httpResponse.status);
   }
+}).then(function(httpResponse) {
+  console.log(httpResponse.text);
+}, function(httpResponse) {
+  console.error('Request failed with response code ' + httpResponse.status);
 });
 ```
 
@@ -465,13 +439,11 @@ AV.Cloud.httpRequest({
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json'
-  },
-  success: function(httpResponse) {
-    console.log(httpResponse.text);
-  },
-  error: function(httpResponse) {
-    console.error('Request failed with response code ' + httpResponse.status);
   }
+}).then(function(httpResponse) {
+  console.log(httpResponse.text);
+}, function(httpResponse) {
+  console.error('Request failed with response code ' + httpResponse.status);
 });
 ```
 
@@ -486,13 +458,11 @@ AV.Cloud.httpRequest({
   body: {
     title: 'Vote for Pedro',
     body: 'If you vote for Pedro, your wildest dreams will come true'
-  },
-  success: function(httpResponse) {
-    console.log(httpResponse.text);
-  },
-  error: function(httpResponse) {
-    console.error('Request failed with response code ' + httpResponse.status);
   }
+}).then(function(httpResponse) {
+  console.log(httpResponse.text);
+}, function(httpResponse) {
+  console.error('Request failed with response code ' + httpResponse.status);
 });
 ```
 
@@ -508,13 +478,11 @@ AV.Cloud.httpRequest({
   body: {
     title: 'Vote for Pedro',
     body: 'If you vote for Pedro, your wildest dreams will come true'
-  },
-  success: function(httpResponse) {
-    console.log(httpResponse.text);
-  },
-  error: function(httpResponse) {
-    console.error('Request failed with response code ' + httpResponse.status);
   }
+}).then(function(httpResponse) {
+  console.log(httpResponse.text);
+},function(httpResponse) {
+  console.error('Request failed with response code ' + httpResponse.status);
 });
 ```
 

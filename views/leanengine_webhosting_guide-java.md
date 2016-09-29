@@ -6,6 +6,7 @@
 {% set leanengine_middleware = "[LeanEngine Java SDK](https://github.com/leancloud/leanengine-java-sdk)" %}
 
 {% block project_constraint %}
+你的项目需要遵循一定格式才会被云引擎识别并运行。
 
 {{fullName}} 项目必须有 `$PROJECT_DIR/pom.xml` 文件，该文件为整个项目的配置文件。
 
@@ -118,14 +119,14 @@ Java 云引擎只支持 1.8 运行环境和 war 包运行
 		<repository>
 			<id>leancloud</id>
 			<name>LeanCloud</name>
-			<url>http://mvn.leancloud.cn/nexus/content/repositories/</url>
+			<url>http://mvn.leancloud.cn/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
-       <dependencies>
+	<dependencies>
 		<dependency>
 			<groupId>cn.leancloud</groupId>
 			<artifactId>leanengine</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>[0.1.6,0.2.0)</version>
 		</dependency>
 	</dependencies>
 ```
@@ -133,19 +134,22 @@ Java 云引擎只支持 1.8 运行环境和 war 包运行
 * 初始化：在正式使用数据存储之前，你需要使用自己的应用 key 进行初始化中间件：
 
 ```java
-var AV = require('leanengine');
+import com.avos.avoscloud.internal.impl.JavaRequestSignImplementation;
+import cn.leancloud.LeanEngine;
 
-AVOSCloud.initialize(System.getenv("LEANCLOUD_APP_ID"), // 你的 app id
-                                  System.getenv("LEANCLOUD_APP_KEY"), // 你的 app key
-                                  System.getenv("LEANCLOUD_APP_MASTER_KEY") // 你的 master key
-);
+String appId = System.getenv("LEANCLOUD_APP_ID");
+String appKey = System.getenv("LEANCLOUD_APP_KEY");
+String appMasterKey = System.getenv("LEANCLOUD_APP_MASTER_KEY");
+LeanEngine.initialize(appId, appKey, appMasterKey);
 
 // 如果不希望使用 masterKey 权限，可以将下面一行删除
-    EngineRequestSign.instance().setUserMasterKey(true);
+JavaRequestSignImplementation.instance().setUseMasterKey(true);
 ```
 {% endblock %}
 
 {% block custom_api_random_string %}
+{{productName}} 允许开发者自定义基于 HTTP（HTTPS） 的 API。
+例如，开发者如果想实现一个获取服务端时间的 API，可以在代码中如下做：
 
 新建一个类 TimeServlet 继承 HttpServlet :
 
@@ -164,6 +168,14 @@ public class TimeServlet extends HttpServlet {
 }
 
 ```
+
+然后打开浏览器，访问 <http://localhost:3000/time>，浏览器应该会返回如下类似的内容：
+
+```json
+{"currentTime":"2016-02-01T09:43:26.223Z"}
+```
+
+部署到云端后，你可以通过 `http://{{var_app_domain}}.leanapp.cn/time` 来访问该 API。你的 iOS 或者 Android 的程序就可以构建一个 HTTP 请求获取服务端时间了。当然还是建议使用各 SDK 内置的获取服务器时间的 API，这里的例子只是演示。
 {% endblock %}
 
 {% block code_get_client_ip_address %}
@@ -223,9 +235,6 @@ public class UploadServlet extends HttpServlet {
 {% endblock %}
 
 {% block cookie_session %}
-
-### 处理用户登录和登出
-
 云引擎提供了一个 `EngineSessionCookie` 组件，用 Cookie 来维护用户（`AVUser`）的登录状态，要使用这个组件可以在初始化时添加下列代码：
 
 ```java

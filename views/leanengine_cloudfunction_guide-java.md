@@ -3,8 +3,8 @@
 {% set platformName = "Java" %}
 {% set productName = "LeanEngine" %}
 {% set storageName = "LeanStorage" %}
-{% set leanengine_middleware = "[LeanEngine ' + platformName + ' SDK](https://github.com/leancloud/leanengine-java-sdk)" %}
-{% set sdk_guide_link = "[' + platformName + ' SDK](./leanstorage_guide-' + platformName | lower + '.html)" %}
+{% set leanengine_middleware = "[LeanEngine Java SDK](https://github.com/leancloud/leanengine-java-sdk)" %}
+{% set sdk_guide_link = "[Java SDK](leanstorage_guide-java.html)" %}
 {% set cloud_func_file = "$PROJECT_DIR/src/main/java/cn/leancloud/demo/todo/Cloud.java" %}
 {% set runFuncName = "AVCloud.callFunction" %}
 {% set defineFuncName = "@EngineFunction 注解" %}
@@ -17,6 +17,14 @@
 {% set hook_after_delete = "afterDelete" %}
 {% set hook_on_verified = "onVerified" %}
 {% set hook_on_login = "onLogin" %}
+{% set hook_message_received = "_messageReceived" %}
+{% set hook_receiver_offline = "_receiversOffline" %}
+{% set hook_message_sent = "_messageSent" %}
+{% set hook_conversation_start = "_conversationStart" %}
+{% set hook_conversation_started = "_conversationStarted" %}
+{% set hook_conversation_add = "_conversationAdd" %}
+{% set hook_conversation_remove = "_conversationRemove" %}
+{% set hook_conversation_update = "_conversationUpdate" %}
 
 {% block cloudFuncExample %}
 
@@ -206,6 +214,146 @@ EngineRequestContext 则可以获取额外的一些 metaData 信息
     } else {
       return user;
     }
+  }
+```
+{% endblock %}
+{% block code_hook_message_received %}
+
+```java
+  @IMHook(type = IMHookType.messageReceived)
+  public static Map<String, Object> onMessageReceived(Map<String, Object> params) {
+    // 打印整个 Hook 函数的参数
+    System.out.println(params);
+    Map<String, Object> result = new HashMap<String, Object>();
+    // 获取消息内容
+    String content = (String)params.get("content");
+    // 转化成 Map 格式
+    Map<String,Object> contentMap = (Map<String,Object>)JSON.parse(content); 
+    // 读取文本内容
+    String text = (String)(contentMap.get("_lctext").toString());
+    // 过滤广告内容
+    String processedContent = text.replace("XX中介", "**");
+    // 将过滤之后的内容发还给服务端
+    result.put("content",processedContent);
+    return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_receiver_offline %}
+
+```java
+   @IMHook(type = IMHookType.receiversOffline)
+   public static Map<String, Object> onReceiversOffline(Map<String, Object> params) {
+     String alert = (String)params.get("content");
+     if(alert.length() > 6){
+       alert = alert.substring(0, 6);
+     }
+     System.out.println(alert);
+     Map<String, Object> result = new HashMap<String, Object>();
+     JSONObject object = new JSONObject();
+     object.put("badge", "Increment");
+     object.put("sound", "default");
+     object.put("_profile", "dev");
+     object.put("alert", alert);
+     result.put("pushMessage", object);
+     return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_conversation_start %}
+
+```java
+  @IMHook(type = IMHookType.conversationStart)
+  public static Map<String, Object> onConversationStart(Map<String, Object> params) {
+    System.out.println(params);
+    Map<String, Object> result = new HashMap<String, Object>();
+    // 如果创建者是 black 可以拒绝创建对话
+    if ("black".equals(params.get("initBy"))) {
+      result.put("reject", true);
+      // 这个数字是由开发者自定义的
+      result.put("code", 9890);
+    }
+    return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_conversation_started %}
+
+```java
+  @IMHook(type = IMHookType.conversationStarted)
+  public static Map<String, Object> onConversationStarted(Map<String, Object> params) throws Exception {
+    System.out.println(params);
+    Map<String, Object> result = new HashMap<String, Object>();
+    String convId = (String)params.get("convId");
+    System.out.println(convId);
+    return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_conversation_add %}
+
+```java
+  @IMHook(type = IMHookType.conversationAdd)
+  public static Map<String, Object> onConversationAdd(Map<String, Object> params) {
+    System.out.println(params);
+    String[] members = (String[])params.get("members");
+    Map<String, Object> result = new HashMap<String, Object>();
+    System.out.println("members");
+    System.out.println(members);
+    // 以下代码表示此次操作的发起人如果是 black 就拒绝此次操作，members 不会被加入到当前对话中
+    if ("black".equals(params.get("initBy"))) {
+      result.put("reject", true);
+      // 这个数字是由开发者自定义
+      result.put("code", 9890);
+    }
+    return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_conversation_remove %}
+
+```java
+  @IMHook(type = IMHookType.conversationRemove)
+  public static Map<String, Object> onConversationRemove(Map<String, Object> params) {
+    System.out.println(params);
+    String[] members = (String[])params.get("members");
+    Map<String, Object> result = new HashMap<String, Object>();
+    System.out.println("members");
+    // 以下代码表示此次操作的发起人如果是 black 就拒绝此次操作，members 不会被删除
+    if ("black".equals(params.get("initBy"))) {
+      result.put("reject", true);
+      // 这个数字是由开发者自定义
+      result.put("code", 9892);
+    }
+    return result;
+  }
+```
+{% endblock %}
+
+{% block code_hook_conversation_update %}
+
+```java
+  @IMHook(type = IMHookType.conversationUpdate)
+  public static Map<String, Object> onConversationUpdate(Map<String, Object> params) {
+    System.out.println(params);
+    Map<String, Object> result = new HashMap<String, Object>();
+    Map<String,Object> attr = (Map<String,Object>)params.get("attr");
+    System.out.println(attr);
+    //Map<String,Object> attrMap = (Map<String,Object>)JSON.parse(attr);
+    String name = (String)attr.get("name");
+    //System.out.println(attrMap);
+    System.out.println(name);
+    // 以下代码表示此次操作的发起人如果是 black 就拒绝此次操作，对话的属性不会被修改
+    if ("black".equals(params.get("initBy"))) {
+      result.put("reject", true);
+      result.put("code", 9893);
+    } 
+    return result;
   }
 ```
 {% endblock %}

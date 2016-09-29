@@ -35,11 +35,11 @@ https://ruby.taobao.org
 use_frameworks! # LeanCloud Swift SDK can only be integrated as framework.
 
 target '你的项目名称' do
-	pod 'LeanCloud', :git => 'git@github.com:leancloud/swift-sdk.git', :tag => '0.0.1.beta'
+	pod 'LeanCloud'
 end
 ```
 
-执行命令 `pod install --verbose` 安装 SDK。如果本地安装过最新版本的 SDK，则可执行 `pod install --verbose --no-repo-update` 来加快安装速度。
+执行命令 `pod install --verbose` 安装 SDK。
 
 {% endblock %}
 
@@ -52,33 +52,36 @@ end
 打开 `AppDelegate.m` 文件，添加下列导入语句到头部：
 
 ```swift
-    import LeanCloud
+import LeanCloud
 ```
 
 然后粘贴下列代码到 `application:didFinishLaunchingWithOptions` 函数内：
 
 ```swift
-    // applicationId 即 App Id，clientKey 是 App Key。
-    LeanCloud.initialize(applicationID: "{{appid}}", applicationKey: "{{appkey}}")
+// applicationId 即 App Id，applicationKey 是 App Key
+LeanCloud.initialize(applicationID: "{{appid}}", applicationKey: "{{appkey}}")
 ```
 {% endblock %}
 
 {% block sdk_switching_node %}
 
 ```swift
-    //如果使用美国站点，请加上这行代码，并且写在初始化前面
-    LeanCloud.setServiceRegion(LCServiceRegion.US)
-    // applicationId 即 App Id，clientKey 是 App Key。
-    LeanCloud.initialize(applicationID: "{{appid}}", applicationKey: "{{appkey}}")
+// 如果使用美国站点，请加上这行代码，并且写在初始化前面
+LeanCloud.setServiceRegion(.US)
+
+// applicationId 即 App Id，applicationKey 是 App Key
+LeanCloud.initialize(applicationID: "{{appid}}", applicationKey: "{{appkey}}")
 ```
 {% endblock %}
 
 {% block save_a_hello_world %}
 
 ```swift
-    let post = LCObject(className: "TestObject")
-    post.set("words", value: LCString("Hello World!"))
-    post.save { _ in }
+let post = LCObject(className: "TestObject")
+
+post.set("words", value: "Hello World!")
+
+post.save()
 ```
 
 然后，点击 `Run` 运行调试，真机和虚拟机均可。

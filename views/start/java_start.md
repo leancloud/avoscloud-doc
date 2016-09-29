@@ -5,7 +5,7 @@
     <repository>
       <id>leancloud</id>
       <name>LeanCloud</name>
-      <url>http://mvn.leancloud.cn/nexus/content/repositories/release</url>
+      <url>http://mvn.leancloud.cn/nexus/content/groups/public/</url>
     </repository>
   </repositories>
 
@@ -13,7 +13,7 @@
     <dependency>
       <groupId>cn.leancloud</groupId>
       <artifactId>leanengine</artifactId>
-      <version>0.1.0</version>
+      <version>[0.1.6,0.2.0)</version>
     </dependency>
   </dependencies>
 ```

@@ -17,14 +17,7 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
 1.1 | 2014 年 8 月 13 号发布，修复 Date 类型和 createdAt、updatedAt 的时区问题，返回标准 UTC 时间。
 1.0|存在时间不准确的 Bug，实际返回的 Date 类型和 createdAt、updatedAt 都是北京时间。**不推荐再使用**。
 
-## API 域名
 
-所有 API 访问都通过 HTTPS 进行。API 访问域名为：
-
-- **中国节点**：<https://api.leancloud.cn>
-- **美国节点**：<https://us-api.leancloud.cn>
-
-域名之后衔接 API 版本号，如 `/1.1/`，代表正在使用 1.1 版的 API。
 
 ### 在线测试
 
@@ -458,7 +451,7 @@ curl -X PUT \
   -H "X-LC-Key: UtOCzqb67d3sN12Kts4URwy8" \
   -H "Content-Type: application/json" \
   -d '{"content": "更新一篇博客的内容"}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 对于 JavaScript 使用，LeanCloud 支持跨域资源共享，所以你可以将这些 header 同 XMLHttpRequest 一同使用。
@@ -473,7 +466,7 @@ curl -X PUT \
   -H "X-LC-Sign: d5bcbb897e19b2f6633c716dfdfaf9be,1453014943466" \
   -H "Content-Type: application/json" \
   -d '{"content": "在 HTTP header 中使用 X-LC-Sign 来更新一篇博客的内容"}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 **X-LC-Sign** 的值是由 `sign,timestamp[,master]` 组成的字符串：
@@ -587,19 +580,19 @@ createdAt 和 updatedAt 都是 UTC 时间戳，以 ISO 8601 标准和毫秒级�
 在 REST API 中，class 级的操作都是通过一个带类名的资源路径（URL）来标识的。例如，如果类名是 Post，那么 class 的 URL 就是：
 
 ```
-https://api.leancloud.cn/1.1/classes/Post
+https://{{host}}/1.1/classes/Post
 ```
 
 对于**用户账户**这种对象，有一个特殊的 URL：
 
 ```
-https://api.leancloud.cn/1.1/users
+https://{{host}}/1.1/users
 ```
 
 针对于一个特定的对象的操作可以通过组织一个 URL 来做。例如，对 Post 中的一个 objectId 为 `558e20cbe4b060308e3eb36c` 的对象的操作应使用如下 URL：
 
 ```
-https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 ### 创建对象
@@ -612,14 +605,14 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"content": "每个 Java 程序员必备的 8 个开发工具","pubUser": "LeanCloud官方客服","pubTimestamp": 1435541999}' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 当创建成功时，HTTP 的返回是 **201 Created**，而 header 中的 Location 表示新的 object 的 URL：
 
 ```sh
 Status: 201 Created
-Location: https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+Location: https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 响应的主体是一个 JSON 对象，包含新的对象的 objectId 和 createdAt 时间戳。
@@ -641,7 +634,7 @@ Location: https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 返回的主体是一个 JSON 对象包含所有用户提供的 field 加上 createdAt、updatedAt 和 objectId 字段：
@@ -665,7 +658,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'include=author' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 ### 更新对象
@@ -678,7 +671,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"content": "每个 JavaScript 程序员必备的 8 个开发工具: http://buzzorange.com/techorange/2015/03/03/9-javascript-ide-editor/"}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 返回的 JSON 对象只会包含一个 updatedAt 字段，表明更新发生的时间：
@@ -699,7 +692,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"upvotes":{"__op":"Increment","amount":1}}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 这样就将对象里的 **upvotes**（表示被用户点赞的次数）分数加 1，其中 **amount** 指定递增的数字大小，如果为负数，就变成递减。
@@ -723,7 +716,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"flags":{"__op":"BitOr","value": 0x0000000000000004}}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 
@@ -743,7 +736,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"tags":{"__op":"AddUnique","objects":["Frontend","JavaScript"]}}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 #### 关系
@@ -756,7 +749,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"likes":{"__op":"AddRelation","objects":[{"__type":"Pointer","className":"_User","objectId":"51c3ba67e4b0f0e851c16221"}]}}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 或者可以在一个对象中删除一个关系（某个用户取消喜欢了这条微博）：
@@ -767,7 +760,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"likes":{"__op":"RemoveRelation","objects":[{"__type":"Pointer","className":"_User","objectId":"51fa3f64e4b05df1766cfb90"}]}}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 #### 按条件更新对象
@@ -780,7 +773,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"balance":{"__op":"Decrement","amount": 30}}' \
-  "https://api.leancloud.cn/1.1/classes/Account/558e20cbe4b060308e3eb36c?where=%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D"    
+  "https://{{host}}/1.1/classes/Account/558e20cbe4b060308e3eb36c?where=%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D"
 ```
 
 可以看到 URL 里多了个参数 where，值是 `%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D`，其实是 `{"balance":{"$gte": 30}}` 做了 url encode 的结果。更多 where 查询的例子参见下文的 [查询](#查询) 一节。
@@ -805,7 +798,7 @@ curl -X PUT \
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 你也可以在一个对象中删除一个字段，通过 Delete 操作（注意：**这时候 HTTP Method 还是 PUT**）：
@@ -816,7 +809,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"downvotes":{"__op":"Delete"}}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 #### 按条件删除对象
@@ -828,7 +821,7 @@ curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  "https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c?where=%7B%22clicks%22%3A%200%7D"    
+  "https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c?where=%7B%22clicks%22%3A%200%7D"
 ```
 
 可以看到 URL 里多了个参数 where，值是 `%7B%22clicks%22%3A%200%7D`，其实是 `{"clicks": 0}` 做了 url encode 的结果，这里的意思是我们只有当这个帖子的点击量 clicks 为 0 才删除。更多 where 查询的例子参见 [查询](#查询) 一节。
@@ -858,7 +851,7 @@ curl -X GET \
    -H "X-LC-Key: {{masterkey}},master" \
    -G \
    --data-urlencode 'limit=10' \
-   https://api.leancloud.cn/1.1/scan/classes/Article
+   https://{{host}}/1.1/scan/classes/Article
 ```
 
 `scan` 强制要求使用 master key。
@@ -890,7 +883,7 @@ curl -X GET \
    -G \
    --data-urlencode 'limit=10' \
    --data-urlencode 'cursor=pQRhIrac3AEpLzCA' \
-   https://api.leancloud.cn/1.1/scan/classes/Article
+   https://{{host}}/1.1/scan/classes/Article
 ```
 
 每次返回的 `cursor` 的有效期是 10 分钟。
@@ -905,7 +898,7 @@ curl -X GET \
    -G \
    --data-urlencode 'limit=10' \
    --data-urlencode 'where={"score": 100}' \
-   https://api.leancloud.cn/1.1/scan/classes/Article
+   https://{{host}}/1.1/scan/classes/Article
 ```
 
 按照其他字段排序（默认为  `createdAt`），可以传入 `scan_key` 参数：
@@ -917,8 +910,8 @@ curl -X GET \
    -G \
    --data-urlencode 'limit=10' \
    --data-urlencode 'scan_key=score' \
-   https://api.leancloud.cn/1.1/scan/classes/Article
-```   
+   https://{{host}}/1.1/scan/classes/Article
+```
 
 ### 批量操作
 
@@ -951,7 +944,7 @@ curl -X POST \
           }
         ]
       }' \
-  https://api.leancloud.cn/1.1/batch
+  https://{{host}}/1.1/batch
 ```
 
 我们对每一批次中所包含的操作数量（requests 数组中的元素个数）暂不设限，但考虑到云端对每次请求的 body 内容大小有 20 MB 的限制，因此建议将每一批次的操作数量控制在 100 以内。
@@ -1000,7 +993,7 @@ curl -X POST \
           }
         ]
       }' \
-  https://api.leancloud.cn/1.1/batch
+  https://{{host}}/1.1/batch
 ```
 
 ### 数据类型
@@ -1025,7 +1018,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'where={"createdAt":{"$gte":{"__type":"Date","iso":"2015-06-21T18:02:52.249Z"}}}' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 **Byte** 类型包含了一个 base64 字段，这个字段是一些二进制数据编码过的 base64 字符串。base64 是 MIME 使用的标准，不包含空白符：
@@ -1073,7 +1066,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 返回的值就是一个 JSON 对象包含了 results 字段，它的值就是对象的列表：
@@ -1113,7 +1106,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'where={"pubUser":"LeanCloud官方客服"}' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 除了完全匹配一个给定的值以外，`where` 也支持比较的方式。而且，它还支持对 key 的一些 hash 操作（譬如包含）。`where` 参数支持下面一些选项：
@@ -1142,7 +1135,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'where={"createdAt":{"$gte":{"__type":"Date","iso":"2015-06-29T00:00:00.000Z"},"$lt":{"__type":"Date","iso":"2015-06-30T00:00:00.000Z"}}}' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 求点赞次数少于 10 次，且该次数还是奇数的微博，查询条件要这样写：
@@ -1154,7 +1147,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'where={"upvotes":{"$in":[1,3,5,7,9]}}' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 为了获取不是「LeanCloud官方客服」发布的微博，我们可以:
@@ -1166,7 +1159,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'where={"pubUser":{"$nin":["LeanCloud官方客服"]}}' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 为了获取有人喜欢的微博，我们应该用:
@@ -1178,7 +1171,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'where={"upvotes":{"$exists":true}}' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 为了获取没有被人喜欢过的微博：
@@ -1190,10 +1183,10 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'where={"upvotes":{"$exists":false}}' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
-我们都知道，微博里面有用户互相关注的功能，如果我们用 `_Followee` 和 `_Follower` 这两个类来存储用户之间的关注关系（`_Follower` 记录用户的粉丝，`_Followee` 记录用户关注的人，我们的 [应用内社交组件](./status_system.html) 已经实现了这样的模型，这里直接使用其后台表结构），我们可以创建一个查询来找到某个用户关注的人发布的微博（`Post` 表中有一个字段 `author` 指向发布者），查询看起来应该是这样：
+我们都知道，微博里面有用户互相关注的功能，如果我们用 `_Followee` 和 `_Follower` 这两个类来存储用户之间的关注关系（`_Follower` 记录用户的粉丝，`_Followee` 记录用户关注的人，{% if node != 'qcloud' %}我们的 [应用内社交组件](./status_system.html) 已经实现了这样的模型，这里直接使用其后台表结构），{% endif %}我们可以创建一个查询来找到某个用户关注的人发布的微博（`Post` 表中有一个字段 `author` 指向发布者），查询看起来应该是这样：
 
 ```sh
 curl -X GET \
@@ -1206,7 +1199,7 @@ curl -X GET \
   "className": "_User",
   "objectId": "55a39634e4b0ed48f0c1845c"
 }}, "key":"followee"}}}}' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 你可以用 `order` 参数来指定一个字段来排序，前面加一个负号的前缀表示逆序。这样返回的微博会按发布时间呈升序排列：
@@ -1217,7 +1210,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'order=createdAt' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 而这样会呈降序：
@@ -1228,7 +1221,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'order=-createdAt' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 你可以用多个字段进行排序，只要用一个逗号隔开的列表就可以。为了获取 Post 以 createdAt  的升序和 pubUser 的降序进行排序：
@@ -1239,7 +1232,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'order=createdAt,-pubUser' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 你可以用 `limit` 和 `skip` 来做分页。`limit` 的默认值是 100，任何 1 到 1000 之间的值都是可选的，在 1 到 1000 范围之外的都强制转成默认的 100。比如为了获取排序在 400 到 600 之间的微博：
@@ -1251,7 +1244,7 @@ curl -X GET \
   -G \
   --data-urlencode 'limit=200' \
   --data-urlencode 'skip=400' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 你可以限定返回的字段通过传入 `keys` 参数和一个逗号分隔列表。为了返回对象只包含 `pubUser` 和 `content` 字段（还有特殊的内置字段比如 objectId、createdAt 和 updatedAt）：
@@ -1262,7 +1255,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'keys=pubUser,content' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 `keys` 还支持反向选择，也就是不返回某些字段，字段名前面加个减号即可，比如我不想查询返回 `author`：
@@ -1273,7 +1266,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'keys=-author' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 所有以上这些参数都可以和其他的组合进行使用。
@@ -1288,7 +1281,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'where={"arrayKey":2}' \
-  https://api.leancloud.cn/1.1/classes/TestObject
+  https://{{host}}/1.1/classes/TestObject
 ```
 
 你同样可以使用 `$all` 操作符来找到 key 的值中有 2、3 和 4 的对象：
@@ -1299,7 +1292,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'where={"arrayKey":{"$all":[2,3,4]}}' \
-  https://api.leancloud.cn/1.1/classes/TestObject
+  https://{{host}}/1.1/classes/TestObject
 ```
 
 ### 关系查询
@@ -1312,7 +1305,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'where={"post":{"__type":"Pointer","className":"Post","objectId":"558e20cbe4b060308e3eb36c"}}' \
-  https://api.leancloud.cn/1.1/classes/Comment
+  https://{{host}}/1.1/classes/Comment
 ```
 
 如果你想获取对象，这个对象的一个字段指向的对象需要另一个查询来指定，你可以使用 `$inQuery` 操作符。注意 `limit` 的默认值是 100 且最大值是 1000，这个限制同样适用于内部的查询，所以对于较大的数据集你可能需要细心地构建查询来获得期望的结果。
@@ -1325,7 +1318,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'where={"post":{"$inQuery":{"where":{"image":{"$exists":true}},"className":"Post"}}}' \
-  https://api.leancloud.cn/1.1/classes/Comment
+  https://{{host}}/1.1/classes/Comment
 ```
 
 如果你想获取作为其父对象的关系成员的对象，你可以使用 `$relatedTo` 操作符。例如对于微博这种社交类应用来讲，每一条微博都可以被不同的用户点赞，我们可以设计 Post 类下面有一个 key 是 Relation 类型，叫做 `likes`，存储了喜欢这个 Post 的所有 User。你可以通过下面的方式找到喜欢某条 Post 的所有用户（**请注意，新创建应用的 `_User` 表的查询权限默认是关闭的，你可以通过 class 权限设置打开，请参考 [数据与安全 - Class 级别的权限](data_security.html#Class_级别的_ACL)。**）：
@@ -1336,7 +1329,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'where={"$relatedTo":{"object":{"__type":"Pointer","className":"Post","objectId":"558e20cbe4b060308e3eb36c"},"key":"likes"}}' \
-  https://api.leancloud.cn/1.1/users
+  https://{{host}}/1.1/users
 ```
 
 有时候，你可能需要在一个查询之中返回多种类型，你可以通过传入字段到 `include` 参数中。比如，我们想获得最近的 10 篇评论，而你想同时得到它们关联的微博：
@@ -1349,7 +1342,7 @@ curl -X GET \
   --data-urlencode 'order=-createdAt' \
   --data-urlencode 'limit=10' \
   --data-urlencode 'include=post' \
-  https://api.leancloud.cn/1.1/classes/Comment
+  https://{{host}}/1.1/classes/Comment
 ```
 
 不是作为一个 Pointer 表示，`post` 字段现在已经被展开为一个完整的对象：`__type` 被设置为 Object 而 `className` 同样也被提供了。例如，一个指向 Post 的 Pointer 可能被展示为：
@@ -1385,7 +1378,7 @@ curl -X GET \
   --data-urlencode 'order=-createdAt' \
   --data-urlencode 'limit=10' \
   --data-urlencode 'include=post.author' \
-  https://api.leancloud.cn/1.1/classes/Comment
+  https://{{host}}/1.1/classes/Comment
 ```
 
 如果你要构建一个查询，这个查询要 include 多个类，此时用逗号分隔列表即可。
@@ -1402,7 +1395,7 @@ curl -X GET \
   --data-urlencode 'where={"pubUser":"LeanCloud官方客服"}' \
   --data-urlencode 'count=1' \
   --data-urlencode 'limit=0' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 因为这个 request 请求了 `count` 而且把 `limit` 设为了 0，返回的值里面只有计数，没有 `results`：
@@ -1428,7 +1421,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'where={"$or":[{"pubUserCertificate":{"$gt":2}},{"pubUserCertificate":{"$lt":3}}]}' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 任何在查询上的其他的约束都会对返回的对象生效，所以你可以用 `$or` 对其他的查询添加约束。
@@ -1445,7 +1438,7 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -G \
   --data-urlencode 'cql=select * from Post limit 0,100 order by pubUser' \
-  https://api.leancloud.cn/1.1/cloudQuery
+  https://{{host}}/1.1/cloudQuery
 ```
 
 更多请参考 [CQL 详细指南](./cql_guide.html)。
@@ -1459,7 +1452,7 @@ curl -X GET \
   -G \
   --data-urlencode 'cql=select * from Post where pubUser=? limit ?,? order by createdAt' \
    --data-urlencode 'pvalues=["dennis", 0, 100]'
-  https://api.leancloud.cn/1.1/cloudQuery
+  https://{{host}}/1.1/cloudQuery
 ```
 
 ## 用户
@@ -1487,14 +1480,14 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"username":"hjiang","password":"f32@ds*@&dsa","phone":"18612340000"}' \
-  https://api.leancloud.cn/1.1/users
+  https://{{host}}/1.1/users
 ```
 
 当创建成功时，HTTP返回为 201 Created，Location 头包含了新用户的 URL：
 
 ```sh
 Status: 201 Created
-Location: https://api.leancloud.cn/1.1/users/55a47496e4b05001a7732c5f
+Location: https://{{host}}/1.1/users/55a47496e4b05001a7732c5f
 ```
 
 返回的主体是一个 JSON 对象，包含 objectId、createdAt 时间戳表示创建对象时间，sessionToken 可以被用来认证这名用户随后的请求：
@@ -1517,7 +1510,7 @@ curl -X POST \
 -H "X-LC-Id: {{appid}}" \
 -H "X-LC-Key: {{appkey}}" \
 -d '{"username":"hjiang","password":"f32@ds*@&dsa"}' \
-https://api.leancloud.cn/1.1/login
+https://{{host}}/1.1/login
 ```
 
 返回的主体是一个 JSON 对象包括所有除了 password 以外的自定义字段。它同样包含了 createdAt、updateAt、objectId 和 sessionToken 字段。
@@ -1544,7 +1537,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "X-LC-Session: qmdj8pdidnmyzp0c7yqil91oc" \
-  https://api.leancloud.cn/1.1/users/me
+  https://{{host}}/1.1/users/me
 ```
 返回的 JSON 数据与 [`/login`](#登录) 登录请求所返回的相同。
 
@@ -1583,7 +1576,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"email":"hang@leancloud.rocks"}' \
-  https://api.leancloud.cn/1.1/requestEmailVerify
+  https://{{host}}/1.1/requestEmailVerify
 ```
 
 ### 请求密码重设
@@ -1596,7 +1589,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"email":"hang@leancloud.rocks"}' \
-  https://api.leancloud.cn/1.1/requestPasswordReset
+  https://{{host}}/1.1/requestPasswordReset
 ```
 
 如果成功的话，返回的值是一个 JSON 对象。
@@ -1617,7 +1610,7 @@ curl -X POST \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://api.leancloud.cn/1.1/users/55a47496e4b05001a7732c5f
+  https://{{host}}/1.1/users/55a47496e4b05001a7732c5f
 ```
 
 返回的 body 是一个 JSON 对象，包含所有用户提供的字段，除了密码以外，也包括了 createdAt、 updatedAt 和 objectId 字段.
@@ -1649,7 +1642,7 @@ curl -X PUT \
   -H "X-LC-Session: qmdj8pdidnmyzp0c7yqil91oc" \
   -H "Content-Type: application/json" \
   -d '{"phone":"18600001234"}' \
-  https://api.leancloud.cn/1.1/users/55a47496e4b05001a7732c5f
+  https://{{host}}/1.1/users/55a47496e4b05001a7732c5f
 ```
 
 返回的 body 是一个 JSON 对象，只有一个 `updatedAt` 字段表明更新发生的时间.
@@ -1671,7 +1664,7 @@ curl -X PUT \
   -H "X-LC-Session: qmdj8pdidnmyzp0c7yqil91oc" \
   -H "Content-Type: application/json" \
   -d '{"old_password":"the_old_password", "new_password":"the_new_password"}' \
-  https://api.leancloud.cn/1.1/users/55a47496e4b05001a7732c5f/updatePassword
+  https://{{host}}/1.1/users/55a47496e4b05001a7732c5f/updatePassword
 ```
 
 * **old_password**：用户的老密码
@@ -1690,7 +1683,7 @@ curl -X PUT \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://api.leancloud.cn/1.1/users
+  https://{{host}}/1.1/users
 ```
 
 返回的值是一个 JSON 对象包括一个 `results` 字段，值是包含了所有对象的一个 JSON 数组。
@@ -1722,7 +1715,7 @@ curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "X-LC-Session: qmdj8pdidnmyzp0c7yqil91oc" \
-  https://api.leancloud.cn/1.1/users/55a47496e4b05001a7732c5f
+  https://{{host}}/1.1/users/55a47496e4b05001a7732c5f
 ```
 
 ### 连接用户账户和第三方平台
@@ -1816,14 +1809,14 @@ curl -X POST \
          }
     }
     }' \
-  https://api.leancloud.cn/1.1/users
+  https://{{host}}/1.1/users
 ```
 
 LeanCloud 会校验提供的 `authData` 是否有效，并检查是否已经有一个用户连接了这个 `authData` 服务。如果已经有用户存在并连接了同一个 `authData`，那么返回 200 OK 和详细信息（包括用户的 `sessionToken`）：
 
 ```sh
 Status: 200 OK
-Location: https://api.leancloud.cn/1.1/users/75a4800fe4b05001a7745c41
+Location: https://{{host}}/1.1/users/75a4800fe4b05001a7745c41
 ```
 
 应答的 body 类似：
@@ -1849,7 +1842,7 @@ Location: https://api.leancloud.cn/1.1/users/75a4800fe4b05001a7745c41
 
 ```sh
 Status: 201 Created
-Location: https://api.leancloud.cn/1.1/users/55a4800fe4b05001a7745c41
+Location: https://{{host}}/1.1/users/55a4800fe4b05001a7745c41
 ```
 
 应答内容包括 objectId、createdAt、sessionToken 以及一个自动生成的随机 username，例如：
@@ -1882,7 +1875,7 @@ curl -X PUT \
           }
         }
       }' \
-  https://api.leancloud.cn/1.1/users/55a47496e4b05001a7732c5f
+  https://{{host}}/1.1/users/55a47496e4b05001a7732c5f
 ```
 
 完成连接后，你可以使用匹配的 `authData` 来认证他们。
@@ -1902,7 +1895,7 @@ curl -X PUT \
       "weibo" : null
     }
       }' \
-  https://api.leancloud.cn/1.1/users/55a47496e4b05001a7732c5f
+  https://{{host}}/1.1/users/55a47496e4b05001a7732c5f
 ```
 
 ### 安全
@@ -1960,7 +1953,7 @@ curl -X POST \
           }
         }
       }' \
-  https://api.leancloud.cn/1.1/roles
+  https://{{host}}/1.1/roles
 ```
 
 其返回值类似于：
@@ -2007,14 +2000,14 @@ curl -X POST \
           ]
         }
       }' \
-  https://api.leancloud.cn/1.1/roles
+  https://{{host}}/1.1/roles
 ```
 
 当创建成功时，HTTP 返回是 **201 Created** 而 Location header 包含了新的对象的 URL：
 
 ```sh
 Status: 201 Created
-Location: https://api.leancloud.cn/1.1/roles/55a483f0e4b05001a774b837
+Location: https://{{host}}/1.1/roles/55a483f0e4b05001a774b837
 ```
 
 ### 获取角色
@@ -2025,7 +2018,7 @@ Location: https://api.leancloud.cn/1.1/roles/55a483f0e4b05001a774b837
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://api.leancloud.cn/1.1/roles/55a483f0e4b05001a774b837
+  https://{{host}}/1.1/roles/55a483f0e4b05001a774b837
 ```
 
 响应的 body 是一个 JSON 对象包含角色的所有字段：
@@ -2072,7 +2065,7 @@ curl -X PUT \
           ]
         }
       }' \
-  https://api.leancloud.cn/1.1/roles/55a48351e4b05001a774a89f
+  https://{{host}}/1.1/roles/55a48351e4b05001a774a89f
 ```
 
 相似的，我们可以删除一个 Manager 的子角色：
@@ -2094,7 +2087,7 @@ curl -X PUT \
           ]
         }
       }' \
-  https://api.leancloud.cn/1.1/roles/55a48351e4b05001a774a89f
+  https://{{host}}/1.1/roles/55a48351e4b05001a774a89f
 ```
 
 
@@ -2109,7 +2102,7 @@ curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "X-LC-Session: qmdj8pdidnmyzp0c7yqil91oc" \
-  https://api.leancloud.cn/1.1/roles/55a483f0e4b05001a774b837
+  https://{{host}}/1.1/roles/55a483f0e4b05001a774b837
 ```
 
 ### 安全性
@@ -2161,7 +2154,7 @@ curl -X PUT \
           ]
         }
       }' \
-  https://api.leancloud.cn/1.1/roles/<ModeratorsRoleObjectId>
+  https://{{host}}/1.1/roles/<ModeratorsRoleObjectId>
 ```
 
 ## 文件
@@ -2186,7 +2179,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: text/plain" \
   -d 'Hello, World!' \
-  https://api.leancloud.cn/1.1/files/hello.txt
+  https://{{host}}/1.1/files/hello.txt
 ```
 
 文件上传成功后，返回 **201 Created** 的应答和创建的文件对象（可以在 _File 表看到）：
@@ -2211,7 +2204,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: image/png" \
   --data-binary '@test.png'  \
-  https://api.leancloud.cn/1.1/files/test.png
+  https://{{host}}/1.1/files/test.png
 ```
 
 ### 关联文件到对象
@@ -2230,7 +2223,7 @@ curl -X POST \
           "__type": "File"
         }
       }' \
-  https://api.leancloud.cn/1.1/classes/Staff
+  https://{{host}}/1.1/classes/Staff
 ```
 
 其中 `id` 就是文件对象的 objectId。
@@ -2244,7 +2237,7 @@ curl -X POST \
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://api.leancloud.cn/1.1/files/543cbaede4b07db196f50f3c
+  https://{{host}}/1.1/files/543cbaede4b07db196f50f3c
 ```
 
 ## Push 通知
@@ -2284,14 +2277,14 @@ curl -X POST \
           ""
         ]
       }' \
-  https://api.leancloud.cn/1.1/installations
+  https://{{host}}/1.1/installations
 ```
 
 当创建成功后，HTTP的返回值为 **201 Created**，Location header 包括了新的安装的 URL：
 
 ```sh
 Status: 201 Created
-Location: https://api.leancloud.cn/1.1/installations/51ff1808e4b074ac5c34d7fd
+Location: https://{{host}}/1.1/installations/51ff1808e4b074ac5c34d7fd
 ```
 
 返回的 body 是一个 JSON 对象，包括了 objectId 和 createdAt 这个创建对象的时间戳。
@@ -2311,7 +2304,7 @@ Location: https://api.leancloud.cn/1.1/installations/51ff1808e4b074ac5c34d7fd
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://api.leancloud.cn/1.1/installations/51ff1808e4b074ac5c34d7fd
+  https://{{host}}/1.1/installations/51ff1808e4b074ac5c34d7fd
 ```
 
 返回的 JSON 对象所有用户提供的字段，加上 createdAt、updatedAt 和 objectId 字段：
@@ -2346,7 +2339,7 @@ curl -X PUT \
           "foo"
         ]
       }' \
-  https://api.leancloud.cn/1.1/installations/51ff1808e4b074ac5c34d7fd
+  https://{{host}}/1.1/installations/51ff1808e4b074ac5c34d7fd
 ```
 
 ### 查询安装对象
@@ -2359,7 +2352,7 @@ curl -X PUT \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://api.leancloud.cn/1.1/installations
+  https://{{host}}/1.1/installations
 ```
 
 返回的 JSON 对象的 results 字段包含了所有的结果：
@@ -2401,7 +2394,7 @@ curl -X GET \
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://api.leancloud.cn/1.1/installations/51fcb74ee4b074ac5c34cf85
+  https://{{host}}/1.1/installations/51fcb74ee4b074ac5c34cf85
 ```
 
 ## 数据 Schema
@@ -2414,7 +2407,7 @@ curl -X DELETE \
 curl -X GET \
    -H "X-LC-Id: {{appid}}" \
    -H "X-LC-Key: {{masterkey}},master" \
-   https://api.leancloud.cn/1.1/schemas
+   https://{{host}}/1.1/schemas
 ```
 
 返回的 JSON 数据包含了每个 Class 对应的 Schema:
@@ -2441,7 +2434,7 @@ curl -X GET \
 curl -X GET \
    -H "X-LC-Id: {{appid}}" \
    -H "X-LC-Key: {{masterkey}},master" \
-   https://api.leancloud.cn/1.1/schemas/_User
+   https://{{host}}/1.1/schemas/_User
 ```
 
 
@@ -2455,7 +2448,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{}' \
-  https://api.leancloud.cn/1.1/functions/hello
+  https://{{host}}/1.1/functions/hello
 ```
 
 通过 `POST /functions/:name` 这个 API 调用时，参数和结果都是 JSON 格式，不会对其中的 AVObject 进行特殊处理。
@@ -2468,7 +2461,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"__type": "Object", "className": "Post", "pubUser": "LeanCloud官方客服"}' \
-  https://api.leancloud.cn/1.1/call/hello
+  https://{{host}}/1.1/call/hello
 ```
 
 响应：
@@ -2504,7 +2497,7 @@ curl -X GET \
           }
         }
       }' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 这会按照距离纬度 39.9、经度 116.4（当前用户所在位置）的远近排序返回一系列结果，第一个就是最近的对象。(注意：**如果指定了 order 参数的话，它会覆盖按距离排序。**）
@@ -2526,7 +2519,7 @@ curl -X GET \
           "$maxDistanceInMiles": 10.0
         }
       }' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 同样做查询寻找在一个特定的范围里面的对象也是可以的，为了找到在一个矩形的区域里的对象，按下面的格式加入一个约束 `{"$within": {"$box": [southwestGeoPoint, northeastGeoPoint]}}`。
@@ -2554,7 +2547,7 @@ curl -X GET \
           }
         }
       }' \
-  https://api.leancloud.cn/1.1/classes/Post
+  https://{{host}}/1.1/classes/Post
 ```
 
 ### 警告
@@ -2564,6 +2557,7 @@ curl -X GET \
 1. 每一个 AVObject 类只能包含一个 AVGeoPoint 对象的键值。
 2. Points 不应该等于或者超出它的界. 纬度不应该是 -90.0 或者 90.0，经度不应该是 -180.0 或者 180.0。试图在 GeoPoint 上使用超出范围内的经度和纬度会导致问题.
 
+{% if node != 'qcloud' %}
 ## 用户反馈组件 API
 
 如果使用我们的用户反馈组件，可以通过下列 API 来提交一条新的用户反馈：
@@ -2578,10 +2572,11 @@ curl -X POST \
          "content" : "反馈的文字内容",
          "contact" : "联系方式、QQ 或者邮箱手机等"
        }' \
-  https://api.leancloud.cn/1.1/feedback
+  https://{{host}}/1.1/feedback
 ```
 
 提交后的用户反馈在可以在组件菜单的用户反馈里看到。
+{% endif %}
 
 {% if node!='qcloud' %}
 ## 短信验证 API
@@ -2605,7 +2600,7 @@ curl -X POST \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://api.leancloud.cn/1.1/stats/appinfo
+  https://{{host}}/1.1/stats/appinfo
 ```
 
 返回的 JSON 数据：
@@ -2629,7 +2624,7 @@ curl -X GET \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  "https://api.leancloud.cn/1.1/stats/appmetrics?platform=iOS&start=20140301&end=20140315&metrics=active_user"
+  "https://{{host}}/1.1/stats/appmetrics?platform=iOS&start=20140301&end=20140315&metrics=active_user"
 ```
 
 具体支持的参数：
@@ -2716,7 +2711,7 @@ metrics 参数可选项解释：
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  "https://api.leancloud.cn/1.1/stats/rtmetrics?platform=iOS&metrics=current_active"
+  "https://{{host}}/1.1/stats/rtmetrics?platform=iOS&metrics=current_active"
 ```
 
 具体支持的参数：
@@ -2762,7 +2757,7 @@ metrics参数可选项解释：
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  "https://api.leancloud.cn/1.1/stats/appmetrics?platform=iOS&start=20140301&end=20140315&metrics=new_user,retention_1"
+  "https://{{host}}/1.1/stats/appmetrics?platform=iOS&start=20140301&end=20140315&metrics=new_user,retention_1"
 ```
 将返回
 
@@ -2808,7 +2803,7 @@ curl -X GET \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://api.leancloud.cn/1.1/statistics/apps/{{appid}}/sendPolicy
+  https://{{host}}/1.1/statistics/apps/{{appid}}/sendPolicy
 ```
 
 返回结果：
@@ -2859,7 +2854,7 @@ curl -i -X POST \
     }
   ]
  }' \
-https://api.leancloud.cn/1.1/stats/open/collect
+https://{{host}}/1.1/stats/open/collect
 ```
 
 统计发送的数据格式包括 3 个节点。
@@ -2920,11 +2915,11 @@ tag|可选|事件属性的简写方式，等同于属性里面添加：`{event: 
   "duration": 60000 // 使用时长，单位毫秒
 }
 ```
-
+{% if node != 'qcloud' %}
 ## 事件流 API
 
 请参考 [事件流 REST API](./status_system.html#REST_API)。
-
+{% endif %}
 ## 应用内搜索 API
 
 请参考 [搜索 API](./app_search_guide.html#搜索_api)。
@@ -2939,7 +2934,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{}' \
-  https://api.leancloud.cn/1.1/exportData
+  https://{{host}}/1.1/exportData
 ```
 
 `exportData` 要求使用 master key 来授权。
@@ -2952,7 +2947,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_date":"2015-09-20", "to_date":"2015-09-25"}' \
-  https://api.leancloud.cn/1.1/exportData
+  https://{{host}}/1.1/exportData
 ```
 
 还可以指定具体的 class 列表，使用逗号隔开：
@@ -2963,7 +2958,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"classes":"_User,GameScore,Post"}' \
-  https://api.leancloud.cn/1.1/exportData
+  https://{{host}}/1.1/exportData
 ```
 
 
@@ -2975,7 +2970,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"only-schema":"true"}' \
-  https://api.leancloud.cn/1.1/exportData
+  https://{{host}}/1.1/exportData
 ```
 
 导出的 Schema 文件同样可以使用数据导入功能来导入到其他应用。
@@ -2988,7 +2983,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"email":"username@exmaple.com"}' \
-  https://api.leancloud.cn/1.1/exportData
+  https://{{host}}/1.1/exportData
 ```
 
 调用结果将返回本次任务的 id 和状态：
@@ -3007,7 +3002,7 @@ curl -X POST \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://api.leancloud.cn/1.1/exportData/1wugzx81LvS5R4RHsuaeMPKlJqFMFyLwYDNcx6LvCc6MEzQ2
+  https://{{host}}/1.1/exportData/1wugzx81LvS5R4RHsuaeMPKlJqFMFyLwYDNcx6LvCc6MEzQ2
 ```
 
 如果导出完成，将返回导出结果的下载链接：
@@ -3032,7 +3027,7 @@ curl -X GET \
 curl -i -X GET \
     -H "X-LC-Id: {{appid}}" \
     -H "X-LC-Key: {{appkey}}" \
-    https://api.leancloud.cn/1.1/date
+    https://{{host}}/1.1/date
 ```
 
 返回 UTC 日期:
@@ -3059,7 +3054,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"jobConfig":{"sql":"select count(*) from table"}}' \
-  https://api.leancloud.cn/1.1/bigquery/jobs
+  https://{{host}}/1.1/bigquery/jobs
 ```
 
 需要特别说明的是，`jobConfig` 不仅可以提供查询分析 `sql`，还可以增加其他配置项：
@@ -3067,10 +3062,10 @@ curl -X POST \
 * 查询结果自动另存为：
 
 ```json
-{  
-  "jobConfig":{  
+{
+  "jobConfig":{
     "sql":"select count(*) as count from table",
-    "saveAs":{  
+    "saveAs":{
       "className":"Table1",
       "limit":100
     }
@@ -3081,11 +3076,11 @@ curl -X POST \
 * 设置依赖 job，也就是当前的查询可以使用前趋查询结果：
 
 ```
-{  
-  "jobConfig":{  
+{
+  "jobConfig":{
     "sql":"select * from table inner join tempTable on table.id=tempTable.objectId",
-    "dependencyJobs":[  
-      {  
+    "dependencyJobs":[
+      {
         "id":"xxx",
         "className":"tempTable"
       } // id 为依赖 job 的 jobId,  className 则为自定义的临时表名
@@ -3115,7 +3110,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
-  https://api.leancloud.cn/1.1/bigquery/jobs/:jobId
+  https://{{host}}/1.1/bigquery/jobs/:jobId
 ```
 
 对应的输出：
@@ -3148,7 +3143,7 @@ Strict-Transport-Security: max-age=31536000
   '{"_method":"GET",
     "_ApplicationId":"{{appid}}",
     "_ApplicationKey":"{{appkey}}"}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 对应的输出：
@@ -3184,7 +3179,7 @@ curl -i -X POST \
     "_ApplicationId":"{{appid}}",
     "_ApplicationKey":"{{appkey}}",
     "upvotes":99}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 对应的输出：
@@ -3212,7 +3207,7 @@ curl -i -X POST \
   '{"_method":  "DELETE",
     "_ApplicationId":"{{appid}}",
     "_ApplicationKey":"{{appkey}}"}' \
-  https://api.leancloud.cn/1.1/classes/Post/558e20cbe4b060308e3eb36c
+  https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
 对应的输出是：

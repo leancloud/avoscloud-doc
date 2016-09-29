@@ -112,7 +112,7 @@ $obj->destroy();
 
 #### 常见问题
 
-一、<a id="error_curl_connection" name="error_curl_connection"></a>【系统报错】**Fatal error: Uncaught exception 'RuntimeException' with message 'CURL connection (https://api.leancloud.cn/1.1/...) error: 60 60**
+一、<a id="error_curl_connection" name="error_curl_connection"></a>【系统报错】**Fatal error: Uncaught exception 'RuntimeException' with message 'CURL connection (https://{{host}}/1.1/...) error: 60 60**
 
 错误原因是 Windows curl 没有证书无法发送 https 请求，解决方案有两种：
 
@@ -123,4 +123,4 @@ $obj->destroy();
 [PHP]
 curl.cainfo={自定义的目录路径}/ca-bundle.crt
   ```
-  
+

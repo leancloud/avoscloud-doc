@@ -392,7 +392,7 @@ await task；
 
 ```
 //第二步回调认证
-var task = AVUser.VerifyMobilePhoneAsync(code);//code代表6位数字的验证码
+var task = AVUser.VerifyMobilePhoneAsync(code, mobilePhoneNumber);//code代表6位数字的验证码
 await task.ContinueWith(t =>
 {
 	var success= t.Result;
@@ -577,7 +577,7 @@ var user = AVUser.CurrentUser;
 ```
 如果调用了登出借口，那么当前用户就会被清除，并置为`null`：
 ```
-await AVUser.LogOut();
+AVUser.LogOut();
 var user = AVUser.CurrentUser;	//如此做就会抛出异常，因为登出之后，CurrentUser已经为空。
 ```
 

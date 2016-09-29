@@ -1,3 +1,4 @@
+{% set maven_uri = "http://mvn.leancloud.cn/nexus/content/repositories/public" %}
 # ChatKit 使用指南 &middot; Android
 
 [ChatKit](https://github.com/leancloud/LeanCloudChatKit-Android) 是由 LeanCloud 官方推出的、基于 LeanCloud 实时通信 SDK「LeanMessage」开发并封装了简单 UI 的聊天套件。它可以帮助开发者快速掌握 LeanMessage 的技术细节，轻松扩展和实现常用的聊天功能。
@@ -43,7 +44,7 @@ buildscript {
         jcenter()
         // 这里是 LeanCloud 的包仓库
         maven {
-            url "http://mvn.leancloud.cn/nexus/content/repositories/releases"
+            url "{{maven_uri}}"
         }
 
     }
@@ -57,7 +58,7 @@ allprojects {
         jcenter()
         // 这里是 LeanCloud 的包仓库
         maven {
-            url "http://mvn.leancloud.cn/nexus/content/repositories/releases"
+            url "{{maven_uri}}"
         }
     }
 }

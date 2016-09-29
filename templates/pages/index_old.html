@@ -1,0 +1,330 @@
+---
+layout: download.swig
+isHome: true
+---
+<div class="home-full-width-content">
+  <div class="doc-home-title text-center">
+    {% if node=='qcloud' %}
+    <h1 class="font-logo">Tencent App Builder Documentation</h1>
+    <h4>TAB 移动开发工具由腾讯云、LeanCloud 联合推出，开发文档由 LeanCloud 提供。</h4>
+    {% else %}
+    <h1 class="font-logo">LeanCloud Documentation</h1>
+    <form class="hero-search" role="search" action="/search.html" method="get">
+      <div class="form-group">
+        <input name="q" type="text" class="form-control input-lg" placeholder="搜索全部文档、错误代码&hellip;">
+      </div>
+    </form>
+    {% endif %}
+  </div>
+  <!-- .doc-home-title -->
+
+  <div class="toc-hack" style="display: none;">
+    <ul>
+    </ul>
+  </div>
+  <!-- .toc-hack -->
+
+  <!-- . -->
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="doc-hero-links">
+        <a href="faq_list.html" class="doc-quick-start-btn">
+          <i class="icon icon-question"></i>
+          常见问题一览
+        </a>
+      </div>
+    </div>
+    <!-- .col-sm-3 -->
+
+    <div class="col-sm-3">
+      <div class="doc-hero-links">
+        <a href="demo.html" class="doc-quick-start-btn">
+          <i class="icon icon-devices"></i>
+          Demo
+        </a>
+      </div>
+    </div>
+    <!-- .col-sm-3 -->
+
+    <div class="col-sm-3">
+      <div class="doc-hero-links">
+        <a href="tutorials.html" class="doc-quick-start-btn">
+          <i class="icon icon-beaker"></i>
+          实用教程
+        </a>
+      </div>
+    </div>
+    <!-- .col-sm-3 -->
+
+    <div class="col-sm-3">
+      <div class="doc-hero-links">
+        <a href="start.html" class="doc-quick-start-btn">
+          <i class="icon icon-bulb"></i>
+          快速入门
+        </a>
+      </div>
+    </div>
+    <!-- .col-sm-3 -->
+  </div>
+  <!-- .row -->
+
+  <div class="row">
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>功能和服务概览</h2>
+        <ul>
+          <li><a href="storage_overview.html">数据存储服务总览</a></li>
+          <li><a href="push_guide.html">消息推送服务总览</a></li>
+          <li><a href="realtime_v2.html">实时通信服务总览</a></li>
+          {% if node!='qcloud' %}
+          <li><a href="dashboard_guide.html">控制台使用指南</a></li>
+          {% else %}
+          <li><a href="dashboard_guide_tab.html">控制台使用指南</a></li>
+          {% endif %}
+          <li><a href="data_security.html">数据安全</a></li>
+          <li><a href="error_code.html">错误码详解</a></li>
+          <li><a href="faq.html">常见问题</a></li>
+          <li><a href="tool_tips.html">常见功能提示</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- .col-md-4 -->
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>iOS / OS X SDK</h2>
+        <ul>
+          <li><a href="sdk_setup-ios.html">SDK 安装指南</a></li>
+          <li><a href="leanstorage_guide-ios.html">数据存储开发指南</a></li>
+          <li><a href="ios_push_guide.html">消息推送开发指南</a></li>
+          <li><a href="ios_push_cert.html">iOS 推送证书设置指南</a></li>
+          <li><a href="realtime_guide-ios.html">实时通信开发指南</a></li>
+          <li><a href="chatkit-ios.html">ChatKit 使用指南</a></li>
+          <li><a href="relation_guide-ios.html">数据模型设计指南</a></li>
+          <li><a href="acl_guide-ios.html">权限管理使用指南</a></li>
+          <li><a href="ios_statistics.html">统计分析开发指南</a></li>
+          {% if node!='qcloud' %}
+          <li><a href="sms_guide-ios.html">短信服务使用指南</a></li>
+          {% endif %}
+          <li><a href="ios_crashreporting_guide.html">崩溃报告使用指南</a></li>
+          <li><a href="ios_os_x_faq.html">FAQ</a></li>
+          <li><a href="/api-docs/iOS/index.html" target="_blank">SDK API</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- .col-md-4 -->
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>Swift SDK</h2>
+        <ul>
+          <li><a href="sdk_setup-swift.html">SDK 安装指南</a></li>
+          <li><a href="leanstorage_guide-swift.html">数据存储开发指南</a></li>
+          <!-- <li><a href="/api-docs/iOS/index.html" target="_blank">SDK API</a></li> -->
+        </ul>
+      </div>
+    </div>
+    <!-- .col-md-4 -->
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>Android SDK</h2>
+        <ul>
+          <li><a href="sdk_setup-android.html">SDK 安装指南</a></li>
+          <li><a href="leanstorage_guide-android.html">数据存储开发指南</a></li>
+          <li><a href="android_push_guide.html">消息推送开发指南</a></li>
+          <li><a href="realtime_guide-android.html">实时通信开发指南</a></li>
+          <li><a href="chatkit-android.html">ChatKit 使用指南</a></li>
+          <li><a href="relation_guide-android.html">数据模型设计指南</a></li>
+          <li><a href="acl_guide-android.html">权限管理使用指南</a></li>
+          <li><a href="android_statistics.html">统计分析开发指南</a></li>
+          {% if node!='qcloud' %}
+          <li><a href="sms_guide-android.html">短信服务使用指南</a></li>
+          {% endif %}
+          <li><a href="android_faq.html">FAQ</a></li>
+          <li><a href="/api-docs/android/index.html" target="_blank">SDK API</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- .col-md-4 -->
+
+  </div>
+  <!-- .row -->
+<hr>
+  <div class="row">
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>JavaScript SDK</h2>
+        <ul>
+          <li><a href="sdk_setup-js.html">SDK 安装指南</a></li>
+          <li><a href="leanstorage_guide-js.html">数据存储开发指南</a></li>
+          <li><a href="js_push.html">消息推送开发指南</a></li>
+          <li><a href="realtime_guide-js.html">实时通信开发指南</a></li>
+          <li><a href="relation_guide-js.html">数据模型设计指南</a></li>
+          <li><a href="acl_guide-js.html">权限管理使用指南</a></li>
+          <li><a href="js_analytics.html">统计分析开发指南</a></li>
+          {% if node!='qcloud' %}
+          <li><a href="sms_guide-js.html">短信服务使用指南</a></li>
+          {% endif %}
+          <!-- <li><a href="js_faq.html">FAQ</a></li> -->
+          <li><a href="/api-docs/javascript/index.html" target="_blank">数据存储 SDK API</a></li>
+          <li><a href="https://leancloud.github.io/js-realtime-sdk/docs/" target="_blank">实时通信 SDK API</a></li>
+          <li class="dropdown-header">云引擎</li>
+          <li><a href="leanengine_webhosting_guide-node.html">网站托管开发指南</a></li>
+          <li><a href="leanengine_cloudfunction_guide-node.html">云函数开发指南</a></li>
+        </ul>
+      </div>
+    </div>
+     <!-- .col-md-4 -->
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>.NET / Unity3D</h2>
+        <ul>
+          <li><a href="dotnet_guide.html">.NET 数据存储开发指南</a></li>
+          <li><a href="unity_guide.html">Unity3D 数据存储开发指南</a></li>
+          <li><a href="dotnet_push_guide.html">WP8.0 消息推送开发指南</a></li>
+          <li><a href="realtime_guide-dotnet.html">实时通信开发指南</a></li>
+          <li><a href="unity_statistics.html">Unity3D 统计开发指南</a></li>
+          <li><a href="dotnet_faq.html">FAQ</a></li>
+          <li><a href="/api-docs/dotnet/Help/index.html">.NET SDK API</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- .col-md-4 -->
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>Python SDK</h2>
+        <ul>
+          <li><a href="sdk_setup-python.html">SDK 安装指南</a></li>
+          <li><a href="leanstorage_guide-python.html">数据存储开发指南</a></li>
+          <li><a href="relation_guide-python.html">数据模型设计指南</a></li>
+          <li><a href="acl_guide-python.html">权限管理使用指南</a></li>
+          <li><a href="/api-docs/python/leancloud.html">SDK API</a></li>
+          <li role="separator" class="divider"></li>
+          <li class="dropdown-header">云引擎</li>
+          <li><a href="leanengine_guide-python.html">云引擎开发指南</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>PHP SDK</h2>
+        <ul>
+          <li><a href="leanstorage_guide-php.html">数据存储开发指南</a></li>
+          <li class="dropdown-header">云引擎</li>
+          <li><a href="leanengine_webhosting_guide-php.html">网站托管开发指南</a></li>
+          <li><a href="leanengine_cloudfunction_guide-php.html">云函数开发指南</a></li>
+          <li><a href="/api-docs/php/" target="_blank">SDK API</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <!-- .row -->
+<hr>
+  <div class="row">
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>Java SDK</h2>
+        <ul>
+          <li><a href="sdk_setup-java.html">SDK 安装指南</a></li>
+          <li><a href="leanstorage_guide-java.html">数据存储开发指南</a></li>
+          <li class="dropdown-header">云引擎</li>
+          <li><a href="leanengine_webhosting_guide-java.html">网站托管开发指南</a></li>
+          <li><a href="leanengine_cloudfunction_guide-java.html">云函数开发指南</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>REST API 和开放平台</h2>
+        <ul>
+          <li><a href="rest_api.html">数据存储 API</a></li>
+          <li><a href="rest_api.html#Push_通知">消息推送 API</a></li>
+          <li><a href="realtime_rest_api.html">实时通信 API</a></li>
+          {% if node!='qcloud' %}
+          <li><a href="rest_sms_api.html">短信验证 API</a></li>
+          {% endif %}
+          <li><a href="rest_api.html#统计数据_API">数据统计 API</a></li>
+          <li><a href="cql_guide.html">CQL 查询语言详解</a></li>
+          <li><a href="oauth2_provider.html">LeanCloud 开放平台接入</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- .col-md-4 -->
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>云引擎</h2>
+        <ul>
+          <li><a href="leanengine_overview.html">云引擎总览</a></li>
+          <li><a href="leanengine_quickstart.html">云引擎快速入门</a></li>
+          <li><a href="leanengine_plan.html">云引擎运行方案</a></li>
+          <li class="dropdown-header">Node.js</li>
+          <li><a href="leanengine_webhosting_guide-node.html">网站托管开发指南</a></li>
+          <li><a href="leanengine_cloudfunction_guide-node.html">云函数开发指南</a></li>
+          <li class="dropdown-header">Python</li>
+          <li><a href="leanengine_guide-python.html">云引擎开发指南</a></li>
+          <li class="dropdown-header">PHP</li>
+          <li><a href="leanengine_webhosting_guide-php.html">网站托管开发指南</a></li>
+          <li><a href="leanengine_cloudfunction_guide-php.html">云函数开发指南</a></li>
+          <li class="dropdown-header">Java</li>
+          <li><a href="leanengine_webhosting_guide-java.html">网站托管开发指南</a></li>
+          <li><a href="leanengine_cloudfunction_guide-java.html">云函数开发指南</a></li>
+          <li class="dropdown-header">其它相关</li>
+          <li><a href="leanengine_examples.html">云引擎项目示例</a></li>
+          <li><a href="leanengine_cli.html">云引擎命令行工具</a></li>
+          <li><a href="acl_guide_leanengine.html">在云引擎中管理 ACL</a></li>
+          <li><a href="leanengine_faq.html">FAQ</a></li>
+          <li><a href="leancache_guide.html">LeanCache 使用指南</a></li>
+        </ul>
+      </div>
+    </div>
+    <!-- .col-md-4 -->
+
+    <div class="col-md-3 col-xs-6">
+      <div class="link-block">
+        <h2>其他组件</h2>
+        <ul>
+          <li><a href="status_system.html">应用内社交开发指南</a></li>
+          <li><a href="app_search_guide.html">应用内搜索和 DeepLink 开发指南</a></li>
+          <li><a href="app_data_share.html">应用之间数据共享（Class 绑定）</a></li>
+          <li><a href="user_groups.html">用户群分析指南</a></li>
+          {% if node!='qcloud' %}
+          <li><a href="leaninsight_guide.html">离线数据分析使用指南</a></li>
+          {% endif %}
+          <li><a href="sns.html">第三方平台账号登录 SNS 开发指南</a></li>
+          <li><a href="feedback.html">用户反馈开发指南</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <!-- .row -->
+<hr>
+  <div class="row">
+
+    <div class="col-md-3 col-xs-6">
+     <div class="link-block">
+       <h2>教程</h2>
+       <ul>
+       <li>
+         <li><a href="tutorials.html#打造我的微信客服">打造我的微信客服</a></li>
+         <li><a href="tutorials.html#开发微博_OAuth_授权验证回调服务器">开发微博 OAuth 授权验证回调服务器</a></li>
+         <li><a href="https://zhuanlan.zhihu.com/p/21399155">快速开发聊天机器人</a></li>
+         <!-- <a href="tutorials.html#自带_UI_的聊天工具包_ChatKit">聊天工具包 ChatKit</a></li> -->
+         <li><a href="tutorials.html#为聊天接入表情云">为聊天接入表情云</a></li>
+         <li><a href="pay-beecloud.html">为网站加入收款功能</a></li>
+       </ul>
+     </div>
+   </div>
+
+  </div>
+
+</div>
