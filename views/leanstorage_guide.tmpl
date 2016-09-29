@@ -278,6 +278,9 @@ description     objectId
 ### 关联数据
 
 #### `{{relationObjectName}}`
+<div class="callout callout-info">注意：**如果针对关联数据有查询排序等复杂的操作，我们建议使用[关联表构建对象之间的关系](relation_guide-ios.html#使用关联表实现多对多关系)**
+</div>
+
 对象可以与其他对象相联系。如前面所述，我们可以把一个 `{{baseObjectName}}` 的实例 A，当成另一个 `{{baseObjectName}}` 实例 B 的属性值保存起来。这可以解决数据之间一对一或者一对多的关系映射，就像关系型数据库中的主外键关系一样。
 
 例如，一个 TodoFolder 包含多个 Todo ，可以用如下代码实现：
