@@ -1,40 +1,34 @@
 # LeanStorage 入门教程 &middot; {{platformName}}
 
-亲爱的开发者们，你们好！本教程将带您在 1 小时左右，掌握 LeanCloud 存储的核心概念，然后开始没有后端负担的快速开发！
+开发者们，你们好！本教程，将带你快速地理解和掌握 LeanCloud 的存储模块。我们会在示例项目的代码中，逐一地去熟悉几个核心的概念：`{{avUserName}}`、`{{avObjectName}}`、`{{avFileName}}`、`pointer`、`{{avQueryName}}` 和 `include`。即使你不熟悉数据库也没有关系，在理解了这些基础知识后，就可以开始基于 LeanCloud 的快速开发了。
 
-## 必要配置
-在跟随本教程进行开发之前，请先做好如下配置：
+## 准备工作
+* 选择下载你所需要的 [StorageStarted 源码](https://github.com/leancloud/StorageStarted)
 
-* 下载 zip 或者 git clone [StorageStarted 源码](https://github.com/leancloud/StorageStarted)
-* 在自己的控制台，[创建一个新应用](https://leancloud.cn/applist.html#/newapp)
-* 找到项目里的初始化代码，替换为自己所新建项目的 App ID 和 App Key，然后运行起来。
-
-```objc
-[AVOSCloud setApplicationId:@"你的 App ID" clientKey:@"你的 App Key"];
-```
-```java
-AVOSCloud.initialize(this,"你的 App ID", "你的 App Key");
-```
+## 学习方式
+ 1. 直接运行。你可以通过浏览 StorageStarted 的界面，同时查看 StorageStarted 里的代码，得到一个大体的印象。
+ 2. [创建一个新应用](https://leancloud.cn/applist.html#/newapp)。找到项目里的初始化代码，替换为自己的 App ID 和 App Key，然后再次运行。
+ 3. 通过对比 StorageStarted 里的代码，同时观察控制台的数据变化，来全面深入地理解 LeanStorage。
 
 ## 开发步骤
-
 ### 使用 {{avUesrName}} 操作用户
 
-打开应用后，我们首先看到的是登录界面，再进入注册页面。在这里，你会接触到第一个概念：`{{avUesrName}}`。
+打开应用后，我们看到的是登录界面。我们先点击进入注册页面，注册一个用户。
 
-它是用来描述一个用户的特殊对象，与之相关的数据都保存在 `_User` 数据表中。本质上，和下面所讲到的 `{{avObjectName}}` 是相同的。
+`{{avUesrName}}` 是用来描述一个用户的特殊对象，与之相关的数据都保存在 `_User` 数据表中。本质上，和下面所讲到的 `{{avObjectName}}` 是相同的。
 
-输入用户名和密码后，通过如下代码完成注册过程；成功后，在你的控制台的 `_User` 表里，会对应地生成一条数据，也就是刚刚注册成功的这名用户：
+输入用户名、密码和邮箱后，通过如下代码完成注册过程；成功后，在你的控制台的 `_User` 表里，会对应地生成一条数据，也就是刚刚注册成功的这名用户：
 
 ```java
     AVUser user = new AVUser();// 新建 AVUser 对象实例
-    user.setPassword(mUsernameView.getText().toString());// 设置用户名
-    user.setUsername(mPasswordView.getText().toString());// 设置密码
+    user.setUsername(username);// 设置用户名
+    user.setPassword(password);// 设置密码
+    user.setEmail(email);//设置邮箱
     user.signUpInBackground(new SignUpCallback() {
       @Override
       public void done(AVException e) {
         if (e == null) {
-          // 注册成功，把用户对象赋值给 AVUser.getCurrentUser()
+          // 注册成功，把用户对象赋值给当前用户 AVUser.getCurrentUser()
           startActivity(new Intent(RegisterActivity.this, MainActivity.class));
           RegisterActivity.this.finish();
         } else {
@@ -46,7 +40,7 @@ AVOSCloud.initialize(this,"你的 App ID", "你的 App Key");
     });
 ```
 
-如果已有帐号，那就在登陆页面，通过以下代码完成登录操作：
+如果已有帐号，那就在登录页面，通过以下代码完成登录操作：
 
 ```java
     AVUser.logInInBackground(username, password, new LogInCallback<AVUser>() {
@@ -63,20 +57,17 @@ AVOSCloud.initialize(this,"你的 App ID", "你的 App Key");
     });
 ```
 
-如果要做登出操作，使用如下代码：
-```
-AVUser.getCurrentUser().logOut();
-```
-
 ### 使用 {{avObjectName}} 新增数据
 
-登录成功后，我们进入主页面。再进入发布页面。在这里，你会接触到第二、三个概念：`{{avObjectName}}` 和 `pointer`。
+登录成功后，我们进入主页面。如果主页面没有任何内容，我们则点击进入发布页面，来发布一个新商品。
 
-`{{avObjectName}}` 是 LeanStorage 对复杂对象的封装，对应着控制台里一张表的一条数据。
+`{{avObjectName}}` 是 LeanStorage 对复杂对象的封装，每个 `{{avObjectName}}` 包含若干属性值对，也称键值对（key-value）。
 
-`pointer`，本质上是指向另外一张表的指针。在下面这个案例里，`owner` 字段，就是 `Product` 表里，用来指向 `_User` 表的一名用户的。
+`pointer`，本质上是指向另外一张表的指针。在下面这个案例里，`owner` 字段，就是 `Product` 表里，用来指向 `_User` 表的一名用户的指针。
 
-依次输入标题、商品描述和金额后，通过如下代码完成发布过程；成功后，在你的控制台里会新增一张名为 `Product` 的表，表里有一条新数据，也就是刚刚发布成功的这条数据：
+`{{avFileName}}` 是用来描述一个文件的特殊对象，与之相关的数据都保存在 `_File` 数据表中。
+
+依次输入标题、商品描述和金额，并从相册挑选一张商品图片后，通过如下代码完成发布过程；成功后，在你的控制台里会新增一张名为 `Product` 的表，表里有一条新数据，也就是刚刚发布成功的这条数据：
 
 ```java
     AVObject product = new AVObject("Product");
@@ -101,11 +92,11 @@ AVUser.getCurrentUser().logOut();
 
 ### 使用 {{avQueryName}} 进行查询
 
-发布成功后，我们回到主页面。对 `Product` 表进行查询。在这里，你会接触到第四、五个概念：`{{avQueryName}}` 和 `include`。
+发布成功后，我们回到主页面。对 `Product` 表进行查询。
 
 `{{avQueryName}}` 是构建针对 `{{avObjectName}}` 查询的基础类。
 
-还记得前面提到的 `pointer`？`Product` 表里的 `owner` 字段，就是一个 `pointer` 型字段，它的数据形式为：
+还记得前面提到的 `pointer`？`Product` 表里的 `owner` 字段，就是一个 `pointer` 型字段，它仅包含 3 个键值对的信息，数据形式为：
 
 ```
   "owner": {
@@ -136,8 +127,6 @@ AVUser.getCurrentUser().logOut();
     });
 ```
 
-##  结束语
+##  更进一步
 
-通过以上这个简单的教程，我们逐一熟悉了几个核心的概念：`{{avUserName}}`、`{{avObjectName}}`、`{{avQueryName}}`、`pointer` 和 `include`。即使你不熟悉数据库也没有关系，在理解这些基础知识后，就可以开始基于 LeanCloud 的开发了。
-
-如果你在之后对存储模块的开发过程中，有遇到任何问题，再去直接查阅：{{link_to_storage_guide_doc}}。
+如果你之后，在存储模块的开发过程中，遇到任何问题，请直接查阅以下文档的相关部分：{{link_to_storage_guide_doc}}。
