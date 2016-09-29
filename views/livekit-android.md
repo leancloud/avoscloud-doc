@@ -1,4 +1,5 @@
 {% set git_link = "https://github.com/leancloud/LeanCloudLiveKit-Android.git" %}
+{% set maven_uri = "http://mvn.leancloud.cn/nexus/content/repositories/public" %}
 # LiveKit 使用指南 &middot; Android
 
 [LiveKit]({{git_link}}) 是由 LeanCloud 官方推出的基于 LeanCloud 实时通信与七牛直播服务的 UI 套件，它包含直播、文字聊天、弹幕、送礼物等界面。
@@ -66,7 +67,7 @@ allprojects {
     repositories {
         jcenter()
         maven {
-            url "http://mvn.leancloud.cn/nexus/content/repositories/releases"
+            url "{{maven_uri}}"
         }
     }
 }
