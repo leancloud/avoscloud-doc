@@ -694,7 +694,7 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  https://api.leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
 ```
 
 {% if node=='qcloud' %}
@@ -710,7 +710,7 @@ curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  https://api.leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
 ```
 
 关注还可以增加一些属性：
@@ -721,7 +721,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"score": 100}' \
-  https://api.leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
 ```
 
 那么 `score` 字段将同时出现在 `_Follower` 和 `_Followee` 表，可以作为查询或者排序条件。
@@ -735,7 +735,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  https://api.leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/followers
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followers
 ```
 
 返回的用户列表是 Pointer 类型，如果想要将用户信息也返回，需要 include:
@@ -747,7 +747,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'include=follower' \
-  https://api.leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/followers
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followers
 ```
 
 查询关注的用户列表：
@@ -759,7 +759,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'include=followee' \
-  https://api.leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/followees
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followees
 ```
 
 同时查询粉丝和关注的人：
@@ -771,7 +771,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'include=followee' \
-  https://api.leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/followersAndFollowees
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followersAndFollowees
 ```
 
 结果返回：
@@ -790,7 +790,7 @@ curl -X GET \
   -G \
   --data-urlencode 'include=followee' \
   --data-urlencode 'count=1' \
-  https://api.leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/followersAndFollowees
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followersAndFollowees
 ```
 
 ### 状态 API
@@ -842,7 +842,7 @@ curl -X POST \
               }
          }
       }' \
-   https://api.leancloud.cn/1.1/statuses
+   https://{{host}}/1.1/statuses
 ```
 
 这条状态的内容是 data 指定的，并且设定 inboxType 是 `default`：
@@ -920,7 +920,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'owner={"__type":"Pointer","className":"_User","objectId":"dennis id"}' \
-  https://api.leancloud.cn/1.1/subscribe/statuses
+  https://{{host}}/1.1/subscribe/statuses
 ```
 
 【示例二】查询我的最新私信列表：
@@ -965,7 +965,7 @@ curl -X DELETE \
   --data-urlencode 'owner={"__type":"Pointer","className":"_User","objectId":"dennis id"}' \
   --data-urlencode 'inboxType=default' \
   --data-urlencode 'messageId=99' \
-  https://api.leancloud.cn/1.1/subscribe/statuses/inbox
+  https://{{host}}/1.1/subscribe/statuses/inbox
 ```
 
 
@@ -997,7 +997,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'owner={"__type":"Pointer","className":"_User","objectId":"dennis"}' \
-  https://api.leancloud.cn/1.1/subscribe/statuses/count
+  https://{{host}}/1.1/subscribe/statuses/count
 ```
 
 返回：
@@ -1016,5 +1016,5 @@ curl -X GET \
   -G \
    --data-urlencode 'owner={"__type":"Pointer","className":"_User","objectId":"dennis"}' \
    --data-urlencode 'inboxType=private' \
-   https://api.leancloud.cn/1.1/subscribe/statuses/count
+   https://{{host}}/1.1/subscribe/statuses/count
 ```
