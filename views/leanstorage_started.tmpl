@@ -1,6 +1,6 @@
 # LeanStorage 入门教程 &middot; {{platformName}}
 
-开发者们，你们好！本教程将带你快速地理解和掌握 LeanCloud 的存储模块。我们会在示例项目的代码中，逐一地去熟悉几个核心的概念：`{{avUserName}}`、`{{avObjectName}}`、`{{avFileName}}`、`pointer`、`{{avQueryName}}` 和 `include`。在理解了这些基础知识后，就可以开始基于 LeanCloud 的快速开发了。
+开发者们，你们好！本教程将模拟一个发布商品的场景，向你讲解 LeanCloud 的存储模块。我们会在示例项目的代码中，逐一地去熟悉几个核心的概念：`{{avUserName}}`、`{{avObjectName}}`、`{{avFileName}}`、`Pointer`、`{{avQueryName}}` 和 `include`。在理解了这些基础知识后，就可以开始基于 LeanCloud 的快速开发了。
 
 ## 准备工作
 * 选择下载你所需要的 [StorageStarted 源码](https://github.com/leancloud/StorageStarted)
@@ -10,7 +10,7 @@
  2. [创建一个新应用](https://leancloud.cn/applist.html#/newapp)。找到项目里的初始化代码，替换为自己的 App ID 和 App Key，然后再次运行。这时候，通过对比 StorageStarted 里的代码，同时观察自己控制台的数据变化，来全面深入地理解 LeanStorage。
 
 ## 开发步骤
-### 使用 {{avUesrName}} 操作用户
+### 用户注册和登录
 
 打开应用后，我们看到的是登录界面。我们先点击进入注册页面，注册一个用户。
 
@@ -56,17 +56,39 @@
     });
 ```
 
-### 使用 {{avObjectName}} 新增数据
+### 发布第一件商品
 
 登录成功后，我们进入主页面。如果主页面没有任何内容，我们则点击进入发布页面，来发布一个新商品。
 
-`{{avObjectName}}` 是 LeanStorage 对复杂对象的封装，每个 `{{avObjectName}}` 包含若干属性值对，也称键值对（key-value）。
+通常我们发布出来的商品，有如下几个属性：
 
-`pointer`，本质上是指向另外一张表的指针。在下面这个案例里，`owner` 字段，就是 `Product` 表里，用来指向 `_User` 表的一名用户的指针。
+- 商品标题
+- 商品描述
+- 商品价格
+- 封面图片
+- 所有者
 
-`{{avFileName}}` 是用来描述一个文件的特殊对象，与之相关的数据都保存在 `_File` 数据表中。
+我们可以将一件商品，对应到一个 `{{avObjectName}}` 的实例。`{{avObjectName}}` 是 LeanCloud 提供的面向对象存储模型的核心概念，一个 Object 可以拥有若干属性，每一个属性就是一个键值对（key-value）。像上面的商品属性，我们可以设计如下的存储 schema：
 
-依次输入标题、商品描述和金额，并从相册挑选一张商品图片后，通过如下代码完成发布过程；成功后，在你的控制台里会新增一张名为 `Product` 的表，表里有一条新数据，也就是刚刚发布成功的这条数据：
+属性名 | 类型 | 含义
+---|---|---
+title | String | 商品标题
+description | String | 商品描述
+price | Number | 商品价格
+owner | Pointer | 所有者
+image | File | 封面图片
+
+
+这里还有两个属性比较特殊：
+
+- 所有者
+- 封面图片
+
+`Pointer` 类型，本质上是指向另外一张表的指针。在这个案例里，`owner` 字段，就是 `Product` 表里，用来指向 `_User` Pointer表的一名用户的指针。
+
+`File` 类型，对应着 `{{avFileName}}`。 `{{avFileName}}` 是用来描述一个文件的特殊对象，与之相关的数据都保存在 `_File` 数据表中。
+
+依次输入商品标题、商品描述和商品价格，并从相册挑选一张封面图片后，通过如下代码完成发布过程；成功后，在你的控制台里会新增一张名为 `Product` 的表，表里有一条新数据，也就是刚刚发布成功的这条数据：
 
 ```java
     AVObject product = new AVObject("Product");
@@ -89,13 +111,13 @@
     });
 ```
 
-### 使用 {{avQueryName}} 进行查询
+### 展示商品列表
 
 发布成功后，我们回到主页面。对 `Product` 表进行查询。
 
 `{{avQueryName}}` 是构建针对 `{{avObjectName}}` 查询的基础类。
 
-还记得前面提到的 `pointer`？`Product` 表里的 `owner` 字段，就是一个 `pointer` 型字段，它仅包含 3 个键值对的信息，数据形式为：
+还记得前面提到的 `Pointer`？`Product` 表里的 `owner` 字段，就是一个 `Pointer` 型字段，它仅包含 3 个键值对的信息，数据形式为：
 
 ```
   "owner": {
