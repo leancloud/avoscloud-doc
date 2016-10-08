@@ -103,20 +103,12 @@
 1. 进入 [LeanCloud 应用控制台 > 消息 > 推送 > 设置](/messaging.html?appid={{appid}}#/message/push/conf)，然后就可以看到下面的页面：
   
   ![Push certificate configure](images/ios_cert_v2/push_certificate_config.png)
-2. 根据你的证书类别进行上传。这里请注意区分证书的类别，<u>测试环境</u>证书和<u>生产环境</u>证书请勿混淆。
-  - 「Universal 推送证书」需要上传到图中的 **生产证书** 中。
-    <div class="callout callout-info">在 LeanCloud 的推送服务中，出于兼容性考虑，**Universal 证书只能用于生产环境**。如果需要进行推送测试，请使用图中的 **测试环境证书**。</div>
-  - 在 LeanCloud 的推送服务中，不同类型的推送证书能够服务的环境略有不同，对应关系如下图所示：
-    
-    ![relation between cer and prod or dev](images/ios_cert_v2/relation_between_cer_and_prod_or_dev.png)
 
-3. 正如上文中所述，如果你需要进行推送测试，那么就需要上传测试证书。找到你刚刚创建好的 App ID，点击 Edit 生成测试证书：
+2. 将「Universal 推送证书」上传到图中的 **生产证书** 中。
 
-    ![create_dev_cert_02](images/ios_cert_v2/create_dev_cert_01.png)
+	**根据你的证书类别进行上传。这里请注意区分证书的类别，<u>测试环境</u>证书和<u>生产环境</u>证书请勿混淆。**
 
-    ![create_dev_cert_02](images/ios_cert_v2/create_dev_cert_02.png)
-
-其余步骤与生产证书步骤类似。
+3. 配置推送证书，最简单的方式就是将刚才生成的「Universal 推送证书」直接上传。当然也可以自己生成一个测试证书。
 
 上传测试证书后，那么就可以在控制台看到生产证书和测试证书都上传完成：
 
