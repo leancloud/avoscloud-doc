@@ -1024,7 +1024,7 @@ AVIMMessage msg = new AVIMMessage();
 msg.setContent("Ping");
 AVIMMessageOption messageOption = new AVIMMessageOption();
 messageOption.setReceipt(true);
-conv.sendMessage(msg, AVIMConversation.RECEIPT_MESSAGE_FLAG, new AVIMConversationCallback() {
+conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
       @Override
       public void done(AVIMException e) {
         if (e == null) {
