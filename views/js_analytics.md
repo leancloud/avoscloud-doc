@@ -38,8 +38,8 @@ AV.init({
 // 开启统计 Pageview（页面访问）
 AV.Analyse.recordPageview();
 
-// 开启统计 Session-view（会话访问）
-AV.Analyse.recordSessionView();
+// 开启统计 Session view（会话访问）
+AV.Analyse.recordSession();
 
 // 发送统计自定义事件
 AV.Analyse.send({
@@ -134,14 +134,14 @@ AV.Analyse.send({
 AV.Analyse.recordPageview();
 ```
 
-### AV.Analyse.recordSessionView()
+### AV.Analyse.recordSession()
 
-描述：开启统计 Session-view（会话访问）
+描述：开启统计 Session view（会话访问）
 
 例子：
 
 ```javascript
-AV.Analyse.recordSessionView();
+AV.Analyse.recordSession();
 ```
 
 ## 数据时效性
