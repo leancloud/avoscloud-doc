@@ -28,6 +28,9 @@
 - [PHP](leanengine_cloudfunction_guide-php.html)
 - [Java](leanengine_cloudfunction_guide-java.html)
 
+{% block initialize %}
+{% endblock %}
+
 ## 云函数
 
 示例项目中 {{ cloud_func_file }} 文件定义了一个很简单的 `hello` 云函数。现在让我们看一个明显较复杂的例子来展示云引擎的用途。在云端进行计算的一个重要理由是，你不需要将大量的数据发送到设备上做计算，而是将这些计算放到服务端，并返回结果这一点点信息就好。
@@ -109,6 +112,11 @@ $params = array(
 );
 Cloud::run("averageStars", $params);
 ```
+```python
+from leancloud import cloudfunc
+
+cloudfunc.run('averageStars', movie='夏洛特烦恼')
+```
 ### 通过 REST API 调用云函数
 [REST API 调用云函数](rest_api.html#云函数-1) 是 LeanCloud 云端提供的统一的访问云函数的接口，所有的客户端 SDK 也都是封装了这个接口从而实现对云函数的调用。
 
@@ -181,6 +189,7 @@ AV.Cloud.rpc('averageStars', movie).then(function(object) {
 });
 ```
 
+
 ### 切换云引擎环境
 
 专业版云引擎应用有「生产环境」和「预备环境」，切换方法为：
@@ -196,6 +205,9 @@ LeanClient::useProduction(false); // 调用预备环境
 ```
 ```javascript
 AV.setProduction(false); // 调用预备环境
+```
+```python
+leancloud.use_production(False) # 调用预备环境
 ```
 
 [免费版云引擎应用只有「生产环境」](leanengine_plan.html#免费版) ，因此以上切换方法不适用。

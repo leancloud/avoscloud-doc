@@ -348,17 +348,6 @@ AV.Cloud.useMasterKey();
 ```
 {% endblock %}
 
-{% block loggerExample %}
-
-```javascript
-AV.Cloud.define('Logger', function(request, response) {
-  console.log(request.params);
-  response.success();
-});
-```
-{% endblock %}
-
-
 {% block code_hook_message_received %}
 
 ```js

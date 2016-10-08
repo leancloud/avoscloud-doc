@@ -1,6 +1,6 @@
 #### 版本依赖
 
-目前 Python SDK 只支持 Python 2，Python 3 的支持正在开发中。
+目前 Python SDK 支持 Python3 与 Python2，并且推荐使用 3.5 或者 2.7 及以上版本的 Python。
 
 #### 使用 virtualenv
 
