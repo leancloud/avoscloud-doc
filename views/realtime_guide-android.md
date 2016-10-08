@@ -691,10 +691,9 @@ tom.open(new AVIMClientCallback() {
           AVIMConversation conv = client.getConversation("551260efe4b01608686c3e0f");
           AVIMOperationMessage msg = new AVIMOperationMessage();
           msg.setOp("keyboard inputing");
-          // AVIMConversation.TRANSIENT_MESSAGE_FLAG 表示该条消息为暂态消息
-          // 
-          conv.sendMessage(msg, AVIMConversation.TRANSIENT_MESSAGE_FLAG,
-              new AVIMConversationCallback() {
+          AVIMMessageOption messageOption = new AVIMMessageOption();
+          messageOption.setTransient(true);
+          conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
                 @Override
                 public void done(AVIMException e) {
                   if (e == null) {
@@ -767,31 +766,6 @@ jerry.open(new AVIMClientCallback() {
 {% endblock %}
 
 {% block offlineMessage_android %}>**Android 聊天服务是和后台的推送服务共享连接的，所以只要有网络就永远在线，不需要专门做推送。**消息达到后，你可以根据用户的设置来判断是否需要弹出通知。网络断开时，我们为每个对话保存 20 条离线消息。{% endblock %}
-
-{% block message_sent_ack %}
-
-```
-AVIMMessageHandler handler = new AVIMMessageHandler(){
-
-    public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
-     //此处就是对方收到消息以后的回调
-	  Log.i("Tom & Jerry","msg received");
-  }
-}
-
-//注册对应的handler
-AVIMMessageManager.registerMessageHandler(AVIMMessage.class,handler);
-
-//发送消息
-
-AVIMClient jerry = AVIMClient.getInstance("Jerry");
-AVIMConversation conv = jerry.getConversation("551260efe4b01608686c3e0f");
-AVIMMessage msg = new AVIMMessage();
-msg.setContent("Ping");
-conv.sendMessage(msg,AVIMConversation.RECEIPT_MESSAGE_FLAG);
-
-```
-{% endblock %}
 
 {% block messagePolicy_received_intro %}{% endblock %}
 
@@ -960,9 +934,7 @@ public class AVIMTextMessage extends AVIMTypedMessage {
 /**
  *
  * @param message 发送的消息实体，可以是任何 AVIMMessage 子类
- * @param messageFlag AVIMConversation.TRANSIENT_MESSAGE_FLAG(0)：暂态消息，只有在消息发送时，对方也是在线的才能收到这条消息；
- *                    AVIMConversation.NONTRANSIENT_MESSAGE_FLAG(1)：非暂态消息，当消息发送时，对方不在线的话，消息会变成离线消息；
- *                    AVIMConversation.RECEIPT_MESSAGE_FLAG(17)：回执消息，当消息送到到对方以后，发送方会收到消息回执说明消息已经成功达到接收方
+ * @param AVIMMessageOption 消息特性的选项
  * @param callback 消息发送之后的回调，发送异常或者发送成功都可以在回调里进行操作
  */
 public void sendMessage(final AVIMMessage message, final int messageFlag, final AVIMConversationCallback callback)
@@ -987,6 +959,81 @@ public void sendMessage(AVIMMessage message, AVIMConversationCallback callback)
 {% block messagePolicy_received_method %}{% endblock %}
 
 {% block messagePolicy_received %}{% endblock %}
+
+{% set message_option_name = 'AVIMMessageOption' %}
+
+{% set message_priority_default_varname = 'MessagePriority.Default' %}
+{% set message_priority_high_varname    = 'MessagePriority.High' %}
+{% set message_priority_normal_varname  = 'MessagePriority.Normal' %}
+{% set message_priority_low_varname     = 'MessagePriority.Low' %}
+ 
+{% block message_option_priority %}
+```
+AVIMClient tom = AVIMClient.getInstance("Tom");
+    tom.open(new AVIMClientCallback() {
+      @Override
+      public void done(AVIMClient client, AVIMException e) {
+        if (e == null) {
+          // 创建名为“猫和老鼠”的对话
+          client.createConversation(Arrays.asList("Jerry"), "猫和老鼠", null,
+            new AVIMConversationCreatedCallback() {
+              @Override
+              public void done(AVIMConversation conv, AVIMException e) {
+                if (e == null) {
+                  AVIMTextMessage msg = new AVIMTextMessage();
+                  msg.setText("耗子，起床！");
+
+                  AVIMMessageOption messageOption = new AVIMMessageOption();
+                  messageOption.setPriority(AVIMMessageOption.MessagePriority.High);
+                  conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
+                    @Override
+                    public void done(AVIMException e) {
+                      if (e == null) {
+                        // 发送成功
+                      }
+                    }
+                  });
+                }
+              }
+            });
+        }
+      }
+    });
+```
+{% endblock %}
+
+{% block message_sent_ack %}
+
+```
+AVIMMessageHandler handler = new AVIMMessageHandler(){
+
+    public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
+     //此处就是对方收到消息以后的回调
+	  Log.i("Tom & Jerry","msg received");
+  }
+}
+
+//注册对应的handler
+AVIMMessageManager.registerMessageHandler(AVIMMessage.class,handler);
+
+//发送消息
+
+AVIMClient jerry = AVIMClient.getInstance("Jerry");
+AVIMConversation conv = jerry.getConversation("551260efe4b01608686c3e0f");
+AVIMMessage msg = new AVIMMessage();
+msg.setContent("Ping");
+AVIMMessageOption messageOption = new AVIMMessageOption();
+messageOption.setReceipt(true);
+conv.sendMessage(msg, AVIMConversation.RECEIPT_MESSAGE_FLAG, new AVIMConversationCallback() {
+      @Override
+      public void done(AVIMException e) {
+        if (e == null) {
+          // 发送成功
+        }
+      }
+    });
+```
+{% endblock %}
 
 {% block conversation_init %}
 ```
