@@ -15,17 +15,8 @@ npm-debug.log
 # ------------
 # use template
 # ------------
-md/acl_guide*.md
-md/acl_quick_start*.md
-md/leanengine_guide*.md
-md/leanengine_cloudfunction*.md
-md/leanengine_webhosting*.md
-md/leanstorage_guide*.md
-md/realtime_guide*.md
-!md/realtime_guide-js.md
-md/relation_guide*.md
-md/sdk_setup*.md
-md/sms_guide*.md
-md/test*.md
+md/*.md
+md/start/*.md
 
 views/test.md
+

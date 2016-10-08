@@ -290,7 +290,7 @@ todo.save()
 * `add()`<br>
   将指定对象附加到数组末尾。
 * `add_unique()`<br>
-  如果不确定某个对象是否已包含在数组字段中，可以使用此操作来添加。
+  如果数组中不包含指定对象，将该对象加入数组，对象的插入位置是随机的。
 
 {% endblock %}
 
@@ -970,6 +970,14 @@ for todo in query_list:
 ```
 {% endblock %}
 
+{% block code_query_select_pointer_keys %}
+
+```python
+query.select('owner.username')
+```
+
+{% endblock %}
+
 {% block code_query_orderby %}
 ```python
 # 按时间，升序排列
@@ -1002,7 +1010,7 @@ todo.save()  # 存储图片
 
 query = Todo.query
 query.exists('images')  # 查询 images 属性不为空的对象
-query.does_not_exists('images')  # 查询 images 属性为空的对象
+query.does_not_exist('images')  # 查询 images 属性为空的对象
 ```
 {% endblock %}
 
@@ -1101,7 +1109,7 @@ query.within_kilometers('whereCreated', point, 10)
 ```
 {% endblock %} code_object_fetch_with_keys
 
-{% block link_to_relation_guide_doc %}[Python 关系建模指南](relation_guide-python.html){% endblock %}
+{% block link_to_relation_guide_doc %}[Python 数据模型设计指南](relation_guide-python.html){% endblock %}
 
 {% block link_to_sms_guide_doc %}{% endblock %}
 
@@ -1207,6 +1215,13 @@ leancloud.User.get_current().save()
 
 ``` python
 leancloud.User.request_password_reset('tom-test@gmail.com')
+```
+{% endblock %}
+
+{% block code_send_verify_email %}
+
+```python
+   //待补充
 ```
 {% endblock %}
 
@@ -1381,5 +1396,6 @@ class MyUser(leancloud.User):
 {% block text_work_in_background %}{% endblock %}
 {% block text_data_protocol %}{% endblock %}
 {% block save_eventually %}{% endblock %}
+
 
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

@@ -1940,7 +1940,7 @@ private void TomQueryWithLimit() {
     public void done(AVIMClient client, AVIMException e) {
       if (e == null) {
         //登录成功
-        AVIMConversationQuery query = tom.getConversationQuery();
+        AVIMConversationQuery query = tom.getQuery();
         query.setLimit(1);
         //获取第一个对话
         query.findInBackground(new AVIMConversationQueryCallback() {
@@ -2016,11 +2016,31 @@ private void TomQueryWithLimit() {
 ```
 {% endblock %}
 
+{% block message_priority %}
+### 聊天室消息等级
+
+为了保证消息的时效性，当聊天室消息过多导致客户端连接堵塞时，服务器端会根据消息等级来丢弃部分不重要的消息。可通过调用 `AVIMMessage` 的如下方法来设置消息等级：
+
+```
+ public void setPriority(AVIMMessagePriorityType priority)
+```
+
+`AVIMMessagePriorityType` 包含以下枚举值：
+* Default - 默认值
+* High - 高等级（针对时效性要求比较高的消息，比如直播聊天室中的礼物、弹幕等类型消息）
+* Normal - 正常等级
+* Low - 低等级（针对时效性要求比较低的消息，比如直播聊天室中的普通消息）
+
+注意：此功能仅针对聊天室消息，普通会话消息不需要设置此等级，因为普通会话消息不会被丢弃。
+
+{% endblock %}
+
 {% block networkStatus %}
 与网络相关的通知（网络断开、恢复等）会由 `AVIMClientEventHandler` 做出响应，接口函数有：
 
 * `onConnectionPaused()` 指网络连接断开事件发生，此时聊天服务不可用。
 * `onConnectionResume()` 指网络连接恢复正常，此时聊天服务变得可用。
+* `onClientOffline()` 指[单点登录](#单点登录)被踢下线的事件。
 
 在网络中断的情况下，所有的消息收发和对话操作都会出现问题。
 
@@ -2081,7 +2101,7 @@ tom.open(new AVIMClientCallback(){
       List<String> targetIds, String action) throws SignatureException;
 ```
 
-`createSignature` 函数会在用户登录的时候被调用，`createConversationSignature` 会在对话创建/加入、邀请成员、踢出成员等操作时被调用。
+`createSignature` 函数会在用户登录、对话创建的时候被调用，`createConversationSignature` 会在对话加入成员、邀请成员、踢出成员等操作时被调用。
 
 你需要做的就是按照前文所述的签名算法实现签名，其中 `Signature` 声明如下：
 
@@ -2181,6 +2201,16 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
 {% block disconnected_by_server_with_same_tag %}
 
 ```java
+public class MyApplication extends Application{
+  public void onCreate(){
+   ...
+   AVOSCloud.initialize(this,"{{appid}}","{{appkey}}");
+   // 自定义实现的 AVIMClientEventHandler 需要注册到 SDK 后，SDK 才会通过回调 onClientOffline 来通知开发者
+   AVIMClient.setClientEventHandler(new AVImClientManager());
+   ...
+  }
+}
+
 public class AVImClientManager extends AVIMClientEventHandler {
   ...
   @Override
@@ -2193,6 +2223,20 @@ public class AVImClientManager extends AVIMClientEventHandler {
 }
 ```
 
+{% endblock %}
+
+{% block client_auto_open %}
+### 自动登录
+
+如果开发者希望控制 App 重新启动后是否由 SDK 自动登录实时通讯，这可通过如下接口实现：
+
+```
+AVIMClient.setAutoOpen(false);
+```
+
+如果为 true，SDK 会在 App 重新启动后进行实时通讯的自动重连，如果为 false，则 App 重新启动后不会做自动重连操作，默认值为 true。
+
+注意：此设置并不影响在 App 生命周期内因网络获取等问题造成的重连。
 {% endblock %}
 
 {% block code_set_query_policy %}

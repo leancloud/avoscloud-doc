@@ -9,9 +9,17 @@
 
 <body  class="dashboard-init" ng-cloak ng-controller="AppCtrl">
 
-{% include 'templates/include/header.html' %}
+{% if node=='qcloud' %}
+  {% include 'templates/include/qcloudheader.html' %}
+{% endif %}
 
-<div class="container-fluid" id="content" style="padding-bottom: 0;">
+{% if node!='qcloud' %}
+  {% include 'templates/include/header.html' %}
+{% endif %}
+
+{% include 'templates/include/doc-nav.html' %}
+
+<div class="container-fluid <%= node %>" id="content" style="padding-bottom: 0;">
   <div class="row">
     <div class="col-sm-12">
       <div class="doc-content">
@@ -24,8 +32,15 @@
   <!-- .row -->
 </div>
 <!-- .container-fluid -->
+{% include 'templates/include/common-footer.html' %}
 
-{% include 'templates/include/footer.html' %}
+{% if node=='qcloud' %}
+  {% include 'templates/include/qcloudfooter.html' %}
+{% endif %}
+
+{% if node!='qcloud' %}
+  {% include 'templates/include/footer.html' %}
+{% endif %}
 
 
 </body>

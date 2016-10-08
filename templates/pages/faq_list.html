@@ -12,8 +12,10 @@
         <li><a href="faq.html#获取客服支持有哪些途径">获取客服支持有哪些途径</a></li>
         <li><a href="faq.html#计费是基于账号还是应用">计费是基于账号还是应用</a></li>
         <li><a href="faq.html#如果没有缴费会怎么样">如果没有缴费会怎么样</a></li>
+        {% if node!='qcloud' %}
         <li><a href="faq.html#如何付费">如何付费</a></li>
         <li><a href="faq.html#如何申请开具发票">如何申请开具发票</a></li>
+        {% endif %}
         <li><a href="faq.html#哪里获取平台的更新信息">哪里获取平台的更新信息</a></li>
         <li><a href="faq.html#API_开放吗">API 开放吗</a></li>
         <li><a href="faq.html#提供哪些平台的_SDK">提供哪些平台的 SDK</a></li>
@@ -42,6 +44,7 @@
         <li><a href="faq.html#当数据量越来越来大时_怎么加快查询速度_" target="_blank">当数据量越来越来大时，怎么加快查询速度</a></li>
         <li><a href="faq.html#LeanCloud_查询支持_Sum__Group_By__Distinct_这种函数吗_" target="_blank">LeanCloud 查询支持 Sum, Group By, Distinct 这种函数吗</a></li>
         <li><a href="faq.html#sessionToken_在什么情况下会失效_" target="_blank">sessionToken 在什么情况下会失效</a></li>
+        <li><a href="faq.html#默认值的查询结果为什么不对">默认值的查询结果为什么不对</a></li>
       </ul>
     </div>
   </div>
@@ -63,6 +66,7 @@
   </div>
   <!-- .col-md-4 -->
 
+{% if node!='qcloud' %}
   <div class="col-md-3 col-xs-6">
     <div class="link-block">
       <h2>短信</h2>
@@ -79,6 +83,7 @@
       </ul>
     </div>
   </div>
+  {% endif %}
   <!-- .col-md-4 -->
 
    

@@ -281,7 +281,7 @@ option.query = query;
   将指定对象附加到数组末尾。
 * `addUniqueObject:forKey:`<br>
   `addUniqueObjectsFromArray:forKey:`<br>
-  如果不确定某个对象是否已包含在数组字段中，可以使用此操作来添加。对象的插入位置是随机的。  
+  如果数组中不包含指定对象，将该对象加入数组，对象的插入位置是随机的。  
 * `removeObject:forKey:`<br>
   `removeObjectsInArray:forKey:`<br>
   从数组字段中删除指定对象的所有实例。
@@ -540,7 +540,7 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 ```objc
     [file saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
       // 成功或失败处理...
-    } progressBlock:^(int percentDone) {
+    } progressBlock:^(NSInteger percentDone) {
       // 上传进度数据，percentDone 介于 0 和 100。
     }];
 ```
@@ -967,6 +967,14 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 ```
 {% endblock %}
 
+{% block code_query_select_pointer_keys %}
+
+```objc
+    [query selectKeys:@[@"owner.username"]];
+```
+
+{% endblock %}
+
 {% block code_query_count %}
 
 ```objc
@@ -1173,10 +1181,20 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 ```
 {% endblock %} code_object_fetch_with_keys
 
-{% block link_to_relation_guide_doc %}[iOS / OS X 关系建模指南](relation_guide-ios.html){% endblock %}
+{% block link_to_relation_guide_doc %}[iOS / OS X 数据模型设计指南](relation_guide-ios.html){% endblock %}
 
 {% set link_to_sms_guide_doc = '[iOS / OS X 短信服务使用指南](sms_guide-ios.html#注册验证)' %}
 
+{% block code_send_verify_email %}
+
+```objc
+    [AVUser requestEmailVerify:@"abc@xyz.com" withBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"请求重发验证邮件成功");
+        }
+    }];
+```
+{% endblock %}
 {% block code_send_sms_code_for_loginOrSignup %}
 
 ```objc

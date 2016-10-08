@@ -15,6 +15,13 @@ module.exports = function(grunt) {
 
   require("time-grunt")(grunt);
 
+  var hostMap = {
+    'us': 'us-api.leancloud.cn',
+    'cn': 'api.leancloud.cn',
+    'qcloud': 'tab.leancloud.cn'
+  }
+  console.log('current theme --- '+grunt.option('theme'))
+
   // Project configuration.
   grunt.initConfig({
 
@@ -113,6 +120,7 @@ module.exports = function(grunt) {
         },
         layoutdir: 'templates/layouts/',
         layout: ['template.swig'],
+        node: grunt.option('theme'),
         flatten: true
       },
       md: {
@@ -228,8 +236,17 @@ module.exports = function(grunt) {
     nunjucks: {
       precompile: {
         baseDir: 'views',
-        src: 'views/*.md',
-        destDir: 'md'
+        src: ['views/*.md', 'views/start/*.md'],
+        destDir: 'md',
+        options:{
+          data:{
+            node: grunt.option('theme'),
+            appid: '{{appid}}',
+            appkey: '{{appkey}}',
+            masterkey: '{{masterkey}}',
+            host: hostMap[grunt.option('theme')] || 'api.leancloud.cn'
+          }
+        }
       }
     },
 
@@ -384,7 +401,7 @@ module.exports = function(grunt) {
     }
     var self = this;
     // 查询所有已存在的 snippet version，
-    // 用来判断哪些是新的 snipeet，然后将其 version 和 content 添加到数据库
+    // 用来判断哪些是新的 snippet，然后将其 version 和 content 添加到数据库
     var snippetsVersion = [];
     var getSnippetsVersion = function(skip) {
       return AV.Query.doCloudQuery('select snippetVersion from Snippet limit ?, ?', [skip, 1000]).then(function(result) {

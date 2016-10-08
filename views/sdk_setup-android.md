@@ -1,5 +1,5 @@
 {% extends "./sdk_setup.tmpl" %}
-
+{% set maven_uri = "http://mvn.leancloud.cn/nexus/content/repositories/public" %}
 {% block language %}Android{% endblock %}
 
 {% block libs_tool_automatic %}
@@ -32,7 +32,7 @@ buildscript {
         jcenter()
         //这里是 LeanCloud 的包仓库
         maven {
-            url "http://mvn.leancloud.cn/nexus/content/repositories/releases"
+            url "{{maven_uri}}"
         }
 
     }
@@ -46,7 +46,7 @@ allprojects {
         jcenter()
         //这里是 LeanCloud 的包仓库
         maven {
-            url "http://mvn.leancloud.cn/nexus/content/repositories/releases"
+            url "{{maven_uri}}"
         }
     }
 }
@@ -198,11 +198,11 @@ public class MyLeanCloudApp extends Application {
 
   <!-- 实时通信模块、推送（若使用该功能，需添加以下声明）START -->
   <service android:name="com.avos.avoscloud.PushService"/>
-    <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
-      <intent-filter>
-        <action android:name="android.intent.action.BOOT_COMPLETED"/>
-        <action android:name="android.intent.action.USER_PRESENT"/>
-        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+  <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
+    <intent-filter>
+      <action android:name="android.intent.action.BOOT_COMPLETED"/>
+      <action android:name="android.intent.action.USER_PRESENT"/>
+      <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
     </intent-filter>
   </receiver>
   <!-- 实时通信模块、推送 END -->

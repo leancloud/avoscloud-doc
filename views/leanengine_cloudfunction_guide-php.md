@@ -3,7 +3,7 @@
 {% set platformName = 'PHP' %}
 {% set productName = 'LeanEngine' %}
 {% set storageName = 'LeanStorage' %}
-{% set leanengine_middleware = '[LeanEngine PHP SDK](https://github.com/leancloud/php-sdk)' %}
+{% set leanengine_middleware = '[LeanCloud PHP SDK](https://github.com/leancloud/php-sdk)' %}
 
 {% set sdk_guide_link = '[PHP SDK](./leanstorage_guide-php.html)' %}
 {% set cloud_func_file = '`$PROJECT_DIR/cloud.php`' %}
@@ -19,16 +19,24 @@
 {% set hook_after_delete  = "afterDelete" %}
 {% set hook_on_verified   = "onVerified" %}
 {% set hook_on_login      = "onLogin" %}
+{% set hook_message_received = "_messageReceived" %}
+{% set hook_receiver_offline = "_receiversOffline" %}
+{% set hook_message_sent = "_messageSent" %}
+{% set hook_conversation_start = "_conversationStart" %}
+{% set hook_conversation_started = "_conversationStarted" %}
+{% set hook_conversation_add = "_conversationAdd" %}
+{% set hook_conversation_remove = "_conversationRemove" %}
+{% set hook_conversation_update = "_conversationUpdate" %}
 
 {% block cloudFuncExample %}
 
 ```php
 use \LeanCloud\Engine\Cloud;
-use \LeanCloud\LeanQuery;
+use \LeanCloud\Query;
 use \LeanCloud\CloudException;
 
 Cloud::define("averageStars", function($params, $user) {
-    $query = new LeanQuery("Review");
+    $query = new Query("Review");
     $query->equalTo("movie", $params["movie"]);
     try {
         $reviews = $query->find();
@@ -64,7 +72,7 @@ Cloud::define("averageStars", function($params, $user) {
 传递给云函数的参数依次为：
 
 * `$params: array`：客户端发送的参数。
-* `$user: LeanUser`：客户端所关联的用户（根据客户端发送的 `LC-Session` 头）。
+* `$user: User`：客户端所关联的用户（根据客户端发送的 `LC-Session` 头）。
 * `$meta: array`：有关客户端的更多信息，目前只有一个 `$meta['remoteAddress']` 属性表示客户端的 IP。
 
 {% endblock %}
@@ -105,7 +113,7 @@ Cloud::beforeSave("Review", function($review, $user) {
 
 ```php
 Cloud::afterSave("Comment", function($comment, $user) {
-    $query = new LeanQuery("Post");
+    $query = new Query("Post");
     $post = $query->get($comment->get("post")->getObjectId());
     $post->increment("commentCount");
     try {
@@ -161,7 +169,7 @@ Cloud::afterUpdate("Article", function($article, $user) {
 
 ```php
 Cloud::beforeDelete("Album", function($album, $user) {
-    $query = new LeanQuery("Photo");
+    $query = new Query("Photo");
     $query->equalTo("album", $album);
     try {
         $count = $query->count();
@@ -181,12 +189,12 @@ Cloud::beforeDelete("Album", function($album, $user) {
 
 ```php
 Cloud::afterDelete("Album", function($album, $user) {
-    $query = new LeanQuery("Photo");
+    $query = new Query("Photo");
     $query->equalTo("album", $album);
     try {
         // 删除相关的 photos
         $photos = $query->find();
-        LeanObject::destroyAll($photos);
+        Object::destroyAll($photos);
     } catch (CloudException $ex) {
         throw new FunctionError("删除关联 photos 失败: {$ex->getMessage()}");
     }
@@ -217,21 +225,209 @@ Cloud::onLogin(function($user) {
 ```
 {% endblock %}
 
+{% block code_hook_message_received %}
+
+```php
+Cloud::define("_messageReceived", function($params, $user) {
+	// params = {
+	// 	fromPeer: 'Tom',
+	// 	receipt: false,
+	// 	groupId: null,
+	// 	system: null,
+	// 	content: '{"_lctext":"耗子，起床！","_lctype":-1}',
+	// 	convId: '5789a33a1b8694ad267d8040',
+	// 	toPeers: ['Jerry'],
+	// 	__sign: '1472200796787,a0e99be208c6bce92d516c10ff3f598de8f650b9',
+	// 	bin: false,
+	// 	transient: false,
+	// 	sourceIP: '121.239.62.103',
+	// 	timestamp: 1472200796764
+	// };
+
+	error_log('_messageReceived start');
+	$content = json_decode($params["content"], true);
+	$text = $content["_lctext"];
+	error_log($text);
+    $processedContent = preg_replace("XX中介", "**", $text);
+    return array("content" => $processedContent);
+});
+```
+{% endblock %}
+
+{% block code_hook_receiver_offline %}
+
+```php
+Cloud::define('_receiversOffline', function($params, $user) {
+	error_log('_receiversOffline start');
+	// content 为消息的内容
+    $shortContent = $params["content"];
+    if (strlen($shortContent) > 6) {
+        $shortContent = substr($shortContent, 0, 6);
+    }
+
+	$json = array(
+        // 自增未读消息的数目，不想自增就设为数字
+        "badge" => "Increment",
+        "sound" => "default",
+        // 使用开发证书
+        "_profile" => "dev",
+        "alert" => shortContent
+    );
+
+	$pushMessage = json_encode($json);
+    return array(
+        "pushMessage" => $pushMessage,
+    );
+});
+```
+{% endblock %}
+
+
+{% block code_hook_message_sent %}
+
+```php
+Cloud::define('_messageSent', function($params, $user) {
+	error_log('_messageSent start');
+	error_log('params' . json_encode($params));
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	// _messageSent start
+	// params { fromPeer: 'Tom',
+	//   receipt: false,
+	//   onlinePeers: [],
+	//   content: '12345678',
+	//   convId: '5789a33a1b8694ad267d8040',
+	//   msgId: 'fptKnuYYQMGdiSt_Zs7zDA',
+	//   __sign: '1472703266575,30e1c9b325410f96c804f737035a0f6a2d86d711',
+	//   bin: false,
+	//   transient: false,
+	//   sourceIP: '114.219.127.186',
+	//   offlinePeers: [ 'Jerry' ],
+	//   timestamp: 1472703266522 }
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_start %}
+
+```php
+Cloud::define('_conversationStart', function($params, $user) {
+	error_log('_conversationStart start');
+	error_log('params' . json_encode($params));
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	//_conversationStart start
+	// params {
+	// 	initBy: 'Tom',
+	// 	members: ['Tom', 'Jerry'],
+	// 	attr: {
+	// 		name: 'Tom & Jerry'
+	// 	},
+	// 	__sign: '1472703266397,b57285517a95028f8b7c34c68f419847a049ef26'
+	// }
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_started %}
+
+```php
+Cloud::define('_conversationStarted', function($params, $user) {
+	error_log('_conversationStarted start');
+	error_log('params' . json_encode($params));
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	// _conversationStarted start
+	// params {
+	// 	convId: '5789a33a1b8694ad267d8040',
+	// 	__sign: '1472723167361,f5ceedde159408002fc4edb96b72aafa14bc60bb'
+	// }
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_add %}
+
+```php
+Cloud::define('_conversationAdd', function($params, $user) {
+	error_log('_conversationAdd start');
+	error_log('params' . json_encode($params));
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	// _conversationAdd start
+	// params {
+	// 	initBy: 'Tom',
+	// 	members: ['Mary'],
+	// 	convId: '5789a33a1b8694ad267d8040',
+	// 	__sign: '1472786231813,a262494c252e82cb7a342a3c62c6d15fffbed5a0'
+	// }
+});
+```
+{% endblock %}
+
+{% block code_hook_conversation_remove %}
+
+```php
+Cloud::define('_conversationRemove', function($params, $user) {
+
+	error_log('_conversationRemove start');
+	error_log('params' . json_encode($params));
+	error_log('removed client Id:' . $params['members'][0]);
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	// _conversationRemove start
+	// params {
+	// 	initBy: 'Tom',
+	// 	members: ['Jerry'],
+	// 	convId: '57c8f3ac92509726c3dadaba',
+	// 	__sign: '1472787372605,abdf92b1c2fc4c9820bc02304f192dab6473cd38'
+	// }
+	//removed client Id: Jerry
+});
+```
+{% endblock %}
+{% block code_hook_conversation_update %}
+
+```php
+Cloud::define('_conversationUpdate', function($params, $user) {
+	error_log('_conversationUpdate start');
+	error_log('params' . json_encode($params));
+    error_log('name' . $params['attr']['name']);
+    return array();
+
+	// 在云引擎中打印的日志如下：
+	// _conversationUpdate start
+	// params {
+	// 	convId: '57c9208292509726c3dadb4b',
+	// 	initBy: 'Tom',
+	// 	attr: {
+	// 		name: '聪明的喵星人',
+	// 		type: 'public'
+	// 	},
+	// name 聪明的喵星人
+});
+```
+{% endblock %}
 
 {% block hookDeadLoop %}
 #### 防止死循环调用
 
-在实际使用中有这样一种场景：在 `Post` 类的 `{{hook_after_update}}` Hook 函数中，对传入的 `Post` 对象做了修改并且保存，而这个保存动作又会再次触发 `{{hook_after_update}}`，由此形成死循环。针对这种情况，我们为所有 Hook 函数传入的 `LeanObject` 对象做了处理，以阻止死循环调用的产生。
+在实际使用中有这样一种场景：在 `Post` 类的 `{{hook_after_update}}` Hook 函数中，对传入的 `Post` 对象做了修改并且保存，而这个保存动作又会再次触发 `{{hook_after_update}}`，由此形成死循环。针对这种情况，我们为所有 Hook 函数传入的 `Object` 对象做了处理，以阻止死循环调用的产生。
 
 不过请注意，以下情况还需要开发者自行处理：
 
-- 对传入的 `LeanObject` 对象进行 `fetch` 操作。
-- 重新构造传入的 `LeanObject` 对象，如使用 `LeanObject::create()` 方法。
+- 对传入的 `Object` 对象进行 `fetch` 操作。
+- 重新构造传入的 `Object` 对象，如使用 `Object::create()` 方法。
 
 对于使用上述方式产生的对象，请根据需要自行调用以下 API：
 
-- `LeanObject->disableBeforeHook()` 或
-- `LeanObject->disableAfterHook()`
+- `Object->disableBeforeHook()` 或
+- `Object->disableAfterHook()`
 
 这样，对象的保存或删除动作就不会再次触发相关的 Hook 函数。
 
@@ -250,7 +446,7 @@ Cloud::afterUpdate("Post", function($post, $user) {
 
     // 如果是其他方式构建对象，则需要在新构建的对象上调用相关的 disable 方法
     // 来确保不会再次触发 Hook 函数
-    $post = LeanObject::create("Post", $post->getObjectId());
+    $post = Object::create("Post", $post->getObjectId());
     $post->disableAfterHook();
     $post->save();
 });
@@ -263,7 +459,7 @@ Cloud::afterUpdate("Post", function($post, $user) {
 ```php
 Cloud::define("errorCode", function($params, $user) {
     // 尝试登录一个不存在的用户，会返回 211 错误
-    LeanUser::logIn("not_this_user", "xxxxxx");
+    User::logIn("not_this_user", "xxxxxx");
 });
 ```
 {% endblock %}
@@ -307,10 +503,10 @@ Cloud::define("logTimer", function($params, $user) {
 {% block timerExample2 %}
 
 ```php
-use \LeanCloud\LeanPush;
+use \LeanCloud\Push;
 
 Cloud::define("pushTimer", function($params, $user) {
-    $push = new LeanPush(array("alert" => "Public message"));
+    $push = new Push(array("alert" => "Public message"));
     $push->setChannels(array("Public"));
     $push->send();
 });
@@ -320,8 +516,8 @@ Cloud::define("pushTimer", function($params, $user) {
 {% block masterKeyInit %}
 ```php
 //参数依次为 AppId, AppKey, MasterKey
-use \LeanCloud\LeanClient;
-LeanClient::initialize($appId, $appKey, $masterKey);
-LeanClient::useMasterKey(true);
+use \LeanCloud\Client;
+Client::initialize($appId, $appKey, $masterKey);
+Client::useMasterKey(true);
 ```
 {% endblock %}

@@ -39,15 +39,16 @@ def prepare_remote_dirs():
 def _prepare_local_docs(target):
     local("mkdir -p %s" % tmp_dir)
     ##local("ruby render.rb")
-    if target == 'us':
-      local("npm install -d");
+    local("npm install -d");
+    if target == 'qcloud':
+      local("grunt build --theme=qcloud");
+    elif target == 'us':
+      local("grunt build --theme=us --no-comments");
     else:
-      local("npm install -d");
-      # local("cnpm install -d");
-    local("grunt build")
+      local("grunt build ");
 #    local("mkdir dist/api")
 #    local("cp -rfv api/* dist/api/");
-    local("cd dist ; tar zcvf leancloud-docs.tar.gz ./* ; cd ..")
+#    local("cd dist ; tar zcvf leancloud-docs.tar.gz ./* ; cd ..")
     local("cp -rfv %s/dist/* %s" % (project_dir, tmp_dir))
 
 def _start_on_boot(name, dist):

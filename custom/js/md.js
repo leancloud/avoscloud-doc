@@ -21,7 +21,8 @@ $.fn.scrollStopped = function(callback) {
   };
 
   var tocContents = gajus.contents({
-    contents: document.querySelector('#toc-wrapper')
+    contents: document.querySelector('#toc-wrapper'),
+    articles: $('.col-sm-9').find('h1, h2, h3, h4').get()
   });
 
   // Add essential classes
@@ -46,7 +47,8 @@ var updateSidebarAffixShadowWidth = function() {
 };
 
 // Sidebar affix
-var doSideBar = function(){
+var doSideBar = function() {
+  $('.sidebar-loading').removeClass('on');
   $('.sidebar-wrapper').affix({
     offset: {
       top: 80,
@@ -103,7 +105,7 @@ var initGitHubLinks = function() {
   var currentPath = window.location.pathname.match(/.*\/(.+).html/i)[1];
   $('#content').prepend("<div class=docs-meta>\
       <span class='icon icon-github'></span>\
-      <a href='https://github.com/leancloud/docs#贡献'>编辑</a>\
+      <a href='https://github.com/leancloud/docs#贡献'>编辑文档</a>\
     </div>");
   $('.sidebar-wrapper #toc').append("<li class=sidebar-meta><a href='#' class=do-expand-all>展开所有</a> <a href='#top' class=back-to-top>返回顶部</a></li>");
 };
@@ -296,13 +298,13 @@ var codeBlockTabber = (function() {
         var nextHeight = 0;
         var heightOffset = 0;
 
-        // sum all heights of previous visble code blocks with multilang enabled
+        // sum all heights of previous visible code blocks with multilang enabled
         $(this).closest('.code-lang-toggles').prevAll('.codeblock-toggle-enabled:visible').each(function () {
           prevHeihgt += $(this).outerHeight(true);
         });
 
-        // sum all heights of previous hidden code blocks with multilang enabled
-        $(this).closest('.code-lang-toggles').prevAll('.codeblock-toggle-enabled').not(':visible').each(function () {
+        // sum all heights of previous hidden code blocks with multilang enabled, also excludes unrelated (non-targetLang) codeblocks
+        $(this).closest('.code-lang-toggles').prevAll('.codeblock-toggle-enabled').not(':visible').find('.' + targetLang).parent().each(function () {
           nextHeight += $(this).outerHeight(true);
         });
 
@@ -367,7 +369,7 @@ $(function() {
     && window.location.pathname.toLowerCase() != '/index.html' ){
     $('title').text(function(){
     // do not use html()
-    return $(this).text() + ' - ' + $('.doc-content h1').first().text();
+    return $('.doc-content h1').first().text() + ' - ' + $(this).text();
   });
 }
 

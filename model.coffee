@@ -36,7 +36,7 @@ exports.getBlocks = (tmpl, impl) ->
   return blocks
 
 exports.getVars = (tmpl, impl) ->
-  varRe = /{%\s?set\s+(\w+)\s?=\s?["'](.*)["']\s?%}/gm
+  varRe = /{%\s?set\s+(\w+)\s*=\s*["'](.*)["']\s*%}/gm
   content = fs.readFileSync(
     path.join(__dirname, 'views', "#{tmpl}-#{impl}.md"), {encoding: 'utf-8'})
   vars = []

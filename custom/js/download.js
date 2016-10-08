@@ -73,12 +73,7 @@ $(document.body).on("click","a[data-ref]",function(){
 });
 
 $(function(){
-  $.get("https://download.avoscloud.com/sdk/iOS/changelog.txt").success(function(result){
-    $("#ios-changelog").html(markdown.toHTML(result));
-  });
-  $.get("https://download.avoscloud.com/sdk/OSX/changelog.txt").success(function(result){
-    $("#osx-changelog").html(markdown.toHTML(result));
-  });
+
   $.get("https://download.avoscloud.com/sdk/android/changelog.txt").success(function(result){
     $("#android-changelog").html(markdown.toHTML(result));
   });

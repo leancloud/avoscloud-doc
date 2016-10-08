@@ -34,26 +34,23 @@
 {% block code_create_todo_object %}
 
 ```swift
-    // className 参数对应控制台中的 Class Name
-     let todo = LCObject(className: "Todo")
+let todo = LCObject(className: "Todo")
 ```
 {% endblock %}
 
 {% block code_save_object_by_cql %}
 
 ```swift
-    // 执行 CQL 语句实现新增一个 TodoFolder 对象
-    LeanCloud.CQLClient.execute("insert into TodoFolder(name, priority) values('工作', 1)") { (result) in
-        if(result.isFailure){
-            print(result.error)
-        } else {
-            if(result.objects.count > 0){
-                let todoFolder = result.objects[0]
-                // 打印 objectId
-                print("objectId",todoFolder.objectId?.value)
-            }
-        }
+// 执行 CQL 语句实现新增一个 TodoFolder 对象
+LCCQLClient.execute("insert into TodoFolder(name, priority) values('工作', 1)") { result in
+    switch result {
+    case .success(let value):
+        let todoFolder = value.objects.first
+        print(todoFolder)
+    case .failure(let error):
+        print(error)
     }
+}
 
 //https://github.com/leancloud/Swift-Sample-Code/blob/master/Swift-Sample-CodeTests/LCObject%23saveByCQL.swift
 ```
@@ -62,45 +59,60 @@
 {% block code_quick_save_a_todo %}
 
 ```swift
-    // className 参数对应控制台中的 Class Name
-    let todo = LCObject(className: "Todo")
-    todo.set("title", object:"工作")
-    todo.set("content", object: "每周工程师会议，周一下午2点")
-    
-    todo.save { result in
-      // 读取 result.isSuccess 可以判断是否操作成功
+let todo = LCObject(className: "Todo")
+
+todo.set("title", value: "工程师周会")
+todo.set("content", value: "每周工程师会议，周一下午 2 点")
+
+todo.save { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_quick_save_a_todo_with_location %}
 
 ```swift
-    // className 参数对应控制台中的 Class Name
-    let todo = LCObject(className: "Todo")
-    todo.set("title", object:"工作")
-    todo.set("content", object: "每周工程师会议，周一下午2点")
-    // 设置 location 的值为「会议室」
-    todo.set("location", object: "会议室")
-    
-    todo.save { result in
-      // 读取 result.isSuccess 可以判断是否操作成功
-      
+let todo = LCObject(className: "Todo")
+
+todo.set("title", value: "工程师周会")
+todo.set("content", value: "每周工程师会议，周一下午 2 点")
+
+// 设置 location 的值为「会议室」
+todo.set("location", value: "会议室")
+
+todo.save { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_save_todo_folder %}
 
 ```swift
-    // className 参数对应控制台中的 Class Name
-    let todoFolder = LCObject(className: "TodoFolder")
-    todoFolder.set("name", object:"工作")
-    todoFolder.set("priority", object: 1)
-    
-    // 保存到云端
-    todoFolder.save { result in
+let todoFolder = LCObject(className: "TodoFolder")
+
+todoFolder.set("name", value: "工作")
+todoFolder.set("priority", value: 1)
+
+todoFolder.save { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 {% block section_saveOptions %}{% endblock %}
@@ -110,31 +122,33 @@
 {% block code_get_todo_by_objectId %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    query.get("575cf743a3413100614d7d75", completion: { (result) in
-        if(result.isSuccess) {
-            let todo = result.object
-            print(todo?.objectId?.value)
-            print( todo?.get("title"))
-        }
-    })
+let query = LCQuery(className: "Todo")
+
+query.get("575cf743a3413100614d7d75") { result in
+    switch result {
+    case .success(let todo):
+        print(todo.get("title"))
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_fetch_todo_by_objectId %}
 
 ```swift
-    let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
-    
-    todo.fetch({ (result ) in
-        if(result.error != nil){
-            print(result.error)
-        }
-        // 读取 title 属性
-        let title = todo.get("title")
-        // 读取 content 属性
-        let content = todo.get("content")
-    })
+let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
+
+todo.fetch { result in
+    switch result {
+    case .success:
+        print(todo.get("title"))
+        print(todo.get("content"))
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 
 {% endblock %}
@@ -142,37 +156,44 @@
 {% block code_save_callback_get_objectId %}
 
 ```swift
-    let todo = LCObject(className: "Todo")
-    todo.set("title", object: "工程师周会")
-    todo.set("content", object: "每周工程师会议，周一下午2点")
-    todo.set("location", object: "会议室")
-    
-    todo.save { (result) in
-        if(result.isSuccess){
-            print(todo.objectId)
-        } else {
-            // 失败的话，请检查网络环境以及 SDK 配置是否正确
-        }
+let todo = LCObject(className: "Todo")
+
+todo.set("title", value: "工程师周会")
+todo.set("content", value: "每周工程师会议，周一下午 2 点")
+todo.set("location", value: "会议室")
+
+todo.save { result in
+    switch result {
+    case .success:
+        print(todo.objectId)
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_access_todo_folder_properties %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    query.get("558e20cbe4b060308e3eb36c") { (result) in
-        // todoObj 就是 id 为 558e20cbe4b060308e3eb36c 的 Todo 对象实例
-        let todoObj = result.object
-        let location = todoObj?.get("location") as! LCString
-        let title = todoObj?.get("title") as! LCString
-        let content = todoObj?.get("content") as! LCString
-        
-        // 获取三个特性
-        let objectId = todoObj?.objectId
-        let updatedAt = todoObj?.updatedAt
-        let createdAt = todoObj?.createdAt
+let query = LCQuery(className: "Todo")
+
+query.get("558e20cbe4b060308e3eb36c") { result in
+    switch result {
+    case .success(let todo):
+        // 使用 get 方法访问非预定义属性
+        let title    = todo.get("title") as! LCString
+        let content  = todo.get("content") as! LCString
+        let location = todo.get("location") as! LCString
+
+        // 预定义属性可以使用 dot 语法访问
+        let objectId  = todo.objectId
+        let updatedAt = todo.updatedAt
+        let createdAt = todo.createdAt
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
@@ -200,33 +221,41 @@
 {% block code_update_todo_location %}
 
 ```swift
-    let todo = LCObject(className: "Todo")
-    todo.set("title", value: LCString("工程师周会"))
-    todo.set("content", value: LCString("每周工程师会议，周一下午2点"))
-    todo.set("location", value: LCString("会议室"))
-    todo.save { (result) in
-        // 存储成功
-        if(result.isSuccess){
-            // 修改地址
-            todo.set("location", value: LCString("二楼大会议室"))
-            // 保存修改
-            todo.save { _ in }
-        }
+let todo = LCObject(className: "Todo")
+
+todo.set("title", value: "工程师周会")
+todo.set("content", value: "每周工程师会议，周一下午 2 点")
+todo.set("location", value: "会议室")
+
+todo.save { result in
+    switch result {
+    case .success:
+        // 修改 location 属性
+        todo.set("location", value: "二楼大会议室")
+        // 异步保存修改
+        todo.save { _ in }
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_update_todo_content_with_objectId %}
 
 ```swift
-    let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
-    todo.set("content", object: "每周工程师会议，本周改为周三下午3点半。")
-    
-    todo.save({ (result) in
-        if(result.isSuccess){
-            print("保存成功")
-        }
-    })
+let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
+
+todo.set("content", value: "每周工程师会议，本周改为周三下午 3 点半")
+
+todo.save { result in
+    switch result {
+    case .success:
+        break // 保存成功
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 
 {% endblock %}
@@ -234,27 +263,33 @@
 {% block code_update_object_by_cql %}
 
 ```swift
-    LeanCloud.CQLClient.execute("update TodoFolder set name='家庭' where objectId='575d2c692e958a0059ca3558'", completion: { (result) in
-        if(result.isSuccess){
-            // 成功执行了 CQL
-        }
-    })
+LCCQLClient.execute("update TodoFolder set name='家庭' where objectId='575d2c692e958a0059ca3558'") { result in
+    switch result {
+    case .success:
+        break // 更新成功
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_atomic_operation_increment %}
 
 ```swift
-    let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
-    todo.set("views", object: 50)
-    todo.save({ (saveResult) in
-        todo.increase("views", by: LCNumber(1));
-        todo.save({ (increaseResult) in
-            if(increaseResult.isSuccess){
-                print(todo.get("views"))
-            }
-        })
-    })
+let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
+
+// 递增 views 属性，保存时，服务端会保证原子性
+todo.increase("views", by: 1)
+
+todo.save { result in
+    switch result {
+    case .success:
+        break // 更新成功
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
@@ -278,40 +313,44 @@
 {% block code_set_array_value %}
 
 ```swift
-func getDateWithDateString(dateString:String) -> LCDate {
-    let dateStringFormatter = NSDateFormatter()
-    dateStringFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-    dateStringFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-    let date = dateStringFormatter.dateFromString(dateString)!
-    let lcDate = LCDate(date);
-    return lcDate;
+func dateWithString(string: String) -> LCDate {
+    let dateFormatter = NSDateFormatter()
+
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+
+    let date = LCDate(dateFormatter.dateFromString(string)!)
+
+    return date
 }
 
 func testSetArray() {
-
-    let renminder1 = self.getDateWithDateString("2015-11-11 07:10:00")
-    let renminder2 = self.getDateWithDateString("2015-11-11 07:20:00")
-    let renminder3 = self.getDateWithDateString("2015-11-11 07:30:00")
-    
-    let reminders = LCArray(arrayLiteral: renminder1,renminder2,renminder3)
-    
     let todo = LCObject(className: "Todo")
-    todo.set("reminders", value: reminders)
-    
-    todo.save({ (result) in
-        // 新增一个闹钟时间
-        let todo4 = self.getDateWithDateString("2015-11-11 07:40:00")
-        // 使用 append 方法添加
-        todo.append("reminders", element: todo4, unique: true)
-        todo.save({ (updateResult) in
-            if(result.isSuccess){
-                // 成功执行了 CQL
-            }
-        })
-    })
-}
 
-//https://github.com/BenBBear/cordova-plugin-leanpush
+    let reminder1 = dateWithString("2015-11-11 07:10:00")
+    let reminder2 = dateWithString("2015-11-11 07:20:00")
+    let reminder3 = dateWithString("2015-11-11 07:30:00")
+
+    todo.set("reminders", value: [reminder1, reminder2, reminder3])
+
+    // 同步地保存，为了示例的简洁，故意忽略了错误检查
+    todo.save()
+
+    // 新增一个闹钟时间
+    let reminder4 = dateWithString("2015-11-11 07:40:00")
+
+    // 使用 append 方法添加
+    todo.append("reminders", element: reminder4, unique: true)
+
+    todo.save { result in
+        switch result {
+        case .success:
+            break // 更新成功
+        case .failure(let error):
+            print(error)
+        }
+    }
+}
 ```
 {% endblock %}
 {% block text_batch_operation %}{% endblock %}
@@ -335,43 +374,49 @@ func testSetArray() {
 细心的开发者已经发现，在所有的示例代码中几乎都是用了异步来访问 {{productName}} 云端，如下代码：
 
 ```swift
-    todo.save({ (result) in
-        if(result.isSuccess){
-            // 操作成功
-        }
-    })
-``` 
+let todo = LCObject(className: "Todo")
+
+todo.save { result in
+    switch result {
+    case .success:
+        break // 保存成功
+    case .failure(let error):
+        print(error)
+    }
+}
+```
 上述用法都是提供给开发者在主线程调用用来实现后台运行的方法，因此开发者可以放心地在主线程调用这种命名方式的函数。另外，需要强调的是：**回调函数的代码是在主线程执行。**
 {% endblock %}
 
 {% block code_delete_todo_by_objectId %}
 
 ```swift
-    // 调用实例方法删除对象
-    todo.delete { (result) in
-        if(result.isSuccess){
-            // 根据 result.isSuccess 可以判断是否删除成功
-        } else {
-            if (result.error != nil){
-                print(result.error?.reason)
-                // 如果删除失败，可以查看是否当前正确使用了 ACL
-            }
-        }
+let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
+
+// 调用实例方法删除对象
+todo.delete { result in
+    switch result {
+    case .success:
+        break // 删除成功
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_delete_todo_by_cql %}
 
 ```swift
-    // 执行 CQL 语句实现删除一个 Todo 对象
-    LeanCloud.CQLClient.execute("delete from Todo where objectId='558e20cbe4b060308e3eb36c'") { (result) in
-        if(result.isSuccess){
-            // 删除成功
-        } else {
-            // 删除失败，打印错误信息
-            print(result.error?.reason)
-        }
+// 执行 CQL 语句实现删除一个 Todo 对象
+LCCQLClient.execute("delete from Todo where objectId='558e20cbe4b060308e3eb36c'") { result in
+    switch result {
+    case .success:
+        break // 删除成功
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
@@ -381,97 +426,106 @@ func testSetArray() {
 {% block code_relation_todoFolder_one_to_many_todo %}
 
 ```swift
-    // 以下代码需要同步执行
-    // 新建一个 TodoFolder 对象
-    let todoFolder = LCObject(className: "TodoFolder")
-    todoFolder.set("name", object: "工作")
-    todoFolder.set("priority", object: 1)
-    todoFolder.save()
-    
-    // 新建 3 个 Todo 对象
-    let todo1 = LCObject(className: "Todo")
-    todo1.set("title", object: "工程师周会")
-    todo1.set("content", object: "每周工程师会议，周一下午2点")
-    todo1.set("location", object: "会议室")
-    todo1.save()
-    
-    let todo2 = LCObject(className: "Todo")
-    todo2.set("title", object: "维护文档")
-    todo2.set("content", object: "每天 16：00 到 18：00 定期维护文档")
-    todo2.set("location", object: "当前工位")
-    todo2.save()
-    
-    let todo3 = LCObject(className: "Todo")
-    todo3.set("title", object: "发布 SDK")
-    todo3.set("content", object: "每周一下午 15：00")
-    todo3.set("location", object: "SA 工位")
-    todo3.save()
-    
-    // 使用接口 insertRelation 建立 todoFolder 与 todo1,todo2,todo3 的一对多的关系
-    todoFolder.insertRelation("containedTodos", object: todo1)
-    todoFolder.insertRelation("containedTodos", object: todo2)
-    todoFolder.insertRelation("containedTodos", object: todo3)
-    
-    todoFolder.save()
-    
-    // 保存完毕之后，读取 LCRelation 对象
-    let relation : LCRelation = todoFolder.get("containedTodos")
+// 以下代码需要同步执行
+// 新建一个 TodoFolder 对象
+let todoFolder = LCObject(className: "TodoFolder")
+
+todoFolder.set("name", value: "工作")
+todoFolder.set("priority", value: 1)
+
+todoFolder.save()
+
+// 新建 3 个 Todo 对象
+let todo1 = LCObject(className: "Todo")
+todo1.set("title", value: "工程师周会")
+todo1.set("content", value: "每周工程师会议，周一下午 2 点")
+todo1.set("location", value: "会议室")
+todo1.save()
+
+let todo2 = LCObject(className: "Todo")
+todo2.set("title", value: "维护文档")
+todo2.set("content", value: "每天 16：00 到 18：00 定期维护文档")
+todo2.set("location", value: "当前工位")
+todo2.save()
+
+let todo3 = LCObject(className: "Todo")
+todo3.set("title", value: "发布 SDK")
+todo3.set("content", value: "每周一下午 15：00")
+todo3.set("location", value: "SA 工位")
+todo3.save()
+
+// 使用接口 insertRelation 建立 todoFolder 与 todo1,todo2,todo3 的一对多的关系
+todoFolder.insertRelation("containedTodos", object: todo1)
+todoFolder.insertRelation("containedTodos", object: todo2)
+todoFolder.insertRelation("containedTodos", object: todo3)
+
+todoFolder.save()
+
+// 保存完毕之后，读取 LCRelation 对象
+let relation = todoFolder.get("containedTodos") as? LCRelation
 ```
 {% endblock %}
 
 {% block code_pointer_comment_one_to_many_todoFolder %}
 
 ```swift
-    // 新建一条留言
-    let comment = LCObject(className: "Comment")
-    // 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
-    comment.set("like", object: 1)
-    // 留言的内容
-    comment.set("content", object: "这个太赞了！楼主，我也要这些游戏，咱们团购么？")
-    
-    // 假设已知了被分享的该 TodoFolder 的 objectId 是 5590cdfde4b00f7adb5860c8
-    let todoFolder = LCObject(className: "TodoFolder", objectId: "5590cdfde4b00f7adb5860c8")
-    comment.set("targetTodoFolder", object: todoFolder)
-    // 以上代码的执行结果是在 comment 对象上有一个名为 targetTodoFolder 属性，它是一个 Pointer 类型，指向 objectId 为 5590cdfde4b00f7adb5860c8 的 TodoFolder
-    comment.save {_ in}
+// 新建一条留言
+let comment = LCObject(className: "Comment")
+
+// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
+comment.set("like", value: 1)
+
+// 留言的内容
+comment.set("content", value: "这个太赞了！楼主，我也要这些游戏，咱们团购么？")
+
+// 假设已知了被分享的该 TodoFolder 的 objectId 是 5590cdfde4b00f7adb5860c8
+let todoFolder = LCObject(className: "TodoFolder", objectId: "5590cdfde4b00f7adb5860c8")
+
+// 在 comment 对象上创建一个名为 targetTodoFolder 属性，它是一个 Pointer 类型，指向 objectId 为 5590cdfde4b00f7adb5860c8 的 TodoFolder 对象
+comment.set("targetTodoFolder", value: todoFolder)
+
+comment.save()
 ```
 {% endblock %}
 
 {% block code_create_geoPoint %}
 
 ```swift
-  let leancloudOffice  = LCGeoPoint(latitude: 39.9, longitude: 116.4)
+let leancloudOffice = LCGeoPoint(latitude: 39.9, longitude: 116.4)
 ```
 {% endblock %}
 
 {% block code_use_geoPoint %}
 
 ```swift
-  todo.set("whereCreated", object: leancloudOffice)
+let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
+
+todo.set("whereCreated", value: leancloudOffice)
 ```
 {% endblock %}
 
 {% block code_serialize_baseObject_to_string %}
 
 ```swift
-    let todoFolder = LeanCloud.LCObject(className: "TodoFolder")
-    todoFolder.set("priority", object: 1)
-    todoFolder.set("name", object: "工作")
-    todoFolder.set("owner", object: LCUser.current)
-    
-    let serializeObject = NSKeyedArchiver.archivedDataWithRootObject(todoFolder)
-    // serializeObject 可以存在本地当做缓存或者作为参数传递
+let todoFolder = LCObject(className: "TodoFolder")
+
+todoFolder.set("name", value: "工作")
+todoFolder.set("owner", value: LCUser.current)
+todoFolder.set("priority", value: 1)
+
+// 将 todoFolder 序列化成 NSData 对象
+let data = NSKeyedArchiver.archivedDataWithRootObject(todoFolder)
 ```
 {% endblock %}
 
 {% block code_deserialize_string_to_baseObject %}
 
 ```swift
-    // 假设 serializeObject 是一个已经被序列化之后的 NSData
-    let serializeObject = NSKeyedArchiver.archivedDataWithRootObject(todoFolder)
-    
-    // 反序列化的方式如下
-    let deserializeObject = NSKeyedUnarchiver.unarchiveObjectWithData(serializeObject) as! LCObject
+// 将 todoFolder 序列化成 NSData 对象
+let data = NSKeyedArchiver.archivedDataWithRootObject(todoFolder)
+
+// 将 data 反序列化成 LCObject 对象
+let newTodoFolder = NSKeyedUnarchiver.unarchiveObjectWithData(data) as! LCObject
 ```
 {% endblock %}
 
@@ -480,25 +534,18 @@ func testSetArray() {
 {% block code_data_type %}
 
 ```swift
-    let bool = true
-    let number = 123
-    let str = "abc"
-    let date = NSDate()
-    let data = "短篇小说".dataUsingEncoding(NSUTF8StringEncoding)
-    let array:[String] = ["Eggs", "Milk"]
-    let dictionary: [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
-    
-    let testObject = LeanCloud.LCObject(className: "Todo")
-    testObject.set("testBoolean", object: bool)
-    testObject.set("testNumber", object: number)
-    testObject.set("testString", object: str)
-    testObject.set("testDate", object: date)
-    testObject.set("testData", object: data)
-    testObject.set("testArray", object: array)
-    testObject.set("testDictionary", object: dictionary)
-    
-    testObject.save({ (result) in
-    })
+let number     : LCNumber     = 42
+let bool       : LCBool       = true
+let string     : LCString     = "foo"
+let object     : LCObject     = LCObject()
+let dictionary : LCDictionary = LCDictionary(["name": string, "count": number])
+let array      : LCArray      = LCArray([number, bool, string])
+let relation   : LCRelation   = object.relationForKey("elements")
+let acl        : LCACL        = LCACL()
+let point      : LCGeoPoint   = LCGeoPoint(latitude: 45, longitude: -45)
+let date       : LCDate       = LCDate()
+let data       : LCData       = LCData()
+let null       : LCNull       = LCNull()
 ```
 
 若想了解更多有关 LeanStorage 如何解析处理数据的信息，请查看专题文档《[数据与安全](./data_security.html)》。
@@ -506,50 +553,65 @@ func testSetArray() {
 
 {% block text_LCType_convert %}
 #### LCString
-`LCString` 是 Swift SDK 针对 String 对象的封装，它与 String 相互转化的代码如下：
+`LCString` 是 `String` 类型的封装，它与 `String` 相互转化的代码如下：
 
 ```swift
-    // String 转化成 LCString
-    let lcString = LCString("abc")
-    // 从 LCString 获取 String
-    let abc  = lcString.value
+// 将 String 转化成 LCString
+let lcString = LCString("abc")
+
+// 从 LCString 获取 String
+let value = lcString.value
+```
+
+`LCString` 实现了 `StringLiteralConvertible` 协议。在需要 `LCString` 的地方，可以直接使用字符串字面量：
+
+```swift
+let lcString: LCString = "abc"
 ```
 
 #### LCNumber
-`LCNumber` 是 Swift SDK 针对 Double 数据类型的封装，它与 Double 相互转化的代码如下：
+`LCNumber` 是 `Double` 类型的封装，它与 `Double` 相互转化的代码如下：
 
 ```swift
-    // Double 转化成 LCNumber
-    let number123 : Double = 123
-    let lcNumber  = LCNumber(number123)
-    // 从 LCNumber 获取 Double
-    let testNumber = lcNumber.value
-    
-    // 从 LCObject 中读取 Double
-    let priority = todo.get("priority") as! LCNumber
-    let priorityDoubule = priority.value
+// 将 Double 转化成 LCNumber
+let lcNumber = LCNumber(123)
+
+// 从 LCNumber 获取 Double
+let value = lcNumber.value
 ```
+
+`LCNumber` 实现了 `IntegerLiteralConvertible` 和 `FloatLiteralConvertible` 协议。在需要 `LCNumber` 的地方，可以直接使用数字字面量：
+
+```swift
+let lcNumber: LCNumber = 123
+```
+
 #### LCArray
-`LCArray` 是 Swift SDK 针对  Array 类型的封装，它的构造方式如下：
+`LCArray` 是 `Array` 类型的封装，它与 `Array` 相互转化的代码如下：
 
 ```swift
-    let lcNumberArray = LCArray(arrayLiteral: LCNumber(1),LCNumber(2),LCNumber(3))
-    let lcStringArray: LCArray = [LCString("a"), LCString("b"), LCString("c")]
+let lcArray = LCArray(unsafeObject: [1, "abc", ["foo": true]])
 ```
+
+`LCArray` 实现了 `ArrayLiteralConvertible` 协议。在需要 `LCArray` 的地方，可以直接使用数组字面量：
+
+```swift
+let lcArray: LCArray = [LCNumber(1), LCString("abc")]
+```
+
+注意：当使用数组字面量构造 `LCArray` 对象时，数组字面量的类型必须是 `[LCType]`。
 
 #### LCDate
-`LCDate` 是 Swift SDK 针对  日期类型的封装，它的使用方式如下：
+`LCDate` 是 `NSDate` 类型的封装，它与 `NSDate` 相互转化的代码如下：
 
 ```swift
-    let dateStringFormatter = NSDateFormatter()
-    dateStringFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-    dateStringFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-    let date = dateStringFormatter.dateFromString("2016-07-09 22:15:16")!
-    
-    // 使用 NSDate 构造 LCDate
-    let lcDate = LCDate(date);
-    // 从 LCDate 读取 NSDate
-    let nativeDate = lcDate.value
+let date = NSDate()
+
+// 将 NSDate 转化成 LCDate
+let lcDate = LCDate(date)
+
+// 从 LCDate 获取 NSDate
+let value = lcDate.value
 ```
 
 {% endblock %}
@@ -634,7 +696,7 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 {% block code_create_query_by_className %}
 
 ```swift
-  let query = LCQuery(className: "Todo")
+let query = LCQuery(className: "Todo")
 ```
 {% endblock %}
 
@@ -645,43 +707,41 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 {% block code_priority_equalTo_zero_query %}
 
 ```swift
-    // 构建 LCQuery 对象
-    let query = LCQuery(className: "Todo")
-    // 查询所有 priority 等于 0 的 Todo
-    query.whereKey("priority", LCQuery.Constraint.EqualTo(value: LCNumber(0)))
-    // 执行查找
-    query.find({ (result) in
-        if(result.isSuccess){
-            // 获取 Todo 数组
-            let todos = result.objects
-            // 遍历数组
-            for todo in todos! {
-                // 打印 title
-                print(todo.get("title"))
-            }
-        }
-    })
+// 构建 LCQuery 对象
+let query = LCQuery(className: "Todo")
+
+// 查询所有 priority 等于 0 的 Todo
+query.whereKey("priority", .EqualTo(0))
+
+// 执行查找
+query.find { result in
+    switch result {
+    case .success(let objects):
+        break // 查询成功
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_priority_equalTo_zero_and_one_wrong_example %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    query.whereKey("priority", LCQuery.Constraint.EqualTo(value: LCNumber(0)))
-    query.whereKey("priority", LCQuery.Constraint.EqualTo(value: LCNumber(1)))
-    // 如果这样写，第二个条件将覆盖第一个条件，查询只会返回 priority = 1 的结果
-    query.find({ (result) in
-        if(result.isSuccess){
-            let todos = result.objects
-            for todo in todos! {
-                if(todo.get("priority") == LCNumber(1)){
-                  // todos 集合里面所有的 Todo 的 priority 属性都应该是 1
-                }
-            }
-        }
-    })
+let query = LCQuery(className: "Todo")
 
+query.whereKey("priority", .EqualTo(0))
+query.whereKey("priority", .EqualTo(1))
+
+// 如果这样写，第二个条件将覆盖第一个条件，查询只会返回 priority = 1 的结果
+query.find { result in
+    switch result {
+    case .success(let objects):
+        break // 查询成功
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
@@ -689,257 +749,322 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 
 逻辑操作 | AVQuery 方法|
 ---|---
-等于 | `whereKey("key", LCQuery.Constraint.EqualTo(value: LCType()))`
-不等于 |  `whereKey("key", LCQuery.Constraint.NotEqualTo(value: LCType))`
-大于 | `whereKey("key", LCQuery.Constraint.GreaterThan(value: LCType))`
-大于等于 | `whereKey("key", LCQuery.Constraint.GreaterThanOrEqualTo(value: LCType))`
-小于 | `whereKey("key", LCQuery.Constraint.LessThan(value: LCType))`
-小于等于 | `whereKey("key", LCQuery.Constraint.LessThanOrEqualTo(value: LCType))`
+等于 | `whereKey("drink", .EqualTo("Pepsi"))`
+不等于 |  `whereKey("hasFood", .NotEqualTo(true))`
+大于 | `whereKey("expirationDate", .GreaterThan(NSDate()))`
+大于等于 | `whereKey("age", .GreaterThanOrEqualTo(18))`
+小于 | `whereKey("pm25", .LessThan(75))`
+小于等于 | `whereKey("count", .LessThanOrEqualTo(10))`
 {% endblock %}
 
 {% block code_query_lessThan %}
 
 ```swift
-  query.whereKey("priority", LCQuery.Constraint.LessThan(value: LCNumber(2)))
+query.whereKey("priority", .LessThan(2))
 ```
 {% endblock %}
 
 {% block code_query_greaterThanOrEqualTo %}
 
 ```swift
-  query.whereKey("priority", LCQuery.Constraint.GreaterThanOrEqualTo(value: LCNumber(2)))
+query.whereKey("priority", .GreaterThanOrEqualTo(2))
 ```
 {% endblock %}
 
 {% block code_query_with_regular_expression %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    query.whereKey("title", LCQuery.Constraint.MatchedPattern(pattern: "[\\u4e00-\\u9fa5]", option:nil))
+let query = LCQuery(className: "Todo")
+
+query.whereKey("title", .MatchedPattern("[\\u4e00-\\u9fa5]", option:nil))
 ```
 {% endblock %}
 
 {% block code_query_with_contains_keyword %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    query.whereKey("title", LCQuery.Constraint.MatchedSubstring(string: "李总"))
+let query = LCQuery(className: "Todo")
+
+query.whereKey("title", .MatchedSubstring("李总"))
 ```
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    query.whereKey("title", LCQuery.Constraint.MatchedPattern(pattern: "^((?!机票).)*$", option: nil))
+let query = LCQuery(className: "Todo")
+
+query.whereKey("title", .MatchedPattern("^((?!机票).)*$", option: nil))
 ```
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    let filterArray = LCArray([ LCString("休假"),LCString("出差")])
-    query.whereKey("title", LCQuery.Constraint.NotContainedIn(array: filterArray))
+let query = LCQuery(className: "Todo")
+
+query.whereKey("title", .NotContainedIn(["休假", "出差"]))
 ```
 {% endblock %}
 
 {% block code_query_array_contains_using_equalsTo %}
 
 ```swift
-    func queryRemindersContains(){
-        let reminder = self.getDateWithDateString("2015-11-11 08:30:00")
-        let query = LCQuery(className: "Todo")
-        query.whereKey("reminders", LCQuery.Constraint.EqualTo(value: reminder))
-    }
-    func getDateWithDateString(dateString:String) -> LCDate {
-        let dateStringFormatter = NSDateFormatter()
-        dateStringFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        dateStringFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-        let date = dateStringFormatter.dateFromString(dateString)!
-        let lcDate = LCDate(date)
-        return lcDate
-    }
+func queryRemindersContains() {
+    let dateFormatter = NSDateFormatter()
+
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+
+    let reminder = dateFormatter.dateFromString("2015-11-11 08:30:00")!
+
+    let query = LCQuery(className: "Todo")
+
+    // 查询 reminders 数组中有与 reminder 相等的 Todo 对象
+    query.whereKey("reminders", .EqualTo(reminder))
+}
 ```
 {% endblock %}
 
 {% block code_query_array_contains_all %}
 
 ```swift
-    func testArrayContainsAll() {
-        let reminder1 = self.getDateWithDateString("2015-11-11 08:30:00")
-        let reminder2 = self.getDateWithDateString("2015-11-11 09:30:00")
-        
-        // 构建查询时间点数组
-        let reminders: LCArray = [reminder1, reminder2]
-        let query = LCQuery(className: "Todo")
-        query.whereKey("reminders", LCQuery.Constraint.ContainedAllIn(array: reminders))
-        
-    }
+func testArrayContainsAll() {
+    let dateFormatter = NSDateFormatter()
+
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+
+    let reminder1 = dateFormatter.dateFromString("2015-11-11 08:30:00")!
+    let reminder2 = dateFormatter.dateFromString("2015-11-11 09:30:00")!
     
-    func getDateWithDateString(dateString:String) -> LCDate {
-        let dateStringFormatter = NSDateFormatter()
-        dateStringFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        dateStringFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-        let date = dateStringFormatter.dateFromString(dateString)!
-        let lcDate = LCDate(date)
-        return lcDate
-    }
+    let query = LCQuery(className: "Todo")
+
+    // 查询 reminders 数组中同时包含 reminder1 和 reminder2 的 Todo 对象
+    query.whereKey("reminders", .ContainedAllIn([reminder1, reminder2]))
+}
 ```
 {% endblock %}
 
 {% block code_query_whereHasPrefix %}
 
 ```swift
-    // 找出开头是「早餐」的 Todo
-    let query = LCQuery(className: "Todo")
-    query.whereKey("content", LCQuery.Constraint.PrefixedBy(string: "早餐"))
+// 找出开头是「早餐」的 Todo
+let query = LCQuery(className: "Todo")
+
+query.whereKey("content", .PrefixedBy("早餐"))
 ```
 {% endblock %}
 
 {% block code_query_comment_by_todoFolder %}
 
 ```swift
-    let query = LCQuery(className: "Comment")
-    let targetTodoFolder = LCObject(className: "TodoFolder", objectId: "5590cdfde4b00f7adb5860c8")
-    query.whereKey("targetTodoFolder", LCQuery.Constraint.EqualTo(value: targetTodoFolder))
+let query = LCQuery(className: "Comment")
+
+let targetTodoFolder = LCObject(className: "TodoFolder", objectId: "5590cdfde4b00f7adb5860c8")
+
+query.whereKey("targetTodoFolder", .EqualTo(targetTodoFolder))
 ```
 {% endblock %}
 
 {% block code_create_tag_object %}
 
 ```swift
-    let tag = LCObject(className: "Tag")
-    tag.set("name", object: "今日必做")
-    tag.save(){ _ in }
+let tag = LCObject(className: "Tag")
+
+tag.set("name", value: "今日必做")
+
+tag.save()
 ```
 {% endblock %}
 
 {% block code_create_family_with_tag %}
 
 ```swift
-    let tag1 = LCObject(className: "Tag")
-    tag1.set("name", object: "今日必做")
-    
-    let tag2 = LCObject(className: "Tag")
-    tag2.set("name", object: "老婆吩咐")
-    
-    let tag3 = LCObject(className: "Tag")
-    tag3.set("name", object: "十分重要")
-    
-    let todoFolder = LCObject(className: "TodoFolder") // 新建 TodoFolder 对象
-    todoFolder.set("name", object: "家庭")
-    todoFolder.set("priority", object: 1)
-    
-    // 分别将 tag1,tag2,tag3 分别插入到关系中
-    todoFolder.insertRelation("tags", object: tag1)
-    todoFolder.insertRelation("tags", object: tag2)
-    todoFolder.insertRelation("tags", object: tag3)
-    
-    todoFolder.save(){_ in} //保存到云端
+let tag1 = LCObject(className: "Tag")
+tag1.set("name", value: "今日必做")
+
+let tag2 = LCObject(className: "Tag")
+tag2.set("name", value: "老婆吩咐")
+
+let tag3 = LCObject(className: "Tag")
+tag3.set("name", value: "十分重要")
+
+// 新建 TodoFolder 对象
+let todoFolder = LCObject(className: "TodoFolder")
+todoFolder.set("name", value: "家庭")
+todoFolder.set("priority", value: 1)
+
+// 分别将 tag1, tag2, tag3 分别插入到关系中
+todoFolder.insertRelation("tags", object: tag1)
+todoFolder.insertRelation("tags", object: tag2)
+todoFolder.insertRelation("tags", object: tag3)
+
+todoFolder.save()
 ```
 {% endblock %}
 
 {% block code_query_tag_for_todoFolder %}
 
 ```swift
-    let targetTodoFolder = LCObject(className: "TodoFolder", objectId: "5590cdfde4b00f7adb5860c8")
-    let relation = todoFolder.relationForKey("tags")
-    let realationQuery = relation.query;
-    realationQuery.find { (result) in
-        let tags = result.objects
+let todoFolder = LCObject(className: "TodoFolder", objectId: "5590cdfde4b00f7adb5860c8")
+let realationQuery = todoFolder.relationForKey("tags").query
+
+realationQuery.find { result in
+    switch result {
+    case .success(let objects):
+        break // 查询成功
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_query_todoFolder_with_tag %}
 
 ```swift
-    let tag = LCObject(className: "Tag",objectId: "5661031a60b204d55d3b7b89")
-    let todoFolderQuery = LCQuery(className: "TodoFolder")
-    todoFolderQuery.whereKey("Tags", LCQuery.Constraint.EqualTo(value: tag))
-    todoFolderQuery.find { (result) in
-        // objects 指的就是所有包含当前 tag 的 TodoFolder
-        let objects = result.objects
+let query = LCQuery(className: "TodoFolder")
+
+let tag = LCObject(className: "Tag", objectId: "5661031a60b204d55d3b7b89")
+
+query.whereKey("tags", .EqualTo(tag))
+
+query.find { result in
+    switch result {
+    case .success(let objects):
+        break // objects 是 tags 数组中包含当前 tag 的 TodoFolder
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_query_comment_include_todoFolder %}
 
 ```swift
-    let query = LCQuery(className: "Comment")
-    query.whereKey("targetTodoFolder", LCQuery.Constraint.Included)// 关键代码，用 LCQuery.Constraint.Included 告知云端需要返回的关联属性对应的对象的详细信息，而不仅仅是 objectId
-    query.whereKey("targetTodoFolder.targetAVUser", LCQuery.Constraint.Included)// 关键代码，同上，会返回 targetAVUser 对应的对象的详细信息，而不仅仅是 objectId
-    query.whereKey("createdAt", LCQuery.Constraint.Descending)
-    query.limit = 10
-    query.find { (result) in
-        let comments = result.objects
-        // comments 是最近的十条评论, 其 targetTodoFolder 字段也有相应数据
-        for comment in comments!{
-            print(comment.objectId?.value)
-            let todoFolder = comment.get("targetTodoFolder")
-            let avUser = todoFolder.get("targetAVUser")
-        }
+let query = LCQuery(className: "Comment")
+
+// 关键代码，指定云端返回 `targetTodoFolder` 字段所指向的对象的全部数据，而不仅仅是 pointer
+query.whereKey("targetTodoFolder", .Included)
+
+// 关键代码，同上，指定云端返回 `targetTodoFolder.targetAVUser` 所指向的对象的全部数据，而不仅仅是 pointer
+query.whereKey("targetTodoFolder.targetAVUser", .Included)
+
+query.whereKey("createdAt", .Descending)
+
+query.limit = 10
+
+query.find { result in
+    switch result {
+    case .success(let comments):
+        // comments 是最近的十条评论
+        guard let comment = comments.first else { return }
+
+        // targetTodoFolder 字段也有相应数据
+        let todoFolder = comment.get("targetTodoFolder") as? LCObject
+
+        // todoFolder 的 targetAVUser 字段也有相应的数据
+        let user = todoFolder?.get("targetAVUser")
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_query_comment_match_query_todoFolder %}
 
 ```swift
-    // 构建内嵌查询
-    let innerQuery = LCQuery(className: "TodoFolder")
-    innerQuery.whereKey("likes", LCQuery.Constraint.GreaterThan(value: LCNumber(20)))
-    // 将内嵌查询赋予目标查询
-    let query = LCQuery(className: "Comment")
-    // 执行内嵌操作
-    query.whereKey("targetTodoFolder", LCQuery.Constraint.MatchedQuery(query: innerQuery))
-    query.find { (result) in
-        let comments = result.objects
+// 将内嵌查询赋予目标查询
+let query = LCQuery(className: "Comment")
+
+// 构建内嵌查询
+let innerQuery = LCQuery(className: "TodoFolder")
+innerQuery.whereKey("likes", .GreaterThan(20))
+
+// 执行内嵌操作
+query.whereKey("targetTodoFolder", .MatchedQuery(innerQuery))
+
+query.find { result in
+    switch result {
+    case .success(let comments):
+        break // 查询成功
+    case .failure(let error):
+        print(error)
     }
-    
-    // 注意如果要做相反的查询可以使用
-    query.whereKey("targetTodoFolder", LCQuery.Constraint.NotMatchedQuery(query: innerQuery))
-    // 如此做将查询出 likes 小于或者等于 20 的 TodoFolder 的 Comment 对象
+}
+
+// 注意如果要做相反的查询可以使用（查询 likes 小于等于 20 的 Comment 对象）：
+query.whereKey("targetTodoFolder", .NotMatchedQuery(innerQuery))
+
+query.find { result in
+    switch result {
+    case .success(let comments):
+        break // 查询成功
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_query_find_first_object %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    query.whereKey("priority", LCQuery.Constraint.EqualTo(value: LCNumber(0)))
-    query.getFirst { (result) in
-        // result.object 就是符合条件的第一个 LCObject
+let query = LCQuery(className: "Todo")
+
+query.whereKey("priority", .EqualTo(0))
+
+query.getFirst { result in
+    switch result {
+    case .success(let todo):
+        break // 查询成功
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_set_query_limit %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    query.whereKey("priority", LCQuery.Constraint.EqualTo(value: LCNumber(0)))
-    query.limit = 10
-    query.find { (result) in
-        if(result.objects?.count <= 10){
-            // 因为设置了 limit，因此返回的结果数量一定小于等于 10
-        }
+let query = LCQuery(className: "Todo")
+
+query.whereKey("priority", .EqualTo(0))
+query.limit = 10
+
+query.find { result in
+    switch result {
+    case .success(let todos):
+        break // 查询成功
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_set_skip_for_pager %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    query.whereKey("priority", LCQuery.Constraint.EqualTo(value: LCNumber(0)))
-    query.limit = 10 // 返回 10 条数据
-    query.skip = 20 // 跳过 20 条数据
-    query.find { (result) in
-        // 每一页 10 条数据，跳过了 20 条数据，因此获取的是第 3 页的数据
+let query = LCQuery(className: "Todo")
+
+query.whereKey("priority", .EqualTo(0))
+
+query.limit = 10 // 返回 10 条数据
+query.skip = 20 // 跳过 20 条数据
+
+query.find { result in
+    switch result {
+    case .success(let todos):
+        break // 每一页 10 条数据，跳过了 20 条数据，因此获取的是第 3 页的数据
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 
 {% endblock %}
@@ -947,121 +1072,159 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 {% block code_query_select_keys %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    // 指定返回 title 属性
-    query.whereKey("title", LCQuery.Constraint.Selected)
-    // 指定返回 content 属性
-    query.whereKey("content", LCQuery.Constraint.Selected)
-    query.find { (result) in
-        for todo in result.objects!{
-            let title = todo.get("title") // 读取 title
-            let content = todo.get("content") // 读取 content
-            
-            // 如果访问没有指定返回的属性（key），则会报错，在当前这段代码中访问 location 属性就会报错
-            let location = todo.get("location")
-        }
-    }```
+let query = LCQuery(className: "Todo")
+
+// 指定返回 title 属性
+query.whereKey("title", .Selected)
+
+// 指定返回 content 属性
+query.whereKey("content", .Selected)
+
+query.find { result in
+    switch result {
+    case .success(let todos):
+        // 每一页 10 条数据，跳过了 20 条数据，因此获取的是第 3 页的数据
+
+        guard let todo = todos.first else { return }
+
+        let title   = todo.get("title") // 读取 title
+        let content = todo.get("content") // 读取 content
+        
+        // 如果访问没有指定返回的属性，会返回 nil
+        let location = todo.get("location")
+    case .failure(let error):
+        print(error)
+    }
+}
+```
 {% endblock %}
 
 {% block code_query_count %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    query.whereKey("status", LCQuery.Constraint.EqualTo(value: LCNumber(1)))
-    query.count()
+let query = LCQuery(className: "Todo")
+
+query.whereKey("status", .EqualTo(1))
+
+query.count()
 ```
 {% endblock %}
 
 {% block code_query_orderby %}
 
-``` swift
-    // 按时间，升序排列
-    query.whereKey("createdAt", LCQuery.Constraint.Ascending)
+```swift
+// 按时间，升序排列
+query.whereKey("createdAt", .Ascending)
 
-    // 按时间，降序排列
-    query.whereKey("createdAt", LCQuery.Constraint.Descending)
+// 按时间，降序排列
+query.whereKey("createdAt", .Descending)
 ```
 {% endblock %}
 
 {% block code_query_orderby_on_multiple_keys %}
 
 ```swift
-    query.whereKey("priority", LCQuery.Constraint.Ascending)
-    query.whereKey("createdAt", LCQuery.Constraint.Descending)
+query.whereKey("priority", .Ascending)
+query.whereKey("createdAt", .Descending)
 ```
 {% endblock %}
 
 {% block code_query_with_or %}
 
 ```swift
-    let priorityQuery = LCQuery(className: "Todo")
-    priorityQuery.whereKey("priority", LCQuery.Constraint.GreaterThanOrEqualTo(value: LCNumber(3)))
-    
-    let statusQuery = LCQuery(className: "Todo")
-    statusQuery.whereKey("status", LCQuery.Constraint.EqualTo(value: LCNumber(1)))
-    
-    let query = priorityQuery.or(statusQuery)
-    
-    query.find { (result) in
-        // 返回 priority 大于等于 3 或 status 等于 1 的 Todo
-        let todos = result.objects
+let priorityQuery = LCQuery(className: "Todo")
+priorityQuery.whereKey("priority", .GreaterThanOrEqualTo(3))
+
+let statusQuery = LCQuery(className: "Todo")
+statusQuery.whereKey("status", .EqualTo(1))
+
+let titleQuery = LCQuery(className: "Todo")
+titleQuery.whereKey("title", .MatchedSubstring("李总"))
+
+let query = priorityQuery.or(statusQuery).or(titleQuery)
+
+query.find { result in
+    switch result {
+    case .success(let todos):
+        break // 返回 priority 大于等于 3 或 status 等于 1 或 title 包含李总的 Todo
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_query_with_and %}
 
 ```swift
-    let priorityQuery = LCQuery(className: "Todo")
-    priorityQuery.whereKey("priority", LCQuery.Constraint.LessThan(value: LCNumber(3)))
-    
-    let statusQuery = LCQuery(className: "Todo")
-    statusQuery.whereKey("status", LCQuery.Constraint.EqualTo(value: LCNumber(0)))
-    
-    let query = priorityQuery.and(statusQuery)
-    
-    query.find { (result) in
-        // 返回 priority 小于 3 并且 status 等于 0 的 Todo
-        let todos = result.objects
+let priorityQuery = LCQuery(className: "Todo")
+priorityQuery.whereKey("priority", .LessThan(3))
+
+let statusQuery = LCQuery(className: "Todo")
+statusQuery.whereKey("status", .EqualTo(0))
+
+let query = priorityQuery.and(statusQuery)
+
+query.find { result in
+    switch result {
+    case .success(let todos):
+        break // 返回 priority 小于 3 并且 status 等于 0 的 Todo
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_query_where_keys_exist %}
 
 ```swift
-    // 使用非空值查询获取有图片的 Todo
-    query.whereKey("images", LCQuery.Constraint.Existed)
+// 使用非空值查询获取有图片的 Todo
+query.whereKey("images", .Existed)
 
-    // 使用空值查询获取没有图片的 Todo
-    query.whereKey("images", LCQuery.Constraint.NotExisted)
+// 使用空值查询获取没有图片的 Todo
+query.whereKey("images", .NotExisted)
 ```
 {% endblock %}
 
 {% block code_query_by_cql %}
 
 ```swift
-    LCCQLClient.execute("select * from Todo where status = 1") { (result) in
-         // result.objects 就是满足条件的 Todo 对象
-        for todo in result.objects {
-            let title = todo.get("title")
-        }
+LCCQLClient.execute("select * from Todo where status = 1") { result in
+    switch result {
+    case .success(let result):
+        let todos = result.objects
+    case .failure(let error):
+        print(error)
     }
+}
 
-    LCCQLClient.execute("select count(*) from Todo where priority = 0") { (result) in
-        // result.count 就是 priority = 0 的 Todo 的数量
+LCCQLClient.execute("select count(*) from Todo where priority = 0") { result in
+    switch result {
+    case .success(let result):
+        let todos = result.objects
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
 {% block code_query_by_cql_with_placeholder %}
 
 ```swift
-    let cql = "select * from Todo where status = ? and priority = ?"
-    let pvalues = [0,1]
-    LCCQLClient.execute(cql, parameters: pvalues) { (result) in
-        // result.objects 就是满足条件(status = 0 and priority = 1)的 Todo 对象
+let cql = "select * from Todo where status = ? and priority = ?"
+let pvalues = [0, 1]
+
+LCCQLClient.execute(cql, parameters: pvalues) { result in
+    switch result {
+    case .success(let result):
+        // todos 就是满足条件（status == 0 并且 priority == 1）的 Todo 对象集合
+        let todos = result.objects
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 {% endblock %}
 
@@ -1074,15 +1237,21 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 {% block code_query_geoPoint_near %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    let point = LCGeoPoint(latitude: 39.9, longitude: 116.4)
-    
-    query.whereKey("whereCreated", LCQuery.Constraint.NearbyPoint(point: point))
-    query.limit = 10
-    query.find { (result) in
+let query = LCQuery(className: "Todo")
+let point = LCGeoPoint(latitude: 39.9, longitude: 116.4)
+
+query.whereKey("whereCreated", .LocatedWithin(point))
+query.limit = 10
+
+query.find { result in
+    switch result {
+    case .success(let todos):
         // 离这个位置最近的 10 个 Todo 对象
         let todos = result.objects
+    case .failure(let error):
+        print(error)
     }
+}
 ```
 
 在上面的代码中，`nearbyTodos` 返回的是与 `point` 这一点按距离排序（由近到远）的对象数组。注意：**如果在此之后又使用了排序方法，则按距离排序会被新排序覆盖。**
@@ -1090,22 +1259,23 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 {% endblock %}
 
 {% block text_platform_geoPoint_notice %}
-* iOS 8.0 之后，使用定位服务之前，需要调用 `[locationManager requestWhenInUseAuthorization]` 或 `[locationManager requestAlwaysAuthorization]` 来获取用户的「使用期授权」或「永久授权」，而这两个请求授权需要在 `info.plist` 里面对应添加 `NSLocationWhenInUseUsageDescription` 或 `NSLocationAlwaysUsageDescription` 的键值对，值为开启定位服务原因的描述。SDK 内部默认使用的是「使用期授权」。
+* iOS 8.0 之后，使用定位服务之前，需要调用 `locationManager.requestWhenInUseAuthorization()` 或 `locationManager.requestAlwaysAuthorization()` 来获取用户的「使用期授权」或「永久授权」，而这两个请求授权需要在 `Info.plist` 里面对应添加 `NSLocationWhenInUseUsageDescription` 或 `NSLocationAlwaysUsageDescription` 的键值对，值为开启定位服务原因的描述。SDK 内部默认使用的是「使用期授权」。
 {% endblock %}
 
 {% block code_query_geoPoint_within %}
 
 ```swift
-    let query = LCQuery(className: "Todo")
-    let point = LCGeoPoint(latitude: 39.9, longitude: 116.4)
-    let from = LCGeoPoint.Distance(value: 1.0, unit: LCGeoPoint.Unit.Kilometer)
-    let to = LCGeoPoint.Distance(value: 2.0, unit: LCGeoPoint.Unit.Kilometer)
-    // 查询离指定 point 距离在 1.0 和 2.0 公里的 Todo
-    query.whereKey("whereCreated", LCQuery.Constraint.NearbyPointWithRange(point: point, from: from, to: to))
+let query = LCQuery(className: "Todo")
+let point = LCGeoPoint(latitude: 39.9, longitude: 116.4)
+let from  = LCGeoPoint.Distance(value: 1.0, unit: .Kilometer)
+let to    = LCGeoPoint.Distance(value: 2.0, unit: .Kilometer)
+
+// 查询离指定 point 距离在 1.0 和 2.0 公里的 Todo
+query.whereKey("whereCreated", .LocatedNear(origin: point, from: from, to: to))
 ```
 {% endblock %} code_object_fetch_with_keys
 
-{% block link_to_relation_guide_doc %}[iOS / OS X 关系建模指南](relation_guide-ios.html){% endblock %}
+{% block link_to_relation_guide_doc %}[iOS / OS X 数据模型设计指南](relation_guide-ios.html){% endblock %}
 
 {% set link_to_sms_guide_doc = '[iOS / OS X 短信服务使用指南](sms_guide-ios.html#注册验证)' %}
 
@@ -1116,40 +1286,82 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 {% block code_user_signUp_with_username_and_password %}
 
 ```swift
-    let randomUser = LCUser()
-    randomUser.username = LCString("Tom")
-    randomUser.password = LCString("leancloud")
-    randomUser.signUp()
+let randomUser = LCUser()
+
+randomUser.username = LCString("Tom")
+randomUser.password = LCString("cat!@#123")
+
+randomUser.signUp()
+```
+{% endblock %}
+
+{% block code_send_verify_email %}
+
+```swift
+LCUser.requestVerificationMail(email: "abc@xyz.com") { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        break
+    }
+}
 ```
 {% endblock %}
 
 {% block code_user_logIn_with_username_and_password %}
 
 ```swift
-LCUser.logIn(username: "Tom", password: "leancloud", completion: { ( result ) in
-        let user = result.object! as LCUser
-    })
+LCUser.logIn(username: "Tom", password: "leancloud") { result in
+    switch result {
+    case .success(let user):
+        break
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_user_logIn_with_mobilephonenumber_and_password %}
 
 ```swift
-    LCUser.logIn(mobilePhoneNumber: "13577778888", password: "leancloud") { _ in }
+LCUser.logIn(mobilePhoneNumber: "13577778888", password: "leancloud") { result in
+    switch result {
+    case .success(let user):
+        break
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_user_logIn_requestLoginSmsCode %}
 
 ```swift
-    LCUser.requestLoginShortCode(mobilePhoneNumber: "13577778888") { _ in }
+LCUser.requestLoginVerificationCode(mobilePhoneNumber: "13577778888") { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_user_logIn_with_smsCode %}
 
 ```swift
-    LCUser.logIn(mobilePhoneNumber: "13577778888", shortCode: "238825"){ _ in }
+LCUser.logIn(mobilePhoneNumber: "13577778888", verificationCode: "238825") { result in
+    switch result {
+    case .success(let user):
+        break
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
@@ -1158,75 +1370,113 @@ LCUser.logIn(username: "Tom", password: "leancloud", completion: { ( result ) in
 <div class="callout callout-info">当前版本的 Swift SDK 尚未实现本地的持久化存储， 因此只能在登录成功之后访问 `LCUser.current`。</div>
 
 ```swift
-    let username = LCUser.current?.username // 当前用户名
-    let email = LCUser.current?.email // 当前用户的邮箱
+if let currentUser = LCUser.current {
+    let email = currentUser.email // 当前用户的邮箱
+    let username = currentUser.username // 当前用户名
 
     // 请注意，以下代码无法获取密码
-    let password = LCUser.current?.password
+    let password = currentUser.password
+}
 ```
 {% endblock %}
 
 {% block code_set_user_custom_properties %}
 
 ```swift
-    LCUser.current?.set("age", object: "27")
-    LCUser.current?.save(){ _ in }
+let currentUser = LCUser.current!
+
+// 修改当前用户的年龄
+currentUser.set("age", value: "27")
+
+currentUser.save { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_update_user_custom_properties %}
 
 ```swift
-    LCUser.current?.set("age", object: "25")
-    LCUser.current?.save(){ _ in }
+let currentUser = LCUser.current!
+
+currentUser.set("age", value: "25")
+
+currentUser.save { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_reset_password_by_email %}
 
 ``` swift
-    LCUser.requestPasswordReset(email: "myemail@example.com") { _ in}
+LCUser.requestPasswordReset(email: "myemail@example.com") { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_reset_password_by_mobilephoneNumber %}
 
 ```swift
-    LCUser.requestPasswordReset(mobilePhoneNumber: "13577778888") { _ in}
+LCUser.requestPasswordReset(mobilePhoneNumber: "13577778888") { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 
 {% block code_reset_password_by_mobilephoneNumber_verify %}
 
 ```swift
-    LCUser.resetPassword(mobilePhoneNumber: "13577778888", shortCode: "123456", newPassword: "newpassword") { _ in}
+LCUser.resetPassword(mobilePhoneNumber: "13577778888", verificationCode: "123456", newPassword: "newpassword") { result in
+    switch result {
+    case .success:
+        break
+    case .failure(let error):
+        print(error)
+    }
+}
 ```
 {% endblock %}
 {% block text_current_user %}{% endblock %}
 {% block code_current_user %}
 
 ```swift
-  let currentUser = LCUser.current?
-  if (currentUser != nil) {
-      // 跳转到首页
-  } else {
-      // 缓存用户对象为空时，可打开用户注册界面…
-  }
+if let currentUser = LCUser.current {
+    // 跳转到首页
+} else {
+    // 缓存用户对象为空时，可打开用户注册界面…
+}
 ```
 {% endblock %}
 
 {% block code_current_user_logout %}
-
-```objc
-  [AVUser logOut];  //清除缓存用户对象
-  AVUser *currentUser = [AVUser currentUser]; // 现在的currentUser是nil了
-```
 {% endblock %}
 
 {% block code_query_user %}
 
 ```objc
-  let query = LCQuery(className: "_User")
+let query = LCQuery(className: "_User")
 ```
 {% endblock %}
 
@@ -1238,8 +1488,10 @@ LCUser.logIn(username: "Tom", password: "leancloud", completion: { ( result ) in
 子类化是可选的，请对照下面的例子来加深理解：
 
 ```swift
-let student = LCObject(className:"Student")
-student.set("name", object: "小明")
+let student = LCObject(className: "Student")
+
+student.set("name", value: "小明")
+
 student.save()
 ```
 
@@ -1247,7 +1499,9 @@ student.save()
 
 ```swift
 let student = Student()
+
 student.name = "小明"
+
 student.save()
 ```
 
@@ -1292,7 +1546,7 @@ class Student: LCObject {
 这样就可以通过 `student.age = 19` 这样的方式来读写 `age` 字段了，当然也可以写成：
 
 ```swift
-student.set("age", object: 19)
+student.set("age", value: 19)
 ```
 
 {% endblock %}

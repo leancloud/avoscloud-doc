@@ -314,7 +314,7 @@
 * `add()`<br>
   将指定对象附加到数组末尾。
 * `addUnique()`<br>
-  如果不确定某个对象是否已包含在数组字段中，可以使用此操作来添加。
+  如果数组中不包含指定对象，将该对象加入数组，对象的插入位置是随机的。
 * `removeAll()`<br>
   从数组字段中删除指定对象的所有实例。
 
@@ -967,6 +967,15 @@ fetchAllInBackground()
 ```
 {% endblock %}
 
+{% block code_query_select_pointer_keys %}
+
+```java
+    query.selectKeys(Arrays.asList("owner.username"));
+```
+
+{% endblock %}
+
+
 {% block code_query_orderby %}
 ``` java
         // 按时间，升序排列
@@ -1080,6 +1089,14 @@ fetchAllInBackground()
                 avCloudQueryResult.getCount();
             }
         });
+
+        // 请注意：如果 Todo 是 AVObject 的子类，则需要传入第三个参数 Todo.class，否则会遇到 ClassCastException 的错误
+        AVQuery.doCloudQueryInBackground(cql, new CloudQueryCallback<AVCloudQueryResult>() {
+            @Override
+            public void done(AVCloudQueryResult avCloudQueryResult, AVException e) {
+                Todo todo = (Todo) avCloudQueryResult.getResults().get(0);
+            }
+        }, Todo.class);
 ```
 {% endblock %}
 
@@ -1188,9 +1205,9 @@ fetchAllInBackground()
 {% endblock %} code_object_fetch_with_keys
 
 
-{% block link_to_relation_guide_doc %}[Android 关系建模指南](relation_guide-android.html){% endblock %}
+{% block link_to_relation_guide_doc %}[Android 数据模型设计指南](relation_guide-android.html){% endblock %}
 
-{% set link_to_sms_guide_doc = '[短信服务使用指南 &middot; 注册验证](sms_guide-android.html#注册验证)' %}
+{% set link_to_sms_guide_doc = '[短信服务使用指南 · 注册验证](sms_guide-android.html#注册验证)' %}
 
 {% block code_send_sms_code_for_loginOrSignup %}
 
@@ -1314,6 +1331,20 @@ fetchAllInBackground()
                 AVUser.getCurrentUser().saveInBackground();
             }
         });
+```
+{% endblock %}
+
+{% block code_send_verify_email %}
+
+```java
+  AVUser.requestEmailVerfiy("abc@xyz.com", new RequestEmailVerifyCallback() {
+    @Override
+    public void done(AVException e) {
+      if (e == null) {
+        // 求重发验证邮件成功
+      }
+    }
+  });
 ```
 {% endblock %}
 
