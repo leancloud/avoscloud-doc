@@ -94,6 +94,9 @@
 
 1. 打开 **Keychain Access**，找到要导出的证书（证书名有前缀 **Apple Push Services**）。
 2. 右键点击证书，选择 **导出 / Export**，选择保存格式为 `.p12`。这时程序会提示你输入密码来保护导出的证书，**请不要输入密码**，让两个输入框为空，点击  **OK**。接着又会弹出一个对话框，要求输入 OS X 账户的密码来允许从 Keychain Access 中导出，请填写密码并点击 **允许 / Allow**。
+3. 在 Xcode 工程中开启推送权限：具体步骤如下： ![open_push_auth](images/ios_cert_v2/open_push_auth.png)
+
+
 
 ## 上传证书
 
@@ -104,13 +107,22 @@
 {% endif %}
   
   ![Push certificate configure](images/ios_cert_v2/push_certificate_config.png)
-2. 根据你的证书类别进行上传。这里请注意区分证书的类别，<u>测试环境</u>证书和<u>生产环境</u>证书请勿混淆。
-  - 「Universal 推送证书」需要上传到图中的 **自定义证书** 中。
-    <div class="callout callout-info">在 LeanCloud 的推送服务中，出于兼容性考虑，**Universal 证书只能用于生产环境**。如果需要进行推送测试，请使用图中的 **测试环境证书**。</div>
-  - 在 LeanCloud 的推送服务中，不同类型的推送证书能够服务的环境略有不同，对应关系如下图所示：
-    
-    ![relation between cer and prod or dev](images/ios_cert_v2/relation_between_cer_and_prod_or_dev.png)
 
+2. 将「Universal 推送证书」上传到图中的 **生产证书** 中。
+
+	**根据你的证书类别进行上传。这里请注意区分证书的类别，<u>测试环境</u>证书和<u>生产环境</u>证书请勿混淆。**
+
+3. 配置推送证书，最简单的方式就是将刚才生成的「Universal 推送证书」直接上传。当然也可以自己生成一个测试证书。
+
+上传测试证书后，那么就可以在控制台看到生产证书和测试证书都上传完成：
+
+    ![prod_dev_push_cer_preview](images/ios_cert_v2/prod_dev_push_cer_preview.png)
+
+4. 推送测试可以在这里进行：
+
+    ![push_test](images/ios_cert_v2/push_test.png)
+
+ 
 ## 上传证书失败
 
 如果无法上传推送证书，通常是因为证书有问题，一般由下列原因导致：
