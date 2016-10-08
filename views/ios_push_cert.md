@@ -115,7 +115,6 @@
 
 3. 配置推送证书，最简单的方式就是将刚才生成的「Universal 推送证书」直接上传。当然也可以自己生成一个测试证书。
 
-
 上传测试证书后，那么就可以在控制台看到生产证书和测试证书都上传完成：
 
     ![prod_dev_push_cer_preview](images/ios_cert_v2/prod_dev_push_cer_preview.png)
