@@ -1010,7 +1010,7 @@ todo.save()  # 存储图片
 
 query = Todo.query
 query.exists('images')  # 查询 images 属性不为空的对象
-query.does_not_exists('images')  # 查询 images 属性为空的对象
+query.does_not_exist('images')  # 查询 images 属性为空的对象
 ```
 {% endblock %}
 

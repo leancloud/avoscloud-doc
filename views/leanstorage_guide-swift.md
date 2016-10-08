@@ -1240,7 +1240,7 @@ LCCQLClient.execute(cql, parameters: pvalues) { result in
 let query = LCQuery(className: "Todo")
 let point = LCGeoPoint(latitude: 39.9, longitude: 116.4)
 
-query.whereKey("whereCreated", .NearbyPoint(point))
+query.whereKey("whereCreated", .LocatedWithin(point))
 query.limit = 10
 
 query.find { result in
@@ -1271,7 +1271,7 @@ let from  = LCGeoPoint.Distance(value: 1.0, unit: .Kilometer)
 let to    = LCGeoPoint.Distance(value: 2.0, unit: .Kilometer)
 
 // 查询离指定 point 距离在 1.0 和 2.0 公里的 Todo
-query.whereKey("whereCreated", .NearbyPointWithRange(origin: point, from: from, to: to))
+query.whereKey("whereCreated", .LocatedNear(origin: point, from: from, to: to))
 ```
 {% endblock %} code_object_fetch_with_keys
 
