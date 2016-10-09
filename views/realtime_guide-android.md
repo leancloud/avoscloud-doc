@@ -934,12 +934,12 @@ public class AVIMTextMessage extends AVIMTypedMessage {
 /**
  *
  * @param message 发送的消息实体，可以是任何 AVIMMessage 子类
- * @param AVIMMessageOption 消息特性的选项
+ * @param AVIMMessageOption 消息发送选项
  * @param callback 消息发送之后的回调，发送异常或者发送成功都可以在回调里进行操作
  */
-public void sendMessage(final AVIMMessage message, final int messageFlag, final AVIMConversationCallback callback)
+public void sendMessage(final AVIMMessage message, final AVIMMessageOption option, final AVIMConversationCallback callback)
 ```
-为了满足通用需求，SDK 还提供了一个更为常用的重载声明：
+关于 AVIMMessageOption 可参见[消息发送选项](#消息发送选项)，为了满足通用需求，SDK 还提供了一个更为常用的重载声明：
 
 ```
 /**
@@ -950,7 +950,7 @@ public void sendMessage(final AVIMMessage message, final int messageFlag, final 
 public void sendMessage(AVIMMessage message, AVIMConversationCallback callback)
 ```
 
-其实本质上，调用 `sendMessage(message, callback)` 就等价于调用 `sendMessage(message,1, callback)` ，因为一般情况下消息存在的形式多以**非暂态**消息为主
+其实本质上，调用 `sendMessage(message, callback)` 就等价于调用 `sendMessage(message, null, callback)`
 
 {% endblock %}
 
