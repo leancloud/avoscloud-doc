@@ -1,13 +1,15 @@
 # LeanStorage 入门教程 &middot; {{platformName}}
 
-开发者们，你们好！本教程将模拟一个发布商品的场景，向你讲解 LeanCloud 的存储模块。我们会在示例项目的代码中，逐一地去熟悉几个核心的概念：`{{avUserName}}`、`{{avObjectName}}`、`{{avFileName}}`、`Pointer`、`{{avQueryName}}` 和 `include`。在理解了这些基础知识后，就可以开始基于 LeanCloud 的快速开发了。
-
-## 准备工作
-* 选择下载你所需要的 [StorageStarted 源码](https://github.com/leancloud/StorageStarted)
+开发者们，你们好！本教程将模拟一个发布商品的场景，向你讲解 LeanCloud 的存储模块。你可以通过运行教程里的 demo 进行简单地学习，或者直接动手开发出一个一模一样的 demo。
 
 ## 学习方式
  1. 直接运行。你可以通过浏览 StorageStarted 的界面，同时查看 StorageStarted 里的代码，得到一个大体的印象。
- 2. [创建一个新应用](https://leancloud.cn/applist.html#/newapp)。找到项目里的初始化代码，替换为自己的 App ID 和 App Key，然后再次运行。这时候，通过对比 StorageStarted 里的代码，同时观察自己控制台的数据变化，来全面深入地理解 LeanStorage。
+ 2. [创建一个新应用](https://leancloud.cn/applist.html#/newapp)。找到项目里的初始化代码，替换为你的 App ID 和 App Key，然后再次运行。这时候，通过对比 StorageStarted 里的代码，同时观察你的控制台的数据变化，来全面深入地理解 LeanStorage。
+ 3. 开发出一个一模一样的 demo。参考教程里各个业务部分的代码，同时需要你额外地去编写界面。
+
+## 准备工作
+* 从第一、二种学习方式开始，选择下载你所需要的 [StorageStarted 源码](https://github.com/leancloud/StorageStarted);
+* 从第三种学习方式开始，请先[集成 SDK](https://leancloud.cn/docs/sdk_down.html)。
 
 ## 开发步骤
 ### 用户注册和登录
@@ -154,5 +156,7 @@ AVUser.getCurrentUser().logOut();
 ```
 
 ##  更进一步
+
+我们在这次的教程中，逐一地去熟悉几个核心的概念：`{{avUserName}}`、`{{avObjectName}}`、`{{avFileName}}`、`Pointer`、`{{avQueryName}}` 和 `include`。在理解了这些基础知识后，就可以开始基于 LeanCloud 的快速开发了。
 
 如果你之后，在存储模块的开发过程中，遇到任何问题，请直接查阅以下文档的相关部分：{{link_to_storage_guide_doc}}。
