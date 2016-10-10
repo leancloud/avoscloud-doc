@@ -28,13 +28,13 @@
  * 初始化UNUserNotificationCenter
  */
 - (void)registerForRemoteNotification {
-    // iOS 10 兼容
+    // iOS10 兼容
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 10.0) {
         // 使用 UNUserNotificationCenter 来管理通知
         UNUserNotificationCenter *uncenter = [UNUserNotificationCenter currentNotificationCenter];
         // 监听回调事件
         [uncenter setDelegate:self];
-        //iOS 10 使用以下方法注册，才能得到授权
+        //iOS10 使用以下方法注册，才能得到授权
         [uncenter requestAuthorizationWithOptions:(UNAuthorizationOptionAlert+UNAuthorizationOptionBadge+UNAuthorizationOptionSound)
                                 completionHandler:^(BOOL granted, NSError * _Nullable error) {
                                     //TODO:授权状态改变
@@ -61,16 +61,16 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
         UIUserNotificationType types = UIUserNotificationTypeAlert |
-        UIUserNotificationTypeBadge |
-        UIUserNotificationTypeSound;
+                                       UIUserNotificationTypeBadge |
+                                       UIUserNotificationTypeSound;
         UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
         
         [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     } else {
         UIRemoteNotificationType types = UIRemoteNotificationTypeBadge |
-        UIRemoteNotificationTypeAlert |
-        UIRemoteNotificationTypeSound;
+                                         UIRemoteNotificationTypeAlert |
+                                         UIRemoteNotificationTypeSound;
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:types];
     }
 #pragma clang diagnostic pop
@@ -421,7 +421,6 @@ AVPush *push = [[AVPush alloc] init];
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     . . .
     if ([[UIDevice currentDevice].systemVersion floatValue] < 10.0) {
-        // Extract the notification data
         NSDictionary *notificationPayload;
         @try {
             notificationPayload = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -477,7 +476,7 @@ iOS10 以上需要使用下面代理方法来获得 `userInfo` ：
 
  ```objc
 /**
- * Required for iOS 10+
+ * Required for iOS10+
  * 在前台收到推送内容, 执行的方法
  */
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
@@ -493,7 +492,7 @@ iOS10 以上需要使用下面代理方法来获得 `userInfo` ：
 }
 
 /**
- * Required for iOS 10+
+ * Required for iOS10+
  * 在后台和启动之前收到推送内容, 执行的方法
  */
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
