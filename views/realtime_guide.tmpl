@@ -365,6 +365,14 @@ Tom 想建立一个群，把自己好朋友都拉进这个群，然后给他们�
 
 {% block offlineMessage %}{% endblock %}
 
+#### 自定义离线推送内容
+
+发送消息时，可以指定该消息对应的离线推送内容。如果消息接收方不在线，我们会推送您指定的内容。以下代码演示了如何自定义离线推送内容：
+
+{% block message_push_data %}{% endblock %}
+
+除此以外，还有其他方法来自定义离线推送内容，请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。
+
 #### 消息送达回执
 
 是指消息被对方收到之后，云端会发送一个回执通知给发送方，表明消息已经送达。
@@ -878,6 +886,21 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 {% endblock %}
 
 {% block chatroom_query_extra %}{% endblock %}
+
+### 消息等级
+
+为了保证消息的时效性，当聊天室消息过多导致客户端连接堵塞时，服务器端会选择性地丢弃部分低等级的消息。目前支持的消息等级有：
+
+消息等级 | 描述
+---------|-----
+`{{message_priority_default_varname}}` | 默认等级，表示由系统决定该消息的等级。
+`{{message_priority_high_varname}}`    | 高等级，针对时效性要求较高的消息，比如直播聊天室中的礼物、弹幕等。
+`{{message_priority_normal_varname}}`  | 正常等级。
+`{{message_priority_low_varname}}`     | 低等级，针对时效性要求较低的消息，比如直播聊天室中的普通消息。
+
+消息等级在发送接口的参数中设置。以下代码演示了如何发送一个高等级的消息：
+
+{% block message_priority %}{% endblock %}
 
 ## 聊天记录
 
