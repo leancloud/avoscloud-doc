@@ -1,5 +1,4 @@
 # LeanStorage 入门教程 &middot; {{platformName}}
-
 开发者们，你们好！本教程将模拟一个发布商品的场景，向你讲解 LeanCloud 的数据存储 LeanStorage 的核心使用方法。
 
 ## 你将学到什么
@@ -17,54 +16,22 @@
 
 ## 要做的准备
 * 从第一步学习阶段开始，请选择下载你所需要平台的 [Demo](https://github.com/leancloud/StorageStarted);
-* 从第三步学习阶段直接开始，请先阅读 [{{platform_title}} 安装指南](sdk_setup-{{segment_code}}.html)，集成 SDK。
+* 从第三步学习阶段直接开始，请先阅读 [{{platformName}} 安装指南](sdk_setup-{{segment_code}}.html)，集成 SDK。
 
-## 主要步骤
+## 主要步骤 
 ### 1、用户注册和登录
 
 打开 demo 后，我们看到的是登录界面。我们先点击进入注册页面，注册一个用户。
 
-`{{avUesrName}}` 是用来描述一个用户的特殊对象，与之相关的数据都保存在 `_User` 数据表中。本质上，和下面所讲到的 `{{avObjectName}}` 是相同的。
+`{{avUserName}}` 是用来描述一个用户的特殊对象，与之相关的数据都保存在 `_User` 数据表中。本质上，和下面所讲到的 `{{avObjectName}}` 是相同的。
 
 输入用户名、密码和邮箱，点击注册，成功后在你的控制台的 `_User` 表里，会对应地生成一条用户数据，具体代码如下：
 
-```java
-    AVUser user = new AVUser();// 新建 AVUser 对象实例
-    user.setUsername(username);// 设置用户名
-    user.setPassword(password);// 设置密码
-    user.setEmail(email);//设置邮箱
-    user.signUpInBackground(new SignUpCallback() {
-      @Override
-      public void done(AVException e) {
-        if (e == null) {
-          // 注册成功，把用户对象赋值给当前用户 AVUser.getCurrentUser()
-          startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-          RegisterActivity.this.finish();
-        } else {
-          // 失败的原因可能有多种，常见的是用户名已经存在。
-          showProgress(false);
-          Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-      }
-    });
-```
+{% block code_user_sign_up %}{% endblock %}
 
 如果已有帐号，那就在登录页面，通过以下代码完成登录操作：
 
-```java
-    AVUser.logInInBackground(username, password, new LogInCallback<AVUser>() {
-      @Override
-      public void done(AVUser avUser, AVException e) {
-        if (e == null) {
-          LoginActivity.this.finish();
-          startActivity(new Intent(LoginActivity.this, MainActivity.class));
-        } else {
-          showProgress(false);
-          Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-      }
-    });
-```
+{% block code_user_login %}{% endblock %}
 
 ### 2、发布第一件商品
 
@@ -100,26 +67,7 @@ image | File | 封面图片
 
 依次输入商品标题、商品描述和商品价格，并从相册挑选一张封面图片后，点击发布，成功后，在你的控制台里会新增一张名为 `Product` 的表，同时表里会有一条新数据。具体代码如下：
 
-```java
-    AVObject product = new AVObject("Product");
-    product.put("title", mTitleEdit.getText().toString());
-    product.put("description", mDiscriptionEdit.getText().toString());
-    product.put("price", Integer.parseInt(mPriceEdit.getText().toString()));
-    product.put("owner", AVUser.getCurrentUser());
-    product.put("image", new AVFile("productPic", mImageBytes));
-    product.saveInBackground(new SaveCallback() {
-      @Override
-      public void done(AVException e) {
-        if (e == null) {
-          mProgerss.setVisibility(View.GONE);
-          PublishActivity.this.finish();
-        } else {
-          mProgerss.setVisibility(View.GONE);
-          Toast.makeText(PublishActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-      }
-    });
-```
+{% block code_create_product_object %}{% endblock %}
 
 ### 3、展示商品列表
 
@@ -141,30 +89,13 @@ image | File | 封面图片
 
 请看示例，通过如下代码实现查询过程：
 
-```java
-    AVQuery<AVObject> avQuery = new AVQuery<>("Product");
-    avQuery.orderByDescending("createdAt");
-    avQuery.include("owner");
-    avQuery.findInBackground(new FindCallback<AVObject>() {
-      @Override
-      public void done(List<AVObject> list, AVException e) {
-        if (e == null) {
-          mList.addAll(list);
-          mRecyclerAdapter.notifyDataSetChanged();
-        } else {
-          e.printStackTrace();
-        }
-      }
-    });
-```
+{% block code_query_product %}{% endblock %}
 
 ### 4、退出登录
 
 可以使用如下代码：
 
-```java
-    AVUser.getCurrentUser().logOut();
-```
+{% block code_user_logout %}{% endblock %}
 
 ##  更进一步
 
