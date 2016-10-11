@@ -1,24 +1,32 @@
 # LeanStorage 入门教程 &middot; {{platformName}}
 
-开发者们，你们好！本教程将模拟一个发布商品的场景，向你讲解 LeanCloud 的存储模块。你可以通过运行教程里的 demo 进行简单地学习，或者直接动手开发出一个一模一样的 demo。
+开发者们，你们好！本教程将模拟一个发布商品的场景，向你讲解 LeanCloud 的数据存储 LeanStorage 的核心使用方法。
 
-## 学习方式
- 1. 直接运行。你可以通过浏览 StorageStarted 的界面，同时查看 StorageStarted 里的代码，得到一个大体的印象。
- 2. [创建一个新应用](https://leancloud.cn/applist.html#/newapp)。找到项目里的初始化代码，替换为你的 App ID 和 App Key，然后再次运行。这时候，通过对比 StorageStarted 里的代码，同时观察你的控制台的数据变化，来全面深入地理解 LeanStorage。
- 3. 开发出一个一模一样的 demo。参考教程里各个业务部分的代码，同时需要你额外地去编写界面。
+## 你将学到什么
+* 用户系统，如何注册、登录和登出
+* 保存数据到 LeanCloud 平台
+* 从客户端查询数据
+* 处理数据表与数据表之间的简单关联关系
 
-## 准备工作
-* 从第一、二种学习方式开始，选择下载你所需要的 [StorageStarted 源码](https://github.com/leancloud/StorageStarted);
-* 从第三种学习方式开始，请先[集成 SDK](https://leancloud.cn/docs/sdk_down.html)。
+## 如何学习
+我们推荐下面三步，它们是一步步递进且相互关联的。所以，这个教程后面的主体部分，都在讲解承上启下的第二步学习阶段：
 
-## 开发步骤
-### 用户注册和登录
+ 1. 直接运行配合本教程的 StorageStarted demo（以下全部简称为 demo）。你可以通过浏览界面，同时查看里面的代码，对 LeanStorage 有一个初步的了解。
+ 2. [创建一个新应用](https://leancloud.cn/applist.html#/newapp)。找到 demo 里的初始化代码，替换为你的 App ID 和 App Key，然后再次运行 demo。这时候，通过对比运行 demo 里的代码，同时观察你的控制台的数据变化，来全面深入地理解 LeanStorage。
+ 3. 新建一个项目，开发出一个一模一样的 demo。照搬教程 demo 里各个业务部分的代码，同时需要你额外地去编写界面。
 
-打开应用后，我们看到的是登录界面。我们先点击进入注册页面，注册一个用户。
+## 要做的准备
+* 从第一步学习阶段开始，选择下载你所需要平台的 [Demo](https://github.com/leancloud/StorageStarted);
+* 从第三步学习阶段直接开始，请先[集成 SDK](https://leancloud.cn/docs/sdk_down.html)。
+
+## 主要步骤
+### 1、用户注册和登录
+
+打开 demo 后，我们看到的是登录界面。我们先点击进入注册页面，注册一个用户。
 
 `{{avUesrName}}` 是用来描述一个用户的特殊对象，与之相关的数据都保存在 `_User` 数据表中。本质上，和下面所讲到的 `{{avObjectName}}` 是相同的。
 
-输入用户名、密码和邮箱后，通过如下代码完成注册过程；成功后，在你的控制台的 `_User` 表里，会对应地生成一条数据，也就是刚刚注册成功的这名用户：
+输入用户名、密码和邮箱，点击注册，成功后在你的控制台的 `_User` 表里，会对应地生成一条用户数据，具体代码如下：
 
 ```java
     AVUser user = new AVUser();// 新建 AVUser 对象实例
@@ -58,7 +66,7 @@
     });
 ```
 
-### 发布第一件商品
+### 2、发布第一件商品
 
 登录成功后，我们进入主页面。如果主页面没有任何内容，我们则点击进入发布页面，来发布一个新商品。
 
@@ -70,7 +78,7 @@
 - 封面图片
 - 所有者
 
-我们可以将一件商品，对应到一个 `{{avObjectName}}` 的实例。`{{avObjectName}}` 是 LeanCloud 提供的面向对象存储模型的核心概念，一个 Object 可以拥有若干属性，每一个属性就是一个键值对（key-value）。像上面的商品属性，我们可以设计如下的存储 schema：
+我们可以将一件商品，对应到一个 `{{avObjectName}}` 的实例。`{{avObjectName}}` 是 LeanCloud 提供的面向对象存储模型的核心概念，一个 Object 可以拥有若干属性，每一个属性就是一个键值对（key-value）。像上面的商品属性，我们可以设计成如下的存储 schema：
 
 属性名 | 类型 | 含义
 ---|---|---
@@ -86,11 +94,11 @@ image | File | 封面图片
 - 所有者
 - 封面图片
 
-`Pointer` 类型，本质上是指向另外一张表的指针。在这个案例里，`owner` 字段，就是 `Product` 表里，用来指向 `_User` Pointer表的一名用户的指针。
+`Pointer` 类型，本质上是指向另外一张表的指针。在这个案例里，`owner` 字段，就是 `Product` 表里，用来指向 `_User` 表里一名用户的指针。
 
 `File` 类型，对应着 `{{avFileName}}`。 `{{avFileName}}` 是用来描述一个文件的特殊对象，与之相关的数据都保存在 `_File` 数据表中。
 
-依次输入商品标题、商品描述和商品价格，并从相册挑选一张封面图片后，通过如下代码完成发布过程；成功后，在你的控制台里会新增一张名为 `Product` 的表，表里有一条新数据，也就是刚刚发布成功的这条数据：
+依次输入商品标题、商品描述和商品价格，并从相册挑选一张封面图片后，点击发布，成功后，在你的控制台里会新增一张名为 `Product` 的表，同时表里会有一条新数据。具体代码如下：
 
 ```java
     AVObject product = new AVObject("Product");
@@ -113,9 +121,9 @@ image | File | 封面图片
     });
 ```
 
-### 展示商品列表
+### 3、展示商品列表
 
-发布成功后，我们回到主页面。对 `Product` 表进行查询。
+发布成功后，我们回到主页面。对 `Product` 表进行查询，然后展示出来。
 
 `{{avQueryName}}` 是构建针对 `{{avObjectName}}` 查询的基础类。
 
@@ -149,14 +157,17 @@ image | File | 封面图片
       }
     });
 ```
-最后，退出登录，可以使用如下代码：
+
+### 4、退出登录
+
+可以使用如下代码：
 
 ```java
-AVUser.getCurrentUser().logOut();
+    AVUser.getCurrentUser().logOut();
 ```
 
 ##  更进一步
 
 我们在这次的教程中，逐一地去熟悉几个核心的概念：`{{avUserName}}`、`{{avObjectName}}`、`{{avFileName}}`、`Pointer`、`{{avQueryName}}` 和 `include`。在理解了这些基础知识后，就可以开始基于 LeanCloud 的快速开发了。
 
-如果你之后，在存储模块的开发过程中，遇到任何问题，请直接查阅以下文档的相关部分：{{link_to_storage_guide_doc}}。
+如果你在后续存储模块的开发过程中，遇到任何问题，请查阅以下进阶文档的相关部分：{{link_to_storage_guide_doc}}。
