@@ -3,6 +3,7 @@
 
 {# --Start--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 {% set platform = 'Android' %}
+{% set segment_code ="android" %}
 {% set avUserName = 'AVUser' %}
 {% set avQueryName = 'AVQuery' %}
 {% set avObjectName = 'AVObject' %}
