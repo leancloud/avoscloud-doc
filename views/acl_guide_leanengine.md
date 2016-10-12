@@ -2,8 +2,10 @@
 
 云引擎（LeanEngine）提供给开发者自定义云端逻辑的接口，例如开发者想记录每一个用户登录系统的时间，打印一下日志，以备之后的查询和分析，那么云引擎提供的接口就可以实现这一需求，详细的操作请查看：
 
-* [云引擎 Node 环境](leanengine_cloudfunction_guide-node.html)
-* [云引擎 Python 环境](leanengine_guide-python.html)
+* [云引擎 Node.js 环境](leanengine_cloudfunction_guide-node.html)
+* [云引擎 Python 环境](leanengine_cloudfunction_guide-python.html)
+* [云引擎 PHP 环境](leanengine_cloudfunction_guide-php.html)
+* [云引擎 Java 环境](leanengine_cloudfunction_guide-java.html)
 
 提到以上这个需求是为了让开发者更好的理解一下的需求描述：
 

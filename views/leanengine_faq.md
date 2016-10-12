@@ -2,7 +2,7 @@
 
 ## 如何判断当前是预备环境还是生产环境？
 
-请参考 [网站托管开发指南 · 预备环境和生产环境](leanengine_webhosting_guide-node.html#预备环境和生产环境) / [Python · 运行环境区分](/leanengine_guide-python.html#运行环境区分)。
+请参考 [网站托管开发指南 · 预备环境和生产环境](leanengine_webhosting_guide-node.html#预备环境和生产环境) / [Python · 运行环境区分](leanengine_webhosting_guide-python.html#预备环境和生产环境)。
 
 ## 怎么添加第三方模块
 
