@@ -1,5 +1,5 @@
 {# 指定继承模板 #}
-{% extends "./leanstorage_started.tmpl" %}
+{% extends "./leanstorage-started.tmpl" %}
 
 {# --Start--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 {% set platformName = 'iOS / OSX' %}
