@@ -1,6 +1,9 @@
 {% extends "./acl_quick_start.tmpl" %}
 
-{% block language_version %}Python{% endblock %}
+{% set platform_name = "Python" %}
+{% set acl_guide_url = "[LeanCloud 权限管理使用规范](./acl_guide-python.html)" %}
+
+
 {% block code_not_use_acl %}
 <pre lang="python">
 import leancloud
@@ -40,4 +43,3 @@ post.save()
 </pre>
 
 {% endblock %}
-{% block link_to_acl_guide %}[LeanCloud 权限管理使用规范](./acl_guide-python.html){% endblock %}

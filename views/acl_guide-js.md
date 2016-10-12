@@ -2,12 +2,14 @@
 
 {% set runAtServer = "true" %}
 {% set language = "JavaScript SDK" %}
-{% set platform = "JavaScript" %}
+{% set platform_name = "JavaScript" %}
+{% set acl_quickstart_guide_url = "权限管理以及 ACL 快速指南](acl_quick_start-js.html)" %}
+
 {% block for_front_js %}
 ### 云引擎使用 ACL
-文档中使用的 `AV.User.current()` 这个方法仅仅针对浏览器端有效，在**云引擎中该接口无法使用**。云引擎中获取用户信息，请参考云引擎文档[处理用户登录和登出](leanengine_webhosting_guide-node.html#处理用户登录和登出)
+文档中使用的 `AV.User.current()` 这个方法仅仅针对浏览器端有效，在**云引擎中该接口无法使用**。云引擎中获取用户信息，请参考 [云引擎指南 &middot; 处理用户登录和登出](leanengine_webhosting_guide-node.html#处理用户登录和登出)。
 {% endblock %}
-{% block link_to_acl_quickStart %}[权限管理以及 ACL 快速指南](acl_quick_start-js.html){% endblock %}
+
 {% block create_post_set_acl_for_single_user %}
 
 ```js

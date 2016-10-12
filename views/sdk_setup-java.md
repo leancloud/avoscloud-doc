@@ -1,5 +1,5 @@
 {% extends "./sdk_setup.tmpl" %}
-
+{% set platform_name = "Java" %}
 {% set java_sdk_latest_version = '0.1.6' %}
 
 {% block language %}Java{% endblock %}

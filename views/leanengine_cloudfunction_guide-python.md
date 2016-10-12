@@ -4,7 +4,7 @@
 {% set productName = "LeanEngine" %}
 {% set storageName = "LeanStorage" %}
 {% set leanengine_middleware = "[LeanCloud Python SDK](https://github.com/leancloud/python-sdk)" %}
-{% set sdk_guide_link = "[Python SDK](./leanstorage_guide-python.html)" %}
+{% set storage_guide_url = "[Python SDK](./leanstorage_guide-python.html)" %}
 {% set cloud_func_file = "`$PROJECT_DIR/cloud.py`" %}
 {% set runFuncName = "`leancloud.cloudfunc.run`" %}
 {% set defineFuncName = "`engine.define`" %}

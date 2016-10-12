@@ -2,13 +2,13 @@
 {% set appkey = '{{appkey}}' %}
 {% set masterkey = '{{masterkey}}' %}
 
-# {{platform}} 数据模型设计指南
+# 数据模型设计指南 &middot; {{platform_name}} 
 
 > 其他语言代码示例
-{% if platform != 'iOS / OS X' %}* [iOS / OS X](relation_guide-ios.html){% else %}* iOS / OS X{% endif %}
-{% if platform != 'Android' %}* [Android](relation_guide-android.html){% else %}* Android{% endif %}
-{% if platform != 'JavaScript' %}* [JavaScript](relation_guide-js.html){% else %}* JavaScript{% endif %}
-{% if platform != 'Python' %}* [Python](relation_guide-python.html){% else %}* Python{% endif %}
+{% if platform_name != 'iOS / OS X' %}* [iOS / OS X](relation_guide-ios.html){% else %}* iOS / OS X{% endif %}
+{% if platform_name != 'Android' %}* [Android](relation_guide-android.html){% else %}* Android{% endif %}
+{% if platform_name != 'JavaScript' %}* [JavaScript](relation_guide-js.html){% else %}* JavaScript{% endif %}
+{% if platform_name != 'Python' %}* [Python](relation_guide-python.html){% else %}* Python{% endif %}
 
 多年以来，关系型数据库已经成为了企业数据管理的基础，很多工程师对于关系模型和 6 个范式都比较了解，但是如今来构建和运行一个应用，随着数据来源的越发多样和用户量的不断增长，关系数据库的限制逐渐成为业务的瓶颈，因此越来越多的公司开始向其它 NoSQL 数据库进行迁移。
 

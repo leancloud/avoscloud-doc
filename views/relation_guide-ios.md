@@ -1,6 +1,6 @@
 {% extends "./relation_guide.tmpl" %}
 
-{% set platform    = "iOS / OS X" %}
+{% set platform_name = "iOS / OS X" %}
 {% set ops_include = "includeKey" %}
 
 {% block code_save_student_family_address %}

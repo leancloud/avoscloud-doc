@@ -4,7 +4,7 @@
 {% set productName = "LeanEngine" %}
 {% set storageName = "LeanStorage" %}
 {% set leanengine_middleware = "[LeanEngine Java SDK](https://github.com/leancloud/leanengine-java-sdk)" %}
-{% set sdk_guide_link = "[Java SDK](leanstorage_guide-java.html)" %}
+{% set storage_guide_url = "[Java SDK](leanstorage_guide-java.html)" %}
 {% set cloud_func_file = "$PROJECT_DIR/src/main/java/cn/leancloud/demo/todo/Cloud.java" %}
 {% set runFuncName = "AVCloud.callFunction" %}
 {% set defineFuncName = "@EngineFunction 注解" %}

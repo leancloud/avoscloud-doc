@@ -1,6 +1,5 @@
 {% extends "./sdk_setup.tmpl" %}
-
-{% block language %}PHP{% endblock %}
+{% set platform_name = "PHP" %}
 
 {% block libs_tool_automatic %}
 

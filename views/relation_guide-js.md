@@ -1,6 +1,6 @@
 {% extends "./relation_guide.tmpl" %}
 
-{% set platform    = "JavaScript" %}
+{% set platform_name = "JavaScript" %}
 {% set ops_include = "includeKey" %}
 
 {% block code_save_student_family_address %}

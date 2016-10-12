@@ -16,7 +16,7 @@
 
 第一步，我们需要编写我们的云引擎 Hook 函数（关于云引擎 Hook 函数介绍请查看 [Save AVObject 前执行操作](leanengine_cloudfunction_guide-node.html#beforeSave)）：
 
-**Node**
+**Node.js**
 
 ```javascript
 AV.Cloud.beforeSave('Post', function(request, response) {

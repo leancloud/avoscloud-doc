@@ -1,6 +1,6 @@
 {% extends "./relation_guide.tmpl" %}
 
-{% set platform    = "Android" %}
+{% set platform_name = "Android" %}
 {% set ops_include = "include" %}
 
 {% block code_save_student_family_address %}

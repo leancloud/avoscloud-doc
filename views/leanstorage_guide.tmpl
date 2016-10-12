@@ -4,7 +4,7 @@
 {% set middot = '·' %}
 {% set link_to_blog_password_reset = '关于自定义邮件模板和验证链接，请参考《[自定义应用内用户重设密码和邮箱验证页面](https://blog.leancloud.cn/607/)》。' %}
 
-#  {{platform_title}} 数据存储开发指南
+# 数据存储开发指南 &middot; {{platform_name}}
 
 数据存储（{{productName}}）是 LeanCloud 提供的核心功能之一，它的使用方法与传统的关系型数据库有诸多不同。下面我们将其与传统数据库的使用方法进行对比，让大家有一个初步了解。
 
@@ -50,7 +50,7 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 ## SDK 安装
 
 {% block text_and_link_to_install_doc %}
-请阅读 [{{platform_title}} 安装指南](sdk_setup-{{segment_code}}.html)。
+请阅读 [{{platform_name}} 安装指南](sdk_setup-{{segment_code}}.html)。
 {% endblock %}
 
 {% endblock %}
@@ -236,7 +236,7 @@ description     objectId
 
 {% block code_delete_todo_by_objectId %}{% endblock %}
 
-<div class="callout callout-danger">删除对象是一个较为敏感的操作。在控制台创建对象的时候，默认开启了权限保护，关于这部分的内容请阅读《{{link_to_acl_doc}}》。</div>
+<div class="callout callout-danger">删除对象是一个较为敏感的操作。在控制台创建对象的时候，默认开启了权限保护，关于这部分的内容请阅读《{{acl_guide_url}}》。</div>
 
 #### 使用 CQL 语法删除对象
 {{productName}} 提供了类似 SQL 语法中的 Delete 方式删除一个对象，例如删除一个 Todo 对象可以使用下面的代码：
@@ -331,7 +331,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 很多开发者在使用 {{productName}} 初期都会产生疑惑：客户端的数据类型是如何被云端识别的？
 因此，我们有必要重点介绍一下 {{productName}} 的数据协议。
 
-先从一个简单的日期类型入手，比如在 {{platform_title}} 中，默认的日期类型是 `{{dateType}}`，下面会详细讲解一个
+先从一个简单的日期类型入手，比如在 {{platform_name}} 中，默认的日期类型是 `{{dateType}}`，下面会详细讲解一个
  `{{dateType}}` 是如何被云端正确的按照日期格式存储的。
 
 为一个普通的 `{{baseObjectName}}` 的设置一个 `{{dateType}}` 的属性，然后调用保存的接口：
@@ -648,7 +648,7 @@ AND 操作是指只有满足了所有查询条件的对象才会被返回给客�
 
 {% block code_query_todoFolder_with_tag %}{% endblock %}
 
-关于关联数据的建模是一个复杂的过程，很多开发者因为在存储方式上的选择失误导致最后构建查询的时候难以下手，不但客户端代码冗余复杂，而且查询效率低，为了解决这个问题，我们专门针对关联数据的建模推出了一个详细的文档予以介绍，详情请阅读 {% block link_to_relation_guide_doc %}{% endblock %}。
+关于关联数据的建模是一个复杂的过程，很多开发者因为在存储方式上的选择失误导致最后构建查询的时候难以下手，不但客户端代码冗余复杂，而且查询效率低，为了解决这个问题，我们专门针对关联数据的建模推出了一个详细的文档予以介绍，详情请阅读 {{relation_guide_url}}。
 
 #### 关联属性查询
 正如在 [Pointer](#Pointer) 中保存 Comment 的 targetTodoFolder 属性一样，假如查询到了一些 Comment 对象，想要一并查询出每一条 Comment 对应的 TodoFolder 对象的时候，可以加上 include 关键字查询条件。同理，假如 TodoFolder 表里还有 pointer 型字段 targetAVUser 时，再加上一个递进的查询条件，形如 include(b.c)，即可一并查询出每一条 TodoFolder 对应的 AVUser 对象。代码如下：
@@ -802,7 +802,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 #### 设置手机号码
 
-微信、陌陌等流行应用都会建议用户将账号和一个手机号绑定，这样方便进行身份认证以及日后的密码找回等安全模块的使用。我们也提供了一整套发送短信验证码以及验证手机号的流程，这部分流程以及代码演示请参考 {{ link_to_sms_guide_doc }}。
+微信、陌陌等流行应用都会建议用户将账号和一个手机号绑定，这样方便进行身份认证以及日后的密码找回等安全模块的使用。我们也提供了一整套发送短信验证码以及验证手机号的流程，这部分流程以及代码演示请参考 {{ sms_guide_url }}。
 
 #### 验证邮箱
 
@@ -824,7 +824,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 #### 手机号和密码登录
 
-请确保已详细阅读了 {{ link_to_sms_guide_doc }} 这一小节的内容，才可以顺利理解手机号匹配密码登录的流程以及适用范围。
+请确保已详细阅读了 {{ sms_guide_url }} 这一小节的内容，才可以顺利理解手机号匹配密码登录的流程以及适用范围。
 
 用户的手机号只要经过了验证，就可以使用手机号密码登录的功能，否则登录会失败。
 
@@ -918,33 +918,33 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 用户表是一个特殊的表，专门存储用户对象。在浏览器端，你会看到一个 `_User` 表。
 
 ## 角色
-关于用户与角色的关系，我们有一个更为详尽的文档介绍这部分的内容，并且针对权限管理有深入的讲解，详情请点击 {{link_to_acl_doc}}。
+关于用户与角色的关系，我们有一个更为详尽的文档介绍这部分的内容，并且针对权限管理有深入的讲解，详情请点击 {{acl_guide_url}}。
 
 {% block text_subclass %}{% endblock %}
 
 {% block module_in_app_search %}
 ## 应用内搜索
-应用内搜索是一个针对应用数据进行全局搜索的接口，它基于搜索引擎构建，提供更强大的搜索功能。要深入了解其用法和阅读示例代码，请阅读 {% block link_to_in_app_search_doc %}{% endblock %}。
+应用内搜索是一个针对应用数据进行全局搜索的接口，它基于搜索引擎构建，提供更强大的搜索功能。要深入了解其用法和阅读示例代码，请阅读 {{inapp_search_guide_url}}。
 {% endblock %}
 
 {% if node != 'qcloud' %}
 {% block module_in_app_social %}
 ## 应用内社交
-应用内社交，又称「事件流」，在应用开发中出现的场景非常多，包括用户间关注（好友）、朋友圈（时间线）、状态、互动（点赞）、私信等常用功能，请参考 {% block link_to_status_system_doc %}{% endblock %}。
+应用内社交，又称「事件流」，在应用开发中出现的场景非常多，包括用户间关注（好友）、朋友圈（时间线）、状态、互动（点赞）、私信等常用功能，请参考 {{status_system_guide_url}}。
 {% endblock %}
 {% endif %}
 
 {% if node != 'qcloud' %}
 {% block text_sns %}
 ## 第三方账户登录
-社交账号的登录方便了应用开发者在提升用户体验，我们特地开发了一套支持第三方账号登录的组件，请参考 {% block link_to_sns_doc %}{% endblock %}。
+社交账号的登录方便了应用开发者在提升用户体验，我们特地开发了一套支持第三方账号登录的组件，请参考 {{sns_guide_url}}。
 {% endblock %}
 {% endif %}
 
 {% if node != 'qcloud' %}
 {% block text_feedback %}
 ## 用户反馈
-用户反馈是一个非常轻量的模块，可以用最少两行的代码来实现一个支持文字和图片的用户反馈系统，并且能够方便的在我们的移动 App 中查看用户的反馈，请参考 {% block link_to_feedback_doc %}{% endblock %}。
+用户反馈是一个非常轻量的模块，可以用最少两行的代码来实现一个支持文字和图片的用户反馈系统，并且能够方便的在我们的移动 App 中查看用户的反馈，请参考  {{feedback_guide_url}}。
 {% endblock %}
 {% endif %}
 

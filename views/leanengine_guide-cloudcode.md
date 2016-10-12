@@ -176,7 +176,7 @@ $ avoscloud
 因为云引擎 2.0 运行在沙箱环境，所以不需要安装和初始化，直接可以在项目中使用。
 {% endblock %}
 
-{% set sdk_guide_link = '[JavaScript SDK](./leanstorage_guide-js.html)' %}
+{% set storage_guide_url = '[JavaScript SDK](./leanstorage_guide-js.html)' %}
 
 {% block cloudFuncExample %}
 ```javascript

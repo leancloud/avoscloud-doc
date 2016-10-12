@@ -1,5 +1,5 @@
 {% extends "./sdk_setup.tmpl" %}
-{% block language %}Swift{% endblock %} 
+{% set platform_name = "Swift" %}
 {% set command_install_cocoapods = "$ sudo gem install cocoapods" %}
 {% set code_import_sdk_core = "import LeanCloud" %}
 

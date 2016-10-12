@@ -1,18 +1,19 @@
 {% set appid = '{{appid}}' %}
 {% set appkey = '{{appkey}}' %}
 {% set masterkey = '{{masterkey}}' %}
-# {{language}} 权限管理使用指南
+
+# 权限管理使用指南 &middot; {{platform_name}} 
 
 ## 其他语言代码示例
-{% if platform != 'iOS / OS X' %}* [iOS / OS X](acl_guide-ios.html){% else %}* iOS / OS X{% endif %}
-{% if platform != 'Android' %}* [Android](acl_guide-android.html){% else %}* Android{% endif %}
-{% if platform != 'JavaScript' %}* [JavaScript](acl_guide-js.html){% else %}* JavaScript{% endif %}
-{% if platform != 'Python' %}* [Python](acl_guide-python.html){% else %}* Python{% endif %}
+{% if platform_name != 'iOS / OS X' %}* [iOS / OS X](acl_guide-ios.html){% else %}* iOS / OS X{% endif %}
+{% if platform_name != 'Android' %}* [Android](acl_guide-android.html){% else %}* Android{% endif %}
+{% if platform_name != 'JavaScript' %}* [JavaScript](acl_guide-js.html){% else %}* JavaScript{% endif %}
+{% if platform_name != 'Python' %}* [Python](acl_guide-python.html){% else %}* Python{% endif %}
 
 ## 简介
 数据安全在应用开发的任何阶段都应该被重视。因此本文档我们详细介绍了在选择 LeanCloud 作为后端服务之后，如何使用 LeanCloud 提供的安全功能模块为开发者的应用以及数据提供安全保障。
 
-如果您尚未对权限管理以及 ACL 的进行过了解，请查看 {% block link_to_acl_quickStart %}{% endblock %}。
+如果您尚未对权限管理以及 ACL 的进行过了解，请查看 {{acl_quickstart_guide_url}}。
 
 ## 需求场景
 

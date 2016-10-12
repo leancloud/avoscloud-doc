@@ -4,7 +4,7 @@
 {# --Start--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 {% set cloudName ="LeanCloud" %}
 {% set productName ="LeanStorage" %}
-{% set platform_title ="JavaScript" %}
+{% set platform_name ="JavaScript" %}
 {% set segment_code ="js" %}
 {% set sdk_name ="JavaScript SDK" %}
 {% set baseObjectName ="AV.Object" %}
@@ -22,7 +22,13 @@
 {% set fileObjectName ="AV.File" %}
 {% set dateType= "Date" %}
 {% set byteType= "Buffer" %}
-{% set link_to_acl_doc ="[JavaScript 权限管理使用指南](acl_guide-js.html)" %}
+{% set acl_guide_url = "[JavaScript 权限管理使用指南](acl_guide-js.html)" %}
+{% set sms_guide_url = "[JavaScript 短信服务使用指南](sms_guide-js.html#注册验证)" %}
+{% set relation_guide_url = "[JavaScript 数据模型设计指南](relation_guide-js.html)" %}
+{% set inapp_search_guide_url = "[JavaScript 应用内搜索指南](app_search_guide.html)" %}
+{% set status_system_guide_url = "[JavaScript 应用内社交模块](status_system.html#JavaScript_SDK)" %}
+{% set sns_guide_url = "（JavaScript SDK 文档待补充）" %}
+{% set feedback_guide_url = "（JavaScript SDK 文档待补充）" %}
 {% set funtionName_whereKeyHasPrefix = "startsWith" %}
 {% set saveOptions_query= "query" %}
 {% set saveOptions_fetchWhenSave= "fetchWhenSave" %}
@@ -1157,12 +1163,7 @@ file.save({
   query.withinKilometers('whereCreated', point, 2.0);
 ```
 
-{% endblock %} code_object_fetch_with_keys
-
-
-{% block link_to_relation_guide_doc %}[JavaScript 数据模型设计指南](relation_guide-js.html){% endblock %}
-
-{% set link_to_sms_guide_doc = '[JavaScript 短信服务使用指南](sms_guide-js.html#注册验证)' %}
+{% endblock %}
 
 {% block code_send_sms_code_for_loginOrSignup %}
 
@@ -1385,8 +1386,6 @@ AV.User.requestLoginSmsCode('13577778888').then(function (success) {
 {% block text_subclass %}{% endblock %}
 {% block text_sns %}{% endblock %}
 {% block text_feedback %}{% endblock %}
-{% block link_to_in_app_search_doc %}[JavaScript 应用内搜索指南](app_search_guide.html){% endblock %}
-{% block link_to_status_system_doc %}[JavaScript 应用内社交模块](status_system.html#JavaScript_SDK){% endblock %}
 
 {% block text_js_promise %}
 ## Promise

@@ -4,7 +4,7 @@
 {# --Start--变量定义，主模板使用的单词，短语所有子模板都必须赋值 #}
 {% set cloudName ="LeanCloud" %}
 {% set productName ="LeanStorage" %}
-{% set platform_title ="Android" %}
+{% set platform_name ="Android" %}
 {% set segment_code ="android" %}
 {% set sdk_name ="Android SDK" %}
 {% set baseObjectName ="AVObject" %}
@@ -22,7 +22,13 @@
 {% set fileObjectName ="AVFile" %}
 {% set dateType= "Date" %}
 {% set byteType= "byte[]" %}
-{% set link_to_acl_doc= "[Android 权限管理使用指南](acl_guide-android.html)" %}
+{% set acl_guide_url= "[Android 权限管理使用指南](acl_guide-android.html)" %}
+{% set sms_guide_url = '[短信服务使用指南 · 注册验证](sms_guide-android.html#注册验证)' %}
+{% set relation_guide_url = "[Android 数据模型设计指南](relation_guide-android.html)" %}
+{% set inapp_search_guide_url = "[Android 应用内搜索指南](app_search_guide.html)" %}
+{% set status_system_guide_url = "[Android 应用内社交模块](status_system.html#Android_SDK)" %}
+{% set sns_guide_url = "[Android SNS 开发指南](sns.html#Android_SNS_组件)" %}
+{% set feedback_guide_url = "[Android 用户反馈指南](feedback.html#Android_反馈组件)" %}
 {% set funtionName_whereKeyHasPrefix = "whereStartsWith()" %}
 {% set saveOptions_query= "query" %}
 {% set saveOptions_fetchWhenSave= "fetchWhenSave" %}
@@ -1204,11 +1210,6 @@ fetchAllInBackground()
 ```
 {% endblock %} code_object_fetch_with_keys
 
-
-{% block link_to_relation_guide_doc %}[Android 数据模型设计指南](relation_guide-android.html){% endblock %}
-
-{% set link_to_sms_guide_doc = '[短信服务使用指南 · 注册验证](sms_guide-android.html#注册验证)' %}
-
 {% block code_send_sms_code_for_loginOrSignup %}
 
 ```java
@@ -1600,13 +1601,5 @@ MyUser cloudUser = AVUser.logIn(username, password,
 
 <div class="callout callout-info">由于 fastjson 内部的 bug，请在定义 AVUser 时<u>不要定义</u>跟 AVRelation 相关的 `get` 方法。如果一定要定义的话，请通过在 Class 上添加 `@JSONType(ignores = {"属性名"})` 的方式，将其注释为非序列化字段。</div>
 {% endblock %}
-
-{% block link_to_in_app_search_doc %}[Android 应用内搜索指南](app_search_guide.html){% endblock %}
-
-{% block link_to_status_system_doc %}[Android 应用内社交模块](status_system.html#Android_SDK){% endblock %}
-
-{% block link_to_sns_doc %}[Android SNS 开发指南](sns.html#Android_SNS_组件){% endblock %}
-
-{% block link_to_feedback_doc %}[Android 用户反馈指南](feedback.html#Android_反馈组件){% endblock %}
 
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

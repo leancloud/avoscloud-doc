@@ -8,7 +8,7 @@
 {% set avQueryName = 'AV.Query' %}
 {% set avObjectName = 'AV.Object' %}
 {% set avFileName = 'AV.File' %}
-{% set link_to_storage_guide_doc ="[JavaScript 数据存储开发指南](leanstorage_guide-js.html)"%}
+{% set storage_guide_url ="[JavaScript 数据存储开发指南](leanstorage_guide-js.html)"%}
 {# --End--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 
 {# --Start--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
