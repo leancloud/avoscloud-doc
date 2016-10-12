@@ -26,7 +26,7 @@
   user.setPassword(password);
   user.setEmail(email);
   user.signUp().then(function (loginedUser) {
-    window.location.href = "./../products-list/products-list.html";
+    // 注册成功，跳转到商品 list 页面
   }, (function (error) {
   	alert(JSON.stringify(error));
   }));
@@ -41,7 +41,7 @@
   // LeanCloud - 登录
   // https://leancloud.cn/docs/leanstorage_guide-js.html#用户名和密码登录
   AV.User.logIn(username, password).then(function (loginedUser) {
-    window.location.href = "./../products-list/products-list.html";
+    // 登录成功，跳转到商品 list 页面
   }, function (error) {
     alert(JSON.stringify(error));
   });
@@ -73,7 +73,7 @@
   product.set('owner', AV.User.current());
   product.set('image', avFile);
   product.save().then(function() {
-    window.location.href = "./../products-list/products-list.html";
+    //  发布成功，跳转到商品 list 页面
   }, function(error) {
     alert(JSON.stringify(error));
   });
@@ -89,27 +89,10 @@
   query.include('image');
   query.descending('createdAt');
   query.find().then(function (products) {
-    products.forEach(function(product) {
-      var productTitle = product.get('title');
-      var productDescription = product.get('description');
-      var releaseTime = (product.createdAt.getMonth() + 1) + '/' + product.createdAt.getDate() + '/' +  product.createdAt.getFullYear();
-      var ownerUsername = product.get('owner').get('username');
-      var productImage = product.get('image');
-      var productImageUrl;
-      if (productImage) {
-        productImageUrl = productImage.get('url');
-      } else {
-        productImageUrl = './../storage.png'
-      }
-      // handlebars context
-      context.products.push({
-        productImageUrl,
-        productTitle,
-        productDescription,
-        ownerUsername,
-        releaseTime
-      });
-    });
+   	// 查询到商品后，在前端展示到相应的位置中。
+  }).catch(function(error) {
+    alert(JSON.stringify(error));
+  });
 ```
 {% endblock %}
 
