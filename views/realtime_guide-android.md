@@ -2,7 +2,7 @@
 
 {% set platform_name = 'Android' %}
 {% set segment_code = 'android' %}
-{% set  = platform_name + " SDK" %}
+{% set sdk_name = platform_name + " SDK" %}
 
 {% block setup_init %}
 请参考详细的 [{{sdk_name}} 安装指南](sdk_setup-android.html)。
