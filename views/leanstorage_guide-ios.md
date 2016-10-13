@@ -4,9 +4,9 @@
 {# --Start--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 {% set cloudName ="LeanCloud" %}
 {% set productName ="LeanStorage" %}
-{% set platform_name ="iOS / OS X" %}
+{% set platform_name ="Objective-C" %}
 {% set segment_code ="ios" %}
-{% set sdk_name ="iOS / OS X SDK" %}
+{% set sdk_name ="Objective-C SDK" %}
 {% set baseObjectName ="AVObject" %}
 {% set objectIdName ="objectId" %}
 {% set updatedAtName ="updatedAt" %}
@@ -22,13 +22,13 @@
 {% set fileObjectName ="AVFile" %}
 {% set dateType= "NSDate" %}
 {% set byteType= "NSData" %}
-{% set acl_guide_url = "[iOS / OS X 权限管理使用指南](acl_guide-ios.html)"%}
-{% set sms_guide_url = "[iOS / OS X 短信服务使用指南](sms_guide-ios.html#注册验证)" %}
-{% set relation_guide_url = "[iOS / OS X 数据模型设计指南](relation_guide-ios.html)" %}
-{% set inapp_search_guide_url = "[iOS / OS X 应用内搜索指南](app_search_guide.html)" %}
-{% set status_system_guide_url = "[iOS / OS X 应用内社交模块](status_system.html#iOS_SDK)" %}
-{% set sns_guide_url = "[iOS / OS X SNS 开发指南](sns.html#iOS_SNS_组件)" %}
-{% set feedback_guide_url = "[iOS / OS X 用户反馈指南](feedback.html#iOS_反馈组件)" %}
+{% set acl_guide_url = "[Objective-C 权限管理使用指南](acl_guide-ios.html)"%}
+{% set sms_guide_url = "[Objective-C 短信服务使用指南](sms_guide-ios.html#注册验证)" %}
+{% set relation_guide_url = "[Objective-C 数据模型设计指南](relation_guide-ios.html)" %}
+{% set inapp_search_guide_url = "[Objective-C 应用内搜索指南](app_search_guide.html)" %}
+{% set status_system_guide_url = "[Objective-C 应用内社交模块](status_system.html#iOS_SDK)" %}
+{% set sns_guide_url = "[Objective-C SNS 开发指南](sns.html#iOS_SNS_组件)" %}
+{% set feedback_guide_url = "[Objective-C 用户反馈指南](feedback.html#iOS_反馈组件)" %}
 {% set funtionName_whereKeyHasPrefix = "whereKey:hasPrefix:" %}
 {% set saveOptions_query= "where" %}
 {% set saveOptions_fetchWhenSave= "fetch_when_save" %}
@@ -1481,7 +1481,7 @@ student.name = @"小明";
 
 你可以根据自己的需求来选择使用哪种类型。原始类型更为易用，而 `NSNumber` 支持 `nil` 值，这可以让结果更清晰易懂。
 
-**注意** 子类中，对于 `BOOL` 类型的字段，SDK 在 3.1.3.2 之前会将其保存为 Number 类型，3.1.3.2 之后将其正确保存为 Bool 类型。详情请参考[这里](https://leancloud.cn/docs/ios_os_x_faq.html#为什么升级到_3_1_3_2_以上的版本时_BOOL_类型数据保存错误_)。
+**注意** 子类中，对于 `BOOL` 类型的字段，SDK 在 3.1.3.2 之前会将其保存为 Number 类型，3.1.3.2 之后将其正确保存为 Bool 类型。详情请参考 [这里](ios-macos-faq.html#为什么升级到_3_1_3_2_以上的版本时_BOOL_类型数据保存错误_)。
 
 注意：`AVRelation` 同样可以作为子类化的一个属性来使用，比如：
 

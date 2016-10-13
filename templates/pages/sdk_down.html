@@ -1,5 +1,8 @@
 --- layout: download.swig ---
 <link rel="alternate" type="application/atom+xml" title="LeanCloud SDK Update Feed" href="https://download.leancloud.cn/sdk/feed.xml" />
+<style type="text/css">
+.doc-content h2 { color: #333; }
+</style>
 <div class="row" ng-controller="DownCtrl">
   <div class="col-md-12">
     <div class="doc-home-title">
@@ -22,7 +25,7 @@
         <div class="desc">
           <h2><i class="icon icon-github"></i> Objective-C  </h2>
           <p>
-            分为 iOS，OS X，watchOS 和 tvOS SDK， <a href="https://github.com/leancloud/objc-sdk/releases">查看所有</a>
+            分为 iOS、macOS、watchOS 和 tvOS SDK， <a href="https://github.com/leancloud/objc-sdk/releases">查看所有</a>
           </p>
         </div>
         <ul class="list-unstyled list-inline download-btns">
@@ -48,7 +51,7 @@
   </ul>
 </div>
 <div class="dl-cell">
-  <h2>Android SDK<small>v{{sdkversion.android}}</small></h2>
+  <h2>Android SDK <small>v{{sdkversion.android}}</small></h2>
   <div class="desc">
     <div  ng-repeat="m in download.android.required" class="download-option">
       <label class="checkbox" ng-hide="true">
@@ -206,12 +209,11 @@
 </ul>
 </div>
 </div>
-<hr>
 <!-- .row -->
 </div>
 <!-- .col-md-12 -->
 <div class="col-md-12">
-<p>SDK， Demo 汇总</p>
+<h2>SDK、Demo 汇总</h2>
 <ul class="list-unstyled list-inline">
 <li><a href="https://github.com/leancloud/leancloud-sdk" class="btn btn-lg  btn-default"><i class="icon icon-github"></i> leancloud/leancloud-sdk</a>
 </li>
@@ -254,7 +256,7 @@
 <div class="modal-content">
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-<h4 class="modal-title" id="modal-ios-changelog-label">OS X Changelog</h4>
+<h4 class="modal-title" id="modal-ios-changelog-label">macOS Changelog</h4>
 </div>
 <div class="modal-body">
 <div id="osx-changelog" class="changelog-list selectable-text"></div>

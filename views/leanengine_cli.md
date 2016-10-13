@@ -24,7 +24,7 @@ sudo yum install nodejs
 
 提示：官网仓库的 Node.js 版本可能比较滞后，你可以从 [第三方源](https://github.com/nodesource/distributions) 安装。
 
-### Mac OS X
+### macOS
 
 可以通过 [Homebrew](http://brew.sh/)（需要自行安装）安装：
 

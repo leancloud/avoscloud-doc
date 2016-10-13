@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block setup_init %}
-请参考详细的 [iOS / OS X SDK 安装指南](sdk_setup-ios.html)。
+请参考详细的 [Objective-C SDK 安装指南](sdk_setup-ios.html)。
 {% endblock %}
 
 {% block compatibility %}

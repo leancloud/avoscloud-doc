@@ -3,7 +3,7 @@
 ## 你是 iOS 程序员？
 
 * [快速入门](./start.html)
-<li><a href="leanstorage_guide-ios.html">iOS / OS X 数据存储指南</a></li>
+<li><a href="leanstorage_guide-ios.html">Objective-C 数据存储指南</a></li>
 <li><a href="realtime_guide-ios.html">iOS 实时通信指南</a></li>
 <li><a href="ios_statistics.html">iOS 统计 SDK 开发指南</a></li>
 <li><a href="ios_push_cert.html">iOS 推送证书设置指南</a></li>
@@ -54,7 +54,7 @@
 ## 你要实现数据存储？
 
 <ul>
-<li><a href="leanstorage_guide-ios.html">iOS / OS X 数据存储指南</a></li>
+<li><a href="leanstorage_guide-ios.html">Objective-C 数据存储指南</a></li>
 <li><a href="leanstorage_guide-android.html">Android 数据存储指南</a></li>
 <li><a href="unity_guide.html">Unity3D 数据存储指南</a></li>
 <li><a href="dotnet_guide.html">.NET 数据存储指南</a></li>

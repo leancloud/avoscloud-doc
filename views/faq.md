@@ -80,19 +80,17 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 目前官方提供的 SDK 种类包括：
 
-* iOS 和 OS X
+* Objective-C
+* Swift
 * Android
+* Java
 * JavaScript
-* Windows Phone
-* Unity
 * Python
 * PHP
+* Windows Phone
+* Unity
 
-来自第三方的开源项目有：
-
-* [C#](https://github.com/freewing99/BaasReponsitory)
-
-详情请访问 [SDK 下载](/docs/sdk_down.html) 页面。
+部分 SDK 已开源，详情请访问 [SDK 下载](/docs/sdk_down.html) 页面。
 
 ### iOS 和 Android 是否可以使用同一个 App
 
@@ -245,7 +243,7 @@ LeanCloud 数据存储的查询接口不支持这些函数，可以查询到客�
 
 请参考我们的博客文章 [《2014 年 3 月第 4 周更新日志》](http://blog.leancloud.cn/blog/2014/03/31/2014nian-3yue-di-4zhou-avos-cloud-geng-xin/)。
 
-## iOS/OS X SDK
+## iOS/macOS SDK
 
 ### 安装 Cocopods 失败怎么解决
 
@@ -334,8 +332,6 @@ LeanCloud 依赖的 Framework 包括：
 
 请参考 [存储开发指南 &middot; 手机号码登录](leanstorage_guide-android.html#手机号码登录")。
 
-
-
 ## JavaScript SDK
 
 ### 有没有同步 API
@@ -410,7 +406,7 @@ LeanCloud 的美国节点即将提供 GCM 支持，如果应用的服务对象�
 目前支持
 
 * iOS
-* OS X
+* macOS
 * Android
 
 更多平台 SDK 正在开发中。

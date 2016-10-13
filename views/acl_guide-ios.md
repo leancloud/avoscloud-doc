@@ -2,7 +2,7 @@
 
 {% set language = "Objective-C SDK" %}
 {% set runAtClient = "true" %}
-{% set platform_name = "iOS / OS X" %}
+{% set platform_name = "Objective-C" %}
 {% set acl_quickstart_guide_url = "[权限管理以及 ACL 快速指南](acl_quick_start-ios.html)" %}
 {% block create_post_set_acl_for_single_user %}
 

@@ -1,5 +1,5 @@
 {% extends "./sms_guide.tmpl" %}
-{% set platform_name = "iOS / OS X" %}
+{% set platform_name = "Objective-C" %}
 
 {% block avuser_signup_send_sms %}
   ```objc
