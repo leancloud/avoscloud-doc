@@ -1,6 +1,6 @@
 {% extends "./relation_guide.tmpl" %}
 
-{% set platform = 'Python' %}
+{% set platform_name = 'Python' %}
 {% set ops_include = "include" %}
 
 {% block code_save_student_family_address %}

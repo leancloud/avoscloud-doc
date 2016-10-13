@@ -4,7 +4,7 @@
 {# --Start--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 {% set cloudName ="LeanCloud" %}
 {% set productName ="LeanStorage" %}
-{% set platform_title ="Swift" %}
+{% set platform_name ="Swift" %}
 {% set segment_code ="swift" %}
 {% set sdk_name ="Swift SDK" %}
 {% set baseObjectName ="LCObject" %}
@@ -22,7 +22,13 @@
 {% set fileObjectName ="LCFile" %}
 {% set dateType= "NSDate" %}
 {% set byteType= "NSData" %}
-{% set link_to_acl_doc ="[iOS / OS X 权限管理使用指南](acl_guide-ios.html)"%}
+{% set acl_guide_url = "[Objective-C 权限管理使用指南（Swift 文档待补充）](acl_guide-ios.html)"%}
+{% set sms_guide_url = "[Objective-C 短信服务使用指南（Swift 文档待补充）](sms_guide-ios.html#注册验证)" %}
+{% set relation_guide_url = "[Objective-C 数据模型设计指南（Swift 文档待补充）](relation_guide-ios.html)" %}
+{% set inapp_search_guide_url = "[iOS / OS X 应用内搜索指南](app_search_guide.html)" %}
+{% set status_system_guide_url = "[iOS / OS X 应用内社交模块](status_system.html#iOS_SDK)" %}
+{% set sns_guide_url = "[iOS / OS X SNS 开发指南](sns.html#iOS_SNS_组件)" %}
+{% set feedback_guide_url = "[iOS / OS X 用户反馈指南](feedback.html#iOS_反馈组件)" %}
 {% set funtionName_whereKeyHasPrefix = "whereKey:hasPrefix:" %}
 {% set saveOptions_query= "where" %}
 {% set saveOptions_fetchWhenSave= "fetch_when_save" %}
@@ -1275,9 +1281,9 @@ query.whereKey("whereCreated", .LocatedNear(origin: point, from: from, to: to))
 ```
 {% endblock %} code_object_fetch_with_keys
 
-{% block link_to_relation_guide_doc %}[iOS / OS X 数据模型设计指南](relation_guide-ios.html){% endblock %}
+{% block relation_guide_url %}[iOS / OS X 数据模型设计指南](relation_guide-ios.html){% endblock %}
 
-{% set link_to_sms_guide_doc = '[iOS / OS X 短信服务使用指南](sms_guide-ios.html#注册验证)' %}
+{% set sms_guide_url = '[iOS / OS X 短信服务使用指南](sms_guide-ios.html#注册验证)' %}
 
 {% block text_send_sms_code_for_loginOrSignup %}{% endblock %}
 {% block code_send_sms_code_for_loginOrSignup %}{% endblock %}
@@ -1548,11 +1554,6 @@ class Student: LCObject {
 ```swift
 student.set("age", value: 19)
 ```
-
 {% endblock %}
-{% block link_to_in_app_search_doc %}[iOS / OS X 应用内搜索指南](app_search_guide.html){% endblock %}
-{% block link_to_status_system_doc %}[iOS / OS X 应用内社交模块](status_system.html#iOS_SDK){% endblock %}
-{% block link_to_sns_doc %}[iOS / OS X SNS 开发指南](sns.html#iOS_SNS_组件){% endblock %}
-{% block link_to_feedback_doc %}[iOS / OS X 用户反馈指南](feedback.html#iOS_反馈组件){% endblock %}
 
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

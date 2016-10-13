@@ -1,5 +1,6 @@
 {% extends "./sms_guide.tmpl" %}
-{% block language %}JavaScript{% endblock %}
+{% set platform_name = "JavaScript" %}
+
 {% block avuser_signup_send_sms %}
   ```javascript
 var user = new AV.User();

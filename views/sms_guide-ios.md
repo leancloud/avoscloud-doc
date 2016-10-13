@@ -1,5 +1,6 @@
 {% extends "./sms_guide.tmpl" %}
-{% block language %}iOS / OS X{% endblock %}
+{% set platform_name = "iOS / OS X" %}
+
 {% block avuser_signup_send_sms %}
   ```objc
   AVUser *user = [AVUser user];

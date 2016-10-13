@@ -3,9 +3,9 @@
 {# --Start--变量定义，主模板使用的单词，短语所有子模板都必须赋值 #}
 
 {% set productName ="LeanStorage" %}
-{% set platform_title ="PHP" %}
-{% set segment_code = platform_title | lower %}
-{% set sdk_name = platform_title + " SDK" %}
+{% set platform_name = "PHP" %}
+{% set segment_code = platform_name | lower %}
+{% set sdk_name = platform_name + " SDK" %}
 {% set baseObjectName ="Object" %}
 {% set objectIdName ="objectId" %}
 {% set updatedAtName ="updatedAt" %}
@@ -24,8 +24,13 @@
 {% set funtionName_whereKeyHasPrefix = "startsWith()" %}
 {% set saveOptions_query= "where" %}
 {% set saveOptions_fetchWhenSave= "fetch_when_save" %}
-{% set link_to_acl_doc = "（PHP 文档待补充）" %}
-{% set link_to_sms_guide_doc = "（PHP 文档待补充）" %}
+{% set acl_guide_url = "（PHP 文档待补充）" %}
+{% set sms_guide_url = "（PHP 文档待补充）" %}
+{% set relation_guide_url = "（PHP 文档待补充）" %}
+{% set inapp_search_guide_url = "（PHP SDK 暂不支持）" %}
+{% set status_system_guide_url = "（PHP SDK 暂不支持）" %}
+{% set sns_guide_url = "（PHP 文档待补充）" %}
+{% set feedback_guide_url = "（PHP SDK 暂不支持）" %}
 
 {# --End--变量定义，主模板使用的单词，短语的定义所有子模板都必须赋值 #}
 
@@ -59,7 +64,7 @@ try {
 {% endblock %}
 
 {% block text_and_link_to_install_doc %}
-请阅读 [{{platform_title}} 安装指南](sdk_setup-php.html)。
+请阅读 [{{platform_name}} 安装指南](sdk_setup-php.html)。
 {% endblock %}
 
 {% block code_save_object_by_cql %}
@@ -891,8 +896,6 @@ $query->withinKilometers("whereCreated", $point, 2.0);
 ```
 {% endblock %}
 
-{% block link_to_relation_guide_doc %}(**PHP 文档待补充**){% endblock %}
-
 {% block code_send_sms_code_for_loginOrSignup %}
 
 ```php
@@ -1139,13 +1142,7 @@ $query->find();
 ```
 {% endblock %}
 
-{% block link_to_in_app_search_doc %}（**PHP 不支持**）{% endblock %}
-{% block link_to_status_system_doc %}（**PHP 不支持**）{% endblock %}
-{% block link_to_sns_doc %}（**PHP 文档待补充**）{% endblock %}
-{% block link_to_feedback_doc %}（**PHP 不支持**）{% endblock %}
-
-
-{# 2016-06-07 以下三部分都不适用于 Python，所以清空内容。 #}
+{# 2016-06-07 以下三部分都不适用于 PHP，所以清空内容。 #}
 {% block text_work_in_background %}{% endblock %}
 {% block text_data_protocol %}{% endblock %}
 {% block save_eventually %}{% endblock %}

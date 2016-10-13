@@ -1,4 +1,4 @@
-# JavaScript 实时通信开发指南
+# 实时通信开发指南 &middot; JavaScript 
 
 <div class="callout callout-info">本文介绍 JavaScript 实时通讯 SDK version 3 的使用，version 2 的文档请参考[《JavaScript 实时通信开发指南（version 2）》](./js_realtime.html)。</div>
 

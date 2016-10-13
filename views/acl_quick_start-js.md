@@ -1,6 +1,8 @@
 {% extends "./acl_quick_start.tmpl" %}
 
-{% block language_version %}JavaScript{% endblock %}
+{% set platform_name = "JavaScript" %}
+{% set acl_guide_url = "[LeanCloud 权限管理使用规范](./acl_guide-js.html)" %}
+
 {% block code_not_use_acl %}
 <pre lang="javascript">
   // 新建一个帖子对象
@@ -30,5 +32,3 @@
 </pre>
 
 {% endblock %}
-
-{% block link_to_acl_guide %}[LeanCloud 权限管理使用规范](./acl_guide-js.html){% endblock %}

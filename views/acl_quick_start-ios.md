@@ -1,6 +1,8 @@
 {% extends "./acl_quick_start.tmpl" %}
 
-{% block language_version %}iOS{% endblock %}
+{% set platform_name = "iOS" %}
+{% set acl_guide_url = "[LeanCloud 权限管理使用规范](./acl_guide-ios.html)" %}
+
 {% block code_not_use_acl %}
 <pre lang="objc">
 AVObject *post = [AVObject objectWithClassName:@"Post"];
@@ -27,5 +29,3 @@ post.ACL = acl;// 将 ACL 实例赋予 Post对象
 </pre>
 
 {% endblock %}
-
-{% block link_to_acl_guide %}[LeanCloud 权限管理使用规范](./acl_guide-ios.html){% endblock %}

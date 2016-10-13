@@ -1,5 +1,6 @@
 {% extends "./sms_guide.tmpl" %}
-{% block language %}Android{% endblock %}
+{% set platform_name = "Android" %}
+
 {% block avuser_signup_send_sms %}
   ```java
         AVUser user = new AVUser();

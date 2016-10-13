@@ -1,6 +1,5 @@
 {% extends "./sdk_setup.tmpl" %}
-
-{% block language %}Python{% endblock %}
+{% set platform_name = "Python" %}
 
 {% block libs_tool_automatic %}
 

@@ -1,6 +1,6 @@
 {% extends "./sdk_setup.tmpl" %}
+{% set platform_name = "Android" %}
 {% set maven_uri = "http://mvn.leancloud.cn/nexus/content/repositories/public" %}
-{% block language %}Android{% endblock %}
 
 {% block libs_tool_automatic %}
 

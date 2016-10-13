@@ -2,7 +2,7 @@
 
 {% set cloudName = "LeanCloud" %}
 {% set productName = "LeanStorage" %}
-{% set platform_title = "Java" %}
+{% set platform_name = "Java" %}
 {% set segment_code = "java" %}
 {% set sdk_name = "Java SDK" %}
 {% set baseObjectName = "AVObject" %}
@@ -19,7 +19,13 @@
 {% set fileObjectName = "AVFile" %}
 {% set dateType = "Date" %}
 {% set byteType = "byte[]" %}
-{% set link_to_acl_doc = "[Java 权限管理使用指南](acl_guide-java.html)" %}
+{% set acl_guide_url = "[Java SDK 权限管理使用指南](acl_guide-java.html)" %}
+{% set sms_guide_url = "（Java SDK 文档待补充）" %}
+{% set relation_guide_url = "（Java SDK 文档待补充）" %}
+{% set inapp_search_guide_url = "[Android 应用内搜索指南](app_search_guide.html)" %}
+{% set status_system_guide_url = "[Android 应用内社交模块](status_system.html#Android_SDK)" %}
+{% set sns_guide_url = "[Android SNS 开发指南](sns.html#Android_SNS_组件)" %}
+{% set feedback_guide_url = "[Android 用户反馈指南](feedback.html#Android_反馈组件)" %}
 {% set funtionName_whereKeyHasPrefix = "whereStartsWith()" %}
 {% set saveOptions_query = "query" %}
 {% set saveOptions_fetchWhenSave = "fetchWhenSave" %}
@@ -806,11 +812,6 @@
 ```
 {% endblock %}
 
-{% block link_to_relation_guide_doc %}
-
-[Java 数据模型设计指南](relation_guide-java.html)
-{% endblock %}
-
 {% block code_query_comment_include_todoFolder %}
 
 ```java
@@ -1303,12 +1304,4 @@ AVPush.sendMessageInBackground("这是发给指定 installation id 的消息",  
 
 <div class="callout callout-info">CQL 与 AVQuery 同时只能设置一个，并且 `setPushTarget` 类函数（`setPushToAndroid` / `setPushToIOS` / `setPushToWindowsPhone`）只能与 AVQuery 一起使用。在设置 CQL 时，只能在 CQL 语句中设定目标机器的类型。</div>
 
-{% endblock %}
-
-{% block link_to_in_app_search_doc %}
-（**Java 暂不支持**）
-{% endblock %}
-
-{% block link_to_status_system_doc %}
-（**Java 暂不支持**）
 {% endblock %}

@@ -1,6 +1,5 @@
 {% extends "./sdk_setup.tmpl" %}
-
-{% block language %}JavaScript{% endblock %}
+{% set platform_name = "JavaScript" %}
 
 {% block libs_tool_automatic %}
 
