@@ -616,4 +616,4 @@ iOS10 以上会调用下面的两个方法：
 
 ## 离线消息重复推送
 
-请参考 [为什么在 iOS 上离线消息重复推送了两次？](realtime_guide-ios.html#duplicate-offline-message-notification)
+请参考 [为什么在 iOS 上离线消息重复推送了两次？](realtime_guide-objc.html#duplicate-offline-message-notification)

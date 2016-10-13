@@ -119,7 +119,7 @@ LeanCloud 中有 4 种方式来构建对象之间的关系：
 - **AVRelation**——这是一个专门的关联类，用来建立两种对象之间的关联关系，适合多对多的场景。
 - **关联表**——使用专门的类，来为两种对象建立关联关系，与 AVRelation 相比它还可以添加更多的附加信息。譬如我们为用户之间关注/被关注的关系建模，就像流行的社交网络那样，一个用户可以关注别的用户。在这里，我们不仅想知道用户 A 是否关注了用户 B，我们还想知道什么时候用户 A 开始关注的用户 B，这时候就适合建立专门的关联表。关联表适合多对多的关联关系。
 
-详细情况请参考我们的技术文章——《数据模型设计指南（[Objective-C 篇](./relation_guide-ios.html) / [Android 篇](./relation_guide-android.html) / [JavaScript 篇](./relation_guide-js.html) / [Python 篇](./relation_guide-python.html)）》。
+详细情况请参考我们的技术文章——《数据模型设计指南（[Objective-C 篇](./relation_guide-objc.html) / [Android 篇](./relation_guide-android.html) / [JavaScript 篇](./relation_guide-js.html) / [Python 篇](./relation_guide-python.html)）》。
 
 ## 数据查询 AVQuery
 
@@ -154,7 +154,7 @@ LeanCloud 平台保证 99.9% 的高可用性，并且数据访问方面保证了
 如果你是某个特定平台的开发者，想查看我们原生的 SDK 开发指南，请移步到具体页面：
 
 ### iOS 开发指南
-详细请参看 [iOS 数据存储开发指南](./leanstorage_guide-ios.html);
+详细请参看 [iOS 数据存储开发指南](./leanstorage_guide-objc.html);
 
 ### Android 开发指南
 详细请参看 [Android 数据存储开发指南](./leanstorage_guide-android.html);

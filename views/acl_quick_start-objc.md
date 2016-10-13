@@ -1,7 +1,7 @@
 {% extends "./acl_quick_start.tmpl" %}
 
 {% set platform_name = "iOS" %}
-{% set acl_guide_url = "[LeanCloud 权限管理使用规范](./acl_guide-ios.html)" %}
+{% set acl_guide_url = "[LeanCloud 权限管理使用规范](./acl_guide-objc.html)" %}
 
 {% block code_not_use_acl %}
 <pre lang="objc">

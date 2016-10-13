@@ -33,7 +33,7 @@
 <div class="row">
   <div class="col-sm-6">
     <div class="doc-hero-links">
-      <a href="chatkit-ios.html" class="doc-quick-start-btn">
+      <a href="chatkit-objc.html" class="doc-quick-start-btn">
           iOS 教程
       </a>
     </div>

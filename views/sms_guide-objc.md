@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block builtin_account_url %}
-leanstorage_guide-ios.html#用户
+leanstorage_guide-objc.html#用户
 {% endblock %}
 
 {% block avuser_signup_sms_verify %}

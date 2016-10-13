@@ -3,6 +3,7 @@
 {% set runAtClient = "true" %}
 {% set language = "Android SDK" %}
 {% set platform_name = "Android" %}
+{% set segment_code = "android" %}
 {% set acl_quickstart_guide_url = "[权限管理以及 ACL 快速指南](acl_quick_start-android.html)" %}
 
 {% block create_post_set_acl_for_single_user %}

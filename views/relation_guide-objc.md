@@ -1,6 +1,7 @@
 {% extends "./relation_guide.tmpl" %}
 
 {% set platform_name = "Objective-C" %}
+{% set segment_code = "objc" %}
 {% set ops_include = "includeKey" %}
 
 {% block code_save_student_family_address %}

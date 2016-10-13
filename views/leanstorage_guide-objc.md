@@ -5,7 +5,7 @@
 {% set cloudName ="LeanCloud" %}
 {% set productName ="LeanStorage" %}
 {% set platform_name ="Objective-C" %}
-{% set segment_code ="ios" %}
+{% set segment_code ="objc" %}
 {% set sdk_name ="Objective-C SDK" %}
 {% set baseObjectName ="AVObject" %}
 {% set objectIdName ="objectId" %}
@@ -22,9 +22,9 @@
 {% set fileObjectName ="AVFile" %}
 {% set dateType= "NSDate" %}
 {% set byteType= "NSData" %}
-{% set acl_guide_url = "[Objective-C 权限管理使用指南](acl_guide-ios.html)"%}
-{% set sms_guide_url = "[Objective-C 短信服务使用指南](sms_guide-ios.html#注册验证)" %}
-{% set relation_guide_url = "[Objective-C 数据模型设计指南](relation_guide-ios.html)" %}
+{% set acl_guide_url = "[Objective-C 权限管理使用指南](acl_guide-objc.html)"%}
+{% set sms_guide_url = "[Objective-C 短信服务使用指南](sms_guide-objc.html#注册验证)" %}
+{% set relation_guide_url = "[Objective-C 数据模型设计指南](relation_guide-objc.html)" %}
 {% set inapp_search_guide_url = "[Objective-C 应用内搜索指南](app_search_guide.html)" %}
 {% set status_system_guide_url = "[Objective-C 应用内社交模块](status_system.html#iOS_SDK)" %}
 {% set sns_guide_url = "[Objective-C SNS 开发指南](sns.html#iOS_SNS_组件)" %}

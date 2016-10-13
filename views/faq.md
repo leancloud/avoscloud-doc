@@ -310,7 +310,7 @@ LeanCloud 依赖的 Framework 包括：
 
 ### 如何先验证手机号码再注册
 
-请参考 [存储开发指南 &middot; 手机号码登录](leanstorage_guide-ios.html#手机号码登录")。
+请参考 [存储开发指南 &middot; 手机号码登录](leanstorage_guide-objc.html#手机号码登录")。
 
 
 ## Android SDK

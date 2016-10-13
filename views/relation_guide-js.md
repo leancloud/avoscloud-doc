@@ -1,6 +1,7 @@
 {% extends "./relation_guide.tmpl" %}
 
 {% set platform_name = "JavaScript" %}
+{% set segment_code = "js" %}
 {% set ops_include = "includeKey" %}
 
 {% block code_save_student_family_address %}

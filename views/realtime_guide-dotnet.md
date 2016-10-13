@@ -1,7 +1,8 @@
 {% extends "./realtime_guide.tmpl" %}
 
 {% set platform_name = '.NET' %}
-{% set sdk_name = '.NET SDK' %}
+{% set segment_code = 'dotnet' %}
+{% set sdk_name = platform_name + " SDK" %}
 
 {% block supportedRuntime %}
 目前我们的 .NET 实时通信支持如下运行时：

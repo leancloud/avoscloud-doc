@@ -5,7 +5,7 @@
 目前，我们提供 Android、iOS、JavaScript、Windows Phone 四个主要平台的客户端 SDK，也提供了一些 Demo 帮助你快速入门：
 
 * iOS 聊天应用：
-  * [ChatKit，自带 UI 的聊天工具包](chatkit-ios.html)
+  * [ChatKit，自带 UI 的聊天工具包](chatkit-objc.html)
   * [LeanMessageDemo iOS 版](https://github.com/leancloud/LeanMessage-Demo)
   * [LeanChat iOS 版](https://github.com/leancloud/leanchat-ios)
 
@@ -618,7 +618,7 @@ mute | 可选 | 修改后的关闭对话提醒设置，如果不提供则保持�
 
 ## iOS 开发指南
 
-参考 [iOS 实时通信开发指南](realtime_guide-ios.html)
+参考 [iOS 实时通信开发指南](realtime_guide-objc.html)
 
 ##  JavaScript 开发指南
 

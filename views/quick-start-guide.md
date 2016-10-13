@@ -3,8 +3,8 @@
 ## 你是 iOS 程序员？
 
 * [快速入门](./start.html)
-<li><a href="leanstorage_guide-ios.html">Objective-C 数据存储指南</a></li>
-<li><a href="realtime_guide-ios.html">iOS 实时通信指南</a></li>
+<li><a href="leanstorage_guide-objc.html">Objective-C 数据存储指南</a></li>
+<li><a href="realtime_guide-objc.html">iOS 实时通信指南</a></li>
 <li><a href="ios_statistics.html">iOS 统计 SDK 开发指南</a></li>
 <li><a href="ios_push_cert.html">iOS 推送证书设置指南</a></li>
 <li><a href="ios_crashreporting_guide.html">iOS 崩溃报告使用指南</a></li>
@@ -54,7 +54,7 @@
 ## 你要实现数据存储？
 
 <ul>
-<li><a href="leanstorage_guide-ios.html">Objective-C 数据存储指南</a></li>
+<li><a href="leanstorage_guide-objc.html">Objective-C 数据存储指南</a></li>
 <li><a href="leanstorage_guide-android.html">Android 数据存储指南</a></li>
 <li><a href="unity_guide.html">Unity3D 数据存储指南</a></li>
 <li><a href="dotnet_guide.html">.NET 数据存储指南</a></li>
@@ -64,7 +64,7 @@
 ## 你要实现聊天功能？
 
 <ul>
-<li><a href="realtime_guide-ios.html">iOS 实时通信指南</a></li>
+<li><a href="realtime_guide-objc.html">iOS 实时通信指南</a></li>
 <li><a href="realtime_guide-android.html">Android 实时通信指南</a></li>
 <li><a href="https://github.com/leancloud/realtime-messaging-jssdk">JavaScript 实时通信 SDK</a></li>
 <li><a href="realtime_guide-dotnet.html">Windows Phone 8.0 实时通信指南</a></li>

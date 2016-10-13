@@ -3,6 +3,7 @@
 {% set language = "Python" %}
 {% set runAtServer = "true" %}
 {% set platform_name = "Python" %}
+{% set segment_code = "python" %}
 {% set acl_quickstart_guide_url ="[权限管理以及 ACL 快速指南](acl_quick_start-python.html)" %}
 
 

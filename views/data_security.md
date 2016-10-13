@@ -84,7 +84,7 @@ LeanCloud 也允许将部分列的数据设置为 「客户端不可见」。设
 
 使用 LeanCloud SDK，你可以设置一个默认的 ACL 给客户端所有创建的对象。如果你同时开启允许匿名用户的功能，你可以保证你的数据拥有严格限制到每个单独用户的 ACL 权限。基于用户和角色的权限管理指南，详细信息请参考如下文档：
 - [JavaScript 权限管理指南](./acl_guide-js.html)
-- [Objective-C 权限管理指南](./acl_guide-ios.html)
+- [Objective-C 权限管理指南](./acl_guide-objc.html)
 - [Android 权限管理指南](./acl_guide-android.html)
 
 ### Web 应用安全设置
