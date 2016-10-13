@@ -1,4 +1,4 @@
-# Unity 数据存储开发指南
+#  数据存储开发指南 &middot; Unity
 
 如果还没有安装 LeanCloud Unity SDK，请阅读 [快速入门](./start.html) 来获得该 SDK。我们的 SDK 兼容 Unity 4.2 及更高版本，支持使用 Unity 开发的 iOS、Android、Windows Phone 8、Windows Store、Windows Desktop，以及网页游戏。
 
