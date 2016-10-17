@@ -14,9 +14,7 @@
 
 ## 保存 Installation
 
-在保存 installation 前，要先从 APNs 注册推送所需的 device token。可以选择使用 SDK 中提供的接口，也可以使用 Cocoa Touch 提供的原生接口。SDK 提供的接口封装了原生接口在不同版本 iOS 系统上的差异。
-
-`+[AVOSCloud registerForRemoteNotification]` 接口是一个快捷方法：
+在保存 installation 前，要先从 APNs 注册推送所需的 device token，具体步骤：
 
 ```objc
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
