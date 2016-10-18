@@ -624,6 +624,19 @@ Location: https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 }
 ```
 
+如果希望返回新创建的对象的完整信息，可以在 URL 里加上 `fetchWhenSave` 选项，并且设置为 true:
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '{"content": "每个 Java 程序员必备的 8 个开发工具","pubUser": "LeanCloud官方客服","pubTimestamp": 1435541999}' \
+  https://{{host}}/1.1/classes/Post?fetchWhenSave=true
+```
+
+fetchWhenSave 选项对更新对象也同样有效，但是它仅返回已被更新的字段，而非全部字段。
+
 >注意：**我们对单个 class 的记录数目没有做限制，但是单个应用的总 class 数目限定为 500 个以内**。也就是说单个应用里面，对象的类别不超过 500 个，但是单个类别下的实例数量则没有限制。
 
 ### 获取对象
