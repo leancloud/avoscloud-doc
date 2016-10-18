@@ -197,6 +197,7 @@ public class MyLeanCloudApp extends Application {
   android:name=".MyLeanCloudApp" >
 
   <!-- 实时通信模块、推送（若使用该功能，需添加以下声明）START -->
+  <!-- 注意：实时通信和推送都需要 PushService -->
   <service android:name="com.avos.avoscloud.PushService"/>
   <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
     <intent-filter>
