@@ -161,11 +161,11 @@ NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦�
 }];
 ```
 ```java
-AVObject movie = new AVObject("Movie");
-movie.put("title", "夏洛特烦恼");
-movie.save();
+// 构建参数
+Map<String, String> dicParameters = new HashMap<String, String>();
+dicParameters.put("movie", "夏洛特烦恼");
 
-AVCloud.rpcFunctionInBackground("averageStars", movie,
+AVCloud.rpcFunctionInBackground("averageStars", dicParameters,
     new FunctionCallback<AVObject>() {
       @Override
       public void done(AVObject object, AVException e) {
@@ -177,18 +177,21 @@ AVCloud.rpcFunctionInBackground("averageStars", movie,
 // PHP 有待支持
 ```
 ```javascript
-// 假设已经有一个类型为 AV.Object 的 movie 对象
-var movie = new AV.Object('Movie');
-movie.set('title', '夏洛特烦恼');
-movie.save().then(/* ... */);
+var paramsJson = {
+  movie: "夏洛特烦恼"
+};
 
-AV.Cloud.rpc('averageStars', movie).then(function(object) {
+AV.Cloud.rpc('averageStars', paramsJson).then(function(object) {
   // 成功，如果云函数返回的是一个 AV.Object，回调参数中的 object 也会是一个 AV.Object
 }, function(error) {
   // 失败        
 });
 ```
+```python
+from leancloud import cloudfunc
 
+cloudfunc.rpc('averageStars', movie='夏洛特烦恼')
+```
 
 ### 切换云引擎环境
 
