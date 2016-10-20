@@ -109,6 +109,11 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
       <td>根据 <a href="leanstorage_guide-js.html#SessionToken">sessionToken</a> 获取用户信息</td>
     </tr>
     <tr>
+      <td>/1.1/users/&lt;objectId&gt;/refreshSessionToken</td>
+      <td>PUT</td>
+      <td>重置用户 sessionToken。</td>
+    </tr>
+    <tr>
       <td>/1.1/users/&lt;objectId&gt;/updatePassword</td>
       <td>PUT</td>
       <td>更新密码，要求输入旧密码。</td>
@@ -1541,6 +1546,16 @@ https://{{host}}/1.1/login
 }
 ```
 
+可以将 sessionToken 理解为用户的登陆凭证，每个用户的 sessionToken 在同一个应用内都是唯一的，类似 Cookie 的概念。
+
+正常情况下，用户的 sessionToken 是固定不变的，在以下情况下会发生变化：
+
+* 用户调用了忘记密码功能，重设了密码。
+* 用户在应用选项勾选了『密码修改后，强制客户端重新登录』，那么在修改密码后，sessionToken 也将强制变换。
+* 调用下文所述的 `refreshSessionToken` 主动重置。
+
+在 sessionToken 变化后，已有的登陆如果调用到用户相关权限受限的 API，将返回 403 权限错误。
+
 ### 已登录的用户信息
 
 用户成功注册或登录后，服务器会返回 sessionToken 并保存在本地，后续请求可以通过传递 sessionToken 来获取该用户信息（如访问权限等）。更多说明请参考 [存储 &middot; sessionToken](leanstorage_guide-js.html#SessionToken)。
@@ -1554,6 +1569,33 @@ curl -X GET \
 ```
 返回的 JSON 数据与 [`/login`](#登录) 登录请求所返回的相同。
 
+### 重置登陆 sessionToken
+
+可以主动重置用户的 sessionToken:
+
+```sh
+curl -X PUT \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Session: qmdj8pdidnmyzp0c7yqil91oc" \
+  https://{{host}}/1.1/users/57e3bcca67f35600577c3063/refreshSessionToken
+```
+
+调用这个 API 要求传入登陆返回的 `X-LC-Session` 作为认证，或者使用 Master Key。
+
+重置成功将返回新的 sessionToken 及用户信息:
+
+```json
+{
+ "sessionToken":"5frlikqlwzx1nh3wzsdtfr4q7",
+ "updatedAt":"2016-10-20T03:10:57.926Z",
+ "objectId":"57e3bcca67f35600577c3063",
+ "username":"leancloud",
+ "createdAt":"2016-09-22T11:13:14.842Z",
+ "emailVerified":false,
+ "mobilePhoneVerified":false
+}
+```
 
 #### 账户锁定
 
