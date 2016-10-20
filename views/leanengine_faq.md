@@ -48,9 +48,11 @@ var async = require('async');
 
 我们在 [JavaScript 指南 - AV.Object](./leanstorage_guide-js.html#AV_Object) 章节中也进行了描述。
 
+{% if node != 'qcloud' %}
 ## 如何进行域名备案和域名绑定？
 
 只有网站类的才需要备案，并且在主域名已备案的情况下，二级子域名不需要备案。如果主站需要托管在我们这边，且还没有备案过，请进入 **应用控制台 > 账号设置 >** [域名备案](/settings.html#/setting/domainrecord) 和 [域名绑定](/settings.html#/setting/domainbind)，按照步骤提示操作即可。
+{% endif %}
 
 ## 调用云引擎方法如何收费？
 

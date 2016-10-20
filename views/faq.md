@@ -442,9 +442,11 @@ LeanCloud 的美国节点即将提供 GCM 支持，如果应用的服务对象�
 
 请参考这篇博文 [《为云引擎托管网站启用 HTTPS》](http://blog.leancloud.cn/blog/2013/12/20/wei-yun-dai-ma-tuo-guan-wang-zhan-qi-yong-https/)。
 
+{% if node != 'qcloud' %}
 ### 云引擎网站托管备案
 
 只有网站类的才需要备案，并且在主域名已备案的情况下，二级子域名不需要备案。详细流程请参见 [应用控制台 > 账户设置 > 域名备案](/settings.html#/setting/domainrecord)。
+{% endif %}
 
 ### 为什么在控制台通过在线定义函数或项目定义函数中的 Class Hook 没有被运行？
 
