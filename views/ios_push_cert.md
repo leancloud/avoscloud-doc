@@ -108,20 +108,16 @@
 {% endif %}
   
   ![Push certificate configure](images/ios_cert_v2/push_certificate_config.png)
-
 2. 将「Universal 推送证书」上传到图中的 **生产证书** 中。
 
-	**根据你的证书类别进行上传。这里请注意区分证书的类别，<u>测试环境</u>证书和<u>生产环境</u>证书请勿混淆。**
+  **根据你的证书类别进行上传。这里请注意区分证书的类别，<u>测试环境</u>证书和<u>生产环境</u>证书请勿混淆。**
 
 3. 配置推送证书，最简单的方式就是将刚才生成的「Universal 推送证书」直接上传。当然也可以自己生成一个测试证书。
 
-上传测试证书后，那么就可以在控制台看到生产证书和测试证书都上传完成：
-
-    ![prod_dev_push_cer_preview](images/ios_cert_v2/prod_dev_push_cer_preview.png)
-
+  上传测试证书后，那么就可以在控制台看到生产证书和测试证书都上传完成：
+  ![prod_dev_push_cer_preview](images/ios_cert_v2/prod_dev_push_cer_preview.png)
 4. 推送测试可以在这里进行：
-
-    ![push_test](images/ios_cert_v2/push_test.png)
+  ![push_test](images/ios_cert_v2/push_test.png)
 
  
 ## 上传证书失败

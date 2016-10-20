@@ -3,16 +3,16 @@
 微信小程序是一个全新的移动应用平台。本文演示了如何在微信小程序中使用 LeanCloud SDK。
 
 ## 安装与初始化 SDK
-1. 首先，下载 [小程序开发工具](https://mp.weixin.qq.com/debug/wxadoc/dev/devtools/download.html)，按照 [小程序开发教程](https://mp.weixin.qq.com/debug/wxadoc/dev/) 新建一个项目。
-2. 下载 [https://unpkg.com/leancloud-storage@^2.0.0-beta/dist/av-weapp.js](https://unpkg.com/leancloud-storage@^2.0.0-beta/dist/av-weapp.js)，移动到 `utils` 目录。
-3. 在 app.js 中使用 `const AV = require('./utils/av-weapp.js')` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
-4. 在 app.js 中初始化应用：
-```javascript
+1. 首先下载 [小程序开发工具](https://mp.weixin.qq.com/debug/wxadoc/dev/devtools/download.html)，按照 [小程序开发教程](https://mp.weixin.qq.com/debug/wxadoc/dev/) 新建一个项目。
+2. 下载 [`av-weapp.js`](https://unpkg.com/leancloud-storage@^2.0.0-beta/dist/av-weapp.js)，移动到 `utils` 目录。
+3. 在 `app.js` 中使用 `const AV = require('./utils/av-weapp.js')` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
+4. 在 `app.js` 中初始化应用：
+  ```javascript
 AV.init({
   appId: "{{appid}}",
   appKey: "{{appkey}}",
 });
-```
+  ```
 
 ## 用户系统
 如果你的应用已经在使用 [LeanCloud 的用户系统](https://leancloud.cn/docs/leanstorage_guide-js.html#用户)，现有的注册登录 API 都能正常使用。比如下面的代码展示了如何使用用户名与密码进行登录：

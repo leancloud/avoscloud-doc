@@ -1546,15 +1546,15 @@ https://{{host}}/1.1/login
 }
 ```
 
-可以将 sessionToken 理解为用户的登陆凭证，每个用户的 sessionToken 在同一个应用内都是唯一的，类似 Cookie 的概念。
+可以将 sessionToken 理解为用户的登录凭证，每个用户的 sessionToken 在同一个应用内都是唯一的， 类似于 Cookie 的概念。
 
-正常情况下，用户的 sessionToken 是固定不变的，在以下情况下会发生变化：
+正常情况下，用户的 sessionToken 是固定不变的，但在以下情况下会发生改变：
 
 * 用户调用了忘记密码功能，重设了密码。
-* 用户在应用选项勾选了『密码修改后，强制客户端重新登录』，那么在修改密码后，sessionToken 也将强制变换。
-* 调用下文所述的 `refreshSessionToken` 主动重置。
+* 用户在控制台的 [应用选项](/app.html?appid={{appid}}#/permission) 中勾选了 **密码修改后，强制客户端重新登录**，那么在修改密码后 sessionToken 也将强制更换。
+* 调用 [`refreshSessionToken`](#重置登录_sessionToken) 主动重置。
 
-在 sessionToken 变化后，已有的登陆如果调用到用户相关权限受限的 API，将返回 403 权限错误。
+在 sessionToken 变化后，已有的登录如果调用到用户相关权限受限的 API，将返回 403 权限错误。
 
 ### 已登录的用户信息
 
@@ -1569,9 +1569,9 @@ curl -X GET \
 ```
 返回的 JSON 数据与 [`/login`](#登录) 登录请求所返回的相同。
 
-### 重置登陆 sessionToken
+### 重置登录 sessionToken
 
-可以主动重置用户的 sessionToken:
+可以主动重置用户的 sessionToken：
 
 ```sh
 curl -X PUT \
@@ -1581,9 +1581,9 @@ curl -X PUT \
   https://{{host}}/1.1/users/57e3bcca67f35600577c3063/refreshSessionToken
 ```
 
-调用这个 API 要求传入登陆返回的 `X-LC-Session` 作为认证，或者使用 Master Key。
+调用这个 API 要求传入登录返回的 `X-LC-Session` 作为认证，或者使用 Master Key。
 
-重置成功将返回新的 sessionToken 及用户信息:
+重置成功将返回新的 sessionToken 及用户信息：
 
 ```json
 {

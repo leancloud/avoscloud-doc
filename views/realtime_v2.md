@@ -5,7 +5,7 @@
 目前，我们提供 Android、iOS、JavaScript、Windows Phone 四个主要平台的客户端 SDK，也提供了一些 Demo 帮助你快速入门：
 
 * iOS 聊天应用：
-  * [ChatKit，自带 UI 的聊天工具包](chatkit-objc.html)
+  * [ChatKit，自带 UI 的聊天工具包](chatkit-ios.html)
   * [LeanMessageDemo iOS 版](https://github.com/leancloud/LeanMessage-Demo)
   * [LeanChat iOS 版](https://github.com/leancloud/leanchat-ios)
 
