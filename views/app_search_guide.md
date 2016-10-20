@@ -499,7 +499,7 @@ sid: "cXVlcnlUaGVuRmV0Y2g7Mzs0NDpWX0NFUmFjY1JtMnpaRDFrNUlBcTNnOzQzOlZfQ0VSYWNjUm
 `q`|必须|查询文本，支持类似 google 的搜索语法。
 `fields`|可选|逗号隔开的字段列表，查询的字段列表
 <code class="text-nowrap">highlights</code>|可选|高亮字段，可以是通配符 `*`，也可以是字段列表逗号隔开的字符串。如果加入，返回结果会多出 `_highlight` 属性，表示高亮的搜索结果内容，关键字用 `em` 标签括起来。
-`clazz`|可选|类名，如果没有指定，则搜索所有启用了应用内搜索的 class。
+`clazz`|可选|类名，如果没有指定或者为空字符串，则搜索所有启用了应用内搜索的 class。
 `order`|可选|排序字段，形如 `-score,createdAt` 逗号隔开的字段，负号表示倒序，可以多个字段组合排序。
 `include`||关联查询内联的 Pointer 字段列表，逗号隔开，形如 `user,comment` 的字符串。**仅支持 include Pointer 类型**。
 `sort`||复杂排序字段，例如地理位置信息排序，见下文描述。
