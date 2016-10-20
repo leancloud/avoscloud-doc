@@ -4,8 +4,8 @@
 
 ## 安装与初始化 SDK
 1. 首先，下载 [小程序开发工具](https://mp.weixin.qq.com/debug/wxadoc/dev/devtools/download.html)，按照 [小程序开发教程](https://mp.weixin.qq.com/debug/wxadoc/dev/) 新建一个项目。
-2. 下载 [https://cdn1.lncld.net/static/js/av-weapp-2.0.0-beta.1.js](https://cdn1.lncld.net/static/js/av-weapp-2.0.0-beta.1.js)，移动到 `utils` 目录。
-3. 在 app.js 中使用 `const AV = require('./utils/av-weapp-2.0.0-beta.1.js')` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
+2. 下载 [https://unpkg.com/leancloud-storage@^2.0.0-beta/dist/av-weapp.js](https://unpkg.com/leancloud-storage@^2.0.0-beta/dist/av-weapp.js)，移动到 `utils` 目录。
+3. 在 app.js 中使用 `const AV = require('./utils/av-weapp.js')` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
 4. 在 app.js 中初始化应用：
 ```javascript
 AV.init({
