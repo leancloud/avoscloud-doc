@@ -101,8 +101,10 @@
 * 避免对象循环引用，将循环关系作为第三个对象存储。
 * 想建立一个应用网站？我们提供 [网站托管](leanengine_guide-cloudcode.html#Web_Hosting)。
 * 想用好云引擎，请先熟悉 [JavaScript SDK 开发指南](leanstorage_guide-js.html)。
+{% if node != 'qcloud' %}
 * 云引擎 Web 主机托管，可以绑定备案过的独立域名，请在 [工单系统](https://leanticket.cn/t/leancloud) 提出技术申请。
 * 云引擎 Web 主机托管，我们可以协助你完成域名的备案，请在 [应用控制台 > 账户设置 > 域名备案](/settings.html#/setting/domainrecord) 操作。
+{% endif %}
 
 ## 其他
 {% if node !='qcloud' %}

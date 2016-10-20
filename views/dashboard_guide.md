@@ -445,8 +445,10 @@ public static string SHA512Encrypt(string password, string salt)
 * 登录时需要邮箱
 * 数据导入，数据导出等一些服务会发送邮件通知
 
+{% if node != 'qcloud' %}
 ### 实名认证
 按照国家法律法规要求，所有使用了 LeanCloud 云引擎的网站托管功能的开发者必须进行实名认证。
+{% endif %}
 
 ### 告警设置
 这里可以设置短信账户的告警余额。对于使用短信服务的用户而言，如果你短信账户的余额低于这里设置的阈值，LeanCloud 会发送短信、邮件通知。
