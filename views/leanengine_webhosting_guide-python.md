@@ -39,7 +39,7 @@ git+https://github.com/foo/bar.git@master#egg=bar  # 可以使用 Git/SVN 等版
 应用部署到云引擎之后，会自动按照 `requirements.txt` 中的内容进行依赖安装。在本地运行和调试项目的时候，可以在项目目录下使用如下命令安装依赖：
 
 ```sh
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 另外当你部署应用的时候，建议将依赖的包的版本都按照 `foo==1.0.0` 这种格式来明确指定版本号（或版本的范围），防止因为依赖的模块升级且不再兼容老的 API 时，当再次部署时会导致应用运行失败。
@@ -70,7 +70,7 @@ pip install -r requirements.txt
 将 `leancloud-sdk` 添加到 `requirements.txt` 中，部署到线上即可自动安装此依赖。在本地运行和调试项目的时候，可以在项目目录下使用如下命令进行依赖安装：
 
 ```sh
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 ### 初始化
@@ -104,13 +104,13 @@ leancloud.use_master_key(False)
 请确保以上依赖都已经在本机上安装就绪，然后在项目目录下执行如下命令，来安装项目用到的第三方依赖：
 
 ```sh
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 接下来便可以在项目目录，用我们的命令行工具来启动本地调试了：
 
 ```sh
-lean up
+$ lean up
 ```
 
 更多有关命令行工具和本地调试的内容请参考 [云引擎命令行工具使用详解](leanengine_cli.html)。

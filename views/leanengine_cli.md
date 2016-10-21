@@ -2,215 +2,168 @@
 
 ## 介绍
 
-云引擎命令行工具（在 NPM 上包名为 leancloud-cli）是用来管理、部署云引擎项目的命令行工具。通过它你可以部署、发布、回滚云引擎代码，并且可以对同一个云引擎项目做多应用管理，还可以查看云引擎日志，批量上传文件到 LeanCloud 平台上等。
-
-## 安装 Node.js 运行环境
-
-首先，你需要安装 [Node.js](http://nodejs.org/) 环境以及 [npm](https://npmjs.org/) 包管理工具。
-
-### Linux
-
-Debian、Ubuntu 可以执行：
-
-```sh
-sudo apt-get install nodejs
-```
-
-RedHat、CentOS 可以执行：
-
-```sh
-sudo yum install nodejs
-```
-
-提示：官网仓库的 Node.js 版本可能比较滞后，你可以从 [第三方源](https://github.com/nodesource/distributions) 安装。
-
-### macOS
-
-可以通过 [Homebrew](http://brew.sh/)（需要自行安装）安装：
-
-```sh
-brew install nodejs
-```
-
-### Windows
-
-可在 [官网](https://nodejs.org) 下载安装包，Windows 系统用户请确保在系统盘 C 盘默认目录安装 Node.js，否则命令行工具可能无法正常运行。
+云引擎命令行工具是用来管理、部署云引擎项目的命令行工具。通过它你可以部署、发布、回滚云引擎代码，并且可以对同一个云引擎项目做多应用管理，还可以查看云引擎日志，批量上传文件到 LeanCloud 平台上等。
 
 ## 安装命令行工具
 
-```sh
-npm install -g leancloud-cli
-```
+### macOS
 
-若在 Linux/Mac 上将 Node.js 安装到了整个系统，请在命令前添加 `sudo`；若在 Windows 上选择了「为所有用户安装 Node.js」，请以管理员权限打开一个命令行窗口再安装。
-
-NPM 官方仓库在国内比较慢，请耐心等待。你也可以从国内的 [cnpm](https://npm.taobao.org/) 安装，速度会更快：
+可以使用 [Homebrew](http://brew.sh/) 进行安装：
 
 ```sh
-npm install -g leancloud-cli --registry=https://registry.npm.taobao.org
+brew update
+brew install lean-cli
 ```
 
-### Bash Completion
+如果之前使用 `npm` 安装过旧版本的命令行工具，为了避免与新版本产生冲突，建议先使用 `npm` 卸载旧版本命令行工具；或者直接按照 `homebrew` 的提示，执行 `brew link --overwrite lean-cli` 覆盖掉之前的 `lean` 命令来解决。
 
-该功能可以让你在使用 lean 命令时得到自动补全（用 `tab` 补全），不安装也不会影响正常使用，Mac 用户需要先按照下一小节的方法安装 `bash-completion`。
+### Windows
 
-下载 [avoscloud_completion.sh](https://raw.githubusercontent.com/leancloud/leancloud-cli-command/master/avoscloud_completion.sh) 保存到某个目录，例如通常保存为 `~/.leancloud_completion.sh`，然后在 `~/.bashrc` 或者 `~/.bash_profile` 文件中添加：
+目前仅提供预编译好的绿色版下载，可以在 [lean-cli release 页面](https://github.com/leancloud/lean-cli/releases)根据操作系统下载对应版本，然后在 Windows 命令提示符（或者 PowerShell）下输入此文件的完整路径，就可以正常使用了。比如下载之后保存的文件位置是 `C:\Users\Downloads\`，文件名是`lean-windows-amd64.exe`，输入 `C:\Users\Downloads\lean-windows-amd64.exe` 即可使用。
 
-```sh
-source ~/.leancloud_completion.sh
-```
+我们强烈建议将此文件改名为 `lean.exe`，并且将所在文件夹加入到系统 `PATH` 环境变量中去，这样就可以直接在任意目录下输入 `lean` 就可以使用命令行工具了。设置 Windows PATH 环境变量的方法，请参考[此文档](https://www.java.com/zh_CN/download/help/path.xml) 。另外还可以将此文件放到已经是系统 `PATH` 环境变量的目录中去，比如 `C:\Windows\System32` 中。
 
-然后重启终端，就可以让 lean 命令拥有自动提示和完成功能。
+如果之前使用 `npm` 安装过旧版本的命令行工具，为了避免与新版本产生冲突，建议使用 `npm uninstall -g leancloud-cli` 卸载旧版本命令行工具。
 
-### Mac 上安装 bash-completion
+### Linux
 
-```sh
-brew install bash-completion
-```
+可以使用预编译好的二进制文件，在 [lean-cli release](https://github.com/leancloud/lean-cli/releases) 页面根据操作系统下载对应版本，放在 `PATH` 环境变量所在目录中即可。
 
-请将下面的内容添加到 `~/.bash_profile` 文件中：
+### 通过源码安装
 
-```sh
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-fi
-```
-
-### 常见问题排查
-
-如果安装完执行仍然出现一些问题，请尝试下列步骤：
-
-**移除命令行工具：**
-
-```sh
-npm uninstall -g leancloud-cli
-```
-
-移除之后，确认命令行工具不可运行，即执行 lean 命令时会有如下提示：
-
-```sh
-C:\Users\wchen\workspace\cloud-code-unit-test_v2.0>lean
-'lean' 不是内部或外部命令，也不是可运行的程序或批处理文件。
-```
-
-**清除缓存：**
-
-```sh
-npm cache clean
-```
-
-如果有安装 `cnpm`，还需要清除 `cnpm` 的缓存：
-
-```sh
-cnpm cache clean
-```
-
-然后使用 `npm` 重新安装 leancloud-cli 命令行工具。
+请参考项目源码 [README](https://github.com/leancloud/lean-cli)
 
 ## 使用
 
 安装成功之后，直接在 terminal（终端）运行 `lean -h`，输出帮助信息：
 
 ```sh
-$ lean -h
+$ lean help
 
-  Usage: lean [options] [command]
+ _                        ______ _                 _
+| |                      / _____) |               | |
+| |      ____ ____ ____ | /     | | ___  _   _  _ | |
+| |     / _  ) _  |  _ \| |     | |/ _ \| | | |/ || |
+| |____( (/ ( ( | | | | | \_____| | |_| | |_| ( (_| |
+|_______)____)_||_|_| |_|\______)_|\___/ \____|\____|
+NAME:
+   lean - Command line to manage and deploy LeanCloud apps
 
+USAGE:
+   lean [global options] command [command options] [arguments...]
+   
+VERSION:
+   0.3.0
+   
+COMMANDS:
+     login     登录 LeanCloud 账户
+     info      查看当前登录用户以及应用信息
+     up        本地启动云引擎应用
+     init      初始化云引擎项目
+     checkout  切换当前项目关联的 LeanCloud 应用
+     deploy    部署云引擎项目到服务器
+     publish   部署当前预备环境的代码至生产环境
+     upload    上传文件到当前应用 File 表
+     logs      查看 LeanEngine 产生的日志
+     env       输出运行当前云引擎应用所需要的环境变量
+     cache     LeanCache 管理相关功能
+     cql       进入 CQL 交互查询
+     help, h   显示全部命令或者某个子命令的帮助
 
-  Commands:
-
-    up [options]                             本地启动云引擎应用。
-    search <keywords...>                     根据关键字查询开发文档。
-    new [options]                            创建云引擎项目。
-    deploy [options]                         部署到云引擎。
-    publish [options]                        发布预备环境代码到生产环境。
-    status [options]                         查询当前部署状态。
-    undeploy [options]                       从 LeanEngine 平台清除云引擎部署，包括生产环境和预备环境。
-    logs [options]                           查看云引擎日志。
-    image                                    应用镜像管理。
-    instance                                 应用实例管理。
-    app                                      多应用管理，可以使用一个云引擎项目关联多个 LeanCloud 应用。
-    cql [options]                            进入 CQL 查询交互。
-    redis                                    LeanCache Redis 命令行。
-    upload [options] <file-or-directory...>  导入文件到 LeanCloud 平台，如果是目录，则会将该目录下的文件递归导入。
-    clear [options]                          清除本地状态，在输入 app id 或者 master key 错误的情况下使用。
-    help [cmd]                               显示关于 [cmd] 命令的帮助信息。
-
-  Options:
-
-    -h, --help     output usage information
-    -V, --version  output the version number
+GLOBAL OPTIONS:
+   --version, -v  print the version
 ```
 
-可以通过 `-V` 选项查看版本：
+可以通过 `--version` 选项查看版本：
 
 
 ```sh
-$ lean -V
-1.1.0
+$ lean --version
+lean version 0.3.0
 ```
 
 后面凡是以 `$ lean` 开头的即表示在终端里执行这个命令。
 
-## 创建项目
+## 登录
 
-在安装命令行工具后，除了下载我们在 Github 上维护的 [新应用项目框架（Node.js）](https://github.com/leancloud/node-js-getting-started) 之外，你也可以通过 `new` 命令来创建一个新的云引擎项目：
-
-```sh
-$ lean new
-```
-
-{% if node=='qcloud' %}
-窗口会提示输入应用的 Id 和 Master Key，该信息可以在 `控制台 / 设置 / 应用 Key` 中找到。
-{% else %}
-窗口会提示输入应用的 Id 和 Master Key，该信息可以在 [控制台 / 设置 / 应用 Key](/app.html?appid={{appid}}#/key) 中找到。
-{% endif %}
-
-<div class="callout callout-info">复制粘贴 Master Key 后，窗口不会有任何显示，直接按回车键确认即可。</div>
-
-接下来选择项目语言，确认后一个新的云引擎项目框架就被创建出来了：
+安装完命令行工具之后，首先第一步需要登录 LeanCloud 账户。
 
 ```sh
-开始输入应用信息，这些信息可以从'开发者平台的应用设置 -> 应用 key'里找到。
-请输入应用的 Application ID: GQexGUn5wCPV7jp0eR2gkQxI-gzGzoHsz
-请选择项目语言，Node.js(N) 或 Python(P): n
-正在创建项目 ...
-  .gitignore
-  .jshintrc
-  app.js
-  cloud.js
-  package.json
-  public/
-  public/stylesheets/
-  public/stylesheets/style.css
-  README.md
-  routes/
-  routes/todos.js
-  server.js
-  views/
-  views/error.ejs
-  views/index.ejs
-  views/todos.ejs
-关联应用：new_app -- GQexGUn5wCPV7jp0eR2gkQxI-gzGzoHsz
-切换到应用 new_app
-项目创建完成！
+$ lean login
 ```
 
-进入 `new_app` 目录就可以看到新建立的项目。
+之后按照提示输入 LeanCloud 用户名／密码就可以登录了。
+
+对于美国节点用户，需要增加参数 `--region=US` 来进行登录，腾讯云 TAB 的用户需要增加 `--region=TAB` 来进行登录。
+
+## 初始化项目
+
+登录完成之后，可以使用 `init` 命令来初始化一个项目，并且关联到已有 LeanCloud 应用上。
+
+```sh
+$ lean init
+[?] 请选择应用节点
+ 1) 国内
+ 2) 美国
+ 3) TAB
+ =>
+```
+
+首先需要选择项目节点。选择完成之后会展示出此节点当前用户的所有应用：
+
+```sh
+[?] 请选择 APP
+ 1) AwesomeApp
+ 2) Foobar
+```
+
+接下来选择项目语言／框架：
+
+```sh
+[?] 请选择需要创建的应用模版：
+ 1) node-js-getting-started
+ 2) python-getting-started
+ 3) slim-getting-started
+ 4) java-war-getting-started
+ 5) django-getting-started
+ 6) static-getting-started
+```
+
+选择完毕之后，命令行工具会下载此项目模版到本地，初始化就完成了：
+
+```sh
+ ✓ 下载模版文件 5.93 KB / 5.93 KB [=======================================] 100.00% 0s
+ ✓ 正在创建项目...
+```
+
+进入应用名命名的目录就可以看到新建立的项目。
+
+## 关联已有项目
+
+如果已经使用其他方法创建好项目，可以直接在项目目录执行
+
+```sh
+$ lean checkout
+```
+
+将已有项目关联到 LeanCloud 应用上。
 
 ## 本地运行
+
+如果想简单的部署一份代码到服务器，而不在本地运行和调试的话，可以暂时跳过此章节。
 
 进入项目目录：
 
 ```sh
-$ cd new_app
+$ cd AwesomeApp
 ```
 
-安装项目本身的依赖（以 Node.js 为例）：
+之后需要安装此项目相关依赖，需要根据项目语言来查看不同文档：
 
-```sh
-$ npm install
-```
+- [Python](leanengine_webhosting_guide-python.html#本地运行和调试)
+- [Node.js](leanengine_webhosting_guide-node.html#本地运行和调试)
+- [PHP](leanengine_webhosting_guide-php.html#本地运行和调试)
+- [Java](leanengine_webhosting_guide-java.html#命令行工具)
 
 启动应用：
 
@@ -218,14 +171,10 @@ $ npm install
 $ lean up
 ```
 
-可能会提示输入应用的 Master Key，粘贴后窗口不会有任何显示，直接回车，即可在本机调试云引擎。
-
 * 通过浏览器打开 <http://localhost:3000>，进入 web 应用的首页。
 * 通过浏览器打开 <http://localhost:3001>，进入云引擎云函数和 Hook 函数调试界面。
 
-`lean up` 命令包装了 [nodemon](https://github.com/remy/nodemon)，它会监视文件变更，修改代码后会自动重启进程，无需手工重启命令行工具就可以看到代码的最新效果。
-
-**提示**：如果想变更启动端口号，可以使用 `lean up -P 新端口号` 命令来指定。
+**提示**：如果想变更启动端口号，可以使用 `lean up --port 新端口号` 命令来指定。
 
 **提示**：命令行工具所有自命令都可以通过 `-h` 参数来查看详细的参数说明信息，比如 `lean up -h`。
 
@@ -246,47 +195,43 @@ $ lean deploy
 在部署的过程中会实时地打印进度：
 
 ```sh
-部署到：生产环境
-压缩项目文件 ...
-生成临时文件：/var/folders/90/y1fg6dds0fzg1ljs3cjqcl040000gp/T/1463385551840.zip
-开始上传项目文件 ...
-2016-05-16 15:59:14 [INFO] 开始构建 20160516-155914
-2016-05-16 15:59:14 [INFO] 正在下载应用代码 ...
-2016-05-16 15:59:15 [INFO] 正在解压缩应用代码 ...
-2016-05-16 15:59:15 [INFO] 运行环境: nodejs (leanengine/nodejs-base-4.x)
-2016-05-16 15:59:15 [INFO] 从之前的构建中恢复依赖项 ...
-2016-05-16 15:59:15 [INFO] 正在下载和安装依赖项 ...
-2016-05-16 15:59:27 [INFO] 依赖项体积：16.69MB
-2016-05-16 15:59:27 [INFO] 缓存最新的依赖项 ...
-2016-05-16 15:59:28 [INFO] 存储镜像到仓库 ...
-2016-05-16 16:00:33 [INFO] 镜像构建完成：20160516-155914
-2016-05-16 16:00:33 [INFO] 开始部署 20160516-155914 到 web1
-2016-05-16 16:00:33 [INFO] 正在创建新实例 ...
-2016-05-16 16:00:49 [INFO] 正在启动新实例 ...
-2016-05-16 16:00:50 [INFO] 实例启动成功：{"runtime":"nodejs-v4.4.3","version":"0.4.0"}
-2016-05-16 16:00:50 [INFO] 正在统一切换新旧实例 ...
-2016-05-16 16:00:50 [INFO] 正在更新云函数信息 ...
-2016-05-16 16:00:50 [INFO] 部署完成：1 个实例部署成功
-
-部署成功
-
-NAME      STATUS   GROUP NAME  QUOTA       IMAGE TAG        DEPLOYED           CREATED
-staging1  running  staging     5           20160516-155914  a few seconds ago  2 months ago
-web1      stopped  web         1CPU/512MB  20160511-134022  a day ago          4 months ago
-web2      stopped  web         5           20160511-134022  a day ago          25 days ago
+ ✓ 获取应用信息
+ ✓ 准备部署至目标应用：AwesomeApp (xxxxxx)
+ ✓ 获取应用分组信息
+ ✓ 准备部署应用到生产环境: web
+ ✓ 检测到 Python 运行时
+ ✓ 压缩项目文件
+ ✓ 上传应用文件 6.41 KB / 6.41 KB [=======================================] 100.00% 0s
+ ✓ 开始构建 20161021-171836
+ ✓ 正在下载应用代码 ...
+ ✓ 正在解压缩应用代码 ...
+ ✓ 运行环境: python (leanengine/python-base-2.7)
+ ✓ 从之前的构建中恢复依赖项 ...
+ ✓ 正在下载和安装依赖项 ...
+ ✓ 缓存最新的依赖项 ...
+ ✓ 存储镜像到仓库 ...
+ ✓ 镜像构建完成：20161021-171836
+ ✓ 开始部署 20161021-171836 到 web1
+ ✓ 正在创建新实例 ...
+ ✓ 正在启动新实例 ...
+ ✓ 实例启动成功：{"version": "1.6.5", "runtime": "cpython-2.7.6"}
+ ✓ 正在统一切换新旧实例 ...
+ ✓ 正在更新云函数信息 ...
+ ✓ 部署完成：1 个实例部署成功
+ ✓ 删除临时文件
 ```
 
-默认部署备注（将会显示在 LeanCloud 的网站控制台上）是简单的一句 `从命令行工具构建`，你可以通过 `-o` 选项来自定义部署备注：
+默认部署备注（将会显示在 LeanCloud 的网站控制台上）是简单的一句 `从命令行工具构建`，你可以通过 `-m` 选项来自定义部署备注：
 
 ```sh
-$ lean deploy -o '添加 XXX 功能'
+$ lean deploy -m 'Be more awesome'
 ```
 
 部署之后，你可以通过 curl 命令，或者访问你设置的 `${your_app_domain}.leanapp.cn` 的二级域名对应的专用测试域名 `stg-${your_app_domain}.leanapp.cn` 测试你的云引擎代码。
 
 ### 从 Git 仓库部署
 
-如果你的代码是保存在某个 Git 仓库，例如 [Github](https://github.com) 上，你也可以请求 LeanCloud 平台从 Git 仓库获取源码并自动部署，这个操作可以在云引擎的部署菜单里完成，也可以在本地执行 `deploy` 命令和 `-g` 选项配合完成：
+如果你的代码是保存在某个 Git 仓库，例如 [Github](https://github.com) 上，并且在 LeanCloud 控制台正确设置了 git repo 地址以及 deploy key，你也可以请求 LeanCloud 平台从 Git 仓库获取源码并自动部署，这个操作可以在云引擎的部署菜单里完成，也可以在本地执行 `deploy` 命令和 `-g` 参数配合完成：
 
 ```sh
 $ lean deploy -g
@@ -309,32 +254,18 @@ $ lean publish
 就会将预备环境的云引擎代码发布到生产环境：
 
 ```sh
-2016-05-16 16:03:41 [INFO] 开始部署 20160516-160159 到 web1,web2
-2016-05-16 16:03:41 [INFO] 正在创建新实例 ...
-2016-05-16 16:03:41 [INFO] 正在创建新实例 ...
-2016-05-16 16:03:44 [INFO] 正在启动新实例 ...
-2016-05-16 16:03:45 [INFO] 实例启动成功：{"runtime":"nodejs-v4.4.3","version":"0.4.0"}
-2016-05-16 16:03:53 [INFO] 正在启动新实例 ...
-2016-05-16 16:03:54 [INFO] 实例启动成功：{"runtime":"nodejs-v4.4.3","version":"0.4.0"}
-2016-05-16 16:03:54 [INFO] 正在统一切换新旧实例 ...
-2016-05-16 16:03:55 [INFO] 正在更新云函数信息 ...
-2016-05-16 16:03:55 [INFO] 部署完成：2 个实例部署成功
-
-部署成功
-
-GROUP NAME  ENV   CURRENT IMAGE    INSTANCES                      CREATED       DEPLOYED
-web         prod  20160516-160159  [web1(running),web2(running)]  4 months ago  a few seconds ago
-```
-
-## 查看云引擎状态
-
-可以通过 `lean instance list` 命令查询当前所有云引擎实例的状态：
-
-```sh
-NAME      STATUS   GROUP NAME  QUOTA       IMAGE TAG        DEPLOYED       CREATED
-staging1  running  staging     5           20160516-160159  5 minutes ago  2 months ago
-web1      running  web         1CPU/512MB  20160516-160159  4 minutes ago  4 months ago
-web2      running  web         5           20160516-160159  4 minutes ago  25 days ago
+ ✓ 获取应用信息
+ ✓ 准备部署至目标应用：AwesomeApp (xxxxxx)
+ ✓ 开始部署 20161021-173118 到 web1,web2
+ ✓ 正在创建新实例 ...
+ ✓ 正在创建新实例 ...
+ ✓ 正在启动新实例 ...
+ ✓ 实例启动成功：{"version": "1.6.5", "runtime": "cpython-3.5.1"}
+ ✓ 正在启动新实例 ...
+ ✓ 实例启动成功：{"version": "1.6.5", "runtime": "cpython-3.5.1"}
+ ✓ 正在统一切换新旧实例 ...
+ ✓ 正在更新云函数信息 ...
+ ✓ 部署完成：2 个实例部署成功
 ```
 
 ## 查看日志
@@ -355,100 +286,52 @@ $ lean logs
 2016-05-16 16:03:55 [PROD] [INFO] 部署完成：2 个实例部署成功
 ```
 
-默认返回最新的 10 条，最新的在最下面。
+默认返回最新的 30 条，最新的在最下面。
 
-可以通过 `-n` 选项设定返回的日志数目，例如返回最近的 100 条
+可以通过 `-l` 选项设定返回的日志数目，例如返回最近的 100 条
 
 ```sh
-$ lean logs -n 100
+$ lean logs -l 100
 ```
 
-也可以加上 `-t` 选项来自动滚动更新日志，类似 `tail -f` 命令的效果：
+也可以加上 `-f` 选项来自动滚动更新日志，类似 `tail -f` 命令的效果：
 
 ```sh
-$ lean logs -t
+$ lean logs -f
 ```
 
 当有新的云引擎日志产生，都会自动填充到屏幕下方。
 
 ## 多应用管理
 
-我们为 lean 添加了多应用管理功能，类似 git 的多分支功能。使用这个功能，允许你将同一个云引擎项目部署到多个 LeanCloud 应用上。
+一个项目的代码可以同时部署到多个 LeanCloud 应用上。
 
-### 查看应用状态
+### 查看当前应用状态
 
-使用 `lean app list` 可以查看当前应用列表，当前激活的应用前会显示一个星号：
-
-```sh
-$ lean app list
-  github-commit-ical    d1ARJHxmAze1Qx8mWd75N6MM
-* leanengine-playground hOm6fe8KE285nUXsB6AR267i
-```
-
-此时，执行 `deploy`、`publish`、`status`、`logs` 等命令都将是针对当前激活的应用。
-
-### 添加应用
-
-如果你想将 new_app 发布到其他 LeanCloud 应用，你可以通过 `add` 命令来添加一个应用：
+使用 `lean info` 可以查看当前项目关联的应用：
 
 ```sh
-$ lean app add new_app <new app 的应用 id>
+$ lean info
+当前登录用户: asaka (lan@leancloud.rocks)
+当前目录关联应用：AwesomeApp (xxxxxx)
 ```
 
-`add` 接收两个参数，第一个是应用的名称，用于后续的显示和切换，第二个是新应用的 id，可以在应用设置的应用 Key 信息里找到。
-
-添加成功将打印：
-
-```sh
-关联应用：other_app -- <应用 id>
-```
-
-通过 `app list` 命令将看到两个应用：
-
-```sh
-$ lean app list
-* origin    7104en0u071tcb5d1tr2juxa499ouvdn1gm5szq47nqzt06q
-  other_app 1qdney6b5qg2i69t79yq941krrwdu3glt0ot69re6w7xv6lf
-```
-
-前面有星号的应用，表示是当前应用。
+此时，执行 `deploy`、`publish`、`logs` 等命令都将是针对当前激活的应用。
 
 ### 切换应用
 
-从当前应用切换到另一个应用，可以使用 `checkout <应用名称>`:
+如果你想将当前项目切换到其他 LeanCloud 应用，你可以通过 `checkout` 命令来添加一个应用：
 
 ```sh
-$ lean app checkout other_app
-Switched to app other_app
+$ lean checkout
 ```
 
-切换成功后，执行 `deploy`、`publish`、`status`、`logs`等命令都将运行在 `other_app` 上。如果你过去没有部署过，第一次部署的时候会要求你输入新应用的 master key。
+之后会运行向导供选择想要切换的目标应用。
 
-通过 `app` 命令可以看到当前应用已经是 `other_app`:
+另外还可以直接执行 `$ lean checkout another_app_id` 来快速切换关联应用。
 
-```sh
-$ lean app
-* other_app <应用 id>
-```
 
-如果你想在不切换应用的情况下去部署云引擎到其他应用，也可以通过 `--app` 选项来指定，例如:
-
-```sh
-$ lean deploy --app other_app
-```
-
-这样就无需通过 checkout 切换应用，就可以部署项目到其他应用。`status`、`publish` 等应用相关的命令也同样支持 `--app` 选项。
-
-### 移除应用
-
-同样，你可以删除一个应用，使用  `lean rm` 命令：
-
-```sh
-$ lean app rm other_app
-Removed app: other_app
-```
-
-## 批量上传文件
+## 上传文件
 
 如果你有一些文件希望上传到 LeanCloud 平台上，可以通过 `upload` 命令，既可以上传单个文件，也可以批量上传一个目录下（包括子目录）下的所有文件。
 
@@ -467,15 +350,56 @@ $ lean upload images/
 
 ## CQL 交互查询
 
-0.6.1 版本开始，我们支持 cql 命令来进入交互查询界面：
+可以直接使用 `cql` 命令来查询存储服务数据：
 
 ```sh
 $ lean cql
 ```
 
-使用 [CQL](./cql_guide.html) 语言做查询，结果如图：
+使用 [CQL](./cql_guide.html) 语言做查询，结果如下：
 
-![image](images/cql_command.png)
+```
+$ lean cql
+CQL > select objectId, mime_type, createdAt, updatedAt from _File where mime_type != null limit 10;
+objectId                   mime_type                                   createdAt                  updatedAt
+5583bc44e4b0ef6154cb1b9e   application/zip, application/octet-stream   2015-06-19T06:52:52.106Z   2015-06-19T06:52:52.106Z
+559a63bee4b0c4d3e72432f6   application/zip, application/octet-stream   2015-07-06T11:17:18.885Z   2015-07-06T11:17:18.885Z
+55cc4d3b60b28da5fc3af7c5   image/jpeg                                  2015-08-13T07:54:35.119Z   2015-08-13T07:54:35.119Z
+55cc4d7660b2d1408c770cde   image/jpeg                                  2015-08-13T07:55:34.496Z   2015-08-13T07:55:34.496Z
+55cc4df460b2c0a2834d63e2   image/jpeg                                  2015-08-13T07:57:40.013Z   2015-08-13T07:57:40.013Z
+55cc4eb660b2597462bc093e   image/jpeg                                  2015-08-13T08:00:54.983Z   2015-08-13T08:00:54.983Z
+55cc4ece60b2597462bc0e06   image/jpeg                                  2015-08-13T08:01:18.323Z   2015-08-13T08:01:18.323Z
+563b2fc360b216575c579204   application/zip, application/octet-stream   2015-11-05T10:30:27.721Z   2015-11-05T10:30:27.721Z
+564ae21400b0ee7f5ca4e11a   application/zip, application/octet-stream   2015-11-17T08:15:16.951Z   2015-11-17T08:15:16.951Z
+564da57360b2ed36207ad273   text/plain                                  2015-11-19T10:33:23.854Z   2015-11-19T10:33:23.854Z
+```
+
+如果需要查询的 class 有大量 Object / Array 等嵌套的数据结构，上面展示的表格形式的展示结果不能方便的查看这些数据，可以使用 `$ lean cql --format=json` 指定使用 `JSON` 来展示结果：
+
+```
+$ lean cql --format=json
+CQL > select objectId, mime_type from _File where mime_type != null limit 3;
+[
+  {
+    "createdAt": "2015-06-19T06:52:52.106Z",
+    "mime_type": "application/zip, application/octet-stream",
+    "objectId": "5583bc44e4b0ef6154cb1b9e",
+    "updatedAt": "2015-06-19T06:52:52.106Z"
+  },
+  {
+    "createdAt": "2015-07-06T11:17:18.885Z",
+    "mime_type": "application/zip, application/octet-stream",
+    "objectId": "559a63bee4b0c4d3e72432f6",
+    "updatedAt": "2015-07-06T11:17:18.885Z"
+  },
+  {
+    "createdAt": "2015-08-13T07:54:35.119Z",
+    "mime_type": "image/jpeg",
+    "objectId": "55cc4d3b60b28da5fc3af7c5",
+    "updatedAt": "2015-08-13T07:54:35.119Z"
+  }
+]
+```
 
 ## 其他命令
 
@@ -495,4 +419,4 @@ $ lean search 云引擎 命令行
 
 ## 贡献
 
-`leancloud-cli` 本身是开源，基于 [GNU LGPL](https://www.gnu.org/licenses/lgpl.html) 协议，源码托管在 Github: <https://github.com/leancloud/avoscloud-code-command>，欢迎大家贡献。
+`lean-cli` 本身是开源，基于 [Apache](https://github.com/leancloud/lean-cli/blob/master/LICENSE.txt) 协议，源码托管在 Github: <https://github.com/leancloud/lean-cli>，欢迎大家贡献。

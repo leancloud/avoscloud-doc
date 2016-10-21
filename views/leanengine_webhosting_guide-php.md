@@ -98,6 +98,8 @@ $app->get('/', function($req, $res) {
 
 如果是自定义项目，则需要自己配置：
 
+* 首先安装 [composer](https://getcomposer.org)
+
 * 配置依赖：在项目根目录下执行以下命令来增加 {{leanengine_middleware}} 的依赖：
 
 ```
@@ -118,6 +120,23 @@ Client::initialize(
 // 如果不希望使用 masterKey 权限，可以将下面一行删除
 Client::useMasterKey(true);
 ```
+
+## 本地运行和调试
+
+使用 composer 安装第三方依赖：
+
+```sh
+$ composer install
+```
+
+接下来便可以在项目目录，用我们的命令行工具来启动本地调试了：
+
+```sh
+$ lean up
+```
+
+更多有关命令行工具和本地调试的内容请参考 [云引擎命令行工具使用详解](leanengine_cli.html)。
+
 {% endblock %}
 
 {% block http_client %}

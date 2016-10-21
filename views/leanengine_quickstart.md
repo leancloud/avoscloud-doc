@@ -4,19 +4,19 @@
 
 ## 创建项目
 
-### 使用命令行创建项目
+### 使用命令行创建项目（推荐）
 
 在本地创建项目需要使用 LeanCloud 官方命令行工具，请根据 [云引擎命令行工具使用详解-安装](https://leancloud.cn/docs/leanengine_cli.html#安装) 部分安装该工具，并确保你已经在本地机器上可以成功运行命令行工具：
 
 ```
-lean -h
+lean help
 ```
 如果一切正常，你应该看到命令行工具的帮助信息。
 
-使用命令行工具创建的项目模板是一个空项目：
+使用命令行工具创建项目：
 
 ```
-lean new
+lean init
 ```
 然后根据提示输入相关信息即可。
 
@@ -44,7 +44,7 @@ cd java-war-getting-started
 然后添加应用 appId 等信息到该项目：
 
 ```
-lean app add <appName> <appId>
+lean checkout
 ```
 
 ## 本地运行
@@ -55,7 +55,7 @@ lean app add <appName> <appId>
 npm install
 ```
 ```python
-sudo pip install -Ur requirements.txt
+pip install -Ur requirements.txt
 ```
 ```php
 composer install
@@ -69,13 +69,6 @@ mvn package
 ```
 lean up
 ```
-
-
-**提示**：命令行窗口可能会提示输入 Master Key，该信息可以在 [控制台 / 设置 / 应用 Key](/app.html?appid=#/key) 中找到。
-
-<div class="callout callout-info">复制粘贴 Master Key 后，窗口不会有任何显示，直接按回车键确认即可。</div>
-
-应用即可启动运行。
 
 ## 访问站点
 
