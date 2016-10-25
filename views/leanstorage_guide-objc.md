@@ -30,8 +30,8 @@
 {% set sns_guide_url = "[Objective-C SNS 开发指南](sns.html#iOS_SNS_组件)" %}
 {% set feedback_guide_url = "[Objective-C 用户反馈指南](feedback.html#iOS_反馈组件)" %}
 {% set funtionName_whereKeyHasPrefix = "whereKey:hasPrefix:" %}
-{% set saveOptions_query= "where" %}
-{% set saveOptions_fetchWhenSave= "fetch_when_save" %}
+{% set saveOptions_query= "query" %}
+{% set saveOptions_fetchWhenSave= "fetchWhenSave" %}
 
 
 {# --End--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
@@ -199,8 +199,8 @@ option.query = query;
 
 {% block code_object_fetchWhenSave %}
 ```
-    todo.fetchWhenSave = true;// 设置 fetchWhenSave 为 true
-    [todo saveInBackground];
+    anotherTodo.fetchWhenSave = true;
+    [anotherTodo saveInBackground];
 ```
 {% endblock %}
 

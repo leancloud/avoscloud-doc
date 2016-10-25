@@ -238,7 +238,7 @@ content = todo.get('content')
 {% block code_object_fetchWhenSave %}
 
 ```python
-todo.fetch_when_save = True  # 设置 fetch_when_save 为 true
+todo.fetch_when_save = True
 todo.save()
 ```
 {% endblock %}
