@@ -23,7 +23,7 @@
 
 ### 文件存储
 
-在小程序中通过 `wx.chooseImage` 方法得到选定照片的本地临时文件的路径，仅在小程序本次启动期间可以正常使用，如需持久保存可以通过 `AV.File` 将其上传到 LeanCloud：
+在小程序中，可以将用户相册或拍照得到的图片上传到 LeanCloud服务器进行保存。首先通过 `wx.chooseImage` 方法选择或拍摄照片，得到本地临时文件的路径，然后按照下面的方法构造一个 `AV.File` 将其上传到 LeanCloud：
 
 ```javascript
 wx.chooseImage({
@@ -34,7 +34,7 @@ wx.chooseImage({
     var tempFilePath = res.tempFilePaths[0];
     new AV.File('file-name', {
       blob: {
-        uri: tempFilePaths,
+        uri: tempFilePath,
       },
     }).save().then(
       file => console.log(file.url())
@@ -72,7 +72,7 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
 3. 在 `app.js` 中使用 `const Realtime = require('./utils/realtime.weapp.js').Realtime;` 获得 `Realtime` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
 4. 在 `app.js` 中初始化应用：
   ```javascript
-  const reatlime = new Realtime({
+  const realtime = new Realtime({
     appId: '{{appid}}',
     noBinary: true,
   });
@@ -81,12 +81,12 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
 实时通讯 SDK 的详细用法请参考 [实时通信开发指南](realtime_guide-js.html);
 
 ### 富媒体消息
-要在小程序中使用富媒体消息插件，有一些额外的约束：
+要在小程序中使用实时通讯 SDK 的富媒体消息插件，有一些额外的约束：
 
 1. 安装存储 SDK 至 `utils` 目录，并将文件重命名为 `leancloud-storage.js`。
 2. 安装实时通讯 SDK 至 `utils` 目录，并将文件重命名为 `leancloud-realtime.js`。
-3. 下载 [`leancloud-realtime-plugin-typed-messages.js`](https://unpkg.com/leancloud-realtime-plugin-typed-messages@^1.0.0)，移动到 `utils` 目录。必须保证**三个文件在同一目录中**。
-4. 在 `app.js` 中**依次加载** `leancloud-storage.js`，`leancloud-realtime.js`，`leancloud-realtime-plugin-typed-messages.js`。
+3. 下载 [`leancloud-realtime-plugin-typed-messages.js`](https://unpkg.com/leancloud-realtime-plugin-typed-messages@^1.0.0)，移动到 `utils` 目录。必须保证 **三个文件在同一目录中**。
+4. 在 `app.js` 中 **依次加载** `leancloud-storage.js`，`leancloud-realtime.js`，`leancloud-realtime-plugin-typed-messages.js`。
   ```javascript
   const AV = require('./utils/leancloud-storage.js');
   const Realtime = require('./utils/leancloud-realtime.js').Realtime;
