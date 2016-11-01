@@ -13,7 +13,9 @@
 * 你可以在 [错误码详解](error_code.html) 文档里找到所有的错误代码和信息解释。
 * 你可以使用 [API 在线测试工具](https://leancloud.cn/apionline/) 在线测试我们提供的开放 [REST API](rest_api.html)。
 * 我们的用户账户系统都自动做了密码加密存储，基于 SHA-512 加密算法，使用随机生成的 salt 加密。
+{% if node != 'qcloud' and node != 'us' %}
 * 我们提供短信服务，你可以使用短息服务发送手机验证码、手机登录验证码等。具体参考各 SDK 开发指南。
+{% endif %}
 * 我们提供了 iOS、Android、Windows Phone、JavaScript、Unity3D 等平台的 SDK，进入 [SDK 下载页面](sdk_down.html)。
 {% if node != 'qcloud' %}
 * 如果你想做一个形如微博的 Feed 系统，也许你可以尝试使用我们的 [事件流系统](status_system.html)。
