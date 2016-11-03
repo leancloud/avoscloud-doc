@@ -962,7 +962,6 @@ public void sendMessage(AVIMMessage message, AVIMConversationCallback callback)
 
 {% set message_option_name = 'AVIMMessageOption' %}
 
-{% set message_priority_default_varname = 'MessagePriority.Default' %}
 {% set message_priority_high_varname    = 'MessagePriority.High' %}
 {% set message_priority_normal_varname  = 'MessagePriority.Normal' %}
 {% set message_priority_low_varname     = 'MessagePriority.Low' %}
