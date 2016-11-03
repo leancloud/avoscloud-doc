@@ -40,7 +40,9 @@ LeanCloud 实时通信服务采用 [签名方式](realtime_v2.html#权限和认�
 [LeanCache Node.js Demos](https://github.com/leancloud/lean-cache-demos) 是 [LeanCache](https://leancloud.cn/docs/leancache_guide.html) 的示例项目，使用 Node.js 和 Express 实现，包含了一些典型的使用场景：
 
 * **关联数据缓存**：缓存一些数据量少、查询频繁、不常修改、关联结构复杂的关联数据。
+{% if node != 'qcloud' and node != 'us' %}
 * **图形验证码**：利用图形验证码保护短信发送接口。
+{% endif %}
 * **排行榜缓存**：维护一个用户游戏分数的排行榜，并在次日将榜单归档到云存储中。
 * **抢红包**：管理员在后台生成一些随机金额的红包供用户获取，利用 LeanCache 应对瞬时的高并发场景。
 * **热点只读数据缓存**：将几乎只读的配置（例如购物网站的商品分类信息）通过 Class Hook 缓存在 Redis。

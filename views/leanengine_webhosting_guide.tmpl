@@ -96,12 +96,12 @@ git push -u origin master
 
 ### 设置域名
 
-你可以在 {% if node=='qcloud' %}「云引擎 > 设置」{% else %}[云引擎 > 设置](/cloud.html?appid={{appid}}#/conf){% endif %} 的「Web 主机域名」部分，填写一个自定义的二级域名，例如你设置了 `myapp`，那么你就可以通过我们的二级域名来访问你的网站了：
+你可以在 {% if node=='qcloud' %}**云引擎** > **设置** {% else %}[云引擎 > 设置](/cloud.html?appid={{appid}}#/conf){% endif %} 的「Web 主机域名」部分，填写一个自定义的二级域名，例如你设置了 `myapp`，那么你就可以通过我们的二级域名来访问你的网站了：
 
-- <http://myapp.leanapp.cn>（中国区）
-- <http://myapp.avosapps.us>（美国区）
+- `http://myapp.leanapp.cn`（中国区）
+- `http://myapp.avosapps.us`（美国区）
 
-<div class="callout callout-info">你可能需要至多几个小时的时间来等待 DNS 生效。</div>
+<div class="callout callout-info">DNS 可能需要等待几个小时后才能生效。</div>
 
 ## 用户状态管理
 

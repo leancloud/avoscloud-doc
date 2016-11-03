@@ -34,7 +34,7 @@
             <li><a href="relation_guide-objc.html">数据模型设计指南</a></li>
             <li><a href="acl_guide-objc.html">权限管理使用指南</a></li>
             <li><a href="ios_statistics.html">统计分析开发指南</a></li>
-            {% if node!='qcloud' %}
+            {% if node != 'qcloud' and node != 'us' %}
             <li><a href="sms_guide-objc.html">短信服务使用指南</a></li>
             {% endif %}
             <li><a href="ios_crashreporting_guide.html">崩溃报告使用指南</a></li>
@@ -64,7 +64,7 @@
             <li><a href="relation_guide-android.html">数据模型设计指南</a></li>
             <li><a href="acl_guide-android.html">权限管理使用指南</a></li>
             <li><a href="android_statistics.html">统计分析开发指南</a></li>
-            {% if node!='qcloud' %}
+            {% if node != 'qcloud' and node != 'us' %}
             <li><a href="sms_guide-android.html">短信服务使用指南</a></li>
             {% endif %}
             <li><a href="android_faq.html">FAQ</a></li>
@@ -83,7 +83,7 @@
             <li><a href="realtime_guide-js.html">实时通信开发指南</a></li>
             <li><a href="relation_guide-js.html">数据模型设计指南</a></li>
             <li><a href="acl_guide-js.html">权限管理使用指南</a></li>
-            {% if node!='qcloud' %}
+            {% if node != 'qcloud' and node != 'us' %}
             <li><a href="sms_guide-js.html">短信服务使用指南</a></li>
             {% endif %}
             <li><a href="js_analytics.html">统计分析开发指南</a></li>
@@ -152,7 +152,7 @@
             <li><a href="rest_api.html">数据存储 API</a></li>
             <li><a href="rest_api.html#Push_通知">消息推送 API</a></li>
             <li><a href="realtime_rest_api.html">实时通信 API</a></li>
-            {% if node!='qcloud' %}
+            {% if node != 'qcloud' and node != 'us' %}
             <li><a href="rest_sms_api.html">短信验证 API</a></li>
             {% endif %}
             <li><a href="rest_api.html#统计数据_API">数据统计 API</a></li>
@@ -203,7 +203,9 @@
             <li><a href="app_search_guide.html">应用内搜索和 DeepLink 开发指南</a></li>
             <li><a href="app_data_share.html">应用之间数据共享（Class 绑定）</a></li>
             <li><a href="user_groups.html">用户群分析指南</a></li>
+            {% if node != 'qcloud' and node != 'us' %}
             <li><a href="leaninsight_guide.html">离线数据分析使用指南</a></li>
+            {% endif %}
             <li class="divider"></li>
             <li><a href="tutorials.html">教程</a></li>
            <li><a href="demo.html">Demo</a></li>

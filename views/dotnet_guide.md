@@ -365,13 +365,13 @@ await user.SignUpAsync().ContinueWith(t =>
 ```
 以上代码就可以很快的注册为当前的应用注册一个用户，并且这个用户也会有一个唯一的`ObjectId`。
 **用户的密码在数据管理界面是无法显示的，这是因为服务端存储的并不是明文，是通过不可逆的特殊算法加密后的字符串**
-
+{% if node != 'qcloud' and node != 'us' %}
 ### 手机号注册
 为了适应移动互联时代的需求，我们特地增加了手机号注册的功能，当然前提是会进行短信认证，就如同微信一样，注册的时候会发送6位数字的验证码到用户输入的手机上，然后再回调我们的验证接口就可以完成一次手机号的注册。
 {% if node=='qcloud' %}
-在`应用设置`可以开启这一个功能。
+在 **应用设置** 中可以开启这一个功能。
 {% else %}
-在[应用设置](/app.html?appid={{appid}}#/permission)可以开启这一个功能。
+在 [应用设置](/app.html?appid={{appid}}#/permission) 中可以开启这一个功能。
 {% endif %}
 
 ```
@@ -401,9 +401,10 @@ await task.ContinueWith(t =>
 });
 ```
 以上两步，就是一个完整的手机号注册流程。
+{% endif %}
 
 ### 登录
-登录是一个`AVUser`的静态方法，通过如下代码可以实现登录，登录之后，SDK会默认将此次登录的用户设置为`AVUser.CurrentUser`：
+登录是一个 `AVUser` 的静态方法，通过如下代码可以实现登录，登录之后，SDK会默认将此次登录的用户设置为 `AVUser.CurrentUser`：
 
 ```
 var userName = "demoUser";
@@ -420,8 +421,9 @@ await AVUser.LogInAsync(userName, pwd).ContinueWith(t =>
     }
 });
 ```
+
 #### 手机号和密码登录
-在短信服务上线之后，只要是`通过认证`的手机号可以当做用户名在 LeanCloud 服务端进行登录，自然SDK里面也加入了相应的支持(WP SDK 自V1.1.0以及以后的版本都有支持)。它的调用与用户名登录一样，只是方法名字不一样，代码如下:
+在短信服务上线之后，只要是<u>通过认证</u>的手机号可以当做用户名在 LeanCloud 服务端进行登录，自然 SDK 里面也加入了相应的支持（WP SDK 自 V1.1.0 以及以后的版本都有支持）。它的调用与用户名登录一样，只是方法名字不一样，代码如下:
 
 ```
 await AVUser.LogInByMobilePhoneNumberAsync (mobilePhone, password).ContinueWith (t =>
@@ -431,6 +433,7 @@ await AVUser.LogInByMobilePhoneNumberAsync (mobilePhone, password).ContinueWith 
 			//这里提供返回值是为了使链式表达式脱离对全局变量的依赖，当然大部分情况下AVUser.CurrentUser应该已经可以满足一般的需求。
 		});
 ```
+{% if node != 'qcloud' and node != 'us' %}
 #### 手机号和短信验证码登录
 在对客户端验证要求比较高的应用里面，也许有些应用要求支持短信随机的验证码作为临时的密码登录，这个应用场景在现在已经被普遍的采用了，这种验证机制被认为是安全性高的一种机制，自然 LeanCloud 也给予了支持。它比前2种静态登录的方法多了`发送短信验证码`这一步，具体代码如下：
 
@@ -463,16 +466,11 @@ catch(AVException avException)
 {
 }
 ```
-### 邮箱认证
-{% if node=='qcloud' %}
-在移动互联时代，任何一个用户信息都是必须在双方统一认证之后才会被视为一种安全机制，比如邮箱的认证，同样，在`AVUser`这个特殊的`AVObject`拥有一个特殊字段`email`，可以在`数据管理`的`_User`表看到这个默认的字段，这就是在注册是提供的邮箱，当在`应用设置`中勾选了
-{% else %}
-在移动互联时代，任何一个用户信息都是必须在双方统一认证之后才会被视为一种安全机制，比如邮箱的认证，同样，在`AVUser`这个特殊的`AVObject`拥有一个特殊字段`email`，可以在[数据管理](/data.html?appid={{appid}})的`_User`表看到这个默认的字段，这就是在注册是提供的邮箱，当在[应用设置](/app.html?appid={{appid}}#/permission)中勾选了
 {% endif %}
 
-```
-启用注册用户邮箱验证
-```
+### 邮箱认证
+
+在移动互联时代，任何一个用户信息都是必须在双方统一认证之后才会被视为一种安全机制，比如邮箱的认证，同样，在`AVUser`这个特殊的 `AVObject` 拥有一个特殊字段 `email`，可以在 {% if node=='qcloud' %}**数据管理**{% else %}[数据管理](/data.html?appid={{appid}}){% endif %} 的 `_User` 表看到这个默认的字段，这就是在注册是提供的邮箱，当在 {% if node=='qcloud' %}**应用设置**{% else %}[应用设置](/app.html?appid={{appid}}#/permission){% endif %} 中勾选了 **启用注册用户邮箱验证**。
 
 {% if node=='qcloud' %}
 这样在注册用户的时候，LeanCloud默认就会发送一封邮件，进行验证，邮件的模板也可以在`邮件模板`中进行设置。
@@ -480,8 +478,9 @@ catch(AVException avException)
 这样在注册用户的时候，LeanCloud默认就会发送一封邮件，进行验证，邮件的模板也可以在[邮件模板](/app.html?appid={{appid}}#/email)中进行设置。
 {% endif %}
 
-注意，验证过的用户，TA的`emailVerified`将会置成`true`，反之`false`，但是如果**未启用注册用户邮箱验证**，这个字段会为空。
+注意，验证过的用户，TA 的 `emailVerified` 将会置成 `true`，反之 `false`，但是如果<u>未启用</u>注册用户邮箱验证，这个字段会为空。
 
+{% if node != 'qcloud' and node != 'us' %}
 ### 手机号认证
 相对于邮箱认证，手机号认证的过程稍微需要多一点代码，如果当您的应用在注册的时候没有开启短信验证，伴随业务发展，发现需要验证用户的手机，LeanCloud 正好提供了这一接口。
 
@@ -492,16 +491,14 @@ await AVUser.RequestMobilePhoneVerifyAsync ("18688888888").ContinueWith(t=>
 		   //这样就成功的发送了验证码
 		});
 ```
-回调认证的接口与`手机号注册`小节的第二步一样。
+回调认证的接口与 [手机号注册](#手机号注册) 小节的第二步一样。
 
+验证成功后，用户的 `mobilePhoneVerified` 属性变为true，并且调用云引擎的 `AV.Cloud.onVerifed('sms', function)` 方法。
 
-验证成功后，用户的`mobilePhoneVerified`属性变为true，并且调用云引擎的`AV.Cloud.onVerifed('sms', function)`方法。
-
-**以上只是针对_User表的一个属性mobilePhoneNumber进行验证，但是存在另一种需求，类似于支付宝在进行交易的时候会要求进行实时的短信认证，这一机制现在已经普遍存在于各种应用中进行敏感操作的首选，并不局限于注册登录这种通用功能，LeanCloud 也提供了这一机制**
-
+<div class="callout callout-info">以上只是针对 `_User` 表的一个属性 `mobilePhoneNumber` 进行验证，但是存在另一种需求，类似于支付宝在进行交易的时候会要求进行实时的短信认证，这一机制现在已经普遍存在于各种应用中进行敏感操作的首选，并不局限于注册登录这种通用功能，LeanCloud 也提供了这一机制。</div>
 
 #### 手机短信针对应用自定义操作的验证
-`AVCloud`类包含了相关的静态方法，实例如下：
+`AVCloud` 类包含了相关的静态方法，实例如下：
 
 ```
 //第一步，先请求发送，如果手机号无效则会发送失败。
@@ -534,9 +531,8 @@ public void RequestSMSCodeWithCustomParameters()
 ```
 用户就会收到如下短信：
 
-```
-您正在使用 PP打车 服务进行 叫车服务，您的验证码是012345，请在8分钟之内完成验证。
-```
+<samp class="bubble">您正在使用 PP打车 服务进行 叫车服务，您的验证码是012345，请在8分钟之内完成验证。</samp>
+
 以上是调用发送，下一步就是验证。
 
 ```
@@ -569,8 +565,9 @@ AVCloud.VerifySmsCode ("18688888888","012345")
 ```
 再次验证用户输入的验证码是否正确。
 
-目前语音短信验证码仅支持大陆的手机号（移动，电信，联通全面覆盖）。
- 
+目前语音短信验证码仅支持大陆的手机号（移动、电信、联通全面覆盖）。
+{% endif %}
+
 ### 当前用户
 诚如所有移动应用一样当前用户一直是被在客户端视作持久化存储处理，比如手机QQ等流行的App，LeanCloud必然也会如此为开发者解决持久化存储当前用户，只要调用了`登录`相关的接口，当前用户就会被持久化存储在客户端。
 
@@ -592,6 +589,7 @@ await AVUser.RequestPasswordResetAsync(user.Email);
 ```
 这样服务端就会再次发送重置密码的邮件，开发者只要引导用户登录邮箱，进行操作就完成了。
 
+{% if node != 'qcloud' and node != 'us' %}
 #### 短信验证码重置
 如果用户的手机是有效地，并且已经通过了验证码验证手机的有效性，那么开发者可以提供另一种在手机上体验较好的方式：通过短信验证码重置密码。具体实例如下：
 首先，需要发送一个请求到服务端去发送6位数的验证码：
@@ -607,10 +605,11 @@ var resetTask = AVUser.ResetPasswordBySmsCode(NewPassword,SMSCode);//第一个�
 await resetTask；
 ```
 这样2步就可以重置密码，这项功能我们建议在一些应用内操作比较频繁的应用使用，邮箱重置的话可能需要用户去单独打开一个邮箱应用或者用浏览器跳转。
+{% endif %}
 
 ### 查询用户
 
-**请注意，新创建应用的 `_User` 表的查询权限默认是关闭的，通常我们推荐你在云引擎里封装用户查询，只查询特定条件的用户，避免开放用户表的全部查询权限。此外，你可以通过 class 权限设置打开查询权限，请参考 [数据与安全 - Class 级别的权限](data_security.html#Class_级别的_ACL)。**
+请注意，**新创建应用的 `_User` 表的查询权限默认是关闭的**，通常我们推荐你在云引擎里封装用户查询，只查询特定条件的用户，避免开放用户表的全部查询权限。此外，你可以通过 class 权限设置打开查询权限，请参考 [数据与安全 - Class 级别的权限](data_security.html#Class_级别的_ACL)。
 
 用户既然是个特殊的 `AVObject`，它当然也具备了 `AVObject` 的一些共同特性，很多场景下，关于用户的操作，首先就是通过条件查询，把符合特定条件的用户查询到客户端进行展现或者一些修改之类的操作。
 
