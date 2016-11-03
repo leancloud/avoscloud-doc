@@ -19,9 +19,11 @@ brew install lean-cli
 
 ### Windows
 
-目前仅提供预编译好的绿色版下载，可以在 [lean-cli release 页面](https://github.com/leancloud/lean-cli/releases)根据操作系统下载对应版本，然后在 Windows 命令提示符（或者 PowerShell）下输入此文件的完整路径，就可以正常使用了。比如下载之后保存的文件位置是 `C:\Users\Downloads\`，文件名是`lean-windows-amd64.exe`，输入 `C:\Users\Downloads\lean-windows-amd64.exe` 即可使用。
+Windows 用户可以在 [lean-cli release 页面](https://github.com/leancloud/lean-cli/releases) 根据自己操作系统版本（32位／64位）下载最新的 `msi` 安装包来进行安装，安装成功之后打开 `命令提示符` 或者 `PowerShell` 直接输入 `lean` 命令就可以使用了。
 
-我们强烈建议将此文件改名为 `lean.exe`，并且将所在文件夹加入到系统 `PATH` 环境变量中去，这样就可以直接在任意目录下输入 `lean` 就可以使用命令行工具了。设置 Windows PATH 环境变量的方法，请参考[此文档](https://www.java.com/zh_CN/download/help/path.xml) 。另外还可以将此文件放到已经是系统 `PATH` 环境变量的目录中去，比如 `C:\Windows\System32` 中。
+另外还提供预编译好的绿色版下载，可以在 [lean-cli release 页面](https://github.com/leancloud/lean-cli/releases)根据操作系统下载对应版本，然后在 Windows 命令提示符（或者 PowerShell）下输入此文件的完整路径，就可以正常使用了。比如下载之后保存的文件位置是 `C:\Users\Downloads\`，文件名是`lean-windows-amd64.exe`，输入 `C:\Users\Downloads\lean-windows-amd64.exe` 即可使用。
+
+对于使用绿色版的用户，我们强烈建议将此文件改名为 `lean.exe`，并且将所在文件夹加入到系统 `PATH` 环境变量中去，这样就可以直接在任意目录下输入 `lean` 就可以使用命令行工具了。设置 Windows PATH 环境变量的方法，请参考[此文档](https://www.java.com/zh_CN/download/help/path.xml) 。另外还可以将此文件放到已经是系统 `PATH` 环境变量的目录中去，比如 `C:\Windows\System32` 中。
 
 如果之前使用 `npm` 安装过旧版本的命令行工具，为了避免与新版本产生冲突，建议使用 `npm uninstall -g leancloud-cli` 卸载旧版本命令行工具。
 
