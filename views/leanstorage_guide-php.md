@@ -760,7 +760,7 @@ $comments = $query->find();
 
 ```php
 $query = new Query("Todo");
-$query.select("title", "content");
+$query->select("title", "content");
 $todos = $query->find();
 forEach($todos as $todo) {
     $title   = $todo->get("title");

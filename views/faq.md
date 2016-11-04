@@ -390,8 +390,10 @@ invalidTokens 的数量由以下两部分组成：
 ### Android 应用进程被杀掉后无法收到推送消息
 iOS 能做到这点，是因为当应用进程关闭后，Apple 和设备的系统之间还会存在连接，这条连接跟应用无关，所以无论应用是否被杀掉，消息都能发送到 APNs 再通过这条连接发送到设备。 但对 Android 来说，如果是国内用户，因为众所周知的原因，Google 和设备之间的这条连接是无法使用的，所以应用只能自己去保持连接并在后台持续运行，一旦后台进程被杀掉，就无法收到推送消息了。
 
+{% if node != 'qcloud' %}
+LeanCloud 美国节点提供 [GCM 支持](android_push_guide.html#GCM_推送)，如果应用的服务对象主要是国外用户，可以通过 [GCM (Google Cloud Messaging)](https://developers.google.com/cloud-messaging/) 来克服上述问题。
+{% endif %}
 
-LeanCloud 的美国节点即将提供 GCM 支持，如果应用的服务对象主要是国外用户，可以通过 [GCM (Google Cloud Messaging)](https://developers.google.com/cloud-messaging/) 来克服上述问题。
 国内节点的应用依然很难避免这个问题，因为无法建立系统级别的长连接去收消息。不过 LeanCloud SDK 已经采取了各种办法保持应用在后台运行，能保证在大部分情况下都能收到消息。
 
 
@@ -505,14 +507,14 @@ avoscloud -P 3002
 ### 文件存储有 CDN 加速吗？
 
 国内节点本身就提供 CDN 加速访问。
-
+{% if node != 'qcloud' %}
 美国节点没有现成的 CDN 加速，需要用户自行配置。下面以 CloudFront 加速服务为例，简述一下配置过程。
 
 1. 阅读官方指南 [Getting Started with CloudFront](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html)。
 2. 创建一个 AWS 账户，以使用 CloudFront 服务和付费。
 3. S3 的公共访问权限（read permission）已经配置好，指南中有关 S3 配置的部分（[Step 2: Upload your content to Amazon S3 and grant object permissions](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html#GettingStartedUploadContent)）可以跳过。
 4. CloudFront 配置时的 **Origin Domain Name** 请从 `AVFile` 的 URL 中获取，其他均可保持默认。
-
+{% endif %}
 
 ### 文件存储有大小限制吗？
 
@@ -525,7 +527,7 @@ avoscloud -P 3002
 使用 [七牛图片处理 API](http://docs.qiniu.com/api/v6/image-process.html) 执行处理，例如添加水印、裁剪等。
 {% endif %}
 
-{% if node!='qcloud' %}
+{% if node != 'qcloud' and node != 'us' %}
 ## 短信
 请参见 [短信收发常见问题一览](/docs/rest_sms_api.html#常见问题_FAQ)。
 {% endif %}

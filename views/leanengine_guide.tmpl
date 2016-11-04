@@ -99,7 +99,7 @@ curl -X POST -H "Content-Type: application/json; charset=utf-8"   \
 `LEANCLOUD_APP_ENV`|当前的应用环境：<ul><li>开发环境没有该环境变量，或值为 `development`（一般指本地开发）</li><li>预备环境值为 `stage`</li><li>生产环境值为 `production`</li></ul>
 `LEANCLOUD_APP_PORT`|当前应用开放给外网的端口，只有监听此端口，用户才可以访问到你的服务。
 `LEANCLOUD_APP_INSTANCE`|云引擎实例名称，在多实例环境可以通过此变量标示自己。
-`LEANCLOUD_REGION`|云引擎服务所在区域，值为 `CN` 或 `US`，分别表示国内节点和美国节点。
+`LEANCLOUD_REGION`|云引擎服务所在区域，{% if node != 'qcloud' %}值为 `CN` 或 `US`，分别表示国内节点和美国节点。{% else %}目前仅支持 `CN` 即中国节点。{% endif %}
 
 **提示**：旧版云引擎使用的以 `LC_` 开头的环境变量（如 `LC_APP_ID`）已经被弃用。为了保证代码兼容性，`LC_` 变量在一段时间内依然有效，但未来可能会完全失效。为了避免报错，建议使用 `LEANCLOUD_` 变量来替换。
 

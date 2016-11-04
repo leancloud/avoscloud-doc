@@ -19,9 +19,8 @@ JavaScript 实时通信 SDK 支持如下运行时：
   - iOS 8.0+
   - Android 4.4+
 - Node.js 0.12+
-- React Native
-  - iOS 0.22+
-  - Android 0.25+
+- React Native 0.26+
+- 微信小程序开发者工具 latest（参见 [在微信小程序中使用 LeanCloud](weapp.html)）
 
 ### 文档贡献
 我们欢迎和鼓励大家对本文档的不足提出修改建议。请访问我们的 [Github 文档仓库](https://github.com/leancloud/docs) 来提交 Pull Request。
@@ -62,15 +61,15 @@ var TextMessage = require('leancloud-realtime').TextMessage;
 ```javascript
 var realtime = new Realtime({
   appId: '{{appid}}',
-  region: 'cn', // 美国节点为 "us"
+  region: 'cn', //{% if node != 'qcloud' %}美国节点为 "us"{% else %}目前仅支持中国节点 cn{% endif %}
 });
 ```
 
-在 React Native 中使用时需要在初始化时指定 noBinary 为 true：
+在微信小程序中使用时需要在初始化时指定 noBinary 参数为 true：
 ```javascript
 const realtime = new Realtime({
   appId: '{{appid}}',
-  region: 'cn', // 美国节点为 "us"
+  region: 'cn', // {% if node != 'qcloud' %}美国节点为 "us"{% else %}目前仅支持中国节点 cn{% endif %}
   noBinary: true,
 });
 ```
@@ -463,8 +462,9 @@ realtime.createIMClient('bob').then(function(bob) {
 
 ```javascript
 var message = new AV.TextMessage('very important message');
-message.setNeedReceipt(true);
-conversation.send(message);
+conversation.send(message, {
+  reciept: true,
+});
 ```
 
 当消息的接收方收到消息后，服务端会通知消息的发送方「消息已送达」，发送方的 SDK 会在 conversation 上派发一个 `receipt` 事件：
@@ -860,6 +860,7 @@ Conversation 属性名 | _Conversation 字段|含义
 `members`|`m` |成员列表
 `creator` | `c` |对话创建者
 `transient`|`tr`|是否为聊天室（暂态对话）
+`system`|`sys`|是否为系统对话
 `mutedMembers`|`mu`|静音该对话的成员
 `muted`|N/A|当前用户是否静音该对话
 `createdAt`|`createdAt`|创建时间

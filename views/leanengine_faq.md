@@ -70,6 +70,14 @@ var async = require('async');
 
 这两条路是分开的，任何一个部署，就会导致另一种方式失效掉。
 
+## 如何从「在线编辑」迁移到项目部署？
+
+1. 按照 [命令行工具使用指南](leanengine_cli.html) 安装命令行工具，使用 `lean new` 初始化项目，模板选择 `node-js-getting-started`（我们的 Node.js 示例项目）。
+2. 在 [应用控制台 > 云引擎 > 部署 > 在线编辑](https://leancloud.cn/cloud.html?appid={{appid}}#/deploy/online) 中点击 **预览**，将全部函数的代码拷贝到新建项目中的 `cloud.js`（替换掉原有内容）。
+3. 检查 `cloud.js` 的代码，将 `AV.User.current()` 改为 `request.currentUser` 以便从 Node SDK 的 0.x 版本升级到 1.x，有关这个升级的更多信息见 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk-upgrade-1.html)。
+4. 运行 `lean up`，在 <http://localhost:3001> 的调试界面中测试云函数和 Hook，然后运行 `lean deploy` 部署代码到云引擎（专业版用户还需要执行 `lean publish`）。
+5. 部署后请留意云引擎控制台上是否有错误产生。
+
 ## 为什么查询 include 没有生效？
 
 以 JavaScript 云引擎为例子，很多时候，经常会定义一个云函数，在里面使用 `AV.Query` 查询一张表，并 include 其中一个 pointer 类型的字段，然后返回给客户端:

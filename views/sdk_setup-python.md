@@ -39,8 +39,10 @@ leancloud.init("{{appid}}", "{{appkey}}")
 import leancloud
 
 leancloud.init("{{appid}}", "{{appkey}}")
+{% if node != 'qcloud' %}
 leancloud.use_region('US')  # 启用美国节点
-# leancloud.use_region('CN') 启用国内节点，是默认行为
+{% endif %}
+# leancloud.use_region('CN') # 默认启用中国节点{% if node == 'qcloud' %}，目前仅支持中国节点。{% endif %}
 ```
 {% endblock %}
 

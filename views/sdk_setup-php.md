@@ -28,10 +28,14 @@ Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
 use \LeanCloud\Client;
 // 参数依次为 AppId, AppKey, MasterKey
 Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
+{% if node != 'qcloud' %}
 // 启用美国节点
 // Client::useRegion("US");
-// 启用国内节点 (默认启用)
-Client::useRegion("CN");
+// 启用中国节点（默认启用）
+{% else %}
+// 启用中国节点（默认启用）目前仅支持 E1。 
+{% endif %}
+Client::useRegion("E1");
 ```
 {% endblock %}
 
