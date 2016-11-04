@@ -135,7 +135,7 @@ $ composer install
 $ lean up
 ```
 
-更多有关命令行工具和本地调试的内容请参考 [云引擎命令行工具使用详解](leanengine_cli.html)。
+更多有关命令行工具和本地调试的内容请参考 [命令行工具使用指南](leanengine_cli.html)。
 
 {% endblock %}
 

@@ -1,7 +1,7 @@
 {% set release = "[lean-cli release 页面](https://github.com/leancloud/lean-cli/releases)" %}
 # 命令行工具 CLI 使用指南
 
-命令行工具是用来管理和部署云引擎项目的命令行工具。它不仅可以部署、发布和回滚云引擎代码，对同一个云引擎项目做多应用管理，还能查看云引擎日志，批量将文件上传到 LeanCloud 云端。
+命令行工具是用来管理和部署云引擎项目的工具。它不仅可以部署、发布和回滚云引擎代码，对同一个云引擎项目做多应用管理，还能查看云引擎日志，批量将文件上传到 LeanCloud 云端。
 
 ## 安装命令行工具
 
@@ -17,13 +17,13 @@ brew install lean-cli
 
 ### Windows
 
-Windows 用户可以在 {{release}} 页面根据操作系统版本下载最新的 32 位 或 64 位 msi 安装包进行安装，安装成功之后在 Windows 命令提示符（或 PowerShell）下直接输入 `lean` 命令即可使用。
+Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 位 或 64 位 msi 安装包进行安装，安装成功之后在 Windows 命令提示符（或 PowerShell）下直接输入 `lean` 命令即可使用。
 
 也可以选择下载编译好的绿色版 exe 文件，使用时在 Windows 命令提示符（或 PowerShell）下输入此文件的完整路径即可。比如下载之后文件的存放位置是 `C:\Users\Downloads\lean-windows-amd64.exe`，则输入 `C:\Users\Downloads\lean-windows-amd64.exe`。不过我们强烈建议将此文件更名为 `lean.exe`，并将其路径加入到系统 **PATH** 环境变量（[设置方法](https://www.java.com/zh_CN/download/help/path.xml)）中去，这样在任意目录下输入 `lean` 就可以使用命令行工具了。当然也可以将此文件直接放到已经在 PATH 环境变量中声明的任意目录中去，比如 `C:\Windows\System32` 中。
 
 ### Linux
 
-在 {{release}} 页面下载预编译好的二进制文件，放在 PATH 环境变量所在目录中即可。
+在 {{release}} 下载预编译好的二进制文件，放在 PATH 环境变量所在目录中即可。
 
 ### 通过源码安装
 
@@ -84,14 +84,12 @@ lean version 0.3.0
 
 安装完命令行工具之后，首先第一步需要登录 LeanCloud 账户。
 
-```sh
-{% if node != 'qcloud' %}
-# 美国节点用户需要使用参数 `--region=US` 进行登录。
-$ lean login {% if node == 'us' %}--region=US{% endif %}
-{% else %}
-# 腾讯云 TAB 的用户需要使用参数 `--region=TAB` 进行登录。
-$ lean login --region=TAB
-{% endif %}
+<div class="callout callout-info">
+{% if node != 'qcloud' %}美国节点用户需要使用参数 `--region=US` 进行登录。{% else %}腾讯云 TAB 的用户需要使用参数 `--region=TAB` 进行登录。{% endif %}
+</div>
+
+```sh 
+$ lean login {% if node == 'us' %}--region=US{% endif %}{% if node == 'qcloud' %}--region=TAB{% endif %}
 ```
 
 然后按照提示输入 LeanCloud 用户名／密码完成登录。
@@ -171,12 +169,14 @@ $ cd AwesomeApp
 $ lean up
 ```
 
-* 在浏览器中打开 <http://localhost:3000>，进入 web 应用的首页。
-* 在浏览器中打开 <http://localhost:3001>，进入云引擎云函数和 Hook 函数调试界面。
+- 在浏览器中打开 <http://localhost:3000>，进入 web 应用的首页。
+- 在浏览器中打开 <http://localhost:3001>，进入云引擎云函数和 Hook 函数调试界面。
 
 <div class="callout callout-info">
-- 如果想变更启动端口号，可以使用 `lean up --port 新端口号` 命令来指定。
-- 命令行工具所有自命令都可以通过 `-h` 参数来查看详细的参数说明信息，比如 `lean up -h`。
+  <ul>
+    <li>如果想变更启动端口号，可以使用 `lean up --port 新端口号` 命令来指定。</li>
+    <li>命令行工具的所有命令都可以通过 `-h` 参数来查看详细的参数说明信息，比如 `lean up -h`。</li>
+  </ul>
 </div>
 
 更多关于云引擎开发的内容，请参考 [云引擎服务总览](leanengine_overview.html)。
@@ -236,14 +236,14 @@ $ lean deploy -m 'Be more awesome! 这是定制的部署备注'
 
 ```sh
 $ lean deploy -g
-# `-g` 选项要求从 Git 仓库部署，Git 仓库地址必须已经在云引擎菜单中保存。
 ```
 
-默认部署使用 **master** 分支的最新代码，你可以通过 `-r <revision>` 来指定部署特定的 commit 或者 branch。
+- `-g` 选项要求从 Git 仓库部署，Git 仓库地址必须已经在云引擎菜单中保存。
+- 默认部署使用 **master** 分支的最新代码，你可以通过 `-r <revision>` 来指定部署特定的 commit 或者 branch。
 
 ## 发布到生产环境
 
-注意：[免费版云引擎](leanengine_plan.html#免费版) 的用户没有预备环境，因此不需要发布这个步骤。
+以下步骤仅适用于 [专业版云引擎](leanengine_plan.html#专业版) 用户。
 
 如果预备环境如果测试没有问题，此时需要将预备环境的云引擎代码切换到生产环境，可以在 [应用控制台 > 云引擎 > 部署](cloud.html?appid={{appid}}#/deploy) 中发布，也可以直接运行 `publish` 命令：
 
@@ -333,7 +333,7 @@ $ lean checkout
 
 ## 上传文件
 
-如果你有一些文件希望上传到 LeanCloud 平台上，可以通过 `upload` 命令，既可以上传单个文件，也可以批量上传一个目录下（包括子目录）下的所有文件。
+使用 `upload` 命令既可以上传单个文件，也可以批量上传一个目录下（包括子目录）下的所有文件到 LeanCloud 云端。
 
 ```sh
 $ lean upload public/index.html
@@ -368,7 +368,7 @@ objectId                   mime_type                                   createdAt
 564da57360b2ed36207ad273   text/plain                                  2015-11-19T10:33:23.854Z   2015-11-19T10:33:23.854Z
 ```
 
-如果需要查询的 Class 有大量 Object / Array 等嵌套的数据结构，而以上的表格形式不便于查看结果，可以尝试用 `$ lean cql --format=json` 将结果以 JSON 格式来展示：
+如果需要查询的 Class 有大量 Object / Array 等嵌套的数据结构，但以上的表格形式不便于查看结果，可以尝试用 `$ lean cql --format=json` 将结果以 JSON 格式来展示：
 
 ```
 $ lean cql --format=json
