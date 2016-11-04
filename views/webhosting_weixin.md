@@ -2,10 +2,10 @@
 
 随着微信逐渐开放的数据接口，开发者可以设置自定义的服务器地址，微信的服务端会把用户发送给公众号的消息转发到开发者自定义的服务器上，并且开发者可以调用接口进行回复，这就成就了基于微信进行二次开发的可能性。
 
-把微信和 LeanEngine 的网站托管（Web Hosting）功能结合起来，就可以做一个几乎零成本的微信公众号自动问答机器人。
+把微信和云引擎 LeanEngine 的 [网站托管（Web Hosting）功能](leanengine_webhosting_guide-node.html) 结合起来，就可以做出一个几乎零成本的微信公众号自动问答的机器人了。
 
 ## 场景设定
-本文的主要目的是指导开发者使用 LeanEngine 作为微信公众号的回调服务器，因此我们设定了如下场景：实现一个自动根据用户发送消息做简单回复的机器人 Bob；比如用户发送「你好」，Bob 就会自动回复「您好，大家好才是真的好！」。
+本文的主要目的是指导开发者使用 LeanEngine 作为微信公众号的回调服务器，因此我们设定了如下场景：实现一个自动根据用户发送消息做简单回复的机器人 Bob，当用户发送信息「你好」，Bob 就会自动回复「您好，大家好才是真的好！」。
 
 
 ## 注册微信公众号
@@ -28,18 +28,13 @@
 
 ## 创建项目
 
-在 `LeanCloud 控制台` 中创建一个应用，暂且叫做「Wechat」，在本地创建一个文件夹，如 `/usr/leancloud/wechat/`，并在该目录下执行下列命令行工具：
+在 [LeanCloud 控制台](https://leancloud.cn/applist.html#/apps) 中创建一个应用，暂且叫做「Wechat」。在本地创建一个文件夹，如 `/usr/leancloud/wechat/`，安装 [LeanCloud 命令行工具](leanengine_cli.html#安装命令行工具)，并在该目录下执行下列命令：
 
 ```bash
 avoscloud new
 ```
 
-然后进入 `LeanCloud 控制台`，选择刚才创建的应用 Wechat，
-{% if node=='qcloud' %}
-再选择 `**设置** > **应用 Key**`，找到 App ID 以及 Master Key 并复制。
-{% else %}
-再选择 [**设置** > **应用 Key**](/app.html?appid={{appid}}#/general)，找到 App ID 以及 Master Key 并复制。
-{% endif %}
+然后进入 LeanCloud 控制台，选择刚才创建的应用 **Wechat**，再选择 {% if node=='qcloud' %}**设置** > **应用 Key**{% else %}[**设置** > **应用 Key**](/app.html?appid={{appid}}#/general){% endif %}，找到 App ID 以及 Master Key 并复制。
 
 回到命令行工具，它会要求你输入 App ID 以及 Master Key，输入完成之后，可以看见在 `/usr/leancloud/wechat/` 下已经创建了一个 LeanEngine 默认的模板项目，打开 `app.js` 文件。然后访问放在 GitHub 上的 [LeanEngine 微信自动问答机器人](https://github.com/leancloud/LeanEngine-WechatBot) 项目，打开该项目下的 `wechatBot.js` 文件（建议克隆到本地）。
 
@@ -84,8 +79,10 @@ avoscloud new
 ### wechatBot.js
 参照 [wechatBot.js](https://github.com/leancloud/LeanEngine-WechatBot/blob/master/routes/wechatBot.js) 的代码，建议直接复制拷贝所有内容，全部覆盖本地的 `/usr/leancloud/wechat/routes/wechatBot.js` 的内容。如果没有该文件，就直接复制到对应的目录下，然后修改关键的配置项。此时需要打开微信公众号管理控制台，进行对应设置。
 
-然后下图是我用来做实验的公众号的设置，描红的部分是我的配置：
+下图为本文所使用的公众号的设置页面：
 ![wexin_config](http://ac-lhzo7z96.clouddn.com/1456390412452)
+
+注意，在「服务器配置」中生成 **EncodingAESKey(消息加密解密密钥)** 之后，先不要点击保存设置，其中的 **URL(服务器地址)** 需要经过后续的 [项目部署](#项目部署) 才可以确定。
 
 ```js
 // 引用 wechat 库，详细请查看 https://github.com/node-webot/wechat
@@ -93,7 +90,7 @@ var wechat = require('wechat');
 var config = {
   token: 'weixinDemo',
   appid: '请把微信的 AppID 填写在这里',
-  encodingAESKey: '请把微信后台为您生成的 EncodingAESKey 填写在这里'
+  encodingAESKey: '请把微信后台生成的 EncodingAESKey 填写在这里'
 };
 ```
 
@@ -105,7 +102,7 @@ AppID(应用ID)|`config.appid`
 Token(令牌) | `config.token`
 EncodingAESKey(消息加密解密密钥)|`config.encodingAESKey`
 
-还有需要设置如下选项，把 **AppID(应用ID)** 和 **AppSercet(应用密钥)** 填入如下引号中，作为初始化参数：
+还需要设置初始化参数 **AppID(应用ID)** 和 **AppSercet(应用密钥)**：
 
 ```js
 var WechatAPI = require('wechat-api');
@@ -114,7 +111,7 @@ var api = new WechatAPI('请把微信的 AppID 填写在这里',
 ```
 
 ### app.js
-在根目录下的 `app.js` 需要配置的是两行代码，如下：
+在根目录下的 `app.js` 需要配置以下两行代码：
 
 ```js
 'use strict';
@@ -123,25 +120,22 @@ var wechat = require('./routes/wechatBot'); // 这一段必须拷贝到当前项
 ...
 ```
 
-然后在后面引用定义过的这个路由集合：
+然后在后面引用这个已定义过的路由集合：
 
 ```js
 // 可以将一类的路由单独保存在一个文件中
 app.use('/wechat', wechat);
 ```
 
-**微信的配置是实时验证的，假如你的服务器上并没有正确的进行验证，是无法配置成功**。因此，我们先部署到 LeanEngine 中，才能在微信这边保存设置。
+微信在保存「服务器配置」时会进行实时验证，所以在这之前你需要将自己的服务器配置好，让它可以提供正确的验证。**这就需要将应用部署到 LeanEngine 中**：
 
 ## 部署项目
-{% if node=='qcloud' %}
-回到 `LeanCloud 控制台的中 LeanEngine 设置界面`，找到设置二级域名的地方：
-{% else %}
-回到 [LeanCloud 控制台的中 LeanEngine 设置界面](/cloud.html?appid={{appid}}#/conf)，找到设置二级域名的地方：
-{% endif %}
+进入 {% if node=='qcloud' %}**LeanCloud 控制台** > **云引擎** > **设置**，{% else %}
+进入 [**LeanCloud 控制台** > **云引擎** > **设置**](/cloud.html?appid={{appid}}#/conf)，{% endif %}找到 **Web 主机域名**，填入自己想使用的名称，本文使用 `wechatTest`（即 `wechatTest.leanapp.cn`）：
 
 ![domain_setting](http://ac-lhzo7z96.clouddn.com/1456826436084)
 
-设置域名为：`wechatTest.leanapp.cn`。然后回到项目目录下，执行如下命令行：
+然后回到项目目录下，执行如下命令行：
 
 ```bash
 avoscloud deploy
@@ -154,8 +148,11 @@ avoscloud publish
 ```
 
 ## 配置验证
-此时需要回到微信公众号的控制台，可以点击保存设置，此时，需要把刚才在 LeanEngine 上设置的域名填写在微信的控制台中(本例为：` http://wechatTest.leanapp.cn/wechat`)，验证一下。如果微信控制台提示验证失败，请仔细确认代码中的配置是否与控制台配置一致。
+回到微信公众号的控制台，将刚才在 LeanEngine 上设置的域名填写到 **URL(服务器地址)** 中（本例为 `http://wechatTest.leanapp.cn/wechat`），然后保存设置进行验证。如果微信控制台提示验证失败，请仔细确认代码中的配置是否与控制台配置一致。
 
 ## 微信内验证
-关注自己所注册的微信公众号，打开之后，发送「你好」，看看是否能成功按照代码执行回复指定的内容。
-（正确的回复应该是：您好，大家好才是真的好！）
+
+1. 关注自己所注册的微信公众号。
+1. 打开该微信公众号并发送「你好」。
+1. 确认是否能接收到代码中指定的回复内容（正确回复应该是「您好，大家好才是真的好！」）。
+

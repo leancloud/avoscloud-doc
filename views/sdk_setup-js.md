@@ -132,8 +132,14 @@ var APP_KEY = '{{appkey}}';
 AV.init({
   appId: APP_ID,
   appKey: APP_KEY,
+  {% if node != 'qcloud' %}
   // 启用美国节点
   region: 'us'
+  {% else %}
+  // 目前仅支持中国节点
+  region: 'cn'
+  {% endif %}
+  
 });
 ```
 ```es7

@@ -10,7 +10,7 @@
 
 开发过微博应用或者是接入过 QQ 登录的应用都需要在后台设置一个回调服务器地址，用来接收回调信息，关于为什么需要回调服务器这个请阅读 [OAuth 2 官方文档](http://oauth.net/2/)。
 
-许多用户在 LeanEngine 上托管了自己的网站，因为他们在制作登录页面的时候，需要实现微博登录等等第三方登录的功能，因此如果在 LeanEngine 部署回调服务器可以节省成本，快速实现需求。
+许多用户在云引擎 LeanEngine 上托管了自己的网站，因为他们在制作登录页面的时候，需要实现微博登录这样的第三方登录的功能，因此如果在 LeanEngine 部署回调服务器可以节省成本，快速实现需求。
 
 如何开发 OAuth 授权验证回调服务器，请查看 [微博 OAuth 授权验证回调服务器开发指南](webhosting_oauth.html)。
 
@@ -40,7 +40,9 @@ LeanCloud 实时通信服务采用 [签名方式](realtime_v2.html#权限和认�
 [LeanCache Node.js Demos](https://github.com/leancloud/lean-cache-demos) 是 [LeanCache](https://leancloud.cn/docs/leancache_guide.html) 的示例项目，使用 Node.js 和 Express 实现，包含了一些典型的使用场景：
 
 * **关联数据缓存**：缓存一些数据量少、查询频繁、不常修改、关联结构复杂的关联数据。
+{% if node != 'qcloud' and node != 'us' %}
 * **图形验证码**：利用图形验证码保护短信发送接口。
+{% endif %}
 * **排行榜缓存**：维护一个用户游戏分数的排行榜，并在次日将榜单归档到云存储中。
 * **抢红包**：管理员在后台生成一些随机金额的红包供用户获取，利用 LeanCache 应对瞬时的高并发场景。
 * **热点只读数据缓存**：将几乎只读的配置（例如购物网站的商品分类信息）通过 Class Hook 缓存在 Redis。

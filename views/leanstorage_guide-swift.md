@@ -683,9 +683,9 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 或者在 Target 的 Info 标签中修改配置：
 
 ![Info.plist Setting](images/ios_qiniu_http.png)
-
+{% if node != 'qcloud' %}
 如果是美国节点，请把上面的 `clouddn.com` 换成 `amazonaws.com`。
-
+{% endif %}
 也可以根据项目需要，允许所有的 HTTP 访问，更多可参考 [iOS 9 适配系列教程](https://github.com/ChenYilong/iOS9AdaptationTips)。
 
 #### 启用文件 SSL 域名

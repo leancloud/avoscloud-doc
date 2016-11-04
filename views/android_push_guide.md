@@ -273,7 +273,7 @@ intent.putExtra(AVConstants.PUSH_INTENT_KEY, 1);
 
 
 ## 混合推送
-
+{% if node != 'us' %}
 ### 小米推送
 
 #### 环境配置
@@ -473,7 +473,9 @@ dependencies {
 - manifest 正确填写
 
 如果以上条件不符合，SDK 会有日志输出，开发者可以根据日志判断是什么原因导致注册失败。开发者可以通过查看控制台 `_Installation` 表的相关记录的 **vendor** 字段来判断是否注册成功。
+{% endif %}
 
+{% if node == 'us' %}
 ### GCM 推送
 
 GCM（Google Cloud Messaging）是 Google 提供的一项将推送通知消息发送到手机的服务。接入时后台不需要任何设置，GCM 相关的 token 由 LeanCloud SDK 来申请。
@@ -519,7 +521,7 @@ GCM 需要系统为 Android 2.2 及以上并且安装有 Google Play 商店的�
   </intent-filter>
 </receiver>
 ```
-
+{% if node != 'qcloud' %}
 接下来设置 GCM 开关。在 `AVOSCloud.initialize` 初始化时设置开关 `AVOSCloud.setGcmOpen(true)`。
 
 注意，LeanCloud 云端只有在以下三个条件都满足的情况下，才会默认走 GCM 通道。
@@ -527,8 +529,9 @@ GCM 需要系统为 Android 2.2 及以上并且安装有 Google Play 商店的�
 - LeanCloud 美国节点
 - 调用 `AVOSCloud.setGcmOpen(true)`
 - manifest 正确填写
-
+{% endif %}
 开发者可以通过查看控制台 `_Installation` 表的相关记录的 **vendor** 字段来判断是否注册成功。
+{% endif %}
 
 [xiaomi]: http://dev.xiaomi.com/index
 [leancloud-console]: https://leancloud.cn/apps.html

@@ -215,8 +215,8 @@
 {% block code_object_fetchWhenSave %}
 
 ```java
-    todo.setFetchWhenSave(true);// 设置 fetchWhenSave 为 true
-    todo.save();// 如此
+    anotherTodo.setFetchWhenSave(true);
+    anotherTodo.save();
 ```
 {% endblock %}
 

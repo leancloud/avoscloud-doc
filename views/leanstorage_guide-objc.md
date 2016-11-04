@@ -30,8 +30,8 @@
 {% set sns_guide_url = "[Objective-C SNS 开发指南](sns.html#iOS_SNS_组件)" %}
 {% set feedback_guide_url = "[Objective-C 用户反馈指南](feedback.html#iOS_反馈组件)" %}
 {% set funtionName_whereKeyHasPrefix = "whereKey:hasPrefix:" %}
-{% set saveOptions_query= "where" %}
-{% set saveOptions_fetchWhenSave= "fetch_when_save" %}
+{% set saveOptions_query= "query" %}
+{% set saveOptions_fetchWhenSave= "fetchWhenSave" %}
 
 
 {# --End--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
@@ -199,8 +199,8 @@ option.query = query;
 
 {% block code_object_fetchWhenSave %}
 ```
-    todo.fetchWhenSave = true;// 设置 fetchWhenSave 为 true
-    [todo saveInBackground];
+    anotherTodo.fetchWhenSave = true;
+    [anotherTodo saveInBackground];
 ```
 {% endblock %}
 
@@ -635,9 +635,9 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 或者在 Target 的 Info 标签中修改配置：
 
 ![Info.plist Setting](images/ios_qiniu_http.png)
-
+{% if node != 'qcloud' %}
 如果是美国节点，请把上面的 `clouddn.com` 换成 `amazonaws.com`。
-
+{% endif %}
 也可以根据项目需要，允许所有的 HTTP 访问，更多可参考 [iOS 9 适配系列教程](https://github.com/ChenYilong/iOS9AdaptationTips)。
 
 #### 启用文件 SSL 域名

@@ -2,18 +2,7 @@
 
 ## 安装与初始化
 
-{% if node=='qcloud' %}
-首先在控制台上创建新的应用，然后 [下载 LeanCloud Android SDK](sdk_down.html) 以及相应的 Demo。
-{% else %}
-首先在 [控制台](/applist.html#/apps) 上创建新的应用，然后 [下载 LeanCloud Android SDK](sdk_down.html) 以及相应的 Demo。
-{% endif %}
-
-### 导入 SDK
-
-除了必须的 avoscloud.jar 外，你还需要额外的导入 avosstatistics.jar。
-请将下载的 jar 包放到 libs 目录下，以便你的 IDE（Eclipse 或者 Intellij IDEA 等)可以正常识别导入的 jar 包。如以下图片所示：
-
-![image](images/android_statistics_ide.png)
+请按照 [Android SDK 安装指南](sdk_setup-android.html) 进行操作。除了导入必需的基础模块外，还要导入统计模块专用的 jar 包。
 
 ### 配置 `AndroidManifest.xml` 文件
 

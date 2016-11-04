@@ -1018,3 +1018,20 @@ curl -X GET \
    --data-urlencode 'inboxType=private' \
    https://{{host}}/1.1/subscribe/statuses/count
 ```
+
+#### 重置未读消息数
+
+如果想将某个收件箱的未读消息数设置为 0，也就是通常看到的将全部消息设为「已读」的功能，可以通过 `resetUnreadCount` API 来实现：
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -G \
+   --data-urlencode 'owner={"__type":"Pointer","className":"_User","objectId":"dennis"}' \
+   --data-urlencode 'inboxType=private' \
+   https://{{host}}/1.1/subscribe/statuses/resetUnreadCount
+```
+
+接收的参数与 [查询状态计数 API](#查询状态计数_API) 是一致的。
