@@ -4,11 +4,11 @@
 {% set productName = "LeanEngine" %}
 {% set storageName = "LeanStorage" %}
 {% set leanengine_middleware = "[LeanEngine Node.js SDK](https://github.com/leancloud/leanengine-node-sdk)" %}
-{% set sdk_guide_link = "[JavaScript SDK](./leanstorage_guide-js.html)" %}
+{% set storage_guide_url = "[JavaScript SDK](./leanstorage_guide-js.html)" %}
 {% set cloud_func_file = "`$PROJECT_DIR/cloud.js`" %}
 {% set runFuncName = "`AV.Cloud.run`" %}
 {% set defineFuncName = "`AV.Cloud.define`" %}
-{% set runFuncApiLink = "[AV.Cloud.run](/api-docs/javascript/symbols/AV.Cloud.html#.run)" %}
+{% set runFuncApiLink = "[AV.Cloud.run](https://leancloud.github.io/javascript-sdk/docs/AV.Cloud.html#.run)" %}
 {% set hook_before_save = "beforeSave" %}
 {% set hook_after_save = "afterSave" %}
 {% set hook_before_update = "beforeUpdate" %}
@@ -255,11 +255,9 @@ AV.Cloud.onLogin(function(request, response) {
 错误响应码允许自定义。云引擎方法最终的错误对象如果有 `code` 和 `message` 属性，则响应的 body 以这两个属性为准，否则 `code` 为 1， `message` 为错误对象的字符串形式。比如：
 
 ```
-AV.Cloud.define('errorCode', function(request, response) {
-  AV.User.logIn('NoThisUser', 'lalala', {
-    error: function(user, err) {
-      response.error(err);
-    }
+AV.Cloud.define('errorCode', function(req, res) {
+  AV.User.logIn('NoThisUser', 'lalala').catch(function(err) {
+    res.error(err);
   });
 });
 ```
@@ -349,17 +347,6 @@ AV.init({
 AV.Cloud.useMasterKey();
 ```
 {% endblock %}
-
-{% block loggerExample %}
-
-```javascript
-AV.Cloud.define('Logger', function(request, response) {
-  console.log(request.params);
-  response.success();
-});
-```
-{% endblock %}
-
 
 {% block code_hook_message_received %}
 
@@ -489,7 +476,7 @@ AV.Cloud.define('_conversationStarted', (request, response) => {
 	console.log('params', params);
 	response.success({});
 	console.log('_conversationStarted end');
-	
+
 	// 在云引擎中打印的日志如下：
 	// _conversationStarted start
 	// params {

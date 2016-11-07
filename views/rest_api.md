@@ -109,6 +109,11 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
       <td>根据 <a href="leanstorage_guide-js.html#SessionToken">sessionToken</a> 获取用户信息</td>
     </tr>
     <tr>
+      <td>/1.1/users/&lt;objectId&gt;/refreshSessionToken</td>
+      <td>PUT</td>
+      <td>重置用户 sessionToken。</td>
+    </tr>
+    <tr>
       <td>/1.1/users/&lt;objectId&gt;/updatePassword</td>
       <td>PUT</td>
       <td>更新密码，要求输入旧密码。</td>
@@ -138,6 +143,7 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
       <td>POST</td>
       <td>请求验证用户邮箱</td>
     </tr>
+    {% if node != 'qcloud' and node != 'us' %}
     <tr>
       <td>/1.1/requestMobilePhoneVerify</td>
       <td>POST</td>
@@ -163,6 +169,7 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
       <td>PUT</td>
       <td>验证手机短信验证码并重置密码。</td>
     </tr>
+    {% endif %}
   </tbody>
 </table>
 
@@ -623,6 +630,19 @@ Location: https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
   "objectId": "558e20cbe4b060308e3eb36c"
 }
 ```
+
+如果希望返回新创建的对象的完整信息，可以在 URL 里加上 `fetchWhenSave` 选项，并且设置为 true:
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '{"content": "每个 Java 程序员必备的 8 个开发工具","pubUser": "LeanCloud官方客服","pubTimestamp": 1435541999}' \
+  https://{{host}}/1.1/classes/Post?fetchWhenSave=true
+```
+
+fetchWhenSave 选项对更新对象也同样有效，但是它仅返回已被更新的字段，而非全部字段。
 
 >注意：**我们对单个 class 的记录数目没有做限制，但是单个应用的总 class 数目限定为 500 个以内**。也就是说单个应用里面，对象的类别不超过 500 个，但是单个类别下的实例数量则没有限制。
 
@@ -1528,6 +1548,16 @@ https://{{host}}/1.1/login
 }
 ```
 
+可以将 sessionToken 理解为用户的登录凭证，每个用户的 sessionToken 在同一个应用内都是唯一的， 类似于 Cookie 的概念。
+
+正常情况下，用户的 sessionToken 是固定不变的，但在以下情况下会发生改变：
+
+* 用户调用了忘记密码功能，重设了密码。
+* 用户在控制台的 [应用选项](/app.html?appid={{appid}}#/permission) 中勾选了 **密码修改后，强制客户端重新登录**，那么在修改密码后 sessionToken 也将强制更换。
+* 调用 [`refreshSessionToken`](#重置登录_sessionToken) 主动重置。
+
+在 sessionToken 变化后，已有的登录如果调用到用户相关权限受限的 API，将返回 403 权限错误。
+
 ### 已登录的用户信息
 
 用户成功注册或登录后，服务器会返回 sessionToken 并保存在本地，后续请求可以通过传递 sessionToken 来获取该用户信息（如访问权限等）。更多说明请参考 [存储 &middot; sessionToken](leanstorage_guide-js.html#SessionToken)。
@@ -1541,6 +1571,33 @@ curl -X GET \
 ```
 返回的 JSON 数据与 [`/login`](#登录) 登录请求所返回的相同。
 
+### 重置登录 sessionToken
+
+可以主动重置用户的 sessionToken：
+
+```sh
+curl -X PUT \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Session: qmdj8pdidnmyzp0c7yqil91oc" \
+  https://{{host}}/1.1/users/57e3bcca67f35600577c3063/refreshSessionToken
+```
+
+调用这个 API 要求传入登录返回的 `X-LC-Session` 作为认证，或者使用 Master Key。
+
+重置成功将返回新的 sessionToken 及用户信息：
+
+```json
+{
+ "sessionToken":"5frlikqlwzx1nh3wzsdtfr4q7",
+ "updatedAt":"2016-10-20T03:10:57.926Z",
+ "objectId":"57e3bcca67f35600577c3063",
+ "username":"leancloud",
+ "createdAt":"2016-09-22T11:13:14.842Z",
+ "emailVerified":false,
+ "mobilePhoneVerified":false
+}
+```
 
 #### 账户锁定
 
@@ -1548,7 +1605,7 @@ curl -X GET \
 
 锁定将在最后一次错误登录的 15 分钟之后由云端自动解除，开发者无法通过 SDK 或 REST API 进行干预。在锁定期间，即使用户输入了正确的验证信息也不允许登录。这个限制在 SDK 和云引擎中都有效。
 
-{% if node!='qcloud' %}
+{% if node != 'qcloud' and node != 'us' %}
 ### 使用手机号码注册或登录
 
 请参考 [短信服务 REST API 详解 &middot; 使用手机号码注册或登录](rest_sms_api.html#使用手机号码注册或登录)。
@@ -2476,7 +2533,12 @@ curl -X POST \
 
 **注意：`POST /1.1/call/:name` 需要你在云引擎中使用最新版的 SDK，Node.js 需要 0.2 版本以上的云引擎**
 
-你还可以阅读 [云引擎开发指南 - Node.js 环境](./leanengine_cloudfunction_guide-node.html) / [Python 环境](./leanengine_guide-python.html) 来获取更多的信息。
+你还可以阅读以下云引擎开发指南来获取更多的信息。
+
+* [云引擎 Node.js 环境](leanengine_cloudfunction_guide-node.html)
+* [云引擎 Python 环境](leanengine_cloudfunction_guide-python.html)
+* [云引擎 PHP 环境](leanengine_cloudfunction_guide-php.html)
+* [云引擎 Java 环境](leanengine_cloudfunction_guide-java.html)
 
 ## 地理查询
 

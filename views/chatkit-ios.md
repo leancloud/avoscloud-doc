@@ -116,7 +116,7 @@ git clone --depth=1 https://github.com/leancloud/ChatKit-OC
  从上面可以看出，`ChatKit-OC` 项目包分为两个部分：
 
 * `ChatKit` 是库的核心库文件夹。
-* `ChatKit-OC` 为Demo 演示部分，其中 `LCChatKitExample` 这个类提供了很多胶水函数，可完成初步的集成。
+* `ChatKit-OC` 为 Demo 演示部分，其中 `LCChatKitExample` 这个类提供了很多胶水函数，可完成初步的集成。
 
 
  ## 使用方法
@@ -158,6 +158,23 @@ gem install cocoapods
 如果提示找不到库，则可去掉 `--no-repo-update`。
 
 如果不想使用 CocoaPods 进行集成，也可以选择使用 [源码集成](#手动集成)。
+
+### 初始化
+
+打开 `AppDelegate` 文件，添加下列导入语句到头部：
+
+```objc
+#import <ChatKit/LCChatKit.h>
+```
+
+然后粘贴下列代码到 `application:didFinishLaunchingWithOptions` 函数内：
+
+```objc
+// 开启 LeanCloud 服务
+[LCChatKit setAppId:@"{{appid}}" appKey:@"{{appkey}}"];
+```
+
+AppId 和 appKey 可以在 [控制台 > 应用设置](/app.html?appid={{appid}}#/key) 中找到。
 
 ### 胶水函数快速集成
 

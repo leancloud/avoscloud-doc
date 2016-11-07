@@ -2,6 +2,18 @@
 
 本文介绍了如何在 iOS 设备中使用 LeanCloud 的推送功能。请先阅读我们的博客文章《[细说 iOS 消息推送](https://blog.leancloud.cn/1163/)》，再通过 [消息推送概览](push_guide.html) 了解和巩固相关概念。
 
+### iOS 流程简介
+
+#### iOS 注册 deviceToken
+首先，iOS 的推送是通过如下图逻辑：
+
+<img src="images/apns-registration.svg" class="img-responsive" alt="">
+
+#### 调用 LeanCloud API 向设备推送消息
+开发者调用 LeanCloud SDK 提供的接口发送推送消息的逻辑时序图如下：
+
+<img src="images/push-workflow-ios.svg" class="img-responsive" alt="">
+
 ## 配置 iOS 推送证书
 
 配置 iOS 证书相对麻烦，但是却是必须的步骤，请详读 [iOS 推送证书设置指南](ios_push_cert.html)。
@@ -14,47 +26,66 @@
 
 ## 保存 Installation
 
-在保存 installation 前，要先从 APNs 注册推送所需的 device token。可以选择使用 SDK 中提供的接口，也可以使用 Cocoa Touch 提供的原生接口。SDK 提供的接口封装了原生接口在不同版本 iOS 系统上的差异。
-
-`+[AVOSCloud registerForRemoteNotification]` 接口是一个快捷方法：
+在保存 installation 前，要先从 APNs 注册推送所需的 device token，具体步骤：
 
 ```objc
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [AVOSCloud registerForRemoteNotification];
+    [self registerForRemoteNotification];
+    . . .
 }
-```
 
-上面的代码等价于以下代码：
-
-```objc
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    if ([[UIDevice currentDevice].systemVersion floatValue] < 8.0) {
-        UIRemoteNotificationType types = UIRemoteNotificationTypeBadge |
-                                         UIRemoteNotificationTypeAlert |
-                                         UIRemoteNotificationTypeSound;
-        [application registerForRemoteNotificationTypes:types];
-    } else {
+/**
+ * 初始化UNUserNotificationCenter
+ */
+- (void)registerForRemoteNotification {
+    // iOS10 兼容
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 10.0) {
+        // 使用 UNUserNotificationCenter 来管理通知
+        UNUserNotificationCenter *uncenter = [UNUserNotificationCenter currentNotificationCenter];
+        // 监听回调事件
+        [uncenter setDelegate:self];
+        //iOS10 使用以下方法注册，才能得到授权
+        [uncenter requestAuthorizationWithOptions:(UNAuthorizationOptionAlert+UNAuthorizationOptionBadge+UNAuthorizationOptionSound)
+                                completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                                    [[UIApplication sharedApplication] registerForRemoteNotifications];
+                                    //TODO:授权状态改变
+                                    NSLog(@"%@" , granted ? @"授权成功" : @"授权失败");
+                                }];
+        // 获取当前的通知授权状态, UNNotificationSettings
+        [uncenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+            NSLog(@"%s\nline:%@\n-----\n%@\n\n", __func__, @(__LINE__), settings);
+            /*
+             UNAuthorizationStatusNotDetermined : 没有做出选择
+             UNAuthorizationStatusDenied : 用户未授权
+             UNAuthorizationStatusAuthorized ：用户已授权
+             */
+            if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
+                NSLog(@"未选择");
+            } else if (settings.authorizationStatus == UNAuthorizationStatusDenied) {
+                NSLog(@"未授权");
+            } else if (settings.authorizationStatus == UNAuthorizationStatusAuthorized) {
+                NSLog(@"已授权");
+            }
+        }];
+    }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
         UIUserNotificationType types = UIUserNotificationTypeAlert |
                                        UIUserNotificationTypeBadge |
                                        UIUserNotificationTypeSound;
-
         UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
-
-        [application registerUserNotificationSettings:settings];
-        [application registerForRemoteNotifications];
+        
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    } else {
+        UIRemoteNotificationType types = UIRemoteNotificationTypeBadge |
+                                         UIRemoteNotificationTypeAlert |
+                                         UIRemoteNotificationTypeSound;
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:types];
     }
+#pragma clang diagnostic pop
 }
-```
-
-除此之外，还可以使用 SDK 提供的更灵活的接口来注册不同类型的通知：
-
-```objc
-@interface AVOSCloud : NSObject
-
-+ (void)registerForRemoteNotificationTypes:(NSUInteger)types categories:(NSSet *)categories AVIM_TV_UNAVAILABLE AVIM_WATCH_UNAVAILABLE;
-
-@end
 ```
 
 {% if node=='qcloud' %}
@@ -399,29 +430,36 @@ AVPush *push = [[AVPush alloc] init];
 
 ```objc
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  . . .
-  // Extract the notification data
-  NSDictionary *notificationPayload = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
-
-  // Create a pointer to the Photo object
-  NSString *photoId = [notificationPayload objectForKey:@"p"];
-  AVObject *targetPhoto = [AVObject objectWithoutDataWithClassName:@"Photo"
-                                                          objectId:photoId];
-
-  // Fetch photo object
-  [targetPhoto fetchIfNeededInBackgroundWithBlock:^(AVObject *object, NSError *error) {
-    // Show photo view controller
-    if (!error && [AVUser currentUser]) {
-      PhotoVC *viewController = [[PhotoVC alloc] initWithPhoto:object];
-      [self.navController pushViewController:viewController animated:YES];
+    . . .
+    if ([[UIDevice currentDevice].systemVersion floatValue] < 10.0) {
+        NSDictionary *notificationPayload;
+        @try {
+            notificationPayload = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
+        } @catch (NSException *exception) {}
+        
+        // Create a pointer to the Photo object
+        NSString *photoId = [notificationPayload objectForKey:@"p"];
+        AVObject *targetPhoto = [AVObject objectWithoutDataWithClassName:@"Photo"
+                                                                objectId:photoId];
+        
+        // Fetch photo object
+        [targetPhoto fetchIfNeededInBackgroundWithBlock:^(AVObject *object, NSError *error) {
+            // Show photo view controller
+            if (!error && [AVUser currentUser]) {
+                PhotoVC *viewController = [[PhotoVC alloc] initWithPhoto:object];
+                [self.navController pushViewController:viewController animated:YES];
+            }
+        }];
     }
-  }];
 }
 ```
 
-如果当通知到达的时候，你的应用已经在运行，那么你可以通过 `application:didReceiveRemoteNotification:fetchCompletionHandler:` 方法的 `userInfo` 参数所使用 dictionary 访问到数据：
+如果当通知到达的时候，你的应用已经在运行，对于 iOS10 以下，你可以通过 `application:didReceiveRemoteNotification:fetchCompletionHandler:` 方法的 `userInfo` 参数所使用 dictionary 访问到数据：
 
 ```objc
+/*!
+ * Required for iOS 7+
+ */
 - (void)application:(UIApplication *)application
       didReceiveRemoteNotification:(NSDictionary *)userInfo
             fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))handler {
@@ -445,6 +483,41 @@ AVPush *push = [[AVPush alloc] init];
 }
 ```
 
+iOS10 以上需要使用下面代理方法来获得 `userInfo` ：
+
+ ```objc
+/**
+ * Required for iOS10+
+ * 在前台收到推送内容, 执行的方法
+ */
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+       willPresentNotification:(UNNotification *)notification
+         withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
+    NSDictionary *userInfo = notification.request.content.userInfo;
+    if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+        //TODO:处理远程推送内容
+        NSLog(@"%@", userInfo);
+    }
+    // 需要执行这个方法，选择是否提醒用户，有 Badge、Sound、Alert 三种类型可以选择设置
+    completionHandler(UNNotificationPresentationOptionAlert);
+}
+
+/**
+ * Required for iOS10+
+ * 在后台和启动之前收到推送内容, 执行的方法
+ */
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+didReceiveNotificationResponse:(UNNotificationResponse *)response
+         withCompletionHandler:(void (^)())completionHandler {
+    NSDictionary * userInfo = response.notification.request.content.userInfo;
+    if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+        //TODO:处理远程推送内容
+        NSLog(@"%@", userInfo);
+    }
+    // 需要执行这个方法，选择是否提醒用户，有 Badge、Sound、Alert 三种类型可以选择设置
+    completionHandler(UNNotificationPresentationOptionBadge + UNNotificationPresentationOptionSound);
+}
+ ```
 
 你可以阅读 [Apple 本地化和推送的文档](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/Introduction.html#//apple_ref/doc/uid/TP40008194-CH1-SW1) 来更多地了解推送通知。
 
@@ -510,12 +583,21 @@ if (application.applicationState != UIApplicationStateBackground) {
 
 ### 跟踪本地通知
 
-为了统计跟踪本地通知消息，需要注意以下两种方法都会调用到：
+为了统计跟踪本地通知消息，需要注意 iOS10 以前以下两种方法都会调用到：
 
 - `application:didFinishLaunchingWithOptions:`
-- `-application:didReceiveLocalNotification:`
+- `application:didReceiveLocalNotification:`
 
 如果你实现了 `application:didReceiveLocalNotification:` 这个方法，要注意避免重复统计。
+
+iOS10 以上会调用下面的两个方法：
+
+ ```objc
+ //在前台收到本地通知, 执行的方法
+-[UNUserNotificationCenterDelegate willPresentNotification:withCompletionHandler:] 
+ //在后台和启动之前收到本地推送, 执行的方法
+-[UNUserNotificationCenterDelegate didReceiveNotificationResponse:withCompletionHandler:]") 
+ ```
 
 ### 清除 Badge
 
@@ -545,4 +627,4 @@ if (application.applicationState != UIApplicationStateBackground) {
 
 ## 离线消息重复推送
 
-请参考 [为什么在 iOS 上离线消息重复推送了两次？](realtime_guide-ios.html#duplicate-offline-message-notification)
+请参考 [为什么在 iOS 上离线消息重复推送了两次？](realtime_guide-objc.html#duplicate-offline-message-notification)

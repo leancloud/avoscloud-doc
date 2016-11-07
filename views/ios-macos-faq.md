@@ -1,7 +1,7 @@
-# iOS / OS X SDK 常见问题和解答
+# iOS/macOS SDK 常见问题和解答
 
 
-## 怎么使用 LeanCloud iOS SDK
+## 怎么使用 Objective-C SDK
 最简单的方式，使用 CocoaPods，在 PodFile 加入以下内容：
 
 ```sh

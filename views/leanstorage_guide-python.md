@@ -4,7 +4,7 @@
 {# --Start--变量定义，主模板使用的单词，短语所有子模板都必须赋值 #}
 
 {% set productName ="LeanStorage" %}
-{% set platform_title ="Python" %}
+{% set platform_name = "Python" %}
 {% set segment_code ="python" %}
 {% set sdk_name ="Python SDK" %}
 {% set baseObjectName ="leancloud.Object" %}
@@ -22,16 +22,21 @@
 {% set fileObjectName ="leancloud.File" %}
 {% set dateType= "datetime.datetime" %}
 {% set byteType= "byte[]" %}
+{% set acl_guide_url = "[Python SDK 权限管理使用指南](acl_guide-python.html)" %}
+{% set sms_guide_url = "（Python SDK 文档待补充）" %}
+{% set relation_guide_url = "[Python 数据模型设计指南](relation_guide-python.html)" %}
+{% set inapp_search_guide_url = "（Python SDK 暂不支持）" %}
+{% set status_system_guide_url = "（Python SDK 暂不支持）" %}
+{% set sns_guide_url = "（Python 文档待补充）" %}
+{% set feedback_guide_url = "（Python SDK 暂不支持）" %}
+
 {% set funtionName_whereKeyHasPrefix = "startswith()" %}
 {% set saveOptions_query= "where" %}
 {% set saveOptions_fetchWhenSave= "fetch_when_save" %}
-{% set link_to_acl_doc = "[" + sdk_name + " 权限管理使用指南](acl_guide-python.html)" %}
-
 
 {# --End--变量定义，主模板使用的单词，短语的定义所有子模板都必须赋值 #}
 
 {# --Start--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
-
 
 {% block code_quick_save_a_todo %}
 
@@ -233,7 +238,7 @@ content = todo.get('content')
 {% block code_object_fetchWhenSave %}
 
 ```python
-todo.fetch_when_save = True  # 设置 fetch_when_save 为 true
+todo.fetch_when_save = True
 todo.save()
 ```
 {% endblock %}
@@ -290,7 +295,7 @@ todo.save()
 * `add()`<br>
   将指定对象附加到数组末尾。
 * `add_unique()`<br>
-  如果不确定某个对象是否已包含在数组字段中，可以使用此操作来添加。
+  如果数组中不包含指定对象，将该对象加入数组，对象的插入位置是随机的。
 
 {% endblock %}
 
@@ -1010,7 +1015,7 @@ todo.save()  # 存储图片
 
 query = Todo.query
 query.exists('images')  # 查询 images 属性不为空的对象
-query.does_not_exists('images')  # 查询 images 属性为空的对象
+query.does_not_exist('images')  # 查询 images 属性为空的对象
 ```
 {% endblock %}
 
@@ -1108,10 +1113,6 @@ query.find()
 query.within_kilometers('whereCreated', point, 10)
 ```
 {% endblock %} code_object_fetch_with_keys
-
-{% block link_to_relation_guide_doc %}[Python 数据模型设计指南](relation_guide-python.html){% endblock %}
-
-{% block link_to_sms_guide_doc %}{% endblock %}
 
 {% block code_send_sms_code_for_loginOrSignup %}
 
@@ -1386,11 +1387,6 @@ class MyUser(leancloud.User):
 ```
 
 {% endblock %}
-{% block link_to_in_app_search_doc %}（**Python 暂不支持**）{% endblock %}
-{% block link_to_status_system_doc %}（**Python 暂不支持**）{% endblock %}
-{% block link_to_sns_doc %}（**Python 文档待补充**）{% endblock %}
-{% block link_to_feedback_doc %}（**Python 暂不支持**）{% endblock %}
-
 
 {# 2016-06-07 以下三部分都不适用于 Python，所以清空内容。 #}
 {% block text_work_in_background %}{% endblock %}

@@ -1,6 +1,8 @@
 {% extends "./acl_quick_start.tmpl" %}
 
-{% block language_version %}Android{% endblock %}
+{% set platform_name = "Android" %}
+{% set acl_guide_url = "[LeanCloud 权限管理使用规范](./acl_guide-android.html)" %}
+
 {% block code_not_use_acl %}
 <pre lang="java">
 AVObject post = new AVObject("Post");
@@ -12,7 +14,6 @@ post.saveInBackground();
 {% endblock %}
 
 {% block code_use_acl %}
-
 <pre lang="java">
 AVObject post = new AVObject("Post");
 post.put("title", "大家好，我是新人");
@@ -28,4 +29,3 @@ post.saveInBackground();
 </pre>
 
 {% endblock %}
-{% block link_to_acl_guide %}[LeanCloud 权限管理使用规范](./acl_guide-android.html){% endblock %}

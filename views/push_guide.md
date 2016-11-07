@@ -48,15 +48,16 @@ data| |本次推送的消息内容，JSON 对象。
 invalidTokens|iOS|本次推送遇到多少次由 APNS 返回的 [INVALID TOKEN](https://developer.apple.com/library/mac/technotes/tn2265/_index.html#//apple_ref/doc/uid/DTS40010376-CH1-TNTAG32) 错误。**如果这个数字过大，请留意证书是否正常。**
 prod|iOS|使用什么环境证书。**dev** 表示开发证书，**prod** 表示生产环境证书。
 status| |本次推送的状态，**in-queue** 表示仍然在队列，**done** 表示完成，**scheduled** 表示定时推送任务等待触发中。
-devices| |本次推送的接收设备数目，注意这个数字并不表示实际送达，而是说当时符合查询条件的、并且已经推送给 Apple APNS 或者 Android Push Server 的总设备数。
-where| |本次推送查询 _Installation 表的条件，符合这些查询条件的设备将接收本条推送消息。
+devices| |本次推送待发送设备总数。这个数字不是实际送达数，而是处理本次推送请求时在 `_Installation` 表中符合查询条件的总设备数。其中可能会包含大量的非活跃用户(如已卸载 App 的用户)，这部分用户可能无法收到推送。
+successes| |本次推送成功设备数。推送成功对普通 Android 设备来说指目标设备收到了推送，对 iOS 设备或使用了混合推送的 Android 设备来说指消息成功推送给了 Apple APNS 或设备对应的混合推送平台。
+where| |本次推送查询 `_Installation` 表的条件，符合这些查询条件的设备将接收本条推送消息。
 errors| | 本次推送过程中的错误信息。
 
 如何发送消息也请看下面的详细指南。
 
 推送本质上是根据一个 query 条件来查询 `_Installation` 表里符合条件的设备，然后将消息推送给设备。因为 `_Installation` 是一个可以完全自定义属性的 Key-Value Object，因此可以实现各种复杂条件推送，例如频道订阅、地理位置信息推送、特定用户推送等。
 
-这里重点说明一下 **devices** 这个属性，它的值表示我们查找出来的符合条件的 Installation 数量。当值为 0 时，表示没有找到任何符合目标条件的设备，这时自然所有人都收不到推送通知；当值不为 0 时，仅仅说明找到了这么多符合条件的设备，但并不保证这些设备都能收到推送通知。
+对于 **devices** 和 **successes** 这两个属性，当 **devices** 值为 0 时，表示没有找到任何符合目标条件的设备，需要检查一下推送查询条件，这时没有设备能收到推送通知；当 **devices** 值不为 0 时，该值仅仅说明找到了这么多符合条件的设备，但并不保证这些设备都能收到推送通知，所以 **successes** 很可能是会小于 **devices** 的。特别是当查询出来的设备中含有大量的非活跃设备时，**successes** 可能会和 **devices** 有很大差距。
 
 注意：我们只保留最近一周的推送记录，并会对过期的推送记录定时进行清理。推送记录清理和推送消息过期时间无关，也就是说即使推送记录被清理，没有过期的推送消息依然是有效的，目标用户依然是能够收到消息。推送过期时间设置请参考 [推送消息](#推送消息) 一节。
 
@@ -219,7 +220,7 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
    "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
    "sound":             "声音文件名，前提在应用里存在",
    "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
-   "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用, 
+   "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用,
    "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
   }
 }
@@ -234,7 +235,7 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
       "title":               "标题",
       "title-loc-key":       "",
       "sub-title":           "附标题",
-      "sub-title-loc-key":   "", 
+      "sub-title-loc-key":   "",
       "body":                "消息内容",
       "action-loc-key":      "",
       "loc-key":             "",
@@ -257,7 +258,7 @@ data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://de
         "title":               "标题",
         "title-loc-key":       "",
         "sub-title":           "附标题",
-        "sub-title-loc-key":   "", 
+        "sub-title-loc-key":   "",
         "body":                "消息内容",
         "action-loc-key":      "",
         "loc-key":             "",
@@ -268,7 +269,7 @@ data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://de
       "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
       "sound":             "声音文件名，前提在应用里存在",
       "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
-      "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用, 
+      "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用,
     }
     "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
   }
@@ -355,7 +356,7 @@ Windows Phone 设备类似，也支持 `title` 和 `alert`，同时支持 `wp-pa
 }
 ```
 
-如果是 `dev` 值就表示使用开发证书，`prod` 值表示使用生产证书。如果未设置 `prod` 属性，且使用的不是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html)，我们默认使用**生产证书**来发推送。如果未设置 `prod` 属性，且使用的是 [JavaScript 数据存储 SDK](https://leancloud.cn/api-docs/javascript/symbols/AV.Push.html) ，则需要在发推送之前执行 [AV.setProduction](https://leancloud.cn/api-docs/javascript/symbols/AV.html#.setProduction) 函数才会使用生产证书发推送，否则会以开发证书发推送。注意，当设备设置了 `deviceProfile` 时我们优先按照 `deviceProfile` 指定的证书推送。
+如果是 `dev` 值就表示使用开发证书，`prod` 值表示使用生产证书。如果未设置 `prod` 属性，且使用的不是 [JavaScript 数据存储 SDK](https://leancloud.github.io/javascript-sdk/docs/AV.Push.html)，我们默认使用**生产证书**来发推送。如果未设置 `prod` 属性，且使用的是 [JavaScript 数据存储 SDK](https://leancloud.github.io/javascript-sdk/docs/AV.Push.html) ，则需要在发推送之前执行 [AV.setProduction](https://leancloud.github.io/javascript-sdk/docs/AV.html#.setProduction) 函数才会使用生产证书发推送，否则会以开发证书发推送。注意，当设备设置了 `deviceProfile` 时我们优先按照 `deviceProfile` 指定的证书推送。
 
 #### Android 推送区分透传和通知栏消息
 

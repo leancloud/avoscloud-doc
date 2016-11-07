@@ -61,7 +61,7 @@ LeanCloud 提供的数据操作 API 能覆盖大部分业务的需求，但是�
 * 访问方式不一样，不需要任何 JDBC/ODBC 的驱动，直接通过 HTTP 协议来传输 JSON Object 即可，所以不光服务端可以使用，在客户端也可以直接访问。我们既提供各种平台原生 SDK（iOS, Android, Javascript, Windows Phone, .Net, Unity3D, C++, Python，以及社区贡献的其他语言 SDK）来帮助开发者简单集成数据存储服务，也提供开放的 REST API 供大家直接使用。
 * LeanCloud 对于数据的唯一格式要求是满足 JSON Object 的形式，存储新的对象类型时不需要预先在云端定义任何「表结构」，而且同一种数据类型里的键值也是允许随时增加的。这种 schema free 的设计，会给开发者带来最大的便利。
 * AVObject 之间没有了主键、外键的概念，也不支持跨表的 join 查询，取而代之的，我们提供另一种数据关联的机制，详见[下文](#数据关联)；
-* 既然 AVObject 是面向对象设计的，它的查询就与传统 SQL 不一样，[后文](#数据查询_AVQuery)会有详细说明。不过为了照顾已经习惯了传统关系型数据库查询的开发者，我们也提供了类 SQL 查询的 [Cloud Query Language 查询语法](./cql_guide.html)（简称：CQL）。请注意：LeanCloud 的 CQL 查询语法是 SQL 查询语法的子集和变种，目的是降低大家学习 LeanCloud 查询的 API 的成本，并不是所有 SQL 中可以执行的查询都会在 CQL 中产生相同的结果。
+* 既然 AVObject 是面向对象设计的，它的查询就与传统 SQL 不一样（[详见下文](#数据查询_AVQuery)）。不过为了照顾已经习惯了传统关系型数据库查询的开发者，我们也提供了类 SQL 查询的 [Cloud Query Language 查询语法](./cql_guide.html)（简称：CQL）。请注意：LeanCloud 的 CQL 查询语法是 SQL 查询语法的子集和变种，目的是降低大家学习 LeanCloud 查询的 API 的成本，并不是所有 SQL 中可以执行的查询都会在 CQL 中产生相同的结果。
 
 ### 有效的数据类型
 
@@ -119,9 +119,9 @@ LeanCloud 中有 4 种方式来构建对象之间的关系：
 - **AVRelation**——这是一个专门的关联类，用来建立两种对象之间的关联关系，适合多对多的场景。
 - **关联表**——使用专门的类，来为两种对象建立关联关系，与 AVRelation 相比它还可以添加更多的附加信息。譬如我们为用户之间关注/被关注的关系建模，就像流行的社交网络那样，一个用户可以关注别的用户。在这里，我们不仅想知道用户 A 是否关注了用户 B，我们还想知道什么时候用户 A 开始关注的用户 B，这时候就适合建立专门的关联表。关联表适合多对多的关联关系。
 
-详细情况请参考我们的技术文章——《数据模型设计指南（[iOS/OSX 篇](./relation_guide-ios.html) / [Android 篇](./relation_guide-android.html) / [JavaScript 篇](./relation_guide-js.html) / [Python 篇](./relation_guide-python.html)）》。
+详细情况请参考我们的技术文章——《数据模型设计指南（[Objective-C 篇](./relation_guide-objc.html) / [Android 篇](./relation_guide-android.html) / [JavaScript 篇](./relation_guide-js.html) / [Python 篇](./relation_guide-python.html)）》。
 
-## 数据查询：AVQuery
+## 数据查询 AVQuery
 
 AVObject 保存到 LeanCloud 云端之后，如何再次获取到它们呢？这时候需要用到数据查询功能了。前面我们讲过，查询语法因为面向对象的模型不同，与 SQL 语法有较大差异。这时候我们能用的就是 `AVQuery`。AVQuery 的功能非常强大，它可以：
 
@@ -154,7 +154,7 @@ LeanCloud 平台保证 99.9% 的高可用性，并且数据访问方面保证了
 如果你是某个特定平台的开发者，想查看我们原生的 SDK 开发指南，请移步到具体页面：
 
 ### iOS 开发指南
-详细请参看 [iOS 数据存储开发指南](./leanstorage_guide-ios.html);
+详细请参看 [iOS 数据存储开发指南](./leanstorage_guide-objc.html);
 
 ### Android 开发指南
 详细请参看 [Android 数据存储开发指南](./leanstorage_guide-android.html);

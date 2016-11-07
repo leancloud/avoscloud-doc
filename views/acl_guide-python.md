@@ -2,8 +2,11 @@
 
 {% set language = "Python" %}
 {% set runAtServer = "true" %}
-{% set platform = "Python" %}
-{% block link_to_acl_quickStart %}[权限管理以及 ACL 快速指南](acl_quick_start-python.html){% endblock %}
+{% set platform_name = "Python" %}
+{% set segment_code = "python" %}
+{% set acl_quickstart_guide_url ="[权限管理以及 ACL 快速指南](acl_quick_start-python.html)" %}
+
+
 {% block create_post_set_acl_for_single_user %}
 
 ```python

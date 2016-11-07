@@ -6,7 +6,7 @@
 
 ```
 public void onCreate() {
-    //如果使用美国节点，请加上这行代码 AVOSCloud.useAVCloudUS();
+    {% if node != 'qcloud' %}//如果使用美国节点，请加上这行代码 AVOSCloud.useAVCloudUS();{% endif %}
     AVOSCloud.initialize(this, "{{appid}}", "{{appkey}}");
 }
 ```

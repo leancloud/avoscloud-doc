@@ -2,7 +2,7 @@
 
 ## 如何判断当前是预备环境还是生产环境？
 
-请参考 [网站托管开发指南 · 预备环境和生产环境](leanengine_webhosting_guide-node.html#预备环境和生产环境) / [Python · 运行环境区分](/leanengine_guide-python.html#运行环境区分)。
+请参考 [网站托管开发指南 · 预备环境和生产环境](leanengine_webhosting_guide-node.html#预备环境和生产环境) / [Python · 运行环境区分](leanengine_webhosting_guide-python.html#预备环境和生产环境)。
 
 ## 怎么添加第三方模块
 
@@ -48,9 +48,11 @@ var async = require('async');
 
 我们在 [JavaScript 指南 - AV.Object](./leanstorage_guide-js.html#AV_Object) 章节中也进行了描述。
 
+{% if node != 'qcloud' %}
 ## 如何进行域名备案和域名绑定？
 
 只有网站类的才需要备案，并且在主域名已备案的情况下，二级子域名不需要备案。如果主站需要托管在我们这边，且还没有备案过，请进入 **应用控制台 > 账号设置 >** [域名备案](/settings.html#/setting/domainrecord) 和 [域名绑定](/settings.html#/setting/domainbind)，按照步骤提示操作即可。
+{% endif %}
 
 ## 调用云引擎方法如何收费？
 
@@ -67,6 +69,14 @@ var async = require('async');
 当然，你也可以使用基础包，自己写代码并部署项目。
 
 这两条路是分开的，任何一个部署，就会导致另一种方式失效掉。
+
+## 如何从「在线编辑」迁移到项目部署？
+
+1. 按照 [命令行工具使用指南](leanengine_cli.html) 安装命令行工具，使用 `lean new` 初始化项目，模板选择 `node-js-getting-started`（我们的 Node.js 示例项目）。
+2. 在 [应用控制台 > 云引擎 > 部署 > 在线编辑](https://leancloud.cn/cloud.html?appid={{appid}}#/deploy/online) 中点击 **预览**，将全部函数的代码拷贝到新建项目中的 `cloud.js`（替换掉原有内容）。
+3. 检查 `cloud.js` 的代码，将 `AV.User.current()` 改为 `request.currentUser` 以便从 Node SDK 的 0.x 版本升级到 1.x，有关这个升级的更多信息见 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk-upgrade-1.html)。
+4. 运行 `lean up`，在 <http://localhost:3001> 的调试界面中测试云函数和 Hook，然后运行 `lean deploy` 部署代码到云引擎（专业版用户还需要执行 `lean publish`）。
+5. 部署后请留意云引擎控制台上是否有错误产生。
 
 ## 为什么查询 include 没有生效？
 

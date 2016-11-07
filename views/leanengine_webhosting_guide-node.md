@@ -24,7 +24,7 @@ Node.js 的 `package.json` 中可以指定 [很多选项](https://docs.npmjs.com
     "scripts": {
         "start": "node server.js"
     },
-    "engine": {
+    "engines": {
         "node": "4.x"
     },
     "dependencies": {
@@ -214,7 +214,7 @@ npm install
 lean up
 ```
 
-更多有关命令行工具和本地调试的内容请看 [云引擎命令行工具使用详解](leanengine_cli.html)。
+更多有关命令行工具和本地调试的内容请看 [命令行工具使用指南](leanengine_cli.html)。
 
 {% endblock %}
 
@@ -494,5 +494,7 @@ leancloud:request response(0) +220ms 200 {"results":[{"content":"1","createdAt":
 `toString`（`console.log` 打印时）|当地时间|Thu Apr 09 2015 03:35:09 GMT+0000 (UTC)
 `toLocaleString`|当地时间|Thu Apr 09 2015 03:35:09 GMT+0000 (UTC)
 
-提醒大家需要在向用户展示时注意区分，否则就会出现时间「偏差八小时」的现象。
+同时在构造 Date 对象时也要注意传递给 Date 一个带时区（无论是 UTC 还是本地时区，例如要使用 `2011-10-10T14:48:00.000Z` 而不是 `2011-10-10T14:48:00`）的对象，否则 Date 将 [不知道以什么样的方式来理解这个时间](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse)。
+
+提醒大家需要在构造和展示时间对象时注意区分，否则就会出现时间「偏差八小时」的现象。
 {% endblock %}

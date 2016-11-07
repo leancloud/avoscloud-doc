@@ -13,7 +13,9 @@
 * 你可以在 [错误码详解](error_code.html) 文档里找到所有的错误代码和信息解释。
 * 你可以使用 [API 在线测试工具](https://leancloud.cn/apionline/) 在线测试我们提供的开放 [REST API](rest_api.html)。
 * 我们的用户账户系统都自动做了密码加密存储，基于 SHA-512 加密算法，使用随机生成的 salt 加密。
+{% if node != 'qcloud' and node != 'us' %}
 * 我们提供短信服务，你可以使用短息服务发送手机验证码、手机登录验证码等。具体参考各 SDK 开发指南。
+{% endif %}
 * 我们提供了 iOS、Android、Windows Phone、JavaScript、Unity3D 等平台的 SDK，进入 [SDK 下载页面](sdk_down.html)。
 {% if node != 'qcloud' %}
 * 如果你想做一个形如微博的 Feed 系统，也许你可以尝试使用我们的 [事件流系统](status_system.html)。
@@ -26,7 +28,7 @@
 * 在应用设置菜单里，可以找到 **数据导出** 功能，你可以完整导出应用的数据。
 * 你可以在某个 class 的其他菜单里找到权限设置、Class 绑定等高级功能。
 * 在应用设置的 **邮件模板** 菜单，你可以编辑并保存发送给注册用户的邮箱验证邮件模板等。
-* 适当使用 [查询缓存](leanstorage_guide-ios.html#缓存查询) 功能，可以提升查询性能，并提供离线浏览。
+* 适当使用 [查询缓存](leanstorage_guide-objc.html#缓存查询) 功能，可以提升查询性能，并提供离线浏览。
 * 实现应用 DeepLink，参考 [应用内搜索和 DeepLink 开发指南](app_search_guide.html)。
 * 如果你想针对一个列建立唯一索引，不允许该列的数据出现重复，请提交 [技术支持工单](https://leanticket.cn/t/leancloud) 或者发邮件至 <support@leancloud.rocks>，说明应用、Class 和列名。
 * 想实现先验证手机号码再注册，可以用 `requestSMSCode`、`verifySMSCodeInBackground` 得到一个正确的手机号码再进行 `new AVUser()` 的注册。
@@ -40,7 +42,7 @@
 更多缩略图选项可以使用 [七牛 API](http://docs.qiniu.com/api/v6/image-process.html) 做 URL 转换得到。
 {% endif %}
 * 文件如果存储为其他对象的数组属性，那么需要在 query 或者 fetch 的时候 `includeKey` 该字段。
-* [云引擎命令行工具](leanengine_cli.html) 提供文件批量上传命令 upload，可以用于上传现有资源文件到 LeanCloud 平台。
+* [命令行工具](leanengine_cli.html) 提供文件批量上传命令 upload，可以用于上传现有资源文件到 LeanCloud 平台。
 * 文件没有大小限制，文件在 SDK 下载成功后将自动缓存在本地。
 
 ## 统计
@@ -101,8 +103,10 @@
 * 避免对象循环引用，将循环关系作为第三个对象存储。
 * 想建立一个应用网站？我们提供 [网站托管](leanengine_guide-cloudcode.html#Web_Hosting)。
 * 想用好云引擎，请先熟悉 [JavaScript SDK 开发指南](leanstorage_guide-js.html)。
+{% if node != 'qcloud' %}
 * 云引擎 Web 主机托管，可以绑定备案过的独立域名，请在 [工单系统](https://leanticket.cn/t/leancloud) 提出技术申请。
 * 云引擎 Web 主机托管，我们可以协助你完成域名的备案，请在 [应用控制台 > 账户设置 > 域名备案](/settings.html#/setting/domainrecord) 操作。
+{% endif %}
 
 ## 其他
 {% if node !='qcloud' %}

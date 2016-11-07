@@ -5,7 +5,7 @@
 {% set storageName = 'LeanStorage' %}
 {% set leanengine_middleware = '[LeanCloud PHP SDK](https://github.com/leancloud/php-sdk)' %}
 
-{% set sdk_guide_link = '[PHP SDK](./leanstorage_guide-php.html)' %}
+{% set storage_guide_url = '[PHP SDK](./leanstorage_guide-php.html)' %}
 {% set cloud_func_file = '`$PROJECT_DIR/cloud.php`' %}
 {% set runFuncName = '`LeanCloud\Engine\Cloud::run`' %}
 {% set defineFuncName = '`LeanCloud\Engine\Cloud::define`' %}

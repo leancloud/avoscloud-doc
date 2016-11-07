@@ -24,9 +24,12 @@
 云引擎支持多种语言的运行环境，你可以选择自己熟悉的语言开发应用：
 
 - [Node.js](leanengine_cloudfunction_guide-node.html)
-- [Python](leanengine_guide-python.html)
+- [Python](leanengine_cloudfunction_guide-python.html)
 - [PHP](leanengine_cloudfunction_guide-php.html)
 - [Java](leanengine_cloudfunction_guide-java.html)
+
+{% block initialize %}
+{% endblock %}
 
 ## 云函数
 
@@ -44,7 +47,7 @@
 
 `stars` 表示评分，1-5。如果你想查找《夏洛特烦恼》这部电影的平均分，你可以找出这部电影的所有评分，并在设备上根据这个查询结果计算平均分。但是这样一来，尽管你只是需要平均分这样一个数字，却不得不耗费大量的带宽来传输所有的评分。通过云引擎，我们可以简单地传入电影名称，然后返回电影的平均分。
 
-Cloud 函数接收 JSON 格式的请求对象，我们可以用它来传入电影名称。整个 {{ sdk_guide_link }} 都在云引擎运行环境上有效，可以直接使用，所以我们可以使用它来查询所有的评分。结合在一起，实现 `averageStars` 函数的代码如下：
+Cloud 函数接收 JSON 格式的请求对象，我们可以用它来传入电影名称。整个 {{ storage_guide_url }} 都在云引擎运行环境上有效，可以直接使用，所以我们可以使用它来查询所有的评分。结合在一起，实现 `averageStars` 函数的代码如下：
 
 {% block cloudFuncExample %}{% endblock %}
 
@@ -109,6 +112,11 @@ $params = array(
 );
 Cloud::run("averageStars", $params);
 ```
+```python
+from leancloud import cloudfunc
+
+cloudfunc.run('averageStars', movie='夏洛特烦恼')
+```
 ### 通过 REST API 调用云函数
 [REST API 调用云函数](rest_api.html#云函数-1) 是 LeanCloud 云端提供的统一的访问云函数的接口，所有的客户端 SDK 也都是封装了这个接口从而实现对云函数的调用。
 
@@ -153,11 +161,11 @@ NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦�
 }];
 ```
 ```java
-AVObject movie = new AVObject("Movie");
-movie.put("title", "夏洛特烦恼");
-movie.save();
+// 构建参数
+Map<String, String> dicParameters = new HashMap<String, String>();
+dicParameters.put("movie", "夏洛特烦恼");
 
-AVCloud.rpcFunctionInBackground("averageStars", movie,
+AVCloud.rpcFunctionInBackground("averageStars", dicParameters,
     new FunctionCallback<AVObject>() {
       @Override
       public void done(AVObject object, AVException e) {
@@ -169,16 +177,20 @@ AVCloud.rpcFunctionInBackground("averageStars", movie,
 // PHP 有待支持
 ```
 ```javascript
-// 假设已经有一个类型为 AV.Object 的 movie 对象
-var movie = new AV.Object('Movie');
-movie.set('title', '夏洛特烦恼');
-movie.save().then(/* ... */);
+var paramsJson = {
+  movie: "夏洛特烦恼"
+};
 
-AV.Cloud.rpc('averageStars', movie).then(function(object) {
+AV.Cloud.rpc('averageStars', paramsJson).then(function(object) {
   // 成功，如果云函数返回的是一个 AV.Object，回调参数中的 object 也会是一个 AV.Object
 }, function(error) {
   // 失败        
 });
+```
+```python
+from leancloud import cloudfunc
+
+cloudfunc.rpc('averageStars', movie='夏洛特烦恼')
 ```
 
 ### 切换云引擎环境
@@ -196,6 +208,9 @@ LeanClient::useProduction(false); // 调用预备环境
 ```
 ```javascript
 AV.setProduction(false); // 调用预备环境
+```
+```python
+leancloud.use_production(False) # 调用预备环境
 ```
 
 [免费版云引擎应用只有「生产环境」](leanengine_plan.html#免费版) ，因此以上切换方法不适用。

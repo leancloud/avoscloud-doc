@@ -1,5 +1,6 @@
 {% extends "./sms_guide.tmpl" %}
-{% block language %}iOS / OS X{% endblock %}
+{% set platform_name = "Objective-C" %}
+
 {% block avuser_signup_send_sms %}
   ```objc
   AVUser *user = [AVUser user];
@@ -13,7 +14,7 @@
 {% endblock %}
 
 {% block builtin_account_url %}
-leanstorage_guide-ios.html#用户
+leanstorage_guide-objc.html#用户
 {% endblock %}
 
 {% block avuser_signup_sms_verify %}
