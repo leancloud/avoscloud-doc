@@ -15,9 +15,9 @@ git clone --depth=1 https://github.com/leancloud/LeanCloudLiveKit-iOS.git
 
 ## 集成效果
 
-发送弹幕和普通消息 | 发送礼物消息 | 发送点赞消息
--------------|-------------|-------------
-![](http://ww1.sinaimg.cn/large/65e4f1e6jw1f9jijxpga4j20bi0kgtby.jpg) | ![](http://ww4.sinaimg.cn/large/65e4f1e6jw1f9jihbhv4bj20bk0l4who.jpg) | ![](http://ww1.sinaimg.cn/large/65e4f1e6jw1f9jikvm0lfj20bl0a00u0.jpg)
+发送弹幕和普通消息 | 发送礼物消息 
+-------------|-------------
+![](images/live_kit_android_barrage.jpg) | ![](images/live_kit_android_gift.jpg) 
 
 ## 项目结构
 
