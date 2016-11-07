@@ -490,7 +490,15 @@ GCM 需要系统为 Android 2.2 及以上并且安装有 Google Play 商店的�
 
 #### 接入 SDK
 
-首先补充 `AndroidManifest`，添加 Permission，开发者要将其中的 `<包名>` 替换为自己的应用对应的 package：
+首先导入 avoscloud-gcm 包。修改 build.gradle 文件，在 dependencies 中添加依赖：
+
+```xml
+dependencies {
+    compile ('cn.leancloud.android:avoscloud-gcm:v3.+@aar')
+}
+```
+
+然后补充 `AndroidManifest`，添加 Permission，开发者要将其中的 `<包名>` 替换为自己的应用对应的 package：
 
 ```xml
 <permission android:name="<包名>.permission.C2D_MESSAGE"
@@ -498,7 +506,7 @@ GCM 需要系统为 Android 2.2 及以上并且安装有 Google Play 商店的�
 <uses-permission android:name="<包名>.permission.C2D_MESSAGE" />
 ```
 
-然后添加 service 与 receiver：
+添加 service 与 receiver：
 
 ```xml
 <receiver android:name="com.avos.avoscloud.AVBroadcastReceiver">
