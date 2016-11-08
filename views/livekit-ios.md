@@ -1,27 +1,33 @@
-# LiveKit-iOS
+{% set git_link = "https://github.com/leancloud/LeanCloudLiveKit-iOS" %}# LiveKit 使用指南 &middot; Objective-C
 
- [LiveKit](https://github.com/leancloud/LeanCloudLiveKit-iOS) 是一个专门为视频直播业务提供的一个 UI 组件。主要特点是：
- 
-   1. 将直播模块与 IM 模块结合，提供了推流端和播放端，以及聊天室等的实现。
-   2. 支持无人数限制的聊天室 
-   3. 支持多种自定义消息拓展并提供了默认实现，比如：弹幕、点赞出心、送飞机游轮或保时捷等礼物、成员加入聊天室自动打招呼等。   
-   4. 针对直播服务，LeanCloud 只按照 [聊天的费用标准](/pricing.html) 收费，而直播相关的内容，LeanCloud 并不参与收费，其产生的费用请在七牛账户中查询。
-   
+[LiveKit]({{git_link}}) 是由 LeanCloud 官方推出的一个专门开发视频直播的 UI 组件，包含了直播、文字聊天、弹幕、送礼物等界面。其主要特点有：
+
+   1. 将直播模块与 [LeanCloud IM 模块](realtime_v2.html) 结合，提供了推流端和播放端，以及聊天室等的实现。
+   2. 支持无人数限制的聊天室。 
+   3. 支持多种自定义消息拓展并提供了默认实现，比如弹幕、点赞出心、送飞机游轮或保时捷等礼物、成员加入聊天室自动打招呼等。   
+
+针对直播服务，LeanCloud 只按照 [聊天的费用标准](/pricing.html) 收费，而直播相关的内容，LeanCloud 并不参与收费，其产生的费用请在七牛账户中查询。
+
+<div class="row" style="margin-bottom:1.5em;">
+  <div class="col-sm-6">
+    <p><strong>发送弹幕和普通消息</strong></p>
+    <img src="images/live_kit_android_barrage.jpg" class="img-responsive">
+  </div>
+  <div class="col-sm-6">
+    <p><strong>发送礼物消息</strong></p>
+    <img src="images/live_kit_android_gift.jpg" class="img-responsive">
+  </div>
+</div>
+
 ## 获取项目
 
- ```Objective-C
-git clone --depth=1 https://github.com/leancloud/LeanCloudLiveKit-iOS.git
+ ```sh
+git clone --depth=1 {{git_link}}.git
  ```
-
-## 集成效果
-
-发送弹幕和普通消息 | 发送礼物消息 
--------------|-------------
-![](images/live_kit_android_barrage.jpg) | ![](images/live_kit_android_gift.jpg) 
 
 ## 项目结构
 
- ```Objective-C
+ ```sh
 └── LiveKit-iOS
     ├── LiveKit-iOS
     │   ├── Assets.xcassets
@@ -67,67 +73,47 @@ git clone --depth=1 https://github.com/leancloud/LeanCloudLiveKit-iOS.git
         └── View
  ```
 
-## 使用方法
+## CocoaPods 导入
 
-本库通过 CocoaPods 管理依赖。
+本库通过 CocoaPods 管理依赖。如果尚未安装 CocoaPods，请在终端运行如下命令来安装：
 
-> CocoaPods 是目前最流行的 Cocoa 项目库依赖管理工具之一，考虑到便捷与项目的可维护性，我们更推荐您使用 CocoaPods 导入并管理 SDK。
+```shell
+sudo gem install cocoapods
+```
 
-### CocoaPods 导入
+如果你的网络不能访问 CocoaPods 服务器，可以通过淘宝的 RubyGems 镜像进行安装。
 
-  1. CocoaPods 安装
+```shell
+gem sources --add https://ruby.taobao.org/ --remove https://rubygems.org/
+sudo gem install cocoapods
+```
 
-  如果您的机器上已经安装了 CocoaPods，直接进入下一步即可。
+然后通过 CocoaPods 进行安装：
 
-  如果您的网络能够访问 CocoaPods 服务器，在终端中运行如下命令直接安装：
+```shell
+pod install
+```
 
- ```shell
-     sudo gem install cocoapods
- ```
+或者：
 
-   如果您的网络不能访问 CocoaPods 服务器，可以通过淘宝的 RubyGems 镜像 进行安装。
+```shell
+# 禁止升级 CocoaPods 的 spec 仓库，否则会卡在 Analyzing dependencies，非常慢
+pod update --verbose --no-repo-update
+```
 
-   在终端依次运行以下命令：
+如果提示找不到库，则可去掉 `--no-repo-update`。
 
- ```shell
-     gem sources --add https://ruby.taobao.org/ --remove https://rubygems.org/
-     sudo gem install cocoapods
- ```
+完成后，CocoaPods 会在项目根目录下生成一个 `.xcworkspace` 文件。你需要通过此文件来打开项目，不是之前的 `.xcodeproj`。
 
-  2. 使用 CocoaPods 导入
+Pod 安装完成后，还需要下载 [`IJKMediaFramework.framework`](https://pan.baidu.com/s/1eSBLDpK) 并放置到在 [项目结构](#项目结构) 中已标注出的目录中。
 
-   打开终端，然后使用 CocoaPods 进行安装。在终端中运行以下命令：
+## 播放端配置
 
- ```shell
-    pod install
- ```
+在 Demo 中播放端的配置演示主要集中在 `PlayerViewController` 这个类。播放端的配置步骤如下：
 
-  或者这个命令：
+应用层面需要提供 URL，然后将 URL 传给 LiveKit，LiveKit 会根据 URL 查询聊天室信息，如果发现不存在，则创建一个聊天室：
 
- ```shell
-    # 禁止升级 CocoaPods 的 spec 仓库，否则会卡在 Analyzing dependencies，非常慢
-    pod update --verbose --no-repo-update
- ```
-
-  如果提示找不到库，则可去掉 `--no-repo-update`。
-
-  完成后，CocoaPods 会在您的工程根目录下生成一个 `.xcworkspace` 文件。您需要通过此文件打开您的工程，而不是之前的 `.xcodeproj`。
-
-Pod安装后，会发现，还是少一个framework：`IJKMediaFramework.framework` ,在文档上文中的项目结构部分有标注。可以到[这里](https://pan.baidu.com/s/1eSBLDpK)下载，编译好的版本 ：
-
-## 推流端与播放端
-
-### 播放端配置
-
-在 Demo 中，播放端的配置演示主要集中 `PlayerViewController` 这个类。
-
-播放端的配置步骤如下：
-
-  1. APP 层面需要提供URL，然后将 URL 传给 LiveKit， LiveKit 根据 URL 地址查询聊天室信息，如果在发现不存在，LiveKit会创建一个聊天室聊天室。
- 
- 具体代码如下：
-
- ```Objective-C
+```Objective-C
     
     [[LCLKLiveService sharedInstance] fetchConversationIfNeededForLiveId:self.liveUrl callback:^(AVIMConversation *conversation, NSError *error) {
         if (conversation) {
@@ -135,28 +121,29 @@ Pod安装后，会发现，还是少一个framework：`IJKMediaFramework.framewo
         }
     }];
    
- ```
-
-
-  2. 根据 URL 获得聊天室ID后，根据 ID 获取聊天室视图，具体可参考下面这个方法： 
-
-  `-[PlayerViewController exampleOpenConversationViewControllerWithConversaionId:fromNavigationController:]`
+```
   
-   聊天视图位置的设置需要借助 LiveKit 提供的几个生命周期函数`-setViewDidLoadBlock:`、`-setViewWillAppearBlock:`、`-setViewWillDisappearBlock:`，同时将自动加入聊天室属性 `enableAutoJoin` 设置为 YES。
+根据 URL 获得聊天室 ID 后，再根据 ID 获取聊天室视图，具体可以参考以下方法：
 
-### 推流端配置
+```
+  -[PlayerViewController exampleOpenConversationViewControllerWithConversaionId:fromNavigationController:]`
+```
+  
+聊天视图位置的设置需要借助 LiveKit 提供的生命周期函数来完成：
 
-在 Demo 中，推流端的配置演示主要集中 `PLViewController` 这个类。
+- `-setViewDidLoadBlock:`
+- `-setViewWillAppearBlock:`
+- `-setViewWillDisappearBlock:`
 
-Demo 中使用了七牛 SDK 的推流端 PLStreamingKit：
+同时将自动加入聊天室属性 `enableAutoJoin` 设置为 YES。
 
-`PLStreamingKit` 是一个适用于 iOS 的 RTMP 直播推流 SDK，可高度定制化和二次开发。特色是支持 H.264 硬编码，以及支持 AAC 硬编码；同时，还根据移动网络环境的多变性，实现了一套可供开发者灵活选择的编码参数集合。
+## 推流端配置
 
-`PLStreamingKit` 不包括摄像头、麦克风等设备相关的资源获取，只包括音视频数据的编码处理和发送。
+在 Demo 中推流端的配置演示主要集中在 `PLViewController` 这个类。
 
-具体步骤如下：
+Demo 使用了七牛 SDK 的推流端 `PLStreamingKit`，这是一个适用于 iOS 的 RTMP 直播推流 SDK，可高度定制化和二次开发。特色是支持 H.264 硬编码和 AAC 硬编码，同时还根据移动网络环境的多变性，实现了一套可供开发者灵活选择的编码参数集合。`PLStreamingKit` 不包括摄像头、麦克风等设备相关的资源获取，只包括音视频数据的编码处理和发送。
 
-在 `AppDelegate.m` 中进行 SDK 初始化，如果未进行 SDK 初始化，在核心类 `PLStreamingSession` 初始化阶段将抛出异常
+具体步骤为：在 `AppDelegate.m` 中进行 SDK 初始化。如果未进行 SDK 初始化，在核心类 `PLStreamingSession` 初始化阶段将抛出异常。
 
 ```Objective-C
 #import <PLStreamingKit/PLStreamingEnv.h>
@@ -169,15 +156,13 @@ Demo 中使用了七牛 SDK 的推流端 PLStreamingKit：
 }
 ```
 
-在需要的地方添加
+在需要的地方添加：
 
 ```Objective-C
 #import <PLStreamingKit/PLStreamingKit.h>
 ```
 
-`PLStreamingSession` 是核心类，你只需要关注并使用这个类就可以完成推流工作。
-
-`PLStreamingSession ` 的创建
+`PLStreamingSession` 是核心类，你只需要关注并使用这个类就可以完成推流工作。`PLStreamingSession ` 的创建如下：
 
 ```Objective-C
 // streamJSON 是从服务端拿回的
@@ -202,7 +187,7 @@ self.session = [[PLStreamingSession alloc] initWithVideoStreamingConfiguration:v
 self.session.delegate = self;
 ```
 
-推流操作
+推流操作：
 
 ```Objective-C
 // 开始推流，无论 security policy 是 static 还是 dynamic，都无需再单独计算推流地址
@@ -220,31 +205,24 @@ self.session.delegate = self;
 [self.session stop];
 ```
 
-销毁推流 session
+销毁推流 session：
 
 ```Objective-C
 [self.session destroy];
 ```
 
-推流端需要获取的 `streamJSON` 如果有不清楚的可以参考：
+推流端需要获取的 `streamJSON`，具体内容可以参考：
 
-  1. [《七牛开发者中心-API文档》](http://developer.qiniu.com/article/index.html#pili-api-handbook) 
-  2. [《2小时搞定移动直播 App 开发》](http://www.imooc.com/learn/707?sukey=f740b693ad416b27703fbe1bfb6cc97b973f0a33f4b940c57d8ba98cf76ac97363149884f0b55604da9f6135c6942f40) 视频教程
+1. [《七牛开发者中心-API 文档》](http://developer.qiniu.com/article/index.html#pili-api-handbook) 
+2. [《2 小时搞定移动直播 App 开发》](http://www.imooc.com/learn/707?sukey=f740b693ad416b27703fbe1bfb6cc97b973f0a33f4b940c57d8ba98cf76ac97363149884f0b55604da9f6135c6942f40) 视频教程
   
-播放端是采用的通用的直播组件，Demo 中实时播放的直播地址，是从网上抓包抓取的直播地址。如果想观看推流端的直播视频，直接替换 URL 地址就可以达到效果。
-
-播放端和推流端的代码位置，在上文的项目结构部分已经标注出。
+播放端采用通用的直播组件，Demo 中实时播放的直播地址是从网上抓包获取到的。如果想观看推流端的直播视频，直接替换 URL 地址就可以达到效果。播放端和推流端的代码位置已在 [项目结构](#项目结构) 中标注。
 
 ## IM 系统配置
 
-IM 部分的配置需要参考：[ChatKit-OC](https://github.com/leancloud/ChatKit-OC) 。
+IM 实时通信的配置需要参考 [ChatKit-OC](https://github.com/leancloud/ChatKit-OC) 。IM 代码位置已标注在 [项目结构](#项目结构) 中。
 
-IM 系统的的代码位置，在上文的项目项目结构部分已经标注出。
-
-**参考到的开源项目**
-
-主要是两个部分：
-
- 1. 直播演示部分，主要参考：[520Linkee](https://github.com/GrayJIAXU/520Linkee)   
- 2. IM部分，主要参考：[ChatKit-OC](https://github.com/leancloud/ChatKit-OC) 
+可供参考的开源项目：
+ 1. 直播演示部分：[520Linkee](https://github.com/GrayJIAXU/520Linkee)   
+ 2. IM 部分：[ChatKit-OC](https://github.com/leancloud/ChatKit-OC) 
 
