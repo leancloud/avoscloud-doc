@@ -3,6 +3,7 @@
 {% set masterkey = '{{masterkey}}' %}
 {% set middot = '·' %}
 {% set link_to_blog_password_reset = '关于自定义邮件模板和验证链接，请参考《[自定义应用内用户重设密码和邮箱验证页面](https://blog.leancloud.cn/607/)》。' %}
+{% set app_permission_link = "[控制台 > 应用设置 > 应用选项](/app.html?appid={{appid}}#/permission)" %}
 
 # 数据存储开发指南 &middot; {{platform_name}}
 
@@ -811,7 +812,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 #### 验证邮箱
 
-许多应用会通过验证邮箱来确认用户注册的真实性。如果在 [应用控制台 > 应用设置 > 应用选项](https://leancloud.cn/app.html?appid={{appid}}#/permission) 中勾选了 **用户注册时，发送验证邮件**，那么当一个 `AVUser` 在注册时设置了邮箱，云端就会向该邮箱自动发送一封包含了激活链接的验证邮件，用户打开该邮件并点击激活链接后便视为通过了验证。有些用户可能在注册之后并没有点击激活链接，而在未来某一个时间又有验证邮箱的需求，这时需要调用如下接口让云端重新发送验证邮件：
+许多应用会通过验证邮箱来确认用户注册的真实性。如果在 {{app_permission_link}} 中勾选了 **用户注册时，发送验证邮件**，那么当一个 `AVUser` 在注册时设置了邮箱，云端就会向该邮箱自动发送一封包含了激活链接的验证邮件，用户打开该邮件并点击激活链接后便视为通过了验证。有些用户可能在注册之后并没有点击激活链接，而在未来某一个时间又有验证邮箱的需求，这时需要调用如下接口让云端重新发送验证邮件：
 
 {% block code_send_verify_email %}{% endblock %}
 
@@ -830,15 +831,13 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 {% if node != 'qcloud' and node != 'us' %}
 #### 手机号和密码登录
 
-请确保已详细阅读了 {{ sms_guide_url }} 这一小节的内容，才可以顺利理解手机号匹配密码登录的流程以及适用范围。
-
-用户的手机号只要经过了验证，就可以使用手机号密码登录的功能，否则登录会失败。
+{{ sms_guide_url }} 可以帮助你更好地理解手机号匹配密码登录的流程以及适用范围，所以推荐详细阅读。
 
 {% block code_user_logIn_with_mobilephonenumber_and_password %}{% endblock %}
 
-#### 手机号和验证码登录
+以上的手机号码即使没有经过验证，只要密码正确也可以成功登录。如果希望阻止未验证的手机号码用于登录，则需要在 {{app_permission_link}} 中勾选 **未验证手机号码的用户，禁止登录****。这种方式也提高了用户账号的合法性与安全性。
 
-中国电信、中国联通、中国移动，这三大运营商的官网均支持「手机号 + 密码」和「手机号 + 随机验证码」的登录方式，我们也提供了这些方式。
+#### 手机号和验证码登录
 
 首先，调用发送登录验证码的接口：
 
@@ -868,7 +867,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 所有登录接口调用成功之后，云端会返回一个 SessionToken 给客户端，客户端在发送 HTTP 请求的时候，{{sdk_name}} 会在 HTTP 请求的 Header 里面自动添加上当前用户的 SessionToken 作为这次请求发起者 `{{userObjectName}}` 的身份认证信息。
 
-如果在控制台的 [应用选项](/app.html?appid={{appid}}#/permission) 中勾选了 **密码修改后，强制客户端重新登录**，那么当用户密码再次被修改后，已登录的用户对象就会失效，开发者需要使用更改后的密码重新调用登录接口，使 SessionToken 得到更新，否则后续操作会遇到 [403 (Forbidden)](error_code.html#_403) 的错误。
+如果在 {{app_permission_link}} 中勾选了 **密码修改后，强制客户端重新登录**，那么当用户密码再次被修改后，已登录的用户对象就会失效，开发者需要使用更改后的密码重新调用登录接口，使 SessionToken 得到更新，否则后续操作会遇到 [403 (Forbidden)](error_code.html#_403) 的错误。
 
 #### 账户锁定
 
