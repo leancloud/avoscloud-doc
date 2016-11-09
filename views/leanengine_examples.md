@@ -4,7 +4,9 @@
 
 ## 一个简单的 Todo 列表
 
-[leanengine-todo-demo](https://github.com/leancloud/leanengine-todo-demo) 这是一个稍微复杂点的项目，演示了基本的用户注册、会话管理、业务数据的增删查改、简单的 ACL 使用。这个项目可以作为初学云引擎和 [JavaScript SDK](leanstorage_guide-js.html) 使用。（在线演示：<http://todo-demo.leanapp.cn/>）
+[leanengine-todo-demo](https://github.com/leancloud/leanengine-todo-demo) 演示了基本的用户注册、会话管理、业务数据的增删查改，和简单的 ACL 使用。这个项目可以作为初学云引擎和 [JavaScript SDK](leanstorage_guide-js.html) 的入门。（在线演示：<http://todo-demo.leanapp.cn/>）
+
+<a href="https://github.com/leancloud/leanengine-todo-demo" class="btn btn-default">阅读</a>
 
 ## OAuth 授权验证回调服务器
 
@@ -12,7 +14,7 @@
 
 许多用户在云引擎 LeanEngine 上托管了自己的网站，因为他们在制作登录页面的时候，需要实现微博登录这样的第三方登录的功能，因此如果在 LeanEngine 部署回调服务器可以节省成本，快速实现需求。
 
-如何开发 OAuth 授权验证回调服务器，请查看 [微博 OAuth 授权验证回调服务器开发指南](webhosting_oauth.html)。
+<a href="webhosting_oauth.html" class="btn btn-default">阅读</a>
 
 ## 微信自动问答机器人
 
@@ -25,7 +27,7 @@
 2. 向这个公众号发送一条消息：**说个笑话**。
 3. 你会收到机器人回复的消息。
 
-如何开发这个微信公众号请查看 [微信公众平台开发指南](webhosting_weixin.html)。
+<a href="webhosting_weixin.html" class="btn btn-default">阅读</a>
 
 ## 实时通信云引擎签名 Demo
 
@@ -37,7 +39,7 @@ LeanCloud 实时通信服务采用 [签名方式](realtime_v2.html#权限和认�
 
 <div class="callout callout-danger">抢红包、游戏排名、秒杀购物等场景，强烈建议使用 LeanCache。</div>
 
-[LeanCache Node.js Demos](https://github.com/leancloud/lean-cache-demos) 是 [LeanCache](https://leancloud.cn/docs/leancache_guide.html) 的示例项目，使用 Node.js 和 Express 实现，包含了一些典型的使用场景：
+[LeanCache Node.js Demos](https://github.com/leancloud/lean-cache-demos) 是 [LeanCache](leancache_guide.html) 的示例项目，使用 Node.js 和 Express 实现，包含了一些典型的使用场景：
 
 * **关联数据缓存**：缓存一些数据量少、查询频繁、不常修改、关联结构复杂的关联数据。
 {% if node != 'qcloud' and node != 'us' %}
@@ -48,3 +50,5 @@ LeanCloud 实时通信服务采用 [签名方式](realtime_v2.html#权限和认�
 * **热点只读数据缓存**：将几乎只读的配置（例如购物网站的商品分类信息）通过 Class Hook 缓存在 Redis。
 * **节点选举和锁**：多个任务共同竞争一个资源（锁），确保同一时间只有一个任务能够在执行（持有这个锁）。
 * **任务队列**：保证大量任务以指定的并发数量顺序地执行，以减少对其他服务的压力。
+
+<a href="https://github.com/leancloud/lean-cache-demos" class="btn btn-default">阅读</a>
