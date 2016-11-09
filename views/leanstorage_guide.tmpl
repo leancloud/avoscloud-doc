@@ -365,10 +365,11 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 {% endblock %}
 {% block module_file %}
 ## 文件
-文件存储也是数据存储的一种方式，图像、音频、视频、通用文件等等都是数据的载体，另外很多开发者习惯了把复杂对象序列化之后保存成文件（如 `.json` 或者 `.xml` )。文件存储在 {{productName}} 中被单独封装成一个 `{{fileObjectName}}` 来实现文件的上传、下载等操作。
+文件存储也是数据存储的一种方式，图像、音频、视频、通用文件等等都是数据的载体。很多开发者也习惯把复杂对象序列化之后保存成文件，比如 JSON 或 XML 文件。文件存储在 {{productName}} 中被单独封装成一个 `{{fileObjectName}}` 来实现文件的上传、下载等操作。
 
 ### 文件上传
-文件的上传指的是开发者调用接口将文件存储在云端，并且返回文件最终的 URL 的操作。
+
+文件上传是指开发者调用接口将文件存储在云端，并且返回文件最终的 URL 的操作。文件上传成功后会在系统表 `_File` 中生成一条记录，**此后该记录无法被再次修改**，包括 [metaData 字段](#文件元数据) 中的数据。如果 `_File` 表打开了 [删除权限](#删除)，该记录才可以被删除。
 
 {% block text_create_avfile_by_stream_data %}
 #### 从数据流构建文件
@@ -430,11 +431,11 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% block code_file_image_thumbnail %}{% endblock %}
 
-<div class="callout callout-info">注意：<strong>图片最大不超过 20 M 才可以获取缩略图。</strong> </div>
+<div class="callout callout-info">图片最大不超过 **20 MB** 才可以获取缩略图。</div>
 {% endif %}
 ### 文件元数据
 
-`{{fileObjectName}}` 的 `metaData` 属性，可以用来保存和获取该文件对象的元数据信息：
+`{{fileObjectName}}` 的 `metaData` 属性，可以用来保存和获取该文件对象的元数据信息。metaData 一旦保存到云端就**无法再次修改**。 
 
 {% block code_file_metadata %}{% endblock %}
 
@@ -444,13 +445,15 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 当文件较多时，要把一些不需要的文件从云端删除：
 
+<div class="callout callout-danger">默认情况下，文件的删除权限是关闭的，需要进入 {% if node == 'qcloud' %}**控制台** > **存储** > `_File`{% else %}[控制台 > 存储 > **`_File`**](/data.html?appid={{appid}}#/_File){% endif %}，选择菜单 **其他** > **权限设置** > **delete** 来开启。</div>
+
 {% block code_file_delete %}{% endblock %}
 
 {% block code_cache_operations_file %}{% endblock %}
 
 {% block text_https_access_for_ios9 %}{% endblock %}
 
-<div class="callout callout-info">注意：默认情况下，文件的删除权限是关闭的，需要进入控制台，在 [`_File` > 其他 > 权限设置 > delete](/data.html?appid={{appid}}#/_File)  中开启。</div>
+
 
 {% endblock %}
 ## 查询
