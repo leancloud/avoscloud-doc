@@ -3,6 +3,7 @@
 {% set masterkey = '{{masterkey}}' %}
 {% set middot = '·' %}
 {% set link_to_blog_password_reset = '关于自定义邮件模板和验证链接，请参考《[自定义应用内用户重设密码和邮箱验证页面](https://blog.leancloud.cn/607/)》。' %}
+{% set query_result_limit = "每次查询默认最多返回 100 条符合条件的结果，要更改这一数值，请参考 [限定结果返回数量](#限定返回数量)。" %}
 
 # 数据存储开发指南 &middot; {{platform_name}}
 
@@ -454,7 +455,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% endblock %}
 ## 查询
-`{{baseQueryClassName}}` 是构建针对 `{{baseObjectName}}` 查询的基础类。
+`{{baseQueryClassName}}` 是构建针对 `{{baseObjectName}}` 查询的基础类。{{query_result_limit}}
 
 {% block text_avquery_constructors %}
 ### 创建查询实例
@@ -465,22 +466,24 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 在 [获取对象](#获取对象) 中我们介绍过如何通过 objectId 来获取对象实例，从而简单的介绍了一下 `{{baseQueryClassName}}` 的用法，代码请参考对应的内容，不再赘述。
 
 ### 条件查询
-在大多数情况下做列表展现的时候，都是根据不同条件来分类展现的，比如，我要查询所有优先级为 0 的 Todo，也就是做列表展现的时候，要展示优先级最高，最迫切需要完成的日程列表，此时基于 priority 构建一个查询就可以查询出符合需求的对象：
+
+根据不同条件来过滤结果，比如查询最迫切需要完成的日程列表 Todo，此时基于 priority 构建一个查询就可以得到符合条件的对象：
 
 {% block code_priority_equalTo_zero_query %}{% endblock %}
 
-其实，拥有传统关系型数据库开发经验的开发者完全可以翻译成如下的 SQL：
+<div class="callout callout-info">{{query_result_limit}}</div>
+
+将以上逻辑用 SQL 语句表达：
 
 ```sql
   select * from Todo where priority = 0
 ```
-{{productName}} 也支持使用这种传统的 SQL 语句查询。具体使用方法请移步至 [Cloud Query Language（CQL）查询](#CQL_查询)。
 
-查询默认最多返回 100 条符合条件的结果，要更改这一数值，请参考 [限定结果返回数量](#限定返回数量)。
+{{productName}} 也支持使用这种传统的 SQL 语句查询。具体使用方法请移步至 [Cloud Query Language（CQL）查询](#CQL_查询)。
 
 当多个查询条件并存时，它们之间默认为 AND 关系，即查询只返回满足了全部条件的结果。建立 OR 关系则需要使用 [组合查询](#组合查询)。
 
-注意：在简单查询中，如果对一个对象的同一属性设置多个条件，那么先前的条件会被覆盖，查询只返回满足最后一个条件的结果。例如，我们要找出优先级为 0 和 1 的所有 Todo，错误写法是：
+请注意，在简单查询中，如果对一个对象的同一属性设置多个条件，那么先前的条件会被覆盖，查询只返回满足最后一个条件的结果。例如，我们要找出优先级为 0 和 1 的所有 Todo，错误写法是：
 
 {% block code_priority_equalTo_zero_and_one_wrong_example %}{% endblock %}
 
@@ -656,9 +659,12 @@ AND 操作是指只有满足了所有查询条件的对象才会被返回给客�
 {% block code_query_comment_include_todoFolder %}{% endblock %}
 
 #### 内嵌查询
-假如现在有一个需求是展现点赞超过 20 次的 TodoFolder 的评论（Comment）查询出来，注意这个查询是针对评论（Comment），要实现一次查询就满足需求可以使用内嵌查询的接口：
+
+要查询点赞超过 20 次的 TodoFolder 的 Comment 评论（注意查询针对的是 Comment），使用内嵌查询接口就可以通过一次查询来达到目的。
 
 {% block code_query_comment_match_query_todoFolder %}{% endblock %}
+
+与普通查询一样，内嵌查询默认也最多返回 100 条记录，想修改这一默认请参考 [限定结果返回数量](#限定返回数量)。**如果所有返回的记录没有匹配到外层的查询条件，那么整个查询也查不到结果**。
 
 ### CQL 查询
 Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功能的语言，具有 SQL 开发经验的开发者可以方便地使用此接口实现查询。

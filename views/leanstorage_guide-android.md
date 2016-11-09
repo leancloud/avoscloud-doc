@@ -935,7 +935,7 @@ fetchAllInBackground()
 ```java
         // 构建内嵌查询
         AVQuery<AVObject> innerQuery = new AVQuery<>("TodoFolder");
-        innerQuery.whereGreaterThan("liks", 20);
+        innerQuery.whereGreaterThan("likes", 20);
         // 将内嵌查询赋予目标查询
         AVQuery<AVObject> query = new AVQuery<>("Comment");
         // 执行内嵌操作
