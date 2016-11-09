@@ -730,7 +730,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 ## 用户
 
-用户系统几乎是每款应用都要加入的功能。除了基本的注册、登录和密码重置，移动端开发还会使用手机号一键登录、短信验证码登录等功能。{{productName}} 提供了一系列接口来帮助开发者快速实现各种场景下的需求。
+用户系统几乎是每款应用都要加入的功能。除了基本的注册、登录和密码重置，移动端开发还会使用手机号一键登录{% if node != 'qcloud' and node != 'us' %}、短信验证码登录{% endif %}等功能。{{productName}} 提供了一系列接口来帮助开发者快速实现各种场景下的需求。
 
 `{{userObjectName}}` 是用来描述一个用户的特殊对象，与之相关的数据都保存在 `_User` 数据表中。
 
@@ -768,6 +768,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 <div class="callout callout-danger">注意：TAB 暂时未开放短信功能，所以所有与短信相关的 API 操作（如使用手机号进行注册）暂时不能调用。</div>
 {% endif %}
 
+{% if node != 'qcloud' and node != 'us' %}
 #### 手机号码登录
 
 一些应用为了提高首次使用的友好度，一般会允许用户浏览一些内容，直到用户发起了一些操作才会要求用户输入一个手机号，而云端会自动发送一条验证码的短信给用户的手机号，最后验证一下，完成一个用户注册并且登录的操作，例如很多团购类应用都有这种用户场景。
@@ -779,6 +780,8 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 然后在 UI 上给与用户输入验证码的输入框，用户点击登录的时候调用如下接口：
 
 {% block code_verify_sms_code_for_loginOrSignup %}{% endblock %}
+
+{% endif %}
 {% endblock %}
 #### 用户名和密码注册
 
@@ -800,9 +803,11 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {% block text_logInOrSignUp_with_authData %}{% endblock %}
 
+{% if node != 'qcloud' and node != 'us' %}
 #### 设置手机号码
 
 微信、陌陌等流行应用都会建议用户将账号和一个手机号绑定，这样方便进行身份认证以及日后的密码找回等安全模块的使用。我们也提供了一整套发送短信验证码以及验证手机号的流程，这部分流程以及代码演示请参考 {{ sms_guide_url }}。
+{% endif %}
 
 #### 验证邮箱
 
@@ -822,6 +827,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {% block code_user_logIn_with_username_and_password %}{% endblock %}
 
+{% if node != 'qcloud' and node != 'us' %}
 #### 手机号和密码登录
 
 请确保已详细阅读了 {{ sms_guide_url }} 这一小节的内容，才可以顺利理解手机号匹配密码登录的流程以及适用范围。
@@ -842,7 +848,10 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {% block code_user_logIn_with_smsCode %}{% endblock %}
 
+{% endif %}
+
 {% block text_current_user %}
+
 #### 当前用户
 
 打开微博或者微信，它不会每次都要求用户都登录，这是因为它将用户数据缓存在了客户端。
@@ -886,6 +895,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {{link_to_blog_password_reset}}
 
+{% if node != 'qcloud' and node != 'us' %}
 #### 手机号码重置密码
 
 {% if node=='qcloud' %}
@@ -899,7 +909,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 注意！用户需要先绑定手机号码，然后使用短信验证码来重置密码：
 
 {% block code_reset_password_by_mobilephoneNumber_verify %}{% endblock %}
-
+{% endif %}
 #### 登出
 
 用户登出系统时，SDK 会自动清理缓存信息。

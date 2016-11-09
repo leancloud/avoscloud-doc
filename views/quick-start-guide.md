@@ -39,7 +39,7 @@
 * [开放 REST API 文档](./rest_api.html)
 <li><a href="leanstorage_guide-js.html">JavaScript 数据存储指南</a></li>
 <li><a href="leanengine_overview.html">云引擎指南</a></li>
-<li><a href="leanengine_cli.html">云引擎命令行工具</a></li>
+<li><a href="leanengine_cli.html">命令行工具 CLI</a></li>
 
 ## 你是 PHP 开发者？
 

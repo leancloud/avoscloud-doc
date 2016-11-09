@@ -143,6 +143,7 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
       <td>POST</td>
       <td>请求验证用户邮箱</td>
     </tr>
+    {% if node != 'qcloud' and node != 'us' %}
     <tr>
       <td>/1.1/requestMobilePhoneVerify</td>
       <td>POST</td>
@@ -168,6 +169,7 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
       <td>PUT</td>
       <td>验证手机短信验证码并重置密码。</td>
     </tr>
+    {% endif %}
   </tbody>
 </table>
 
@@ -1603,7 +1605,7 @@ curl -X PUT \
 
 锁定将在最后一次错误登录的 15 分钟之后由云端自动解除，开发者无法通过 SDK 或 REST API 进行干预。在锁定期间，即使用户输入了正确的验证信息也不允许登录。这个限制在 SDK 和云引擎中都有效。
 
-{% if node!='qcloud' %}
+{% if node != 'qcloud' and node != 'us' %}
 ### 使用手机号码注册或登录
 
 请参考 [短信服务 REST API 详解 &middot; 使用手机号码注册或登录](rest_sms_api.html#使用手机号码注册或登录)。

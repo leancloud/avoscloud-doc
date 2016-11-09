@@ -82,4 +82,4 @@ private async void Button_Click(object sender, RoutedEventArgs e)
 ![截图](http://i.imgur.com/r9rJTpT.png)
 
 #### Demo 项目
-另外，我们在 [Demo 项目](https://github.com/avoscloud/avoscloud-demo/tree/master/wp/)里面包含了数据存储，对象关系，文件存储，短信验证码等功能的实例代码，开发者下载之后可以尽情去感受 LeanCloud 提供的专业移动后端服务。
+另外，我们在 [Demo 项目](https://github.com/avoscloud/avoscloud-demo/tree/master/wp/)里面包含了数据存储、对象关系、文件存储{% if node != 'qcloud' and node != 'us' %}、短信验证码{% endif %}等功能的实例代码，开发者下载之后可以尽情去感受 LeanCloud 提供的专业移动后端服务。

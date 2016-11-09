@@ -364,13 +364,15 @@ $(function() {
     updateSidebarAffixShadowWidth();
   }, 400);
 
-  // set the title: LeanCloud 文档 - xxxxxxx
+  // set the title:  xxxxxxx - LeanCloud 文档
   if ( window.location.pathname != '/'
     && window.location.pathname.toLowerCase() != '/index.html' ){
     $('title').text(function(){
     // do not use html()
     return $('.doc-content h1').first().text() + ' - ' + $(this).text();
   });
+
+
 }
 
 });
@@ -393,3 +395,14 @@ $(window).scrollStopped(function() {
 $(window).resize(function() {
   updateSidebarAffixShadowWidth();
 });
+
+$(window).load(function() {
+  //2016-11-07 add scrollbar for out-streched tables
+  $('.doc-content table').each(function(index, el) {
+    var $el = $(el);
+    if ( $el.outerWidth() > $('.doc-content').width() ){
+      $el.css('display','block');
+    }
+  });
+});
+  
