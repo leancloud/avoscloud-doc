@@ -103,7 +103,7 @@ LeanCloud 实时通信服务的特性主要有：
 **sys**|system|Boolean|可选|是否是系统对话
 **unique**|unique|Boolean|可选|内部字段，标记根据成员原子创建的对话。<br/>（只能在 SDK 中使用。**REST API 不支持此参数**，传入 unique 无效)
 
-除了在各平台的 SDK 里面可以调用 API 创建对话外，我们也提供 [REST API](./realtime_rest_api.html#通过_REST_API_创建_更新_删除对话数据) 可以让大家预先建立对话：对话的信息存储在 _Conversation 表中，你可以直接通过 [数据存储相关的 REST API](./rest_api.html#%E5%AF%B9%E8%B1%A1-1) 对其进行操作。
+除了在各平台的 SDK 里面可以调用 API 创建对话外，我们也提供 [REST API](realtime_rest_api.html#对话数据操作) 可以让大家预先建立对话。对话的信息存储在 `_Conversation` 表中，你可以直接通过 [数据存储相关的 REST API](./rest_api.html#%E5%AF%B9%E8%B1%A1-1) 对其进行操作。
 
 这里要特别讨论一下**单聊**、**群聊**、**聊天室**、**公众号**等使用场景。
 
@@ -120,7 +120,7 @@ LeanCloud 实时通信服务的特性主要有：
 
 #### 普通对话（Normal Conversation）
 
-这是我们经常会用到的「对话」，单聊和群聊都通过它来实现。我们建议开发者将单聊/群聊、私密/公开等属性存入到 Conversation.attributes 之中，在应用层进行区别对待。
+这是我们经常会用到的「对话」，单聊和群聊都通过它来实现。我们建议开发者将单聊/群聊、私密/公开等属性存入到 `Conversation.attributes` 之中，在应用层进行区别对待。
 
 为了提高系统的灵活性，我们允许多个对话保持相同的成员，因此创建对话时系统总是默认创建新的对话。
 如果开发者希望使用固定的对话，可以在创建对话时设置相应 SDK 上的 `unique` 选项，系统将查找对应成员相同且 `unique` 选项为 true 的对话，如果找到即返回已有的对话，如果没有则自动创建。
