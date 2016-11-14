@@ -8,7 +8,7 @@
 * （细微不兼容）更新至 [JavaScript SDK 1.0](https://github.com/leancloud/javascript-sdk/releases)。
 * （不兼容）彻底废弃了 currentUser，默认开启 keepAlive（将会提高并发性能）、兼容了 Node.js 4 内建的 Promise，详见下文的 [废弃 currentUser](#废弃_currentUser)。
 * （不兼容）默认启用与 Promise/A+ 兼容的错误处理逻辑，详见下文的 [Promise/A+](#Promise_A_)。
-* `cors`, `fetch-user`, `health-check`, `parse-leancloud-headers` 等中间件都被拆分到了单独的文件，可以通过 `var fetchUser = require('leanengine/cors')` 这样的方式使用它们。
+* `cors`, `fetch-user`, `health-check`, `parse-leancloud-headers` 等中间件都被拆分到了单独的文件，可以通过 `var cors = require('leanengine/cors')` 这样的方式使用它们。
 * `AV.Cloud.run` 支持了一个 `remote` 选项，可以像 JavaScript SDK 一样通过 HTTP API 来调用云函数，而不是进行一个本地的函数调用。
 * `AV.Cloud.define` 支持了一个 `fetchUser` 选项，指定为 false 时该云函数不会去获取用户信息，可以减少 API 调用次数。
 
@@ -134,7 +134,7 @@ function getFriends(user, otherOptions) {
 当在一个已经解决的 Promise 上调用 then 时，onFulfilled 和 onRejected 会被添加到事件队列中，异步地被执行（而不是之前同步地执行）：
 
 ```javascript
-Promise.as('some value').then(function(v) {
+Promise.resolve('some value').then(function(v) {
   console.log(v);
 });
 
@@ -159,7 +159,7 @@ some value
 
 ```javascript
 try {
-  Promise.as('some value').then(function(v) {
+  Promise.resolve('some value').then(function(v) {
     throw new Error('some exception');
   }).then(function() {
     console.log('resolved');
@@ -186,7 +186,7 @@ rejected [Error: some exception]
 当在一个 rejected 的 Promise 上调用 then 时，如果 onRejected 没有抛出异常也没有返回一个 rejected 的 Promise, 则返回一个 resolved 的 Promise（而不是之前返回一个 rejected 的 Promise）：
 
 ```javascript
-Promise.error(new Error('some exception')).then(null, function() {
+Promise.reject(new Error('some exception')).then(null, function() {
   // do nothings
 }).then(function() {
   console.log('resolved');

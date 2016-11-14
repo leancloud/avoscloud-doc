@@ -168,7 +168,7 @@
 ## 142
 
 * 信息 - `Cloud Code validation failed.`
-* 含义 - 云引擎校验错误，通常是因为 beforeSave、beforeDelete 等函数返回 error。
+* 含义 - 云引擎校验错误，通常是因为 `beforeSave`、`beforeDelete` 等函数返回 error。
 
 ## 145
 
@@ -282,7 +282,7 @@
 
 ## 251
 
-* 信息 - `Invalid linked session`或者`Invalid Weibo session`
+* 信息 - `Invalid linked session` 或者 `Invalid Weibo session`
 * 含义 - 无效的账户连接，一般是因为 access token 非法引起的。
 
 ## 252
@@ -352,12 +352,18 @@
 * 含义 -  该请求 API 暂时不可用，请稍后重试。一般是运维操作临时禁止了某个 API 访问，一段时间后会自然恢复，或者联系我们处理。
 
 
+## 524
+
+* 信息 - `complete a TCP connection to the upstream server, but did not receive a timely HTTP response.`
+* 含义 -  Web 服务器与后端应用服务器通讯失败，一般是某个应用服务器异常，Web 服务器会在几秒后移除此实例。如果频繁遇到 524，请联系我们处理。
+
+{% if node != 'qcloud' and node != 'us' %}
 ## 600
 
 * 信息 - `Invalid SMS signature.`
-* 含义 - 无效的短信签名。短信签名是指附加在短信文本前后位置，使用中文括号【】括起来的文字，短信签名只能位于短信开头或者结束的位置，并且限制在 10（包含 10 个字符）个字符内。
+* 含义 - 无效的短信签名。短信签名是指附加在短信文本前后位置，使用中文括号【】括起来的文字，短信签名只能位于短信开头或者结束的位置，具体要求请参考 [短信签名规范](sms_guide-android.html#短信签名)。
         默认发送的短信签名使用的是应用名称，应用名称可以在应用设置里修改。短信自定义模板可以在模板里自定义签名。
-        
+  ​      
 ## 601
 
 * 信息 - `Can't send SMS too frequently.`
@@ -387,6 +393,7 @@
 
 * 信息 - `Fails to render SMS template.`
 * 含义 - 渲染短信模板失败，通常是模板语法问题，我们的短信模板仅支持 [handlerbars](http://handlebarsjs.com/) 模板语法。
+{% endif %}
 
 ## 700
 

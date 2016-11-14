@@ -4,7 +4,7 @@
 {# --Start--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 {% set cloudName ="LeanCloud" %}
 {% set productName ="LeanStorage" %}
-{% set platform_title ="Swift" %}
+{% set platform_name ="Swift" %}
 {% set segment_code ="swift" %}
 {% set sdk_name ="Swift SDK" %}
 {% set baseObjectName ="LCObject" %}
@@ -22,7 +22,13 @@
 {% set fileObjectName ="LCFile" %}
 {% set dateType= "NSDate" %}
 {% set byteType= "NSData" %}
-{% set link_to_acl_doc ="[iOS / OS X 权限管理使用指南](acl_guide-ios.html)"%}
+{% set acl_guide_url = "[Objective-C 权限管理使用指南（Swift 文档待补充）](acl_guide-objc.html)"%}
+{% set sms_guide_url = "[Objective-C 短信服务使用指南（Swift 文档待补充）](sms_guide-objc.html#注册验证)" %}
+{% set relation_guide_url = "[Objective-C 数据模型设计指南（Swift 文档待补充）](relation_guide-objc.html)" %}
+{% set inapp_search_guide_url = "[Objective-C 应用内搜索指南](app_search_guide.html)" %}
+{% set status_system_guide_url = "[Objective-C 应用内社交模块](status_system.html#iOS_SDK)" %}
+{% set sns_guide_url = "[Objective-C SNS 开发指南](sns.html#iOS_SNS_组件)" %}
+{% set feedback_guide_url = "[Objective-C 用户反馈指南](feedback.html#iOS_反馈组件)" %}
 {% set funtionName_whereKeyHasPrefix = "whereKey:hasPrefix:" %}
 {% set saveOptions_query= "where" %}
 {% set saveOptions_fetchWhenSave= "fetch_when_save" %}
@@ -44,10 +50,10 @@ let todo = LCObject(className: "Todo")
 // 执行 CQL 语句实现新增一个 TodoFolder 对象
 LCCQLClient.execute("insert into TodoFolder(name, priority) values('工作', 1)") { result in
     switch result {
-    case .Success(let value):
+    case .success(let value):
         let todoFolder = value.objects.first
         print(todoFolder)
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -66,9 +72,9 @@ todo.set("content", value: "每周工程师会议，周一下午 2 点")
 
 todo.save { result in
     switch result {
-    case .Success:
+    case .success:
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -88,9 +94,9 @@ todo.set("location", value: "会议室")
 
 todo.save { result in
     switch result {
-    case .Success:
+    case .success:
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -107,9 +113,9 @@ todoFolder.set("priority", value: 1)
 
 todoFolder.save { result in
     switch result {
-    case .Success:
+    case .success:
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -126,9 +132,9 @@ let query = LCQuery(className: "Todo")
 
 query.get("575cf743a3413100614d7d75") { result in
     switch result {
-    case .Success(let todo):
+    case .success(let todo):
         print(todo.get("title"))
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -142,10 +148,10 @@ let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
 
 todo.fetch { result in
     switch result {
-    case .Success:
+    case .success:
         print(todo.get("title"))
         print(todo.get("content"))
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -164,9 +170,9 @@ todo.set("location", value: "会议室")
 
 todo.save { result in
     switch result {
-    case .Success:
+    case .success:
         print(todo.objectId)
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -180,7 +186,7 @@ let query = LCQuery(className: "Todo")
 
 query.get("558e20cbe4b060308e3eb36c") { result in
     switch result {
-    case .Success(let todo):
+    case .success(let todo):
         // 使用 get 方法访问非预定义属性
         let title    = todo.get("title") as! LCString
         let content  = todo.get("content") as! LCString
@@ -190,7 +196,7 @@ query.get("558e20cbe4b060308e3eb36c") { result in
         let objectId  = todo.objectId
         let updatedAt = todo.updatedAt
         let createdAt = todo.createdAt
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -229,12 +235,12 @@ todo.set("location", value: "会议室")
 
 todo.save { result in
     switch result {
-    case .Success:
+    case .success:
         // 修改 location 属性
         todo.set("location", value: "二楼大会议室")
         // 异步保存修改
         todo.save { _ in }
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -250,9 +256,9 @@ todo.set("content", value: "每周工程师会议，本周改为周三下午 3 �
 
 todo.save { result in
     switch result {
-    case .Success:
+    case .success:
         break // 保存成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -265,9 +271,9 @@ todo.save { result in
 ```swift
 LCCQLClient.execute("update TodoFolder set name='家庭' where objectId='575d2c692e958a0059ca3558'") { result in
     switch result {
-    case .Success:
+    case .success:
         break // 更新成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -284,9 +290,9 @@ todo.increase("views", by: 1)
 
 todo.save { result in
     switch result {
-    case .Success:
+    case .success:
         break // 更新成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -344,9 +350,9 @@ func testSetArray() {
 
     todo.save { result in
         switch result {
-        case .Success:
+        case .success:
             break // 更新成功
-        case .Failure(let error):
+        case .failure(let error):
             print(error)
         }
     }
@@ -378,9 +384,9 @@ let todo = LCObject(className: "Todo")
 
 todo.save { result in
     switch result {
-    case .Success:
+    case .success:
         break // 保存成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -396,9 +402,9 @@ let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
 // 调用实例方法删除对象
 todo.delete { result in
     switch result {
-    case .Success:
+    case .success:
         break // 删除成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -411,9 +417,9 @@ todo.delete { result in
 // 执行 CQL 语句实现删除一个 Todo 对象
 LCCQLClient.execute("delete from Todo where objectId='558e20cbe4b060308e3eb36c'") { result in
     switch result {
-    case .Success:
+    case .success:
         break // 删除成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -677,9 +683,9 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 或者在 Target 的 Info 标签中修改配置：
 
 ![Info.plist Setting](images/ios_qiniu_http.png)
-
+{% if node != 'qcloud' %}
 如果是美国节点，请把上面的 `clouddn.com` 换成 `amazonaws.com`。
-
+{% endif %}
 也可以根据项目需要，允许所有的 HTTP 访问，更多可参考 [iOS 9 适配系列教程](https://github.com/ChenYilong/iOS9AdaptationTips)。
 
 #### 启用文件 SSL 域名
@@ -716,9 +722,9 @@ query.whereKey("priority", .EqualTo(0))
 // 执行查找
 query.find { result in
     switch result {
-    case .Success(let objects):
+    case .success(let objects):
         break // 查询成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -736,9 +742,9 @@ query.whereKey("priority", .EqualTo(1))
 // 如果这样写，第二个条件将覆盖第一个条件，查询只会返回 priority = 1 的结果
 query.find { result in
     switch result {
-    case .Success(let objects):
+    case .success(let objects):
         break // 查询成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -912,9 +918,9 @@ let realationQuery = todoFolder.relationForKey("tags").query
 
 realationQuery.find { result in
     switch result {
-    case .Success(let objects):
+    case .success(let objects):
         break // 查询成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -932,9 +938,9 @@ query.whereKey("tags", .EqualTo(tag))
 
 query.find { result in
     switch result {
-    case .Success(let objects):
+    case .success(let objects):
         break // objects 是 tags 数组中包含当前 tag 的 TodoFolder
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -958,7 +964,7 @@ query.limit = 10
 
 query.find { result in
     switch result {
-    case .Success(let comments):
+    case .success(let comments):
         // comments 是最近的十条评论
         guard let comment = comments.first else { return }
 
@@ -967,7 +973,7 @@ query.find { result in
 
         // todoFolder 的 targetAVUser 字段也有相应的数据
         let user = todoFolder?.get("targetAVUser")
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -989,9 +995,9 @@ query.whereKey("targetTodoFolder", .MatchedQuery(innerQuery))
 
 query.find { result in
     switch result {
-    case .Success(let comments):
+    case .success(let comments):
         break // 查询成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1001,9 +1007,9 @@ query.whereKey("targetTodoFolder", .NotMatchedQuery(innerQuery))
 
 query.find { result in
     switch result {
-    case .Success(let comments):
+    case .success(let comments):
         break // 查询成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1019,9 +1025,9 @@ query.whereKey("priority", .EqualTo(0))
 
 query.getFirst { result in
     switch result {
-    case .Success(let todo):
+    case .success(let todo):
         break // 查询成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1038,9 +1044,9 @@ query.limit = 10
 
 query.find { result in
     switch result {
-    case .Success(let todos):
+    case .success(let todos):
         break // 查询成功
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1059,9 +1065,9 @@ query.skip = 20 // 跳过 20 条数据
 
 query.find { result in
     switch result {
-    case .Success(let todos):
+    case .success(let todos):
         break // 每一页 10 条数据，跳过了 20 条数据，因此获取的是第 3 页的数据
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1082,7 +1088,7 @@ query.whereKey("content", .Selected)
 
 query.find { result in
     switch result {
-    case .Success(let todos):
+    case .success(let todos):
         // 每一页 10 条数据，跳过了 20 条数据，因此获取的是第 3 页的数据
 
         guard let todo = todos.first else { return }
@@ -1092,7 +1098,7 @@ query.find { result in
         
         // 如果访问没有指定返回的属性，会返回 nil
         let location = todo.get("location")
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1145,9 +1151,9 @@ let query = priorityQuery.or(statusQuery).or(titleQuery)
 
 query.find { result in
     switch result {
-    case .Success(let todos):
+    case .success(let todos):
         break // 返回 priority 大于等于 3 或 status 等于 1 或 title 包含李总的 Todo
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1167,9 +1173,9 @@ let query = priorityQuery.and(statusQuery)
 
 query.find { result in
     switch result {
-    case .Success(let todos):
+    case .success(let todos):
         break // 返回 priority 小于 3 并且 status 等于 0 的 Todo
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1192,18 +1198,18 @@ query.whereKey("images", .NotExisted)
 ```swift
 LCCQLClient.execute("select * from Todo where status = 1") { result in
     switch result {
-    case .Success(let result):
+    case .success(let result):
         let todos = result.objects
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
 
 LCCQLClient.execute("select count(*) from Todo where priority = 0") { result in
     switch result {
-    case .Success(let result):
+    case .success(let result):
         let todos = result.objects
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1218,10 +1224,10 @@ let pvalues = [0, 1]
 
 LCCQLClient.execute(cql, parameters: pvalues) { result in
     switch result {
-    case .Success(let result):
+    case .success(let result):
         // todos 就是满足条件（status == 0 并且 priority == 1）的 Todo 对象集合
         let todos = result.objects
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1240,15 +1246,15 @@ LCCQLClient.execute(cql, parameters: pvalues) { result in
 let query = LCQuery(className: "Todo")
 let point = LCGeoPoint(latitude: 39.9, longitude: 116.4)
 
-query.whereKey("whereCreated", .NearbyPoint(point))
+query.whereKey("whereCreated", .LocatedWithin(point))
 query.limit = 10
 
 query.find { result in
     switch result {
-    case .Success(let todos):
+    case .success(let todos):
         // 离这个位置最近的 10 个 Todo 对象
         let todos = result.objects
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1271,13 +1277,13 @@ let from  = LCGeoPoint.Distance(value: 1.0, unit: .Kilometer)
 let to    = LCGeoPoint.Distance(value: 2.0, unit: .Kilometer)
 
 // 查询离指定 point 距离在 1.0 和 2.0 公里的 Todo
-query.whereKey("whereCreated", .NearbyPointWithRange(origin: point, from: from, to: to))
+query.whereKey("whereCreated", .LocatedNear(origin: point, from: from, to: to))
 ```
 {% endblock %} code_object_fetch_with_keys
 
-{% block link_to_relation_guide_doc %}[iOS / OS X 数据模型设计指南](relation_guide-ios.html){% endblock %}
+{% block relation_guide_url %}[Objective-C 数据模型设计指南](relation_guide-objc.html){% endblock %}
 
-{% set link_to_sms_guide_doc = '[iOS / OS X 短信服务使用指南](sms_guide-ios.html#注册验证)' %}
+{% set sms_guide_url = '[Objective-C 短信服务使用指南](sms_guide-objc.html#注册验证)' %}
 
 {% block text_send_sms_code_for_loginOrSignup %}{% endblock %}
 {% block code_send_sms_code_for_loginOrSignup %}{% endblock %}
@@ -1300,9 +1306,9 @@ randomUser.signUp()
 ```swift
 LCUser.requestVerificationMail(email: "abc@xyz.com") { result in
     switch result {
-    case .Success:
+    case .success:
         break
-    case .Failure(let error):
+    case .failure(let error):
         break
     }
 }
@@ -1314,9 +1320,9 @@ LCUser.requestVerificationMail(email: "abc@xyz.com") { result in
 ```swift
 LCUser.logIn(username: "Tom", password: "leancloud") { result in
     switch result {
-    case .Success(let user):
+    case .success(let user):
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1328,9 +1334,9 @@ LCUser.logIn(username: "Tom", password: "leancloud") { result in
 ```swift
 LCUser.logIn(mobilePhoneNumber: "13577778888", password: "leancloud") { result in
     switch result {
-    case .Success(let user):
+    case .success(let user):
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1342,9 +1348,9 @@ LCUser.logIn(mobilePhoneNumber: "13577778888", password: "leancloud") { result i
 ```swift
 LCUser.requestLoginVerificationCode(mobilePhoneNumber: "13577778888") { result in
     switch result {
-    case .Success:
+    case .success:
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1356,9 +1362,9 @@ LCUser.requestLoginVerificationCode(mobilePhoneNumber: "13577778888") { result i
 ```swift
 LCUser.logIn(mobilePhoneNumber: "13577778888", verificationCode: "238825") { result in
     switch result {
-    case .Success(let user):
+    case .success(let user):
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1390,9 +1396,9 @@ currentUser.set("age", value: "27")
 
 currentUser.save { result in
     switch result {
-    case .Success:
+    case .success:
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1408,9 +1414,9 @@ currentUser.set("age", value: "25")
 
 currentUser.save { result in
     switch result {
-    case .Success:
+    case .success:
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1422,9 +1428,9 @@ currentUser.save { result in
 ``` swift
 LCUser.requestPasswordReset(email: "myemail@example.com") { result in
     switch result {
-    case .Success:
+    case .success:
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1436,9 +1442,9 @@ LCUser.requestPasswordReset(email: "myemail@example.com") { result in
 ```swift
 LCUser.requestPasswordReset(mobilePhoneNumber: "13577778888") { result in
     switch result {
-    case .Success:
+    case .success:
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1450,9 +1456,9 @@ LCUser.requestPasswordReset(mobilePhoneNumber: "13577778888") { result in
 ```swift
 LCUser.resetPassword(mobilePhoneNumber: "13577778888", verificationCode: "123456", newPassword: "newpassword") { result in
     switch result {
-    case .Success:
+    case .success:
         break
-    case .Failure(let error):
+    case .failure(let error):
         print(error)
     }
 }
@@ -1548,11 +1554,6 @@ class Student: LCObject {
 ```swift
 student.set("age", value: 19)
 ```
-
 {% endblock %}
-{% block link_to_in_app_search_doc %}[iOS / OS X 应用内搜索指南](app_search_guide.html){% endblock %}
-{% block link_to_status_system_doc %}[iOS / OS X 应用内社交模块](status_system.html#iOS_SDK){% endblock %}
-{% block link_to_sns_doc %}[iOS / OS X SNS 开发指南](sns.html#iOS_SNS_组件){% endblock %}
-{% block link_to_feedback_doc %}[iOS / OS X 用户反馈指南](feedback.html#iOS_反馈组件){% endblock %}
 
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

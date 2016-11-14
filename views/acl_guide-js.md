@@ -2,12 +2,15 @@
 
 {% set runAtServer = "true" %}
 {% set language = "JavaScript SDK" %}
-{% set platform = "JavaScript" %}
+{% set platform_name = "JavaScript" %}
+{% set segment_code = "js" %}
+{% set acl_quickstart_guide_url = "权限管理以及 ACL 快速指南](acl_quick_start-js.html)" %}
+
 {% block for_front_js %}
 ### 云引擎使用 ACL
-文档中使用的 `AV.User.current()` 这个方法仅仅针对浏览器端有效，在**云引擎中该接口无法使用**。云引擎中获取用户信息，请参考云引擎文档[处理用户登录和登出](leanengine_webhosting_guide-node.html#处理用户登录和登出)
+文档中使用的 `AV.User.current()` 这个方法仅仅针对浏览器端有效，在**云引擎中该接口无法使用**。云引擎中获取用户信息，请参考 [云引擎指南 &middot; 处理用户登录和登出](leanengine_webhosting_guide-node.html#处理用户登录和登出)。
 {% endblock %}
-{% block link_to_acl_quickStart %}[权限管理以及 ACL 快速指南](acl_quick_start-js.html){% endblock %}
+
 {% block create_post_set_acl_for_single_user %}
 
 ```js
@@ -204,6 +207,7 @@
     //该角色存在，但是当前用户未被赋予该角色
     if (userForRole.length === 0) {
       // 为当前用户赋予该角色
+      var administratorRole = new AV.Role('Administrator');
       var relation = administratorRole.getUsers();
       relation.add(AV.User.current());
       administratorRole.save();
@@ -285,11 +289,11 @@
   //新建电子数码版主角色
   var digitalRole=new AV.Role('Digital');
 
-   AV.Promise.when(
+   AV.Promise.all([
     // 先行保存 photographicRole 和 mobileRole
     photographicRole.save(),
-    mobileRole.save()
-   ).then(function(r1, r2) {
+    mobileRole.save(),
+  ]).then(function([r1, r2]) {
     // 将 photographicRole 和 mobileRole 设为 digitalRole 一个子角色
     digitalRole.getRoles().add(photographicRole);
     digitalRole.getRoles().add(mobileRole);
@@ -333,16 +337,16 @@
     mobilePost.setACL(mobileACL);
     digitalPost.setACL(digitalACL);
 
-    AV.Promise.when(
+    return AV.Promise.all([
       photographicPost.save(),
       mobilePost.save(),
-      digitalPost.save()
-    ).then(function(r1, r2, r3) {
-      // 保存成功
-      }, function(errors) {
-      // 保存失败
-    });
-   });
+      digitalPost.save(),
+    ]);
+   }).then(function([r1, r2, r3]) {
+     // 保存成功
+     }, function(errors) {
+     // 保存失败
+   });;
 ```
 {% endblock %}
 
@@ -358,6 +362,3 @@
   AV.Cloud.useMasterKey();
 ```
 {% endblock %}
-
-
-

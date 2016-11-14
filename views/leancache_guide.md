@@ -72,19 +72,23 @@ LeanCache 不提供外网直接访问。如果需要进行简单的数据操作�
 
 ### 在命令行工具中使用
 
-**提示**：[命令行工具](leanengine_cli.html) 在 v0.8.0 增加了 redis 命令来支持 LeanCache 的操作。
+关于命令行工具的安装以及详细介绍参考[这里](leanengine_cli.html)。
 
 可以通过下列命令查询当前应用有哪些 LeanCache 实例：
 
 ``` shell
-lean redis list
+lean cache list
 ```
 
 可以通过下列命令创建一个交互式的 client：
 
 ``` shell
-lean redis conn <实例名称>
+lean redis
 ```
+
+之后根据向导选择需要连接的 LeanCache 实例以及 DB。
+
+**注意**：命令行工具操作 LeanCache 时，是通过 HTTPS 请求来进行通讯的，因此类似 `pub/sub`、`blpop` 等需要阻塞的命令不能直接使用。但是线上没有这个限制，可以直接使用。
 
 ### 在云引擎中使用（Node.js 环境）
 

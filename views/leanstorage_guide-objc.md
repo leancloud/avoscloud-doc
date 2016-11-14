@@ -4,9 +4,9 @@
 {# --Start--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 {% set cloudName ="LeanCloud" %}
 {% set productName ="LeanStorage" %}
-{% set platform_title ="iOS / OS X" %}
-{% set segment_code ="ios" %}
-{% set sdk_name ="iOS / OS X SDK" %}
+{% set platform_name ="Objective-C" %}
+{% set segment_code ="objc" %}
+{% set sdk_name ="Objective-C SDK" %}
 {% set baseObjectName ="AVObject" %}
 {% set objectIdName ="objectId" %}
 {% set updatedAtName ="updatedAt" %}
@@ -22,10 +22,17 @@
 {% set fileObjectName ="AVFile" %}
 {% set dateType= "NSDate" %}
 {% set byteType= "NSData" %}
-{% set link_to_acl_doc ="[iOS / OS X 权限管理使用指南](acl_guide-ios.html)"%}
+{% set acl_guide_url = "[Objective-C 权限管理使用指南](acl_guide-objc.html)"%}
+{% set sms_guide_url = "[Objective-C 短信服务使用指南](sms_guide-objc.html#注册验证)" %}
+{% set relation_guide_url = "[Objective-C 数据模型设计指南](relation_guide-objc.html)" %}
+{% set inapp_search_guide_url = "[Objective-C 应用内搜索指南](app_search_guide.html)" %}
+{% set status_system_guide_url = "[Objective-C 应用内社交模块](status_system.html#iOS_SDK)" %}
+{% set sns_guide_url = "[Objective-C SNS 开发指南](sns.html#iOS_SNS_组件)" %}
+{% set feedback_guide_url = "[Objective-C 用户反馈指南](feedback.html#iOS_反馈组件)" %}
 {% set funtionName_whereKeyHasPrefix = "whereKey:hasPrefix:" %}
-{% set saveOptions_query= "where" %}
-{% set saveOptions_fetchWhenSave= "fetch_when_save" %}
+{% set saveOptions_query= "query" %}
+{% set saveOptions_fetchWhenSave= "fetchWhenSave" %}
+
 
 {# --End--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 
@@ -192,8 +199,8 @@ option.query = query;
 
 {% block code_object_fetchWhenSave %}
 ```
-    todo.fetchWhenSave = true;// 设置 fetchWhenSave 为 true
-    [todo saveInBackground];
+    anotherTodo.fetchWhenSave = true;
+    [anotherTodo saveInBackground];
 ```
 {% endblock %}
 
@@ -281,7 +288,7 @@ option.query = query;
   将指定对象附加到数组末尾。
 * `addUniqueObject:forKey:`<br>
   `addUniqueObjectsFromArray:forKey:`<br>
-  如果不确定某个对象是否已包含在数组字段中，可以使用此操作来添加。对象的插入位置是随机的。  
+  如果数组中不包含指定对象，将该对象加入数组，对象的插入位置是随机的。  
 * `removeObject:forKey:`<br>
   `removeObjectsInArray:forKey:`<br>
   从数组字段中删除指定对象的所有实例。
@@ -628,9 +635,9 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 或者在 Target 的 Info 标签中修改配置：
 
 ![Info.plist Setting](images/ios_qiniu_http.png)
-
+{% if node != 'qcloud' %}
 如果是美国节点，请把上面的 `clouddn.com` 换成 `amazonaws.com`。
-
+{% endif %}
 也可以根据项目需要，允许所有的 HTTP 访问，更多可参考 [iOS 9 适配系列教程](https://github.com/ChenYilong/iOS9AdaptationTips)。
 
 #### 启用文件 SSL 域名
@@ -1181,10 +1188,6 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 ```
 {% endblock %} code_object_fetch_with_keys
 
-{% block link_to_relation_guide_doc %}[iOS / OS X 数据模型设计指南](relation_guide-ios.html){% endblock %}
-
-{% set link_to_sms_guide_doc = '[iOS / OS X 短信服务使用指南](sms_guide-ios.html#注册验证)' %}
-
 {% block code_send_verify_email %}
 
 ```objc
@@ -1478,7 +1481,7 @@ student.name = @"小明";
 
 你可以根据自己的需求来选择使用哪种类型。原始类型更为易用，而 `NSNumber` 支持 `nil` 值，这可以让结果更清晰易懂。
 
-**注意** 子类中，对于 `BOOL` 类型的字段，SDK 在 3.1.3.2 之前会将其保存为 Number 类型，3.1.3.2 之后将其正确保存为 Bool 类型。详情请参考[这里](https://leancloud.cn/docs/ios_os_x_faq.html#为什么升级到_3_1_3_2_以上的版本时_BOOL_类型数据保存错误_)。
+**注意** 子类中，对于 `BOOL` 类型的字段，SDK 在 3.1.3.2 之前会将其保存为 Number 类型，3.1.3.2 之后将其正确保存为 Bool 类型。详情请参考 [这里](ios-macos-faq.html#为什么升级到_3_1_3_2_以上的版本时_BOOL_类型数据保存错误_)。
 
 注意：`AVRelation` 同样可以作为子类化的一个属性来使用，比如：
 
@@ -1571,9 +1574,5 @@ student.name = @"小明";
   }];
 ```
 {% endblock %}
-{% block link_to_in_app_search_doc %}[iOS / OS X 应用内搜索指南](app_search_guide.html){% endblock %}
-{% block link_to_status_system_doc %}[iOS / OS X 应用内社交模块](status_system.html#iOS_SDK){% endblock %}
-{% block link_to_sns_doc %}[iOS / OS X SNS 开发指南](sns.html#iOS_SNS_组件){% endblock %}
-{% block link_to_feedback_doc %}[iOS / OS X 用户反馈指南](feedback.html#iOS_反馈组件){% endblock %}
 
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

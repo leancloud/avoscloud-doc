@@ -54,7 +54,7 @@ git clone {{git_link}}
 ## 导入方式
 
 开发者可以将 LiveKit 导入到自己的 Project 中使用。新建一个名为 **LiveDemo** 的 Project  用以导入 LiveKit。导入方式有三种：
-- [通过 Gradle 导入](#Gradle 导入)
+- [通过 Gradle 导入](#Gradle_导入)
 - [通过源代码导入](#源代码导入)
 - 通过 Jar 包导入<span class="text-muted">（因为通过 Jar 包导入仍然要拷贝资源文件，所以这里不推荐此种方式。）</span>
 

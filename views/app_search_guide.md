@@ -80,9 +80,11 @@ https://leancloud.cn/1.1/go/com.avoscloud.todo
 
 其中包括三个设定项目：
 
-- **启用**：你可以启用或者关闭这个 Class 的应用内搜索功能，默认是关闭的。
-- **选择开放的列**：你可以选择哪些字段将加入索引引擎，这些字段将可以被外部用户看到（前提是 ACL 允许）。请慎重选择开放的字段。默认情况下，`objectId`、`createdAt`、`updatedAt` 三个字段将无条件加入开放字段列表。
+- **启用**：你可以启用或者关闭这个 Class 的应用内搜索功能，默认是关闭的。每个应用最多允许 5 个 Class 启用应用内搜索。
+- **选择开放的列**：你可以选择哪些字段将加入索引引擎用于搜索，每个 Class 最多允许索引 5 个字段（除内置字段外）。请仔细挑选要索引的字段。默认情况下，`objectId`、`createdAt`、`updatedAt` 三个字段将无条件加入开放字段列表。
 - **数据模板**：设置这个 Class 的数据展现模板，当外部调用无法打开应用（通常是用户没有安装应用）的时候，将渲染这个模板并展现给用户，默认的模板的只是渲染一些下载链接，你可以自定义这个模板的样式，比如加入你的应用 Logo， 添加 CSS 等。
+
+**如果一个 Class 启用了应用内搜索，但是超过两周没有任何搜索调用，我们将自动禁用该 Class 的搜索功能。**
 
 数据模板支持 [handlebars 模板语法](http://handlebarsjs.com/) ，支持的变量（使用两个大括号包起来 <code ng-non-bindable>{{var}}</code>）包括：
 
@@ -453,7 +455,7 @@ JavaScript SDK v0.5.1 版本开始支持应用内搜索 API:
   });
 ```
 
-更多 API 请参考 [AV.SearchQuery](/api-docs/javascript/symbols/AV.SearchQuery.html) 和 [AV.SearchSortBuilder](/api-docs/javascript/symbols/AV.SearchSortBuilder.html) 的文档。
+更多 API 请参考 [AV.SearchQuery](https://leancloud.github.io/javascript-sdk/docs/AV.SearchQuery.html) 和 [AV.SearchSortBuilder](https://leancloud.github.io/javascript-sdk/docs/AV.SearchSortBuilder.html) 的文档。
 
 ## 搜索 API
 
@@ -499,7 +501,7 @@ sid: "cXVlcnlUaGVuRmV0Y2g7Mzs0NDpWX0NFUmFjY1JtMnpaRDFrNUlBcTNnOzQzOlZfQ0VSYWNjUm
 `q`|必须|查询文本，支持类似 google 的搜索语法。
 `fields`|可选|逗号隔开的字段列表，查询的字段列表
 <code class="text-nowrap">highlights</code>|可选|高亮字段，可以是通配符 `*`，也可以是字段列表逗号隔开的字符串。如果加入，返回结果会多出 `_highlight` 属性，表示高亮的搜索结果内容，关键字用 `em` 标签括起来。
-`clazz`|可选|类名，如果没有指定，则搜索所有启用了应用内搜索的 class。
+`clazz`|可选|类名，如果没有指定或者为空字符串，则搜索所有启用了应用内搜索的 class。
 `order`|可选|排序字段，形如 `-score,createdAt` 逗号隔开的字段，负号表示倒序，可以多个字段组合排序。
 `include`||关联查询内联的 Pointer 字段列表，逗号隔开，形如 `user,comment` 的字符串。**仅支持 include Pointer 类型**。
 `sort`||复杂排序字段，例如地理位置信息排序，见下文描述。
@@ -719,5 +721,3 @@ curl -X GET \
 `max_doc_freq`|可选|词语最多出现的文档个数，超过这个值的词将被忽略，防止一些无意义的热频词干扰结果，默认无限制。
 
 更多内容参考 [ElasticSearch 文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-mlt-query.html)。
-
-

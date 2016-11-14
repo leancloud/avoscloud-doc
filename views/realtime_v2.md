@@ -618,7 +618,7 @@ mute | 可选 | 修改后的关闭对话提醒设置，如果不提供则保持�
 
 ## iOS 开发指南
 
-参考 [iOS 实时通信开发指南](realtime_guide-ios.html)
+参考 [iOS 实时通信开发指南](realtime_guide-objc.html)
 
 ##  JavaScript 开发指南
 

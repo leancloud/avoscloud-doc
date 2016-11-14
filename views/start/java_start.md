@@ -1,19 +1,13 @@
+{% set java_sdk_latest_version = '0.1.6' %}
+
 通过配置 pom.xml 来下载 LeanCloud Java SDK：
 
 ``` xml
-  <repositories>
-    <repository>
-      <id>leancloud</id>
-      <name>LeanCloud</name>
-      <url>http://mvn.leancloud.cn/nexus/content/groups/public/</url>
-    </repository>
-  </repositories>
-
   <dependencies>
     <dependency>
       <groupId>cn.leancloud</groupId>
-      <artifactId>leanengine</artifactId>
-      <version>[0.1.6,0.2.0)</version>
+      <artifactId>java-sdk</artifactId>
+      <version>{{java_sdk_latest_version}}</version>
     </dependency>
   </dependencies>
 ```

@@ -2,7 +2,7 @@
 
 网络支付是时下大热的开发趋势，但市面上支付渠道繁多，接入复杂，深坑不断，大大阻碍了开发者的开发进度。[BeeCloud][beecloud] 为开发者提供了一站式支付的解决方案，能便捷快速地实现各种支付渠道的接入，包括微信支付、支付宝、银联、易宝支付、百度钱包、京东支付、快钱、PayPal、Visa、MasterCard。  
 
-本文介绍如何在 [LeanCloud 云引擎](leanengine_overview.html) 的 [Python 环境](leanengine_guide-python.html) 中使用 BeeCloud 的「[秒收款 Button](https://app.beecloud.cn/)」产品来快速部署一个可以收款的网站。应用场景包含任何需要收款的网站（电脑/手机网站），兼容 IE7+、Chrome、Safari 等多数主流浏览器。
+本文介绍如何在 [LeanCloud 云引擎](leanengine_overview.html) 的 [Python 环境](leanengine_cloudfunction_guide-python.html) 中使用 BeeCloud 的「[秒收款 Button](https://app.beecloud.cn/)」产品来快速部署一个可以收款的网站。应用场景包含任何需要收款的网站（电脑/手机网站），兼容 IE7+、Chrome、Safari 等多数主流浏览器。
 
 ## Demo
 

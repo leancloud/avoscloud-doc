@@ -33,7 +33,7 @@
     "grunt": "^1.0.1",
     "grunt-bump": "^0.8.0",
     "grunt-cli": "^1.2.0",
-    "grunt-connect-proxy": "0.2.0",
+    "grunt-connect-proxy": "0.1.10",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-concat": "~1.0.0",
     "grunt-contrib-connect": "~1.0.0",

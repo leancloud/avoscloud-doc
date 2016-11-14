@@ -1,11 +1,11 @@
 {% extends "./realtime_guide.tmpl" %}
 
 {% set platform_name = 'Android' %}
-{% set doc_title = 'Android' %}
-{% set sdk_name = 'Android SDK' %}
+{% set segment_code = 'android' %}
+{% set sdk_name = platform_name + " SDK" %}
 
 {% block setup_init %}
-请参考详细的 [Android SDK 安装指南](sdk_setup-android.html)。
+请参考详细的 [{{sdk_name}} 安装指南](sdk_setup-android.html)。
 {% endblock %}
 
 {% block demo %}

@@ -461,3 +461,31 @@ def after_post_update(post):
 ```
 
 {% endblock %}
+
+{% block timerExample %}
+```python
+@engine.define
+def log_timer():
+    print 'Log in timer.'
+```
+{% endblock %}
+
+{% block timerExample2 %}
+```python
+from leancloud import push
+
+@engine.define
+def push_timer():
+    data = {
+        'alert': 'Public message',
+    }
+    push.send(data, channels=['Public'])
+```
+{% endblock %}
+
+{% block masterKeyInit %}
+```python
+// 第一个参数为 App Id
+leancloud.init('{{appid}}', master_key='{{masterkey}}')
+```
+{% endblock %}

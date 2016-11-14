@@ -4,6 +4,7 @@
 {% set platformName = "Java" %}
 {% set sdk_name = "Java" %}
 {% set leanengine_middleware = "[LeanEngine Java SDK](https://github.com/leancloud/leanengine-java-sdk)" %}
+{% set leanengine_java_sdk_latest_version = '0.1.11' %}
 
 {% block project_constraint %}
 你的项目需要遵循一定格式才会被云引擎识别并运行。
@@ -28,6 +29,12 @@
 
 #### 命令行工具
 
+首先需要使用 mvn 安装依赖：
+
+```sh
+$ mvn package
+```
+
 命令行工具 [v1.3.2](https://github.com/leancloud/avoscloud-code-command/blob/master/changelog.md#v132) 及之后的版本支持云引擎 Java 应用的本地启动，并为 JVM 进程设置需要的环境变量，在项目根目录执行 `lean up`，根据提示输入 `appId`，`masterKey` 等信息，命令行工具会调用 `mvn jetty:run` 来启动应用。
 
 **提示**：相对于其他启动方式，命令行工具有 [多应用管理](leanengine_cli.html#多应用管理) 功能，可以方便的切换不同应用环境。
@@ -44,7 +51,13 @@
 
 #### 命令行设置环境变量启动
 
-可以使用类似下面的命令来启动应用：
+首先需要使用 mvn 安装依赖：
+
+```sh
+$ mvn package
+```
+
+然后可以使用类似下面的命令来启动应用：
 
 ```
   LEANCLOUD_APP_ENV="development" \
@@ -115,18 +128,11 @@ Java 云引擎只支持 1.8 运行环境和 war 包运行
 * 配置依赖：在 pom.xml 中增加依赖配置来增加 {{leanengine_middleware}} 的依赖：
 
 ```xml
-	<repositories>
-		<repository>
-			<id>leancloud</id>
-			<name>LeanCloud</name>
-			<url>http://mvn.leancloud.cn/nexus/content/groups/public/</url>
-		</repository>
-	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>cn.leancloud</groupId>
 			<artifactId>leanengine</artifactId>
-			<version>[0.1.6,0.2.0)</version>
+			<version>{{leanengine_java_sdk_latest_version}}</version>
 		</dependency>
 	</dependencies>
 ```

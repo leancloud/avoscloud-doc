@@ -52,7 +52,8 @@ leancloud upload_symbol \
 -k "{{appkey}}"
 ```
 
-符号文件将默认上传到中国节点。如果你的应用使用了中国之外的其他节点，例如美国节点，需要通过 `-r` 或 `--region` 选项来设置：
+符号文件将默认上传到中国节点。{% if node != 'qcloud' %}
+如果你的应用使用了中国之外的其他节点，例如美国节点，需要通过 `-r` 或 `--region` 选项来设置：
 
 ```sh
 leancloud upload_symbol -r us \
@@ -65,16 +66,16 @@ leancloud upload_symbol -r us \
 
 - **cn**：中国
 - **us**：美国
-
+{% endif %}
 符号文件的存放位置，与你的发布流程有关，具体为：
 
-* **xcarchive 文件**：对应用进行 Archive 后会生成一个 .xcarchive 文件，在 Xcode 中打开 **Window** / **Organizer** / **Archives** 选项卡里可以看到它的位置。
+* **xcarchive 文件**：对应用进行 Archive 后会生成一个 `.xcarchive` 文件，在 Xcode 中打开 **Window** > **Organizer** > **Archives** 选项卡里可以看到它的位置。
 
-* **dSYM 文件**：一般仅在使用 Release 或 Archiving 构建应用时产生，可以在 /Xcode/DerivedData 文件夹下，与生成的 .app 同级的文件夹里找到。
+* **dSYM 文件**：一般仅在使用 Release 或 Archiving 构建应用时产生，可以在 `/Xcode/DerivedData` 文件夹下，与生成的 `.app` 同级的文件夹里找到。
 
 * **DWARF 文件**：在路径的最底层，它可以通过 strip 应用生成的二进制文件来获得。
 
-请参考以下路径结构，应用文件名为 Demo.app：
+请参考以下路径结构，应用文件名为 `Demo.app`：
 
 ```
 ├── Build

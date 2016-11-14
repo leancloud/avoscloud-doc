@@ -40,14 +40,22 @@ isHome: true
       <div class="section-content col-xs-12 col-sm-6 col-md-6">
         <h3>开发指南</h3>
         <ul class="list-unstyled">
-          <li><a href="start.html">安装</a></li>
+          <li><a href="start.html">SDK 安装</a></li>
+          <li>
+            <span>快速入门</span>
+            <ul class="list-unstyled list-platform">
+              <li><a href="leanstorage-started-android.html">Android</a></li>
+              <li><a href="leanstorage-started-objc.html">Objective-C</a></li>
+              <li><a href="leanstorage-started-js.html">JavaScript</a></li>
+            </ul>
+          </li>
           <li><a href="storage_overview.html">存储服务总览</a></li>
           <li><a href="data_security.html">数据安全详解</a></li>
           <li>
             <span>数据存储开发指南</span>
             <ul class="list-unstyled list-platform">
               <li><a href="leanstorage_guide-android.html">Android</a></li>
-              <li><a href="leanstorage_guide-ios.html">Objective-C</a></li>
+              <li><a href="leanstorage_guide-objc.html">Objective-C</a></li>
               <li><a href="leanstorage_guide-js.html">JavaScript</a></li>
               <li><a href="leanstorage_guide-python.html">Python</a></li>
               <li><a href="leanstorage_guide-php.html">PHP</a></li>
@@ -61,7 +69,7 @@ isHome: true
             <span>数据模型设计指南</span>
             <ul class="list-unstyled list-platform">
               <li><a href="relation_guide-android.html">Android</a></li>
-              <li><a href="relation_guide-ios.html">Objective-C</a></li>
+              <li><a href="relation_guide-objc.html">Objective-C</a></li>
               <li><a href="relation_guide-js.html">JavaScript</a></li>
               <li><a href="relation_guide-python.html">Python</a></li>
             </ul>
@@ -69,7 +77,7 @@ isHome: true
           <li>权限管理使用指南
             <ul class="list-unstyled list-platform">
               <li><a href="acl_guide-android.html">Android</a></li>
-              <li><a href="acl_guide-ios.html">Objective-C</a></li>
+              <li><a href="acl_guide-objc.html">Objective-C</a></li>
               <li><a href="acl_guide-js.html">JavaScript</a></li>
               <li><a href="acl_guide-python.html">Python</a></li>
             </ul>
@@ -84,6 +92,7 @@ isHome: true
       <div class="section-content col-xs-12 col-sm-6 col-md-6">
         <h3>最佳实践</h3>
         <ul class="list-unstyled">
+          <li><a href="weapp.html">在微信小程序中使用 LeanCloud</a></li>
           <li><a href="https://blog.leancloud.cn/1723/" target="_blank">基于 LeanCloud 的一对多、多对多数据建模</a></li>
           <li><a href="app_data_share.html">应用之间数据共享（Class 绑定）</a></li>
           <li><a href="https://blog.leancloud.cn/3993/" target="_blank">使用 LeanCloud 与 React Native 构建原生应用</a></li>
@@ -120,6 +129,7 @@ isHome: true
           <li>
             <span>网站托管开发指南</span>
             <ul class="list-unstyled list-platform">
+              <li><a href="leanengine_webhosting_guide-python.html">Python</a></li>
               <li><a href="leanengine_webhosting_guide-node.html">Node.js</a></li>
               <li><a href="leanengine_webhosting_guide-php.html">PHP</a></li>
               <li><a href="leanengine_webhosting_guide-java.html">Java</a></li>
@@ -128,23 +138,25 @@ isHome: true
           <li>
             <span>云函数开发指南</span>
             <ul class="list-unstyled list-platform">
+              <li><a href="leanengine_cloudfunction_guide-python.html">Python</a></li>
               <li><a href="leanengine_cloudfunction_guide-node.html">Node.js</a></li>
               <li><a href="leanengine_cloudfunction_guide-php.html">PHP</a></li>
               <li><a href="leanengine_cloudfunction_guide-java.html">Java</a></li>
             </ul>
           </li>
-          <li><a href="leanengine_guide-python.html">云引擎开发指南（Python）</a></li>
           <li><a href="leancache_guide.html">LeanCache 使用指南</a></li>
-          <li><a href="leanengine_cli.html">命令行工具使用详解</a></li>
+          <li><a href="leanengine_cli.html">命令行工具 CLI 使用指南</a></li>
         </ul>
       </div>
       <div class="section-content col-xs-12 col-sm-6 col-md-6">
         <h3>最佳实践</h3>
         <ul class="list-unstyled">
-          <li><a href="leanengine_examples.html">几个典型场景下的云引擎项目示例</a></li>
+          <li><a href="push-guide-leanengine.html">在云引擎中使用 Push 推送服务</a></li>
+
           <li><a href="acl_guide_leanengine.html">在云引擎中使用 ACL</a></li>
           <li><a href="https://blog.leancloud.cn/3437/" target="_blank">在云引擎中使用 WebSocket</a></li>
-          <li><a href="https://forum.leancloud.cn/t/leanengine/8426" target="_blank">来自稀土的云引擎最佳实践之用户系统</a></li>
+          <li><a href="leanengine_examples.html">几个典型场景下的云引擎项目示例</a></li>
+          <li><a href="https://forum.leancloud.cn/t/leanengine/8426" target="_blank">云引擎最佳实践 &middot; 用户系统〖稀土〗</a></li>
           <li><a href="https://blog.leancloud.cn/4133/" target="_blank">使用 New Relic 监控云引擎应用的性能</a></li>
           <li><a href="https://zhuanlan.zhihu.com/p/21399155" target="_blank">快速开发聊天机器人</a></li>
           <li><a href="tutorials.html#打造我的微信客服">打造我的微信客服</a></li>
@@ -178,7 +190,7 @@ isHome: true
             <span>通信基础库开发指南</span>
             <ul class="list-unstyled list-platform">
               <li><a href="realtime_guide-android.html">Android</a></li>
-              <li><a href="realtime_guide-ios.html">Objective-C</a></li>
+              <li><a href="realtime_guide-objc.html">Objective-C</a></li>
               <li><a href="realtime_guide-js.html">JavaScript</a></li>
               <li><a href="realtime_guide-dotnet.html">.Net/Unity3D</a></li>
             </ul>
@@ -194,6 +206,7 @@ isHome: true
             <span>直播＋聊天解决方案 LiveKit 使用指南</span>
             <ul class="list-unstyled list-platform">
               <li><a href="livekit-android.html">Android</a></li>
+              <li><a href="livekit-ios.html">Objective-C</a></li>
             </ul>
           </li>
         </ul>
@@ -235,7 +248,7 @@ isHome: true
             <ul class="list-unstyled list-platform">
               <li><a href="android_push_guide.html">Android</a></li>
               <li><a href="ios_push_guide.html">Objective-C</a></li>
-              <li><a href="js_push.html">JavaScript</a></li>
+              <li><a href="leanstorage_guide-js.html#Push_通知">JavaScript</a></li>
             </ul>
           </li>
           <li><a href="android_push_guide.html#混合推送">Android 混合推送使用指南</a></li>
@@ -245,6 +258,7 @@ isHome: true
         <h3>最佳实践</h3>
         <ul class="list-unstyled">
           <li><a href="ios_push_cert.html">iOS 推送证书设置指南</a></li>
+          <li><a href="push-guide-leanengine.html">在云引擎中使用 Push 推送服务</a></li>
           <li><a href="https://blog.leancloud.cn/5014/" target="_blank">在 Cordova 项目中使用 LeanCloud 推送</a></li>
         </ul>
         <h3>相关阅读</h3>
@@ -280,7 +294,7 @@ isHome: true
               <li><a href="unity_statistics.html">Unity3D</a></li>
             </ul>
           </li>
-          <li><a href="ios_crashreporting_guide.html">iOS/OSX 崩溃报告使用指南</a></li>
+          <li><a href="ios_crashreporting_guide.html">iOS/macOS 崩溃报告使用指南</a></li>
         </ul>
       </div>
       <div class="section-content col-xs-12 col-sm-6 col-md-6">
@@ -316,13 +330,13 @@ isHome: true
           <li><a href="realtime_rest_api.html">实时通信 REST API</a></li>
           <li><a href="rest_api.html#Push_通知">消息推送 REST API</a></li>
           <li><a href="rest_api.html#统计数据_API">移动统计 REST API</a></li>
-          {% if node!='qcloud' %}
+          {% if node != 'qcloud' and node != 'us' %}
           <li><a href="rest_sms_api.html">短信验证 REST API</a></li>
           <li>
             <span>短信服务使用指南</span>
             <ul class="list-unstyled list-platform">
               <li><a href="sms_guide-android.html">Android</a></li>
-              <li><a href="sms_guide-ios.html">Objective-C</a></li>
+              <li><a href="sms_guide-objc.html">Objective-C</a></li>
               <li><a href="sms_guide-js.html">JavaScript</a></li>
             </ul>
           </li>
@@ -360,7 +374,7 @@ isHome: true
         <ul class="list-unstyled">
           <li><a href="/api-docs/android/index.html" target="_blank">Android SDK API</a></li>
           <li><a href="/api-docs/iOS/index.html" target="_blank">Objective-C SDK API</a></li>
-          <li><a href="/api-docs/javascript/index.html" target="_blank">JavaScript 数据存储 SDK API</a></li>
+          <li><a href="https://leancloud.github.io/javascript-sdk/docs/" target="_blank">JavaScript 数据存储 SDK API</a></li>
           <li><a href="https://leancloud.github.io/js-realtime-sdk/docs/" target="_blank">JavaScript 实时通信 SDK API</a></li>
           <li><a href="https://leancloud.readthedocs.io/">Python SDK API</a></li>
           <li><a href="/api-docs/php/" target="_blank">PHP SDK API</a></li>

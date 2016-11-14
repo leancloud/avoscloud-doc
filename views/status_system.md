@@ -68,7 +68,7 @@ query.find().then(function(followers){
 });
 ```
 
-`followerQuery` 和 `followeeQuery` 返回的 AV.Query 对象可以象普通的 [AV.Query](/api-docs/javascript/symbols/AV.Query.html) 对象那样使用，它们本质上都是查询数据管理平台中的 `_Follower` 和 `_Followee`表，你可以添加 order、skip、limit 以及其他 where 条件等信息。
+`followerQuery` 和 `followeeQuery` 返回的 AV.Query 对象可以象普通的 [AV.Query](https://leancloud.github.io/javascript-sdk/docs/AV.Query.html) 对象那样使用，它们本质上都是查询数据管理平台中的 `_Follower` 和 `_Followee`表，你可以添加 order、skip、limit 以及其他 where 条件等信息。
 
 
 ### 状态
@@ -694,7 +694,7 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  https://leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
 ```
 
 {% if node=='qcloud' %}
@@ -710,7 +710,7 @@ curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  https://leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
 ```
 
 关注还可以增加一些属性：
@@ -721,7 +721,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"score": 100}' \
-  https://leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
 ```
 
 那么 `score` 字段将同时出现在 `_Follower` 和 `_Followee` 表，可以作为查询或者排序条件。
@@ -735,7 +735,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  https://leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/followers
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followers
 ```
 
 返回的用户列表是 Pointer 类型，如果想要将用户信息也返回，需要 include:
@@ -747,7 +747,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'include=follower' \
-  https://leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/followers
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followers
 ```
 
 查询关注的用户列表：
@@ -759,7 +759,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'include=followee' \
-  https://leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/followees
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followees
 ```
 
 同时查询粉丝和关注的人：
@@ -771,7 +771,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'include=followee' \
-  https://leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/followersAndFollowees
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followersAndFollowees
 ```
 
 结果返回：
@@ -790,7 +790,7 @@ curl -X GET \
   -G \
   --data-urlencode 'include=followee' \
   --data-urlencode 'count=1' \
-  https://leancloud.cn/1.1/users/51fa6886e4b0cc0b5a3792e9/followersAndFollowees
+  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followersAndFollowees
 ```
 
 ### 状态 API
@@ -842,7 +842,7 @@ curl -X POST \
               }
          }
       }' \
-   https://leancloud.cn/1.1/statuses
+   https://{{host}}/1.1/statuses
 ```
 
 这条状态的内容是 data 指定的，并且设定 inboxType 是 `default`：
@@ -920,7 +920,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'owner={"__type":"Pointer","className":"_User","objectId":"dennis id"}' \
-  https://leancloud.cn/1.1/subscribe/statuses
+  https://{{host}}/1.1/subscribe/statuses
 ```
 
 【示例二】查询我的最新私信列表：
@@ -952,6 +952,29 @@ curl -X GET \
     --data-urlencode 'where={"image":{"$exists":true }}'
 ```
 
+#### 删除收件箱里的消息
+
+可以根据 messageId 来删除收件箱的消息：
+
+```sh
+curl -X DELETE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -G \
+  --data-urlencode 'owner={"__type":"Pointer","className":"_User","objectId":"dennis id"}' \
+  --data-urlencode 'inboxType=default' \
+  --data-urlencode 'messageId=99' \
+  https://{{host}}/1.1/subscribe/statuses/inbox
+```
+
+
+参数|说明
+---|---
+owner | JSON 序列化后的 owner 字符串，表示 inbox 所有者。
+inboxType | inbox 的类型，默认为 `default`，可为空。
+messageId  | 想要删除的 status 的 messageId
+
 #### 查询状态计数 API
 
 查询 inbox 总消息数目和未读消息数目：
@@ -974,7 +997,7 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'owner={"__type":"Pointer","className":"_User","objectId":"dennis"}' \
-  https://leancloud.cn/1.1/subscribe/statuses/count
+  https://{{host}}/1.1/subscribe/statuses/count
 ```
 
 返回：
@@ -993,5 +1016,22 @@ curl -X GET \
   -G \
    --data-urlencode 'owner={"__type":"Pointer","className":"_User","objectId":"dennis"}' \
    --data-urlencode 'inboxType=private' \
-   https://leancloud.cn/1.1/subscribe/statuses/count
+   https://{{host}}/1.1/subscribe/statuses/count
 ```
+
+#### 重置未读消息数
+
+如果想将某个收件箱的未读消息数设置为 0，也就是通常看到的将全部消息设为「已读」的功能，可以通过 `resetUnreadCount` API 来实现：
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -G \
+   --data-urlencode 'owner={"__type":"Pointer","className":"_User","objectId":"dennis"}' \
+   --data-urlencode 'inboxType=private' \
+   https://{{host}}/1.1/subscribe/statuses/resetUnreadCount
+```
+
+接收的参数与 [查询状态计数 API](#查询状态计数_API) 是一致的。

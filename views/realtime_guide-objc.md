@@ -1,9 +1,8 @@
 {% extends "./realtime_guide.tmpl" %}
 
-{% set platform_name = 'iOS' %}
-{% set sdk_name = 'iOS SDK' %}
-
-{% block language %}iOS{% endblock %}
+{% set platform_name = 'Objective-C' %}
+{% set segment_code = 'objc' %}
+{% set sdk_name = platform_name + " SDK" %}
 
 {% block demo %}
 * [LeanMessage](https://github.com/leancloud/LeanMessage-Demo)（推荐）
@@ -11,7 +10,7 @@
 {% endblock %}
 
 {% block setup_init %}
-请参考详细的 [iOS / OS X SDK 安装指南](sdk_setup-ios.html)。
+请参考详细的 [{{sdk_name}} 安装指南](sdk_setup-objc.html)。
 {% endblock %}
 
 {% block compatibility %}
@@ -1802,7 +1801,7 @@ option.force = YES;
 ```
 {% endblock %}
 
-{% block link_avquery_chache %} [存储指南 &middot; AVQuery 缓存查询](leanstorage_guide-ios.html#缓存查询) 一节。{% endblock %}
+{% block link_avquery_chache %} [存储指南 &middot; AVQuery 缓存查询](leanstorage_guide-objc.html#缓存查询) 一节。{% endblock %}
 
 {% block platform_specific_faq %}
 <a id="duplicate_message_notification" name="duplicate_message_notification"></a>**为何离线消息重复推送了两次？**

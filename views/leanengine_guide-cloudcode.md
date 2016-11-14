@@ -176,7 +176,7 @@ $ avoscloud
 因为云引擎 2.0 运行在沙箱环境，所以不需要安装和初始化，直接可以在项目中使用。
 {% endblock %}
 
-{% set sdk_guide_link = '[JavaScript SDK](./leanstorage_guide-js.html)' %}
+{% set storage_guide_url = '[JavaScript SDK](./leanstorage_guide-js.html)' %}
 
 {% block cloudFuncExample %}
 ```javascript
@@ -221,7 +221,7 @@ AV.Cloud.run('hello', {name: 'dennis'}).then(function(data){
 ```
 {% endblock %}
 
-{% block runFuncApiLink %}[AV.Cloud.run](/api-docs/javascript/symbols/AV.Cloud.html#.run){% endblock %}
+{% block runFuncApiLink %}[AV.Cloud.run](https://leancloud.github.io/javascript-sdk/docs/AV.Cloud.html#.run){% endblock %}
 
 {% block beforeSaveExample %}
 ```javascript
@@ -348,10 +348,8 @@ AV.Cloud.onLogin(function(request, response) {
 {% block errorCodeExample %}
 ```
 AV.Cloud.define('errorCode', function(req, res) {
-  AV.User.logIn('NoThisUser', 'lalala', {
-    error: function(user, err) {
-      res.error(err);
-    }
+  AV.User.logIn('NoThisUser', 'lalala').catch(function(err) {
+    res.error(err);
   });
 });
 ```

@@ -3,8 +3,8 @@
 ## 你是 iOS 程序员？
 
 * [快速入门](./start.html)
-<li><a href="leanstorage_guide-ios.html">iOS / OS X 数据存储指南</a></li>
-<li><a href="realtime_guide-ios.html">iOS 实时通信指南</a></li>
+<li><a href="leanstorage_guide-objc.html">Objective-C 数据存储指南</a></li>
+<li><a href="realtime_guide-objc.html">iOS 实时通信指南</a></li>
 <li><a href="ios_statistics.html">iOS 统计 SDK 开发指南</a></li>
 <li><a href="ios_push_cert.html">iOS 推送证书设置指南</a></li>
 <li><a href="ios_crashreporting_guide.html">iOS 崩溃报告使用指南</a></li>
@@ -32,14 +32,14 @@
 * [快速入门](./start.html)
 <li><a href="leanstorage_guide-js.html">JavaScript 数据存储指南</a></li>
 <li><a href="https://github.com/leancloud/realtime-messaging-jssdk">JavaScript 实时通信 SDK</a></li>
-<li><a href="/api-docs/javascript/index.html" target="_blank">JavaScript SDK API</a></li>
+<li><a href="https://leancloud.github.io/javascript-sdk/docs/" target="_blank">JavaScript SDK API</a></li>
 
 ## 你是后端逻辑开发者？
 
 * [开放 REST API 文档](./rest_api.html)
 <li><a href="leanstorage_guide-js.html">JavaScript 数据存储指南</a></li>
 <li><a href="leanengine_overview.html">云引擎指南</a></li>
-<li><a href="leanengine_cli.html">云引擎命令行工具</a></li>
+<li><a href="leanengine_cli.html">命令行工具 CLI</a></li>
 
 ## 你是 PHP 开发者？
 
@@ -54,7 +54,7 @@
 ## 你要实现数据存储？
 
 <ul>
-<li><a href="leanstorage_guide-ios.html">iOS / OS X 数据存储指南</a></li>
+<li><a href="leanstorage_guide-objc.html">Objective-C 数据存储指南</a></li>
 <li><a href="leanstorage_guide-android.html">Android 数据存储指南</a></li>
 <li><a href="unity_guide.html">Unity3D 数据存储指南</a></li>
 <li><a href="dotnet_guide.html">.NET 数据存储指南</a></li>
@@ -64,7 +64,7 @@
 ## 你要实现聊天功能？
 
 <ul>
-<li><a href="realtime_guide-ios.html">iOS 实时通信指南</a></li>
+<li><a href="realtime_guide-objc.html">iOS 实时通信指南</a></li>
 <li><a href="realtime_guide-android.html">Android 实时通信指南</a></li>
 <li><a href="https://github.com/leancloud/realtime-messaging-jssdk">JavaScript 实时通信 SDK</a></li>
 <li><a href="realtime_guide-dotnet.html">Windows Phone 8.0 实时通信指南</a></li>
@@ -91,7 +91,7 @@
 <ul>
 <li><a href="leanengine_guide-cloudcode.html#网站托管">云引擎指南</a></li>
  </ul>
- 
+
 ## 你要导入导出数据？
 
 <ul>
