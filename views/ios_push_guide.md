@@ -2,6 +2,18 @@
 
 本文介绍了如何在 iOS 设备中使用 LeanCloud 的推送功能。请先阅读我们的博客文章《[细说 iOS 消息推送](https://blog.leancloud.cn/1163/)》，再通过 [消息推送概览](push_guide.html) 了解和巩固相关概念。
 
+### iOS 流程简介
+
+#### iOS 注册 deviceToken
+首先，iOS 的推送是通过如下图逻辑：
+
+<img src="images/apns-registration.svg" class="img-responsive" alt="">
+
+#### 调用 LeanCloud API 向设备推送消息
+开发者调用 LeanCloud SDK 提供的接口发送推送消息的逻辑时序图如下：
+
+<img src="images/push-workflow-ios.svg" class="img-responsive" alt="">
+
 ## 配置 iOS 推送证书
 
 配置 iOS 证书相对麻烦，但是却是必须的步骤，请详读 [iOS 推送证书设置指南](ios_push_cert.html)。

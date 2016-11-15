@@ -208,11 +208,11 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 ### 手动显示登录界面
 
-上面的例子中都是自动显示登录界面，如果需要实现自定义显示方式，可以使用方法 `loginManualyWithCallback:`，例如：
+上面的例子中都是自动显示登录界面，如果需要实现自定义显示方式，可以使用方法 `loginManuallyWithCallback:`，例如：
 
 ```objc
 __block UIViewController *vc=nil;
-vc= [AVOSCloudSNS loginManualyWithCallback:^(id object, NSError *error) {
+vc= [AVOSCloudSNS loginManuallyWithCallback:^(id object, NSError *error) {
     if (vc) {
         //关闭 UIViewController
 

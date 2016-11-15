@@ -10,7 +10,7 @@
 
 相关参考链接：
 
-* [实时通信服务端错误码说明](realtime_v2.html#服务器端错误码说明)。
+* [实时通信服务端错误码说明](realtime_v2.html#云端错误码说明)。
 * iOS SDK 在进行 WebSocket 通信过程中，相关的状态码请参考  [**RFC 6455 -- Status Codes**]( http://tools.ietf.org/html/rfc6455#section-7.4 )。
 
 ## 1
