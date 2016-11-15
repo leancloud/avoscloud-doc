@@ -81,24 +81,7 @@
 {% block code_saveoption_query_example %}
 
 ```java
-        // 获取 version 值
-        int version = avObject.getInt("version");
-
-        AVSaveOption avSaveOption = new AVSaveOption();
-
-        AVQuery<AVObject> query = new AVQuery<>("Wiki");
-        query.whereEqualTo("version", version);
-
-        avSaveOption.query(query);
-
-        avObject.saveInBackground(avSaveOption, new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                if (e.getCode() == 305) {
-                    Log.d(TAG, "无法保存修改，wiki 已被他人更新。");
-                }
-            }
-        });
+    // 请更新代码
 ```
 {% endblock %}
 

@@ -170,17 +170,7 @@ AV.Object.register(Todo);
 {% block code_saveoption_query_example %}
 
 ```js
-  new AV.Query('Wiki').first().then(function (wiki) {
-    var currentVersion = wiki.get('version');
-    wiki.set('version', currentVersion + 1);
-    return wiki.save(null, {
-      query: new AV.Query('Wiki').equalTo('version', currentVersion)
-    });
-  }).then(function (wiki) {
-    // 保存成功
-  }, function (error) {
-    // 异常处理
-  });
+  // 请更新代码
 ```
 {% endblock %}
 

@@ -108,21 +108,7 @@
 {% block code_saveoption_query_example %}
 
 ```objc
-// 获取 version 值
-NSNumber *version = [object objectForKey:@"version"];
-
-AVSaveOption *option = [[AVSaveOption alloc] init];
-
-AVQuery *query = [[AVQuery alloc] init];
-[query whereKey:@"version" equalTo:version];
-
-option.query = query;
-
-[object saveInBackgroundWithOption:option block:^(BOOL succeeded, NSError *error) {
-    if ( error.code == 305 ){
-      NSLog(@"无法保存修改，wiki 已被他人更新。");
-    }
-}];
+// 请更新代码
 ```
 {% endblock %}
 

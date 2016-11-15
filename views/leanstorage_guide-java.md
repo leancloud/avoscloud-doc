@@ -99,21 +99,7 @@
 {% block code_saveoption_query_example %}
 
 ```java
-    // 获取 version 值
-    int version = wiki.getInt("version");
-    AVQuery<AVObject> query = new AVQuery<>("Wiki");
-    query.whereEqualTo("version", version);
-    try {
-        wiki.put("content", "Hello Java!");
-        wiki.increment("version");
-        wiki.save(new AVSaveOption().query(query));
-    } catch (AVException e) {
-        if (e.getCode() == 305) {
-        log.d("无法保存修改，wiki 已被他人更新。");
-        } else {
-            e.printStackTrace();
-        }
-    }
+    // 请更新代码
 ```
 {% endblock %}
 
