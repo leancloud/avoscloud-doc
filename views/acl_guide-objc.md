@@ -40,8 +40,8 @@
             [acl setPublicReadAccess:YES];// 设置公开的「读」权限，任何人都可阅读
             [acl setWriteAccess:YES forUser:[AVUser currentUser]];// 为当前用户赋予「写」权限
             
-            AVUser *othterUser = [objects objectAtIndex:0];// 读取 admin
-            [acl setWriteAccess:YES forUser:othterUser];
+            AVUser *otherUser = [objects objectAtIndex:0];// 读取 admin
+            [acl setWriteAccess:YES forUser:otherUser];
             
             post.ACL = acl;// 将 ACL 实例赋予 Post 对象
             
