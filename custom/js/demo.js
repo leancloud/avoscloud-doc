@@ -19,46 +19,77 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
       'unity': 'Unity',
       'winphone': 'Windows Phone',
       'js': 'JavaScript',
-      'node': 'Node.js'
+      'node': 'Node.js',
+      'php': 'php',
+      'reactnative': 'React Native'
     }
     $scope.demos = {
       'ios': [{
+        name: 'StorageStarted',
+        desc: '本教程将模拟一个发布商品的场景，向你讲解 LeanCloud 的数据存储 LeanStorage 的核心使用方法。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/StorageStarted',
+        type: 'ios'
+      },{
         name: 'LeanStorage Demo',
         desc: '展示了 LeanCloud 数据存储 SDK 的各种基础和高级用法，帮助 LeanCloud 开发者尽快上手 SDK。',
         downPath: '',
         mdPath: 'https://github.com/leancloud/ios-simple-demo',
         type: 'ios'
       },{
-        name: 'LeanChat + 表情 mm',
-        desc: '全面展示了如何在 LeanCloud 实时通讯 SDK 中集成「表情 mm SDK」，快速方便地为聊天应用加入丰富的表情功能。',
+        name: 'LeanMessageDemo-iOS',
+        desc: '此项目是为了让大家能快速上手熟悉 LeanCloud IM SDK。之前推出的 LeanChat ，我们发现其中含杂了许多 UI 代码，不利于大家学习上手。因此我们推出了 LeanMessageDemo，只有最精简的 UI、最核心的 SDK 用法。',
         downPath: '',
-        mdPath: 'https://github.com/siyanhui/bqmm-leanchat-demo-ios/tree/master/leanchat',
-        type: 'ios',
-        image: 'images/emoji-1.png'
+        mdPath: 'https://github.com/leancloud/LeanMessage-Demo',
+        type: 'ios'
+      },{
+        name: 'Share',
+        desc: '事件流系统的 Demo，有关注、发状态、时间线等功能。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/Share',
+        type: 'ios'
       },{
         name: 'Feedback Demo',
         desc: '演示了 LeanCloud 反馈功能的用法。',
         downPath: '',
         mdPath: 'https://github.com/leancloud/feedback-demo',
         type: 'ios'
-      }, {
-        name: 'FreeChat',
-        desc: '演示了 LeanCloud 实时通信 SDK 的使用方法，包括单聊、群聊、聊天室，也支持图片、文字、语音等消息类型。',
-        downPath: '',
-        mdPath: 'https://github.com/leancloud/FreeChat',
-        type: 'ios'
       },{
-        name: '微转',
-        desc: '一个基于微博的数码设备平台，客户端和后台全部基于 LeanCloud 服务来实现。',
+        name: 'leancloud-smsdemo-ios',
+        desc: 'LeanCloud SMS Demo 是 LeanCloud 开源的一个短信 demo 程序',
         downPath: '',
-        mdPath: 'https://github.com/leancloud/VZ',
+        mdPath: 'https://github.com/leancloud/leancloud-smsdemo-ios',
         type: 'ios'
       }],
       'android': [{
+        name: 'StorageStarted',
+        desc: '本教程将模拟一个发布商品的场景，向你讲解 LeanCloud 的数据存储 LeanStorage 的核心使用方法。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/StorageStarted',
+        type: 'android'
+      },{
         name: 'LeanStorage Demo',
         desc: '展示了 LeanCloud 数据存储 SDK 的各种基础和高级用法，包括用户系统、文件上传下载、子类化、对象复杂查询等。',
         downPath: '',
         mdPath: 'https://github.com/leancloud/android-simple-demo',
+        type: 'android'
+      },{
+        name: 'LeanChat-Android',
+        desc: 'LeanChat 是用 LeanCloud 实时通信服务做的一个沟通工具，有Android、iOS版本。后台也完全基于 LeanCloud，存储用户信息，好友关系等。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/leanchat-android',
+        type: 'android'
+      },{
+        name: 'LeanMessageDemo',
+        desc: '此项目是为了让大家能快速上手熟悉 LeanCloud IM SDK。之前推出的 LeanChat ，我们发现其中含杂了许多 UI 代码，不利于大家学习上手。因此我们推出了 LeanMessageDemo ，只有最精简的 UI、最核心的 SDK 用法。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/LeanMessage-Demo',
+        type: 'android'
+      },{
+        name: 'WeShare',
+        desc: '此项目是用 LeanCloud 事件流系统组件做的类似朋友圈的分享小应用。具有时间线、发文字发图、点赞、关注的模块或功能。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/WeShare',
         type: 'android'
       },{
         name: 'LeanPush Demo',
@@ -67,24 +98,24 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         mdPath: 'https://github.com/leancloud/android-push-demo',
         type: 'android'
       },{
-        name: 'LeanChat + 表情 mm',
-        desc: '全面展示了如何在 LeanCloud 实时通讯 SDK 中集成「表情 mm SDK」，快速方便地为聊天应用加入丰富的表情功能。',
+        name: 'android-sns-demo',
+        desc: '示例了 QQ 、微博授权登录。',
         downPath: '',
-        mdPath: 'https://github.com/siyanhui/bqmm-leanchat-demo-android',
-        type: 'android',
-        image: 'images/emoji-1.png'
-      },{
-        name: 'Todo Demo',
-        desc: '一个创建、编辑、删除和搜索 Todo 的示例，演示功能包括数据增删改查、子类化 com.avos.demo.Todo 类、统计功能、统计的自定义事件功能、应用内搜索等。',
-        downPath: '',
-        mdPath: 'https://github.com/leancloud/android-todolist',
+        mdPath: 'https://github.com/leancloud/android-sns-demo',
         type: 'android'
       },{
-        name: 'Anytime',
-        desc: '展示了用户注册、登录、登出和忘记密码等用户系统相关的功能，相对复杂一些的数据增删改查操作，以及消息推送。',
+        name: 'android-sms-demo',
+        desc: '短信验证码示例项目。',
         downPath: '',
-        mdPath: 'https://github.com/lzwjava/AnyTime',
+        mdPath: 'https://github.com/leancloud/android-sms-demo',
         type: 'android'
+      }],
+      'js': [{
+        name: 'StorageStarted',
+        desc: '本教程将模拟一个发布商品的场景，向你讲解 LeanCloud 的数据存储 LeanStorage 的核心使用方法。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/StorageStarted',
+        type: 'js'
       }],
       'unity': [{
         name: 'FlappyBird',
@@ -100,14 +131,57 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         mdPath: 'https://github.com/leancloud/windows-phone-sdk-demos',
         type: 'winphone'
       }],
-      'js': [{
-        name: '云引擎 Todo Demo',
-        desc: '演示了基本的用户注册、会话管理、业务数据的增删查改、简单的 ACL 使用。本项目可以作为初学云引擎和 JavaScript SDK 使用。',
+      'php': [{
+        name: 'slim-todo-demo',
+        desc: 'LeanCloud todo demo for Slim PHP Framewor',
         downPath: '',
-        mdPath: 'https://github.com/leancloud/leanengine-todo-demo',
-        type: 'js'
+        mdPath: 'https://github.com/leancloud/slim-todo-demo',
+        type: 'php'
+      }],
+      'reactnative': [{
+        name: 'react-native-image-upload-demo',
+        desc: 'React Native 上传图片',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/react-native-image-upload-demo',
+        type: 'reactnative'
+      },{
+        name: 'react-native-installation-demo',
+        desc: '本 Demo 演示了如何在 React Native for iOS 中使用 LeanCloud 的推送服务。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/react-native-installation-demo',
+        type: 'reactnative'
       }],
       'node': [{
+        name: 'sdk-demo-engine',
+        desc: 'LeanEngine 项目，展示 SDK 与云引擎之间的数据交互。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/sdk-demo-engine',
+        type: 'node'
+      },{
+        name: 'cloud-code-weixin',
+        desc: '云代码接入微信的例子，利用云代码可快速搭建微信服务号的后端。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/LeanEngine-WechatBot',
+        type: 'node'
+      },{
+        name: 'realtime-service-demo',
+        desc: '这个项目提供了利用 LeanCloud 云引擎、数据存储和实时通信服务实现一个基本的客服系统的 Demo。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/realtime-service-demo',
+        type: 'node'
+      },,{
+        name: 'leanengine-todo-demo',
+        desc: '该项目是 LeanCloud 的 LeanEngine 示例项目，使用 Node.js 和 Express 实现。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/leanengine-todo-demo',
+        type: 'node'
+      },{
+        name: 'leanengine-websocket-demo',
+        desc: 'websocket 简单示例',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/leanengine-websocket-demo',
+        type: 'node'
+      }{
         name: 'LeanCache Demos',
         desc: '包含了抢红包、排行榜缓存、关联数据缓存、图形验证码、节点选举和锁、任务队列、热点只读数据缓存等实用代码，展示出 Redis 缓存的实际应用效果。',
         downPath: '',
@@ -139,4 +213,4 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
 
 
   }
-]);
+  ]);
