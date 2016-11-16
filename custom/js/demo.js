@@ -20,7 +20,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
       'winphone': 'Windows Phone',
       'js': 'JavaScript',
       'node': 'Node.js',
-      'php': 'php',
+      'php': 'PHP',
       'reactnative': 'React Native'
     }
     $scope.demos = {
@@ -169,7 +169,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         downPath: '',
         mdPath: 'https://github.com/leancloud/realtime-service-demo',
         type: 'node'
-      },,{
+      },{
         name: 'leanengine-todo-demo',
         desc: '该项目是 LeanCloud 的 LeanEngine 示例项目，使用 Node.js 和 Express 实现。',
         downPath: '',
@@ -181,7 +181,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         downPath: '',
         mdPath: 'https://github.com/leancloud/leanengine-websocket-demo',
         type: 'node'
-      }{
+      },{
         name: 'LeanCache Demos',
         desc: '包含了抢红包、排行榜缓存、关联数据缓存、图形验证码、节点选举和锁、任务队列、热点只读数据缓存等实用代码，展示出 Redis 缓存的实际应用效果。',
         downPath: '',

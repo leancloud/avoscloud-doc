@@ -7,7 +7,6 @@
 * iOS 聊天应用：
   * [ChatKit，自带 UI 的聊天工具包](chatkit-ios.html)
   * [LeanMessageDemo iOS 版](https://github.com/leancloud/LeanMessage-Demo)
-  * [LeanChat iOS 版](https://github.com/leancloud/leanchat-ios)
 
 * Android 聊天应用：
   * [ChatKit，自带 UI 的聊天工具包](chatkit-android.html)
