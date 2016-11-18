@@ -874,11 +874,21 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 如果在 {{app_permission_link}} 中勾选了 **密码修改后，强制客户端重新登录**，那么当用户密码再次被修改后，已登录的用户对象就会失效，开发者需要使用更改后的密码重新调用登录接口，使 SessionToken 得到更新，否则后续操作会遇到 [403 (Forbidden)](error_code.html#_403) 的错误。
 
+{% block text_user_isAuthenticated %}
+##### 验证 SessionToken 是否在有效期内
+
+{% block code_user_isAuthenticated %}{% endblock %}
+
+{% endblock %}
+
+
 #### 账户锁定
 
 输入错误的密码或验证码会导致用户登录失败。如果在 15 分钟内，同一个用户登录失败的次数大于 6 次，该用户账户即被云端暂时锁定，此时云端会返回错误码 `{"code":1,"error":"登录失败次数超过限制，请稍候再试，或者通过忘记密码重设密码。"}`，开发者可在客户端进行必要提示。
 
 锁定将在最后一次错误登录的 15 分钟之后由云端自动解除，开发者无法通过 SDK 或 REST API 进行干预。在锁定期间，即使用户输入了正确的验证信息也不允许登录。这个限制在 SDK 和云引擎中都有效。
+
+
 
 ### 重置密码
 

@@ -1383,6 +1383,18 @@ AV.User.requestLoginSmsCode('13577778888').then(function (success) {
 {% endblock %}
 
 
+
+{% block code_user_isAuthenticated %}
+
+```js
+    var currentUser = AV.User.current();
+    currentUser.isAuthenticated().then(function(authenticated){
+       // console.log(authenticated); 根据需求进行后续的操作
+    });
+```
+{% endblock %}
+
+
 {% block text_subclass %}{% endblock %}
 {% block text_sns %}{% endblock %}
 {% block text_feedback %}{% endblock %}

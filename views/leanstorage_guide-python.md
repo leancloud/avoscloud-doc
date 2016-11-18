@@ -1255,7 +1255,12 @@ user.logout()  # 清除缓存用户对象
 current_user = leancloud.User.get_current()  # 现在的 current_user 是 null 了
 ```
 {% endblock %}
+{% block code_user_isAuthenticated %}
 
+```js
+user.is_authenticated() # 验证用户的授权信息是否在有效期内
+```
+{% endblock %}
 {% block code_query_user %}
 
 ```python

@@ -1001,6 +1001,42 @@ AVIMClient tom = AVIMClient.getInstance("Tom");
 ```
 {% endblock %}
 
+{% block message_push_data %}
+
+```java
+AVIMClient tom = AVIMClient.getInstance("Tom");
+    tom.open(new AVIMClientCallback() {
+      @Override
+      public void done(AVIMClient client, AVIMException e) {
+        if (e == null) {
+          // 创建名为“猫和老鼠”的对话
+          client.createConversation(Arrays.asList("Jerry"), "猫和老鼠", null,
+            new AVIMConversationCreatedCallback() {
+              @Override
+              public void done(AVIMConversation conv, AVIMException e) {
+                if (e == null) {
+                  AVIMTextMessage msg = new AVIMTextMessage();
+                  msg.setText("耗子，起床！");
+
+                  AVIMMessageOption messageOption = new AVIMMessageOption();
+                  messageOption.setPushData("自定义离线消息推送内容");
+                  conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
+                    @Override
+                    public void done(AVIMException e) {
+                      if (e == null) {
+                        // 发送成功
+                      }
+                    }
+                  });
+                }
+              }
+            });
+        }
+      }
+    });
+```
+{% endblock %}
+
 {% block message_sent_ack %}
 
 ```
@@ -1383,7 +1419,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_changeName %}
 
-```
+```java
 AVIMClient black = AVIMClient.getInstance("Black");
 black.open(new AVIMClientCallback(){
 
@@ -1410,7 +1446,7 @@ black.open(new AVIMClientCallback(){
 
 {% block conversation_mute %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 

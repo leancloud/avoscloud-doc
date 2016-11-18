@@ -386,11 +386,42 @@ conversation.on('message', function messageEventHandler(message) {
 });
 ```
 
+### 消息发送选项
+消息发送选项用于在发送消息时定义消息的一些特性。包含以下特性：
 
-### 暂态消息
+#### 消息等级
+
+为了保证消息的时效性，当聊天室消息过多导致客户端连接堵塞时，服务器端会选择性地丢弃部分低等级的消息。目前支持的消息等级有：
+
+消息等级 | 描述
+---------|-----
+`MessagePriority.HIGH`    | 高等级，针对时效性要求较高的消息，比如直播聊天室中的礼物，打赏等。
+`MessagePriority.NORMAL`  | 正常等级，比如普通非重复性的文本消息。
+`MessagePriority.LOW`     | 低等级，针对时效性要求较低的消息，比如直播聊天室中的弹幕。
+
+消息等级在发送接口的参数中设置。以下代码演示了如何发送一个高等级的消息：
+
+```js
+var realtime = new Realtime({ appId: '{{appId}}', region: 'cn' });
+realtime.createIMClient('host').then(function (host) {
+    return host.createConversation({
+        members: ['broadcast'],
+        name: '2094 世界杯决赛梵蒂冈对阵中国比赛直播间',
+        transient: true
+    });
+}).then(function (conversation) {
+    console.log(conversation.id);
+    return conversation.send(new AV.TextMessage('现在比分是 0:0，下半场中国队肯定要做出人员调整'), { priority: AV.MessagePriority.HIGH });
+}).then(function (message) {
+    console.log(message);
+}).catch(console.error);
+```
+
+<div class="callout callout-info">此功能仅针对<u>聊天室消息</u>有效。普通对话的消息不需要设置等级，即使设置了也会被系统忽略，因为普通对话的消息不会被丢弃。</div>
+
+#### 暂态消息
 
 暂态消息不会被自动保存（以后在历史消息中无法找到它），也不支持延迟接收，离线用户更不会收到推送通知，所以适合用来做控制协议。譬如聊天过程中「某某正在输入...」这样的状态信息，就适合通过暂态消息来发送；或者当群聊的名称修改以后，也可以用暂态消息来通知该群的成员「群名称被某某修改为...」。
-
 
 
 ```javascript
@@ -454,7 +485,7 @@ realtime.createIMClient('bob').then(function(bob) {
 ```
 
 
-### 消息送达回执
+#### 消息送达回执
 
 是指消息被对方收到之后，云端会发送一个回执通知给发送方，表明消息已经送达。
 
@@ -481,6 +512,39 @@ conversation.on('receipt', function(payload) {
 需要注意的是：
 
 > 只有在发送时设置了「需要回执」标记，云端才会发送回执，默认不发送回执。该回执并不代表用户已读。
+
+
+#### 自定义离线推送内容
+
+发送消息时，可以指定该消息对应的离线推送内容。如果消息接收方不在线，我们会推送您指定的内容。以下代码演示了如何自定义离线推送内容：
+
+```js
+var realtime = new Realtime({ appId: '{{appId}}', region: 'cn' });
+realtime.createIMClient('Tom').then(function (host) {
+    return host.createConversation({
+        members: ['Jerry'],
+        name: 'Tom & Jerry',
+        unique: true
+    });
+}).then(function (conversation) {
+    console.log(conversation.id);
+    return conversation.send(new AV.TextMessage('耗子，今晚有比赛，我约了 Kate，咱们仨一起去酒吧看比赛啊？！'), {
+        pushData: {
+            "data": {
+                "alert": "您有一条未读的消息",
+                "category": "消息",
+                "badge": 1,
+                "sound": "声音文件名，前提在应用里存在",
+                "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
+            }
+        }
+    });
+}).then(function (message) {
+    console.log(message);
+}).catch(console.error);
+```
+
+除此以外，还有其他方法来自定义离线推送内容，请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。
 
 ### 未读消息
 

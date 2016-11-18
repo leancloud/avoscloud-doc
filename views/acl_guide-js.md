@@ -111,6 +111,12 @@
 {% block query_role_of_user %}
 
 ```js
+   //第一种是通过 AV.User 的内置接口：
+   user.getRoles().then(function(roles){
+    // roles 是一个 AV.Role 数组，这些 AV.Role 表示 user 拥有的角色
+   });
+   
+  // 第二种是通过查询：
   // 新建角色查询
   var roleQuery = new AV.Query(AV.Role);
   // 查询当前用户拥有的角色
@@ -118,6 +124,15 @@
   roleQuery.find().then(function(roles) {
     // roles 是一个 AV.Role 数组，这些 AV.Role 表示当前用户所拥有的角色
   }, function (error) {
+  });
+```
+{% endblock %}
+
+{% block get_role_of_user %}
+
+```js
+  user.getRoles().then(function(roles){
+    // roles 是一个 AV.Role 数组，这些 AV.Role 表示 user 拥有的角色
   });
 ```
 {% endblock %}

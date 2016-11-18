@@ -1363,6 +1363,13 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 ```
 {% endblock %}
 
+{% block code_user_isAuthenticated %}
+
+```objc
+
+```
+{% endblock %}
+
 {% block code_query_user %}
 
 ```objc
