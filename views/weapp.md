@@ -153,7 +153,7 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
   ```javascript
   const AV = require('./utils/leancloud-storage.js');
   const Realtime = require('./utils/leancloud-realtime.js').Realtime;
-  const TypedMessagesPlugin = requrie('./utils/leancloud-realtime-plugin-typed-messages.js').TypedMessagesPlugin;
+  const TypedMessagesPlugin = require('./utils/leancloud-realtime-plugin-typed-messages.js').TypedMessagesPlugin;
   const ImageMessage = require('./utils/leancloud-realtime-plugin-typed-messages.js').ImageMessage;
   ```
 5. 在 `app.js` 中初始化应用：

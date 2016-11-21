@@ -68,20 +68,6 @@ typedef enum : NSUInteger {
 @property(nonatomic, strong) UIFont *feedbackCellFont;
 ```
 
-我们看一个例子，节选自 [LeanChat](https://github.com/leancloud/leanchat-ios)，
-
-```objc
-    LCUserFeedbackViewController *feedbackViewController = [[LCUserFeedbackViewController alloc] init];
-    feedbackViewController.navigationBarStyle = LCUserFeedbackNavigationBarStyleNone;
-    feedbackViewController.contactHeaderHidden = YES;
-    feedbackViewController.feedbackTitle = [AVUser currentUser].username;
-    CDBaseNavC *navigationController = [[CDBaseNavC alloc] initWithRootViewController:feedbackViewController];
-    [self presentViewController:navigationController animated:YES completion: ^{
-    }];
-```
-
-这里用 LeanChat 应用统一的 `CDBaseNavC` ，于是有了统一的导航栏样式。其次隐藏了联系方式表头，并且把反馈标题设置成了用户名。前者考虑到 LeanChat 支持手机号注册，不需要额外填写联系方式，后者考虑到能在网站管理台直观地看到用户名，从而快速定位用户。
-
 ### 新回复通知
 往往用户反馈放在设置页面，于是可以在用户反馈一栏增加红点提醒，代码如下，
 ```objc

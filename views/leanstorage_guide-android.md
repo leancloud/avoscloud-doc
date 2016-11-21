@@ -1507,7 +1507,7 @@ public class Student extends AVObject {
 如果你不仅需要一个简单的访问器，而是有更复杂的逻辑，你可以实现自己的方法，例如：
 
 ``` java
-ublic void takeAccusation() {
+public void takeAccusation() {
   // 处理用户举报，当达到某个条数的时候，自动打上屏蔽标志
   increment("accusation", 1);
   if (getAccusation() > 50) {

@@ -69,7 +69,7 @@ git submodule update --init
 在 SDK 的根目录执行以下命令进行一键编译：
 
 ```sh
-ruby build-frameworks.rb
+ruby build-framework.rb
 ```
 
 待命令执行完毕，就可以在 AVOS/AVOS.xcodeproj/build 目录下找到编译好的 frameworks。

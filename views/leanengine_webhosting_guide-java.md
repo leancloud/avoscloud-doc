@@ -6,6 +6,17 @@
 {% set leanengine_middleware = "[LeanEngine Java SDK](https://github.com/leancloud/leanengine-java-sdk)" %}
 {% set leanengine_java_sdk_latest_version = '0.1.11' %}
 
+
+{% block runtime_description %}
+Java 运行环境对内存的使用较多，所以建议：
+
+* 以 [示例项目](https://github.com/leancloud/java-war-getting-started.git) 起步的应用，建议使用 512MB 或以上规格的实例。
+* 使用 [Spring Boot](https://projects.spring.io/spring-boot/) 的应用，建议使用 1GB 或以上规格的实例。
+* 本地启动并模拟完成主要业务流程操作，待应用充分初始化后，根据 Java 进程内存占用量选择相应的实例规格，需要注意保留一定的余量用以应对请求高峰。
+
+<div class="callout callout-danger">如果云引擎 [实例规格](leanengine_plan.html#选择实例规格) **选择不当**，可能造成应用启动时因为内存溢出（OOM）导致部署失败，或运行期内存溢出导致应用频繁重启。</div>
+{% endblock %}
+
 {% block project_constraint %}
 你的项目需要遵循一定格式才会被云引擎识别并运行。
 

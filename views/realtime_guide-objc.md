@@ -5,8 +5,8 @@
 {% set sdk_name = platform_name + " SDK" %}
 
 {% block demo %}
-* [LeanMessage](https://github.com/leancloud/LeanMessage-Demo)（推荐）
-* [LeanChat](https://github.com/leancloud/leanchat-ios)
+* [ChatKit-OC](https://github.com/leancloud/ChatKit-OC)（推荐）
+* [LeanMessage](https://github.com/leancloud/LeanMessage-Demo)
 {% endblock %}
 
 {% block setup_init %}

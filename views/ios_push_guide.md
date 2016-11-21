@@ -2,21 +2,19 @@
 
 本文介绍了如何在 iOS 设备中使用 LeanCloud 的推送功能。请先阅读我们的博客文章《[细说 iOS 消息推送](https://blog.leancloud.cn/1163/)》，再通过 [消息推送概览](push_guide.html) 了解和巩固相关概念。
 
-### iOS 流程简介
+## iOS 流程简介
 
-#### iOS 注册 deviceToken
-首先，iOS 的推送是通过如下图逻辑：
+首先注册 APNs 申请 deviceToken：
 
 <img src="images/apns-registration.svg" class="img-responsive" alt="">
 
-#### 调用 LeanCloud API 向设备推送消息
-开发者调用 LeanCloud SDK 提供的接口发送推送消息的逻辑时序图如下：
+开发者调用 LeanCloud SDK 提供的接口发送推送消息：
 
 <img src="images/push-workflow-ios.svg" class="img-responsive" alt="">
 
 ## 配置 iOS 推送证书
 
-配置 iOS 证书相对麻烦，但是却是必须的步骤，请详读 [iOS 推送证书设置指南](ios_push_cert.html)。
+配置 iOS 证书是关键的步骤，请参考 [iOS 推送证书设置指南](ios_push_cert.html)。
 
 ## 多证书场景
 
@@ -88,11 +86,8 @@
 }
 ```
 
-{% if node=='qcloud' %}
-在 iOS 设备中，Installation 的类是 AVInstallation，并且是 AVObject 的子类，使用同样的 API 存储和查询。如果要访问当前应用的 Installation 对象，可以通过 `[AVInstallation currentInstallation]` 方法。当你第一次保存 AVInstallation 的时候，它会插入 `_Installation` 表，你可以在 `数据管理` 平台看到和查询。当 deviceToken 一被保存，你就可以向这台设备推送消息了。
-{% else %}
-在 iOS 设备中，Installation 的类是 AVInstallation，并且是 AVObject 的子类，使用同样的 API 存储和查询。如果要访问当前应用的 Installation 对象，可以通过 `[AVInstallation currentInstallation]` 方法。当你第一次保存 AVInstallation 的时候，它会插入 `_Installation` 表，你可以在 [数据管理](/data.html?appid={{appid}}) 平台看到和查询。当 deviceToken 一被保存，你就可以向这台设备推送消息了。
-{% endif %}
+在 iOS 设备中，Installation 的类是 AVInstallation，并且是 AVObject 的子类，使用同样的 API 存储和查询。如果要访问当前应用的 Installation 对象，可以通过 `[AVInstallation currentInstallation]` 方法。当你第一次保存 AVInstallation 的时候，它会插入 `_Installation` 表，你可以在 {% if node=='qcloud' %}**控制台 > 存储 > 数据 > `_Installation`**{% else %}[控制台 > 存储 > 数据 > `_Installation`](/data.html?appid={{appid}}#/_Installation){% endif %} 查看和查询。当 deviceToken 一被保存，你就可以向这台设备推送消息了。
+
 
 ```objc
 - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -151,11 +146,7 @@ AVInstallation *currentInstallation = [AVInstallation currentInstallation];
 [currentInstallation saveInBackground];
 ```
 
-{% if node=='qcloud' %}
-订阅后要记得保存，即可在 `数据管理` 平台看到该 installation 的 channels 字段多了一个「Giants」。
-{% else %}
-订阅后要记得保存，即可在 [数据管理](/data.html?appid={{appid}})平台看到该 installation 的 channels 字段多了一个「Giants」。
-{% endif %}
+订阅后要记得保存，即可在 {% if node=='qcloud' %}**控制台 > 存储 > 数据 > `_Installation`**{% else %}[控制台 > 存储 > 数据 > `_Installation`](/data.html?appid={{appid}}#/_Installation){% endif %} 中看到该 installation 的 channels 字段多了一个「Giants」。
 
 退订：
 
@@ -204,11 +195,8 @@ AVPush *push = [[AVPush alloc] init];
 ...
 ```
 
-{% if node=='qcloud' %}
-<div class="callout callout-info">为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 `控制台 / 消息 / 推送记录` 页面中体现。因此，在使用开发证书推送时，请合理设置推送条件。</div>
-{% else %}
-<div class="callout callout-info">为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 [控制台 / 消息 / 推送记录](/messaging.html?appid={{appid}}#/message/push/list) 页面中体现。因此，在使用开发证书推送时，请合理设置推送条件。</div>
-{% endif %}
+<div class="callout callout-info">为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，并在 {% if node=='qcloud' %}**控制台 > 消息 > 推送记录**{% else %}[控制台 > 消息 > 推送记录](/messaging.html?appid={{appid}}#/message/push/list){% endif %} 页面中体现。因此，在使用开发证书推送时，请合理设置推送条件。</div>
+
 
 ## 高级定向发送
 
@@ -343,7 +331,7 @@ AVPush *push = [[AVPush alloc] init];
 
 当设备关闭或者无法连接到网络的时候，推送通知就无法被送达。如果你有一条时间敏感的推送通知，不希望在太长时间后被用户读到，那么可以设置一个过期时间来避免打扰用户。
 
-AVPush 提供了两个方法来设置通知的过期日期，首先是 expireAtDate：接收 NSDate 来告诉 LeanCloud 不要再去发送通知。
+AVPush 提供了两个方法来设置通知的过期日期，首先是 `expireAtDate:` 接收 NSDate 来告诉 LeanCloud 不要再去发送通知。
 
 ```objc
 NSDateComponents *comps = [[NSDateComponents alloc] init];
@@ -543,11 +531,7 @@ if (application.applicationState != UIApplicationStateBackground) {
 
 传递 `nil` 或者空白的参数给 `trackAppOpenedWithLaunchOptions:` 方法只是统计一次标准的应用打开事件（比如不是通过通知打开的应用）。
 
-{% if node=='qcloud' %}
-你可以在 `控制台 > 分析 > 行为分析 > 应用使用` 里看到通知和应用打开的情况。
-{% else %}
-你可以在 [控制台 > 分析 > 行为分析 > 应用使用](/stat.html?appid={{appid}}#/stat/appuse) 里看到通知和应用打开的情况。
-{% endif %}
+你可以在 {% if node=='qcloud' %}**控制台 > 分析 > 行为分析 > 应用使用**{% else %}[控制台 > 分析 > 行为分析 > 应用使用](/stat.html?appid={{appid}}#/stat/appuse){% endif %} 里看到通知和应用打开的情况。
 
 请注意，如果你的应用正在运行或者在后台，`application:didReceiveRemoteNotification:`方法将会处理收到的推送通知。
 
@@ -592,12 +576,12 @@ if (application.applicationState != UIApplicationStateBackground) {
 
 iOS10 以上会调用下面的两个方法：
 
- ```objc
+```objc
  //在前台收到本地通知, 执行的方法
 -[UNUserNotificationCenterDelegate willPresentNotification:withCompletionHandler:] 
  //在后台和启动之前收到本地推送, 执行的方法
 -[UNUserNotificationCenterDelegate didReceiveNotificationResponse:withCompletionHandler:]") 
- ```
+```
 
 ### 清除 Badge
 
