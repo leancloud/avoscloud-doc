@@ -99,7 +99,25 @@
 {% block code_saveoption_query_example %}
 
 ```java
-    // 请更新代码
+    final int amount = -100;
+    AVQuery query = new AVQuery("Account");
+    AVObject account = query.getFirst();
+    
+    account.increment("balance", -amount);
+
+    AVSaveOption option = new AVSaveOption();
+    option.query(new AVQuery("Account").whereGreaterThanOrEqualTo("balance",-amount));
+    option.setFetchWhenSave(true);
+    try {
+      account.save(option);
+      System.out.println("当前余额为：" + account.getInt("balance"));
+    } catch (AVException e){
+      if (e != null){
+        if (e.getCode() == 305){
+          System.out.println("余额不足，操作失败！");
+        }
+      }
+    }
 ```
 {% endblock %}
 

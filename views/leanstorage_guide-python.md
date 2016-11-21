@@ -417,7 +417,24 @@ Todo.save_all([todo1, todo2, todo3])  # save_all 是一个类方法
 {% block code_saveoption_query_example %}
 
 ```python
-# 请更新代码
+import leancloud
+
+class Account(leancloud.Object):
+    pass
+
+account = Account.query.first()
+amount = -100
+account.increment('balance', amount)
+account.fetch_when_save = True
+where = Account.query.greater_than_or_equal_to('balance', -amount)
+try:
+    account.save(where=where)
+    print('当前余额为：', account.get('balance'))
+except leancloud.LeanCloudError as e:
+    if e.code == 305:
+        print('余额不足，操作失败！')
+    else:
+        raise
 ```
 {% endblock %}
 

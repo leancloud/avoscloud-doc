@@ -81,7 +81,27 @@
 {% block code_saveoption_query_example %}
 
 ```java
-    // 请更新代码
+    final int amount = -100;
+    AVQuery<AVObject> query = new AVQuery<>("Account");
+    query.getFirstInBackground(new GetCallback<AVObject>() {
+        @Override
+        public void done(final AVObject account, AVException e) {
+            account.increment("balance", amount);
+            AVSaveOption option = new AVSaveOption();
+            option.query(new AVQuery<>("Account").whereGreaterThanOrEqualTo("balance", -amount));
+            option.setFetchWhenSave(true);
+            account.saveInBackground(option, new SaveCallback() {
+                @Override
+                public void done(AVException e) {
+                    if (e == null) {
+                        System.out.println("当前余额为：" + account.get("balance"));
+                    } else {
+                        System.out.println("余额不足，操作失败！");
+                    }
+                }
+            });
+        }
+    });
 ```
 {% endblock %}
 

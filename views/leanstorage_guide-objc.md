@@ -108,7 +108,26 @@
 {% block code_saveoption_query_example %}
 
 ```objc
-// 请更新代码
+    NSInteger amount = -100;
+    AVObject *account = [[AVQuery queryWithClassName:@"Account"] getFirstObject];
+
+    [account incrementKey:@"balance" byAmount:@(amount)];
+
+    AVQuery *query = [[AVQuery alloc] init];
+    [query whereKey:@"balance" greaterThanOrEqualTo:@(-amount)];
+
+    AVSaveOption *option = [[AVSaveOption alloc] init];
+
+    option.query = query;
+    option.fetchWhenSave = YES;
+
+    [account saveInBackgroundWithOption:option block:^(BOOL succeeded, NSError * _Nullable error) {
+        if (succeeded) {
+            NSLog(@"当前余额为：%@", account[@"balance"]);
+        } else if (error.code == 305) {
+            NSLog(@"余额不足，操作失败！");
+        }
+    }];
 ```
 {% endblock %}
 

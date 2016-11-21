@@ -170,7 +170,25 @@ AV.Object.register(Todo);
 {% block code_saveoption_query_example %}
 
 ```js
-  // 请更新代码
+  var Account = AV.Object.extend('Account');
+  new AV.Query(Account).first().then(function(account) {
+    var amount = -100;
+    account.increment('balance', amount);
+    // 如果使用 JS SDK 2.0 以前的版本，save() 要加传 null 
+    // 作为第一个参数，否则会报错：
+    // return account.save(null, {
+    return account.save({
+      query: new AV.Query(Account).greaterThanOrEqualTo('balance', -amount),
+      fetchWhenSave: true,
+    });
+  }).then(function(account) {
+    // 保存成功
+    console.log('当前余额为：', account.get('balance'));
+  }).catch(function(error) {
+    if (error.code === 305) {
+    console.log('余额不足，操作失败！');
+    }
+  });
 ```
 {% endblock %}
 
