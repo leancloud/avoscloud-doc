@@ -1060,7 +1060,7 @@ query = leancloud.Query.and_(query1, query2)
 import leancloud
 
 cql_string1 = 'select * from Todo where status = 1'
-todo_list = leancloud.Query.do_cloud_query(sql_string1).results
+todo_list = leancloud.Query.do_cloud_query(cql_string1).results
 
 cql_string2 = 'select count(*) from Todo where priority = 0'
 todo_count = leancloud.Query.do_cloud_query(cql_string2).count

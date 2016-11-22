@@ -1,4 +1,4 @@
-{% set release = "[lean-cli release 页面](https://github.com/leancloud/lean-cli/releases)" %}
+{% set release = "[Github releases 页面](https://github.com/leancloud/lean-cli/releases)" %}
 # 命令行工具 CLI 使用指南
 
 命令行工具是用来管理和部署云引擎项目的工具。它不仅可以部署、发布和回滚云引擎代码，对同一个云引擎项目做多应用管理，还能查看云引擎日志，批量将文件上传到 LeanCloud 云端。
@@ -7,23 +7,24 @@
 
 ### macOS
 
-可以使用 [Homebrew](http://brew.sh/) 进行安装：
+使用 [Homebrew](http://brew.sh/) 进行安装：
 
 ```sh
 brew update
 brew install lean-cli
 ```
+
 如果之前使用 `npm` 安装过旧版本的命令行工具，为了避免与新版本产生冲突，建议使用 `npm uninstall -g leancloud-cli` 卸载旧版本命令行工具。或者直接按照 `homebrew` 的提示，执行 `brew link --overwrite lean-cli` 覆盖掉之前的 `lean` 命令来解决。
 
 ### Windows
 
-Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 位 或 64 位 msi 安装包进行安装，安装成功之后在 Windows 命令提示符（或 PowerShell）下直接输入 `lean` 命令即可使用。
+Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 位 或 64 位 **msi** 安装包进行安装，安装成功之后在 Windows 命令提示符（或 PowerShell）下直接输入 `lean` 命令即可使用。
 
-也可以选择下载编译好的绿色版 exe 文件，使用时在 Windows 命令提示符（或 PowerShell）下输入此文件的完整路径即可。比如下载之后文件的存放位置是 `C:\Users\Downloads\lean-windows-amd64.exe`，则输入 `C:\Users\Downloads\lean-windows-amd64.exe`。不过我们强烈建议将此文件更名为 `lean.exe`，并将其路径加入到系统 **PATH** 环境变量（[设置方法](https://www.java.com/zh_CN/download/help/path.xml)）中去，这样在任意目录下输入 `lean` 就可以使用命令行工具了。当然也可以将此文件直接放到已经在 PATH 环境变量中声明的任意目录中去，比如 `C:\Windows\System32` 中。
+也可以选择编译好的绿色版 **exe** 文件，下载后将此文件更名为 `lean.exe`，并将其路径加入到系统 **PATH** 环境变量（[设置方法](https://www.java.com/zh_CN/download/help/path.xml)）中去。这样使用时在 Windows 命令提示符（或 PowerShell）下，在任意目录下输入 `lean` 就可以使用命令行工具了。当然也可以将此文件直接放到已经在 PATH 环境变量中声明的任意目录中去，比如 `C:\Windows\System32` 中。
 
 ### Linux
 
-在 {{release}} 下载预编译好的二进制文件，放在 PATH 环境变量所在目录中即可。
+从 {{release}} 下载预编译好的二进制文件 `lean_linux_amd64`，重命名为 `lean` 并放到 已经在 PATH 环境变量中声明的任意目录中即可。
 
 ### 通过源码安装
 

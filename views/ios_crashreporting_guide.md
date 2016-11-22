@@ -13,11 +13,8 @@
 // Setup AVOSCloud
 [AVOSCloud setApplicationId:@"{{appid}}" clientKey:@"{{appkey}}"];
 ```
-{% if node=='qcloud' %}
-崩溃报告打开后，应用的崩溃信息会发送到 LeanCloud 云端，具体内容可在 `控制台 / 分析 / 错误分析` 里看到。
-{% else %}
-崩溃报告打开后，应用的崩溃信息会发送到 LeanCloud 云端，具体内容可在 [控制台 / 分析 / 错误分析](/stat.html?appid={{appid}}#/stat/crashreport) 里看到。
-{% endif %}
+
+崩溃报告打开后，应用的崩溃信息会发送到 LeanCloud 云端，具体内容可在 {% if node=='qcloud' %}**控制台 > 分析 > 错误分析**{% else %}[控制台 > 分析 > 错误分析](/stat.html?appid={{appid}}#/stat/crashreport){% endif %} 里看到。
 
 ## 符号化
 
@@ -32,7 +29,7 @@ gem update --system
 gem install --no-wrappers -n /usr/local/bin leancloud
 ```
 
-在应用的 Targets 中，选择 **Build Settings** > **Build Options** > **Debug Information Format**，将其设置为 **DWARF with dSYM File**；再打开 **Build Phases** ><span class="text-muted">（点击 + 号）</span>> **New Run Script Phase**，添加一个 **Run Script** 步骤：
+在应用的 Targets 中选择 **Build Settings** > **Build Options** > **Debug Information Format**，将其设置为 **DWARF with dSYM File**；再打开 **Build Phases** ><span class="text-muted">（点击 + 号）</span>> **New Run Script Phase**，添加一个 **Run Script** 步骤：
 
 ```sh
 leancloud upload_symbol \
@@ -97,7 +94,7 @@ leancloud upload_symbol -r us \
 
 ## 测试
 
-崩溃报告启用之后，要测试崩溃信息是否能发送到 LeanCloud 云端，可以在 view controller 或 AppDelegate 中添加一个 `crash` 方法：
+崩溃报告启用之后，要测试崩溃信息是否能发送到 LeanCloud 云端，可以在 view controller 或 `AppDelegate` 中添加一个 `crash` 方法：
 
 ```objc
 - (void)crash {
@@ -117,13 +114,8 @@ leancloud upload_symbol -r us \
 3. 等待应用崩溃；
 4. 再次运行应用。应用将在启动时自动将崩溃报告发送给 LeanCloud 云端。
 
-{% if node=='qcloud' %}
-这时打开应用控制台的 `错误分析`，就会看到刚才的崩溃信息。
-{% else %}
-这时打开应用控制台的 [错误分析](/stat.html?appid={{appid}}#/stat/crashreport)，就会看到刚才的崩溃信息。
-{% endif %}
 
-> 注意：崩溃信息可能会延迟几分钟显示。
+这时打开 {% if node=='qcloud' %}**控制台 > 分析 > 错误分析**{% else %}[控制台 > 分析 > 错误分析](/stat.html?appid={{appid}}#/stat/crashreport){% endif %}，就会看到刚才的崩溃信息。但崩溃信息可能会**延迟**几分钟显示。
 
 ## 流程
 

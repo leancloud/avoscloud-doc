@@ -472,7 +472,7 @@
     }, new ProgressCallback() {
         @Override
         public void done(Integer integer) {
-        // 上传进度数据，integer 介于 0 和 100。
+        // 下载进度数据，integer 介于 0 和 100。
         }
     });
 ```
@@ -1101,7 +1101,7 @@ public class App extends Application {
     super.onCreate();
 
     AVObject.registerSubclass(Student.class);
-    AVOSCloud.initialize(this, "...", "...");
+    AVOSCloud.initialize("{{appid}}","{{appkey}}");
   }
 }
 ```
