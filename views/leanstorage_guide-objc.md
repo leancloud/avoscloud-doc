@@ -108,21 +108,26 @@
 {% block code_saveoption_query_example %}
 
 ```objc
-// 获取 version 值
-NSNumber *version = [object objectForKey:@"version"];
+    NSInteger amount = -100;
+    AVObject *account = [[AVQuery queryWithClassName:@"Account"] getFirstObject];
 
-AVSaveOption *option = [[AVSaveOption alloc] init];
+    [account incrementKey:@"balance" byAmount:@(amount)];
 
-AVQuery *query = [[AVQuery alloc] init];
-[query whereKey:@"version" equalTo:version];
+    AVQuery *query = [[AVQuery alloc] init];
+    [query whereKey:@"balance" greaterThanOrEqualTo:@(-amount)];
 
-option.query = query;
+    AVSaveOption *option = [[AVSaveOption alloc] init];
 
-[object saveInBackgroundWithOption:option block:^(BOOL succeeded, NSError *error) {
-    if ( error.code == 305 ){
-      NSLog(@"无法保存修改，wiki 已被他人更新。");
-    }
-}];
+    option.query = query;
+    option.fetchWhenSave = YES;
+
+    [account saveInBackgroundWithOption:option block:^(BOOL succeeded, NSError * _Nullable error) {
+        if (succeeded) {
+            NSLog(@"当前余额为：%@", account[@"balance"]);
+        } else if (error.code == 305) {
+            NSLog(@"余额不足，操作失败！");
+        }
+    }];
 ```
 {% endblock %}
 

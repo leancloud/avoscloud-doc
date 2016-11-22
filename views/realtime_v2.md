@@ -7,7 +7,6 @@
 * iOS 聊天应用：
   * [ChatKit，自带 UI 的聊天工具包](chatkit-ios.html)
   * [LeanMessageDemo iOS 版](https://github.com/leancloud/LeanMessage-Demo)
-  * [LeanChat iOS 版](https://github.com/leancloud/leanchat-ios)
 
 * Android 聊天应用：
   * [ChatKit，自带 UI 的聊天工具包](chatkit-android.html)
@@ -331,7 +330,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 
 ### 云引擎签名范例
 
-我们提供了一个运行在 LeanCloud [云引擎](leanengine_guide-cloudcode.html) 上的 [签名范例程序](https://github.com/leancloud/realtime-messaging-signature-cloudcode)
+我们提供了一个运行在 LeanCloud [云引擎](leanengine_overview.html) 上的 [签名范例程序](https://github.com/leancloud/realtime-messaging-signature-cloudcode)
 ，它提供了基于 Web Hosting 和云函数两种方式的签名实现，你可以根据实际情况选择自己的实现。
 
 ### 用户登录的签名

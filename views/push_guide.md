@@ -374,45 +374,7 @@ LeanCloud 推送服务通过推送请求中 `data` 参数内的 `silent` 字段�
 
 `_Installation` 表中的所有属性，无论是内置的还是自定义的，都可以作为查询条件通过 where 来指定，并且支持 [REST API](./rest_api.html#查询) 定义的各种复杂查询。
 
-后文会举一些例子，更多例子请参考 [REST API](./rest_api.html#查询) 查询文档。
-
-#### 过期时间和定时推送
-
-`expiration_time` 属性用于指定消息的过期时间，如果客户端收到消息的时间超过这个绝对时间，那么消息将不显示给用户。`expiration_time` 是一个 UTC 时间的字符串，格式为 `YYYY-MM-DDTHH:MM:SS.MMMZ`。
-
-```
-{
-      "expiration_time": "2016-01-28T00:07:29.773Z",
-      "data": {
-        "alert": "过期时间为北京时间 1 月 28 日 8:07。"
-      }
-}
-```
-
-`expiration_interval` 也可以用于指定过期时间，不过这是一个相对时间，以**秒**为单位，从 API 调用时间点开始计算起：
-
-```
-{
-      "expiration_interval": "86400",
-      "data": {
-        "alert": "收到 Push API 调用的 24 小时后过期。"
-      }
-}
-```
-
-`push_time` 是定时推送的时间，格式为 `YYYY-MM-DDTHH:MM:SS.MMMZ` 的 UTC 时间，也可以结合 `expiration_interval` 设定过期时间：
-
-```
-{
-      "push_time":           "2016-01-28T00:07:29.773Z",
-      "expiration_interval": "86400",
-      "data": {
-        "alert": "北京时间 1 月 28 日 8:07 发送这条推送，24 小时后过期"
-      }
-}
-```
-
-下面是一些推送的例子
+下面会举一些例子，更多例子请参考 [REST API](./rest_api.html#查询) 查询文档。
 
 #### 推送给所有的设备
 ```sh
@@ -429,6 +391,24 @@ curl -X POST \
 ```
 
 #### 发送给特定的用户
+
+* 发送给 android 设备的用户
+
+```sh
+curl -X POST \
+-H "X-LC-Id: {{appid}}"          \
+-H "X-LC-Key: {{appkey}}"        \
+-H "Content-Type: application/json" \
+-d '{
+      "where":{
+        "deviceType": "android"
+      },
+      "data": {
+        "alert": "LeanCloud 向您问好！"
+      }
+    }' \
+https://leancloud.cn/1.1/push
+```
 
 * 发送给 public 频道的用户
 
@@ -571,6 +551,42 @@ curl -X POST \
       }
     }' \
 https://leancloud.cn/1.1/push
+```
+
+#### 过期时间和定时推送
+
+`expiration_time` 属性用于指定消息的过期时间，如果客户端收到消息的时间超过这个绝对时间，那么消息将不显示给用户。`expiration_time` 是一个 UTC 时间的字符串，格式为 `YYYY-MM-DDTHH:MM:SS.MMMZ`。
+
+```
+{
+      "expiration_time": "2016-01-28T00:07:29.773Z",
+      "data": {
+        "alert": "过期时间为北京时间 1 月 28 日 8:07。"
+      }
+}
+```
+
+`expiration_interval` 也可以用于指定过期时间，不过这是一个相对时间，以**秒**为单位，从 API 调用时间点开始计算起：
+
+```
+{
+      "expiration_interval": "86400",
+      "data": {
+        "alert": "收到 Push API 调用的 24 小时后过期。"
+      }
+}
+```
+
+`push_time` 是定时推送的时间，格式为 `YYYY-MM-DDTHH:MM:SS.MMMZ` 的 UTC 时间，也可以结合 `expiration_interval` 设定过期时间：
+
+```
+{
+      "push_time":           "2016-01-28T00:07:29.773Z",
+      "expiration_interval": "86400",
+      "data": {
+        "alert": "北京时间 1 月 28 日 8:07 发送这条推送，24 小时后过期"
+      }
+}
 ```
 
 #### 推送消息属性

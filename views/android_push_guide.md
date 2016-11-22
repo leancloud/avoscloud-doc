@@ -6,7 +6,7 @@ Android 推送功能除了需要必须的 `avoscloud.jar` 以外，还需要额�
 
 Android 消息推送有专门的 Demo，请见 [Android-Push-Demo](https://github.com/leancloud/android-push-demo) 项目。
 
-### Android 消息推送流程简介
+## 消息推送流程简介
 
 <img src="images/push-workflow-android.svg" class="img-responsive" alt="">
 

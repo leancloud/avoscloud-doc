@@ -419,22 +419,22 @@ Todo.save_all([todo1, todo2, todo3])  # save_all 是一个类方法
 ```python
 import leancloud
 
-Wiki = leancloud.Object.extend('Wiki')
-wiki = Wiki()
-wiki.set('content', 'Hello World!')
-wiki.set('version', 2)
-wiki.save()
+class Account(leancloud.Object):
+    pass
 
-# 这里其它的进程可能已经更新了 wiki 的内容和版本，如下的更新可能会出错
-query = Wiki.query
-query.equal_to('version', 1)  # 可能查询的时候版本号不符
-wiki.set('content', 'Morning, World!')
+account = Account.query.first()
+amount = -100
+account.increment('balance', amount)
+account.fetch_when_save = True
+where = Account.query.greater_than_or_equal_to('balance', -amount)
 try:
-    wiki.save(query)
+    account.save(where=where)
+    print('当前余额为：', account.get('balance'))
 except leancloud.LeanCloudError as e:
-    print "无法保存修改，wiki 已被他人更新。"   # 如果抛出异常，则说明 query 的条件不符合
-else:
-    print "保存成功。"
+    if e.code == 305:
+        print('余额不足，操作失败！')
+    else:
+        raise
 ```
 {% endblock %}
 
