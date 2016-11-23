@@ -691,10 +691,9 @@ tom.open(new AVIMClientCallback() {
           AVIMConversation conv = client.getConversation("551260efe4b01608686c3e0f");
           AVIMOperationMessage msg = new AVIMOperationMessage();
           msg.setOp("keyboard inputing");
-          // AVIMConversation.TRANSIENT_MESSAGE_FLAG 表示该条消息为暂态消息
-          // 
-          conv.sendMessage(msg, AVIMConversation.TRANSIENT_MESSAGE_FLAG,
-              new AVIMConversationCallback() {
+          AVIMMessageOption messageOption = new AVIMMessageOption();
+          messageOption.setTransient(true);
+          conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
                 @Override
                 public void done(AVIMException e) {
                   if (e == null) {
@@ -767,31 +766,6 @@ jerry.open(new AVIMClientCallback() {
 {% endblock %}
 
 {% block offlineMessage_android %}>**Android 聊天服务是和后台的推送服务共享连接的，所以只要有网络就永远在线，不需要专门做推送。**消息达到后，你可以根据用户的设置来判断是否需要弹出通知。网络断开时，我们为每个对话保存 20 条离线消息。{% endblock %}
-
-{% block message_sent_ack %}
-
-```
-AVIMMessageHandler handler = new AVIMMessageHandler(){
-
-    public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
-     //此处就是对方收到消息以后的回调
-	  Log.i("Tom & Jerry","msg received");
-  }
-}
-
-//注册对应的handler
-AVIMMessageManager.registerMessageHandler(AVIMMessage.class,handler);
-
-//发送消息
-
-AVIMClient jerry = AVIMClient.getInstance("Jerry");
-AVIMConversation conv = jerry.getConversation("551260efe4b01608686c3e0f");
-AVIMMessage msg = new AVIMMessage();
-msg.setContent("Ping");
-conv.sendMessage(msg,AVIMConversation.RECEIPT_MESSAGE_FLAG);
-
-```
-{% endblock %}
 
 {% block messagePolicy_received_intro %}{% endblock %}
 
@@ -960,14 +934,12 @@ public class AVIMTextMessage extends AVIMTypedMessage {
 /**
  *
  * @param message 发送的消息实体，可以是任何 AVIMMessage 子类
- * @param messageFlag AVIMConversation.TRANSIENT_MESSAGE_FLAG(0)：暂态消息，只有在消息发送时，对方也是在线的才能收到这条消息；
- *                    AVIMConversation.NONTRANSIENT_MESSAGE_FLAG(1)：非暂态消息，当消息发送时，对方不在线的话，消息会变成离线消息；
- *                    AVIMConversation.RECEIPT_MESSAGE_FLAG(17)：回执消息，当消息送到到对方以后，发送方会收到消息回执说明消息已经成功达到接收方
+ * @param AVIMMessageOption 消息发送选项
  * @param callback 消息发送之后的回调，发送异常或者发送成功都可以在回调里进行操作
  */
-public void sendMessage(final AVIMMessage message, final int messageFlag, final AVIMConversationCallback callback)
+public void sendMessage(final AVIMMessage message, final AVIMMessageOption option, final AVIMConversationCallback callback)
 ```
-为了满足通用需求，SDK 还提供了一个更为常用的重载声明：
+关于 AVIMMessageOption 可参见[消息发送选项](#消息发送选项)，为了满足通用需求，SDK 还提供了一个更为常用的重载声明：
 
 ```
 /**
@@ -978,7 +950,7 @@ public void sendMessage(final AVIMMessage message, final int messageFlag, final 
 public void sendMessage(AVIMMessage message, AVIMConversationCallback callback)
 ```
 
-其实本质上，调用 `sendMessage(message, callback)` 就等价于调用 `sendMessage(message,1, callback)` ，因为一般情况下消息存在的形式多以**非暂态**消息为主
+其实本质上，调用 `sendMessage(message, callback)` 就等价于调用 `sendMessage(message, null, callback)`
 
 {% endblock %}
 
@@ -987,6 +959,80 @@ public void sendMessage(AVIMMessage message, AVIMConversationCallback callback)
 {% block messagePolicy_received_method %}{% endblock %}
 
 {% block messagePolicy_received %}{% endblock %}
+
+{% set message_option_name = 'AVIMMessageOption' %}
+
+{% set message_priority_high_varname    = 'MessagePriority.High' %}
+{% set message_priority_normal_varname  = 'MessagePriority.Normal' %}
+{% set message_priority_low_varname     = 'MessagePriority.Low' %}
+ 
+{% block message_option_priority %}
+```
+AVIMClient tom = AVIMClient.getInstance("Tom");
+    tom.open(new AVIMClientCallback() {
+      @Override
+      public void done(AVIMClient client, AVIMException e) {
+        if (e == null) {
+          // 创建名为“猫和老鼠”的对话
+          client.createConversation(Arrays.asList("Jerry"), "猫和老鼠", null,
+            new AVIMConversationCreatedCallback() {
+              @Override
+              public void done(AVIMConversation conv, AVIMException e) {
+                if (e == null) {
+                  AVIMTextMessage msg = new AVIMTextMessage();
+                  msg.setText("耗子，起床！");
+
+                  AVIMMessageOption messageOption = new AVIMMessageOption();
+                  messageOption.setPriority(AVIMMessageOption.MessagePriority.High);
+                  conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
+                    @Override
+                    public void done(AVIMException e) {
+                      if (e == null) {
+                        // 发送成功
+                      }
+                    }
+                  });
+                }
+              }
+            });
+        }
+      }
+    });
+```
+{% endblock %}
+
+{% block message_sent_ack %}
+
+```
+AVIMMessageHandler handler = new AVIMMessageHandler(){
+
+    public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
+     //此处就是对方收到消息以后的回调
+	  Log.i("Tom & Jerry","msg received");
+  }
+}
+
+//注册对应的handler
+AVIMMessageManager.registerMessageHandler(AVIMMessage.class,handler);
+
+//发送消息
+
+AVIMClient jerry = AVIMClient.getInstance("Jerry");
+AVIMConversation conv = jerry.getConversation("551260efe4b01608686c3e0f");
+AVIMMessage msg = new AVIMMessage();
+msg.setContent("Ping");
+AVIMMessageOption messageOption = new AVIMMessageOption();
+messageOption.setReceipt(true);
+conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
+      @Override
+      public void done(AVIMException e) {
+        if (e == null) {
+          // 发送成功
+        }
+      }
+    });
+```
+{% endblock %}
 
 {% block conversation_init %}
 ```
@@ -2014,25 +2060,6 @@ private void TomQueryWithLimit() {
     }
   });
 ```
-{% endblock %}
-
-{% block message_priority %}
-### 聊天室消息等级
-
-为了保证消息的时效性，当聊天室消息过多导致客户端连接堵塞时，服务器端会根据消息等级来丢弃部分不重要的消息。可通过调用 `AVIMMessage` 的如下方法来设置消息等级：
-
-```
- public void setPriority(AVIMMessagePriorityType priority)
-```
-
-`AVIMMessagePriorityType` 包含以下枚举值：
-* Default - 默认值
-* High - 高等级（针对时效性要求比较高的消息，比如直播聊天室中的礼物、弹幕等类型消息）
-* Normal - 正常等级
-* Low - 低等级（针对时效性要求比较低的消息，比如直播聊天室中的普通消息）
-
-注意：此功能仅针对聊天室消息，普通会话消息不需要设置此等级，因为普通会话消息不会被丢弃。
-
 {% endblock %}
 
 {% block networkStatus %}
