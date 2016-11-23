@@ -378,7 +378,7 @@ dependencies {
 - manifest 正确填写
 - appId、appKey 有效
 
-如果以上条件不符合，SDK 会有日志输出，开发者可以根据日志判断是什么原因导致注册失败。开发者可以通过查看控制台 `_Installation` 表的相关记录的 **vendor** 字段来判断是否注册成功。
+如果以上条件不符合，SDK 会在日志中输出导致注册失败的原因，例如「register error, mainifest is incomplete」代表 manifest 未正确填写。开发者可以通过查看控制台 `_Installation` 表的相关记录是否存在 **vendor** 这个字段来判断是否注册成功。
 
 #### 小米推送通知栏消息的点击事件
 
@@ -476,7 +476,7 @@ dependencies {
 - EMUI 系统
 - manifest 正确填写
 
-如果以上条件不符合，SDK 会有日志输出，开发者可以根据日志判断是什么原因导致注册失败。开发者可以通过查看控制台 `_Installation` 表的相关记录的 **vendor** 字段来判断是否注册成功。
+如果以上条件不符合，SDK 会在日志中输出导致注册失败的原因。开发者可以通过查看控制台 `_Installation` 表的相关记录是否存在 **vendor** 这个字段来判断是否注册成功。
 {% endif %}
 
 {% if node == 'us' %}
@@ -542,7 +542,7 @@ dependencies {
 - 调用 `AVOSCloud.setGcmOpen(true)`
 - manifest 正确填写
 {% endif %}
-开发者可以通过查看控制台 `_Installation` 表的相关记录的 **vendor** 字段来判断是否注册成功。
+开发者可以通过查看控制台 `_Installation` 表的相关记录是否存在 **vendor** 这个字段来判断是否注册成功。
 {% endif %}
 
 [xiaomi]: http://dev.xiaomi.com/index
