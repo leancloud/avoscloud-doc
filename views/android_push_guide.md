@@ -16,7 +16,7 @@ Android 消息推送有专门的 Demo，请见 [Android-Push-Demo](https://githu
 
 ### 保存 Installation
 
-你可以通过以下代码保存你的 Installation id。如果你的系统之前还没有 Installation id，系统会为你自动生成一个。当你的应用卸载后，Installation id 也将会被删除。
+你可以通过以下代码保存你的 Installation id。如果你的系统之前还没有 Installation id，系统会为你自动生成一个。
 
 
 ```java

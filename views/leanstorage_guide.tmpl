@@ -133,7 +133,7 @@ description     objectId
 <code class="text-nowrap">{{saveOptions_fetchWhenSave}}</code> | BOOL | 对象成功保存后，自动返回本地**已改动属性**在云端的最新值。用途请参考 [更新计数器](#更新计数器)。
 `{{saveOptions_query}}` | `{{baseQueryClassName}}`  | 当 query 中的条件满足后对象才能成功保存，否则放弃保存，并返回错误码 305。<br/><br/>开发者原本可以通过 `{{baseQueryClassName}}` 和 `{{baseObjectName}}` 分两步来实现这样的逻辑，但如此一来无法保证操作的原子性从而导致并发问题。该选项可以用来判断多用户更新同一对象数据时可能引发的冲突。
 
-<a id="saveoption_query_example" name="saveoption_query_example"></a>【{{saveOptions_query}} 选项举例】用户的账务账户表 `Account` 有一个余额字段 `balance`，同时有多个请求要修改该字段值，为避免余额出现负值，只有满足 **balance ± 当前请求的数值 >= 0** 这个条件才允许修改，否则提示「余额不足，操作失败！」。
+<a id="saveoption_query_example" name="saveoption_query_example"></a>【{{saveOptions_query}} 选项举例】用户的账务账户表 `Account` 有一个余额字段 `balance`，同时有多个请求要修改该字段值，为避免余额出现负值，只有满足 **balance >= 当前请求的数值** 这个条件才允许修改，否则提示「余额不足，操作失败！」。
 
 {% block code_saveoption_query_example %}{% endblock %}
 {% endblock %}

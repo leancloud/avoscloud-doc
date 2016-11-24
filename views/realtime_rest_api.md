@@ -218,7 +218,7 @@ curl -X PUT \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
-  -d '{"msg-id":"4XC_IHK+Ry6CXzIPq_nc7Q","conv-id":"5667070f60b2298fdddb683700000000","ack-at":1449683354932,"is-conv":true,"from":"5666d78c60b204d588fd63aa","bin":false,"timestamp":1449661888571,"is-room":false,"from-ip":"223.104.9.13","to":"5667070f60b2298fdddb6837","data":"{\"_lctype\":-1,\"_lctext\":\"\u771f\u4e0d\u61c2\"}"}'
+  -d '{"msg-id":"4XC_IHK+Ry6CXzIPq_nc7Q","conv-id":"5667070f60b2298fdddb683700000000","ack-at":1449683354932,"is-conv":true,"from":"5666d78c60b204d588fd63aa","bin":false,"timestamp":1449661888571,"is-room":false,"from-ip":"223.104.9.13","to":"5667070f60b2298fdddb6837","data":"{\"_lctype\":-1,\"_lctext\":\"\u771f\u4e0d\u61c2\"}"}' \
   https://leancloud.cn/1.1/rtm/messages/logs
 ```
 

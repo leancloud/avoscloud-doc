@@ -704,7 +704,7 @@ curl -X PUT \
 
 #### 计数器
 
-为了存储一个计数器类型的数据, LeanCloud 提供对任何数字字段进行原子增加（或者减少）的功能。比如一条微博，我们需要记录有多少人喜欢或者转发了它。但可能很多次喜欢都是同时发生的，如果在每个客户端都直接把它们读到的计数值增加之后再写回去，那么极容易引发冲突和覆盖，导致最终结果不准。这时候怎么办？LeanCloud 提供了便捷的原子操作来实现计数器：
+比如一条微博，我们需要记录有多少人喜欢或者转发了它，但可能很多次喜欢都是同时发生的，如果每个客户端都直接把读到的计数值更改之后再写回去，那么极容易引发冲突和覆盖，导致最终结果不准。LeanCloud 提供了对数字类型字段进行原子增加或者减少的功能，稳妥地实现对计数器类型数据的更新：
 
 ```sh
 curl -X PUT \
@@ -715,20 +715,17 @@ curl -X PUT \
   https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
-这样就将对象里的 **upvotes**（表示被用户点赞的次数）分数加 1，其中 **amount** 指定递增的数字大小，如果为负数，就变成递减。
+这样就将对象的 **upvotes** 属性值（被用户点赞的次数）加上 1，其中 **amount** 为递增的数字大小，如果为负数，则为递减。
 
-除了 Increment，我们也提供了 Decrement 操作用于递减（等价于 Increment 一个负数）。
+除了 Increment，我们也提供了 Decrement 用于递减，等价于 Increment 一个负数。
 
 #### 位运算
 
-如果文档的某个列是整型，可以使用我们提供的位运算操作符，来对这个列做原子的位运算：
+如果数据表的某一列是整型，可以使用位运算操作符该列进行原子的位运算：
 
-* BitAnd 与运算。
-* BitOr 或运算。
-* BitXor 异或运算。
-
-例如:
-
+* BitAnd 与运算
+* BitOr 或运算
+* BitXor 异或运算
 
 ```sh
 curl -X PUT \
@@ -742,13 +739,13 @@ curl -X PUT \
 
 #### 数组
 
-为了存储数组型数据，LeanCloud 提供 3 种操作来原子性地更改一个数组字段：
+LeanCloud 提供 3 种原子性操作来存储和更改数组类型的字段：
 
 * **Add**：在一个数组字段的后面添加一些指定的对象（包装在一个数组内）
 * **AddUnique**：只会在数组内原本没有这个对象的情形下才会添加入数组，插入的位置不定。
 * **Remove**：从一个数组内移除所有的指定的对象
 
-每一种方法都会有一个 key 是 `objects` 即被添加或删除的对象列表。举个例子，我们可以为每条微博增加一个 tags （标签）属性，然后往里面加入一些标签值：
+每种操作都有一个 key `objects`，其值为被添加或删除的对象列表。例如为每条微博增加一个「标签」属性 tags，然后往里面加入一些值：
 
 ```sh
 curl -X PUT \
@@ -761,7 +758,7 @@ curl -X PUT \
 
 #### 关系
 
-为了更新 Relation 的类型，LeanCloud 提供特殊的操作来原子地添加和删除一个关系，所以我们可以像这样添加一个关系（某个用户喜欢了这条微博）：
+LeanCloud 提供特殊的原子操作来添加和删除一个关系 Relation。比如用户喜欢了这条微博（添加关系）：
 
 ```sh
 curl -X PUT \
@@ -772,7 +769,7 @@ curl -X PUT \
   https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
-或者可以在一个对象中删除一个关系（某个用户取消喜欢了这条微博）：
+用户取消了对这条微博的喜欢（删除关系）：
 
 ```sh
 curl -X PUT \
@@ -785,7 +782,7 @@ curl -X PUT \
 
 #### 按条件更新对象
 
-假设我们要从某个账户对象 Account 的余额扣除一定金额，但是要求余额要大于等于被扣除的金额，那么就需要在更新的时候加上条件 `balance >= amount`，并通过 `where` 参数来实现：
+假设从某个账户对象 Account 的余额中扣除一定金额，但是要求余额要大于等于被扣除的金额才允许操作，那么就需要通过 `where` 参数为更新操作加上限定条件 `balance >= amount`：
 
 ```sh
 curl -X PUT \
@@ -796,7 +793,7 @@ curl -X PUT \
   "https://{{host}}/1.1/classes/Account/558e20cbe4b060308e3eb36c?where=%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D"
 ```
 
-可以看到 URL 里多了个参数 where，值是 `%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D`，其实是 `{"balance":{"$gte": 30}}` 做了 url encode 的结果。更多 where 查询的例子参见下文的 [查询](#查询) 一节。
+URL 中 where 参数的值是 `%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D`，其实这是 `{"balance":{"$gte": 30}}` 被 URL 编码后的结果。更多 where 查询的例子请参考 [查询](#查询)。
 
 如果条件不满足，更新将失败，同时返回错误码 `305`：
 
@@ -808,7 +805,7 @@ curl -X PUT \
 }
 ```
 
-**特别强调， where 一定要作为 URL 的 Query Parameters 传入。**
+**特别强调：where 一定要作为 URL 的 Query Parameters 传入。**
 
 ### 删除对象
 
@@ -821,7 +818,7 @@ curl -X DELETE \
   https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
-你也可以在一个对象中删除一个字段，通过 Delete 操作（注意：**这时候 HTTP Method 还是 PUT**）：
+还可以使用 Delete 操作删除一个对象的一个字段（注意此时** HTTP Method 还是 PUT**）：
 
 ```sh
 curl -X PUT \
@@ -834,7 +831,7 @@ curl -X PUT \
 
 #### 按条件删除对象
 
-为请求增加 `where` 参数即可以按指定的条件来删除对象：
+为请求增加 `where` 参数即可以按指定的条件来删除对象。例如删除点击量 clicks 为 0 的帖子：
 
 ```sh
 curl -X DELETE \
@@ -844,10 +841,9 @@ curl -X DELETE \
   "https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c?where=%7B%22clicks%22%3A%200%7D"
 ```
 
-可以看到 URL 里多了个参数 where，值是 `%7B%22clicks%22%3A%200%7D`，其实是 `{"clicks": 0}` 做了 url encode 的结果，这里的意思是我们只有当这个帖子的点击量 clicks 为 0 才删除。更多 where 查询的例子参见 [查询](#查询) 一节。
+URL 中 where 参数的值是 `%7B%22clicks%22%3A%200%7D`，其实这是 `{"clicks": 0}` 被 URL 编码后的结果。更多 where 查询的例子请参考 [查询](#查询)。
 
 如果条件不满足，删除将失败，同时返回错误码 `305`：
-
 
 ```json
 {
@@ -856,8 +852,7 @@ curl -X DELETE \
 }
 ```
 
-
-**特别强调， where 一定要作为 URL 的 Query Parameters 传入。**
+**特别强调：where 一定要作为 URL 的 Query Parameters 传入。**
 
 ### 遍历 Class
 
@@ -889,7 +884,7 @@ curl -X GET \
         "title"    :  "clojure persistent vector",
         "objectId" :  "577e18b50a2b580057469a5e"
        },
-       ......
+       ...
     ],
     "cursor": "pQRhIrac3AEpLzCA"}
 ```
@@ -908,7 +903,6 @@ curl -X GET \
 
 每次返回的 `cursor` 的有效期是 10 分钟。
 
-
 遍历还支持过滤条件，加入 where 参数：
 
 ```sh
@@ -921,7 +915,7 @@ curl -X GET \
    https://{{host}}/1.1/scan/classes/Article
 ```
 
-按照其他字段排序（默认为  `createdAt`），可以传入 `scan_key` 参数：
+默认情况下系统按 `createdAt` 排序，增加 `scan_key` 参数可以使用其他字段来排序：
 
 ```sh
 curl -X GET \
@@ -1129,24 +1123,24 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-除了完全匹配一个给定的值以外，`where` 也支持比较的方式。而且，它还支持对 key 的一些 hash 操作（譬如包含）。`where` 参数支持下面一些选项：
+除了完全匹配一个给定的值以外，`where` 也支持比较的方式，而且它还支持对 key 的一些 hash 操作，比如包含。`where` 参数支持如下选项：
 
-<table>
-  <tr><th>Key</th><th>Operation</th></tr>
-  <tr><td>$lt</td><td>小于</td></tr>
-  <tr><td>$lte</td><td>小于等于</td></tr>
-  <tr><td>$gt</td><td>大于</td></tr>
-  <tr><td>$gte</td><td>大于等于</td></tr>
-  <tr><td>$ne</td><td>不等于</td></tr>
-  <tr><td>$in</td><td>包含</td></tr>
-  <tr><td>$nin</td><td>不包含</td></tr>
-  <tr><td>$exists</td><td>这个Key有值</td></tr>
-  <tr><td>$select</td><td>匹配另一个查询的返回值</td></tr>
-  <tr><td>$dontSelect</td><td>排除另一个查询的返回值</td></tr>
-  <tr><td>$all</td><td>包括所有的给定的值</td></tr>
-</table>
+Key | Operation
+--- | ---
+`$ne` | 不等于
+`$lt` | 小于
+`$lte` | 小于等于
+`$gt` | 大于
+`$gte` | 大于等于
+`$regex` | 正则表达式 `$options` 指定全局修饰符
+`$in` | 包含任意一个数组值
+`$nin` | 不包含任意一个数组值
+`$all` | 包括所有的数组值
+`$exists` | 指定 Key 有值
+`$select` | 匹配另一个查询的返回值
+`$dontSelect` | 排除另一个查询的返回值
 
-例如，为了获取在 2015-06-29 当天发布的微博，我们应该这样请求：
+例如获取在 **2015-06-29** 当天发布的微博：
 
 ```sh
 curl -X GET \
@@ -1158,7 +1152,19 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-求点赞次数少于 10 次，且该次数还是奇数的微博，查询条件要这样写：
+获取标题以大写「WTO」开头的微博：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -G \
+  --data-urlencode 'where={"title":{"$regex":"^WTO.*","$options":"i"}}' \
+  https://{{host}}/1.1/classes/Post
+```
+
+求点赞次数少于 10 次，且该次数还是奇数的微博：
 
 ```sh
 curl -X GET \
@@ -1170,7 +1176,7 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-为了获取不是「LeanCloud官方客服」发布的微博，我们可以:
+获取不是「LeanCloud官方客服」发布的微博：
 
 ```sh
 curl -X GET \
@@ -1182,7 +1188,7 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-为了获取有人喜欢的微博，我们应该用:
+获取有人喜欢的微博：
 
 ```sh
 curl -X GET \
@@ -1194,7 +1200,7 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-为了获取没有被人喜欢过的微博：
+获取没有被人喜欢过的微博：
 
 ```sh
 curl -X GET \
@@ -1206,7 +1212,7 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-我们都知道，微博里面有用户互相关注的功能，如果我们用 `_Followee` 和 `_Follower` 这两个类来存储用户之间的关注关系（`_Follower` 记录用户的粉丝，`_Followee` 记录用户关注的人，{% if node != 'qcloud' %}我们的 [应用内社交组件](./status_system.html) 已经实现了这样的模型，这里直接使用其后台表结构），{% endif %}我们可以创建一个查询来找到某个用户关注的人发布的微博（`Post` 表中有一个字段 `author` 指向发布者），查询看起来应该是这样：
+微博有用户互相关注的功能，如果我们用 `_Followee`（用户关注的人） 和 `_Follower`（用户的粉丝） 这两个类来存储用户之间的关注关系{% if node != 'qcloud' %}（我们的 [应用内社交组件](./status_system.html) 已经实现了这样的模型）{% endif %}，我们可以创建一个查询来找到某个用户关注的人发布的微博（`Post` 表中有一个字段 `author` 指向发布者）：
 
 ```sh
 curl -X GET \
@@ -1222,7 +1228,7 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-你可以用 `order` 参数来指定一个字段来排序，前面加一个负号的前缀表示逆序。这样返回的微博会按发布时间呈升序排列：
+`order` 参数指定一个字段的排序方式，前面加一个负号表示逆序。返回 Post 记录并按发布时间升序排列：
 
 ```sh
 curl -X GET \
@@ -1233,7 +1239,7 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-而这样会呈降序：
+降序排列：
 
 ```sh
 curl -X GET \
@@ -1244,7 +1250,7 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-你可以用多个字段进行排序，只要用一个逗号隔开的列表就可以。为了获取 Post 以 createdAt  的升序和 pubUser 的降序进行排序：
+对多个字段进行排序，要使用逗号分隔的列表。将 Post 以 createdAt 升序和 pubUser 降序进行排序：
 
 ```sh
 curl -X GET \
@@ -1293,7 +1299,7 @@ curl -X GET \
 
 ### 对数组的查询
 
-对于 key 的值是一个数组的情况，可以通过如下方式查找 key 的值中有 2 的对象：
+如果 key 的值是数组类型，查找 key 值中有 2 的对象：
 
 ```sh
 curl -X GET \
@@ -1304,7 +1310,18 @@ curl -X GET \
   https://{{host}}/1.1/classes/TestObject
 ```
 
-你同样可以使用 `$all` 操作符来找到 key 的值中有 2、3 和 4 的对象：
+查找 key 值中有 2 或 3 或 4 的对象：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -G \
+  --data-urlencode 'where={"arrayKey":{"$in":[2,3,4]}}' \
+  https://{{host}}/1.1/classes/TestObject
+```
+
+使用 `$all` 操作符来找到 key 值中**同时**有 2 和 3 和 4 的对象：
 
 ```sh
 curl -X GET \
@@ -1433,7 +1450,7 @@ curl -X GET \
 
 ### 复合查询
 
-如果你想查询对象符合几种查询之一，你可以使用 `$or` 操作符，带一个 JSON 数组作为它的值。例如，你想查询出企业官方账号和个人账号的微博，可以这样：
+`$or` 操作符用于查询**符合任意一种条件**的对象，它的值为一个 JSON 数组。例如，查询企业账号和个人账号的微博：
 
 ```sh
 curl -X GET \
@@ -1444,7 +1461,7 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-任何在查询上的其他的约束都会对返回的对象生效，所以你可以用 `$or` 对其他的查询添加约束。
+任何在查询上的其他约束都会对返回的对象生效，所以你可以用 `$or` 对其他的查询添加约束。
 
 注意我们不会在组合查询的子查询中支持非过滤型的约束（例如 limit、skip、order、include）。
 
