@@ -176,7 +176,7 @@
     
     AV.Object.saveAll([courseLinearAlgebra, courseObjectOrientedProgramming, courseOperatingSystem]).then(function (result) {
         if (result) {
-            // 三门课程保存成功之后简历与 Tom 之间的 AVRelation
+            // 三门课程保存成功之后建立与 Tom 之间的 AVRelation
             var relation = studentTom.relation('coursesChosen');
             relation.add(courseLinearAlgebra);
             relation.add(courseObjectOrientedProgramming);
