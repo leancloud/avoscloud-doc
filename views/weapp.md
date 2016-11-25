@@ -30,20 +30,14 @@
 
 ### 安装与初始化
 2. 下载 [`av-weapp.js`](https://unpkg.com/leancloud-storage@^2.0.0-beta/dist/av-weapp.js)（[镜像](https://raw.githubusercontent.com/leancloud/javascript-sdk/dist/dist/av-weapp.js)），移动到 `libs` 目录。
-3. 在小程序的第一个页面（这里假设是 `pages/index/index.js`）中使用 `const AV = require('../../libs/av-weapp.js');` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
-4. 在 `pages/index/index.js` 的 onLoad hook 中初始化应用：
-  ```javascript
-  Page({
-    onLoad: function() {
-      AV.init({
-        appId: '{{appid}}',
-        appKey: '{{appkey}}',
-      });
-    },
-  });
+3. 在 `app.js` 中使用 `const AV = require('./libs/av-weapp.js');` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。 
+4. 在 `app.js` 中初始化应用： 
+  ```javascript 
+  AV.init({ 
+    appId: '{{appid}}', 
+    appKey: '{{appkey}}', 
+  }); 
   ```
-<div class="callout callout-info">目前版本的微信开发者工具（v0.11.112200）存在 bug，如果在 Page onLoad 之前进行初始化会导致初始化可能不成功。真机上没有这个问题。</div>
-
 ### 对象存储
 所有的对象存储 API 都能正常使用，详细的用法请参考 [JavaScript 数据存储开发指南](leanstorage_guide-js.html)。
 
@@ -177,8 +171,8 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
 <div class="callout callout-info">实时通讯功能暂时只支持微信开发者工具，我们正在进行真机上的适配工作。</div>
 
 ### 安装与初始化
-2. 下载 [`realtime.weapp.js`](https://unpkg.com/leancloud-realtime@^3.3.0/dist/realtime.weapp.js)（[镜像](https://raw.githubusercontent.com/leancloud/js-realtime-sdk/dist/dist/realtime.weapp.js)），移动到 `utils` 目录。
-3. 在 `app.js` 中使用 `const Realtime = require('./utils/realtime.weapp.js').Realtime;` 获得 `Realtime` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
+2. 下载 [`realtime.weapp.js`](https://unpkg.com/leancloud-realtime@^3.3.0/dist/realtime.weapp.js)（[镜像](https://raw.githubusercontent.com/leancloud/js-realtime-sdk/dist/dist/realtime.weapp.js)），移动到 `libs` 目录。
+3. 在 `app.js` 中使用 `const Realtime = require('./libs/realtime.weapp.js').Realtime;` 获得 `Realtime` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
 4. 在 `app.js` 中初始化应用：
   ```javascript
   const realtime = new Realtime({
@@ -192,15 +186,15 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
 ### 富媒体消息
 要在小程序中使用实时通讯 SDK 的富媒体消息插件，有一些额外的约束：
 
-1. 安装存储 SDK 至 `utils` 目录，并将文件重命名为 `leancloud-storage.js`。
-2. 安装实时通讯 SDK 至 `utils` 目录，并将文件重命名为 `leancloud-realtime.js`。
-3. 下载 [`leancloud-realtime-plugin-typed-messages.js`](https://unpkg.com/leancloud-realtime-plugin-typed-messages@^1.0.0)，移动到 `utils` 目录。必须保证<u>三个文件在同一目录中</u>。
+1. 安装存储 SDK 至 `libs` 目录，并将文件重命名为 `leancloud-storage.js`。
+2. 安装实时通讯 SDK 至 `libs` 目录，并将文件重命名为 `leancloud-realtime.js`。
+3. 下载 [`leancloud-realtime-plugin-typed-messages.js`](https://unpkg.com/leancloud-realtime-plugin-typed-messages@^1.0.0)，移动到 `libs` 目录。必须保证<u>三个文件在同一目录中</u>。
 4. 在 `app.js` 中<u>依次加载</u> `leancloud-storage.js`、`leancloud-realtime.js` 和 `leancloud-realtime-plugin-typed-messages.js`。
   ```javascript
-  const AV = require('./utils/leancloud-storage.js');
-  const Realtime = require('./utils/leancloud-realtime.js').Realtime;
-  const TypedMessagesPlugin = require('./utils/leancloud-realtime-plugin-typed-messages.js').TypedMessagesPlugin;
-  const ImageMessage = require('./utils/leancloud-realtime-plugin-typed-messages.js').ImageMessage;
+  const AV = require('./libs/leancloud-storage.js');
+  const Realtime = require('./libs/leancloud-realtime.js').Realtime;
+  const TypedMessagesPlugin = require('./libs/leancloud-realtime-plugin-typed-messages.js').TypedMessagesPlugin;
+  const ImageMessage = require('./libs/leancloud-realtime-plugin-typed-messages.js').ImageMessage;
   ```
 5. 在 `app.js` 中初始化应用：
   ```javascript
