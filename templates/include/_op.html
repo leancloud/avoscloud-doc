@@ -1,0 +1,21 @@
+{% macro list(prefix='', heading='') %}
+{% if heading != '' %}
+  {{heading}}
+{% endif %}
+
+使用 `{{prefix}}op("操作名称", {JSON 参数})` 函数可以完成原子性操作，确保数据的一致性。  
+
+操作 | 说明 | 示例
+---|---|---
+Delete | 删除对象的一个属性 | `{{prefix}}op('Delete', {})`
+Add | 在数组末尾添加对象 | `{{prefix}}op('Add',{'objects':['Apple','Google']})`
+AddUnique | 在数组末尾添加不会重复的对象，插入位置不定。| `{{prefix}}op('AddUnique', {'objects':['Apple','Google']})`
+Remove | 从数组中删除对象 | `{{prefix}}op('Remove',{'objects':['Apple','Google']})`
+AddRelation | 添加一个关系 | `{{prefix}}op('AddRelation', {'objects':[pointer('_User','558e20cbe4b060308e3eb36c')]})`
+RemoveRelation | 删除一个关系 | `{{prefix}}op('RemoveRelation', {'objects':[pointer('_User','558e20cbe4b060308e3eb36c')]})`
+Increment | 递增 | `{{prefix}}op('Increment', {'amount': 50})`
+Decrement | 递减 | `{{prefix}}op('Decrement', {'amount': 50})`
+BitAnd | 与运算   | `{{prefix}}op('BitAnd', {'value': 0x0000000000000004})`
+BitOr  | 或运算   | `{{prefix}}op('BitOr', {'value': 0x0000000000000004})`
+BitXor | 异或运算 | `{{prefix}}op('BitXor', {'value': 0x0000000000000004})`
+{% endmacro %}
