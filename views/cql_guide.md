@@ -1,4 +1,5 @@
 {% set required = "<div class='callout callout-danger'>不支持批量操作，必须在 where 条件中指定 `objectId=xxx`，否则会遇到报错。</div>" | safe %}
+{% set date_format = "YYYY-MM-DDTHH:MM:SS.MMMZ" %}
 
 # Cloud Query Language 详细指南
 
@@ -6,12 +7,13 @@ Cloud Query Language（简称 CQL）是 LeanCloud 为查询 API 定制的一套�
 
 ## 与 SQL 的主要差异
 
-* 不支持 `join`，关联查询提供 `include`、`relatedTo` 等语法来替代（[关系查询](#关系查询)）。
-* 不支持事务。
+* 不支持在 select 中使用 as 关键字为列增加别名。
 * update 和 delete 不提供批量更新和删除，只能根据 objectId（`where objectId=xxx`）和其他条件来更新或者删除某个文档。
-* 不支持锁。
+* 不支持 `join`，关联查询提供 `include`、`relatedTo` 等语法来替代（[关系查询](#关系查询)）。
 * 仅支持部分 SQL 函数（[内置函数](#内置函数)）。
-* 不支持 `group by`、`having`、`sum`、`distinct` 等分组聚合查询语法。
+* 不支持 `group by`、`having`、`max`、`min`、`sum`、`distinct` 等分组聚合查询语法。
+* 不支持事务。
+* 不支持锁。
 
 ## 快速参考
 
@@ -51,7 +53,7 @@ delete from GameScore where objectId='558e20cbe4b060308e3eb36c'
 select 语句中 `where` 之后的查询条件基本跟 SQL 语法相似，比如支持 `or` 和 `and` 的复合查询，支持常见的比较运算符，支持子查询、in 查询等。
 
 ```
-select [查询字段列表，逗号隔开] from [class 名称]
+select 逗号隔开的列名称或者*星号 from 表名称
    [where [条件列表]
    [limit [skip],limit
    [order by [排序字段列表] [asc |desc]]]]
@@ -99,7 +101,7 @@ select * from GameScore where name!='dennis'
 select * from GameScore where createdAt < date('2011-08-20T02:06:57.931Z')
 ```
 
-[内置函数](#内置函数) `date()` 接收的日期格式必须是 `YYYY-MM-DDTHH:MM:SS.MMMZ` 的 UTC 时间。
+[内置函数](#内置函数) `date()` 接收的日期格式必须是 `{{datetime_format}}` 的 UTC 时间。
 
 ### 模糊查询
 
@@ -363,7 +365,7 @@ insert into GameScore(name, score) values (?, ?)
 update 语句的基本语法：
 
 ```sql
-update 表名称 set 列名称 = 新值 where 条件列表
+update 表名称 set 列名称 = 新值 where objectId = ? [and 条件列表]
 ```
 
 更新玩家的信息：
@@ -480,7 +482,7 @@ CQL 提供了一些内置函数来方便地创建 pointer、geopoint 等类型�
 
 函数名称 | 作用
 ---|---
-`date('YYYY-MM-DDTHH:MM:SS.MMMZ')` | 创建日期类型
+`date('{{datetime_format}}')` | 创建日期类型
 `pointer('表名称', 'objectId')` | 创建 Pointer
 `geopoint(经度, 纬度)` | 创建 GeoPoint
 `file('objectId')` | 创建 file 类型
