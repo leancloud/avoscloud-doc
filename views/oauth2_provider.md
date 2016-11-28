@@ -16,7 +16,7 @@
 {% set timestamp_url = '&amp;timestamp' | safe %}
 
 
-# LeanCloud 开放平台
+# {% if node == 'qcloud' %}TAB{% else %}LeanCloud{% endif %} 开放平台
 
 我们提供了标准的 OAuth2 协议，允许第三方接入我们的平台，调用开放 API 获取用户信息、应用信息、创建应用等。
 
