@@ -89,10 +89,16 @@
 {% block query_role_of_user %}
 
 ```objc
+    // 第一种方式是通过内置的接口
+    [user getRolesInBackgroundWithBlock:^(NSArray<AVRole *> * _Nullable avRoles, NSError * _Nullable error) {
+        // avRoles 就是一个 AVRole 的数组，这些 AVRole 就是当前用户所在拥有的角色
+    }];
+    
+    // 第二种是通过构建 AVQuery
     AVQuery *roleQuery= [AVRole query];
-    [roleQuery whereKey:@"users" equalTo: [AVUser currentUser]];
-    [roleQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        // objects 就是一个 AVRole 的数组，这些 AVRole 就是当前用户所在拥有的角色
+    [roleQuery whereKey:@"users" equalTo: user];
+    [roleQuery findObjectsInBackgroundWithBlock:^(NSArray *avRoles, NSError *error) {
+        // avRoles 就是一个 AVRole 的数组，这些 AVRole 就是当前用户所在拥有的角色
     }];
 ```
 {% endblock %}
