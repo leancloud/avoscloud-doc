@@ -124,7 +124,7 @@
     [post setObject:@"求推荐啊！" forKey:@"content"];
     
     
-     // 假设之前创建的 Administrator 角色 objectId 为 55fc0eb700b039e44440016c，我们使用
+     // 假设之前创建的 Administrator 角色 objectId 为 55fc0eb700b039e44440016c
     AVQuery *roleQuery= [AVRole query];
     [roleQuery getObjectInBackgroundWithId:@"55fc0eb700b039e44440016c" block:^(AVObject *object, NSError *error) {
         AVRole *administratorRole = (AVRole*) object;
