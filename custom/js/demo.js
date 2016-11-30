@@ -21,6 +21,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
       'js': 'JavaScript',
       'node': 'Node.js',
       'php': 'PHP',
+      'weapp': '微信小程序',
       'reactnative': 'React Native'
     }
     $scope.demos = {
@@ -131,6 +132,13 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         mdPath: 'https://github.com/leancloud/StorageStarted',
         type: 'js',
         qcloudShow: true
+      }, {
+        name: 'LeanTodo (Vue)',
+        desc: '使用 JavaScript 存储 SDK 与 Vue.js 实现的 LeanTodo 应用。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/leantodo-vue/',
+        type: 'js',
+        qcloudShow: true
       }],
       'unity': [{
         name: 'FlappyBird',
@@ -156,7 +164,22 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         type: 'php',
         qcloudShow: true
       }],
+      'weapp': [{
+        name: 'LeanTodo',
+        desc: '使用 JavaScript 存储 SDK 在微信小程序平台上实现的 LeanTodo 应用。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/leantodo-weapp',
+        type: 'weapp',
+        qcloudShow: true
+      }],
       'reactnative': [{
+        name: 'LeanTodo',
+        desc: '使用 JavaScript 存储 SDK 与 React Native 实现的 LeanTodo 应用。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/leantodo-react-native',
+        type: 'reactnative',
+        qcloudShow: true
+      },{
         name: '图片上传',
         desc: 'React Native 搭配 LeanCloud 文件存储服务，实现在 iOS 和 Android 客户端上传图片。',
         downPath: '',

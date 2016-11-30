@@ -15,8 +15,6 @@
 
 要使用 LeanCloud 的数据存储、用户系统、调用云引擎等功能，需要使用 LeanCloud 存储 SDK。
 
-<div class="callout callout-info">目前存储 SDK 支持微信开发者工具与 iOS 真机，我们已经确认小程序在 Android 真机上无法访问我们的 REST API，我们正在积极与微信团队沟通该问题。</div>
-
 ### Demo
 为了更直观地展示小程序中存储 SDK 的用法，我们在小程序上实现了 LeanTodo 应用。在这个 Demo 中你可以看到：
 
