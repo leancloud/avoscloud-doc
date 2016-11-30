@@ -185,8 +185,12 @@ body {
     td, th {
       padding: 8px 13px;
       border-top: @table-border;
-      border-left: @table-border;
+      border-right: @table-border;
       border-radius: 0;
+
+      &:first-child {
+        border-left: none;
+      }
     }
 
     th {
@@ -194,46 +198,55 @@ body {
       background-color: #f7f7f7;
     }
 
-    td:first-child,
-    th:first-child {
-      border-left: none;
+    tr {
+      &:first-child {
+        td, th {
+          border-top: none;
+
+          &:first-child {
+            border-top-left-radius: @table-inner-radius;
+          }
+
+          &:last-child {
+            border-top-right-radius: @table-inner-radius;
+          }
+        }
+      }
+
+      &:last-child {
+        td, th {
+          &:first-child {
+            border-bottom-left-radius: @table-border;
+          }
+          &:last-child {
+            border-bottom-right-radius: @table-border;
+          }
+        }
+      }
+
+      td, th {
+        &:last-child {
+          border-right: none;
+        }
+      }
     }
 
-    tr:first-child td, 
-    tr:first-child th {
-      border-top: none;
-    }
+    thead~tbody {
+      tr {
+        &:first-child {
+          td, th {
+            border-top: @table-border;
 
-    thead~tbody tr:first-child td, 
-    thead~tbody tr:first-child th {
-      border-top: @table-border;
-    }
+            &:first-child {
+              border-top-left-radius: 0;
+            }
 
-    tr:first-child td:first-child,
-    tr:first-child th:first-child {
-      border-top-left-radius: @table-inner-radius;
-    }
-
-    thead~tbody tr:first-child td:first-child {
-      border-top-left-radius: 0;
-    }
-
-    tr:first-child td:last-child,
-    tr:first-child th:last-child {
-      border-top-right-radius: @table-inner-radius;
-    }
-
-    thead~tbody tr:first-child td:last-child {
-      border-top-right-radius: 0;
-    }
-
-    tr:last-child th:first-child {
-      border-bottom-left-radius: @table-inner-radius;
-    }
-    
-    tr:last-child td:last-child, 
-    tr:last-child th:last-child {
-      border-bottom-right-radius: @table-inner-radius;
+            &:last-child {
+              border-top-right-radius: 0;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -352,7 +365,6 @@ body {
     }
   }
 }
-
 
 // Nav
 .dashboard-subnav.navbar {

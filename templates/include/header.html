@@ -15,10 +15,25 @@
             </a>
           </li>
           <li>
-            <a href="/docs/sdk_down.html">
+            <a href="sdk_down.html">
               <i class="icon icon-dashbd-icon icon-package"></i>
               <div class="dashboard-subnav-text">SDK 下载</div>
             </a>
+          </li>
+          <li>
+            <a href="demo.html">
+              <i class="icon icon-dashbd-icon icon-magic"></i>
+              <div class="dashboard-subnav-text">Demos</div>
+            </a>
+          </li>
+          <li>
+            <a class="nav-key-6 dropdown-toggle" title="API Docs" data-toggle="dropdown">
+              <i class="icon icon-dashbd-icon icon-log"></i>
+              <i class="dashboard-subnav-text">API 文档</i>
+            </a>
+            <ul class="dropdown-menu">
+            {% include '_apidocs_items.html' %}
+            </ul>
           </li>
           <li ng-class="{active:currentHtmlPage=='help.html'}">
             <a class="nav-key-6 dropdown-toggle" title="帮助" data-toggle="dropdown">

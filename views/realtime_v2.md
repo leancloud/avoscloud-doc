@@ -7,7 +7,6 @@
 * iOS 聊天应用：
   * [ChatKit，自带 UI 的聊天工具包](chatkit-ios.html)
   * [LeanMessageDemo iOS 版](https://github.com/leancloud/LeanMessage-Demo)
-  * [LeanChat iOS 版](https://github.com/leancloud/leanchat-ios)
 
 * Android 聊天应用：
   * [ChatKit，自带 UI 的聊天工具包](chatkit-android.html)
@@ -331,7 +330,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 
 ### 云引擎签名范例
 
-我们提供了一个运行在 LeanCloud [云引擎](leanengine_guide-cloudcode.html) 上的 [签名范例程序](https://github.com/leancloud/realtime-messaging-signature-cloudcode)
+我们提供了一个运行在 LeanCloud [云引擎](leanengine_overview.html) 上的 [签名范例程序](https://github.com/leancloud/realtime-messaging-signature-cloudcode)
 ，它提供了基于 Web Hosting 和云函数两种方式的签名实现，你可以根据实际情况选择自己的实现。
 
 ### 用户登录的签名
@@ -704,7 +703,7 @@ data | 消息内容
 
 ## 限制
 
-* 对于客户端主动发起的操作会按照操作类型限制其频率。发消息操作限制为 **每分钟 60 次**，历史消息查询操作限制为 **每分钟 120 次**，其它类型操作包括加入对话、离开对话、登录服务、退出服务等均限制为 **每分钟 30 次**。当调用超过限制时，云端会丢弃超出的消息。
+* 对于客户端主动发起的操作会按照操作类型限制其频率。发消息操作限制为 **每分钟 60 次**，历史消息查询操作限制为 **每分钟 120 次**，其他类型操作包括加入对话、离开对话、登录服务、退出服务等均限制为 **每分钟 30 次**。当调用超过限制时，云端会拒绝响应这些超限的操作，这样如果操作本由 SDK 发起则表现为不会走回调。如果使用 REST API 发起各种操作，则不会受到上述频率的限制。
 * 应用全局发送消息的速度默认为每分钟 3 万次，如果您的应用场景可能超过此限制，请[联系我们](/help.html)。
 * 客户端发送的单条消息大小不得超过 5 KB。
 * 目前单个普通对话的成员上限为 500 个，如果您通过数据存储 API 向 m 字段加入了超过 500 个 id，我们只会使用其中的前 500 个。

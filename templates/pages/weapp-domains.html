@@ -1,0 +1,101 @@
+---
+layout: download.swig
+title: 小程序域名白名单配置 - LeanCloud
+---
+<script src="//cdn1.lncld.net/static/js/av-min-2.0.0-beta.2.js"></script>
+<div class="start-page" ng-controller="WeappDomainsCtrl" >
+
+  <div class="doc-home-title">
+    <h1 class="font-logo">小程序域名白名单配置</h1>
+  </div>
+  <!-- .doc-home-title -->
+
+  <div class="login" ng-if="!user.username">
+    <a ng-href="/login.html#/signin" class="btn  btn-primary ng-scope">登录</a>
+    <p  class="help-block" style="">查看域名白名单配置，需要先登录</p>
+  </div>
+
+  <div class="step" ng-if="user.username">
+    <h3>1. 选择 LeanCloud 应用</h3>
+
+    <div class="row">
+
+      <div class="step-content col-sm-4" ng-show="apps">
+        <select class="form-control" ng-model="pageState.currentApp"  ng-options="app.app_name  for app in apps">
+        </select>
+      </div>
+
+      <div class="step-content col-sm-4" ng-hide="apps">
+        <form ng-hide="apps.all" class="form-inline">
+          <a ng-href="/applist.html#/newapp" class="btn  btn-primary create-app ng-scope" translate="ACTION_CREATE_APP">创建应用</a>
+          <p  class="help-block" style="">您目前还没有创建任何应用，需要先创建应用</p>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="step">
+    <h3>2. 登录微信公众平台</h3>
+    <div class="row">
+      <div class="step-content col-sm-6" ng-show="apps">
+
+        登录 <a href="https://mp.weixin.qq.com" target="_blank">微信公众平台</a>，前往 <strong>设置 - 开发设置</strong>，点击 <strong>服务器配置</strong> 下的<strong>「修改」</strong>链接
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <h3>3. 增加以下域名</h3>
+
+    <div class="row">
+      <div class="step-content col-sm-6" ng-show="apps">
+        <p ng-show="loading">正在获取配置...</p>
+        <table ng-show="!loading">
+          <tr>
+            <td rowspan="3" width="40%">request 域名</td>
+            <td>
+              {% if node=='qcloud' %}
+              <input class="form-control" type="text" value="e1-api.leancloud.cn" readonly/>
+              {% elseif node === 'us' %}
+              <input class="form-control" type="text" value="us-api.leancloud.cn" readonly/>
+              {% else %}
+              <input class="form-control" type="text" value="api.leancloud.cn" readonly/>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td> <input class="form-control" type="text" value="app-router.leancloud.cn" readonly/></td>
+          </tr>
+          <tr>
+            <td>
+              {% if node=='qcloud' %}
+              <input class="form-control" type="text" value="router-q0-push.leancloud.cn" readonly/>
+              {% elseif node === 'us' %}
+              <input class="form-control" type="text" value="router-a0-push.leancloud.cn" readonly/>
+              {% else %}
+              <input class="form-control" type="text" value="router-g0-push.leancloud.cn" readonly/>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td>uploadFile 域名</td>
+            <td>
+              {% if node=='qcloud' %}
+              <input class="form-control" type="text" value="web.file.myqcloud.com" readonly/>
+              {% elseif node === 'us' %}
+              <input class="form-control" type="text" ng-model="domains.download" readonly/>
+              {% else %}
+              <input class="form-control" type="text" value="up.qbox.me" readonly/>
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td>downloadFile 域名</td>
+            <td> <input class="form-control" type="text" ng-model="domains.download" readonly/></td>
+          </tr>
+        </table>
+        <div class="callout callout-danger">目前微信限制每月只能修改三次域名白名单。</div>
+      </div>
+    </div>
+  </div>
+
+</div>

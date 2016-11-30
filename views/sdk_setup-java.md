@@ -24,7 +24,7 @@ public static void main(String[] args){
 public static void main(String[] args){
         // 启用北美节点
         AVOSCloud.useAVCloudUS();
-        // 初始化参数依次为 this, AppId, AppKey, MasterKey
+        // 初始化参数依次为 AppId, AppKey, MasterKey
         AVOSCloud.initialize("{{appid}}","{{appkey}}","{{masterkey}}");
 }
 ```

@@ -19,7 +19,7 @@
 
 {% include 'templates/include/doc-nav.html' %}
 
-<div class="container-fluid <%= node %>" id="content" style="padding-bottom: 0;">
+<div class="container-fluid <%= node %>" id="content" style="padding-bottom: 2em;">
   <div class="row">
     <div class="col-sm-12">
       <div class="doc-content">

@@ -207,16 +207,16 @@ module.exports = function(grunt) {
     },
     connect: {
       options: {
-        port: 4000,
+        port: 9000,
         hostname: "0.0.0.0",
         open: {
-          target: "http://localhost:4000"
+          target: "http://localhost:9000"
         }
       },
       proxies: [
         {
           context: "/1",
-          host: "cn-stg1.leancloud.cn",
+          host: "leancloud.cn",
           port: 443,
           https: true,
           changeOrigin: true
