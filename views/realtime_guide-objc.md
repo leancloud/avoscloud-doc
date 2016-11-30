@@ -1156,6 +1156,11 @@ AVIMConversation 属性名 | _Conversation 字段|含义
     }];
 }
 ```
+
+查询时，通过设置 `AVIMConversationQuery` 的 `option` 属性，你可以选择让服务端是否返回用户成员，以及是否返回对话的最后一条消息。
+
+这里注意：如果设置了除 `AVIMConversationQueryOptionNone` 之外的选项，出于缓存的兼容性考虑，本次查询的缓存策略将会被修改为只通过网络获取数据，也即 `kAVIMCachePolicyNetworkOnly`，本地缓存也会在每次查询结束后得到更新。
+
 {% endblock %}
 
 {% block conversation_getList %}
