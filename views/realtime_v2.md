@@ -345,7 +345,7 @@ appid:clientid::timestamp:nonce
 ---|---
 appid|应用的 id
 clientid|登录时使用的 clientId
-timestamp|当前的 UTC 时间距离 unix epoch 的**秒数**
+timestamp|当前的 UTC 时间距离 unix epoch 的**毫秒数**
 nonce|随机字符串
 
 {% if node=='qcloud' %}

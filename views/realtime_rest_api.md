@@ -1,6 +1,5 @@
+{% import "templates/include/_content_parts.html" as include %}
 # 实时通信 REST API 使用指南
-
-
 
 ## 请求格式
 对于 POST 和 PUT 请求，请求的主体必须是 JSON 格式，而且 HTTP Header 的 Content-Type 需要设置为 `application/json`。
@@ -146,16 +145,7 @@ appid:peerid:convid:nonce:signature_ts
 
 以上返回字段的说明如下：
 
-字段 | 说明
---- | ---
-conv-id | 用于查询的对话 id
-from | 消息来自 id
-data | 消息内容，字符串形式的 JSON，格式请参考 [富媒体消息格式](realtime_rest_api.html#富媒体消息格式说明)。
-timestamp | 消息到达服务器的 Unix 时间戳（毫秒）
-msg-id | 消息 id
-is-conv | 是否是 v2 中对话模型的消息
-from-ip | 消息的来源 IP
-ack-at | 消息接收者返回的确认到达服务器的 Unix 时间戳（毫秒）
+{{ include.imConversationProperties() }}
 
 ### 获取某个用户发送的聊天记录
 
@@ -224,7 +214,9 @@ curl -X PUT \
 
 这里传入的数据格式与消息记录返回的格式完全一致，只需要按照实际的需求修改相应的字段即可。
 
-注意此处仅能修改服务器端的消息记录，并不能修改客户端缓存的消息记录。
+{{ include.imConversationProperties() }}
+
+<div class="callout callout-info">此处仅能修改**服务器端**的消息记录，并不能修改**客户端缓存**的消息记录。</div>
 
 ## 未收取消息数
 
@@ -331,7 +323,7 @@ Push 的格式与[推送 REST API 消息内容](push_guide.html#消息内容_Dat
 
 调用此 API 将删除已发布的广播消息。
 
-``sh
+```sh
 curl -X DETELE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
@@ -346,16 +338,12 @@ mid | 要删除的消息 id，字符串
 
 返回：
 
-空 JSON 对象。
-
-```json
-{}
-```
+空 JSON 对象 `{}`。
 
 ### 富媒体消息格式说明
 富媒体消息的参数格式相对于普通文本来说，仅仅是将 message 参数换成了一个 JSON **字符串**。
 
->注意：由于 LeanCloud 实时通信中所有的消息都是文本，所以这里发送 JSON 结构时**需要首先序列化成字符串**。
+<div class="callout callout-info">由于 LeanCloud 实时通信中所有的消息都是文本，所以这里发送 JSON 结构时**需要首先序列化成字符串**。</div>
 
 #### 文本消息
 
