@@ -49,7 +49,7 @@ end
 
 {% block init_with_app_keys %}
 
-打开 `AppDelegate.m` 文件，添加下列导入语句到头部：
+打开 `AppDelegate.swift` 文件，添加下列导入语句到头部：
 
 ```swift
 import LeanCloud

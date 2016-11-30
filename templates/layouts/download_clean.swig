@@ -113,14 +113,23 @@
 .list-platform {
   margin: 8px 0;
 }
-.list-platform>li {
+.list-platform>li,.list-keyword>li {
   display: inline-block;
 }
 .platform-as-tab .list-platform>li>a {
+  min-width: 90px;
+}
+.list-keyword {
+  padding-left: 0;
+}
+.hero-search .list-keyword>li>a {
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+.platform-as-tab .list-platform>li>a, .list-keyword>li>a {
   padding: 3px;
   font-size: 13px;
   background-color: #f4f4f4;
-  min-width: 90px;
   margin: 2px 0;
   display: block;
   text-align: center;
@@ -133,7 +142,7 @@
   line-height: 1.8;
   white-space: nowrap;
 }
-.platform-as-tab .list-platform>li>a:hover {
+.platform-as-tab .list-platform>li>a:hover,.list-keyword>li>a:hover {
   background-color: #2c97e8;
   color: #fff;
 }

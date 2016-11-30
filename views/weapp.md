@@ -1,6 +1,6 @@
-# 在微信小程序中使用 LeanCloud
+# 在微信小程序中使用 {% if node == 'qcloud' %}TAB{% else %}LeanCloud{% endif %}
 
-微信小程序是一个全新的跨平台移动应用平台。本文说明了如何在微信小程序中使用 LeanCloud 提供的各项服务。
+微信小程序是一个全新的跨平台移动应用平台，LeanCloud 为小程序提供一站式后端云服务，为你免去服务器维护、证书配置等繁琐的工作，大幅降低你的开发和运维成本。本文说明了如何在微信小程序中使用 LeanCloud 提供的各项服务。
 
 ## 准备工作
 ### 创建应用
@@ -15,19 +15,60 @@
 
 要使用 LeanCloud 的数据存储、用户系统、调用云引擎等功能，需要使用 LeanCloud 存储 SDK。
 
+<div class="callout callout-info">目前存储 SDK 支持微信开发者工具与 iOS 真机，我们已经确认小程序在 Android 真机上无法访问我们的 REST API，我们正在积极与微信团队沟通该问题。</div>
+
+### Demo
+为了更直观地展示小程序中存储 SDK 的用法，我们在小程序上实现了 LeanTodo 应用。在这个 Demo 中你可以看到：
+
+- 如何对云端数据进行查询、增加、修改与删除
+- 查询结果为一个列表时，如何将其绑定到视图层进行展示以及如何在点击事件中得到对应的数组项
+- 如何自动登录 LeanCloud 用户系统
+- 如何在登录后设置帐号与密码以供用户在其他平台的 LeanTodo 应用上登录
+- 如何实现下拉刷新
+
+目前小程序公测阶段暂时无法直接在微信上体验到 Demo，但你仍然可以获取源码通过微信开发者工具本地进行调试与真机预览。 Demo 的源码与运行说明请参考 [https://github.com/leancloud/leantodo-weapp](https://github.com/leancloud/leantodo-weapp)。
+
 ### 安装与初始化
-2. 下载 [`av-weapp.js`](https://unpkg.com/leancloud-storage@^2.0.0-beta/dist/av-weapp.js)（[镜像](https://raw.githubusercontent.com/leancloud/javascript-sdk/dist/dist/av-weapp.js)），移动到 `utils` 目录。
-3. 在 `app.js` 中使用 `const AV = require('./utils/av-weapp.js');` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
-4. 在 `app.js` 中初始化应用：
-  ```javascript
-  AV.init({
-    appId: '{{appid}}',
-    appKey: '{{appkey}}',
-  });
+2. 下载 [`av-weapp.js`](https://unpkg.com/leancloud-storage@^2.0.0-beta/dist/av-weapp.js)（[镜像](https://raw.githubusercontent.com/leancloud/javascript-sdk/dist/dist/av-weapp.js)），移动到 `libs` 目录。
+3. 在 `app.js` 中使用 `const AV = require('./libs/av-weapp.js');` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。 
+4. 在 `app.js` 中初始化应用： 
+  ```javascript 
+  AV.init({ 
+    appId: '{{appid}}', 
+    appKey: '{{appkey}}', 
+  }); 
   ```
 
 ### 对象存储
 所有的对象存储 API 都能正常使用，详细的用法请参考 [JavaScript 数据存储开发指南](leanstorage_guide-js.html)。
+
+#### 数据绑定
+直接使用 `this.setData()` 将 `AV.Object` 对象设置为当前页面的 data，即可在 WXML 中使用 Mustache 语法访问绑定的数据了。下面这个例子展示了如何将一个 Query 的查询结果显示在页面上：
+
+```javascript
+// pages/todos/todos.js
+Page({
+  data: {
+    todos: [],
+  },
+  onReady: function() {
+    new AV.Query('Todo')
+      .descending('createdAt')
+      .find()
+      .then(todos => this.setData({ todos }))
+      .catch(console.error);
+  },
+});
+```
+
+```html
+<!-- pages/todos/todos.js -->
+<block wx:for="{{todos}}" wx:for-item="todo" wx:key="objectId">
+  <text data-id="{{todo.objectId}}">
+    {{todo.content}}
+  </text>
+</block>
+```
 
 ### 文件存储
 
@@ -128,11 +169,11 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
 
 要使用 LeanCloud 的聊天、实时消息功能，需要使用 LeanCloud 实时通讯 SDK。
 
-<div class="callout callout-info">实时通讯功能暂时只支持模拟器，我们正在进行真机上的适配工作。</div>
+<div class="callout callout-info">实时通讯功能暂时只支持微信开发者工具，我们正在进行真机上的适配工作。</div>
 
 ### 安装与初始化
-2. 下载 [`realtime.weapp.js`](https://unpkg.com/leancloud-realtime@^3.3.0/dist/realtime.weapp.js)，（[镜像](https://raw.githubusercontent.com/leancloud/js-realtime-sdk/dist/dist/realtime.weapp.js)）移动到 `utils` 目录。
-3. 在 `app.js` 中使用 `const Realtime = require('./utils/realtime.weapp.js').Realtime;` 获得 `Realtime` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
+2. 下载 [`realtime.weapp.js`](https://unpkg.com/leancloud-realtime@^3.3.0/dist/realtime.weapp.js)（[镜像](https://raw.githubusercontent.com/leancloud/js-realtime-sdk/dist/dist/realtime.weapp.js)），移动到 `libs` 目录。
+3. 在 `app.js` 中使用 `const Realtime = require('./libs/realtime.weapp.js').Realtime;` 获得 `Realtime` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
 4. 在 `app.js` 中初始化应用：
   ```javascript
   const realtime = new Realtime({
@@ -146,15 +187,15 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
 ### 富媒体消息
 要在小程序中使用实时通讯 SDK 的富媒体消息插件，有一些额外的约束：
 
-1. 安装存储 SDK 至 `utils` 目录，并将文件重命名为 `leancloud-storage.js`。
-2. 安装实时通讯 SDK 至 `utils` 目录，并将文件重命名为 `leancloud-realtime.js`。
-3. 下载 [`leancloud-realtime-plugin-typed-messages.js`](https://unpkg.com/leancloud-realtime-plugin-typed-messages@^1.0.0)，移动到 `utils` 目录。必须保证<u>三个文件在同一目录中</u>。
+1. 安装存储 SDK 至 `libs` 目录，并将文件重命名为 `leancloud-storage.js`。
+2. 安装实时通讯 SDK 至 `libs` 目录，并将文件重命名为 `leancloud-realtime.js`。
+3. 下载 [`leancloud-realtime-plugin-typed-messages.js`](https://unpkg.com/leancloud-realtime-plugin-typed-messages@^1.0.0)，移动到 `libs` 目录。必须保证<u>三个文件在同一目录中</u>。
 4. 在 `app.js` 中<u>依次加载</u> `leancloud-storage.js`、`leancloud-realtime.js` 和 `leancloud-realtime-plugin-typed-messages.js`。
   ```javascript
-  const AV = require('./utils/leancloud-storage.js');
-  const Realtime = require('./utils/leancloud-realtime.js').Realtime;
-  const TypedMessagesPlugin = requrie('./utils/leancloud-realtime-plugin-typed-messages.js').TypedMessagesPlugin;
-  const ImageMessage = require('./utils/leancloud-realtime-plugin-typed-messages.js').ImageMessage;
+  const AV = require('./libs/leancloud-storage.js');
+  const Realtime = require('./libs/leancloud-realtime.js').Realtime;
+  const TypedMessagesPlugin = require('./libs/leancloud-realtime-plugin-typed-messages.js').TypedMessagesPlugin;
+  const ImageMessage = require('./libs/leancloud-realtime-plugin-typed-messages.js').ImageMessage;
   ```
 5. 在 `app.js` 中初始化应用：
   ```javascript
