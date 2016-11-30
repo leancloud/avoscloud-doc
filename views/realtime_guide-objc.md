@@ -510,7 +510,7 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
     }
   }];
   // 将这些消息标记为已读 
-  [conversation markAsReadInBackgroundForMessage:[objects lastObject]];
+  [conversation markAsReadInBackground];
 }
 ```
 {% endblock %}
