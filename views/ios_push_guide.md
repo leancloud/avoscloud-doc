@@ -286,18 +286,18 @@ AVPush *push = [[AVPush alloc] init];
 
 ### 定制通知
 
-如果你不仅想发送一条文本消息，你需要一个 NSDictionary 来打包想发送的数据。这里有一些保留字段，具有特殊含义，需要说明：
+如果你不仅想发送一条文本消息，你需要一个 NSDictionary 来打包想发送的数据。这里有一些保留字段具有特殊含义：
 
-保留字段|平台|说明
----|---|---
-alert|通用|推送消息的文本内容
-badge|iOS|应用图标右上角的数字。可以设置一个值或者递增当前值。
-sound|iOS|应用 bundle 里的声音文件名称。
-content-available|iOS|如果你在使用 Newsstand, 设置为 1 来开始一次后台下载。
-action|Android|当消息收到的时候，触发的 Intent 名称。如果没有设置 title 或者 alert，Intent 将触发，但是不会显示通知给用户。
-title|Android|显示在系统通知栏的标题。
+保留字段|说明
+---|---
+`alert`|推送消息的文本内容
+`badge`|应用图标右上角的数字。可以设置一个值或者递增当前值。
+`sound`|应用 bundle 里的声音文件名称。
+`content-available`|如果使用了 Newsstand，设置为 1 来开始一次后台下载。
 
-例如，递增 badge 数字，并播放声音可以这样做:
+更多可用的保留字段，请参考 [推送总览 · 消息内容 Data](push_guide.html#消息内容_Data)。
+
+递增 badge 数字并播放声音：
 
 ```objc
 NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
