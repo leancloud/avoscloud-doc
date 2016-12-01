@@ -1257,7 +1257,7 @@ current_user = leancloud.User.get_current()  # 现在的 current_user 是 null �
 {% endblock %}
 {% block code_user_isAuthenticated %}
 
-```js
+```python
 user.is_authenticated() # 验证用户的授权信息是否在有效期内
 ```
 {% endblock %}

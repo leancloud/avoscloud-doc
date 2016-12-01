@@ -1134,7 +1134,7 @@ AVIMConversation 属性名 | _Conversation 字段|含义
 ```objc
 [conversation setValue:@"public" forKey:@"type"];
 // 设置是星标对话
-[conversation setValue:@"isStared" forKey:@(YES)];
+[conversation setValue:@"isStarred" forKey:@(YES)];
 ```
 {% endblock %}
 
