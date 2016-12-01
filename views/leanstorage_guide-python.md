@@ -561,6 +561,8 @@ avatar.save()
 avatar.save()  # 执行上传
 object_id = avatar.id  # 一旦保存成功即可获取到文件的 objectId
 ```
+
+如果希望在云引擎环境里上传文件，请参考我们的[网站托管开发指南](leanengine_webhosting_guide-python.html#文件上传)。
 {% endblock %}
 
 {# 2016-06-06：不要删除下面的 text_upload_file_with_progress #}

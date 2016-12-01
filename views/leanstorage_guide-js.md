@@ -611,7 +611,10 @@ todo.set('whereCreated', point);
 ```
 {% endblock %}
 
-{% block text_upload_file %}{% endblock %}
+{% block text_upload_file %}
+
+如果希望在云引擎环境里上传文件，请参考我们的[网站托管开发指南](leanengine_webhosting_guide-node.html#文件上传)。
+{% endblock %}
 
 {% block code_upload_file_with_progress %}
 ```javascript

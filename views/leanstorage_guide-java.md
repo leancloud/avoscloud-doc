@@ -453,7 +453,9 @@
     AVFile file = new AVFile("test.gif", "http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif", new HashMap<String, Object>());
 ```
 {% endblock %}
-
+{% block text_upload_file %}
+如果希望在云引擎环境里上传文件，请参考我们的[网站托管开发指南](leanengine_webhosting_guide-java.html#文件上传)。
+{% endblock %}
 {% block code_upload_file %}
 
 ```java

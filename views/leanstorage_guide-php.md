@@ -439,6 +439,11 @@ $file = File::createWithUrl("test.gif", "http://ww3.sinaimg.cn/bmiddle/596b0666g
 ```
 {% endblock %}
 
+{% block text_upload_file %}
+
+如果希望在云引擎环境里上传文件，请参考我们的[网站托管开发指南](leanengine_webhosting_guide-php.html#文件上传)。
+{% endblock %}
+
 {% block code_upload_file %}
 
 ```php
