@@ -114,7 +114,7 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 ### API 调用次数的计算
 
-对于数据存储来说，每次 `create` 和 `update` 一个对象的数据算 1 次请求，如调用 1 次 `object.saveInBackground` 算 1 次 API 请求。
+对于数据存储来说，每次 `create` 和 `update` 一个对象的数据算 1 次请求，如调用 1 次 `object.saveInBackground` 算 1 次 API 请求。在 API 调用失败的情况下，如果是由于 [应用流控超限（错误码 429）](https://leancloud.cn/docs/error_code.html#_429) 而被云端拒绝，则**不会**算成 1 次请求；如果是其他原因，例如 [权限不够（错误码 430）](https://leancloud.cn/docs/error_code.html#_403)，那么仍会算为 1 次请求。
 
 **一次请求**<br/>
 - `create`
