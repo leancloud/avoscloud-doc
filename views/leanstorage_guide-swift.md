@@ -1164,18 +1164,18 @@ query.find { result in
 {% block code_query_with_and %}
 
 ```swift
-let priorityQuery = LCQuery(className: "Todo")
-priorityQuery.whereKey("priority", .LessThan(3))
+let startDateQuery = LCQuery(className: "Todo")
+startDateQuery.whereKey("createdAt", .GreaterThanOrEqualTo("2016-11-13"))
 
-let statusQuery = LCQuery(className: "Todo")
-statusQuery.whereKey("status", .EqualTo(0))
+let endDateQuery = LCQuery(className: "Todo")
+endDateQuery.whereKey("status", .LessThan("2016-12-03"))
 
-let query = priorityQuery.and(statusQuery)
+let query = startDateQuery.and(endDateQuery)
 
 query.find { result in
     switch result {
     case .success(let todos):
-        break // 返回 priority 小于 3 并且 status 等于 0 的 Todo
+        break
     case .failure(let error):
         print(error)
     }

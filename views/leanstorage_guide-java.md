@@ -670,14 +670,14 @@
 {% block code_query_with_and %}
 
 ```java
-    final AVQuery<AVObject> priorityQuery = new AVQuery<>("Todo");
-    priorityQuery.whereLessThan("priority", 3);
+    final AVQuery<AVObject> startDateQuery = new AVQuery<>("Todo");
+    startDateQuery.whereGreaterThanOrEqualTo("createdAt", "2016-11-13");
 
-    final AVQuery<AVObject> statusQuery = new AVQuery<>("Todo");
-    statusQuery.whereEqualTo("status", 0);
+    final AVQuery<AVObject> endDateQuery = new AVQuery<>("Todo");
+    endDateQuery.whereLessThan("createdAt", "2016-12-03");
 
-    AVQuery<AVObject> query = AVQuery.and(Arrays.asList(priorityQuery, statusQuery));
-    List<AVObject> list = query.find()  // 返回 priority 小于 3 并且 status 等于 0 的 Todo
+    AVQuery<AVObject> query = AVQuery.and(Arrays.asList(startDateQuery, endDateQuery));
+    List<AVObject> list = query.find();
 ```
 {% endblock %}
 

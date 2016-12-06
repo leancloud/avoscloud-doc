@@ -1049,19 +1049,18 @@ fetchAllInBackground()
 {% endblock %}
 
 {% block code_query_with_and %}
-
 ```java
-        final AVQuery<AVObject> priorityQuery = new AVQuery<>("Todo");
-        priorityQuery.whereLessThan("priority", 3);
+        final AVQuery<AVObject> startDateQuery = new AVQuery<>("Todo");
+        startDateQuery.whereGreaterThanOrEqualTo("createdAt", 3);
 
-        final AVQuery<AVObject> statusQuery = new AVQuery<>("Todo");
-        statusQuery.whereEqualTo("status", 0);
+        final AVQuery<AVObject> endDateQuery = new AVQuery<>("Todo");
+        endDateQuery.whereLessThan("createdAt", 0);
 
-        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(priorityQuery, statusQuery));
+        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(startDateQuery, endDateQuery));
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
-                // 返回 priority 小于 3 并且 status 等于 0 的 Todo
+
             }
         });
 ```

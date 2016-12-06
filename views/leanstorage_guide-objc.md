@@ -1039,16 +1039,15 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 {% block code_query_with_and %}
 
 ```objc
-    AVQuery *priorityQuery = [AVQuery queryWithClassName:@"Todo"];
-    [priorityQuery whereKey:@"priority" lessThan:[NSNumber numberWithInt:3]];
+    AVQuery *startDateQuery = [AVQuery queryWithClassName:@"Todo"];
+    [startDateQuery whereKey:@"createdAt" greaterThanOrEqualTo:[NSDate @"2016-11-13"]];
 
-    AVQuery *statusQuery = [AVQuery queryWithClassName:@"Todo"];
-    [statusQuery whereKey:@"status" equalTo:[NSNumber numberWithInt:0]];
+    AVQuery *endDateQuery = [AVQuery queryWithClassName:@"Todo"];
+    [endDateQuery whereKey:@"createdAt" lessThan:[NSDate @"2016-12-03"]];
 
-    AVQuery *query = [AVQuery andQueryWithSubqueries:[NSArray arrayWithObjects:statusQuery,priorityQuery,nil]];
-
+    AVQuery *query = [AVQuery andQueryWithSubqueries:[NSArray arrayWithObjects:startDateQuery,endDateQuery,nil]];
     [query findObjectsInBackgroundWithBlock:^(NSArray *results, NSError *error) {
-        // 返回 priority 小于 3 并且 status 等于 0 的 Todo
+        
     }];
 ```
 {% endblock %}

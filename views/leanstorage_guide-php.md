@@ -834,15 +834,14 @@ $query->find();
 {% block code_query_with_and %}
 
 ```php
-$priorityQuery = new Query("Todo");
-$priorityQuery->lessThan("priority", 3);
+$startDateQuery = new Query("Todo");
+$startDateQuery->greaterThanOrEqualTo("createdAt", "2016-11-13");
 
-$statusQuery = new Query("Todo");
-$statusQuery->equalTo("status", 0);
+$endDateQuery = new Query("Todo");
+$endDateQuery->lessThan("createdAt", "2016-12-03");
 
-$query = Query::andQuery($priorityQuery, $statusQuery);
+$query = Query::andQuery($startDateQuery, $endDateQuery);
 
-// 返回 priority 小于 3 并且 status 等于 0 的 Todo
 $query->find();
 ```
 {% endblock %}
