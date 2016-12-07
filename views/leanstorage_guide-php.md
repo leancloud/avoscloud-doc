@@ -832,13 +832,14 @@ $query->find();
 {% endblock %}
 
 {% block code_query_with_and %}
-
 ```php
+$startDate = new \DateTime("2016-11-13");
 $startDateQuery = new Query("Todo");
-$startDateQuery->greaterThanOrEqualTo("createdAt", "2016-11-13");
+$startDateQuery->greaterThanOrEqualTo("createdAt", $startDate);
 
+$endDate = new \DateTime("2016-12-03");
 $endDateQuery = new Query("Todo");
-$endDateQuery->lessThan("createdAt", "2016-12-03");
+$endDateQuery->lessThan("createdAt", $endDate);
 
 $query = Query::andQuery($startDateQuery, $endDateQuery);
 
@@ -847,7 +848,6 @@ $query->find();
 {% endblock %}
 
 {% block code_delete_todo_by_cql %}
-
 ```php
 Query::doCloudQuery("delete from Todo where objectId='558e20cbe4b060308e3eb36c'");
 ```

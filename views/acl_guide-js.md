@@ -147,7 +147,7 @@
     var userRelation= role.getUsers();
 
     // 获取查询实例
-    var query = relation.query();
+    var query = userRelation.query();
     return query.find();
   }).then(function(results) {
     // results 就是拥有 role 角色的所有用户了

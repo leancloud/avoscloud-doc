@@ -1050,19 +1050,25 @@ fetchAllInBackground()
 
 {% block code_query_with_and %}
 ```java
-        final AVQuery<AVObject> startDateQuery = new AVQuery<>("Todo");
-        startDateQuery.whereGreaterThanOrEqualTo("createdAt", 3);
+    Date getDateWithDateString(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = dateFormat.parse(dateString);
+        return date;
+    }
 
-        final AVQuery<AVObject> endDateQuery = new AVQuery<>("Todo");
-        endDateQuery.whereLessThan("createdAt", 0);
+    final AVQuery<AVObject> startDateQuery = new AVQuery<>("Todo");
+    startDateQuery.whereGreaterThanOrEqualTo("createdAt", getDateWithDateString("2016-11-13"));
 
-        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(startDateQuery, endDateQuery));
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
+    final AVQuery<AVObject> endDateQuery = new AVQuery<>("Todo");
+    endDateQuery.whereLessThan("createdAt", getDateWithDateString("2016-12-03"));
 
-            }
-        });
+    AVQuery<AVObject> query = AVQuery.and(Arrays.asList(startDateQuery, endDateQuery));
+    query.findInBackground(new FindCallback<AVObject>() {
+        @Override
+        public void done(List<AVObject> list, AVException e) {
+
+        }
+    });
 ```
 {% endblock %}
 

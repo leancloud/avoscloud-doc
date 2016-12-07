@@ -670,11 +670,17 @@
 {% block code_query_with_and %}
 
 ```java
+    Date getDateWithDateString(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = dateFormat.parse(dateString);
+        return date;
+    }
+
     final AVQuery<AVObject> startDateQuery = new AVQuery<>("Todo");
-    startDateQuery.whereGreaterThanOrEqualTo("createdAt", "2016-11-13");
+    startDateQuery.whereGreaterThanOrEqualTo("createdAt", getDateWithDateString("2016-11-13"));
 
     final AVQuery<AVObject> endDateQuery = new AVQuery<>("Todo");
-    endDateQuery.whereLessThan("createdAt", "2016-12-03");
+    endDateQuery.whereLessThan("createdAt", getDateWithDateString("2016-12-03"));
 
     AVQuery<AVObject> query = AVQuery.and(Arrays.asList(startDateQuery, endDateQuery));
     List<AVObject> list = query.find();

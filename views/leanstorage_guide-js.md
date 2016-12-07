@@ -1074,13 +1074,12 @@ file.save({
 {% block code_query_with_and %}
 ```js
   var startDateQuery = new AV.Query('Todo');
-  startDateQuery.greaterThanOrEqualTo('createdAt', "2016-11-13");
+  startDateQuery.greaterThanOrEqualTo('createdAt', new Date('2016-11-13 00:00:00'));
 
   var endDateQuery = new AV.Query('Todo');
-  endDateQuery.lessThan('createdAt', "2016-12-03");
+  endDateQuery.lessThan('createdAt', new Date('2016-12-03 00:00:00'));
 
   var query = AV.Query.and(startDateQuery, endDateQuery);
-  
 ```
 {% endblock %}
 

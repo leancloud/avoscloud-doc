@@ -1162,13 +1162,19 @@ query.find { result in
 {% endblock %}
 
 {% block code_query_with_and %}
-
 ```swift
+
+let dateFromString: (String) -> Date? = { string in
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    return dateFormatter.date(from: string)
+}
+
 let startDateQuery = LCQuery(className: "Todo")
-startDateQuery.whereKey("createdAt", .GreaterThanOrEqualTo("2016-11-13"))
+startDateQuery.whereKey("createdAt", .GreaterThanOrEqualTo(dateFromString("2016-11-13")!)
 
 let endDateQuery = LCQuery(className: "Todo")
-endDateQuery.whereKey("status", .LessThan("2016-12-03"))
+endDateQuery.whereKey("status", .LessThan(dateFromString("2016-12-03")!)
 
 let query = startDateQuery.and(endDateQuery)
 
