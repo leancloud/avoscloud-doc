@@ -899,8 +899,12 @@ friend.open(new AVIMClientCallback() {
 AVIMTextMessage 的源码如下，可供参考：
 
 ```
-@AVIMMessageType(type = -1)
+@AVIMMessageType(type = AVIMMessageType.TEXT_MESSAGE_TYPE)
 public class AVIMTextMessage extends AVIMTypedMessage {
+
+  public AVIMTextMessage() {
+
+  }
 
   @AVIMMessageField(name = "_lctext")
   String text;
@@ -922,6 +926,8 @@ public class AVIMTextMessage extends AVIMTypedMessage {
   public void setAttrs(Map<String, Object> attr) {
     this.attrs = attr;
   }
+
+  public static final Creator<AVIMTextMessage> CREATOR = new AVIMMessageCreator<AVIMTextMessage>(AVIMTextMessage.class);
 }
 ```
 {% endblock %}
