@@ -1042,13 +1042,14 @@ query = leancloud.Query.or_(query1,query2)
 
 ```python
 import leancloud
+from datetime import datetime
 
 Todo = leancloud.Object.extend('Todo')
 query1 = Todo.query
 query2 = Todo.query
 
-query1.greater_than_or_equal_to('createdAt', '2016-11-13')
-query2.less_than('createdAt', '2016-12-03')
+query1.greater_than_or_equal_to('createdAt', datetime(2016, 11, 13))
+query2.less_than('createdAt', datetime(2016, 12, 3))
 
 query = leancloud.Query.and_(query1, query2)
 ```
