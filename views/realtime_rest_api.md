@@ -48,7 +48,7 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  -d '{"name": "Notification Channel","sys": true}' \
+  -d '{"name": "系统通知", "avatarURL": "http://ww1.sinaimg.cn/large/006y8lVajw1faip71wtc7j30200203ya.jpg", "sys": true}' \
   https://{{host}}/1.1/classes/_Conversation
 ```
 
