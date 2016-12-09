@@ -180,6 +180,11 @@ $ lean up
   </ul>
 </div>
 
+旧版命令行工具有一项功能，在 `$ lean up` 的过程中，监测项目文件的变更，实现自动重启开发服务进程。在新版本中我们移除了这一功能，转由项目代码本身来实现，以便更好的和项目使用的编程语言／框架集成。
+
+- 对于使用以前命令行工具创建的 Node.JS 项目，可以参考[此 PullRequest](https://github.com/leancloud/node-js-getting-started/pull/26/files) 来配置。
+- 对于使用以前命令行工具创建的 Python 项目，可以参考[此 PullRequest](https://github.com/leancloud/python-getting-started/pull/12/files) 来配置。
+
 更多关于云引擎开发的内容，请参考 [云引擎服务总览](leanengine_overview.html)。
 
 ## 部署
