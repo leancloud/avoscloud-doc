@@ -218,10 +218,10 @@ BitXor | 异或运算 | `{{prefix}}op('BitXor', {'value': 0x0000000000000004})`
 {% if format == 'table' %}
 代码|消息|说明
 ---|---|---
-`0`|`(无)`|WebSocket 正常关闭，可能发生在服务器重启，或本地网络异常的情况。SDK 会自动重连，无需人工干预。{% for item in items | dictsort %}
+`0`|`(无)`|WebSocket 正常关闭，可能发生在服务器重启，或本地网络异常的情况。SDK 会自动重连，无需人工干预。{% for item in items %}
 <code class="text-nowrap">{{item.code}}</code>|<code class="text-nowrap">{{ item.message if item.message else "(无)" | escape }}</code>|{{ item.desc | escape }}{% endfor %}
 {% else %}
-  {% for item in items | dictsort %} 
+  {% for item in items %} 
   
   ## {{ item.code }}
 
