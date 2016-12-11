@@ -1,3 +1,4 @@
+{% import "views/_parts.html" as include %}
 # 实时通信服务总览
 
 实时通信服务是 LeanCloud 消息服务中的重要一环。你不但可以为应用加入实时聊天、私信等常用功能，还能实现游戏对战等实时互动功能。
@@ -713,46 +714,7 @@ data | 消息内容
 
 实时通信的错误码会以 SDK 异常或 WebSocket 关闭状态码的形式返回给客户端。当出现异常情况时，SDK 会输出状态码到日志里，以下是对部分状态码的简单说明：
 
-<!--2015-10-27 Da Li: add <code class="text-nowrap"> to prevent unexpected line wrapping. DO NOT REMOVE -->
-
-代码|消息|说明
----|---|---
-`0`| |websocket 正常关闭，可能发生在服务器重启，或本地网络异常的情况。SDK 会自动重连，无需人工干预。
-<code class="text-nowrap">1006</code>| |websocket 连接非正常关闭，通常见于路由器配置对长连接限制的情况。SDK 会自动重连，无需人工干预。
-`4100`|`APP_NOT_AVAILABLE`|应用不存在或应用禁用了实时通信服务
-`4101`|`DUPLICATED_LOGIN`|同一个设备重复登录推送服务。该错误码与实时通信服务无关。
-`4102`|`SIGNATURE_FAILED`|登录签名验证失败
-`4103`|`INVALID_LOGIN`|Client Id 格式错误，超过 64 个字符。
-`4105`|`SESSION_REQUIRED`|Session 没有打开就发送消息，或执行其他操作。常见的错误场景是调用 open session 后直接发送消息，正确的用法是在 Session 打开的回调里执行。
-`4107`|`READ_TIMEOUT`|读超时，云端长时间没有收到客户端的数据，切断连接。SDK 包装了心跳包的机制，出现此错误通常是网络问题。SDK 会自动重连，无需人工干预。
-`4108`|`LOGIN_TIMEOUT`|登录超时，连接后长时间没有完成 session open。通常是登录被拒绝等原因，出现此问题可能是使用方式有误，可以 [创建工单](https://leanticket.cn/t/leancloud)，由我们技术顾问来给出建议。
-`4109`|`FRAME_TOO_LONG`|包过长。消息大小超过 5 KB，请缩短消息或者拆分消息。
-`4110`|`INVALID_ORIGIN`|设置安全域名后，当前登录的域名与安全域名不符合。
-`4111`|`SESSION_CONFLICT`|设置单设备登录后，客户端被其他设备挤下线。
-`4113`|`APP_QUOTA_EXCEEDED`|应用容量超限，当天登录用户数已经超过应用设定的最大值。
-`4114`|`UNPARSEABLE_RAW_MESSAGE`|客户端发送的序列化数据服务器端无法解析。
-`4115`|`KICKED_BY_APP`|客户端被 REST API 管理接口强制下线。
-`4116`|`MESSAGE_SENT_QUOTA_EXCEEDED`|应用单位时间内发送消息量超过限制，消息被拒绝。
-`4200`|`INTERNAL_ERROR`|服务器内部错误，如果反复出现请收集相关线索并 [创建工单](https://leanticket.cn/t/leancloud)，我们会尽快解决。
-`4201`|`SEND_MESSAGE_TIMEOUT`|通过 API 发送消息超时
-`4301`|`CONVERSATION_API_FAILED`|上游 API 调用异常，请查看报错信息了解错误详情
-`4302`|<code style="white-space:nowrap">CONVERSATION_SIGNATURE_FAILED</code>|对话相关操作签名错误
-`4303`|`CONVERSATION_NOT_FOUND`|发送消息，或邀请等操作对应的对话不存在。
-`4304`|`CONVERSATION_FULL`|对话成员已满，不能再添加。
-`4305`|`CONVERSATION_REJECTED_BY_APP`|对话操作被应用的云引擎 Hook 拒绝
-`4306`|`CONVERSATION_UPDATE_FAILED`|更新对话操作失败
-`4307`|`CONVERSATION_READ_ONLY`|该对话为只读，不能更新或增删成员。
-`4308`|`CONVERSATION_NOT_ALLOWED`|该对话禁止当前用户发送消息
-`4309`|`CONVERSATION_UPDATE_REJECTED`|更新对话的请求被拒绝，当前用户不在对话中
-`4310`|`CONVERSATION_QUERY_FAILED`|查询对话失败，常见于慢查询导致的超时或受其他慢查询导致的数据库响应慢
-`4311`|`CONVERSATION_LOG_FAILED`|拉取对话消息记录失败，常见与超时的情况
-`4312`|`CONVERSATION_LOG_REJECTED`|拉取对话消息记录被拒绝，当前用户不在对话中
-`4313`|`SYSTEM_CONVERSATION_REQUIRED`|该功能仅对系统对话有效
-`4314`|`NORMAL_CONVERSATION_REQUIRED`|该功能仅对普通对话有效
-`4315`|`CONVERSATION_BLACKLISTED`|当前用户被加入此对话的黑名单，无法发送消息
-`4316`|`TRANSIENT_CONVERSATION_REQUIRED`|该功能仅对暂态对话有效
-`4401`|`INVALID_MESSAGING_TARGET`|发送消息的对话不存在，或当前用户不在对话中
-`4402`|`MESSAGE_REJECTED_BY_APP`|发送的消息被应用的云引擎 Hook 拒绝
+{{ include.imErrorCodes('table') }}
 
 ## 常见问题 FAQ
 

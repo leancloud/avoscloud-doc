@@ -12,13 +12,13 @@ title: 小程序域名白名单配置 - LeanCloud
 
   <div class="login" ng-if="!user.username">
     <a ng-href="/login.html#/signin" class="btn  btn-primary ng-scope">登录</a>
-    <p  class="help-block" style="">查看域名白名单配置，需要先登录</p>
+    <p  class="help-block" style="">查看域名白名单配置，需要先登录。</p>
   </div>
 
-  <div class="step" ng-if="user.username">
+  <div class="step">
     <h3>1. 选择 LeanCloud 应用</h3>
 
-    <div class="row">
+    <div class="row" ng-if="user.username">
 
       <div class="step-content col-sm-4" ng-show="apps">
         <select class="form-control" ng-model="pageState.currentApp"  ng-options="app.app_name  for app in apps">

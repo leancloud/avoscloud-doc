@@ -1,4 +1,4 @@
-{% import "templates/include/_content_parts.html" as include %}
+{% import "views/_parts.html" as include %}
 # 实时通信 REST API 使用指南
 
 ## 请求格式

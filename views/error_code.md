@@ -1,17 +1,18 @@
+{% import "views/_parts.html" as include %}
 # 错误码详解
 
 本文档列举出服务端和 SDK 返回的错误码及相应说明。其他由各 SDK 产生的错误码，请参考以下链接：
 
 * iOS 的 [AVConstants](/api-docs/iOS/docs/AVConstants.html)。
-* iOS v3.1.5 及之后的版本，与网络请求操作相关的错误码，比如 `28` 表示请求超时、`7` 表示连接服务器失败，请参考 [**libcurl error codes**](http://curl.haxx.se/libcurl/c/libcurl-errors.html)。
+* iOS SDK 在进行 WebSocket 通信过程中，相关的状态码请参考 [RFC 6455 · Status Codes]( http://tools.ietf.org/html/rfc6455#section-7.4)。
+* iOS v3.1.5 及之后的版本，与网络请求操作相关的错误码，比如 `28` 表示请求超时、`7` 表示连接服务器失败，请参考 [libcurl error codes](http://curl.haxx.se/libcurl/c/libcurl-errors.html)。
 * Android 的 [AVException](/api-docs/android/index.html)。
 
-## 实时通信错误码
+## 0
 
-相关参考链接：
-
-* [实时通信服务端错误码说明](realtime_v2.html#云端错误码说明)。
-* iOS SDK 在进行 WebSocket 通信过程中，相关的状态码请参考  [**RFC 6455 -- Status Codes**]( http://tools.ietf.org/html/rfc6455#section-7.4 )。
+* 信息 - `(无)`
+* 含义 - WebSocket 正常关闭，可能发生在服务器重启，或本地网络异常的情况。SDK 会自动重连，无需人工干预。
+* 模块 - 实时通信 IM
 
 ## 1
 * 信息 - `Internal server error. No information available.`
@@ -414,3 +415,5 @@
 
 * 信息 - `Nonexistent query keys`
 * 含义 - 无效的查询或者排序字段，请确认查询或者排序的字段在表中存在。
+
+{{ include.imErrorCodes() }}

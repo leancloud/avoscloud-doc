@@ -1,4 +1,5 @@
 {% set masterkey = '{{masterkey}}' %}
+{% import "views/_parts.html" as include %}
 # REST API 使用详解
 
 REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 进行交互，你可以使用 REST API 做很多事情，比如：
@@ -807,9 +808,7 @@ URL 中 where 参数的值是 `%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D`
 
 **特别强调：where 一定要作为 URL 的 Query Parameters 传入。**
 
-
-{% import "templates/include/_op.html" as op %}
-{{op.list("__","#### __op 操作汇总")}}
+{{ include.ops("__","#### __op 操作汇总") }}
 
 ### 删除对象
 
