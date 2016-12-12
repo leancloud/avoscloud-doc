@@ -427,7 +427,7 @@
 
 ```objc
     AVObject *comment = [[AVObject alloc] initWithClassName:@"Comment"];// 构建 Comment 对象
-    [comment setObject:@1 forKey:@"like"];// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
+    [comment setObject:@1 forKey:@"likes"];// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
     [comment setObject:@"这个太赞了！楼主，我也要这些游戏，咱们团购么？" forKey:@"content"];// 留言的内容
 
     // 假设已知了被分享的该 TodoFolder 的 objectId 是 5590cdfde4b00f7adb5860c8

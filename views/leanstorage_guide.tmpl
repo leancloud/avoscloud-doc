@@ -457,6 +457,51 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 ## 查询
 `{{baseQueryClassName}}` 是构建针对 `{{baseObjectName}}` 查询的基础类。{{query_result_limit}}
 
+### 示例数据结构
+
+熟悉本文所使用的相关数据表结构将有助于更好地理解后面的内容。
+
+![](images/todo-schema.svg)
+
+#### Todo（待办事项）
+
+| 字段 | 类型 | 说明 |
+| :-- | :-- | :-- |
+| `content` | String | 事项的详细内容 |
+| `images` | AVFile | 与事项相关的图片 |
+| `location` | String | 处理该事项的地点 |
+| `priority` | Number | 0 优先级最高，最迫切需要完成。 |
+| `reminders` | Array | 设置提醒日期和时间 |
+| `status` | Number | 0 未完成，1 已完成 |
+| `title` | String | 事项的标题（简短描述） |
+| `views` | Number | 该事项被浏览过的次数 |
+| `whereCreated` | AVGeoPoint | 该事项被创建时的地理定位 |
+
+#### TodoFolder（待办事项的分组）
+
+| 字段 | 类型 | 说明 |
+| :-- | :-- | :-- |
+| `containedTodos` | Relation | 所包含的 Todo，与表 `Todo` 相关联。 |
+| `name` | String | 分组的名称，如家庭、会议。 |
+| `owner` | Pointer | 分组的所有者或创建人，指向表 `_User` |
+| `priority` | Number | 该分组的优先级别，0 优先级最高。 |
+| `tags` | Relation | 标签，与表 `Tag` 相关联。 |
+
+#### Comment（待办事项分组的评论）
+
+| 字段 | 类型 | 说明 |
+| :-- | :-- | :-- |
+| `content` | String | 评论的内容 |
+| `likes` | Number | 点了赞就是 1，点了不喜欢为 -1，没有做任何操作就为 0（默认）。 |
+| `targetTodoFolder` | Pointer | 相关联的待办事项分组，指向表 `TodoFolder` 的 objectId |
+
+#### Tag（待办事项分组的标签）
+
+| 字段 | 类型 | 说明 |
+| :-- | :-- | :-- |
+| `name` | String | 标签的名称，如今日必做、老婆吩咐、十分重要等。 |
+| `targetTodoFolder` | Pointer | 相关联的待办事项分组，指向表 `TodoFolder` 的 objectId |
+
 {% block text_avquery_constructors %}
 ### 创建查询实例
 {% block code_create_query_by_className %}{% endblock %}
@@ -660,7 +705,7 @@ AND 操作将满足了所有查询条件的对象返回给客户端。例如，�
 
 #### 内嵌查询
 
-要查询点赞超过 20 次的 TodoFolder 的 Comment 评论（注意查询针对的是 Comment），使用内嵌查询接口就可以通过一次查询来达到目的。
+查询点赞超过 20 次的 TodoFolder 的 Comment 评论（注意查询针对的是 [Comment](#Comment_待办事项分组的评论_)），使用内嵌查询接口就可以通过一次查询来达到目的。
 
 {% block code_query_comment_match_query_todoFolder %}{% endblock %}
 

@@ -515,7 +515,7 @@ AV.Object.register(Todo);
 
 ```js
   var comment = new AV.Object('Comment');// 构建 Comment 对象
-  comment.set('like', 1);// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
+  comment.set('likes', 1);// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
   comment.set('content', '这个太赞了！楼主，我也要这些游戏，咱们团购么？');
   // 假设已知被分享的该 TodoFolder 的 objectId 是 5735aae7c4c9710060fbe8b0
   var targetTodoFolder = AV.Object.createWithoutData('TodoFolder', '5735aae7c4c9710060fbe8b0');
