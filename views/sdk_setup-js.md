@@ -1,5 +1,6 @@
 {% extends "./sdk_setup.tmpl" %}
 {% set platform_name = "JavaScript" %}
+{% import "views/_parts.html" as include %}
 
 {% block libs_tool_automatic %}
 
@@ -42,10 +43,7 @@ $ bower install leancloud-realtime --save
 
 #### CDN 加速
 
-```html
-<!-- 存储服务 -->
-<script src="https://cdn1.lncld.net/static/js/av-min-1.5.0.js"></script>
-```
+{{ include.js_latest() }}
 
 #### Github 仓库地址
 
