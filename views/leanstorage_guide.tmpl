@@ -507,34 +507,10 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 {% block code_create_query_by_className %}{% endblock %}
 
 {% endblock %}
-### 根据 id 查询
-在 [获取对象](#获取对象) 中我们介绍过如何通过 objectId 来获取对象实例，从而简单的介绍了一下 `{{baseQueryClassName}}` 的用法，代码请参考对应的内容，不再赘述。
 
-### 条件查询
+### 比较查询
 
-根据不同条件来过滤结果，比如查询最迫切需要完成的日程列表 Todo，此时基于 priority 构建一个查询就可以得到符合条件的对象：
-
-{% block code_priority_equalTo_zero_query %}{% endblock %}
-
-<div class="callout callout-info">{{query_result_limit}}</div>
-
-将以上逻辑用 SQL 语句表达：
-
-```sql
-  select * from Todo where priority = 0
-```
-
-{{productName}} 也支持使用这种传统的 SQL 语句查询。具体使用方法请移步至 [Cloud Query Language（CQL）查询](#CQL_查询)。
-
-当多个查询条件并存时，它们之间默认为 AND 关系，即查询只返回满足了全部条件的结果。建立 OR 关系则需要使用 [组合查询](#组合查询)。
-
-请注意，在**简单查询**中，如果对一个对象的**同一属性**设置多个条件，那么先前的条件会被覆盖，查询只返回满足最后一个条件的结果。例如要找出优先级为 0 和 1 的所有 Todo，错误写法是：
-
-{% block code_priority_equalTo_zero_and_one_wrong_example %}{% endblock %}
-
-正确作法是使用 [组合查询 · OR 关系](#OR_查询) 来构建这种条件。
-
-#### 比较查询
+**根据 id 查询**在 [获取对象](#获取对象) 中已经做了介绍，代码不再此重复引用。
 
 {% block table_logic_comparison_in_query %}{% endblock %}
 
@@ -544,68 +520,134 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% block code_query_lessThan %}{% endblock %}
 
-要查询优先级大于等于 2 的 Todo：
+<div class="callout callout-info">{{query_result_limit}}</div>
+
+以上逻辑用 SQL 语句表达为 `select * from Todo where priority < 2`。{{productName}} 也支持使用这种传统的 SQL 语句查询。具体使用方法请移步至 [Cloud Query Language（CQL）查询](#CQL_查询)。
+
+查询优先级大于等于 2 的 Todo：
 
 {% block code_query_greaterThanOrEqualTo %}{% endblock %}
 
 比较查询**只适用于可比较大小的数据类型**，如整型、浮点等。
 
-#### 正则匹配查询
+#### 多个查询条件
 
-正则匹配查询是指在查询条件中使用正则表达式来匹配数据，查询指定的 key 对应的 value 符合正则表达式的所有对象。
-例如，要查询标题包含中文的 Todo 对象可以使用如下代码：
+当多个查询条件并存时，它们之间默认为 AND 关系，即查询只返回满足了全部条件的结果。建立 OR 关系则需要使用 [组合查询](#组合查询)。
 
-{% block code_query_with_regular_expression %}{% endblock %}
+在**简单查询**中，如果对一个对象的**同一属性**设置多个条件，那么先前的条件会被覆盖，查询只返回满足最后一个条件的结果。例如要找出优先级为 0 和 1 的所有 Todo，错误写法是：
 
-正则匹配查询**只适用于**字符串类型的数据。
+{% block code_priority_equalTo_zero_and_one_wrong_example %}{% endblock %}
 
-#### 包含查询
+正确作法是使用 [组合查询 · OR 关系](#OR_查询) 来构建这种条件。
 
-包含查询类似于传统 SQL 语句里面的 `LIKE %keyword%` 的查询，比如查询标题包含「李总」的 Todo：
+### 字符串查询
+
+**前缀查询**类似于 SQL 的 `LIKE 'keyword%'` 条件。因为支持索引，所以该操作对于大数据集也很高效。
+
+{% block code_query_whereHasPrefix %}{% endblock %}
+
+**包含查询**类似于 SQL 的 `LIKE '%keyword%'` 条件，比如查询标题包含「李总」的 Todo：
 
 {% block code_query_with_contains_keyword %}whereContains{% endblock %}
 
-翻译成 SQL 语句就是：
-
-```sql
-  select * from Todo where title LIKE '%李总%'
-```
-不包含查询与包含查询是对立的，不包含指定关键字的查询，可以使用 [正则匹配方法](#正则匹配查询) 来实现。例如，查询标题不包含「机票」的 Todo，正则表达式为 `^((?!机票).)*$`：
+**不包含查询**可以使用**正则匹配查询**的方式来实现。例如，查询标题不包含「机票」的 Todo，正则表达式为 `^((?!机票).)*$`：
 
 {% block code_query_with_not_contains_keyword_using_regex %}正则表达式{% endblock %}
+
+<div class="callout callout-info">正则匹配查询**只适用于**字符串类型的数据。</div>
 
 但是基于正则的模糊查询有两个缺点：
 
 - 当数据量逐步增大后，查询效率将越来越低。
 - 没有文本相关性排序
 
-因此，你还可以考虑使用 [应用内搜索](#应用内搜索) 功能。它基于搜索引擎技术构建，提供更强大的搜索功能。
+因此我们推荐使用 [应用内搜索](#应用内搜索) 功能。它基于搜索引擎技术构建，提供更强大的搜索功能。
 
-还有一个接口可以精确匹配不等于，比如查询标题不等于「出差、休假」的 Todo 对象：
-
-{% block code_query_with_not_contains_keyword %}notContainedIn{% endblock %}
-
-#### 数组查询
+### 数组查询
 
 当一个对象有一个属性是数组的时候，针对数组的元数据查询可以有多种方式。例如，在 [数组](#更新数组) 一节中我们为 Todo 设置了 reminders 属性，它就是一个日期数组，现在我们需要查询所有在 8:30 会响起闹钟的 Todo 对象：
 
 {% block code_query_array_contains_using_equalsTo %}{% endblock %}
 
-如果你要查询包含 8:30、9:30 这两个时间点响起闹钟的 Todo，可以使用如下代码：
+查询包含 8:30 和 9:30 这两个时间点响起闹钟的 Todo：
 
 {% block code_query_array_contains_all %}{% endblock %}
 
-注意这里是包含关系，假如有一个 Todo 会在 8:30、9:30、10:30 响起闹钟，它仍然是会被查询出来的。
+注意这里是包含关系，假如有一个 Todo 会在 8:30、9:30 和 10:30 响起闹钟，它仍然是会被查询出来的。
 
-#### 字符串查询
-使用 `{{funtionName_whereKeyHasPrefix}}` 可以过滤出以特定字符串开头的结果，这有点像 SQL 的 LIKE 条件。因为支持索引，所以该操作对于大数据集也很高效。
+查询「全不包含」的情况：
 
-{% block code_query_whereHasPrefix %}{% endblock %}
+{% block code_query_with_not_contains_keyword %}notContainedIn{% endblock %}
 
-#### 空值查询
-假设我们的 Todo 允许用户上传图片用来帮助用户记录某些特殊的事项，但是有时候用户可能就记得自己给一个 Todo 附加过图片，但是具体又不记得这个 Todo 的关键字是什么，因此我们需要一个接口可以找出那些有图片的 Todo，此时就可以使用到空值查询的接口：
+### 空值查询
+
+假设用户可以有选择地为 Todo 上传图片来做标注，要想找出那些已有图片的 Todo：
 
 {% block code_query_where_keys_exist %}{% endblock %}
+
+### 关系查询
+关联数据查询也可以通俗地理解为关系查询，关系查询在传统型数据库的使用中是很常见的需求，因此我们也提供了相关的接口来满足开发者针对关联数据的查询。
+
+首先，我们需要明确关系的存储方式，再来确定对应的查询方式。
+
+#### Pointer 查询
+基于在 [Pointer](#Pointer) 小节介绍的存储方式：每一个 Comment 都会有一个 TodoFolder 与之对应，用以表示 Comment 属于哪个 TodoFolder。现在我已知一个 TodoFolder，想查询所有的 Comnent 对象，可以使用如下代码：
+
+{% block code_query_comment_by_todoFolder %}{% endblock %}
+
+#### `{{relationObjectName}}` 查询
+假如用户可以给 TodoFolder 增加一个 Tag 选项，用以表示它的标签，而为了以后拓展 Tag 的属性，就新建了一个 Tag 对象，如下代码是创建 Tag 对象：
+
+{% block code_create_tag_object %}{% endblock %}
+
+而 Tag 的意义在于一个 TodoFolder 可以拥有多个 Tag，比如「家庭」（TodoFolder） 拥有的 Tag 可以是：今日必做，老婆吩咐，十分重要。实现创建「家庭」这个 TodoFolder 的代码如下：
+
+{% block code_create_family_with_tag %}{% endblock %}
+
+查询一个 TodoFolder 的所有 Tag 的方式如下：
+
+{% block code_query_tag_for_todoFolder %}{% endblock %}
+
+反过来，现在已知一个 Tag，要查询有多少个 TodoFolder 是拥有这个 Tag 的，可以使用如下代码查询：
+
+{% block code_query_todoFolder_with_tag %}{% endblock %}
+
+关于关联数据的建模是一个复杂的过程，很多开发者因为在存储方式上的选择失误导致最后构建查询的时候难以下手，不但客户端代码冗余复杂，而且查询效率低，为了解决这个问题，我们专门针对关联数据的建模推出了一个详细的文档予以介绍，详情请阅读 {{relation_guide_url}}。
+
+#### 关联属性查询
+正如在 [Pointer](#Pointer) 中保存 Comment 的 targetTodoFolder 属性一样，假如查询到了一些 Comment 对象，想要一并查询出每一条 Comment 对应的 TodoFolder 对象的时候，可以加上 include 关键字查询条件。同理，假如 TodoFolder 表里还有 pointer 型字段 targetAVUser 时，再加上一个递进的查询条件，形如 include(b.c)，即可一并查询出每一条 TodoFolder 对应的 AVUser 对象。代码如下：
+
+{% block code_query_comment_include_todoFolder %}{% endblock %}
+
+#### 内嵌查询
+
+查询点赞超过 20 次的 TodoFolder 的 Comment 评论（注意查询针对的是 [Comment](#Comment_待办事项分组的评论_)），使用内嵌查询接口就可以通过一次查询来达到目的。
+
+{% block code_query_comment_match_query_todoFolder %}{% endblock %}
+
+与普通查询一样，内嵌查询默认也最多返回 100 条记录，想修改这一默认请参考 [限定结果返回数量](#限定返回数量)。**如果所有返回的记录没有匹配到外层的查询条件，那么整个查询也查不到结果**。
+
+### 地理位置查询
+地理位置查询是较为特殊的查询，一般来说，常用的业务场景是查询距离 xx 米之内的某个位置或者是某个建筑物，甚至是以手机为圆心，查找方圆多少范围内餐厅等等。{{productName}} 提供了一系列的方法来实现针对地理位置的查询。
+
+#### 查询位置附近的对象
+Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObjectName}}` 对象，现在已知了一个地理位置，现在要查询 `whereCreated` 靠近这个位置的 Todo 对象可以使用如下代码：
+
+{% block code_query_geoPoint_near %}{% endblock %}
+
+#### 查询指定范围内的对象
+要查找指定距离范围内的数据，可使用 `whereWithinKilometers` 、 `whereWithinMiles` 或 `whereWithinRadians` 方法。
+例如，我要查询距离指定位置，2 千米范围内的 Todo：
+
+{% block code_query_geoPoint_within %}{% endblock %}
+
+#### 注意事项
+
+使用地理位置需要注意以下方面：
+
+* 每个 `{{baseObjectName}}` 数据对象中只能有一个 `{{geoPointObjectName}}` 对象的属性。
+* 地理位置的点不能超过规定的范围。纬度的范围应该是在 `-90.0` 到 `90.0` 之间，经度的范围应该是在 `-180.0` 到 `180.0` 之间。如果添加的经纬度超出了以上范围，将导致程序错误。
+{% block text_platform_geoPoint_notice %}{% endblock %}
 
 ### 组合查询
 组合查询就是把诸多查询条件合并成一个查询，再交给 SDK 去云端查询。方式有两种：OR 和 AND。
@@ -624,7 +666,7 @@ AND 操作将满足了所有查询条件的对象返回给客户端。例如，�
 
 可以对新创建的 `{{baseQueryClassName}}` 添加额外的约束，多个约束将以 AND 运算符来联接。
 
-### 查询结果
+### 查询结果数量和排序
 
 #### 获取第一条结果
 例如很多应用场景下，只要获取满足条件的一个结果即可，例如获取满足条件的第一条 Todo：
@@ -669,48 +711,6 @@ AND 操作将满足了所有查询条件的对象返回给客户端。例如，�
 
 <!-- #### 限定返回字段 -->
 
-### 关系查询
-关联数据查询也可以通俗地理解为关系查询，关系查询在传统型数据库的使用中是很常见的需求，因此我们也提供了相关的接口来满足开发者针对关联数据的查询。
-
-首先，我们需要明确关系的存储方式，再来确定对应的查询方式。
-
-#### Pointer 查询
-基于在 [Pointer](#Pointer) 小节介绍的存储方式：每一个 Comment 都会有一个 TodoFolder 与之对应，用以表示 Comment 属于哪个 TodoFolder。现在我已知一个 TodoFolder，想查询所有的 Comnent 对象，可以使用如下代码：
-
-{% block code_query_comment_by_todoFolder %}{% endblock %}
-
-#### `{{relationObjectName}}` 查询
-假如用户可以给 TodoFolder 增加一个 Tag 选项，用以表示它的标签，而为了以后拓展 Tag 的属性，就新建了一个 Tag 对象，如下代码是创建 Tag 对象：
-
-{% block code_create_tag_object %}{% endblock %}
-
-而 Tag 的意义在于一个 TodoFolder 可以拥有多个 Tag，比如「家庭」（TodoFolder） 拥有的 Tag 可以是：今日必做，老婆吩咐，十分重要。实现创建「家庭」这个 TodoFolder 的代码如下：
-
-{% block code_create_family_with_tag %}{% endblock %}
-
-查询一个 TodoFolder 的所有 Tag 的方式如下：
-
-{% block code_query_tag_for_todoFolder %}{% endblock %}
-
-反过来，现在已知一个 Tag，要查询有多少个 TodoFolder 是拥有这个 Tag 的，可以使用如下代码查询：
-
-{% block code_query_todoFolder_with_tag %}{% endblock %}
-
-关于关联数据的建模是一个复杂的过程，很多开发者因为在存储方式上的选择失误导致最后构建查询的时候难以下手，不但客户端代码冗余复杂，而且查询效率低，为了解决这个问题，我们专门针对关联数据的建模推出了一个详细的文档予以介绍，详情请阅读 {{relation_guide_url}}。
-
-#### 关联属性查询
-正如在 [Pointer](#Pointer) 中保存 Comment 的 targetTodoFolder 属性一样，假如查询到了一些 Comment 对象，想要一并查询出每一条 Comment 对应的 TodoFolder 对象的时候，可以加上 include 关键字查询条件。同理，假如 TodoFolder 表里还有 pointer 型字段 targetAVUser 时，再加上一个递进的查询条件，形如 include(b.c)，即可一并查询出每一条 TodoFolder 对应的 AVUser 对象。代码如下：
-
-{% block code_query_comment_include_todoFolder %}{% endblock %}
-
-#### 内嵌查询
-
-查询点赞超过 20 次的 TodoFolder 的 Comment 评论（注意查询针对的是 [Comment](#Comment_待办事项分组的评论_)），使用内嵌查询接口就可以通过一次查询来达到目的。
-
-{% block code_query_comment_match_query_todoFolder %}{% endblock %}
-
-与普通查询一样，内嵌查询默认也最多返回 100 条记录，想修改这一默认请参考 [限定结果返回数量](#限定返回数量)。**如果所有返回的记录没有匹配到外层的查询条件，那么整个查询也查不到结果**。
-
 ### CQL 查询
 Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功能的语言，具有 SQL 开发经验的开发者可以方便地使用此接口实现查询。
 
@@ -743,28 +743,6 @@ Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语�
 {% block code_cache_operation %}{% endblock %}
 
 {% endblock %}
-
-### 地理位置查询
-地理位置查询是较为特殊的查询，一般来说，常用的业务场景是查询距离 xx 米之内的某个位置或者是某个建筑物，甚至是以手机为圆心，查找方圆多少范围内餐厅等等。{{productName}} 提供了一系列的方法来实现针对地理位置的查询。
-
-#### 查询位置附近的对象
-Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObjectName}}` 对象，现在已知了一个地理位置，现在要查询 `whereCreated` 靠近这个位置的 Todo 对象可以使用如下代码：
-
-{% block code_query_geoPoint_near %}{% endblock %}
-
-#### 查询指定范围内的对象
-要查找指定距离范围内的数据，可使用 `whereWithinKilometers` 、 `whereWithinMiles` 或 `whereWithinRadians` 方法。
-例如，我要查询距离指定位置，2 千米范围内的 Todo：
-
-{% block code_query_geoPoint_within %}{% endblock %}
-
-#### 注意事项
-
-使用地理位置需要注意以下方面：
-
-* 每个 `{{baseObjectName}}` 数据对象中只能有一个 `{{geoPointObjectName}}` 对象的属性。
-* 地理位置的点不能超过规定的范围。纬度的范围应该是在 `-90.0` 到 `90.0` 之间，经度的范围应该是在 `-180.0` 到 `180.0` 之间。如果添加的经纬度超出了以上范围，将导致程序错误。
-{% block text_platform_geoPoint_notice %}{% endblock %}
 
 ### 查询性能优化
 

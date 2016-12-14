@@ -805,15 +805,6 @@ query.whereKey("title", .MatchedPattern("^((?!机票).)*$", option: nil))
 ```
 {% endblock %}
 
-{% block code_query_with_not_contains_keyword %}
-
-```swift
-let query = LCQuery(className: "Todo")
-
-query.whereKey("title", .NotContainedIn(["休假", "出差"]))
-```
-{% endblock %}
-
 {% block code_query_array_contains_using_equalsTo %}
 
 ```swift
@@ -850,6 +841,12 @@ func testArrayContainsAll() {
     // 查询 reminders 数组中同时包含 reminder1 和 reminder2 的 Todo 对象
     query.whereKey("reminders", .ContainedAllIn([reminder1, reminder2]))
 }
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```swift
+    query.whereKey("reminders", .NotContainedIn([reminder1, reminder2]))
 ```
 {% endblock %}
 

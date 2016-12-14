@@ -593,16 +593,6 @@
 ```
 {% endblock %}
 
-{% block code_query_with_not_contains_keyword %}
-
-```java
-    AVQuery<AVObject> query = new AVQuery<>("Todo");
-    query.whereNotContainedIn("title", Arrays.asList("出差", "休假"));
-    // 标题不是「出差」和「休假」的 Todo 对象列表
-    List<AVObject> todos = query.find();
-```
-{% endblock %}
-
 {% block code_query_array_contains_using_equalsTo %}
 
 ```java
@@ -641,6 +631,12 @@
 
         List<AVObject> todos = query.find();
     }
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```java
+    query.whereNotContainedIn("reminders", Arrays.asList(reminder1, reminder2));
 ```
 {% endblock %}
 

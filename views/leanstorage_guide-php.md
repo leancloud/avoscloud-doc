@@ -579,15 +579,6 @@ $query->matches("title","^((?!机票).)*$");
 ```
 {% endblock %}
 
-{% block code_query_with_not_contains_keyword %}
-
-```php
-$query = new Query("Todo");
-$query->notContainedIn("title",array("出差", "休假"));
-$query->find();
-```
-{% endblock %}
-
 {% block code_query_array_contains_using_equalsTo %}
 
 ```php
@@ -608,6 +599,12 @@ $date1 = new \DateTime("2015-11-11 08:30:00");
 $date2 = new \DateTime("2015-11-11 09:30:00");
 $query->containsAll("reminders", array($date1, $date2));
 $query->find();
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```php
+$query->notContainedIn("reminders", array($date1, $date2));
 ```
 {% endblock %}
 

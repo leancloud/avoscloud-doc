@@ -725,18 +725,6 @@ query.matched('title', '^((?!机票).)*$')
 ```
 {% endblock %}
 
-{% block code_query_with_not_contains_keyword %}
-
-```python
-import leancloud
-
-Todo = leancloud.Object.extend('Todo')
-query = Todo.query
-
-query.not_contained_in('title', ['出差','休假'])
-```
-{% endblock %}
-
 {% block code_query_array_contains_using_equalsTo %}
 
 ```python
@@ -771,6 +759,12 @@ reminder2 = datetime(2015, 11, 11, 9, 30, 00)
 
 # 如果精确查询数组元素，则用 equal_to 函数，并在第二个参数传入需要精确查询的数组
 query.equal_to('reminders', [reminder1, reminder2])
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```python
+query.not_contained_in('reminders', [reminder1, reminder2])
 ```
 {% endblock %}
 

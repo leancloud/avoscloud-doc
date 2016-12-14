@@ -786,17 +786,6 @@ file.save({
 ```
 {% endblock %}
 
-
-{% block code_query_with_not_contains_keyword %}
-
-```js
-  var query = new AV.Query('Todo');
-  var filterArray = ['出差', '休假'];
-  query.notContainedIn('title', filterArray);
-```
-{% endblock %}
-
-
 {% block code_query_array_contains_using_equalsTo %}
 
 ```js
@@ -820,9 +809,13 @@ file.save({
 ```
 {% endblock %}
 
+{% block code_query_with_not_contains_keyword %}
+```js
+  query.notContainedIn('reminders', reminderFilter);
+```
+{% endblock %}
 
 {% block code_query_whereHasPrefix %}
-
 ```js
   // 找出开头是「早餐」的 Todo
   var query = new AV.Query('Todo');

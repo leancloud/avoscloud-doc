@@ -719,8 +719,7 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 [query whereKey:@"priority" greaterThanOrEqualTo:@2];
 ```
 
-另外，因为 Objective-C 语言本身特定的设定，boolean 值的查询很多开发者**错误地**使用了 0 和 1 进行查询。
-正确的构建方式如下：
+**查询 boolean 值**时，很多开发者会**错误地**使用 0 和 1，正确方法为：
 
 ```
 [query whereKey:@"booleanTest" equalTo:@(YES)];
@@ -747,18 +746,6 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 ```objc
   AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
   [query whereKey:@"title" matchesRegex:@"^((?!机票).)*$"];
-```
-{% endblock %}
-
-{% block code_query_with_not_contains_keyword %}
-```objc
-    AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-    NSArray *filterArray = [NSArray arrayWithObjects:@"出差", @"休假", nil]; // NSArray
-    [query whereKey:@"title" notContainedIn:filterArray];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        // 标题不是「出差」和「休假」的 Todo 对象列表
-        NSArray<AVObject *> *todos = objects;
-    }];
 ```
 {% endblock %}
 
@@ -806,6 +793,12 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 
     }];
 }
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```objc
+    [query whereKey:@"reminders" notContainedIn:reminders];
 ```
 {% endblock %}
 
