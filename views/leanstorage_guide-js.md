@@ -1479,19 +1479,19 @@ Promise 比较神奇，可以代替多层嵌套方式来解决发送异步请求
 
 ```javascript
 var query = new AV.Query('Student');
-query.addDescending('gpa');
+query.addDescending('score');
 query.find().then(function(students) {
-  students[0].set('valedictorian', true);
+  students[0].set('passed', true);
   return students[0].save();
 
-}).then(function(valedictorian) {
+}).then(function(student0) {
   return query.find();
 
 }).then(function(students) {
-  students[1].set('salutatorian', true);
+  students[1].set('passed', true);
   return students[1].save();
 
-}).then(function(salutatorian) {
+}).then(function(student1) {
   // Everything is done!
 
 });
