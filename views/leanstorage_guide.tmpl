@@ -101,20 +101,10 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 
 <dl>
   <dt>属性名</dt>
-  <dd>也叫键或 key，必须是由字母、数字或下划线组成的字符串；自定义的属性名，不能以 `__`（双下划线）开头。</dd>
+  <dd>也叫键或 key，必须是由字母、数字或下划线组成的字符串。<br/>自定义的属性名，不能以 `__`（双下划线）开头，<span class="callout-danger" style="background-color: transparent;">也不能与内置属性重名</span>。</dd>
   <dt>属性值</dt>
   <dd>可以是字符串、数字、布尔值、数组或字典。</dd>
 </dl>
-
-<div class="callout callout-danger"><p>以下为系统保留字段，不能作为属性名来使用。</p>
-<samp style="color:#666;">acl             error            pendingKeys
-ACL             fetchWhenSave    running
-className       id               updatedAt
-code            isDataReady      uuid
-createdAt       keyValues
-description     objectId
-</samp>
-</div>
 
 为提高代码的可读性和可维护性，建议使用驼峰式命名法（CamelCase）为类和属性来取名。类，采用大驼峰法，如 `CustomData`。属性，采用小驼峰法，如 `imageUrl`。
 
