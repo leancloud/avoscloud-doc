@@ -89,7 +89,7 @@ npm install --save leancloud-realtime-plugin-typed-messages leancloud-storage
 然后依次进行初始化：
 ```javascript
 // 初始化存储 SDK
-AV.initialize('{{appid}}', '{{appkey}}');
+AV.init('{{appid}}', '{{appkey}}');
 // 初始化实时通讯 SDK
 var Realtime = AV.Realtime;
 var realtime = new Realtime({
@@ -108,7 +108,7 @@ var TypedMessagesPlugin = require('leancloud-realtime-plugin-typed-messages').Ty
 var ImageMessage = require('leancloud-realtime-plugin-typed-messages').ImageMessage;
 
 // 初始化存储 SDK
-AV.initialize('{{appid}}', '{{appkey}}');
+AV.init('{{appid}}', '{{appkey}}');
 // 初始化实时通讯 SDK
 var realtime = new Realtime({
   appId: '{{appid}}',

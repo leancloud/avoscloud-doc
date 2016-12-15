@@ -338,10 +338,10 @@ LeanCloud 依赖的 Framework 包括：
 
 JavaScript SDK 由于平台的特殊性（运行在单线程运行的浏览器或者 Node.js 环境中），不提供同步 API，所有需要网络交互的 API 都需要以 callback 的形式调用。我们提供了 [Promise 模式](leanstorage_guide-js.html#Promise) 来减少 callback 嵌套过多的问题。
 
-### 在 AV.initialize 中用了 Master Key，但发出去的 AJAX 请求返回 206
+### 在 AV.init 中用了 Master Key，但发出去的 AJAX 请求返回 206
 目前 JavaScript SDK 在浏览器（而不是 Node）中工作时，是不会发送 Master Key 的，因为我们不鼓励在浏览器中使用 Master Key，Master Key 代表着对数据的最高权限，只应当在后端程序中使用。
 
-如果你的应用的确是内部应用（做好了相关的安全措施，外部访问不到），可以在 `AV.initialize`之后增加下面的代码来让 JavaScript SDK 发送 Master Key：
+如果你的应用的确是内部应用（做好了相关的安全措施，外部访问不到），可以在 `AV.init`之后增加下面的代码来让 JavaScript SDK 发送 Master Key：
 ```
 AV._useMasterKey = true;
 ```
