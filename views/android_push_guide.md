@@ -378,8 +378,6 @@ dependencies {
 - manifest 正确填写
 - appId、appKey 有效
 
-如果以上条件不符合，SDK 会在日志中输出导致注册失败的原因，例如「register error, mainifest is incomplete」代表 manifest 未正确填写。如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
-
 #### 小米推送通知栏消息的点击事件
 
 当小米通知栏消息被点击后，如果已经设置了 [自定义 Receiver](#自定义_Receiver)，则 SDK 会发送一个 action 为 `com.avos.avoscloud.mi_notification_action` 的 broadcast。如有需要，开发者可以通过订阅此消息获取点击事件，否则 SDK 会默认打开 [启动推送服务](#启动推送服务) 对应设置的 Activity。
@@ -476,15 +474,12 @@ dependencies {
 - EMUI 系统
 - manifest 正确填写
 
-如果以上条件不符合，SDK 会在日志中输出导致注册失败的原因。如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
-
 ### 排查建议
 
-- 只要 _Installation 表中没有 vendor 字段，打开 AVOSCloud.setDebugLogEnabled(true);
-日志后，SDK 会在日志中输出导致注册失败的原因。
+- 只要注册时有条件不符合，SDK 会在日志中输出导致注册失败的原因，例如「register error, mainifest is incomplete」代表 manifest 未正确填写。如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
 - 请注意，小米机型注册时，registerXiaomiPush 方法的第二个参数是 AppKey，而在控制台里，Profile 配置的第二个参数是 AppSecret。一定要保证填写正确。
 - 查看华为小米等机型的设置，并打开「信任此应用」、「开机自启动」、「自启动管理」和「权限管理」等相关选项。
-- 如果华为机型打印了日志：push client begin to receive the token 之后没有任何后续的日志，需要去论坛发帖，提供具体的机型以及 EMUI 系统版本号，这个问题我们会联系华为开发平台来解决。
+- 如果注册一直失败的话，请去论坛发帖，提供相关日志、具体机型以及系统版本号，我们会跟进协助来排查。
 
 {% endif %}
 
