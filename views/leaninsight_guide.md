@@ -6,22 +6,15 @@
 {% endif %}
 另外，离线分析仅支持 `SELECT` 语句，不支持 `UPDATE`、`INSERT`、`DELETE` 等语句，所以它不会更新或修改数据源，开发者可以放心使用。
 
-{% if node=='qcloud' %}
-离线数据分析页面的访问路径为 控制台 > **存储** > **离线数据分析**。如果该功能不能正常使用，请通过 [工单系统](https://leanticket.cn/t/leancloud) 或 [用户论坛](https://forum.leancloud.cn) 联系我们。
-{% else %}
-离线数据分析页面的访问路径为 [控制台 > **存储** > **离线数据分析**](/dataquery.html?appid={{appid}}#/)。如果该功能不能正常使用，请通过 [工单系统](https://leanticket.cn/t/leancloud) 或 [用户论坛](https://forum.leancloud.cn) 联系我们。
-{% endif %}
+离线数据分析页面的访问路径为 {% if node=='qcloud' %}**控制台** > **存储** > **离线数据分析**{% else %}[控制台 > 存储 > 离线数据分析](/dataquery.html?appid={{appid}}#/){% endif %}。如果该功能不能正常使用，请通过 [工单系统](https://leanticket.cn/t/leancloud) 或 [用户论坛](https://forum.leancloud.cn) 联系我们。
+
 
 ## 限制
 
 - `_Conversation` 表的 **m** 和 **mu** 字段往往包含大量数组元素，容易引起计算节点故障，因此我们限制了对这些字段的查询。
 - `_User` 表的 **sessionToken**、**password**、**salt** 字段，因为安全原因也被限制查询。
 - 不支持对 **Relation 类型**字段的查询。<br/>由于内部机制，离线分析无法访问 AVRelation 所使用的内部关联表，所以就无法从该字段所在的表中获取相关联的数据。开发者可考虑使用自定义的 [关联表](storage_overview.html#数据关联) 并配合 [join](#多表_Join) 语句来解决这个问题。
-- 由于资源管理上的限制，每次导出的数据条数不能超过 **100,000**（十万条）。<br/>{% if node=='qcloud' %}
-  要导出更多的结果，可以分多次查询并多次导出。如果导出全表的数据，请在该应用的 **设置** > **数据导出** 中操作。
-  {% else %}
-  要导出更多的结果，可以分多次查询并多次导出。如果导出全表的数据，请在该应用的 [设置 > 数据导出](/app.html?appid={{appid}}#/export) 中操作。
-  {% endif %}
+- 由于资源管理上的限制，每次导出的数据条数不能超过 **100,000**（十万条）。<br/>要导出更多的结果，可以分多次查询并多次导出。如果导出全表的数据，请在该应用的 {% if node=='qcloud' %}**设置** > **数据导出**{% else %}[设置 > 数据导出](/app.html?appid={{appid}}#/export){% endif %} 中操作。
 
 ## 查询语法
 
@@ -221,7 +214,6 @@ JavaScript SDK 0.5.5 版本开始支持离线数据分析。**请注意，离线
 
 任务如果能正常启动，将返回任务的 job id，后续可以拿这个 id 去查询任务状态和结果。
 
-
 ### Job 完成
 
 在云引擎里，可以通过一个 hook 函数来监听 job 完成情况：
@@ -251,7 +243,7 @@ AV.Insight.on('end', function(err, result) {
 
 在知道任务 id 的情况下（startJob 返回或者云引擎监听到任务完成），可以主动查询本次任务的结果：
 
-​```js
+```js
   var id = '已知任务 id';
   var q = new AV.Insight.JobQuery(id);
   q.find().then(function(result) {
@@ -263,13 +255,13 @@ AV.Insight.on('end', function(err, result) {
 
 result 是一个 JSON 对象，形如：
 
-​```js
+```js
 {  
   "id":         "976c94ef0847f4ff3a65e661bf7b809a", //任务 id 
   "status":     "OK", //任务状态 
   "totalCount": 50, //结果总数 
   "results":[  
-     ……结果数组……
+     ... 结果数组...
   ]
 }
 ```
