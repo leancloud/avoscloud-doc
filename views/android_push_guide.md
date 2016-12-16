@@ -474,7 +474,7 @@ dependencies {
 - EMUI 系统
 - manifest 正确填写
 
-### 排查建议
+### 错误排查建议
 
 - 只要注册时有条件不符合，SDK 会在日志中输出导致注册失败的原因，例如「register error, mainifest is incomplete」代表 manifest 未正确填写。如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
 - 请注意，小米机型注册时，registerXiaomiPush 方法的第二个参数是 AppKey，而在控制台里，Profile 配置的第二个参数是 AppSecret。一定要保证填写正确。
