@@ -372,11 +372,13 @@ dependencies {
 
 在 `AVOSCloud.initialize` 时调用 `AVMixpushManager.registerXiaomiPush(context, miAppId, miAppKey, profile)` 即可。参数 `profile` 的用法可以参考 [Android 混合推送多配置区分](push_guide.html#Android_混合推送多配置区分)。
 
+registerXiaomiPush() 方法的第二个参数是 AppKey，而在控制台里，Profile 配置的第二个参数是 AppSecret。请务必填写正确。
+
 注意，LeanCloud 云端只有在以下三个条件都满足的情况下，才会使用小米推送。
 
 - MIUI 系统
 - manifest 正确填写
-- appId、appKey 有效
+- appId、appKey、appSecret 有效
 
 #### 小米推送通知栏消息的点击事件
 
@@ -477,7 +479,6 @@ dependencies {
 ### 错误排查建议
 
 - 只要注册时有条件不符合，SDK 会在日志中输出导致注册失败的原因，例如「register error, mainifest is incomplete」代表 manifest 未正确填写。如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
-- 请注意，小米机型注册时，registerXiaomiPush 方法的第二个参数是 AppKey，而在控制台里，Profile 配置的第二个参数是 AppSecret。一定要保证填写正确。
 - 查看华为小米等机型的设置，并打开「信任此应用」、「开机自启动」、「自启动管理」和「权限管理」等相关选项。
 - 如果注册一直失败的话，请去论坛发帖，提供相关日志、具体机型以及系统版本号，我们会跟进协助来排查。
 
