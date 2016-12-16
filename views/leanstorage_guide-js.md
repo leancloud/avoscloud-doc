@@ -1478,22 +1478,23 @@ Promise 比较神奇，可以代替多层嵌套方式来解决发送异步请求
 的 callback 没有解决前是不会解决的，也就是所谓 **Promise Chain**。
 
 ```javascript
-var query = new AV.Query('Student');
-query.addDescending('score');
-query.find().then(function(students) {
-  students[0].set('passed', true);
-  return students[0].save();
+// 将内容按章节顺序添加到页面上
+var chapterIds = [
+  '584e1c408e450a006c676162', // 第一章
+  '584e1c43128fe10058b01cf5', // 第二章
+  '581aff915bbb500059ca8d0b'  // 第三章
+];
 
-}).then(function(student0) {
-  return query.find();
+var query = new AV.Query('Chapter');
 
-}).then(function(students) {
-  students[1].set('passed', true);
-  return students[1].save();
-
-}).then(function(student1) {
-  // Everything is done!
-
+query.get(chapterIds[0]).then(function(chapter0) {
+  addHtmlToPage(chapter0.get('content'));
+  return query.get(chapterIds[1]);
+}).then(function(chapter1) {
+  addHtmlToPage(chapter1.get('content'));
+  return query.get(chapterIds[2]);
+}).then(function(chapter2) {
+  addHtmlToPage(chapter2.get('content'));
 });
 ```
 
@@ -1508,23 +1509,22 @@ query.find().then(function(students) {
 利用 `try,catch` 方法可以将上述代码改写为：
 
 ```javascript
-var query = new AV.Query('Student');
-query.addDescending('gpa');
-query.find().then(function(students) {
-  students[0].set('valedictorian', true);
+query.get(chapterIds[0]).then(function(chapter0) {
+  addHtmlToPage(chapter0.get('content'));
   // 强制失败
-  throw new Error('There was an error.');
-}).then(function(valedictorian) {
+  throw new Error('出错啦');
+  return query.get(chapterIds[1]);
+}).then(function(chapter1) {
   // 这里的代码将被忽略
-  return query.find();
-}).then(function(students) {
-  // 这里的代码也将被忽略
-  students[1].set('salutatorian', true);
-  return students[1].save();
+  addHtmlToPage(chapter1.get('content'));
+  return query.get(chapterIds[2]);
+}).then(function(chapter2) {
+  // 这里的代码将被忽略
+  addHtmlToPage(chapter2.get('content'));
 }).catch(function(error) {
-  // 这个错误处理函数将被调用，并且错误信息是 'There was an error.'.
+  // 这个错误处理函数将被调用，错误信息是 '出错啦'.
   console.error(error.message);
-})
+});
 ```
 
 ### JavaScript Promise 迷你书
