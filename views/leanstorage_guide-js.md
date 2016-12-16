@@ -1485,16 +1485,17 @@ var chapterIds = [
   '581aff915bbb500059ca8d0b'  // 第三章
 ];
 
-var query = new AV.Query('Chapter');
-
-query.get(chapterIds[0]).then(function(chapter0) {
+new AV.Query('Chapter').get(chapterIds[0]).then(function(chapter0) {
+  // 向页面添加内容
   addHtmlToPage(chapter0.get('content'));
-  return query.get(chapterIds[1]);
+  // 返回新的 Promise
+  return new AV.Query('Chapter').get(chapterIds[1]);
 }).then(function(chapter1) {
   addHtmlToPage(chapter1.get('content'));
-  return query.get(chapterIds[2]);
+  return new AV.Query('Chapter').get(chapterIds[2]);
 }).then(function(chapter2) {
   addHtmlToPage(chapter2.get('content'));
+  // 完成
 });
 ```
 
@@ -1509,15 +1510,17 @@ query.get(chapterIds[0]).then(function(chapter0) {
 利用 `try,catch` 方法可以将上述代码改写为：
 
 ```javascript
-query.get(chapterIds[0]).then(function(chapter0) {
+new AV.Query('Chapter').get(chapterIds[0]).then(function(chapter0) {
   addHtmlToPage(chapter0.get('content'));
+  
   // 强制失败
   throw new Error('出错啦');
-  return query.get(chapterIds[1]);
+
+  return new AV.Query('Chapter').get(chapterIds[1]);
 }).then(function(chapter1) {
   // 这里的代码将被忽略
   addHtmlToPage(chapter1.get('content'));
-  return query.get(chapterIds[2]);
+  return new AV.Query('Chapter').get(chapterIds[2]);
 }).then(function(chapter2) {
   // 这里的代码将被忽略
   addHtmlToPage(chapter2.get('content'));
