@@ -199,35 +199,26 @@
 
 ```js
   // 构建 AV.Role 的查询
+  var administratorRole= //假设 administratorRole 是之前创建的 「Administrator」 角色;
   var roleQuery = new AV.Query(AV.Role);
+  // 角色名称等于 Administrator
   roleQuery.equalTo('name', 'Administrator');
-  roleQuery.find().then(function(results) {
+  // 检查当前用户是否已经拥有了 Administrator 角色
+  roleQuery.equalTo('users', AV.User.current());
+  roleQuery.find().then(function (results) {
     if (results.length > 0) {
-
-      // 如果角色存在
+      // 当前用户已经具备了 Administrator 角色，因此不需要做任何操作
       var administratorRole = results[0];
-      roleQuery.equalTo('users', AV.User.current());
-      return roleQuery.find();
+      return administratorRole;
     } else {
-
-      // 如果角色不存在新建角色，并把为当前用户赋予该角色
-      var administratorRole = new AV.Role('Administrator');
-      var relation = administratorRole.getUsers();
-
-      //为当前用户赋予该角色
-      relation.add(AV.User.current());
-      administratorRole.save();
-    }
-  }).then(function(userForRole) {
-    //该角色存在，但是当前用户未被赋予该角色
-    if (userForRole.length === 0) {
-      // 为当前用户赋予该角色
-      var administratorRole = new AV.Role('Administrator');
+      // 当前用户不具备 Administrator，因此你需要把当前用户添加到 Role 的 Users 中
       var relation = administratorRole.getUsers();
       relation.add(AV.User.current());
-      administratorRole.save();
+      return administratorRole.save();
     }
-  }).catch(function(error) {
+  }).then(function (administratorRole) {
+    //此时 administratorRole 已经包含了当前用户
+  }).catch(function (error) {
     // 输出错误
     console.log(error);
   });
