@@ -1,0 +1,20 @@
+{# 2016-12-25 replace linebreak or more than one | to html <p> tag #}
+{% macro paragraph(content="") %}
+  {% if content | trim != "" -%}
+    <p>{{ content | replace(r/[\n\r]+|(\|{2,})/g,"</p><p>") | safe }}</p>
+  {%- endif %}
+{% endmacro %}
+
+{% macro alert(content) -%}
+  {{ callout(paragraph(content),"danger") | safe }}  
+{%- endmacro %}
+
+{% macro note(content) -%}
+  {{ callout(paragraph(content),"info") | safe }}  
+{%- endmacro %}
+
+{% macro callout(content, type) %}
+  {% if content | trim != "" -%}
+    <div class="callout callout-{{type}}">{{ content | safe }}</div>
+  {%- endif %}
+{% endmacro %}
