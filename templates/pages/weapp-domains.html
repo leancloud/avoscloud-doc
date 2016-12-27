@@ -95,10 +95,11 @@ title: 小程序域名白名单配置 - LeanCloud
           {% if node !== 'us' %}
             {% if node === 'qcloud' %}
               {% set area = 'e1' %}
+              {% set arr = [2, 3, 4, 5, 6] %}
             {% else %}
               {% set area = 'n1' %}
+              {% set arr = [1, 2, 5, 7] %}
             {% endif %}
-            {% set arr = [1, 2, 5, 7] %}
             {% for i in arr %}
               <tr>
                 {% if i === 1 %}
