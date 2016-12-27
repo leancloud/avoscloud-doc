@@ -266,6 +266,8 @@ push_data | 可选 | 以消息附件方式设置本条消息的离线推送通�
 
 默认情况下发送消息 API 使用异步的方式，调用后直接返回空结果 `{}`。
 
+## 系统消息
+
 ### 系统对话给用户发消息
 
 利用 REST API 通过系统对话给用户发消息时，除了 conv_id 需要设置为对应系统对话的 id 以外，还需要设置 to_peers（数组）指定实际接收消息的 client id。
@@ -343,7 +345,83 @@ mid | 要删除的消息 id，字符串
 
 空 JSON 对象 `{}`。
 
-### 富媒体消息格式说明
+### 查询系统广播消息
+
+调用此 API 可查询目前有效的广播消息。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  https://leancloud.cn/1.1/rtm/broadcast
+```
+
+参数 | 说明
+--- | ---
+conv_id | 系统对话 id
+limit | 返回消息条数
+skip | 跳过消息条数，用于翻页
+
+### 系统对话发送订阅消息
+
+利用 REST API 发送消息给系统对话所有的订阅用户（即加入系统对话的用户）。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '{"from_peer": "1a", "message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "..."}' \
+  https://leancloud.cn/1.1/rtm/broadcast/subscriber
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+from_peer | | 字符串 | 消息的发件人 id
+conv_id | | 字符串 | 发送到对话 id，仅限于系统对话
+message | | 字符串 |消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
+
+### 订阅和退订系统对话
+
+#### 订阅系统对话
+
+为指定用户订阅指定的系统对话。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '{"conv_id": "...", "client_id": "..."}' \
+  https://leancloud.cn/1.1/rtm/conversation/subscription
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+client_id | | 字符串 | 订阅者的 client id
+conv_id | | 字符串 | 对话 id，仅限于系统对话
+
+#### 退订系统对话
+
+为指定用户退订指定的系统对话。
+
+```sh
+curl -X DELETE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'conv_id=...' \
+  --data-urlencode 'client_id=...' \
+  https://leancloud.cn/1.1/rtm/conversation/subscription
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+client_id | | 字符串 | 退订者的 client id
+conv_id | | 字符串 | 对话 id，仅限于系统对话
+
+
+## 富媒体消息格式说明
 富媒体消息的参数格式相对于普通文本来说，仅仅是将 message 参数换成了一个 JSON **字符串**。
 
 <div class="callout callout-info">由于 LeanCloud 实时通信中所有的消息都是文本，所以这里发送 JSON 结构时**需要首先序列化成字符串**。</div>
