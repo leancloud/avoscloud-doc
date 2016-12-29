@@ -48,7 +48,7 @@ data| |本次推送的消息内容，JSON 对象。
 invalidTokens|iOS|本次推送遇到多少次由 APNS 返回的 [INVALID TOKEN](https://developer.apple.com/library/mac/technotes/tn2265/_index.html#//apple_ref/doc/uid/DTS40010376-CH1-TNTAG32) 错误。**如果这个数字过大，请留意证书是否正常。**
 prod|iOS|使用什么环境证书。**dev** 表示开发证书，**prod** 表示生产环境证书。
 status| |本次推送的状态，**in-queue** 表示仍然在队列，**done** 表示完成，**scheduled** 表示定时推送任务等待触发中。
-devices| |本次推送待发送设备总数。这个数字不是实际送达数，而是处理本次推送请求时在 `_Installation` 表中符合查询条件的总设备数。其中可能会包含大量的非活跃用户(如已卸载 App 的用户)，这部分用户可能无法收到推送。
+devices| |本次推送目标设备数。这个数字不是实际送达数，而是处理本次推送请求时在 `_Installation` 表中符合查询条件且有效的总设备数。有效是指 `_Installation` 表的 valid 字段为 true 且 updatedAt 字段时间在最近三个月以内。目标设备数可能会包含大量的非活跃用户(如已卸载 App 的用户)，这部分用户可能无法收到推送。
 successes| |本次推送成功设备数。推送成功对普通 Android 设备来说指目标设备收到了推送，对 iOS 设备或使用了混合推送的 Android 设备来说指消息成功推送给了 Apple APNS 或设备对应的混合推送平台。
 where| |本次推送查询 `_Installation` 表的条件，符合这些查询条件的设备将接收本条推送消息。
 errors| | 本次推送过程中的错误信息。
@@ -733,6 +733,7 @@ curl -X DELETE \
 
 ## 限制
 
+* 为避免给大量早已不再活跃的用户发消息，我们限制只能给 `_Installation` 表内 `updatedAt` 时间在最近三个月以内的设备推送消息。我们会在根据推送查询条件查出目标设备后自动将不符合条件的设备从目标设备中剔除，并且被剔除的设备不会计入{% if node=='qcloud' %}**控制台 > 消息 > 推送记录**{% else %}[控制台 > 消息 > 推送记录](/messaging.html?appid={{appid}}#/message/push/list){% endif %} 内的目标设备数中。
 * 为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，在 {% if node=='qcloud' %}**控制台 > 消息 > 推送记录**{% else %}[控制台 > 消息 > 推送记录](/messaging.html?appid={{appid}}#/message/push/list){% endif %} 中的 **状态** 一栏显示「错误」，提示信息为「dev profile disabled for massive push」。因此，在使用开发证书推送时，请合理设置推送条件。
 * Apple 对推送消息大小有限制，对 iOS 推送请尽量缩小要发送的数据大小，否则会被截断。详情请参看 [APNs 文档](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html)。
 * 如果使用了 Android 的混合推送，请注意华为推送对消息大小有限制。为保证推送消息能被正常发送，我们要求 data + channels 参数须小于 4096 字节，超过限制会导致推送无法正常发送，请尽量减小发送数据大小。
