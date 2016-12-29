@@ -5,6 +5,12 @@
 {% set content = "## 子文档的标题" %}
 {% set span = "<strong>hi</strong>" | safe %}
 
+{% macro child() %}
+```
+from macro child()
+```
+{% endmacro%}
+
 {% block content %}
 
 

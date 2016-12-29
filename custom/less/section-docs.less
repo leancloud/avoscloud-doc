@@ -4,7 +4,6 @@
 @table-inner-radius: (@general-radius - 1);
 @bubble-color: #eee;
 @base-font-color:#333;
-@internal-link-color: #78909C;
 
 .header-link() {
   color: @brand-primary;
@@ -35,6 +34,9 @@ body {
     .dropdown_header;
     font-size: 12px;
     padding: 0;
+  }
+  .callout-danger a, .callout-info a {
+    color: @brand-primary;
   }
 
   .img-bordered {

@@ -192,8 +192,7 @@ AV.Object.register(Todo);
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```js
   var query = new AV.Query('Todo');
   query.get('57328ca079bc44005c2472d0').then(function (todo) {
@@ -203,10 +202,9 @@ AV.Object.register(Todo);
     // 异常处理
   });
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```js
   // 第一个参数是 className，第二个参数是 objectId
   var todo = AV.Object.createWithoutData('Todo', '5745557f71cfe40068c6abe0');

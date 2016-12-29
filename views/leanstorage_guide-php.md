@@ -123,15 +123,6 @@ try {
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
-```php
-$query = new Query("Todo");
-$todo  = $query->get("558e20cbe4b060308e3eb36c");
-// $todo 就是 ID 为 558e20cbe4b060308e3eb36c 的对象实例
-```
-{% endblock %}
-
 {% block code_save_callback_get_objectId %}
 
 ```php
@@ -169,6 +160,14 @@ $todo->getCreatedAt();
 {% endblock %}
 
 {% block text_refresh_object%}{% endblock %}
+
+{% macro code_get_todo_by_objectId() %}
+```php
+$query = new Query("Todo");
+$todo  = $query->get("558e20cbe4b060308e3eb36c");
+// $todo 就是 ID 为 558e20cbe4b060308e3eb36c 的对象实例
+```
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
 ```php

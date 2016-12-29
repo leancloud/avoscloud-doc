@@ -135,8 +135,7 @@
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```java
         AVQuery<AVObject> avQuery = new AVQuery<>("Todo");
         avQuery.getInBackground("558e20cbe4b060308e3eb36c", new GetCallback<AVObject>() {
@@ -146,10 +145,9 @@
             }
         });
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```java
         // 第一参数是 className,第二个参数是 objectId
         AVObject todo = AVObject.createWithoutData("Todo", "558e20cbe4b060308e3eb36c");
@@ -161,7 +159,6 @@
             }
         });
 ```
-
 {% endblock %}
 
 {% block code_save_callback_get_objectId %}

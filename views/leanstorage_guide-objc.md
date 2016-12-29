@@ -131,18 +131,16 @@
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```objc
     AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     [query getObjectInBackgroundWithId:@"558e20cbe4b060308e3eb36c" block:^(AVObject *object, NSError *error) {
         // object 就是 id 为 558e20cbe4b060308e3eb36c 的 Todo 对象实例
     }];
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```objc
     // 第一个参数是 className，第二个参数是 objectId
     AVObject *todo =[AVObject objectWithClassName:@"Todo" objectId:@"558e20cbe4b060308e3eb36c"];
@@ -151,7 +149,6 @@
         NSString *content = avObject[@"content"]; // 读取 content
     }];
 ```
-
 {% endblock %}
 
 {% block code_save_callback_get_objectId %}

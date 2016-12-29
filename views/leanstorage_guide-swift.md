@@ -126,8 +126,7 @@ todoFolder.save { result in
 // 暂不支持
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```swift
 let query = LCQuery(className: "Todo")
 
@@ -140,10 +139,9 @@ query.get("575cf743a3413100614d7d75") { result in
     }
 }
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```swift
 let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
 
@@ -157,7 +155,6 @@ todo.fetch { result in
     }
 }
 ```
-
 {% endblock %}
 
 {% block code_save_callback_get_objectId %}

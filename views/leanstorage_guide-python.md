@@ -141,8 +141,7 @@ supported_type.save()
 {% endblock %}
 
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```python
 import leancloud
 
@@ -155,8 +154,7 @@ query = leancloud.Query('Todo')
 query_result = query.get('57301af42e958a006982efad')
 title = query_result.get('title')
 ```
-{% endblock %}
-
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
 ```python

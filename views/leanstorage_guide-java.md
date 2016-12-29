@@ -150,18 +150,16 @@
 此外，HashMap 和 ArrayList 支持嵌套，这样在一个 `AVObject` 中就可以使用它们来储存更多的结构化数据。
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```java
     String objectId = "558e20cbe4b060308e3eb36c";
     AVQuery<AVObject> avQuery = new AVQuery<>("Todo");
     AVObject object = avQuery.get(objectId);
     // object 就是 id 为 558e20cbe4b060308e3eb36c 的 Todo 对象实例
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```java
     // 第一参数是 className,第二个参数是 objectId
     AVObject object = AVObject.createWithoutData("Todo", objectId);
