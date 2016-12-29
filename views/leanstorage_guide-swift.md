@@ -797,13 +797,12 @@ query.whereKey("title", .MatchedSubstring("李总"))
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
+<pre><code class="lang-swift">let query = LCQuery(className: "Todo")
 
-```swift
-let query = LCQuery(className: "Todo")
-
-query.whereKey("title", .MatchedPattern("^((?!机票).)*$", option: nil))
-```
+query.whereKey("title", .MatchedPattern("{{ storage.regex() | safe }}, option: nil))
+</code></pre>
 {% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 

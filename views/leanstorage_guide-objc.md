@@ -743,11 +743,11 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-```objc
-  AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-  [query whereKey:@"title" matchesRegex:@"^((?!机票).)*$"];
-```
+<pre><code class="lang-objc">  AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+  [query whereKey:@"title" matchesRegex:@"{{ storage.regex() | safe }}];    
+</code></pre>
 {% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 

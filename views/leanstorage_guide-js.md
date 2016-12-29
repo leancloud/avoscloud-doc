@@ -779,12 +779,12 @@ file.save({
 
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-```js
-  var query = new AV.Query('Todo');
-  var regExp = new RegExp('^((?!机票).)*$', 'i');
+<pre><code class="lang-js">  var query = new AV.Query('Todo');
+  var regExp = new RegExp('{{ storage.regex(true) | safe }}, 'i');
   query.matches('title', regExp);
-```
+</code></pre>
 {% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 

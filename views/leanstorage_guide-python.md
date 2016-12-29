@@ -714,16 +714,15 @@ query.contains('title', '李总')
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
-```python
-import leancloud
+<pre><code class="lang-python">import leancloud
 
 Todo = leancloud.Object.extend('Todo')
 query = Todo.query
 
-query.matched('title', '^((?!机票).)*$')
-```
+query.matched('title', '{{ storage.regex(true) | safe }})
+</code></pre>
 {% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 

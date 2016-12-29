@@ -1,3 +1,4 @@
+{% import "views/_storage.njk" as storage %}
 {% set appid = '{{appid}}' %}
 {% set appkey = '{{appkey}}' %}
 {% set masterkey = '{{masterkey}}' %}
@@ -540,7 +541,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% block code_query_with_contains_keyword %}whereContains{% endblock %}
 
-**不包含查询**可以使用**正则匹配查询**的方式来实现。例如，查询标题不包含「机票」的 Todo，正则表达式为 `^((?!机票).)*$`：
+**不包含查询**可以使用**正则匹配查询**的方式来实现。例如，查询标题不包含「机票」的 Todo：
 
 {% block code_query_with_not_contains_keyword_using_regex %}正则表达式{% endblock %}
 
