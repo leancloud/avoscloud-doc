@@ -1105,13 +1105,13 @@ file.save({
 {% block code_query_by_cql %}
 
 ```js
-  // 新建 AVUser 对象实例
+  var cql = 'select * from Todo where status = 1';
   AV.Query.doCloudQuery(cql).then(function (data) {
       // results 即为查询结果，它是一个 AV.Object 数组
       var results = data.results;
   }, function (error) {
   });
-  cql = 'select * from %@ where status = 1';
+  cql = 'select count(*) from %@ where status = 1';
   AV.Query.doCloudQuery(cql).then(function (data) {
       // 获取符合查询的数量
       var count = data.count;
