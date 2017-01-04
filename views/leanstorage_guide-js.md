@@ -1111,7 +1111,7 @@ file.save({
       var results = data.results;
   }, function (error) {
   });
-  cql = 'select count(*) from %@ where status = 1';
+  cql = 'select count(*) from %@ where status = 0';
   AV.Query.doCloudQuery(cql).then(function (data) {
       // 获取符合查询的数量
       var count = data.count;
