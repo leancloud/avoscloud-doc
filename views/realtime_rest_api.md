@@ -86,7 +86,7 @@ curl -X PUT \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://leancloud.cn/1.1/rtm/messages/logs
+  https://leancloud.cn/1.1/rtm/messages/history
 ```
 
 该接口可以在 URL 中添加不同的参数，实现获取某对话的聊天记录、获取某用户发送的聊天记录、获取应用所有聊天记录和获取系统对话聊天记录等功能。例如：
@@ -95,7 +95,7 @@ curl -X GET \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://leancloud.cn/1.1/rtm/messages/logs?convid=219946ef32e40c515d33ae6975a5c593
+  https://leancloud.cn/1.1/rtm/messages/history?convid=219946ef32e40c515d33ae6975a5c593
 ```
 
 ### 获取某个对话的聊天记录
@@ -106,6 +106,7 @@ convid | **必须** | 对话 id
 max_ts | 可选 | 查询起始的时间戳，返回小于这个时间(不包含)的记录。默认是当前时间。
 msgid | 可选 | 起始的消息 id，**使用时必须加上对应消息的时间戳 max_ts 参数，一起作为查询的起点**。
 limit | 可选 | 返回条数限制，可选，默认 100 条，最大 1000 条。
+reversed | 可选 | 以默认排序相反的方向返回结果。布尔值，默认为 false
 peerid | 可选 | 查看者 id（签名参数）
 nonce | 可选 | 签名随机字符串（签名参数）
 signature_ts | 可选 | 签名时间戳（签名参数）
@@ -123,7 +124,8 @@ signature | 可选 | 签名时间戳（签名参数）
 appid:peerid:convid:nonce:signature_ts
 ```
 
-返回数据格式，JSON 数组，按消息记录从新到旧排序。**注意**：系统广播不会出现在消息记录 API 的结果中。
+返回数据格式，JSON 数组，默认按消息记录从新到旧排序，设置请求参数 `reversed` 后以相反的方向排序。
+**注意**：系统广播不会出现在消息记录 API 的结果中。
 
 ```json
 [
