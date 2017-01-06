@@ -73,7 +73,7 @@ Page({
 
 ```javascript
 wx.chooseImage({
-  count: 9,
+  count: 1,
   sizeType: ['original', 'compressed'],
   sourceType: ['album', 'camera'],
   success: function(res) {
@@ -90,6 +90,20 @@ wx.chooseImage({
 ```
 
 上传成功后可以通过 `file.url()` 方法得到服务端的图片 url。
+
+#### 文件批量上传
+目前在小程序 Android 上不支持文件并发上传，需要串行上传：
+
+```javascript
+res.tempFilePaths.map(tempFilePath => () => new AV.File('filename', {
+  blob: {
+    uri: tempFilePath,
+  },
+}).save()).reduce(
+  (m, p) => m.then(v => AV.Promise.all([...v, p()])),
+  AV.Promise.resolve([])
+).then(files => console.log(files.map(file => file.url()))).catch(console.error);
+```
 
 ### 用户系统
 
@@ -114,6 +128,7 @@ AV.User.loginWithWeapp().then(user => {
 用户的登录状态会保存在客户端中，可以使用 `AV.User.current()` 方法来获取当前登录的用户，下面的例子展示了如何同步登录用户的信息：
 
 ```javascript
+// 假设已经通过 AV.User.loginWithWeapp() 登录
 // 获得当前登录用户
 const user = AV.User.current();
 // 调用小程序 API，得到用户信息
