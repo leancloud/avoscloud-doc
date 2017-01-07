@@ -15,7 +15,7 @@ git clone git@github.com:leancloud/LeanCloudChatKit-Android.git
 
 获取源代码之后，用 [Android Studio](http://developer.android.com/tools/studio/index.html) 打开项目，左侧的 Project 视图显示为：
 
-![project_structure](http://ac-lhzo7z96.clouddn.com/1459410595962)
+![project_structure](images/android-studio-project-pane.png)
 
 「ChatKit-Android」Project 包含两个模块：
 

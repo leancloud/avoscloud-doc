@@ -614,10 +614,7 @@ var realtime = new AV.Realtime({
 
 消息类型之间的关系
 
-![消息的类图](http://ac-lhzo7z96.clouddn.com/1440485935481)
-
-
-
+![消息的类图](images/im-message-types.png)
 
 消息类均包含以下属性：
 

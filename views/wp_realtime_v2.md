@@ -531,7 +531,7 @@ OnTextMessageReceived > OnTypedMessageReceived > OnMessageReceived
 这是为了方便开发者在接受消息的时候有一个分层操作的空间，这一特性也适用于其他富媒体消息。
 
 ### 消息类详解
-![消息的类图](http://ac-lhzo7z96.clouddn.com/1427252943504)
+![消息的类图](images/im-message-types.png)
 
 * `AVIMMessage` 所有消息的基类，一级抽象类；
 * `AVIMTypedMessage` 富媒体消息的基类，二级抽象类；

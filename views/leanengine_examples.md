@@ -23,7 +23,7 @@
 下面是一个用于演示的例子。
 
 1. 扫码关注这个微信公众号<br/>
-  <img src="http://ac-lhzo7z96.clouddn.com/1457597962129" width="200">
+  <img src="images/leanengine-weixin-qrcode.png" width="200">
 2. 向这个公众号发送一条消息：**说个笑话**。
 3. 你会收到机器人回复的消息。
 
