@@ -23,6 +23,14 @@ line 2") }}
 
 {{ docs.note("line 1 ||line 2 (using <code>&verbar;&verbar;</code> as line  seperator) ") }}
 
+{{ docs.mustache("safe") | safe }}
+
+{{ docs.mustache("nosafe-span","span") }}
+
+{{ docs.mustache("nosafe-a-href","a", {style:"color:red;", "ng-show": "hello"}) }}
+
+{{ docs.objectStringify({width:"200",href:"http://leancloud.cn/lemon/"}) }}
+
 
 {% endblock %}
 

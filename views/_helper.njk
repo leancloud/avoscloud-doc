@@ -18,3 +18,11 @@
     <div class="callout callout-{{type}}">{{ content | safe }}</div>
   {%- endif %}
 {% endmacro %}
+
+{% macro mustache(name,tag="code",attributes="") -%}
+  <{{tag}} ng-non-bindable {{ objectStringify(attributes) }}>{% raw %}{{{% endraw %}{{name}}{% raw %}}}{% endraw %}</{{tag}}>
+{%- endmacro %}
+
+{% macro objectStringify(obj) -%}
+  {% for key, value in obj %} {{key}}="{{value}}"{% endfor %}
+{%- endmacro %}

@@ -29,7 +29,6 @@
 
 申请成功后，我们会将 client id 和 client secret 发送给你用来接入。
 
-
 ## OAuth2 接入
 
 目前 LeanCloud 支持的 OAuth2 授权方式仅限 [authorization_code](http://tools.ietf.org/html/draft-ietf-oauth-v2-25#section-4.1)。简单概括为：
