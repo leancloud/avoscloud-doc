@@ -1,4 +1,4 @@
-{% set deviceprofile_format = "`deviceProfile` 的值必须以字母开头，由大小写字母、数字和下划线组成的字符串，或为空值，但不能是 `_default`（系统保留名称）。" %}
+{% set deviceprofile_format = "`deviceProfile` 的值必须以字母开头，由大小写字母、数字和下划线组成的字符串，或为空值。" %}
 # 消息推送服务总览
 
 消息推送，使得开发者可以即时地向其应用程序的用户推送通知或者消息，与用户保持互动，从而有效地提高留存率，提升用户体验。平台提供整合了 Android 推送、iOS 推送、Windows Phone 推送和 Web 网页推送的统一推送服务。
@@ -369,7 +369,7 @@ LeanCloud 推送服务通过推送请求中 `data` 参数内的 `silent` 字段�
 
 如果使用了混合推送功能，并且在 {% if node == 'qcloud' %}**控制台 > 消息 > 推送 > 设置 > 混合推送**{% else %}[控制台 > 消息 > 推送 > 设置 > 混合推送](/messaging.html?appid={{appid}}#/message/push/conf){% endif %} 增加了多个混合推送配置，那么在向 `_Installation` 表保存设备信息时就需要将当前设备所对应的混合推送配置名存入 `deviceProfile` 字段。系统会按照该字段指定的唯一配置名为每个目标设备进行混合推送。
 
-如果 `deviceProfile` 字段为空，系统会默认使用名为 `_default` 的混合推送配置名来推送，所以一定要保证在控制台的混合推送设置中，存在以 `_default` 命名的 Profile 并且已被正确配置，否则系统会因 `deviceProfile` 为空，并且无对应的名为 `_default` 的配置而**无法完成推送。**
+如果 `deviceProfile` 字段为空，系统会默认使用名为 `_default` 的混合推送配置来进行推送，所以一定要保证在控制台的混合推送设置中，存在以 `_default` 命名的 Profile 并且已被正确配置，否则系统会**拒绝推送。**
 
 {{deviceprofile_format}}
 
