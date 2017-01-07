@@ -263,7 +263,7 @@ public class AuthActivity extends Activity{
     
    @Override 
    public void onCreate(Bundle savedInstanceState){
-     SNS.setupPlatform(SNSType.AVOSCloudSNSSinaWeibo, "https://leancloud.cn/1.1/sns/goto/xxx");
+     SNS.setupPlatform(SNSType.AVOSCloudSNSSinaWeibo, "https://{{host}}/1.1/sns/goto/xxx");
      SNS.loginWithCallback(this, SNSType.AVOSCloudSNSSinaWeibo, new SNSCallback() {
        @Override
        public void done(SNSBase base, SNSException e) {

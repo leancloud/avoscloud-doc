@@ -10,27 +10,52 @@
 
 ## `note()`
 
-```
+```nunjucks
 {% raw %}{{ docs.note("callout-info 类型的提示。") }}{% endraw %}
+
+{% raw %}{{ docs.note("第一段文字。
+第二段文字，或使用 `notes()`") }}{% endraw %}
 ```
 效果：
 
 {{ docs.note("callout-info 类型的提示。") }}
 
+{{ docs.note("第一段文字。
+第二段文字，或使用 `notes()`") }}
+
+### `notes()`
+
+<pre><code class="lang-nunjucks">&lbrace;% call docs.notes() -%&rbrace;
+`notes()` 适合有分段、比较长的内容。 变量测试 {{ docs.mustache("time") }}
+
+这是第二段。HTML Entity 测试（&amp;middot; &amp;quot;）
+&lbrace;%- endcall %&rbrace;
+</code></pre>
+
+{% call docs.notes() -%}
+`notes()` 适合有分段、比较长的内容。 变量测试 {{ docs.mustache("time") }}
+
+这是第二段。HTML Entity 测试（&middot; &quot;）
+{%- endcall %}
+
 ## `alert()`
 
-```
+```nunjucks
 {% raw %}{{ docs.alert("callout-danger 类型的提示。用于突出强调或警告。") }}{% endraw %}
 ```
 效果：
 
 {{ docs.alert("callout-danger 类型的提示。用于突出强调或警告。") }}
 
+
+### `alerts()`
+
+
 ## `paragraph()`
 
 将输入内容中的换行替换为 html 的 `<p></p>`，内部方法，被 `alert()` 和 `info()` 调用。
 
-```html
+```nunjucks
 {% raw %}{{ docs.paragraph("第一行。
 第二行。") }}{% endraw %}
 {% raw %}{{ docs.paragraph("只有一行的文本。") }}{% endraw %}
@@ -38,4 +63,12 @@
 <!-- 结果 -->
 <p>第一行。</p><p>第二行。</p>
 <p>只有一行的文本。</p>
+```
+## 正则 RegEx
+
+```js
+// 找出 appid、appkey、masterkey 和 host 之外使用了 mustache 语法的变量
+// 不包含名称中有 . 或 _ 的变量，如 docs., app_url
+\{\{\s*(?!([a-z]+\.|[a-z]+_|appid|appkey|masterkey|host))[^\}\s]+\s*?\}\}
+
 ```

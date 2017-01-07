@@ -111,7 +111,7 @@ curl -X POST \
           "public", "protected", "private"
         ]
       }' \
-  https://leancloud.cn/1.1/installations
+  https://{{host}}/1.1/installations
 ```
 
 ##### installationId
@@ -130,7 +130,7 @@ curl -X POST \
           "public", "protected", "private"
         ]
       }' \
-  https://leancloud.cn/1.1/installations
+  https://{{host}}/1.1/installations
 ```
 
 `installationId` 必须在应用内唯一。
@@ -149,7 +149,7 @@ curl -X PUT \
           "customer"
         ]
       }' \
-  https://leancloud.cn/1.1/installations/mrmBZvsErB
+  https://{{host}}/1.1/installations/mrmBZvsErB
 ```
 
 退订一个频道：
@@ -165,7 +165,7 @@ curl -X PUT \
            "objects":["customer"]
         }
        }' \
-  https://leancloud.cn/1.1/installations/mrmBZvsErB
+  https://{{host}}/1.1/installations/mrmBZvsErB
 ```
 
 `channels` 本质上是数组属性，因此可以使用标准 [REST API](./rest_api.html#数组) 操作。
@@ -182,7 +182,7 @@ curl -X PUT \
   -d '{
         "userObjectId": "<用户的 objectId>"
       }' \
-  https://leancloud.cn/1.1/installations/mrmBZvsErB
+  https://{{host}}/1.1/installations/mrmBZvsErB
 ```
 
 ### 推送消息
@@ -386,7 +386,7 @@ curl -X POST \
           "alert": "LeanCloud 向您问好！"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 #### 发送给特定的用户
@@ -406,7 +406,7 @@ curl -X POST \
         "alert": "LeanCloud 向您问好！"
       }
     }' \
-https://leancloud.cn/1.1/push
+https://{{host}}/1.1/push
 ```
 
 * 发送给 public 频道的用户
@@ -425,7 +425,7 @@ curl -X POST \
         "alert": "LeanCloud 向您问好！"
       }
     }' \
-https://leancloud.cn/1.1/push
+https://{{host}}/1.1/push
 ```
 
 或者更简便的方式
@@ -441,7 +441,7 @@ curl -X POST \
           "alert": "LeanCloud 向您问好！"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 
 ```
 
@@ -460,7 +460,7 @@ curl -X POST \
         "alert": "LeanCloud 向您问好！"
       }
     }' \
-https://leancloud.cn/1.1/push
+https://{{host}}/1.1/push
 ```
 
 * 推送给不活跃的用户
@@ -480,7 +480,7 @@ curl -X POST \
           "alert": "LeanCloud 向您问好！"
       }
     }' \
-https://leancloud.cn/1.1/push
+https://{{host}}/1.1/push
 ```
 
 * 根据查询条件做推送：
@@ -498,7 +498,7 @@ curl -X POST \
           "alert": "您关注的商品已经到货，请尽快购买。"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 用 `where` 查询的都是 `_Installations` 表中的属性。这里假设该表存储了 `inStock` 的布尔属性。
@@ -529,7 +529,7 @@ curl -X POST \
           "alert": "北京明日最高气温 40 摄氏度。"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 上面的例子假设 installation 有个 owner 属性指向 `_User` 表的记录，并且用户有个 `location` 属性是 GeoPoint 类型，我们就可以根据地理信息位置做推送。
@@ -549,7 +549,7 @@ curl -X POST \
         "alert": "LeanCloud 向您问好！"
       }
     }' \
-https://leancloud.cn/1.1/push
+https://{{host}}/1.1/push
 ```
 
 #### 过期时间和定时推送
@@ -604,7 +604,7 @@ curl -X POST \
           "alert": "您的优惠券将于 10 月 7 日到期。"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 也可以是相对时间（从推送 API 调用开始算起，结合 push_time 做定期推送）:
@@ -620,7 +620,7 @@ curl -X POST \
           "alert": "您未使用的代金券将于 2015 年 7 月 4 日过期。"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 ##### 定制消息属性：
@@ -641,7 +641,7 @@ curl -X POST \
           "title": "员工福利"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 
@@ -654,7 +654,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}"          \
   -H "X-LC-Key: {{appkey}}"        \
   -H "Content-Type: application/json" \
-  https://leancloud.cn/1.1/tables/Notifications/:objectId
+  https://{{host}}/1.1/tables/Notifications/:objectId
 ```
 
 其中 URL 里的 `:objectId` 替换成 `/push` 接口返回的 objectId 。
@@ -682,7 +682,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}"          \
   -H "X-LC-Key: {{masterkey}},master"        \
   -H "Content-Type: application/json" \
-  https://leancloud.cn/1.1/scheduledPushMessages
+  https://{{host}}/1.1/scheduledPushMessages
  ```
 
 查询出来的结果类似：
@@ -728,7 +728,7 @@ curl -X DELETE \
   -H "X-LC-Id: {{appid}}"          \
   -H "X-LC-Key: {{masterkey}},master"        \
   -H "Content-Type: application/json" \
-  https://leancloud.cn/1.1/scheduledPushMessages/:id
+  https://{{host}}/1.1/scheduledPushMessages/:id
 ```
 
 ## 限制

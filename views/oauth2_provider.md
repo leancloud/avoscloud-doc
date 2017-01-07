@@ -1,4 +1,3 @@
-{% set client_key    = '{{client_key}}' %}
 {% set redirect_uri  = '{{第三方应用的回调URL}}' %}
 {% set scope         = '{{权限范围}}' %}
 {% set state         = '{{这是uuid}}' %}
@@ -7,13 +6,6 @@
 {% set client_secret = '{{client_secret}}' %}
 {% set code2         = '{{第一步返回的code}}' %}
 {% set redirect_uri2 = '{{第一步使用的redirect_uri}}' %}
-{% set client_id     = '{{client_id}}' %}
-{% set email         = '{{email}}' %}
-{% set username      = '{{username}}' %}
-{% set timestamp     = '{{timestamp}}' %}
-{% set scope         = '{{scope}}' %}
-{% set sign          = '{{sign}}' %}
-{% set timestamp_url = '&amp;timestamp' | safe %}
 {% import "views/_helper.njk" as docs %}
 
 # {% if node == 'qcloud' %}TAB{% else %}LeanCloud{% endif %} 开放平台
@@ -46,9 +38,8 @@ LeanCloud 目前只支持服务器的 Web 应用的授权流程（Server-side Fl
 
 第一步授权，将用户从浏览器内重定向到下列 URL：
 
-<pre ng-non-bindable>
-<code>GET https://leancloud.cn/1.1/authorize?client_id={{client_key}}&response_type=code&redirect_uri={{redirect_uri}}&scope={{scope}}&state={{state}}</code>
-</pre>
+<pre ng-non-bindable><code>GET https://{{host}}/1.1/authorize?client_id={{ docs.mustache("client_key") }}&response_type=code&redirect_uri={{ docs.mustache("redirect_uri") }}&scope={{ docs.mustache("scope") }}&state={{ docs.mustache("state") }}
+</code></pre>
 
 参数|约束|说明
 ---|---|---
@@ -64,9 +55,8 @@ LeanCloud 目前只支持服务器的 Web 应用的授权流程（Server-side Fl
 
 假设 `redirect_uri` 为 `http://exmaple.com/oauth2/callback` ，那么当用户确认授权后，会加入 `code` 值重定向到这个 URL：
 
-<pre ng-non-bindable>
-<code>GET http://exmaple.com/oauth2/callback?state={{state_input}}&code={{code}}</code>
-</pre>
+<pre ng-non-bindable><code>GET http://exmaple.com/oauth2/callback?state={{ docs.mustache("state_input") }}&code={{ docs.mustache("code") }}
+</code></pre>
 
 **`code` 的有效时间是 5 分钟**。
 
@@ -86,9 +76,7 @@ LeanCloud 目前只支持服务器的 Web 应用的授权流程（Server-side Fl
 
 用户授权后，你可以这回掉中拿到授权 code ，然后使用这个 code 去 LeanCloud 请求访问令牌 access_token。服务端直接通过 http client 调用下列 URL：
 
-<pre ng-non-bindable>
-<code>GET https://leancloud.cn/1.1/token?grant_type=authorization_code&client_id={{client_key}}&client_secret={{client_secret}}&code={{code2}}&redirect_uri={{redirect_uri2}}</code>
-</pre>
+<pre ng-non-bindable><code>GET https://{{host}}/1.1/token?grant_type=authorization_code&client_id={{ docs.mustache("client_key") }}&client_secret={{ docs.mustache("client_secret") }}&code={{ docs.mustache("code2") }}&redirect_uri={{ docs.mustache("redirect_uri2") }}</code></pre>
 
 其中 `client_id` 和 `client_key` 也可以作为 http basic 认证的用户名和密码传入。
 
@@ -124,9 +112,7 @@ LeanCloud 目前只支持服务器的 Web 应用的授权流程（Server-side Fl
 
 `[GET | POST] /1.1/connect` API 接收下列参数：
 
-<pre ng-non-bindable>
-<code>[GET | POST] /1.1/connect?client_id={{client_id}}&email={{email}}&username={{username}}{{timestamp_url}}={{timestamp}}&scope={{scope}}&sign={{sign}}</code>
-</pre>
+<pre ng-non-bindable><code>[GET | POST] /1.1/connect?client_id={{ docs.mustache("client_id") }}&email={{ docs.mustache("email") }}&username={{ docs.mustache("username") }}&amp;timestamp={{ docs.mustache("timestamp") }}&scope={{ docs.mustache("scope") }}&sign={{ docs.mustache("sign") }}</code></pre>
 
 参数|约束|说明
 ---|---|---
@@ -139,11 +125,10 @@ LeanCloud 目前只支持服务器的 Web 应用的授权流程（Server-side Fl
 
 对除了 sign 之外的所有参数按照名称排序，并拼接到 URL `/1.1/connect?` 之后形成下列字符串：
 
-<pre ng-non-bindable>
-<code>/1.1/connect?client_id={{client_id}}&email={{email}}&scope={{scope}}{{timestamp_url}}={{timestamp}}&username={{username}}</code>
-</pre>
+<pre ng-non-bindable><code>/1.1/connect?client_id={{ docs.mustache("client_id") }}&email={{ docs.mustache("email") }}&scope={{ docs.mustache("scope") }}&amp;timestamp={{ docs.mustache("timestamp") }}&username={{ docs.mustache("username") }}
+</code></pre>
 
-<div class="callout callout-danger">切记，不要对参数名和值，以及这个字符串做任何 URL encode 或者 escape 操作。</div>
+{{ docs.alert("切记，不要对参数名和值，以及这个字符串做任何 URL encode 或者 escape 操作。") }}
 
 接下来，对这个路径字符串使用 `client secret` 和 [SHA256 Hmac](http://en.wikipedia.org/wiki/Hash-based_message_authentication_code) 算法做签名，最终的值作为 `sign` 参数值。
 
@@ -163,7 +148,7 @@ sha256_hmac("s84rvq98u8j3wnklkznguo38vsvys6vo", base_path)
 最终调用的 URL 就是：
 
 ```
-https://leancloud.cn/1.1/connect?client_id=jl04l2081eczultsb7drrzxfxc5a30wh&email=test@example.com&scope=client:info app:info&timestamp=1405222829000&username=dennis&sign=16e279d3d0cfcfb9b8dbd84cdd8f6ea66ba6120c5fca1b6371c4974fe8ffeefd
+https://{{host}}/1.1/connect?client_id=jl04l2081eczultsb7drrzxfxc5a30wh&email=test@example.com&scope=client:info app:info&timestamp=1405222829000&username=dennis&sign=16e279d3d0cfcfb9b8dbd84cdd8f6ea66ba6120c5fca1b6371c4974fe8ffeefd
 ```
 
 SHA256 Hmac 签名要求都是采用 16 进制编码，而非 base64 等方式。Java 平台可以参考 [Generating HMAC MD5/SHA1/SHA256 etc in Java](http://www.supermind.org/blog/1102/generating-hmac-md5-sha1-sha256-etc-in-java) 或者使用 [commons-codec](http://commons.apache.org/codec/) 库。
@@ -214,7 +199,7 @@ puts sign
 
 来传入访问令牌。
 
-所有开放 API 都以 `https://leancloud.cn/1.1/open` 为前缀。
+所有开放 API 都以 `https://{{host}}/1.1/open` 为前缀。
 所有日期格式都为 `YYYY-MM-DDTHH:MM:SS.MMMZ`。
 
 请求和应答都以 JSON 格式传输，请求请设置 `Content-Type: applicaiton/json;charset=utf-8` 的 HTTP 头。字符串编码为`UTF-8`。

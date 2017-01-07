@@ -1,3 +1,4 @@
+{% import "views/_helper.njk" as docs %}
 # 应用内搜索和 DeepLink 开发指南
 
 ## 简介
@@ -57,7 +58,7 @@
 设置保存之后，你应该可以通过下列链接访问到你的应用信息：
 
 ```
-https://leancloud.cn/1.1/go/{your uri scheme}/
+https://{{host}}/1.1/go/{your uri scheme}/
 ```
 
 查看到你的 App URL 应用设置信息。
@@ -65,7 +66,7 @@ https://leancloud.cn/1.1/go/{your uri scheme}/
 例如，我们的 todo 应用就是：
 
 ```
-https://leancloud.cn/1.1/go/com.avoscloud.todo
+https://{{host}}/1.1/go/com.avoscloud.todo
 ```
 
 #### 为 Class 启用搜索
@@ -86,7 +87,7 @@ https://leancloud.cn/1.1/go/com.avoscloud.todo
 
 **如果一个 Class 启用了应用内搜索，但是超过两周没有任何搜索调用，我们将自动禁用该 Class 的搜索功能。**
 
-数据模板支持 [handlebars 模板语法](http://handlebarsjs.com/) ，支持的变量（使用两个大括号包起来 <code ng-non-bindable>{{var}}</code>）包括：
+数据模板支持 [handlebars 模板语法](http://handlebarsjs.com/) ，支持的变量（使用两个大括号包起来 {{ docs.mustache("var") }}）包括：
 
 - **app_uri**<br/>
   (String) 打开应用的 URL，就是前面提到的 `{URL Scheme} : // {URL Host} / {Resource Path}`。
@@ -106,40 +107,39 @@ https://leancloud.cn/1.1/go/com.avoscloud.todo
 
 以我们的 Todo Demo 为例，我们启用了 Todo 的应用内搜索功能，选择了开放字段`content`，设定数据模板（消除了css）为：
 
-``` html
-<div class="wrap">
-  <div class="section section-open">
-    <div class="section-inner">
-      <p>Todo Content: {{object.content}}</p>
-    </div>
-  </div>
-  <div class="section section-open">
-    <div class="section-inner">
-      <p>已安装 {{applinks.app_name}}？你可以:</p>
-      <p><a href='{{app_uri}}' class="btn">直接打开应用</a></p>
-    </div>
-  </div>
-  <div class="section section-download" >
-    <div class="section-inner">
-      <p>或者下载应用:</p>
-      <div >
-        <p><a href='{{applinks.iphone_link}}'>iPhone 应用</a></p>
-        <p><a href='{{applinks.ipad_link}}'>iPad 应用</a></p>
-        <p><a href='{{applinks.android_phone_link}}'>Android 手机应用</a></p>
-        <p><a href='{{applinks.android_pad_link}}'>Android 平板应用</a></p>
-    </div>
-  </div>
-</div>
-```
+<pre><code class="lang-html">&lt;div class=&quot;wrap&quot;&gt;
+  &lt;div class=&quot;section section-open&quot;&gt;
+    &lt;div class=&quot;section-inner&quot;&gt;
+      &lt;p&gt;Todo Content: {{ docs.mustache("object.content") }}&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;section section-open&quot;&gt;
+    &lt;div class=&quot;section-inner&quot;&gt;
+      &lt;p&gt;已安装 {{ docs.mustache("applinks.app_name") }}？你可以:&lt;/p&gt;
+      &lt;p&gt;&lt;a href='{{ docs.mustache("app_uri") }}' class=&quot;btn&quot;&gt;直接打开应用&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;section section-download&quot; &gt;
+    &lt;div class=&quot;section-inner&quot;&gt;
+      &lt;p&gt;或者下载应用:&lt;/p&gt;
+      &lt;div &gt;
+        &lt;p&gt;&lt;a href='{{ docs.mustache("applinks.iphone_link") }}'&gt;iPhone 应用&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;a href='{{ docs.mustache("applinks.ipad_link") }}'&gt;iPad 应用&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;a href='{{ docs.mustache("applinks.android_phone_link") }}'&gt;Android 手机应用&lt;/a&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;a href='{{ docs.mustache("applinks.android_pad_link") }}'&gt;Android 平板应用&lt;/a&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
 
 在 LeanCloud 索引完成数据后，你应当可以通过下列 URL 访问到一条数据，如果在安装了 Todo Demo 应用的移动设备上访问下面这个URL，应该会打开应用展现这条 Todo 的内容:
 
 ```
-https://leancloud.cn/1.1/go/com.avoscloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18
+https://{{host}}/1.1/go/com.avoscloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18
 
 ```
 
-如果直接在 PC 浏览器打开 <https://leancloud.cn/1.1/go/com.avoscloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18?render=true>，看到的应该是数据渲染页面，如图：
+如果直接在 PC 浏览器打开 <https://{{host}}/1.1/go/com.avoscloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18?render=true>，看到的应该是数据渲染页面，如图：
 
 ![image](images/todo_render.png)
 
@@ -467,7 +467,7 @@ JavaScript SDK v0.5.1 版本开始支持应用内搜索 API:
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  "https://leancloud.cn/1.1/search/select?q=dennis&limit=200&clazz=GameScore&order=-score"
+  "https://{{host}}/1.1/search/select?q=dennis&limit=200&clazz=GameScore&order=-score"
 ```
 
 返回类似：
@@ -523,7 +523,7 @@ sid: "cXVlcnlUaGVuRmV0Y2g7Mzs0NDpWX0NFUmFjY1JtMnpaRDFrNUlBcTNnOzQzOlZfQ0VSYWNjUm
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  "https://leancloud.cn/1.1/search/select?q=dennis&limit=200&clazz=GameScore&order=-score&sid=cXVlcnlUaGVuRmV0Y2g7Mzs0NDpWX0NFUmFjY1JtMnpaRDFrNUlBcTNnOzQzOlZfQ0VSYWNjUm0yelpEMWs1SUFxM2c7NDU6Vl9DRVJhY2NSbTJ6WkQxazVJQXEzZzswOw"
+  "https://{{host}}/1.1/search/select?q=dennis&limit=200&clazz=GameScore&order=-score&sid=cXVlcnlUaGVuRmV0Y2g7Mzs0NDpWX0NFUmFjY1JtMnpaRDFrNUlBcTNnOzQzOlZfQ0VSYWNjUm0yelpEMWs1SUFxM2c7NDU6Vl9DRVJhY2NSbTJ6WkQxazVJQXEzZzswOw"
 ```
 
 直到返回结果为空。
@@ -667,7 +667,7 @@ age:<=10
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  "https://leancloud.cn/1.1/search/mlt?like=clojure&clazz=Post&fields=tags"
+  "https://{{host}}/1.1/search/mlt?like=clojure&clazz=Post&fields=tags"
 ```
 
 我们设定了 `like` 参数为 `clojure`，查询的相关性匹配字段 `fields` 是 `tags`，也就是从 `Post` 里查找 `tags` 字段跟 `clojure` 这个文本相似的对象，返回类似：
@@ -700,7 +700,7 @@ curl -X GET \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  "https://leancloud.cn/1.1/search/mlt?likeObjectIds=577e18b50a2b580057469a5e&clazz=Post&fields=tags"
+  "https://{{host}}/1.1/search/mlt?likeObjectIds=577e18b50a2b580057469a5e&clazz=Post&fields=tags"
 ```
 
 这次我们换成了查找和 `577e18b50a2b580057469a5e` 这个 objectId 指代的对象相似的对象。

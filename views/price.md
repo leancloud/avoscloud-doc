@@ -95,4 +95,4 @@
 > 注意：商用版有每日最低消费 30 元的限制。
 
 ## 专属机群独立部署或私有部署
-如果您对**企业版**有兴趣，请邮件（mailto: support@leancloud.cn）联系我们。
+如果您对**企业版**有兴趣，请邮件（mailto: support@leancloud.rocks）联系我们。

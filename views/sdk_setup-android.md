@@ -1,7 +1,7 @@
 {% extends "./sdk_setup.tmpl" %}
 {% set platform_name = "Android" %}
 {% set maven_uri = "http://mvn.leancloud.cn/nexus/content/repositories/public" %}
-
+{% import "views/_helper.njk" as docs %}
 {% block libs_tool_automatic %}
 
 #### Gradle
@@ -26,13 +26,13 @@ Gradle 是 Google 官方推荐的构建 Android 程序的工具，使用 Android
 
 首先打开根目录下的 `build.gradle` 进行如下标准配置：
 
-```
+<pre><code>
 buildscript {
     repositories {
         jcenter()
         //这里是 LeanCloud 的包仓库
         maven {
-            url "{{maven_uri}}"
+            url "{{ docs.mustache("maven_uri") }}"
         }
 
     }
@@ -46,11 +46,11 @@ allprojects {
         jcenter()
         //这里是 LeanCloud 的包仓库
         maven {
-            url "{{maven_uri}}"
+            url "{{ docs.mustache("maven_uri") }}"
         }
     }
 }
-```
+</code></pre>
 
 然后打开 `app` 目录下的 `build.gradle` 进行如下配置：
 

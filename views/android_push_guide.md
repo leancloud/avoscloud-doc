@@ -242,7 +242,7 @@ curl -X POST \
           "name": "LeanCloud."
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 <div class="callout callout-info">如果你使用自定义的 Receiver，发送的消息必须带 action，并且其值在自定义的 Receiver 配置的 `<intent-filter>` 列表里存在，比如这里的 `'com.avos.UPDATE_STATUS'`，请使用自己的 action，尽量不要跟其他应用混淆，推荐采用域名来定义。</div>

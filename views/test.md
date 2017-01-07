@@ -27,9 +27,42 @@ line 2") }}
 
 {{ docs.mustache("nosafe-span","span") }}
 
-{{ docs.mustache("nosafe-a-href","a", {style:"color:red;", "ng-show": "hello"}) }}
+{{ docs.mustache("专业的","a", {style:"color:red;", "width": ""}) }}
 
 {{ docs.objectStringify({width:"200",href:"http://leancloud.cn/lemon/"}) }}
+
+```
+{% set items = [1,2,3,4,5,6] %}
+{% for item in items | batch(2) -%}
+    -{% for items in item -%}
+       {{ items }}
+    {%- endfor %}
+{%- endfor %}
+
+
+{% set name=["pre","code"] %}
+{% for item in name %}
+- {{item}}
+{% endfor %}
+{% set name="pre,code" %}
+{% for item in name %}
+- {{item}}
+{% endfor %}
+
+{% set name="pre" %}
+{% set attrs={"style":"color:red; background-color:#ccc;","width":"","nowrap":null} %}
+{% set slot="hello" %}
+
+{% set obj={"width":"","height":null,"name":"hello"} %}
+{{ obj | dump | safe }}
+{% for key, value in obj %}
+- {{key}}({{value}}): (isNull?{{ value == null | dump }})
+{% endfor %}
+
+
+```
+
+
 
 
 {% endblock %}

@@ -86,7 +86,7 @@ curl -X PUT \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://leancloud.cn/1.1/rtm/messages/history
+  https://{{host}}/1.1/rtm/messages/history
 ```
 
 该接口可以在 URL 中添加不同的参数，实现获取某对话的聊天记录、获取某用户发送的聊天记录、获取应用所有聊天记录和获取系统对话聊天记录等功能。例如：
@@ -95,7 +95,7 @@ curl -X GET \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://leancloud.cn/1.1/rtm/messages/history?convid=219946ef32e40c515d33ae6975a5c593
+  https://{{host}}/1.1/rtm/messages/history?convid=219946ef32e40c515d33ae6975a5c593
 ```
 
 ### 获取某个对话的聊天记录
@@ -192,7 +192,7 @@ curl -X DELETE \
   --data-urlencode 'convid=219946ef32e40c515d33ae6975a5c593' \
   --data-urlencode 'msgid=PESlY' \
   --data-urlencode 'timestamp=1408008498571' \
-  https://leancloud.cn/1.1/rtm/messages/logs
+  https://{{host}}/1.1/rtm/messages/logs
 ```
 
 参数 | 说明
@@ -211,7 +211,7 @@ curl -X PUT \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"msg-id":"4XC_IHK+Ry6CXzIPq_nc7Q","conv-id":"5667070f60b2298fdddb683700000000","ack-at":1449683354932,"is-conv":true,"from":"5666d78c60b204d588fd63aa","bin":false,"timestamp":1449661888571,"is-room":false,"from-ip":"223.104.9.13","to":"5667070f60b2298fdddb6837","data":"{\"_lctype\":-1,\"_lctext\":\"\u771f\u4e0d\u61c2\"}"}' \
-  https://leancloud.cn/1.1/rtm/messages/logs
+  https://{{host}}/1.1/rtm/messages/logs
 ```
 
 这里传入的数据格式与消息记录返回的格式完全一致，只需要按照实际的需求修改相应的字段即可。需注意修改内容时切勿修改 JSON 中的 `msg-id` 和 `timestamp` 字段，这两个字段用于标识消息，如果修改会造成消息更新失败。
@@ -228,7 +228,7 @@ curl -X PUT \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://leancloud.cn/1.1/rtm/messages/unread/CLIENT_ID
+  https://{{host}}/1.1/rtm/messages/unread/CLIENT_ID
 ```
 
 返回：
@@ -250,7 +250,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_peer": "1a", "message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "...", "transient": false}' \
-  https://leancloud.cn/1.1/rtm/messages
+  https://{{host}}/1.1/rtm/messages
 ```
 
 参数 | 约束 | 说明
@@ -278,7 +278,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_peer": "1a", "to_peers":["2c","3d","4f"],"message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "...", "transient": false}' \
-  https://leancloud.cn/1.1/rtm/messages
+  https://{{host}}/1.1/rtm/messages
 ```
 
 参数 | 约束 | 说明
@@ -300,7 +300,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_peer": "1a", "message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "..."}' \
-  https://leancloud.cn/1.1/rtm/broadcast
+  https://{{host}}/1.1/rtm/broadcast
 ```
 
 参数 | 约束 | 类型 | 说明
@@ -332,7 +332,7 @@ curl -X DETELE \
   -H "X-LC-Key: {{masterkey}},master" \
   -G \
   --data-urlencode 'mid=message-id' \
-  https://leancloud.cn/1.1/rtm/broadcast
+  https://{{host}}/1.1/rtm/broadcast
 ```
 
 参数 | 说明
@@ -356,7 +356,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_peer": "1a", "message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "...", "transient": false}' \
-  https://leancloud.cn/1.1/rtm/messages
+  https://{{host}}/1.1/rtm/messages
 ```
 
 发送文本消息可以按照以上的格式进行，参数说明：
@@ -550,7 +550,7 @@ curl -X POST \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://leancloud.cn/1.1/rtm/transient_group/onlines?gid=...
+  https://{{host}}/1.1/rtm/transient_group/onlines?gid=...
 ```
 
 返回：
@@ -571,7 +571,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"peers": ["7u", "8b", "3h", ...]}' \
-  https://leancloud.cn/1.1/rtm/online
+  https://{{host}}/1.1/rtm/online
 ```
 
 参数 | 说明
@@ -599,7 +599,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"client_id": "some-client-id", "conv_id": "some-conv-id", "ttl": 50}' \
-  https://leancloud.cn/1.1/rtm/conversation/blacklist
+  https://{{host}}/1.1/rtm/conversation/blacklist
 ```
 
 参数 | 说明
@@ -627,7 +627,7 @@ curl -X DETELE \
   -G \
   --data-urlencode 'conv_id=some-conv-id' \
   --data-urlencode 'client_id=some-client-id' \
-  https://leancloud.cn/1.1/rtm/conversation/blacklist
+  https://{{host}}/1.1/rtm/conversation/blacklist
 ```
 
 参数 | 说明
@@ -654,7 +654,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"client_id": "some-client-id", "reason": "..."}' \
-  https://leancloud.cn/1.1/rtm/client/kick
+  https://{{host}}/1.1/rtm/client/kick
 ```
 
 参数 | 说明

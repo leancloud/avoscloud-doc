@@ -1,5 +1,4 @@
 {% extends "./acl_quick_start.tmpl" %}
-
 {% set platform_name = "Python" %}
 {% set acl_guide_url = "[LeanCloud 权限管理使用规范](./acl_guide-python.html)" %}
 
@@ -35,7 +34,7 @@ post.set('content', '我喜欢看新闻和阅读报纸。')
 # 新建一个ACL实例
 acl = ACL()
 acl.set_public_read_access(True)
-acl.set_write_access('{{userObjectId}}', True) # 这里设置某个 user 的写权限
+acl.set_write_access('{{ docs.mustache("userObjectId") }}', True) # 这里设置某个 user 的写权限
 
 # 将 ACL 实例赋予 Post 对象
 post.set_acl(acl)
