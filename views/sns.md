@@ -1,3 +1,4 @@
+{% import "views/_helper.njk" as docs %}
 # 第三方平台账号登录组件（SNS）开发指南
 
 AVOSCloudSNS 是一个非常轻量的模块, 可以用最少一行代码就可以实现社交平台用户登录.
@@ -26,7 +27,6 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 - 新浪微博
 - 手机 QQ
-- 微信
 
 并且不需要使用各个平台官方的 SDK，保证你的应用体积的最小化。
 
@@ -50,7 +50,7 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 ```
 
-在 AppDelegate 里添加:
+在 `AppDelegate` 里添加:
 
 ```objc
 -(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
@@ -79,20 +79,17 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 ![Url Shceme](images/sns_guide_url_scheme.png)
 
-设置 QQ 的 URL Schemes：`tencentappid`；微信则使用微信开放平台提供的 AppId，如 `wxa3eacc1c86a717bc`。
+设置 QQ 的 URL Schemes：`tencentappid`。
 
 #### iOS 9 适配
 
-因为 iOS 9 默认只允许 HTTPS 访问，同时加强了应用间通信的安全。需要配置一下第三方网站的访问策略以及把第三方应用的 URL Scheme 加入到白名单中，请右击以 Source Code 的方式打开项目的 Info.plist，在 plist/dict 节点下加入以下文本：
+因为 iOS 9 默认只允许 HTTPS 访问，同时加强了应用间通信的安全。需要配置一下第三方网站的访问策略以及把第三方应用的 URL Scheme 加入到白名单中，请右击以 Source Code 的方式打开项目的 `Info.plist`，在 `plist/dict` 节点下加入以下文本：
 
 ```
     <key>LSApplicationQueriesSchemes</key>
     <array>
         <!-- QQ、Qzone URL Scheme 白名单-->
         <string>mqqOpensdkSSoLogin</string>
-
-        <!-- 微信 URL Scheme 白名单-->
-        <string>weixin</string>
 
         <!-- 新浪微博 URL Scheme 白名单-->
         <string>sinaweibohdsso</string>
@@ -162,7 +159,7 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 }
 ```
 
-这样在该方法之后，可以紧接着调用 `-[AVUser loginWithAuthData:block]`（此时不需要加 platform 参数，因为 authData 中已包含了 platform 数据）来登录 LeanCloud 账号。这样实现起来非常方便，局限是目前**仅支持微博、QQ、微信**登录。
+这样在该方法之后，可以紧接着调用 `-[AVUser loginWithAuthData:block]`（此时不需要加 platform 参数，因为 authData 中已包含了 platform 数据）来登录 LeanCloud 账号。这样实现起来非常方便，局限是目前**仅支持微博、QQ**登录。
 
 使用其他平台的 SDK（如 Facebook SDK）获取到的 authData 中，如果不包含 platform 键值对，就要在调用 `-[AVUser loginWithAuthData:platform:block]` 时加上 platform 这个参数，来登录 LeanCloud 账号。
 
@@ -228,7 +225,6 @@ if (vc) {
 
 请注意代码提到的 **ARC 模式中要将 vc 置空** 是为了打破 retain 环，否则 vc 将不会被释放而浪费内存!
 
-
 更多详细使用方法，请前往 [开源项目](https://github.com/leancloud/leancloud-social-ios) 结合 Demo 学习。
 
 ## Android SNS 组件
@@ -240,13 +236,10 @@ if (vc) {
 首先下载 Android SNS SDK。进入 [Android SDK 下载页面](sdk_down.html)，勾选 **社交模块**，点击下载。将下载文件中的 jar 包添加到你项目的 libs 目录。如果不知道如何安装 SDK，请查看 [快速入门](./start.html)。
 
 ### WebView 授权
-{% if node=='qcloud' %}
-首先需要在 `应用控制台 > 组件 > 社交` 中间配置相应平台的 **AppKey** 与 **AppSecret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的「App 管理中心」，比如新浪开放平台。
-{% else %}
-首先需要在 [应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns) 中间配置相应平台的 **AppKey** 与 **AppSecret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的「App 管理中心」，比如新浪开放平台。
-{% endif %}
 
-之后需要在 AndroidManifest.xml 中间添加相应的 Activity：
+首先需要在 {% if node=='qcloud' %}**应用控制台** > **组件** > **社交**{% else %}[应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns){% endif %} 中间配置相应平台的 **AppKey** 与 **AppSecret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的「App 管理中心」，比如新浪开放平台。
+
+之后需要在 `AndroidManifest.xml` 中间添加相应的 Activity：
 
 ```
         <activity
@@ -254,7 +247,7 @@ if (vc) {
         </activity>
 ```
 
-然后将 SDK 下载包中 avoscloud-sns/res/layout/**avoscloud_sns_web_activity.xml** 拷贝到你的项目中去。
+然后将 SDK 下载包中 <code>avoscloud-sns/res/layout/<strong>avoscloud_sns_web_activity.xml</strong></code> 拷贝到你的项目中去。
 
 接下来，在需要授权的地方，你就可以通过 WebView 进行相应的授权操作：
 
@@ -288,7 +281,8 @@ public class AuthActivity extends Activity{
 ```
 
 这样就完成了新浪微博从授权到创建用户（登录）的一整套流程。
-**注：由于微信的 Web 授权页面为扫描二维玛，现阶段仅仅支持新浪微博和 QQ 授权。**
+
+{{ docs.note("由于微信的 Web 授权页面为扫描二维码，目前**仅支持新浪微博和 QQ 授权**。") }}
 
 ### SSO 登录
 
