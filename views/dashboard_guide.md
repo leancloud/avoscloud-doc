@@ -52,11 +52,19 @@
 <div class="callout callout-danger">每个应用最多可以创建 300 个 Class。</div>
 
 #### 本地数据导入 LeanCloud
+
 在上面的页面，大家可以看到「数据导入」菜单，它就是为方便批量导入本地数据准备的。详细的数据导入页面如下图所示：
 
 ![storage - import data](images/dash_storage_data3.png)
 
-本地文件的格式要求必须是 JSON 或者 CSV 文件，且需要 UTF-8 文件编码。我们支持两种数据导入：
+本地文件的格式要求：
+
+- 必须是 JSON 或者 CSV 文件
+- UTF-8 文件编码
+- 单个文件大小不能超过 30 MB。超大文件要拆分为小于 30 MB 的多个文件进行导入，只要使用同一个「Class 名称」，数据就会导入到一个表中。
+
+
+我们支持两种数据导入：
 
 - 导入数据到某个 Class，把本地文件内所有的数据都导入到同一个 Class 中去。所以如果我们本地有多个 Class 的数据，需要按照 Class 类别分成多个文件依次导入。
 - 导入数据到某个 Class 的 Relation。Relation 是 LeanCloud 数据模型中实现多对多映射的一种方式，细节可以参看[这里的说明](./storage_overview.html#数据关联)。在导入 Relation 的时候，我们需要原 Class 名字、关联 Class 名字、关联属性名等信息。
