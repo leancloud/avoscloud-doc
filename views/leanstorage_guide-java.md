@@ -472,7 +472,7 @@
     }, new ProgressCallback() {
         @Override
         public void done(Integer integer) {
-        // 下载进度数据，integer 介于 0 和 100。
+        // 上传进度数据，integer 介于 0 和 100。
         }
     });
 ```
@@ -489,7 +489,7 @@
     }, new ProgressCallback() {
         @Override
         public void done(Integer integer) {
-        // 上传进度数据，integer 介于 0 和 100。
+        // 下载进度数据，integer 介于 0 和 100。
         }
     });
 ```

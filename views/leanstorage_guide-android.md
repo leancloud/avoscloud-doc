@@ -578,7 +578,7 @@ fetchAllInBackground()
         }, new ProgressCallback() {
             @Override
             public void done(Integer integer) {
-                // 上传进度数据，integer 介于 0 和 100。
+                // 下载进度数据，integer 介于 0 和 100。
             }
         });
 ```
