@@ -345,23 +345,6 @@ mid | 必填 | 要删除的消息 id，字符串
 
 空 JSON 对象 `{}`。
 
-### 查询系统广播消息
-
-调用此 API 可查询目前有效的广播消息。
-
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
-  https://leancloud.cn/1.1/rtm/broadcast
-```
-
-参数 | 约束 | 说明
---- | --- | ---
-conv_id | 必填 | 系统对话 id
-limit | 可选 | 返回消息条数
-skip | 可选 | 跳过消息条数，用于翻页
-
 ### 系统对话发送订阅消息
 
 利用 REST API 发送消息给系统对话所有的订阅用户（即加入系统对话的用户）。
