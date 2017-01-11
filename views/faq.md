@@ -110,11 +110,11 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 我们每个月提供 100 万次的免费额度，超过的部分才收费。推送服务和统计服务免费使用，并不占用免费额度。
 
-默认情况下，每个应用同一时刻的**并发请求上限为 30**（即同一时刻最多可以同时处理 30 个数据请求）。**我们会根据应用运行状况以及运维需要调整改值**。如果需要提高这一上限，请写信至 <support@leancloud.cn> 进行申请。
+默认情况下，每个应用同一时刻最多可使用的工作线程数为 30，即同一时刻最多可以同时处理 30 个数据请求。**我们会根据应用运行状况以及运维需要调整改值**。如果需要提高这一上限，请写信至 <support@leancloud.rocks> 进行申请。
 
 ### API 调用次数的计算
 
-对于数据存储来说，每次 `create` 和 `update` 一个对象的数据算 1 次请求，如调用 1 次 `object.saveInBackground` 算 1 次 API 请求。
+对于数据存储来说，每次 `create` 和 `update` 一个对象的数据算 1 次请求，如调用 1 次 `object.saveInBackground` 算 1 次 API 请求。在 API 调用失败的情况下，如果是由于 [应用流控超限（错误码 429）](https://leancloud.cn/docs/error_code.html#_429) 而被云端拒绝，则**不会**算成 1 次请求；如果是其他原因，例如 [权限不够（错误码 430）](https://leancloud.cn/docs/error_code.html#_403)，那么仍会算为 1 次请求。
 
 **一次请求**<br/>
 - `create`
@@ -168,7 +168,7 @@ REST API 返回的错误信息跟 SDK 保持一致。
 
 ### 其他语言调用 REST API 如何对参数进行编码
 
-REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对参数进行 URL encode 编码。如果是 GET 请求，直接将经过 URL encode 的参数通过 `&` 连接起来，放到 URL 的问号后。如 `https://leancloud.cn/1.1/login?username=xxxx&password=xxxxx`。
+REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对参数进行 URL encode 编码。如果是 GET 请求，直接将经过 URL encode 的参数通过 `&` 连接起来，放到 URL 的问号后。如 `https://{{host}}/1.1/login?username=xxxx&password=xxxxx`。
 
 ### 如何实现大小写不敏感的查询
 
@@ -202,7 +202,7 @@ REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对
 操作：进入[控制台 > 存储](/data.html?appid={{appid}}#/_File)，选定一张表之后，点击右侧的 **其他** 下拉菜单，然后选择 **索引**，然后根据你的查询需要建立好索引。
 {% endif %}
 
-提示：数据表的默认四个字段 `objectId`、`ACL`、`createdAt`、`updatedAt` 是自带索引的，但是在勾选时，可以作为联合索引来使用。并且如果单表数据超过 1 万条以上，请将 App Id 和查询语句发送到 <support@leancloud.cn>，由我们来创建索引。
+提示：数据表的默认四个字段 `objectId`、`ACL`、`createdAt`、`updatedAt` 是自带索引的，但是在勾选时，可以作为联合索引来使用。并且如果单表数据超过 1 万条以上，请将 App Id 和查询语句发送到 <support@leancloud.rocks>，由我们来创建索引。
 
 ### LeanCloud 查询支持 `Sum`、`Group By`、`Distinct` 这种函数吗？
 LeanCloud 数据存储的查询接口不支持这些函数，可以查询到客户端后，在客户端中自己写逻辑进行这些操作。
@@ -338,10 +338,10 @@ LeanCloud 依赖的 Framework 包括：
 
 JavaScript SDK 由于平台的特殊性（运行在单线程运行的浏览器或者 Node.js 环境中），不提供同步 API，所有需要网络交互的 API 都需要以 callback 的形式调用。我们提供了 [Promise 模式](leanstorage_guide-js.html#Promise) 来减少 callback 嵌套过多的问题。
 
-### 在 AV.initialize 中用了 Master Key，但发出去的 AJAX 请求返回 206
+### 在 AV.init 中用了 Master Key，但发出去的 AJAX 请求返回 206
 目前 JavaScript SDK 在浏览器（而不是 Node）中工作时，是不会发送 Master Key 的，因为我们不鼓励在浏览器中使用 Master Key，Master Key 代表着对数据的最高权限，只应当在后端程序中使用。
 
-如果你的应用的确是内部应用（做好了相关的安全措施，外部访问不到），可以在 `AV.initialize`之后增加下面的代码来让 JavaScript SDK 发送 Master Key：
+如果你的应用的确是内部应用（做好了相关的安全措施，外部访问不到），可以在 `AV.init`之后增加下面的代码来让 JavaScript SDK 发送 Master Key：
 ```
 AV._useMasterKey = true;
 ```

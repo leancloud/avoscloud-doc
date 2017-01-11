@@ -319,17 +319,34 @@ var codeBlockTabber = (function() {
 
       console.log('switching to ' + targetLang);
 
-      $('.code-lang-toggles .toggle').removeClass('active');
-      $('.code-lang-toggles .toggle[data-toggle-lang=' + targetLang + ']').addClass('active');
+      $.each($('.code-lang-toggles'), function () {
+        var langArr = [];
+        var $toggles = $(this).find('.toggle');
 
-      $.each($blocks, function () {
-        var $current = $(this);
-        var currentCodeClass = $current.children().attr('class');
+        $.each($toggles, function () {
+          var lang = $(this).data('toggle-lang');
+          langArr.push(lang);
+        });
 
-        if (currentCodeClass === targetLang) {
-          $current.show();
+        if (langArr.indexOf(targetLang) > - 1) {
+          // Update toggler visibility
+          $(this).find('.toggle').removeClass('active');
+          $(this).find('.toggle[data-toggle-lang=' + targetLang + ']').addClass('active');
+
+          // Update codeblock visibility
+          var $codeBlocks = $(this).prevUntil('*:not(.codeblock-toggle-enabled)');
+          $.each($codeBlocks, function () {
+            var $current = $(this);
+            var currentCodeClass = $current.children().attr('class');
+
+            if (currentCodeClass === targetLang) {
+              $current.show();
+            } else {
+              $current.hide();
+            }
+          });
         } else {
-          $current.hide();
+          console.log('No matching codeblock in current scope!');
         }
       });
     });
@@ -405,4 +422,3 @@ $(window).load(function() {
     }
   });
 });
-  

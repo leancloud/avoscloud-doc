@@ -79,6 +79,10 @@ import leancloud
 user = leancloud.User()
 user.login('username','password')
 
+# 第一种方式是通过 User 的内置接口：
+role_query_list = user.get_roles()
+
+# 第二种方式是通过构建 Query：
 role_query = leancloud.Query(leancloud.Role)
 role_query.equal_to('users', leancloud.User.get_current())
 role_query_list = role_query.find()  # 返回当前用户的角色列表

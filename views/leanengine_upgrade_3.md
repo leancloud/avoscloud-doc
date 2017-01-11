@@ -84,33 +84,37 @@ npm install leanengine --save
   4 var APP_KEY = process.env.LC_APP_KEY;
   5 var MASTER_KEY = process.env.LC_APP_MASTER_KEY;
   6
-  7 AV.initialize(APP_ID, APP_KEY, MASTER_KEY);
-  8 // 如果不希望使用 masterKey 权限，可以将下面一行删除
-  9 AV.Cloud.useMasterKey();
- 10
- 11
- 12 var app = require('./app');
- 13
- 14 // 端口一定要从环境变量 `LC_APP_PORT` 中获取。
- 15 // LeanEngine 运行时会分配端口并赋值到该变量。
- 16 var PORT = parseInt(process.env.LC_APP_PORT || 3000);
- 17 app.listen(PORT, function () {
- 18   console.log('Node app is running, port:', PORT);
- 19 });
+  7 AV.init({
+  8   appId:     APP_ID,
+  9   appKey:    APP_KEY,
+ 10   masterKey: MASTER_KEY
+ 11 });
+ 12 // 如果不希望使用 masterKey 权限，可以将下面一行删除
+ 13 AV.Cloud.useMasterKey();
+ 14
+ 15
+ 16 var app = require('./app');
+ 17
+ 18 // 端口一定要从环境变量 `LC_APP_PORT` 中获取。
+ 19 // LeanEngine 运行时会分配端口并赋值到该变量。
+ 20 var PORT = parseInt(process.env.LC_APP_PORT || 3000);
+ 21 app.listen(PORT, function () {
+ 22   console.log('Node app is running, port:', PORT);
+ 23 });
 ```
 
 该文件做了几件事：
 
 ### 初始化 `AV` 对象
 
-第 1 ~ 10 行，引入 `leanengine` 依赖，并使用环境变量里面的 appId 和 appKey 等信息初始化 `AV` 对象。
+第 1 ~ 13 行，引入 `leanengine` 依赖，并使用环境变量里面的 appId 和 appKey 等信息初始化 `AV` 对象。
 
 * **提示**：2.0 项目直接由沙箱环境提供 `AV` 对象，而 3.0 项目需要手动初始化。前者虽然方便，但略微违反直觉（因为普通的 Node.js 项目全局空间是不会有 `AV` 对象的）。手动初始化还可以做更明确的控制，比如「是否使用 MasterKey 初始化 `AV` 对象，使得 LeanEngine 项目拥有完全权限，不受 ACL 限制等」。
 * 如果想了解具体有哪些环境变量，可以参考 [云引擎指南 - 环境变量](./leanengine_webhosting_guide-node.html#环境变量)。
 
 ### 提供 Web 服务
 
-第 14 ~ 19 行，引入 `app` 模块（具体见 [app 模块](#app_模块) 一节），然后使用环境变量提供的端口启动应用。
+第 16 ~ 23 行，引入 `app` 模块（具体见 [app 模块](#app_模块) 一节），然后使用环境变量提供的端口启动应用。
 
 * **提示**：2.0 项目引入自定义模块时都需要添加 `cloud/` 的前缀（比如 `cloud/app.js`）。Node.js 项目没有这样的引用方式，属于沙箱环境的限制。3.0 项目则使用更加通用的方式，以 `./` 或 `../` 开头来引用自定义模块，如用 `./app` 来引用 `$PROJECT_DIR/app.js` 文件。
 

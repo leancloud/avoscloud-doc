@@ -81,24 +81,27 @@
 {% block code_saveoption_query_example %}
 
 ```java
-        // 获取 version 值
-        int version = avObject.getInt("version");
-
-        AVSaveOption avSaveOption = new AVSaveOption();
-
-        AVQuery<AVObject> query = new AVQuery<>("Wiki");
-        query.whereEqualTo("version", version);
-
-        avSaveOption.query(query);
-
-        avObject.saveInBackground(avSaveOption, new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                if (e.getCode() == 305) {
-                    Log.d(TAG, "无法保存修改，wiki 已被他人更新。");
+    final int amount = -100;
+    AVQuery<AVObject> query = new AVQuery<>("Account");
+    query.getFirstInBackground(new GetCallback<AVObject>() {
+        @Override
+        public void done(final AVObject account, AVException e) {
+            account.increment("balance", amount);
+            AVSaveOption option = new AVSaveOption();
+            option.query(new AVQuery<>("Account").whereGreaterThanOrEqualTo("balance", -amount));
+            option.setFetchWhenSave(true);
+            account.saveInBackground(option, new SaveCallback() {
+                @Override
+                public void done(AVException e) {
+                    if (e == null) {
+                        System.out.println("当前余额为：" + account.get("balance"));
+                    } else {
+                        System.out.println("余额不足，操作失败！");
+                    }
                 }
-            }
-        });
+            });
+        }
+    });
 ```
 {% endblock %}
 
@@ -132,8 +135,7 @@
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```java
         AVQuery<AVObject> avQuery = new AVQuery<>("Todo");
         avQuery.getInBackground("558e20cbe4b060308e3eb36c", new GetCallback<AVObject>() {
@@ -143,10 +145,9 @@
             }
         });
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```java
         // 第一参数是 className,第二个参数是 objectId
         AVObject todo = AVObject.createWithoutData("Todo", "558e20cbe4b060308e3eb36c");
@@ -158,7 +159,6 @@
             }
         });
 ```
-
 {% endblock %}
 
 {% block code_save_callback_get_objectId %}
@@ -440,7 +440,7 @@ fetchAllInBackground()
 
 ```java
         AVObject comment = new AVObject("Comment");// 构建 Comment 对象
-        comment.put("like", 1);// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
+        comment.put("likes", 1);// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
         comment.put("content", "这个太赞了！楼主，我也要这些游戏，咱们团购么？");// 留言的内容
 
         // 假设已知了被分享的该 TodoFolder 的 objectId 是 5590cdfde4b00f7adb5860c8
@@ -578,7 +578,7 @@ fetchAllInBackground()
         }, new ProgressCallback() {
             @Override
             public void done(Integer integer) {
-                // 上传进度数据，integer 介于 0 和 100。
+                // 下载进度数据，integer 介于 0 和 100。
             }
         });
 ```
@@ -703,26 +703,11 @@ fetchAllInBackground()
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
-```java
-        AVQuery<AVObject> query = new AVQuery<>("Todo");
-        query.whereMatches("title","^((?!机票).)*$");
-```
+<pre><code class="lang-java">        AVQuery<AVObject> query = new AVQuery<>("Todo");
+        query.whereMatches("title","{{ storage.regex() | safe }});
+</code></pre>
 {% endblock %}
-
-{% block code_query_with_not_contains_keyword %}
-```java
-        AVQuery<AVObject> query = new AVQuery<>("Todo");
-        query.whereNotContainedIn("title", Arrays.asList("出差", "休假"));
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                // 标题不是「出差」和「休假」的 Todo 对象列表
-                List<AVObject> todos = list;
-            }
-        });
-```
-{% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -767,6 +752,12 @@ fetchAllInBackground()
             }
         });
     }
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```java
+        query.whereNotContainedIn("reminders", Arrays.asList(reminder1, reminder2));
 ```
 {% endblock %}
 
@@ -935,7 +926,7 @@ fetchAllInBackground()
 ```java
         // 构建内嵌查询
         AVQuery<AVObject> innerQuery = new AVQuery<>("TodoFolder");
-        innerQuery.whereGreaterThan("liks", 20);
+        innerQuery.whereGreaterThan("likes", 20);
         // 将内嵌查询赋予目标查询
         AVQuery<AVObject> query = new AVQuery<>("Comment");
         // 执行内嵌操作
@@ -1046,21 +1037,26 @@ fetchAllInBackground()
 {% endblock %}
 
 {% block code_query_with_and %}
-
 ```java
-        final AVQuery<AVObject> priorityQuery = new AVQuery<>("Todo");
-        priorityQuery.whereLessThan("priority", 3);
+    Date getDateWithDateString(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = dateFormat.parse(dateString);
+        return date;
+    }
 
-        final AVQuery<AVObject> statusQuery = new AVQuery<>("Todo");
-        statusQuery.whereEqualTo("status", 0);
+    final AVQuery<AVObject> startDateQuery = new AVQuery<>("Todo");
+    startDateQuery.whereGreaterThanOrEqualTo("createdAt", getDateWithDateString("2016-11-13"));
 
-        AVQuery<AVObject> query = AVQuery.and(Arrays.asList(priorityQuery, statusQuery));
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                // 返回 priority 小于 3 并且 status 等于 0 的 Todo
-            }
-        });
+    final AVQuery<AVObject> endDateQuery = new AVQuery<>("Todo");
+    endDateQuery.whereLessThan("createdAt", getDateWithDateString("2016-12-03"));
+
+    AVQuery<AVObject> query = AVQuery.and(Arrays.asList(startDateQuery, endDateQuery));
+    query.findInBackground(new FindCallback<AVObject>() {
+        @Override
+        public void done(List<AVObject> list, AVException e) {
+
+        }
+    });
 ```
 {% endblock %}
 
@@ -1507,7 +1503,7 @@ public class Student extends AVObject {
 如果你不仅需要一个简单的访问器，而是有更复杂的逻辑，你可以实现自己的方法，例如：
 
 ``` java
-ublic void takeAccusation() {
+public void takeAccusation() {
   // 处理用户举报，当达到某个条数的时候，自动打上屏蔽标志
   increment("accusation", 1);
   if (getAccusation() > 50) {

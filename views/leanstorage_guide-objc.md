@@ -108,36 +108,39 @@
 {% block code_saveoption_query_example %}
 
 ```objc
-// 获取 version 值
-NSNumber *version = [object objectForKey:@"version"];
+    NSInteger amount = -100;
+    AVObject *account = [[AVQuery queryWithClassName:@"Account"] getFirstObject];
 
-AVSaveOption *option = [[AVSaveOption alloc] init];
+    [account incrementKey:@"balance" byAmount:@(amount)];
 
-AVQuery *query = [[AVQuery alloc] init];
-[query whereKey:@"version" equalTo:version];
+    AVQuery *query = [[AVQuery alloc] init];
+    [query whereKey:@"balance" greaterThanOrEqualTo:@(-amount)];
 
-option.query = query;
+    AVSaveOption *option = [[AVSaveOption alloc] init];
 
-[object saveInBackgroundWithOption:option block:^(BOOL succeeded, NSError *error) {
-    if ( error.code == 305 ){
-      NSLog(@"无法保存修改，wiki 已被他人更新。");
-    }
-}];
+    option.query = query;
+    option.fetchWhenSave = YES;
+
+    [account saveInBackgroundWithOption:option block:^(BOOL succeeded, NSError * _Nullable error) {
+        if (succeeded) {
+            NSLog(@"当前余额为：%@", account[@"balance"]);
+        } else if (error.code == 305) {
+            NSLog(@"余额不足，操作失败！");
+        }
+    }];
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```objc
     AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     [query getObjectInBackgroundWithId:@"558e20cbe4b060308e3eb36c" block:^(AVObject *object, NSError *error) {
         // object 就是 id 为 558e20cbe4b060308e3eb36c 的 Todo 对象实例
     }];
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```objc
     // 第一个参数是 className，第二个参数是 objectId
     AVObject *todo =[AVObject objectWithClassName:@"Todo" objectId:@"558e20cbe4b060308e3eb36c"];
@@ -146,7 +149,6 @@ option.query = query;
         NSString *content = avObject[@"content"]; // 读取 content
     }];
 ```
-
 {% endblock %}
 
 {% block code_save_callback_get_objectId %}
@@ -422,7 +424,7 @@ option.query = query;
 
 ```objc
     AVObject *comment = [[AVObject alloc] initWithClassName:@"Comment"];// 构建 Comment 对象
-    [comment setObject:@1 forKey:@"like"];// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
+    [comment setObject:@1 forKey:@"likes"];// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
     [comment setObject:@"这个太赞了！楼主，我也要这些游戏，咱们团购么？" forKey:@"content"];// 留言的内容
 
     // 假设已知了被分享的该 TodoFolder 的 objectId 是 5590cdfde4b00f7adb5860c8
@@ -714,8 +716,7 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 [query whereKey:@"priority" greaterThanOrEqualTo:@2];
 ```
 
-另外，因为 Objective-C 语言本身特定的设定，boolean 值的查询很多开发者**错误地**使用了 0 和 1 进行查询。
-正确的构建方式如下：
+**查询 boolean 值**时，很多开发者会**错误地**使用 0 和 1，正确方法为：
 
 ```
 [query whereKey:@"booleanTest" equalTo:@(YES)];
@@ -739,23 +740,11 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-```objc
-  AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-  [query whereKey:@"title" matchesRegex:@"^((?!机票).)*$"];
-```
+<pre><code class="lang-objc">  AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+  [query whereKey:@"title" matchesRegex:@"{{ storage.regex() | safe }}];    
+</code></pre>
 {% endblock %}
-
-{% block code_query_with_not_contains_keyword %}
-```objc
-    AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-    NSArray *filterArray = [NSArray arrayWithObjects:@"出差", @"休假", nil]; // NSArray
-    [query whereKey:@"title" notContainedIn:filterArray];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        // 标题不是「出差」和「休假」的 Todo 对象列表
-        NSArray<AVObject *> *todos = objects;
-    }];
-```
-{% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -801,6 +790,12 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 
     }];
 }
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```objc
+    [query whereKey:@"reminders" notContainedIn:reminders];
 ```
 {% endblock %}
 
@@ -1032,19 +1027,23 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 {% endblock %}
 
 {% block code_query_with_and %}
-
 ```objc
-    AVQuery *priorityQuery = [AVQuery queryWithClassName:@"Todo"];
-    [priorityQuery whereKey:@"priority" lessThan:[NSNumber numberWithInt:3]];
+NSDate *(^dateFromString)(NSString *string) = ^(NSString *string) {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    return [dateFormatter dateFromString:string];
+};
 
-    AVQuery *statusQuery = [AVQuery queryWithClassName:@"Todo"];
-    [statusQuery whereKey:@"status" equalTo:[NSNumber numberWithInt:0]];
+AVQuery *startDateQuery = [AVQuery queryWithClassName:@"Todo"];
+[startDateQuery whereKey:@"createdAt" greaterThanOrEqualTo:dateFromString(@"2016-11-13")];
 
-    AVQuery *query = [AVQuery andQueryWithSubqueries:[NSArray arrayWithObjects:statusQuery,priorityQuery,nil]];
+AVQuery *endDateQuery = [AVQuery queryWithClassName:@"Todo"];
+[endDateQuery whereKey:@"createdAt" lessThan:dateFromString(@"2016-12-03")];
 
-    [query findObjectsInBackgroundWithBlock:^(NSArray *results, NSError *error) {
-        // 返回 priority 小于 3 并且 status 等于 0 的 Todo
-    }];
+AVQuery *query = [AVQuery andQueryWithSubqueries:[NSArray arrayWithObjects:startDateQuery,endDateQuery,nil]];
+[query findObjectsInBackgroundWithBlock:^(NSArray *results, NSError *error) {
+    
+}];
 ```
 {% endblock %}
 
@@ -1360,6 +1359,17 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 ```objc
   [AVUser logOut];  //清除缓存用户对象
   AVUser *currentUser = [AVUser currentUser]; // 现在的currentUser是nil了
+```
+{% endblock %}
+
+{% block code_user_isAuthenticated %}
+
+```objc
+    [currentUser isAuthenticatedWithSessionToken:@"user-sessionToken-here" callback:^(BOOL succeeded, NSError * _Nullable error) {
+        if (succeeded) {
+            // 用户的 sessionToken 有效
+        }
+    }];
 ```
 {% endblock %}
 

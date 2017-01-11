@@ -13,6 +13,11 @@ isHome: true
       <div class="form-group">
         <input id="site-search" name="q" type="text" class="form-control input-lg" placeholder="&#xf17a 输入错误代码、关键字来搜索&hellip;">
       </div>
+      <!-- <ul class="list-keyword">
+        <li>热门</li>
+        <li><a href="/search.html?q=小程序" target="_blank">小程序</a></li>
+        <li></li>
+      </ul> -->
     </form>
     {% endif %}
 </div>
@@ -93,6 +98,7 @@ isHome: true
         <h3>最佳实践</h3>
         <ul class="list-unstyled">
           <li><a href="weapp.html">在微信小程序中使用 LeanCloud</a></li>
+          <li><a href="https://zhuanlan.zhihu.com/p/24451674" target="_blank">在 LeanCloud 中使用 GraphQL</a></li>
           <li><a href="https://blog.leancloud.cn/1723/" target="_blank">基于 LeanCloud 的一对多、多对多数据建模</a></li>
           <li><a href="app_data_share.html">应用之间数据共享（Class 绑定）</a></li>
           <li><a href="https://blog.leancloud.cn/3993/" target="_blank">使用 LeanCloud 与 React Native 构建原生应用</a></li>
@@ -199,14 +205,14 @@ isHome: true
             <span>UI 库 ChatKit 使用指南</span>
             <ul class="list-unstyled list-platform">
               <li><a href="chatkit-android.html">Android</a></li>
-              <li><a href="chatkit-ios.html">Objective-C</a></li>
+              <li><a href="chatkit-ios.html">iOS</a></li>
             </ul>
           </li>
   	  <li>
             <span>直播＋聊天解决方案 LiveKit 使用指南</span>
             <ul class="list-unstyled list-platform">
               <li><a href="livekit-android.html">Android</a></li>
-              <li><a href="livekit-ios.html">Objective-C</a></li>
+              <li><a href="livekit-ios.html">iOS</a></li>
             </ul>
           </li>
         </ul>
@@ -247,7 +253,7 @@ isHome: true
             <span>消息推送开发指南</span>
             <ul class="list-unstyled list-platform">
               <li><a href="android_push_guide.html">Android</a></li>
-              <li><a href="ios_push_guide.html">Objective-C</a></li>
+              <li><a href="ios_push_guide.html">iOS</a></li>
               <li><a href="leanstorage_guide-js.html#Push_通知">JavaScript</a></li>
             </ul>
           </li>
@@ -298,10 +304,10 @@ isHome: true
         </ul>
       </div>
       <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>最佳实践</h3>
+        <!-- <h3>最佳实践</h3>
         <ul class="list-unstyled">
           <li><a href="user_groups.html">如何进行用户群分析</a></li>
-        </ul>
+        </ul> -->
         <h3>相关阅读</h3>
         <ul class="list-unstyled">
           <li><a href="faq_list.html">常见问题</a></li>
@@ -372,13 +378,7 @@ isHome: true
       <div class="section-content col-xs-12 col-sm-4 col-md-4">
         <h3>SDK API Docs</h3>
         <ul class="list-unstyled">
-          <li><a href="/api-docs/android/index.html" target="_blank">Android SDK API</a></li>
-          <li><a href="/api-docs/iOS/index.html" target="_blank">Objective-C SDK API</a></li>
-          <li><a href="https://leancloud.github.io/javascript-sdk/docs/" target="_blank">JavaScript 数据存储 SDK API</a></li>
-          <li><a href="https://leancloud.github.io/js-realtime-sdk/docs/" target="_blank">JavaScript 实时通信 SDK API</a></li>
-          <li><a href="https://leancloud.readthedocs.io/">Python SDK API</a></li>
-          <li><a href="/api-docs/php/" target="_blank">PHP SDK API</a></li>
-          <li><a href="/api-docs/dotnet/Help/index.html">.NET SDK API</a></li>
+        {% include 'templates/include/_apidocs.html' %}
         </ul>
       </div>
       <div class="section-content col-xs-12 col-sm-4 col-md-4">

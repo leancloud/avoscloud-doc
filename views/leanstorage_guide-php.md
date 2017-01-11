@@ -123,15 +123,6 @@ try {
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
-```php
-$query = new Query("Todo");
-$todo  = $query->get("558e20cbe4b060308e3eb36c");
-// $todo 就是 ID 为 558e20cbe4b060308e3eb36c 的对象实例
-```
-{% endblock %}
-
 {% block code_save_callback_get_objectId %}
 
 ```php
@@ -169,6 +160,14 @@ $todo->getCreatedAt();
 {% endblock %}
 
 {% block text_refresh_object%}{% endblock %}
+
+{% macro code_get_todo_by_objectId() %}
+```php
+$query = new Query("Todo");
+$todo  = $query->get("558e20cbe4b060308e3eb36c");
+// $todo 就是 ID 为 558e20cbe4b060308e3eb36c 的对象实例
+```
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
 ```php
@@ -350,7 +349,7 @@ $todoFolder->save();
 
 ```php
 $comment = new Object("Comment"); // 构建 Comment 对象
-$comment->set("like", 1); // 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
+$comment->set("likes", 1); // 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
 $comment->set("content", "这个太赞了！楼主，我也要这些游戏，咱们团购么？"); // 留言的内容
 
 // 假设已知了被分享的该 TodoFolder 的 objectId 是 5590cdfde4b00f7adb5860c8
@@ -437,6 +436,11 @@ $file = File::createWithLocalFile("/tmp/LeanCloud.png");
 ```php
 $file = File::createWithUrl("test.gif", "http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif");
 ```
+{% endblock %}
+
+{% block text_upload_file %}
+
+如果希望在云引擎环境里上传文件，请参考我们的[网站托管开发指南](leanengine_webhosting_guide-php.html#文件上传)。
 {% endblock %}
 
 {% block code_upload_file %}
@@ -567,21 +571,11 @@ $query->contains("title","李总");
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
-```php
-$query = new Query("Todo");
-$query->matches("title","^((?!机票).)*$");
-```
+<pre><code class="lang-php">$query = new Query("Todo");
+$query->matches("title","{{ storage.regex() | safe }});
+</code></pre>
 {% endblock %}
-
-{% block code_query_with_not_contains_keyword %}
-
-```php
-$query = new Query("Todo");
-$query->notContainedIn("title",array("出差", "休假"));
-$query->find();
-```
-{% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -603,6 +597,12 @@ $date1 = new \DateTime("2015-11-11 08:30:00");
 $date2 = new \DateTime("2015-11-11 09:30:00");
 $query->containsAll("reminders", array($date1, $date2));
 $query->find();
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```php
+$query->notContainedIn("reminders", array($date1, $date2));
 ```
 {% endblock %}
 
@@ -827,23 +827,22 @@ $query->find();
 {% endblock %}
 
 {% block code_query_with_and %}
-
 ```php
-$priorityQuery = new Query("Todo");
-$priorityQuery->lessThan("priority", 3);
+$startDate = new \DateTime("2016-11-13");
+$startDateQuery = new Query("Todo");
+$startDateQuery->greaterThanOrEqualTo("createdAt", $startDate);
 
-$statusQuery = new Query("Todo");
-$statusQuery->equalTo("status", 0);
+$endDate = new \DateTime("2016-12-03");
+$endDateQuery = new Query("Todo");
+$endDateQuery->lessThan("createdAt", $endDate);
 
-$query = Query::andQuery($priorityQuery, $statusQuery);
+$query = Query::andQuery($startDateQuery, $endDateQuery);
 
-// 返回 priority 小于 3 并且 status 等于 0 的 Todo
 $query->find();
 ```
 {% endblock %}
 
 {% block code_delete_todo_by_cql %}
-
 ```php
 Query::doCloudQuery("delete from Todo where objectId='558e20cbe4b060308e3eb36c'");
 ```

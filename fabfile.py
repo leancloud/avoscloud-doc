@@ -38,6 +38,8 @@ def prepare_remote_dirs():
 
 def _prepare_local_docs(target):
     local("mkdir -p %s" % tmp_dir)
+    local("rm -rf %s/dist/*" % project_dir)
+    local("rm -rf %s/md/*" % project_dir)
     ##local("ruby render.rb")
     local("npm install -d");
     if target == 'qcloud':

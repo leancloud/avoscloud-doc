@@ -40,8 +40,8 @@
             [acl setPublicReadAccess:YES];// 设置公开的「读」权限，任何人都可阅读
             [acl setWriteAccess:YES forUser:[AVUser currentUser]];// 为当前用户赋予「写」权限
             
-            AVUser *othterUser = [objects objectAtIndex:0];// 读取 admin
-            [acl setWriteAccess:YES forUser:othterUser];
+            AVUser *otherUser = [objects objectAtIndex:0];// 读取 admin
+            [acl setWriteAccess:YES forUser:otherUser];
             
             post.ACL = acl;// 将 ACL 实例赋予 Post 对象
             
@@ -89,10 +89,16 @@
 {% block query_role_of_user %}
 
 ```objc
+    // 第一种方式是通过内置的接口
+    [user getRolesInBackgroundWithBlock:^(NSArray<AVRole *> * _Nullable avRoles, NSError * _Nullable error) {
+        // avRoles 就是一个 AVRole 的数组，这些 AVRole 就是当前用户所在拥有的角色
+    }];
+    
+    // 第二种是通过构建 AVQuery
     AVQuery *roleQuery= [AVRole query];
-    [roleQuery whereKey:@"users" equalTo: [AVUser currentUser]];
-    [roleQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        // objects 就是一个 AVRole 的数组，这些 AVRole 就是当前用户所在拥有的角色
+    [roleQuery whereKey:@"users" equalTo: user];
+    [roleQuery findObjectsInBackgroundWithBlock:^(NSArray *avRoles, NSError *error) {
+        // avRoles 就是一个 AVRole 的数组，这些 AVRole 就是当前用户所在拥有的角色
     }];
 ```
 {% endblock %}
@@ -118,7 +124,7 @@
     [post setObject:@"求推荐啊！" forKey:@"content"];
     
     
-     // 假设之前创建的 Administrator 角色 objectId 为 55fc0eb700b039e44440016c，我们使用
+     // 假设之前创建的 Administrator 角色 objectId 为 55fc0eb700b039e44440016c
     AVQuery *roleQuery= [AVRole query];
     [roleQuery getObjectInBackgroundWithId:@"55fc0eb700b039e44440016c" block:^(AVObject *object, NSError *error) {
         AVRole *administratorRole = (AVRole*) object;

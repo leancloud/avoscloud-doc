@@ -5,8 +5,8 @@
 {% set sdk_name = platform_name + " SDK" %}
 
 {% block demo %}
-* [LeanMessage](https://github.com/leancloud/LeanMessage-Demo)（推荐）
-* [LeanChat](https://github.com/leancloud/leanchat-ios)
+* [ChatKit-OC](https://github.com/leancloud/ChatKit-OC)（推荐）
+* [LeanMessage](https://github.com/leancloud/LeanMessage-Demo)
 {% endblock %}
 
 {% block setup_init %}
@@ -646,6 +646,45 @@ ioType|AVIMMessageIOType 枚举|消息传输方向，有两种取值：<br/><br/
 ```
 {% endblock %}
 
+{% set message_priority_high_varname    = 'AVIMMessagePriorityHigh' %}
+{% set message_priority_normal_varname  = 'AVIMMessagePriorityNormal' %}
+{% set message_priority_low_varname     = 'AVIMMessagePriorityLow' %}
+ 
+{% block message_option_priority %}
+
+```objc
+// Tom 创建了一个 client，用自己的名字作为 clientId
+self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+
+// Tom 打开 client
+[self.client openWithCallback:^(BOOL succeeded, NSError *error) {
+    // Tom 建立了与 Jerry 的会话
+    [self.client createConversationWithName:@"猫和老鼠" clientIds:@[@"Jerry"] callback:^(AVIMConversation *conversation, NSError *error) {
+        // Tom 发了一条消息给 Jerry
+        
+        AVIMMessageOption *option = [AVIMMessageOption alloc];
+        option.priority = AVIMMessagePriorityHigh;
+        [conversation sendMessage:[AVIMTextMessage messageWithText:@"耗子，起床！" attributes:nil] option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
+            // 在这里处理发送失败或者成功之后的逻辑
+        }];
+        
+    }];
+}];
+```
+{% endblock %}
+
+{% block message_push_data %}
+
+```objc
+AVIMMessageOption *option = [AVIMMessageOption alloc];
+option.pushData = @{@"alert" : @"您有一条未读消息", @"sound" : @"message.mp3", @"badge" : @1, @"custom-key" : @"由用户添加的自定义属性，custom-key 仅是举例，可随意替换"};
+[conversation sendMessage:[AVIMTextMessage messageWithText:@"耗子，起床！" attributes:nil] option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
+    // 在这里处理发送失败或者成功之后的逻辑
+}];
+```
+{% endblock %}
+
+
 {% block conversation_creation_api %}
 ### 创建对话
 
@@ -1093,40 +1132,9 @@ AVIMConversation 属性名 | _Conversation 字段|含义
 接下来，Tom 将 type 修改为 public：
 
 ```objc
--(void)tomUpdateConversationAttributes {
-    // Tom 创建了一个 client，用自己的名字作为 clientId
-    self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
-
-    // Tom 打开 client
-    [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
-        // Tom 查询 id 为 551260efe4b01608686c3e0f 的对话
-        AVIMConversationQuery *query = [self.client conversationQuery];
-        [query getConversationById:@"551260efe4b01608686c3e0f" callback:^(AVIMConversation *conversation, NSError *error) {
-
-            AVIMConversationUpdateBuilder *updateBuilder = [conversation newUpdateBuilder];
-            
-            // ---------  非常重要！！！--------------
-            // 将所有属性转交给 updateBuilder 统一处理。
-            // 如果缺失这一步，下面没有改动过的属性，如上例中的 isSticky，
-            // 在保存后会被删除。
-            // -------------------------------------
-            updateBuilder.attributes = conversation.attributes;
-            
-            // 将 type 值改为 public
-            [updateBuilder setObject:@"public" forKey:@"type"];
-
-            // 其他操作方法：删除 type 
-            // [updateBuilder removeObjectForKey:@"type"];
-
-            // 将更新后的全部属性写回对话
-            [conversation update:[updateBuilder dictionary] callback:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    NSLog(@"更新 attr 成功");
-                }
-            }];
-        }
-    }];
-}
+[conversation setValue:@"public" forKey:@"type"];
+// 设置是星标对话
+[conversation setValue:@"isStarred" forKey:@(YES)];
 ```
 {% endblock %}
 

@@ -537,8 +537,11 @@ AV.Cloud.define('push_timer', function(req, res){
 
 {% block masterKeyInit %}
 ```javascript
-//参数依次为 AppId, AppKey, MasterKey
-AV.initialize('{{appid}}', '{{appkey}}', '{{masterkey}}');
+AV.init({
+  appId:     '{{appid}}',
+  appKey:    '{{appkey}}',
+  masterKey: '{{masterkey}}'
+});
 AV.Cloud.useMasterKey();
 ```
 {% endblock %}

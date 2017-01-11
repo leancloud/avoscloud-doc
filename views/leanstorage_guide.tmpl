@@ -1,9 +1,11 @@
+{% import "views/_storage.njk" as storage %}
 {% set appid = '{{appid}}' %}
 {% set appkey = '{{appkey}}' %}
 {% set masterkey = '{{masterkey}}' %}
 {% set middot = '·' %}
 {% set link_to_blog_password_reset = '关于自定义邮件模板和验证链接，请参考《[自定义应用内用户重设密码和邮箱验证页面](https://blog.leancloud.cn/607/)》。' %}
 {% set app_permission_link = "[控制台 > 应用设置 > 应用选项](/app.html?appid={{appid}}#/permission)" %}
+{% set query_result_limit = "每次查询默认最多返回 100 条符合条件的结果，要更改这一数值，请参考 [限定结果返回数量](#限定返回数量)。" %}
 
 # 数据存储开发指南 &middot; {{platform_name}}
 
@@ -100,20 +102,10 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 
 <dl>
   <dt>属性名</dt>
-  <dd>也叫键或 key，必须是由字母、数字或下划线组成的字符串；自定义的属性名，不能以 `__`（双下划线）开头。</dd>
+  <dd>也叫键或 key，必须是由字母、数字或下划线组成的字符串。<br/>自定义的属性名，不能以 `__`（双下划线）开头，<span class="callout-danger" style="background-color: transparent;">也不能与内置属性重名（不区分大小写）</span>。</dd>
   <dt>属性值</dt>
   <dd>可以是字符串、数字、布尔值、数组或字典。</dd>
 </dl>
-
-<div class="callout callout-danger"><p>以下为系统保留字段，不能作为属性名来使用。</p>
-<samp style="color:#666;">acl             error            pendingKeys
-ACL             fetchWhenSave    running
-className       id               updatedAt
-code            isDataReady      uuid
-createdAt       keyValues
-description     objectId
-</samp>
-</div>
 
 为提高代码的可读性和可维护性，建议使用驼峰式命名法（CamelCase）为类和属性来取名。类，采用大驼峰法，如 `CustomData`。属性，采用小驼峰法，如 `imageUrl`。
 
@@ -132,7 +124,7 @@ description     objectId
 <code class="text-nowrap">{{saveOptions_fetchWhenSave}}</code> | BOOL | 对象成功保存后，自动返回本地**已改动属性**在云端的最新值。用途请参考 [更新计数器](#更新计数器)。
 `{{saveOptions_query}}` | `{{baseQueryClassName}}`  | 当 query 中的条件满足后对象才能成功保存，否则放弃保存，并返回错误码 305。<br/><br/>开发者原本可以通过 `{{baseQueryClassName}}` 和 `{{baseObjectName}}` 分两步来实现这样的逻辑，但如此一来无法保证操作的原子性从而导致并发问题。该选项可以用来判断多用户更新同一对象数据时可能引发的冲突。
 
-<a id="saveoption_query_example" name="saveoption_query_example"></a>【示例】一篇 wiki 文章允许任何人来修改，它的数据表字段有：**content**（wiki 内容）、**version**（版本号）。每当 wiki 内容被更新后，其 version 也需要更新（+1）。用户 A 要修改这篇 wiki，从数据表中取出时其 version 值为 3，当用户 A 完成编辑要保存新内容时，如果数据表中的 version 仍为 3，表明这段时间没有其他用户更新过这篇 wiki，可以放心保存；如果不是 3，开发者可以拒绝掉用户 A 的修改，或执行其他自定义的业务逻辑。
+<a id="saveoption_query_example" name="saveoption_query_example"></a>【{{saveOptions_query}} 选项举例】用户的账务账户表 `Account` 有一个余额字段 `balance`，同时有多个请求要修改该字段值，为避免余额出现负值，只有满足 **balance >= 当前请求的数值** 这个条件才允许修改，否则提示「余额不足，操作失败！」。
 
 {% block code_saveoption_query_example %}{% endblock %}
 {% endblock %}
@@ -140,9 +132,9 @@ description     objectId
 ### 获取对象
 每个被成功保存在云端的对象会有一个唯一的 Id 标识 `{{objectIdName}}`，因此获取对象的最基本的方法就是根据 `{{objectIdName}}` 来查询：
 
-{% block code_get_todo_by_objectId %}{% endblock %}
+{{ code_get_todo_by_objectId() }}
 
-如果不想使用查询，还可以通过从本地构建一个 `{{objectIdName}}`，然后调用接口从云端把这个 `{{objectIdName}}` 的数据拉取到本地，示例代码如下：
+除了使用 `{{baseQueryClassName}}`，还可以采用在本地构建一个 `{{baseObjectName}}` 的方式，通过接口和 objectId 把数据从云端拉取到本地：
 
 {% block code_fetch_todo_by_objectId %}{% endblock %}
 
@@ -275,7 +267,7 @@ description     objectId
 ### 关联数据
 
 #### `{{relationObjectName}}`
-<div class="callout callout-danger">如果针对关联数据有查询、排序等复杂的操作，我们建议 使用 [关联表](relation_guide-{{segment_code}}.html#使用关联表实现多对多关系) 来构建对象之间的关系。</div>
+<div class="callout callout-danger">对关联数据进行查询、排序等复杂操作，建议使用 [关联表](relation_guide-{{segment_code}}.html#使用关联表实现多对多关系_推荐_) 来构建对象之间的关系。</div>
 
 对象可以与其他对象相联系。如前面所述，我们可以把一个 `{{baseObjectName}}` 的实例 A，当成另一个 `{{baseObjectName}}` 实例 B 的属性值保存起来。这可以解决数据之间一对一或者一对多的关系映射，就像关系型数据库中的主外键关系一样。
 
@@ -454,39 +446,64 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% endblock %}
 ## 查询
-`{{baseQueryClassName}}` 是构建针对 `{{baseObjectName}}` 查询的基础类。
+`{{baseQueryClassName}}` 是构建针对 `{{baseObjectName}}` 查询的基础类。{{query_result_limit}}
+
+### 示例数据结构
+
+熟悉本文所使用的相关数据表结构将有助于更好地理解后面的内容。
+
+![](images/todo-schema.svg)
+
+#### Todo（待办事项）
+
+| 字段 | 类型 | 说明 |
+| :-- | :-- | :-- |
+| `content` | String | 事项的详细内容 |
+| `images` | AVFile | 与事项相关的图片 |
+| `location` | String | 处理该事项的地点 |
+| `priority` | Number | 0 优先级最高，最迫切需要完成。 |
+| `reminders` | Array | 设置提醒日期和时间 |
+| `status` | Number | 0 未完成，1 已完成 |
+| `title` | String | 事项的标题（简短描述） |
+| `views` | Number | 该事项被浏览过的次数 |
+| `whereCreated` | AVGeoPoint | 该事项被创建时的地理定位 |
+
+#### TodoFolder（待办事项的分组）
+
+| 字段 | 类型 | 说明 |
+| :-- | :-- | :-- |
+| `containedTodos` | Relation | 所包含的 Todo，与表 `Todo` 相关联。 |
+| `name` | String | 分组的名称，如家庭、会议。 |
+| `owner` | Pointer | 分组的所有者或创建人，指向表 `_User` |
+| `priority` | Number | 该分组的优先级别，0 优先级最高。 |
+| `tags` | Relation | 标签，与表 `Tag` 相关联。 |
+
+#### Comment（待办事项分组的评论）
+
+| 字段 | 类型 | 说明 |
+| :-- | :-- | :-- |
+| `content` | String | 评论的内容 |
+| `likes` | Number | 点了赞就是 1，点了不喜欢为 -1，没有做任何操作就为 0（默认）。 |
+| `targetTodoFolder` | Pointer | 相关联的待办事项分组，指向表 `TodoFolder` 的 objectId |
+
+#### Tag（待办事项分组的标签）
+
+| 字段 | 类型 | 说明 |
+| :-- | :-- | :-- |
+| `name` | String | 标签的名称，如今日必做、老婆吩咐、十分重要等。 |
+| `targetTodoFolder` | Pointer | 相关联的待办事项分组，指向表 `TodoFolder` 的 objectId |
 
 {% block text_avquery_constructors %}
 ### 创建查询实例
 {% block code_create_query_by_className %}{% endblock %}
 
 {% endblock %}
-### 根据 id 查询
-在 [获取对象](#获取对象) 中我们介绍过如何通过 objectId 来获取对象实例，从而简单的介绍了一下 `{{baseQueryClassName}}` 的用法，代码请参考对应的内容，不再赘述。
 
-### 条件查询
-在大多数情况下做列表展现的时候，都是根据不同条件来分类展现的，比如，我要查询所有优先级为 0 的 Todo，也就是做列表展现的时候，要展示优先级最高，最迫切需要完成的日程列表，此时基于 priority 构建一个查询就可以查询出符合需求的对象：
+最基础的用法是根据 objectId 来查询对象：
 
-{% block code_priority_equalTo_zero_query %}{% endblock %}
+{{ code_get_todo_by_objectId() }}
 
-其实，拥有传统关系型数据库开发经验的开发者完全可以翻译成如下的 SQL：
-
-```sql
-  select * from Todo where priority = 0
-```
-{{productName}} 也支持使用这种传统的 SQL 语句查询。具体使用方法请移步至 [Cloud Query Language（CQL）查询](#CQL_查询)。
-
-查询默认最多返回 100 条符合条件的结果，要更改这一数值，请参考 [限定结果返回数量](#限定返回数量)。
-
-当多个查询条件并存时，它们之间默认为 AND 关系，即查询只返回满足了全部条件的结果。建立 OR 关系则需要使用 [组合查询](#组合查询)。
-
-注意：在简单查询中，如果对一个对象的同一属性设置多个条件，那么先前的条件会被覆盖，查询只返回满足最后一个条件的结果。例如，我们要找出优先级为 0 和 1 的所有 Todo，错误写法是：
-
-{% block code_priority_equalTo_zero_and_one_wrong_example %}{% endblock %}
-
-正确作法是使用 [OR 关系](#OR_查询) 来构建条件。
-
-#### 比较查询
+### 比较查询
 
 {% block table_logic_comparison_in_query %}{% endblock %}
 
@@ -496,130 +513,70 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% block code_query_lessThan %}{% endblock %}
 
-要查询优先级大于等于 2 的 Todo：
+<div class="callout callout-info">{{query_result_limit}}</div>
+
+以上逻辑用 SQL 语句表达为 `select * from Todo where priority < 2`。{{productName}} 也支持使用这种传统的 SQL 语句查询。具体使用方法请移步至 [Cloud Query Language（CQL）查询](#CQL_查询)。
+
+查询优先级大于等于 2 的 Todo：
 
 {% block code_query_greaterThanOrEqualTo %}{% endblock %}
 
 比较查询**只适用于可比较大小的数据类型**，如整型、浮点等。
 
-#### 正则匹配查询
+#### 多个查询条件
 
-正则匹配查询是指在查询条件中使用正则表达式来匹配数据，查询指定的 key 对应的 value 符合正则表达式的所有对象。
-例如，要查询标题包含中文的 Todo 对象可以使用如下代码：
+当多个查询条件并存时，它们之间默认为 AND 关系，即查询只返回满足了全部条件的结果。建立 OR 关系则需要使用 [组合查询](#组合查询)。
 
-{% block code_query_with_regular_expression %}{% endblock %}
+在**简单查询**中，如果对一个对象的**同一属性**设置多个条件，那么先前的条件会被覆盖，查询只返回满足最后一个条件的结果。例如要找出优先级为 0 和 1 的所有 Todo，错误写法是：
 
-正则匹配查询**只适用于**字符串类型的数据。
+{% block code_priority_equalTo_zero_and_one_wrong_example %}{% endblock %}
 
-#### 包含查询
+正确作法是使用 [组合查询 · OR 关系](#OR_查询) 来构建这种条件。
 
-包含查询类似于传统 SQL 语句里面的 `LIKE %keyword%` 的查询，比如查询标题包含「李总」的 Todo：
+### 字符串查询
+
+**前缀查询**类似于 SQL 的 `LIKE 'keyword%'` 条件。因为支持索引，所以该操作对于大数据集也很高效。
+
+{% block code_query_whereHasPrefix %}{% endblock %}
+
+**包含查询**类似于 SQL 的 `LIKE '%keyword%'` 条件，比如查询标题包含「李总」的 Todo：
 
 {% block code_query_with_contains_keyword %}whereContains{% endblock %}
 
-翻译成 SQL 语句就是：
-
-```sql
-  select * from Todo where title LIKE '%李总%'
-```
-不包含查询与包含查询是对立的，不包含指定关键字的查询，可以使用 [正则匹配方法](#正则匹配查询) 来实现。例如，查询标题不包含「机票」的 Todo，正则表达式为 `^((?!机票).)*$`：
+**不包含查询**可以使用**正则匹配查询**的方式来实现。例如，查询标题不包含「机票」的 Todo：
 
 {% block code_query_with_not_contains_keyword_using_regex %}正则表达式{% endblock %}
+
+<div class="callout callout-info">正则匹配查询**只适用于**字符串类型的数据。</div>
 
 但是基于正则的模糊查询有两个缺点：
 
 - 当数据量逐步增大后，查询效率将越来越低。
 - 没有文本相关性排序
 
-因此，你还可以考虑使用 [应用内搜索](#应用内搜索) 功能。它基于搜索引擎技术构建，提供更强大的搜索功能。
+因此我们推荐使用 [应用内搜索](#应用内搜索) 功能。它基于搜索引擎技术构建，提供更强大的搜索功能。
 
-还有一个接口可以精确匹配不等于，比如查询标题不等于「出差、休假」的 Todo 对象：
-
-{% block code_query_with_not_contains_keyword %}notContainedIn{% endblock %}
-
-#### 数组查询
+### 数组查询
 
 当一个对象有一个属性是数组的时候，针对数组的元数据查询可以有多种方式。例如，在 [数组](#更新数组) 一节中我们为 Todo 设置了 reminders 属性，它就是一个日期数组，现在我们需要查询所有在 8:30 会响起闹钟的 Todo 对象：
 
 {% block code_query_array_contains_using_equalsTo %}{% endblock %}
 
-如果你要查询包含 8:30、9:30 这两个时间点响起闹钟的 Todo，可以使用如下代码：
+查询包含 8:30 和 9:30 这两个时间点响起闹钟的 Todo：
 
 {% block code_query_array_contains_all %}{% endblock %}
 
-注意这里是包含关系，假如有一个 Todo 会在 8:30、9:30、10:30 响起闹钟，它仍然是会被查询出来的。
+注意这里是包含关系，假如有一个 Todo 会在 8:30、9:30 和 10:30 响起闹钟，它仍然是会被查询出来的。
 
-#### 字符串查询
-使用 `{{funtionName_whereKeyHasPrefix}}` 可以过滤出以特定字符串开头的结果，这有点像 SQL 的 LIKE 条件。因为支持索引，所以该操作对于大数据集也很高效。
+查询「全不包含」的情况：
 
-{% block code_query_whereHasPrefix %}{% endblock %}
+{% block code_query_with_not_contains_keyword %}notContainedIn{% endblock %}
 
-#### 空值查询
-假设我们的 Todo 允许用户上传图片用来帮助用户记录某些特殊的事项，但是有时候用户可能就记得自己给一个 Todo 附加过图片，但是具体又不记得这个 Todo 的关键字是什么，因此我们需要一个接口可以找出那些有图片的 Todo，此时就可以使用到空值查询的接口：
+### 空值查询
+
+假设用户可以有选择地为 Todo 上传图片来做标注，要想找出那些已有图片的 Todo：
 
 {% block code_query_where_keys_exist %}{% endblock %}
-
-### 组合查询
-组合查询就是把诸多查询条件合并成一个查询，再交给 SDK 去云端查询。方式有两种：OR 和 AND。
-
-#### OR 查询
-OR 操作表示多个查询条件符合其中任意一个即可。 例如，查询优先级是大于等于 3 或者已经完成了的 Todo：
-
-{% block code_query_with_or %}{% endblock %}
-
-**注意：OR 查询中，子查询中不能包含地理位置相关的查询。**
-
-#### AND 查询
-AND 操作是指只有满足了所有查询条件的对象才会被返回给客户端。例如，查询优先级小于 1 并且尚未完成的 Todo：
-
-{% block code_query_with_and %}{% endblock %}
-
-可以对新创建的 `{{baseQueryClassName}}` 添加额外的约束，多个约束将以 AND 运算符来联接。
-
-### 查询结果
-
-#### 获取第一条结果
-例如很多应用场景下，只要获取满足条件的一个结果即可，例如获取满足条件的第一条 Todo：
-
-{% block code_query_find_first_object %}{% endblock %}
-
-#### 限定返回数量
-为了防止查询出来的结果过大，云端默认针对查询结果有一个数量限制，即 `limit`，它的默认值是 100。比如一个查询会得到 10000 个对象，那么一次查询只会返回符合条件的 100 个结果。`limit` 允许取值范围是 1 ~ 1000。例如设置返回 10 条结果：
-
-{% block code_set_query_limit %}{% endblock %}
-
-#### 跳过数量
-设置 skip 这个参数可以告知云端本次查询要跳过多少个结果。将 skip 与 limit 搭配使用可以实现翻页效果，这在客户端做列表展现时，尤其在数据量庞大的情况下就使用技术。例如，在翻页中，一页显示的数量是 10 个，要获取第 3 页的对象：
-
-{% block code_set_skip_for_pager %}{% endblock %}
-
-尽管我们提供以上接口，但是我们不建议广泛使用，因为它的执行效率比较低。取而代之，我们建议使用 `{{createdAtName}}` 或者 `{{updatedAtName}}` 这类的时间戳进行分段查询。
-
-#### 属性限定
-通常列表展现的时候并不是需要展现某一个对象的所有属性，例如，Todo 这个对象列表展现的时候，我们一般展现的是 title 以及 content，我们在设置查询的时候，也可以告知云端需要返回的属性有哪些，这样既满足需求又节省了流量，也可以提高一部分的性能，代码如下：
-
-{% block code_query_select_keys %}{% endblock %}
-
-属性限定也支持 Pointer 类型的字段。例如，如果还想获取 Todo 这个对象的所有者信息（owner 属性，Pointer 类型），仅展示这个所有者的 username，可以这样限定属性：
-
-{% block code_query_select_pointer_keys %}{% endblock %}
-
-#### 统计总数量
-通常用户在执行完搜索后，结果页面总会显示出诸如「搜索到符合条件的结果有 1020 条」这样的信息。例如，查询一下今天一共完成了多少条 Todo：
-
-{% block code_query_count %}{% endblock %}
-
-#### 排序
-
-对于数字、字符串、日期类型的数据，可对其进行升序或降序排列。
-
-{% block code_query_orderby %}{% endblock %}
-
-一个查询可以附加多个排序条件，如按 priority 升序、createdAt 降序排列：
-
-{% block code_query_orderby_on_multiple_keys %}{% endblock %}
-
-<!-- #### 限定返回字段 -->
 
 ### 关系查询
 关联数据查询也可以通俗地理解为关系查询，关系查询在传统型数据库的使用中是很常见的需求，因此我们也提供了相关的接口来满足开发者针对关联数据的查询。
@@ -656,9 +613,96 @@ AND 操作是指只有满足了所有查询条件的对象才会被返回给客�
 {% block code_query_comment_include_todoFolder %}{% endblock %}
 
 #### 内嵌查询
-假如现在有一个需求是展现点赞超过 20 次的 TodoFolder 的评论（Comment）查询出来，注意这个查询是针对评论（Comment），要实现一次查询就满足需求可以使用内嵌查询的接口：
+
+查询点赞超过 20 次的 TodoFolder 的 Comment 评论（注意查询针对的是 [Comment](#Comment_待办事项分组的评论_)），使用内嵌查询接口就可以通过一次查询来达到目的。
 
 {% block code_query_comment_match_query_todoFolder %}{% endblock %}
+
+与普通查询一样，内嵌查询默认也最多返回 100 条记录，想修改这一默认请参考 [限定结果返回数量](#限定返回数量)。**如果所有返回的记录没有匹配到外层的查询条件，那么整个查询也查不到结果**。
+
+### 地理位置查询
+地理位置查询是较为特殊的查询，一般来说，常用的业务场景是查询距离 xx 米之内的某个位置或者是某个建筑物，甚至是以手机为圆心，查找方圆多少范围内餐厅等等。{{productName}} 提供了一系列的方法来实现针对地理位置的查询。
+
+#### 查询位置附近的对象
+Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObjectName}}` 对象，现在已知了一个地理位置，现在要查询 `whereCreated` 靠近这个位置的 Todo 对象可以使用如下代码：
+
+{% block code_query_geoPoint_near %}{% endblock %}
+
+#### 查询指定范围内的对象
+要查找指定距离范围内的数据，可使用 `whereWithinKilometers` 、 `whereWithinMiles` 或 `whereWithinRadians` 方法。
+例如，我要查询距离指定位置，2 千米范围内的 Todo：
+
+{% block code_query_geoPoint_within %}{% endblock %}
+
+#### 注意事项
+
+使用地理位置需要注意以下方面：
+
+* 每个 `{{baseObjectName}}` 数据对象中只能有一个 `{{geoPointObjectName}}` 对象的属性。
+* 地理位置的点不能超过规定的范围。纬度的范围应该是在 `-90.0` 到 `90.0` 之间，经度的范围应该是在 `-180.0` 到 `180.0` 之间。如果添加的经纬度超出了以上范围，将导致程序错误。
+{% block text_platform_geoPoint_notice %}{% endblock %}
+
+### 组合查询
+组合查询就是把诸多查询条件合并成一个查询，再交给 SDK 去云端查询。方式有两种：OR 和 AND。
+
+#### OR 查询
+OR 操作表示多个查询条件符合其中任意一个即可。 例如，查询优先级是大于等于 3 或者已经完成了的 Todo：
+
+{% block code_query_with_or %}{% endblock %}
+
+**注意：OR 查询中，子查询中不能包含地理位置相关的查询。**
+
+#### AND 查询
+AND 操作将满足了所有查询条件的对象返回给客户端。例如，找到创建于 `2016-11-13` 至 `2016-12-02` 之间的 Todo：
+
+{% block code_query_with_and %}{% endblock %}
+
+可以对新创建的 `{{baseQueryClassName}}` 添加额外的约束，多个约束将以 AND 运算符来联接。
+
+### 查询结果数量和排序
+
+#### 获取第一条结果
+例如很多应用场景下，只要获取满足条件的一个结果即可，例如获取满足条件的第一条 Todo：
+
+{% block code_query_find_first_object %}{% endblock %}
+
+#### 限定返回数量
+为了防止查询出来的结果过大，云端默认针对查询结果有一个数量限制，即 `limit`，它的默认值是 100。比如一个查询会得到 10000 个对象，那么一次查询只会返回符合条件的 100 个结果。`limit` 允许取值范围是 1 ~ 1000。例如设置返回 10 条结果：
+
+{% block code_set_query_limit %}{% endblock %}
+
+#### 跳过数量
+设置 skip 这个参数可以告知云端本次查询要跳过多少个结果。将 skip 与 limit 搭配使用可以实现翻页效果，这在客户端做列表展现时，特别是在数据量庞大的情况下适合使用。例如，在翻页中每页显示数量为 10，要获取第 3 页的对象：
+
+{% block code_set_skip_for_pager %}{% endblock %}
+
+上述方法的执行效率比较低，因此不建议广泛使用。**建议选用 `{{createdAtName}}` 或者 `{{updatedAtName}}` 这类的时间戳进行分段查询**（[示例](#AND_查询)）。
+
+#### 属性限定
+通常列表展现的时候并不是需要展现某一个对象的所有属性，例如，Todo 这个对象列表展现的时候，我们一般展现的是 title 以及 content，我们在设置查询的时候，也可以告知云端需要返回的属性有哪些，这样既满足需求又节省了流量，也可以提高一部分的性能，代码如下：
+
+{% block code_query_select_keys %}{% endblock %}
+
+属性限定也支持 Pointer 类型的字段。例如，如果还想获取 Todo 这个对象的所有者信息（owner 属性，Pointer 类型），仅展示这个所有者的 username，可以这样限定属性：
+
+{% block code_query_select_pointer_keys %}{% endblock %}
+
+#### 统计总数量
+通常用户在执行完搜索后，结果页面总会显示出诸如「搜索到符合条件的结果有 1020 条」这样的信息。例如，查询一下今天一共完成了多少条 Todo：
+
+{% block code_query_count %}{% endblock %}
+
+#### 排序
+
+对于数字、字符串、日期类型的数据，可对其进行升序或降序排列。
+
+{% block code_query_orderby %}{% endblock %}
+
+一个查询可以附加多个排序条件，如按 priority 升序、createdAt 降序排列：
+
+{% block code_query_orderby_on_multiple_keys %}{% endblock %}
+
+<!-- #### 限定返回字段 -->
 
 ### CQL 查询
 Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功能的语言，具有 SQL 开发经验的开发者可以方便地使用此接口实现查询。
@@ -693,28 +737,6 @@ Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语�
 
 {% endblock %}
 
-### 地理位置查询
-地理位置查询是较为特殊的查询，一般来说，常用的业务场景是查询距离 xx 米之内的某个位置或者是某个建筑物，甚至是以手机为圆心，查找方圆多少范围内餐厅等等。{{productName}} 提供了一系列的方法来实现针对地理位置的查询。
-
-#### 查询位置附近的对象
-Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObjectName}}` 对象，现在已知了一个地理位置，现在要查询 `whereCreated` 靠近这个位置的 Todo 对象可以使用如下代码：
-
-{% block code_query_geoPoint_near %}{% endblock %}
-
-#### 查询指定范围内的对象
-要查找指定距离范围内的数据，可使用 `whereWithinKilometers` 、 `whereWithinMiles` 或 `whereWithinRadians` 方法。
-例如，我要查询距离指定位置，2 千米范围内的 Todo：
-
-{% block code_query_geoPoint_within %}{% endblock %}
-
-#### 注意事项
-
-使用地理位置需要注意以下方面：
-
-* 每个 `{{baseObjectName}}` 数据对象中只能有一个 `{{geoPointObjectName}}` 对象的属性。
-* 地理位置的点不能超过规定的范围。纬度的范围应该是在 `-90.0` 到 `90.0` 之间，经度的范围应该是在 `-180.0` 到 `180.0` 之间。如果添加的经纬度超出了以上范围，将导致程序错误。
-{% block text_platform_geoPoint_notice %}{% endblock %}
-
 ### 查询性能优化
 
 影响查询性能的因素很多。特别是当查询结果的数量超过 10 万，查询性能可能会显著下降或出现瓶颈。以下列举一些容易降低性能的查询方式，开发者可以据此进行有针对性的调整和优化，或尽量避免使用。
@@ -744,21 +766,22 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 请注意代码中，密码是仅仅是在注册的时候可以设置的属性（这部分代码可参照 [用户名和密码注册](#用户名和密码注册)），它在注册完成之后并不会保存在本地（SDK 不会以明文保存密码这种敏感数据），所以在登录之后，再访问密码这个字段是为**空的**。
 
 #### 自定义属性
-用户对象和普通对象一样也支持添加自定义属性。例如，为当前用户添加年龄属性：
+
+用户对象和普通对象一样也支持添加自定义属性。例如，为当前用户添加年龄属性 `age`：
 
 {% block code_set_user_custom_properties %}{% endblock %}
 
-#### 属性的修改
+#### 修改属性
 
-很多开发者都有这样的疑问：为什么我不能修改任意一个用户的属性？原因如下。
+很多开发者会有这样的疑问：「为什么我不能修改任意一个用户的属性？」
 
-> 很多时候，就算是开发者也不要轻易修改用户的基本信息，例如用户的手机号、社交账号等个人信息都比较敏感，应该由用户在 App 中自行修改。所以为了保证用户的数据仅在用户自己已登录的状态下才能修改，云端对所有针对 `{{userObjectName}}` 对象的数据操作都要做验证。
+>因为很多时候，就算是开发者也不要轻易修改用户的基本信息，例如用户的手机号、社交账号等个人信息都比较敏感，应该由用户在 App 中自行修改。所以为了保证用户的数据仅在用户自己已登录的状态下才能修改，云端对所有针对 `{{userObjectName}}` 对象的数据操作都要做验证。
 
-假如，刚才我们为当前用户添加了一个 age 属性，现在我们来修改它：
+例如，先为当前用户增加一个 age 属性，保存后再更改它的值：
 
 {% block code_update_user_custom_properties %}{% endblock %}
 
-细心的开发者应该已经发现 `{{userObjectName}}` 在自定义属性上的使用与一般的 `{{baseObjectName}}` 没本质区别。
+`{{userObjectName}}` 的自定义属性在使用上与 `{{baseObjectName}}` 没有本质区别。
 
 ### 注册
 
@@ -801,7 +824,7 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 {{link_to_blog_password_reset}}
 
-{% block text_logInOrSignUp_with_authData %}{% endblock %}
+{% block sns_authdata %}{% endblock %}
 
 {% if node != 'qcloud' and node != 'us' %}
 #### 设置手机号码
@@ -868,11 +891,21 @@ Todo 的 `whereCreated`（创建 Todo 时的位置）是一个 `{{geoPointObject
 
 如果在 {{app_permission_link}} 中勾选了 **密码修改后，强制客户端重新登录**，那么当用户密码再次被修改后，已登录的用户对象就会失效，开发者需要使用更改后的密码重新调用登录接口，使 SessionToken 得到更新，否则后续操作会遇到 [403 (Forbidden)](error_code.html#_403) 的错误。
 
+{% block text_user_isAuthenticated %}
+##### 验证 SessionToken 是否在有效期内
+
+{% block code_user_isAuthenticated %}{% endblock %}
+
+{% endblock %}
+
+
 #### 账户锁定
 
 输入错误的密码或验证码会导致用户登录失败。如果在 15 分钟内，同一个用户登录失败的次数大于 6 次，该用户账户即被云端暂时锁定，此时云端会返回错误码 `{"code":1,"error":"登录失败次数超过限制，请稍候再试，或者通过忘记密码重设密码。"}`，开发者可在客户端进行必要提示。
 
 锁定将在最后一次错误登录的 15 分钟之后由云端自动解除，开发者无法通过 SDK 或 REST API 进行干预。在锁定期间，即使用户输入了正确的验证信息也不允许登录。这个限制在 SDK 和云引擎中都有效。
+
+
 
 ### 重置密码
 

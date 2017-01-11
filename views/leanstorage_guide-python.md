@@ -141,8 +141,7 @@ supported_type.save()
 {% endblock %}
 
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```python
 import leancloud
 
@@ -155,8 +154,7 @@ query = leancloud.Query('Todo')
 query_result = query.get('57301af42e958a006982efad')
 title = query_result.get('title')
 ```
-{% endblock %}
-
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
 ```python
@@ -419,22 +417,22 @@ Todo.save_all([todo1, todo2, todo3])  # save_all 是一个类方法
 ```python
 import leancloud
 
-Wiki = leancloud.Object.extend('Wiki')
-wiki = Wiki()
-wiki.set('content', 'Hello World!')
-wiki.set('version', 2)
-wiki.save()
+class Account(leancloud.Object):
+    pass
 
-# 这里其它的进程可能已经更新了 wiki 的内容和版本，如下的更新可能会出错
-query = Wiki.query
-query.equal_to('version', 1)  # 可能查询的时候版本号不符
-wiki.set('content', 'Morning, World!')
+account = Account.query.first()
+amount = -100
+account.increment('balance', amount)
+account.fetch_when_save = True
+where = Account.query.greater_than_or_equal_to('balance', -amount)
 try:
-    wiki.save(query)
+    account.save(where=where)
+    print('当前余额为：', account.get('balance'))
 except leancloud.LeanCloudError as e:
-    print "无法保存修改，wiki 已被他人更新。"   # 如果抛出异常，则说明 query 的条件不符合
-else:
-    print "保存成功。"
+    if e.code == 305:
+        print('余额不足，操作失败！')
+    else:
+        raise
 ```
 {% endblock %}
 
@@ -457,7 +455,7 @@ TodoFolder = leancloud.Object.extend('TodoFolder')
 
 comment = Comment()
 # 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
-comment.set('like', 1)
+comment.set('likes', 1)
 # 留言的内容
 comment.set('content', '这个太赞了！楼主，我也要这些游戏，咱们团购么？')
 
@@ -561,6 +559,8 @@ avatar.save()
 avatar.save()  # 执行上传
 object_id = avatar.id  # 一旦保存成功即可获取到文件的 objectId
 ```
+
+如果希望在云引擎环境里上传文件，请参考我们的[网站托管开发指南](leanengine_webhosting_guide-python.html#文件上传)。
 {% endblock %}
 
 {# 2016-06-06：不要删除下面的 text_upload_file_with_progress #}
@@ -712,28 +712,15 @@ query.contains('title', '李总')
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
-```python
-import leancloud
+<pre><code class="lang-python">import leancloud
 
 Todo = leancloud.Object.extend('Todo')
 query = Todo.query
 
-query.matched('title', '^((?!机票).)*$')
-```
+query.matched('title', '{{ storage.regex(true) | safe }})
+</code></pre>
 {% endblock %}
-
-{% block code_query_with_not_contains_keyword %}
-
-```python
-import leancloud
-
-Todo = leancloud.Object.extend('Todo')
-query = Todo.query
-
-query.not_contained_in('title', ['出差','休假'])
-```
-{% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -769,6 +756,12 @@ reminder2 = datetime(2015, 11, 11, 9, 30, 00)
 
 # 如果精确查询数组元素，则用 equal_to 函数，并在第二个参数传入需要精确查询的数组
 query.equal_to('reminders', [reminder1, reminder2])
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```python
+query.not_contained_in('reminders', [reminder1, reminder2])
 ```
 {% endblock %}
 
@@ -1040,15 +1033,15 @@ query = leancloud.Query.or_(query1,query2)
 
 ```python
 import leancloud
+from datetime import datetime
 
 Todo = leancloud.Object.extend('Todo')
 query1 = Todo.query
 query2 = Todo.query
 
-query1.greater_than('priority', 3)
-query2.equal_to('status', 1)
+query1.greater_than_or_equal_to('createdAt', datetime(2016, 11, 13))
+query2.less_than('createdAt', datetime(2016, 12, 3))
 
-# 返回 priority 大于等于 3 且 status 等于 1 的 Todo
 query = leancloud.Query.and_(query1, query2)
 ```
 {% endblock %}
@@ -1060,7 +1053,7 @@ query = leancloud.Query.and_(query1, query2)
 import leancloud
 
 cql_string1 = 'select * from Todo where status = 1'
-todo_list = leancloud.Query.do_cloud_query(sql_string1).results
+todo_list = leancloud.Query.do_cloud_query(cql_string1).results
 
 cql_string2 = 'select count(*) from Todo where priority = 0'
 todo_count = leancloud.Query.do_cloud_query(cql_string2).count
@@ -1255,7 +1248,12 @@ user.logout()  # 清除缓存用户对象
 current_user = leancloud.User.get_current()  # 现在的 current_user 是 null 了
 ```
 {% endblock %}
+{% block code_user_isAuthenticated %}
 
+```python
+user.is_authenticated() # 验证用户的授权信息是否在有效期内
+```
+{% endblock %}
 {% block code_query_user %}
 
 ```python

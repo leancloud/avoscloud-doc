@@ -1,4 +1,5 @@
 'use strict';
+var axios = require('axios');
 var serveStatic = require('serve-static');
 var lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
 var proxySnippet = require("grunt-connect-proxy/lib/utils").proxyRequest;
@@ -26,6 +27,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
+    JSSDKVersion: undefined,
     clean: {
       html: {
         files: [{
@@ -207,16 +209,16 @@ module.exports = function(grunt) {
     },
     connect: {
       options: {
-        port: 4000,
+        port: 9000,
         hostname: "0.0.0.0",
         open: {
-          target: "http://localhost:4000"
+          target: "http://localhost:9000"
         }
       },
       proxies: [
         {
           context: "/1",
-          host: "cn-stg1.leancloud.cn",
+          host: "leancloud.cn",
           port: 443,
           https: true,
           changeOrigin: true
@@ -240,6 +242,7 @@ module.exports = function(grunt) {
         destDir: 'md',
         options:{
           data:{
+            jssdkversion: '<%= JSSDKVersion %>',
             node: grunt.option('theme'),
             appid: '{{appid}}',
             appkey: '{{appkey}}',
@@ -282,9 +285,19 @@ module.exports = function(grunt) {
 
   grunt.registerTask("default", ["build"]);
 
+  grunt.registerTask('ensureSDKVersion', function() {
+    var done = this.async();
+    if (grunt.config.get('JSSDKVersion')) return done();
+    axios.get('http://registry.npm.taobao.org/leancloud-storage/latest').then(function(response){
+      grunt.log.oklns(response.data.version);
+      grunt.config.set('JSSDKVersion', response.data.version);
+      done();
+    });
+  });
+
   grunt.registerTask("build", "Main build", function() {
     grunt.task.run([
-      "clean", "nunjucks", "copy:md", "markdown", "assemble",
+      "clean", "ensureSDKVersion", "nunjucks", "copy:md", "markdown", "assemble",
     ]);
     if (!grunt.option("no-comments")) {
       grunt.task.run(["comment"]);
@@ -296,7 +309,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask("localBuild",[
-    "clean", "nunjucks", "copy:md", "markdown", "assemble",
+    "clean", "ensureSDKVersion", "nunjucks", "copy:md", "markdown", "assemble",
     "less:dist", "postcss", "copy:asset"
   ]);
 

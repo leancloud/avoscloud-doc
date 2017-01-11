@@ -123,10 +123,10 @@ todoFolder.save { result in
 {% endblock %}
 {% block section_saveOptions %}{% endblock %}
 {% block code_saveoption_query_example %}
+// 暂不支持
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```swift
 let query = LCQuery(className: "Todo")
 
@@ -139,10 +139,9 @@ query.get("575cf743a3413100614d7d75") { result in
     }
 }
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```swift
 let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
 
@@ -156,7 +155,6 @@ todo.fetch { result in
     }
 }
 ```
-
 {% endblock %}
 
 {% block code_save_callback_get_objectId %}
@@ -479,7 +477,7 @@ let relation = todoFolder.get("containedTodos") as? LCRelation
 let comment = LCObject(className: "Comment")
 
 // 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
-comment.set("like", value: 1)
+comment.set("likes", value: 1)
 
 // 留言的内容
 comment.set("content", value: "这个太赞了！楼主，我也要这些游戏，咱们团购么？")
@@ -796,22 +794,12 @@ query.whereKey("title", .MatchedSubstring("李总"))
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
+<pre><code class="lang-swift">let query = LCQuery(className: "Todo")
 
-```swift
-let query = LCQuery(className: "Todo")
-
-query.whereKey("title", .MatchedPattern("^((?!机票).)*$", option: nil))
-```
+query.whereKey("title", .MatchedPattern("{{ storage.regex() | safe }}, option: nil))
+</code></pre>
 {% endblock %}
-
-{% block code_query_with_not_contains_keyword %}
-
-```swift
-let query = LCQuery(className: "Todo")
-
-query.whereKey("title", .NotContainedIn(["休假", "出差"]))
-```
-{% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -849,6 +837,12 @@ func testArrayContainsAll() {
     // 查询 reminders 数组中同时包含 reminder1 和 reminder2 的 Todo 对象
     query.whereKey("reminders", .ContainedAllIn([reminder1, reminder2]))
 }
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```swift
+    query.whereKey("reminders", .NotContainedIn([reminder1, reminder2]))
 ```
 {% endblock %}
 
@@ -1161,20 +1155,26 @@ query.find { result in
 {% endblock %}
 
 {% block code_query_with_and %}
-
 ```swift
-let priorityQuery = LCQuery(className: "Todo")
-priorityQuery.whereKey("priority", .LessThan(3))
 
-let statusQuery = LCQuery(className: "Todo")
-statusQuery.whereKey("status", .EqualTo(0))
+let dateFromString: (String) -> Date? = { string in
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    return dateFormatter.date(from: string)
+}
 
-let query = priorityQuery.and(statusQuery)
+let startDateQuery = LCQuery(className: "Todo")
+startDateQuery.whereKey("createdAt", .GreaterThanOrEqualTo(dateFromString("2016-11-13")!)
+
+let endDateQuery = LCQuery(className: "Todo")
+endDateQuery.whereKey("status", .LessThan(dateFromString("2016-12-03")!)
+
+let query = startDateQuery.and(endDateQuery)
 
 query.find { result in
     switch result {
     case .success(let todos):
-        break // 返回 priority 小于 3 并且 status 等于 0 的 Todo
+        break
     case .failure(let error):
         print(error)
     }

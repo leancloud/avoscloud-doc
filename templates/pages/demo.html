@@ -2,7 +2,6 @@
 <div ng-controller="DemoCtrl">
   <div class="row">
     <div class="col-md-12">
-
       <div class="doc-home-title">
         {% if node=='qcloud' %}
         <h1 class="font-logo">
@@ -10,8 +9,6 @@
         </h1>
         <h4>
           使用 TAB 搭建的各类应用演示
-          <br>
-          GitHub 太慢或无法访问？<a href="https://download.leancloud.cn/demo/">直接在 LeanCloud 下载</a>
         </h4>
         {% else %}
         <h1 class="font-logo">
@@ -19,8 +16,6 @@
         </h1>
         <h4>
           使用 LeanCloud 搭建的各类应用演示
-          <br>
-          GitHub 太慢或无法访问？<a href="https://download.leancloud.cn/demo/">直接在 LeanCloud 下载</a>
         </h4>
         {% endif %}
       </div>
@@ -38,16 +33,12 @@
   </div>
 
   <div class="row">
-    <div class="col-md-4" ng-repeat ="demo in displayDemos">
+    <div class="col-md-4" ng-repeat ="demo in displayDemos{% if node=='qcloud' %} | filter: {qcloudShow: true}{% endif %}">
       <div class="demo-card">
         <h1>
           {{demo.name}}
-          <span class="pull-right label label-primary" ng-show="demo.type=='ios'">iOS</span>
-          <span class="pull-right label label-success" ng-show="demo.type=='android'">Android</span>
-          <span class="pull-right label label-warning" ng-show="demo.type=='unity'">Unity</span>
-          <span class="pull-right label label-danger" ng-show="demo.type=='winphone'">Windows Phone</span>
-          <span class="pull-right label label-default" ng-show="demo.type=='js'">JavaScript</span>
-          <span class="pull-right label label-info" ng-show="demo.type=='node'">Node.js</span>
+          <span class="pull-right label label-primary"">{{plats[demo.type]}}</span>
+          
         </h1>
         <p class="demo-desc">{{demo.desc}}</p>
         <!-- <a href="{{demo.downlink}}" class="btn btn-default">下载</a>

@@ -170,22 +170,29 @@ AV.Object.register(Todo);
 {% block code_saveoption_query_example %}
 
 ```js
-  new AV.Query('Wiki').first().then(function (wiki) {
-    var currentVersion = wiki.get('version');
-    wiki.set('version', currentVersion + 1);
-    return wiki.save(null, {
-      query: new AV.Query('Wiki').equalTo('version', currentVersion)
+  var Account = AV.Object.extend('Account');
+  new AV.Query(Account).first().then(function(account) {
+    var amount = -100;
+    account.increment('balance', amount);
+    // 如果使用 JS SDK 2.0 以前的版本，save() 要加传 null 
+    // 作为第一个参数，否则会报错：
+    // return account.save(null, {
+    return account.save({
+      query: new AV.Query(Account).greaterThanOrEqualTo('balance', -amount),
+      fetchWhenSave: true,
     });
-  }).then(function (wiki) {
+  }).then(function(account) {
     // 保存成功
-  }, function (error) {
-    // 异常处理
+    console.log('当前余额为：', account.get('balance'));
+  }).catch(function(error) {
+    if (error.code === 305) {
+    console.log('余额不足，操作失败！');
+    }
   });
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```js
   var query = new AV.Query('Todo');
   query.get('57328ca079bc44005c2472d0').then(function (todo) {
@@ -195,10 +202,9 @@ AV.Object.register(Todo);
     // 异常处理
   });
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```js
   // 第一个参数是 className，第二个参数是 objectId
   var todo = AV.Object.createWithoutData('Todo', '5745557f71cfe40068c6abe0');
@@ -507,7 +513,7 @@ AV.Object.register(Todo);
 
 ```js
   var comment = new AV.Object('Comment');// 构建 Comment 对象
-  comment.set('like', 1);// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
+  comment.set('likes', 1);// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
   comment.set('content', '这个太赞了！楼主，我也要这些游戏，咱们团购么？');
   // 假设已知被分享的该 TodoFolder 的 objectId 是 5735aae7c4c9710060fbe8b0
   var targetTodoFolder = AV.Object.createWithoutData('TodoFolder', '5735aae7c4c9710060fbe8b0');
@@ -603,7 +609,10 @@ todo.set('whereCreated', point);
 ```
 {% endblock %}
 
-{% block text_upload_file %}{% endblock %}
+{% block text_upload_file %}
+
+如果希望在云引擎环境里上传文件，请参考我们的[网站托管开发指南](leanengine_webhosting_guide-node.html#文件上传)。
+{% endblock %}
 
 {% block code_upload_file_with_progress %}
 ```javascript
@@ -613,6 +622,11 @@ file.save({
     // { loaded: 1234, total: 2468, percent: 50 }
   },
 }).then(/* ... */);
+
+// 2.0 之前版本的 SDK 中，save 的第二个参数 callbacks 不能省略：
+file.save({
+  onprogress: function(e) { console.log(e); }
+}, {}).then(/* ... */);
 ```
 {% endblock %}
 {% block text_download_file_with_progress %}{% endblock %}
@@ -768,23 +782,12 @@ file.save({
 
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-```js
-  var query = new AV.Query('Todo');
-  var regExp = new RegExp('^((?!机票).)*$', 'i');
+<pre><code class="lang-js">  var query = new AV.Query('Todo');
+  var regExp = new RegExp('{{ storage.regex(true) | safe }}, 'i');
   query.matches('title', regExp);
-```
+</code></pre>
 {% endblock %}
-
-
-{% block code_query_with_not_contains_keyword %}
-
-```js
-  var query = new AV.Query('Todo');
-  var filterArray = ['出差', '休假'];
-  query.notContainedIn('title', filterArray);
-```
-{% endblock %}
-
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -809,9 +812,13 @@ file.save({
 ```
 {% endblock %}
 
+{% block code_query_with_not_contains_keyword %}
+```js
+  query.notContainedIn('reminders', reminderFilter);
+```
+{% endblock %}
 
 {% block code_query_whereHasPrefix %}
-
 ```js
   // 找出开头是「早餐」的 Todo
   var query = new AV.Query('Todo');
@@ -881,7 +888,7 @@ file.save({
 {% block code_query_tag_for_todoFolder %}
 
 ```js
-  var todoFolder = AV.Object.createWithoutData('Todo', '5735aae7c4c9710060fbe8b0');
+  var todoFolder = AV.Object.createWithoutData('TodoFolder', '5735aae7c4c9710060fbe8b0');
   var relation = todoFolder.relation('tags');
   var query = relation.query();
   query.find().then(function (results) {
@@ -1039,8 +1046,8 @@ file.save({
 
 ```js
   var query = new AV.Query('Todo');
-  query.ascending('priority');
-  query.descending('createdAt');
+  query.addAscending('priority');
+  query.addDescending('createdAt');
 ```
 {% endblock %}
 
@@ -1061,16 +1068,14 @@ file.save({
 
 
 {% block code_query_with_and %}
-
 ```js
-  var priorityQuery = new AV.Query('Todo');
-  priorityQuery.lessThan('priority', 3);
+  var startDateQuery = new AV.Query('Todo');
+  startDateQuery.greaterThanOrEqualTo('createdAt', new Date('2016-11-13 00:00:00'));
 
-  var statusQuery = new AV.Query('Todo');
-  statusQuery.equalTo('status', 0);
+  var endDateQuery = new AV.Query('Todo');
+  endDateQuery.lessThan('createdAt', new Date('2016-12-03 00:00:00'));
 
-  var query = AV.Query.and(priorityQuery, statusQuery);
-  // 返回 priority 小于 3 并且 status 等于 0 的 Todo
+  var query = AV.Query.and(startDateQuery, endDateQuery);
 ```
 {% endblock %}
 
@@ -1100,13 +1105,13 @@ file.save({
 {% block code_query_by_cql %}
 
 ```js
-  // 新建 AVUser 对象实例
+  var cql = 'select * from Todo where status = 1';
   AV.Query.doCloudQuery(cql).then(function (data) {
       // results 即为查询结果，它是一个 AV.Object 数组
       var results = data.results;
   }, function (error) {
   });
-  cql = 'select * from %@ where status = 1';
+  cql = 'select count(*) from %@ where status = 0';
   AV.Query.doCloudQuery(cql).then(function (data) {
       // 获取符合查询的数量
       var count = data.count;
@@ -1205,13 +1210,15 @@ file.save({
 ```
 {% endblock %}
 
-{% block text_logInOrSignUp_with_authData %}
+{% block sns_authdata %}
 #### 第三方账号登录
 
-为了简化用户注册的繁琐流程，许多应用都在登录界面提供了第三方社交账号登录的按钮选项，例如微信、QQ、微博、豆瓣、Twitter、FaceBook 等，以此来提高用户体验。LeanCloud 封装的 {{userObjectName}} 对象也支持通过第三方账号的 accessToken 信息来创建一个用户。例如，使用微信授权信息创建 {{userObjectName}} 的代码如下：
+为了简化用户注册的繁琐流程，许多应用都在登录界面提供了第三方社交账号登录的按钮选项，例如微信、QQ、微博、Github、豆瓣、Twitter、FaceBook 等，以此来提高用户体验。LeanCloud 封装的 {{userObjectName}} 对象也支持通过第三方账号的 accessToken 信息来创建一个用户。例如，使用微信授权信息创建 {{userObjectName}} 的代码如下：
 
 ```js
   AV.User.signUpOrlogInWithAuthData({
+      // 微博（weibo）用 uid
+      // 微信（weixin）和 QQ（qq）用 openid
       "openid": "oPrJ7uM5Y5oeypd0fyqQcKCaRv3o",
       "access_token": "OezXcEiiBSKSxW0eoylIeNFI3H7HsmxM7dUj1dGRl2dXJOeIIwD4RTW7Iy2IfJePh6jj7OIs1GwzG1zPn7XY_xYdFYvISeusn4zfU06NiA1_yhzhjc408edspwRpuFSqtYk0rrfJAcZgGBWGRp7wmA",
       "expires_at": "2016-01-06T11:43:11.904Z"
@@ -1221,8 +1228,26 @@ file.save({
   });
 ```
 
-其他的平台可以参考如上代码。
+目前我们仅支持验证以下平台的 `access_token` 的合法性：
+- 微信
+- QQ 
+- 微博
 
+要接入其他平台，开发者需要完成以下步骤：
+
+- 进入 **控制台** > **应用设置** > **应用选项** 中取消 **第三方登录时，验证用户 AccessToken 合法性** 的勾选。这样开发者要自行验证 `access_token` 的合法性。
+- 确保 authData 包含 `uid`（即将上例代码中的 `openid` 换为 `uid`），否则 SDK 会返回「无效的第三方注册数据（authData）」的错误。
+
+以使用 Github 登录为例：
+
+```js
+  AV.User.signUpOrlogInWithAuthData({
+    'uid':          githubClientId,
+    'access_token': accessToken
+  }, 'github');
+```
+
+更多用法请参考 [REST API · 连接用户账户和第三方平台](rest_api.html#连接用户账户和第三方平台)。
 {% endblock %}
 
 {% block code_send_verify_email %}
@@ -1383,6 +1408,18 @@ AV.User.requestLoginSmsCode('13577778888').then(function (success) {
 {% endblock %}
 
 
+
+{% block code_user_isAuthenticated %}
+
+```js
+    var currentUser = AV.User.current();
+    currentUser.isAuthenticated().then(function(authenticated){
+       // console.log(authenticated); 根据需求进行后续的操作
+    });
+```
+{% endblock %}
+
+
 {% block text_subclass %}{% endblock %}
 {% block text_sns %}{% endblock %}
 {% block text_feedback %}{% endblock %}
@@ -1444,22 +1481,24 @@ Promise 比较神奇，可以代替多层嵌套方式来解决发送异步请求
 的 callback 没有解决前是不会解决的，也就是所谓 **Promise Chain**。
 
 ```javascript
-var query = new AV.Query('Student');
-query.addDescending('gpa');
-query.find().then(function(students) {
-  students[0].set('valedictorian', true);
-  return students[0].save();
+// 将内容按章节顺序添加到页面上
+var chapterIds = [
+  '584e1c408e450a006c676162', // 第一章
+  '584e1c43128fe10058b01cf5', // 第二章
+  '581aff915bbb500059ca8d0b'  // 第三章
+];
 
-}).then(function(valedictorian) {
-  return query.find();
-
-}).then(function(students) {
-  students[1].set('salutatorian', true);
-  return students[1].save();
-
-}).then(function(salutatorian) {
-  // Everything is done!
-
+new AV.Query('Chapter').get(chapterIds[0]).then(function(chapter0) {
+  // 向页面添加内容
+  addHtmlToPage(chapter0.get('content'));
+  // 返回新的 Promise
+  return new AV.Query('Chapter').get(chapterIds[1]);
+}).then(function(chapter1) {
+  addHtmlToPage(chapter1.get('content'));
+  return new AV.Query('Chapter').get(chapterIds[2]);
+}).then(function(chapter2) {
+  addHtmlToPage(chapter2.get('content'));
+  // 完成
 });
 ```
 
@@ -1474,23 +1513,24 @@ query.find().then(function(students) {
 利用 `try,catch` 方法可以将上述代码改写为：
 
 ```javascript
-var query = new AV.Query('Student');
-query.addDescending('gpa');
-query.find().then(function(students) {
-  students[0].set('valedictorian', true);
+new AV.Query('Chapter').get(chapterIds[0]).then(function(chapter0) {
+  addHtmlToPage(chapter0.get('content'));
+  
   // 强制失败
-  throw new Error('There was an error.');
-}).then(function(valedictorian) {
+  throw new Error('出错啦');
+
+  return new AV.Query('Chapter').get(chapterIds[1]);
+}).then(function(chapter1) {
   // 这里的代码将被忽略
-  return query.find();
-}).then(function(students) {
-  // 这里的代码也将被忽略
-  students[1].set('salutatorian', true);
-  return students[1].save();
+  addHtmlToPage(chapter1.get('content'));
+  return new AV.Query('Chapter').get(chapterIds[2]);
+}).then(function(chapter2) {
+  // 这里的代码将被忽略
+  addHtmlToPage(chapter2.get('content'));
 }).catch(function(error) {
-  // 这个错误处理函数将被调用，并且错误信息是 'There was an error.'.
+  // 这个错误处理函数将被调用，错误信息是 '出错啦'.
   console.error(error.message);
-})
+});
 ```
 
 ### JavaScript Promise 迷你书

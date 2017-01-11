@@ -1,17 +1,18 @@
+{% import "views/_parts.html" as include %}
 # 错误码详解
 
-本文档尝试为所有服务端和SDK返回的错误码给出相对详细的解释，具体到各个SDK的错误码，请参考下列文档链接：
+本文档列举出服务端和 SDK 返回的错误码及相应说明。其他由各 SDK 产生的错误码，请参考以下链接：
 
 * iOS 的 [AVConstants](/api-docs/iOS/docs/AVConstants.html)。
-* iOS v3.1.5 及之后的版本，网络请求操作相关的错误码，比如：28 表示请求超时、7 表示连接服务器失败，这些请参考 [**libcurl error codes**](http://curl.haxx.se/libcurl/c/libcurl-errors.html)。
+* iOS SDK 在进行 WebSocket 通信过程中，相关的状态码请参考 [RFC 6455 · Status Codes]( http://tools.ietf.org/html/rfc6455#section-7.4)。
+* iOS v3.1.5 及之后的版本，与网络请求操作相关的错误码，比如 `28` 表示请求超时、`7` 表示连接服务器失败，请参考 [libcurl error codes](http://curl.haxx.se/libcurl/c/libcurl-errors.html)。
 * Android 的 [AVException](/api-docs/android/index.html)。
 
-## 实时通信错误码
+## 0
 
-相关参考链接：
-
-* [实时通信服务端错误码说明](realtime_v2.html#服务器端错误码说明)。
-* iOS SDK 在进行 WebSocket 通信过程中，相关的状态码请参考  [**RFC 6455 -- Status Codes**]( http://tools.ietf.org/html/rfc6455#section-7.4 )。
+* 信息 - `(无)`
+* 含义 - WebSocket 正常关闭，可能发生在服务器重启，或本地网络异常的情况。SDK 会自动重连，无需人工干预。
+* 模块 - 实时通信 IM
 
 ## 1
 * 信息 - `Internal server error. No information available.`
@@ -275,6 +276,11 @@
 * 信息 - `Invalid password, it must be a non-blank string.`
 * 含义 - 无效的密码，不允许空白密码。
 
+## 219
+
+* 信息 - `登录失败次数超过限制，请稍候再试，或者通过忘记密码重设密码。`
+* 含义 -如果在 15 分钟内，同一个用户登录失败的次数大于 6 次，该用户账户即被云端暂时锁定。锁定将在最后一次错误登录的 15 分钟之后由云端自动解除。
+
 ## 250
 
 * 信息 - `Linked id missing from request`
@@ -334,7 +340,17 @@
 ## 429
 
 * 信息 - `Too many requests.`
-* 含义 - 超过应用的流控限制，每个应用同一时刻的并发请求上限为 30（即同一时刻最多可以同时处理 30 个数据请求）；通过数据管理平台每秒限制上传一个文件，并且每分钟最多上传 30 个文件，如需提升，请联系我们。可以在 API 统计的性能统计总览中看到你的应用的请求统计，例如平均并发、平均响应时间等。
+* 含义 - 超过应用的流控限制。每个应用同一时刻最多可使用的工作线程数为 30，即同一时刻最多可以同时处理 30 个数据请求。通过 **控制台** > **存储** > **API 统计** > **API 性能** > **总览** 可以查看应用产生的请求统计数据，如平均工作线程、平均响应时间等。如有必要，可以联系我们来调高工作线程数。
+
+## 430
+
+* 信息 - `Upload files rate limit exceeded.`
+* 含义 - 超过 REST API 上传文件流控限制。通过 REST API 每秒限制上传一个文件，并且每分钟最多上传 30 个文件。使用 SDK 上传没有限制，并且可以获得更高的性能。大规模批量上传请使用云引擎命令行工具提供的 `upload` 命令。
+
+## 431
+
+* 信息 - `LeanEngine hooks rate limit exceeded.`
+* 含义 - 超过云引擎 hook 调用流控限制，通常绝大多数应用不会触发此限制。如有遇到，请联系我们处理。可以通过 **控制台** > **存储** > **API 统计** > **API 性能** > **慢查询** 查看应用的云引擎 Hook 请求状况。
 
 ## 502
 
@@ -361,8 +377,7 @@
 ## 600
 
 * 信息 - `Invalid SMS signature.`
-* 含义 - 无效的短信签名。短信签名是指附加在短信文本前后位置，使用中文括号【】括起来的文字，短信签名只能位于短信开头或者结束的位置，具体要求请参考 [短信签名规范](sms_guide-android.html#短信签名)。
-        默认发送的短信签名使用的是应用名称，应用名称可以在应用设置里修改。短信自定义模板可以在模板里自定义签名。
+* 含义 - 无效的短信签名。具体要求请参考 [短信签名规范](sms_guide-android.html#短信签名)。
   ​      
 ## 601
 
@@ -400,6 +415,4 @@
 * 信息 - `Nonexistent query keys`
 * 含义 - 无效的查询或者排序字段，请确认查询或者排序的字段在表中存在。
 
-
-
-
+{{ include.imErrorCodes() }}

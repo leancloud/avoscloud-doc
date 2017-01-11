@@ -9,20 +9,27 @@
 * Xamarin iOS 8+
 * Xamarin Android 5+
 
-尚未发布但是已在计划内的如下：
+以上几个运行时，我们称之为 `.NET Portable`。
 
-* Windows Runtime （for Windows 10）
-
-文档中涉及的语法以及接口均对所有运行时有效。
-## 快速入门
-
-建议您在阅读本文档之前，阅读我们提供的[快速入门](./start.html)文档，获取 LeanCloud 使用的配置和第一印象。
+而 Unity 较为特殊，它暂时还不支持 .NET 3.5 之后的版本，因此我们单独列为 `Unity` 
 
 ## 安装
-为了支持实时聊天，LeanCloud SDK for .NET 依赖于几个开源的库，所以推荐开发者从 [Nuget](https://www.nuget.org/packages/LeanCloud/1.0.1.2-pre) 上下载我们的 SDK。
+
+### Visual Studio / Xamarin 
+在 Nuget Package Manager 里面打开 Package Manager Console 执行如下命令行：
+
+```sh
+PM> Install-Package LeanCloud.Core
+```
+它会自动安装当前运行时的版本。相关依赖可以通过 [LeanCloud.Core on Nuget](https://www.nuget.org/packages/LeanCloud.Core/) 查询和了解。
+
+### Unity Editor
+Unity 在 Github 上托管了发布 SDK 的服务，可以通过 [leancloud/unity-sdk](https://github.com/leancloud/unity-sdk/releases) 这里来获取最新的发布版本。
+
+例如下载了 `LeanCloud-Unity-SDK-20161215.3.zip` 这个包，解压之后，需要把里面所有的 dll 文件都导入到 Unity 的 Assets 目录下。
 
 ## 介绍
-LeanCloud的 .NET SDK 依赖于微软提供的[基于任务的异步模式 (TAP)](http://msdn.microsoft.com/zh-cn/library/hh873175.aspx)的方式，所以您最好有 .NET Framework 4.5 的编程经验，或者对 .NET Framework 4.5 的新 API 有所了解。
+LeanCloud .NET SDK 依赖于微软提供的[基于任务的异步模式 (TAP)](http://msdn.microsoft.com/zh-cn/library/hh873175.aspx)的方式，所以您最好有 .NET Framework 4.5 的编程经验，或者对 .NET Framework 4.5 的新 API 有所了解。
 
 ## 应用
 在 LeanCloud 的每个应用有自己的 ID 和客户端密钥，在客户端代码中应该用他们来初始化 SDK。
@@ -31,15 +38,24 @@ LeanCloud 的每一个账户都可以创建多个应用。同一个应用可以�
 ### 初始化
 在 LeanCloud 中，几乎所有平台下的接口我们都尽量保持一致，目的就是为了降低开发者的开发成本，所以在初始化的时候我们几乎都是遵循在 `AVClient` 这个类下有一个叫做 `Initialize`（不同平台的编程规范可能不一样，但是在 C# 语言风格中一般方法名的首字母都是大写）的方法，这个方法目前有 2 个重载：
 
-```
+#### Visual Studio / Xamarin 
+在 .NET Portable 运行时中，可以在程序初始化的时候执行如下代码：
+
+```c#
   AVClient.Initialize(string applicationId, string appKey);
   传入您的 `App ID` 以及 `App Key`，默认访问的是 LeanCloud 的中国节点。
+
+  AVClient.Initialize(AVClient.Configuration config);
+  除了传入您的 `App ID` 以及 `App Key`之外，指定 LeanCloud 的服务节点，现在 AVClient.AVRegion 仅支持 CN 以及 US 节点。
 ```
 
-```
-  AVClient.Initialize(string applicationId, string appKey, AVRegion region);
-  除了传入您的 `App ID` 以及 `App Key`之外，指定 LeanCloud 的服务节点，现在 AVRegion 仅支持 CN 以及 US 节点。
-```
+#### Unity
+在 `LeanCloud.Core` 中有一个 `AVInitializeBehaviour` 把它拖拽到任意一个 `GameObject` 上然后根据下图填写 Application ID 以及 Application Key：
+  
+  ![unity-init](images/unity-init.png)
+
+
+默认中国大陆节点对应的 `Region` 是 `Public_CN`,如果是北美节点请选择 `Public_US`。
 
 {% if node != 'qcloud' %}注意，目前 LeanCloud 的节点上的数据是相互隔离的，换言之，您在中国节点上注册的应用无法访问美国节点，反之亦然。
 {% endif %}

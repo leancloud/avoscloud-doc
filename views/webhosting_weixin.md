@@ -18,13 +18,13 @@
 ## 微信控制台设置
 
 登录到微信后台，截图如下：
-![weixin_web_management](http://ac-lhzo7z96.clouddn.com/1456389898408)
+![weixin_web_management](images/weixin-mp-console-home.png)
 
 ### 微信的开发选项
 
 左下角找到菜单入口：
 
-![menu_config](http://ac-lhzo7z96.clouddn.com/1456390574175)
+![menu_config](images/weixin-developer-menu.png)
 
 ## 创建项目
 
@@ -80,7 +80,7 @@ avoscloud new
 参照 [wechatBot.js](https://github.com/leancloud/LeanEngine-WechatBot/blob/master/routes/wechatBot.js) 的代码，建议直接复制拷贝所有内容，全部覆盖本地的 `/usr/leancloud/wechat/routes/wechatBot.js` 的内容。如果没有该文件，就直接复制到对应的目录下，然后修改关键的配置项。此时需要打开微信公众号管理控制台，进行对应设置。
 
 下图为本文所使用的公众号的设置页面：
-![wexin_config](http://ac-lhzo7z96.clouddn.com/1456390412452)
+![wexin_config](images/weixin-mp-console-config.png)
 
 注意，在「服务器配置」中生成 **EncodingAESKey(消息加密解密密钥)** 之后，先不要点击保存设置，其中的 **URL(服务器地址)** 需要经过后续的 [项目部署](#项目部署) 才可以确定。
 
@@ -133,7 +133,7 @@ app.use('/wechat', wechat);
 进入 {% if node=='qcloud' %}**LeanCloud 控制台** > **云引擎** > **设置**，{% else %}
 进入 [**LeanCloud 控制台** > **云引擎** > **设置**](/cloud.html?appid={{appid}}#/conf)，{% endif %}找到 **Web 主机域名**，填入自己想使用的名称，本文使用 `wechatTest`（即 `wechatTest.leanapp.cn`）：
 
-![domain_setting](http://ac-lhzo7z96.clouddn.com/1456826436084)
+![domain_setting](images/console-webhosting-field.png)
 
 然后回到项目目录下，执行如下命令行：
 

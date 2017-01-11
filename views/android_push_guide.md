@@ -6,7 +6,7 @@ Android 推送功能除了需要必须的 `avoscloud.jar` 以外，还需要额�
 
 Android 消息推送有专门的 Demo，请见 [Android-Push-Demo](https://github.com/leancloud/android-push-demo) 项目。
 
-### Android 消息推送流程简介
+## 消息推送流程简介
 
 <img src="images/push-workflow-android.svg" class="img-responsive" alt="">
 
@@ -16,7 +16,7 @@ Android 消息推送有专门的 Demo，请见 [Android-Push-Demo](https://githu
 
 ### 保存 Installation
 
-你可以通过以下代码保存你的 Installation id。如果你的系统之前还没有 Installation id，系统会为你自动生成一个。当你的应用卸载后，Installation id 也将会被删除。
+你可以通过以下代码保存你的 Installation id。如果你的系统之前还没有 Installation id，系统会为你自动生成一个。
 
 
 ```java
@@ -242,7 +242,7 @@ curl -X POST \
           "name": "LeanCloud."
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 <div class="callout callout-info">如果你使用自定义的 Receiver，发送的消息必须带 action，并且其值在自定义的 Receiver 配置的 `<intent-filter>` 列表里存在，比如这里的 `'com.avos.UPDATE_STATUS'`，请使用自己的 action，尽量不要跟其他应用混淆，推荐采用域名来定义。</div>
@@ -278,13 +278,15 @@ intent.putExtra(AVConstants.PUSH_INTENT_KEY, 1);
 
 ## 混合推送
 {% if node != 'us' %}
+
+<!--
 ### 小米推送
 
 #### 环境配置
 
 1. **注册小米账号**：在 [小米开放平台][xiaomi] 上注册小米开发者账号并完成实名认证（[详细流程](http://dev.xiaomi.com/doc/?p=90)）。
 2. **创建小米推送服务应用**（[详细流程](http://dev.xiaomi.com/doc/?p=1621)）。
-3. **设置小米的 AppId 及 AppSecret**：在 [小米开放平台][xiaomi] > **管理控制台** > **消息推送** > **相关应用** 可以查到具体的小米推送服务应用的 AppId 及 AppSecret。将此 AppId 及 AppSecret 通过 [LeanCloud 控制台][leancloud-console] > **消息** > **推送** > **设置** > **混合推送**，与 LeanCloud 应用关联。
+3. **设置小米的 AppId 及 AppSecret**：在 [小米开放平台][xiaomi] > **管理控制台** > **消息推送** > **相关应用** 可以查到具体的小米推送服务应用的 AppId 及 AppSecret。将此 AppId 及 AppSecret 通过 {% if node == 'qcloud' %}LeanCloud 控制台 > **消息** > **推送** > **设置** > **混合推送**{% else %}[LeanCloud 控制台 > **消息** > **推送** > **设置** > **混合推送**](/messaging.html?appid={{appid}}#/message/push/conf){% endif %} 与 LeanCloud 应用关联。
 
 #### 接入 SDK
 
@@ -330,11 +332,11 @@ dependencies {
   android:name="com.xiaomi.mipush.sdk.PushMessageHandler"
   android:enabled="true"
   android:exported="true"/>
-  
+
 <service
   android:name="com.xiaomi.mipush.sdk.MessageHandleService"
   android:enabled="true"/>
-  
+
 <receiver
   android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
   android:exported="true">
@@ -370,20 +372,26 @@ dependencies {
 
 #### 具体使用
 
-在 `AVOSCloud.initialize` 时调用 `AVMixpushManager.registerXiaomiPush(context, miAppId, miAppKey, profile)` 即可。参数 `profile` 的用法可以参考 [Android 混合推送多配置区分](push_guide.html#Android_混合推送多配置区分)。
+在 `AVOSCloud.initialize` 时调用以下函数：
 
-注意，LeanCloud 云端只有在以下三个条件都满足的情况下，才会使用小米推送。
+```java
+AVMixpushManager.registerXiaomiPush(context, miAppId, miAppKey, profile)
+```
+
+- 参数 `miAppKey` 需要的是 AppKey，而在控制台的混合推送配置中 Profile 的第二个参数是 AppSecret，请注意区分，并分别正确填写。
+- 参数 `profile` 的用法可以参考 [Android 混合推送多配置区分](push_guide.html#Android_混合推送多配置区分)。
+
+LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用小米推送：
 
 - MIUI 系统
 - manifest 正确填写
-- appId、appKey 有效
-
-如果以上条件不符合，SDK 会有日志输出，开发者可以根据日志判断是什么原因导致注册失败。开发者可以通过查看控制台 `_Installation` 表的相关记录的 **vendor** 字段来判断是否注册成功。
+- appId、appKey、appSecret 有效
 
 #### 小米推送通知栏消息的点击事件
 
 当小米通知栏消息被点击后，如果已经设置了 [自定义 Receiver](#自定义_Receiver)，则 SDK 会发送一个 action 为 `com.avos.avoscloud.mi_notification_action` 的 broadcast。如有需要，开发者可以通过订阅此消息获取点击事件，否则 SDK 会默认打开 [启动推送服务](#启动推送服务) 对应设置的 Activity。
 
+-->
 
 ### 华为推送
 
@@ -391,7 +399,7 @@ dependencies {
 
 1. **注册华为账号**：在 [华为开发者联盟](http://developer.huawei.com/cn/consumer/)注册华为开发者账号（[详细流程](http://developer.huawei.com/cn/consumer/wiki/index.php?title=%E6%B3%A8%E5%86%8C%E7%99%BB%E5%BD%95)）。
 2. **创建华为应用**：实名认证通过后，需要创建华为移动应用并配置 Push 权益（[详细流程](http://developer.huawei.com/cn/consumer/wiki/index.php?title=%E6%8E%A5%E5%85%A5%E8%AF%B4%E6%98%8E#2.1_.E6.B3.A8.E5.86.8C)）。
-3. **设置华为的 AppId 及 AppKey**：在 [华为开发者联盟控制中心](http://developer.huawei.com/cn/consumer/devunion/openPlatform/html/memberCenter.html#appManage#) > **应用管理** > **移动应用详情**  可以查到具体的华为推送服务应用的 AppId 及  AppSecret，将此 AppId 及 AppSecret 通过 [LeanCloud 控制台][leancloud-console] > **消息** > **推送** > **设置** > **混合推送** 与 LeanCloud 应用关联。
+3. **设置华为的 AppId 及 AppKey**：在 [华为开发者联盟控制中心](http://developer.huawei.com/cn/consumer/devunion/openPlatform/html/memberCenter.html#appManage#) > **应用管理** > **移动应用详情**  可以查到具体的华为推送服务应用的 AppId 及 AppSecret，将此 AppId 及 AppSecret 通过 {% if node == 'qcloud' %}LeanCloud 控制台 > **消息** > **推送** > **设置** > **混合推送**{% else %}[LeanCloud 控制台 > **消息** > **推送** > **设置** > **混合推送**](/messaging.html?appid={{appid}}#/message/push/conf){% endif %} 与 LeanCloud 应用关联。
 
 #### 接入 SDK
 
@@ -471,12 +479,21 @@ dependencies {
 
 在 `AVOSCloud.initialize` 时调用 `registerHuaweiPush(context, profile)` 即可。参数 `profile` 的用法可以参考 [Android 混合推送多配置区分](push_guide.html#Android_混合推送多配置区分)。
 
-注意，LeanCloud 云端只有在以下两个条件都满足的情况下，才会使用华为推送。
+LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华为推送：
 
 - EMUI 系统
 - manifest 正确填写
 
-如果以上条件不符合，SDK 会有日志输出，开发者可以根据日志判断是什么原因导致注册失败。开发者可以通过查看控制台 `_Installation` 表的相关记录的 **vendor** 字段来判断是否注册成功。
+### 小米推送
+因为小米公司不允许第三方服务以任何形式接入、整合小米推送，所以我们目前还不能支持小米系统，不过我们正与小米公司积极沟通解决，希望可以尽快开放这一服务。
+
+
+### 错误排查建议
+
+- 只要注册时有条件不符合，SDK 会在日志中输出导致注册失败的原因，例如「register error, mainifest is incomplete」代表 manifest 未正确填写。如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
+- 查看华为机型的设置，并打开「信任此应用」、「开机自启动」、「自启动管理」和「权限管理」等相关选项。
+- 如果注册一直失败的话，请去论坛发帖，提供相关日志、具体机型以及系统版本号，我们会跟进协助来排查。
+
 {% endif %}
 
 {% if node == 'us' %}
@@ -541,9 +558,9 @@ dependencies {
 - LeanCloud 美国节点
 - 调用 `AVOSCloud.setGcmOpen(true)`
 - manifest 正确填写
-{% endif %}
-开发者可以通过查看控制台 `_Installation` 表的相关记录的 **vendor** 字段来判断是否注册成功。
-{% endif %}
+  {% endif %}
+  如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
+  {% endif %}
+
 
 [xiaomi]: http://dev.xiaomi.com/index
-[leancloud-console]: https://leancloud.cn/apps.html

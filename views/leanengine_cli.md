@@ -1,4 +1,6 @@
-{% set release = "[lean-cli release 页面](https://github.com/leancloud/lean-cli/releases)" %}
+{% set release = "[Github releases 页面](https://github.com/leancloud/lean-cli/releases)" %}
+{% set login = "lean login" %}
+
 # 命令行工具 CLI 使用指南
 
 命令行工具是用来管理和部署云引擎项目的工具。它不仅可以部署、发布和回滚云引擎代码，对同一个云引擎项目做多应用管理，还能查看云引擎日志，批量将文件上传到 LeanCloud 云端。
@@ -7,23 +9,24 @@
 
 ### macOS
 
-可以使用 [Homebrew](http://brew.sh/) 进行安装：
+使用 [Homebrew](http://brew.sh/) 进行安装：
 
 ```sh
 brew update
 brew install lean-cli
 ```
+
 如果之前使用 `npm` 安装过旧版本的命令行工具，为了避免与新版本产生冲突，建议使用 `npm uninstall -g leancloud-cli` 卸载旧版本命令行工具。或者直接按照 `homebrew` 的提示，执行 `brew link --overwrite lean-cli` 覆盖掉之前的 `lean` 命令来解决。
 
 ### Windows
 
-Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 位 或 64 位 msi 安装包进行安装，安装成功之后在 Windows 命令提示符（或 PowerShell）下直接输入 `lean` 命令即可使用。
+Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 位 或 64 位 **msi** 安装包进行安装，安装成功之后在 Windows 命令提示符（或 PowerShell）下直接输入 `lean` 命令即可使用。
 
-也可以选择下载编译好的绿色版 exe 文件，使用时在 Windows 命令提示符（或 PowerShell）下输入此文件的完整路径即可。比如下载之后文件的存放位置是 `C:\Users\Downloads\lean-windows-amd64.exe`，则输入 `C:\Users\Downloads\lean-windows-amd64.exe`。不过我们强烈建议将此文件更名为 `lean.exe`，并将其路径加入到系统 **PATH** 环境变量（[设置方法](https://www.java.com/zh_CN/download/help/path.xml)）中去，这样在任意目录下输入 `lean` 就可以使用命令行工具了。当然也可以将此文件直接放到已经在 PATH 环境变量中声明的任意目录中去，比如 `C:\Windows\System32` 中。
+也可以选择编译好的绿色版 **exe** 文件，下载后将此文件更名为 `lean.exe`，并将其路径加入到系统 **PATH** 环境变量（[设置方法](https://www.java.com/zh_CN/download/help/path.xml)）中去。这样使用时在 Windows 命令提示符（或 PowerShell）下，在任意目录下输入 `lean` 就可以使用命令行工具了。当然也可以将此文件直接放到已经在 PATH 环境变量中声明的任意目录中去，比如 `C:\Windows\System32` 中。
 
 ### Linux
 
-在 {{release}} 下载预编译好的二进制文件，放在 PATH 环境变量所在目录中即可。
+从 {{release}} 下载预编译好的二进制文件 `lean_linux_amd64`，重命名为 `lean` 并放到 已经在 PATH 环境变量中声明的任意目录中即可。
 
 ### 通过源码安装
 
@@ -84,15 +87,15 @@ lean version 0.3.0
 
 安装完命令行工具之后，首先第一步需要登录 LeanCloud 账户。
 
-<div class="callout callout-info">
-{% if node != 'qcloud' %}美国节点用户需要使用参数 `--region=US` 进行登录。{% else %}腾讯云 TAB 的用户需要使用参数 `--region=TAB` 进行登录。{% endif %}
-</div>
-
 ```sh 
-$ lean login {% if node == 'us' %}--region=US{% endif %}{% if node == 'qcloud' %}--region=TAB{% endif %}
+# {% if node != 'qcloud' %}美国节点用户需要使用参数 `--region=US` 进行登录。{% else %}腾讯云 TAB 的用户需要使用参数 `--region=TAB` 进行登录。{% endif %}
+$ {{ login }} {% if node == 'us' %}--region=US{% endif %}{% if node == 'qcloud' %}--region=TAB{% endif %}
 ```
+然后按照提示输入 LeanCloud 用户名和密码完成登录。
 
-然后按照提示输入 LeanCloud 用户名／密码完成登录。
+### 切换账户
+
+要切换到另一账户，重新执行 `{{ login }}` 即可。
 
 ## 初始化项目
 
@@ -179,6 +182,11 @@ $ lean up
   </ul>
 </div>
 
+旧版命令行工具可以在 `$ lean up` 的过程中，监测项目文件的变更，实现自动重启开发服务进程。新版命令行工具移除了这一功能，转由项目代码本身来实现，以便更好地与项目使用的编程语言或框架集成。
+
+- 使用旧版命令行工具创建的 Node.js 项目，请参考 [Pull Request #26](https://github.com/leancloud/node-js-getting-started/pull/26/files) 来配置。
+- 使用旧版命令行工具创建的 Python 项目，请参考 [Pull Request #12](https://github.com/leancloud/python-getting-started/pull/12/files) 来配置。
+
 更多关于云引擎开发的内容，请参考 [云引擎服务总览](leanengine_overview.html)。
 
 ## 部署
@@ -229,6 +237,12 @@ $ lean deploy -m 'Be more awesome! 这是定制的部署备注'
 ```
 
 部署之后可以通过 curl 命令来测试你的云引擎代码，或者访问你已设置的二级域名的测试地址 `stg-${应用的域名}.leanapp.cn`。
+
+#### 部署时忽略部分文件
+
+部署项目时，如果有一些临时文件或是项目源码管理软件用到的文件，不需要上传到服务器，可以将它们加入到 `.leanignore` 文件。
+
+`.leanignore` 文件格式与 Git 使用的 `.gitignore` 格式基本相同，每行写一个忽略项，可以是文件或者文件夹。如果项目没有 `.leanignore` 文件，部署时会根据当前项目所使用的语言创建一个默认的 `.leanignore` 文件。请确认此文件中的默认配置是否与项目需求相符。
 
 ### 从 Git 仓库部署
 
