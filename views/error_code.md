@@ -1,4 +1,4 @@
-{% import "views/_parts.html" as include %}
+{% import "views/_im.njk" as im %}
 # 错误码详解
 
 本文档列举出服务端和 SDK 返回的错误码及相应说明。其他由各 SDK 产生的错误码，请参考以下链接：
@@ -415,4 +415,4 @@
 * 信息 - `Nonexistent query keys`
 * 含义 - 无效的查询或者排序字段，请确认查询或者排序的字段在表中存在。
 
-{{ include.imErrorCodes() }}
+{{ im.errorCodes() }}
