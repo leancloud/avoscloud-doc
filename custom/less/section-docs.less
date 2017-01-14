@@ -814,6 +814,7 @@ ul#toc,#toc li {
     color: #000;
     font-size: 24px;
     vertical-align: -3px;
+    margin-right: 4px;
   }
 
   a {
@@ -827,6 +828,16 @@ ul#toc,#toc li {
     &:hover,
     &:focus {
       color: #000;
+    }
+  }
+
+  .doc-mdate {
+    color: @gray-light;
+    margin-left: 4px;
+    
+    &:before {
+      content:"·";
+      margin-right: 4px;
     }
   }
 }

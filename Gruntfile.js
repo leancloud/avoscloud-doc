@@ -278,6 +278,9 @@ module.exports = function(grunt) {
       options: {
         commitMessage: 'chore: update contributors'
       }
+    },
+    docmeta: {
+      src: ["dist/*.html", "!dist/demo.html"]
     }
   });
 
@@ -295,9 +298,98 @@ module.exports = function(grunt) {
     });
   });
 
+grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置首页内容分类导航', function() {
+    //grunt.task.requires('assemble');
+    const cheerio = require('cheerio');
+    const path = require('path');
+    const fs = require('fs');
+    const crypto = require('crypto');
+    const moment = require('moment');
+    moment.locale('zh-cn');
+    //require('moment/locale/zh-cn');
+    //const done = this.async();
+    const sourceDir = 'views/';
+    const files = this.filesSrc;
+
+    files.forEach(function(filePath) {
+      let changes = [];
+      let file = path.parse(filePath); 
+      // filePath: "dist/realtime_guide-js.html"
+      //   root: ''
+      //   dir: 'dist'
+      //   base: 'realtime_guide-js.html'
+      //   ext: '.html'
+      //   name: 'realtime_guide-js'
+      let content = grunt.file.read(filePath);
+      let $ = cheerio.load(content);
+      const version = crypto.createHash('md5').update($.html(), 'utf8').digest('hex');
+ 
+      // 首页：内容分类导航 scrollspy
+      if ( file.base.toLowerCase() === 'index.html' ){
+        let $sectionNav = $('#section-nav').find('ul');
+        $('.section-title').each(function(index, el) {
+          let $el = $(el);
+          let id = $el.text().replace(/ /g,'-').replace(/[^a-zA-Z_0-9\u4e00-\u9fa5]/g,'-');
+          $el.attr('id',id);
+          $sectionNav.append('<li><a href="#' + id + '">' + $el.html() + '</a></li>');
+        });
+        changes.push('scrollspy');
+
+      } // 更新标题更新为「h1 - LeanCloud 文档」（首页除外）
+      else {
+        $('title').text(function(){
+            // do not use html()
+            return $('.doc-content h1').first().text() + ' - ' + $(this).text();
+        });
+        changes.push('title');
+      }
+
+      // 文档修改日期 ----------------------  
+      // 例如 dist/realtime_guide-js.html => views/realtime_guide-js.md
+      const sourceFilePath = sourceDir + file.name + '.md';
+      var modifiedTime = "";
+
+      if ( grunt.file.exists(sourceFilePath) ){
+        modifiedTime = fs.lstatSync(path.resolve(sourceFilePath)).mtime;
+        // 查找是否有对应的主模板（.tmpl）
+        // dist/realtime_guide-js.html => views/realtime_guide.tmpl
+        let tmplFilePath = file.name.lastIndexOf('-') > -1?path.join(sourceDir,file.name.substr(0, file.name.lastIndexOf('-')) + '.tmpl'):'';
+
+        // 如果有主模板，取回其修改日期
+        if ( tmplFilePath.length && grunt.file.exists(tmplFilePath) ){
+          let tmplModifiedTime = fs.lstatSync(path.resolve(tmplFilePath)).mtime;
+          //console.log(tmplModifiedTime, modifiedTime);
+          // 如果 tmpl 修改日期新于子文档，子文档使用 tmpl 的修改日期
+          if ( tmplModifiedTime && modifiedTime && tmplModifiedTime.getTime() > modifiedTime.getTime() ){
+            modifiedTime = tmplModifiedTime;
+            changes.push('tmpl-newer');
+          }
+        }
+
+        if ( modifiedTime ){
+          //$('.docs-meta').find('.doc-mdate').remove().end()
+          $('.docs-meta').append('<span class="doc-mdate" data-toggle="tooltip" title="'+ moment(modifiedTime).format('lll') + '">更新于 <time datetime="' + moment(modifiedTime).format() + '">' + moment(modifiedTime).format('l') + '</time></span>');
+          changes.push('modified');
+        }
+
+      }
+      else {
+        changes.push('no-md');
+      }
+
+      // 如果文档内容有改动，重新生成
+      if ( version !== crypto.createHash('md5').update($.html(), 'utf8').digest('hex') ){
+        grunt.file.write(filePath, $.html());
+      }
+      // 打印所有文件及所执行的操作
+      grunt.log.writeln(filePath + ' (' + changes.join(',') + ')');
+
+    });
+  });
+
   grunt.registerTask("build", "Main build", function() {
     grunt.task.run([
-      "clean", "ensureSDKVersion", "nunjucks", "copy:md", "markdown", "assemble",
+      "clean", "ensureSDKVersion", "nunjucks", "copy:md", "markdown", "assemble", "docmeta"
     ]);
     if (!grunt.option("no-comments")) {
       grunt.task.run(["comment"]);
@@ -310,7 +402,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask("localBuild",[
     "clean", "ensureSDKVersion", "nunjucks", "copy:md", "markdown", "assemble",
-    "less:dist", "postcss", "copy:asset"
+    "less:dist", "postcss", "copy:asset","docmeta"
   ]);
 
   grunt.registerTask("serve", ["localBuild", "less:server","configureProxies", "connect:livereload", "watch"]);

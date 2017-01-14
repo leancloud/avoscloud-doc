@@ -102,11 +102,11 @@ var initSmoothScroll = function() {
 
 // Init GitHub links
 var initGitHubLinks = function() {
-  var currentPath = window.location.pathname.match(/.*\/(.+).html/i)[1];
-  $('#content').prepend("<div class=docs-meta>\
-      <span class='icon icon-github'></span>\
-      <a href='https://github.com/leancloud/docs#贡献'>编辑文档</a>\
-    </div>");
+  // var currentPath = window.location.pathname.match(/.*\/(.+).html/i)[1];
+  // $('#content').prepend("<div class=docs-meta>\
+  //     <span class='icon icon-github'></span>\
+  //     <a href='https://github.com/leancloud/docs#贡献'>编辑文档</a>\
+  //   </div>");
   $('.sidebar-wrapper #toc').append("<li class=sidebar-meta><a href='#' class=do-expand-all>展开所有</a> <a href='#top' class=back-to-top>返回顶部</a></li>");
 };
 
@@ -380,17 +380,6 @@ $(function() {
   setTimeout(function() {
     updateSidebarAffixShadowWidth();
   }, 400);
-
-  // set the title:  xxxxxxx - LeanCloud 文档
-  if ( window.location.pathname != '/'
-    && window.location.pathname.toLowerCase() != '/index.html' ){
-    $('title').text(function(){
-    // do not use html()
-    return $('.doc-content h1').first().text() + ' - ' + $(this).text();
-  });
-
-
-}
 
 });
 
