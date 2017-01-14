@@ -225,7 +225,7 @@
 
 <script type="text/javascript">
 // get nav items ready for scrollspy
-$(function() {
+$(window).load(function() {
   $('#section-nav').affix({
       offset: {
         top: $('nav').outerHeight(true) + $('.doc-home-title').outerHeight(true)
