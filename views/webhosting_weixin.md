@@ -28,21 +28,23 @@
 
 ## 创建项目
 
-在 [LeanCloud 控制台](https://leancloud.cn/applist.html#/apps) 中创建一个应用，暂且叫做「Wechat」。在本地创建一个文件夹，如 `/usr/leancloud/wechat/`，安装 [LeanCloud 命令行工具](leanengine_cli.html#安装命令行工具)，并在该目录下执行下列命令：
+在 [LeanCloud 控制台](https://leancloud.cn/applist.html#/apps) 中创建一个应用，暂且叫做「Wechat」。在本地创建一个文件夹，如 `/usr/leancloud/wechat/`，安装 [LeanCloud 命令行工具](leanengine_cli.html#安装命令行工具)，在该目录执行以下命令进行登录：
 
 ```bash
-avoscloud new
+lean login
 ```
 
-然后进入 LeanCloud 控制台，选择刚才创建的应用 **Wechat**，再选择 {% if node=='qcloud' %}**设置** > **应用 Key**{% else %}[**设置** > **应用 Key**](/app.html?appid={{appid}}#/general){% endif %}，找到 App ID 以及 Master Key 并复制。
+按照提示输入 LeanCloud 用户名和密码。如遇问题请参考《[命令行工具 CLI 使用指南 · 登录](leanengine_cli.html#登录)》。接下来运行：
 
-回到命令行工具，它会要求你输入 App ID 以及 Master Key，输入完成之后，可以看见在 `/usr/leancloud/wechat/` 下已经创建了一个 LeanEngine 默认的模板项目，打开 `app.js` 文件。然后访问放在 GitHub 上的 [LeanEngine 微信自动问答机器人](https://github.com/leancloud/LeanEngine-WechatBot) 项目，打开该项目下的 `wechatBot.js` 文件（建议克隆到本地）。
+```bash
+lean init
+```
 
-## 编写代码
+根据提示选择对应的节点，应用选择 **Wechat**，应用模版选择 **1) node-js-getting-started**，待过程完成后，一个 LeanEngine 默认的模板项目就在 `/usr/leancloud/wechat/` 下创建好了。如遇问题请参考《[命令行工具 CLI 使用指南 · 初始化项目](leanengine_cli.html#初始化项目)》。
 
-### 添加依赖包
+## 添加依赖包
 
-打开 `package.json` 文件，替换成如下内容：
+打开 `/usr/leancloud/wechat/package.json` 文件，替换成如下内容：
 
 ```js
 {
@@ -76,8 +78,9 @@ avoscloud new
 }
 ```
 
-### wechatBot.js
-参照 [wechatBot.js](https://github.com/leancloud/LeanEngine-WechatBot/blob/master/routes/wechatBot.js) 的代码，建议直接复制拷贝所有内容，全部覆盖本地的 `/usr/leancloud/wechat/routes/wechatBot.js` 的内容。如果没有该文件，就直接复制到对应的目录下，然后修改关键的配置项。此时需要打开微信公众号管理控制台，进行对应设置。
+## wechatBot.js
+
+参照 [Github 的 wechatBot.js](https://github.com/leancloud/LeanEngine-WechatBot/blob/master/routes/wechatBot.js) 代码，建议直接复制拷贝所有内容，全部覆盖本地的 `/usr/leancloud/wechat/routes/wechatBot.js` 的内容。如果没有该文件，就直接复制到对应的目录下，然后修改关键的配置项。此时需要打开微信公众号管理控制台，进行对应设置。
 
 下图为本文所使用的公众号的设置页面：
 ![wexin_config](images/weixin-mp-console-config.png)
@@ -110,7 +113,8 @@ var api = new WechatAPI('请把微信的 AppID 填写在这里',
   '请把微信的 Secret Key 填写在这里');
 ```
 
-### app.js
+## app.js
+
 在根目录下的 `app.js` 需要配置以下两行代码：
 
 ```js
@@ -127,24 +131,23 @@ var wechat = require('./routes/wechatBot'); // 这一段必须拷贝到当前项
 app.use('/wechat', wechat);
 ```
 
-微信在保存「服务器配置」时会进行实时验证，所以在这之前你需要将自己的服务器配置好，让它可以提供正确的验证。**这就需要将应用部署到 LeanEngine 中**：
+微信在保存「服务器配置」时会进行实时验证，所以在这之前你需要将自己的服务器配置好，让它可以提供正确的验证。**这就需要将应用部署到 LeanEngine 中**。
 
 ## 部署项目
-进入 {% if node=='qcloud' %}**LeanCloud 控制台** > **云引擎** > **设置**，{% else %}
-进入 [**LeanCloud 控制台** > **云引擎** > **设置**](/cloud.html?appid={{appid}}#/conf)，{% endif %}找到 **Web 主机域名**，填入自己想使用的名称，本文使用 `wechatTest`（即 `wechatTest.leanapp.cn`）：
+进入 {% if node=='qcloud' %}**LeanCloud 控制台** > **云引擎** > **设置**，{% else %}进入 [**LeanCloud 控制台** > **云引擎** > **设置**](/cloud.html?appid={{appid}}#/conf)，{% endif %}找到 **Web 主机域名**，填入自己想使用的名称，本文使用 `wechatTest`（即 `wechatTest.leanapp.cn`）：
 
-![domain_setting](images/console-webhosting-field.png)
+<img src="images/console-webhosting-field.png" width="500" alt="domain_setting">
 
 然后回到项目目录下，执行如下命令行：
 
 ```bash
-avoscloud deploy
+lean deploy
 ```
 
 这个是部署到预备环境，并没有真正发布到外网的线上，如果 `deploy` 成功之后，可以之下如下命令行：
 
 ```bash
-avoscloud publish
+lean publish
 ```
 
 ## 配置验证
