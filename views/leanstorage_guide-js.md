@@ -844,7 +844,7 @@ file.save({
 {% block code_create_tag_object %}
 
 ```js
-  var tag = new AV.Object('Todo');
+  var tag = new AV.Object('Tag');
   tag.set('name', '今日必做');
   tag.save();
 ```
@@ -854,13 +854,13 @@ file.save({
 {% block code_create_family_with_tag %}
 
 ```js
-  var tag1 = new AV.Object('Todo');
+  var tag1 = new AV.Object('Tag');
   tag1.set('name', '今日必做');
 
-  var tag2 = new AV.Object('Todo');
+  var tag2 = new AV.Object('Tag');
   tag2.set('name', '老婆吩咐');
 
-  var tag3 = new AV.Object('Todo');
+  var tag3 = new AV.Object('Tag');
   tag3.set('name', '十分重要');
 
   var tags = [tag1, tag2, tag3];
