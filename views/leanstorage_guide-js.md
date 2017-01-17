@@ -174,10 +174,7 @@ AV.Object.register(Todo);
   new AV.Query(Account).first().then(function(account) {
     var amount = -100;
     account.increment('balance', amount);
-    // 如果使用 JS SDK 2.0 以前的版本，save() 要加传 null 
-    // 作为第一个参数，否则会报错：
-    // return account.save(null, {
-    return account.save({
+    return account.save(null, {
       query: new AV.Query(Account).greaterThanOrEqualTo('balance', -amount),
       fetchWhenSave: true,
     });

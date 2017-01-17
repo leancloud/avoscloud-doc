@@ -1,3 +1,5 @@
+{% import "views/_helper.njk" as docs %}
+{% import "views/_im.njk" as im %}
 {% set appid = '{{appid}}' %}
 {% set appkey = '{{appkey}}' %}
 {% set masterkey = '{{masterkey}}' %}
@@ -337,7 +339,7 @@ Tom 想建立一个群，把自己好朋友都拉进这个群，然后给他们�
 
 {% block offlineMessage_android %}{% endblock %}
 
-这一功能默认是关闭的，你可以在 LeanCloud 应用控制台中开启它。操作方法请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。
+{%  if segment_code == 'objc' or segment_code == 'dotnet' %}这一功能默认是关闭的，可以通过多种方式的设置来触发它，操作方法请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。{% endif %}
 
 {% block offlineMessage %}{% endblock %}
 
@@ -1002,9 +1004,11 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 {% block conversation_security %}{% endblock %}
 
-> 需要强调的是：开发者切勿在客户端直接使用 MasterKey 进行签名操作，因为 MaterKey 一旦泄露，会造成应用的数据处于高危状态，后果不容小视。因此，强烈建议开发者将签名的具体代码托管在安全性高稳定性好的云端服务器上（例如 LeanCloud 云引擎）。
+{{ docs.alert("需要强调的是：开发者切勿在客户端直接使用 MasterKey 进行签名操作，因为 MaterKey 一旦泄露，会造成应用的数据处于高危状态，后果不容小视。因此，强烈建议开发者将签名的具体代码托管在安全性高稳定性好的云端服务器上（例如 LeanCloud 云引擎）。") }}
 
 为了帮助开发者理解云端签名的算法，我们开源了一个用 Node.js + 云引擎实现签名的云端，供开发者学习和使用：[LeanCloud 实时通信云引擎签名 Demo](https://github.com/leancloud/realtime-messaging-signature-cloudcode)。
+
+{{ im.signature("### 测试签名") }}
 
 {% block text_single_endpoint_login %}
 ### 单点登录

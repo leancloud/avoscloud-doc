@@ -1,4 +1,4 @@
-{% import "views/_parts.html" as include %}
+{% import "views/_im.njk" as im %}
 # 实时通信服务总览
 
 实时通信服务是 LeanCloud 消息服务中的重要一环。你不但可以为应用加入实时聊天、私信等常用功能，还能实现游戏对战等实时互动功能。
@@ -313,11 +313,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 
 ## 权限和认证
 
-{% if node=='qcloud' %}
-为了保证聊天通道的安全，我们设计了签名的概念。默认这一功能是关闭的，你可以在 `控制台 > **设置** > **应用选项**` 中勾选 **聊天服务，启用签名认证** 来强制启用签名。启用后，所有的用户登录、新建或加入对话、邀请/踢出对话成员等操作都需要包含签名，这样你可以对聊天过程进行充分的控制。
-{% else %}
-为了保证聊天通道的安全，我们设计了签名的概念。默认这一功能是关闭的，你可以在 [控制台 > **设置** > **应用选项**](/app.html?appid={{appid}}#/permission) 中勾选 **聊天服务，启用签名认证** 来强制启用签名。启用后，所有的用户登录、新建或加入对话、邀请/踢出对话成员等操作都需要包含签名，这样你可以对聊天过程进行充分的控制。
-{% endif %}
+使用签名可以保证聊天通道的安全，这一功能默认是关闭的，可以在 {% if node=='qcloud' %}控制台 > **设置** > **应用选项**{% else %}[控制台 > **设置** > **应用选项**](/app.html?appid={{appid}}#/permission){% endif %} 中勾选 **聊天服务，启用签名认证** 来强制启用签名。启用后，所有的用户登录、新建或加入对话、邀请/踢出对话成员等操作都需要包含签名，这样就可以对聊天过程进行全面控制。
 
 ![image](images/leanmessage_signature2.png)
 
@@ -348,11 +344,8 @@ clientid|登录时使用的 clientId
 timestamp|当前的 UTC 时间距离 unix epoch 的**毫秒数**
 nonce|随机字符串
 
-{% if node=='qcloud' %}
->注意：签名的 key **必须** 是应用的 master key，你可以 `控制台 > 设置 > 应用 Key` 里找到。**请保护好 master key，不要泄露给任何无关人员。**
-{% else %}
->注意：签名的 key **必须** 是应用的 master key，你可以 [控制台 > 设置 > 应用 Key](/app.html?appid={{appid}}#/key) 里找到。**请保护好 master key，不要泄露给任何无关人员。**
-{% endif %}
+
+>注意：签名的 key **必须** 是应用的 master key，你可以 {% if node=='qcloud' %}控制台 > 设置 > 应用 Key{% else %}[控制台 > 设置 > 应用 Key](/app.html?appid={{appid}}#/key){% endif %} 里找到。**请保护好 master key，不要泄露给任何无关人员。**
 
 开发者可以实现自己的 SignatureFactory，调用远程服务器的签名接口获得签名。如果你没有自己的服务器，可以直接在 LeanCloud 云引擎上通过 **网站托管** 来实现自己的签名接口。在移动应用中直接做签名的作法 **非常危险**，它可能导致你的 **master key** 泄漏。
 
@@ -378,6 +371,8 @@ appid:clientid:convid:sorted_member_ids:timestamp:nonce:action
 * appid、clientid、sorted_member_ids、timestamp 和 nonce  的含义同上。对创建群的情况，这里 sorted_member_ids 是空字符串。
 * convid - 此次行为关联的对话 id。
 * action - 此次行为的动作，分为 **add** （加群和邀请）与 **remove** （踢出群）两种，但出于兼容考虑，签名时分别使用常量 **invite** 和 **kick** 来进行表示。
+
+{{ im.signature("### 测试签名") }}
 
 ## 云引擎 Hook
 
@@ -713,7 +708,7 @@ data | 消息内容
 
 实时通信的错误码会以 SDK 异常或 WebSocket 关闭状态码的形式返回给客户端。当出现异常情况时，SDK 会输出状态码到日志里，以下是对部分状态码的简单说明：
 
-{{ include.imErrorCodes('table') }}
+{{ im.errorCodes('table') }}
 
 ## 常见问题 FAQ
 

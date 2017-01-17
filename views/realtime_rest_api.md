@@ -1,4 +1,4 @@
-{% import "views/_parts.html" as include %}
+{% import "views/_im.njk" as im %}
 # 实时通信 REST API 使用指南
 
 ## 请求格式
@@ -147,7 +147,7 @@ appid:peerid:convid:nonce:signature_ts
 
 以上返回字段的说明如下：
 
-{{ include.imConversationProperties() }}
+{{ im.conversationProperties() }}
 
 ### 获取某个用户发送的聊天记录
 
@@ -216,7 +216,7 @@ curl -X PUT \
 
 这里传入的数据格式与消息记录返回的格式完全一致，只需要按照实际的需求修改相应的字段即可。需注意修改内容时切勿修改 JSON 中的 `msg-id` 和 `timestamp` 字段，这两个字段用于标识消息，如果修改会造成消息更新失败。
 
-{{ include.imConversationProperties() }}
+{{ im.conversationProperties() }}
 
 <div class="callout callout-info">此处仅能修改**服务器端**的消息记录，并不能修改**客户端缓存**的消息记录。</div>
 
@@ -344,6 +344,23 @@ mid | 必填 | 要删除的消息 id，字符串
 返回：
 
 空 JSON 对象 `{}`。
+
+### 查询系统广播消息
+
+调用此 API 可查询目前有效的广播消息。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  https://leancloud.cn/1.1/rtm/broadcast
+```
+
+参数 | 约束 | 说明
+--- | --- | ---
+conv_id | 必填 | 系统对话 id
+limit | 可选 | 返回消息条数
+skip | 可选 | 跳过消息条数，用于翻页
 
 ### 系统对话发送订阅消息
 

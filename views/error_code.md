@@ -1,11 +1,11 @@
-{% import "views/_parts.html" as include %}
+{% import "views/_im.njk" as im %}
 # 错误码详解
 
 本文档列举出服务端和 SDK 返回的错误码及相应说明。其他由各 SDK 产生的错误码，请参考以下链接：
 
 * iOS 的 [AVConstants](/api-docs/iOS/docs/AVConstants.html)。
 * iOS SDK 在进行 WebSocket 通信过程中，相关的状态码请参考 [RFC 6455 · Status Codes]( http://tools.ietf.org/html/rfc6455#section-7.4)。
-* iOS v3.1.5 及之后的版本，与网络请求操作相关的错误码，比如 `28` 表示请求超时、`7` 表示连接服务器失败，请参考 [libcurl error codes](http://curl.haxx.se/libcurl/c/libcurl-errors.html)。
+* PHP SDK 中与网络请求操作相关的错误码，比如 `28` 表示请求超时、`7` 表示连接服务器失败，请参考 [libcurl error codes](http://curl.haxx.se/libcurl/c/libcurl-errors.html)。
 * Android 的 [AVException](/api-docs/android/index.html)。
 
 ## 0
@@ -415,4 +415,4 @@
 * 信息 - `Nonexistent query keys`
 * 含义 - 无效的查询或者排序字段，请确认查询或者排序的字段在表中存在。
 
-{{ include.imErrorCodes() }}
+{{ im.errorCodes() }}

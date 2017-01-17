@@ -44,7 +44,7 @@ $ bower install leancloud-realtime --save
 
 ```html
 <!-- 存储服务 -->
-<script src="//cdn1.lncld.net/static/js/av-min-{{jssdkversion}}.js"></script>
+<script src="//cdn1.lncld.net/static/js/{{jssdkversion}}/av-min.js"></script>
 ```
 
 #### Github 仓库地址
