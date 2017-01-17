@@ -227,7 +227,11 @@ var codeBlockTabber = (function() {
       'lang-java': 'Java',
       'lang-ts':'TypeScript',
       'lang-es7': 'ECMAScript7',
-      'lang-html': 'HTML'
+      'lang-html': 'HTML',
+      'lang-pointer': 'Pointer',
+      'lang-relation': 'Relation',
+      'lang-array': 'Array',
+      'lang-middle': '中间表'
     };
 
     $.each($codeBlocks, function () {
