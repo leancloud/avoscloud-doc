@@ -214,7 +214,8 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
 {
   "data": {
    "alert":             "消息内容",
-   "category":          "通知分类名称",
+   "category":          "通知类型",
+   "thread-id":         "通知分类名称",
    "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
    "sound":             "声音文件名，前提在应用里存在",
    "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
@@ -263,7 +264,8 @@ data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://de
         "loc-args":            [""],
         "launch-image":        ""
       }
-      "category":          "通知分类名称",
+      "category":          "通知类型",
+      "thread-id":         "通知分类名称",
       "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
       "sound":             "声音文件名，前提在应用里存在",
       "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
