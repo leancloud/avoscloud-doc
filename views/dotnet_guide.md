@@ -19,7 +19,7 @@
 在 Nuget Package Manager 里面打开 Package Manager Console 执行如下命令行：
 
 ```sh
-PM> Install-Package LeanCloud.Core
+PM> Install-Package LeanCloud
 ```
 它会自动安装当前运行时的版本。相关依赖可以通过 [LeanCloud on Nuget](https://www.nuget.org/packages/LeanCloud/) 查询和了解。
 
