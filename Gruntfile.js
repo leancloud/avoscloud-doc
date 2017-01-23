@@ -299,7 +299,7 @@ module.exports = function(grunt) {
   });
 
 grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置首页内容分类导航', function() {
-    //grunt.task.requires('assemble');
+    grunt.task.requires('assemble');
     const cheerio = require('cheerio');
     const path = require('path');
     const fs = require('fs');

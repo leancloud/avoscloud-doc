@@ -1,6 +1,8 @@
+{% import "views/_helper.njk" as docs %}
+{% import "views/_im.njk" as im %}
 # 实时通信开发指南 &middot; JavaScript 
 
-<div class="callout callout-info">本文介绍 JavaScript 实时通讯 SDK version 3 的使用，version 2 的文档请参考[《JavaScript 实时通信开发指南（version 2）》](./js_realtime.html)。</div>
+{{ docs.note("本文介绍 JavaScript 实时通讯 SDK Version 3 的使用，Version 2 的文档请参考[《JavaScript 实时通信开发指南 Version 2》](./js_realtime.html)。") }}
 
 ## 简介
 
@@ -154,15 +156,9 @@ realtime.createIMClient('Tom').then(function(tom) {
 // https://jsplay.avosapps.com/fuq/embed?js,console
 ```
 
-> 注意：
-> Realtime.createIMClient() 这个方法表示开始连接 LeanCloud 云端服务器——也就是启动实时通信服务，这个方法在整个使用周期内只需要调用一次。用户退出实时通信服务（断开 LeanCloud 云端服务器连接）时需要在 IMClient 对象上调用另一个方法：IMClient.close()。
-> Realtime.createIMClient/IMClient.close 这两个方法是成对出现，在聊天过程中只需要调用一次即可，无需多次调用的。
+{{ im.clientOpenClose({open: "realtime.createIMClient()", close: "IMClient.close()"}) }}
 
-{% if node=='qcloud' %}
-执行完以上代码，在 LeanCloud 网站的 控制台 /（选择应用）/ 存储 / 数据 / `_Conversation ` 表 中多了一行数据，其字段含义如下：
-{% else %}
-执行完以上代码，在 LeanCloud 网站的 [控制台 /（选择应用）/ 存储 / 数据 / `_Conversation ` 表](/data.html?appid={{appid}}#/_Conversation) 中多了一行数据，其字段含义如下：
-{% endif %}
+执行完以上代码，在 {% if node=='qcloud' %}LeanCloud 控制台 > 存储 > 数据 > `_Conversation` 表{% else %}[LeanCloud 控制台 > 存储 > 数据 > `_Conversation`](/dashboard/data.html?appid={{appid}}#/_Conversation){% endif %} 中多了一行数据，其字段含义如下：
 
 | 名称   | 类型     | 描述                                       |
 | ---- | ------ | ---------------------------------------- |
@@ -172,7 +168,7 @@ realtime.createIMClient('Tom').then(function(tom) {
 | c    | String | 对话的创建者的 ClientId                         |
 | mu   | Array  | 对话中设置了静音的成员，仅针对 iOS 以及 Windows Phone 用户有效。 |
 
->提示：每次调用 `createConversation()` 方法，都会生成一个新的 Conversation 实例，即便使用相同 members 和 name 也是如此。如果想要不重复创建相同成员的对话，请参阅 [常见问题](#常见问题) 。
+{{ docs.note("每次调用 `createConversation()` 方法，都会生成一个新的 Conversation 实例，即便使用相同 members 和 name 也是如此。如果想要不重复创建相同成员的对话，请参阅 [常见问题](#常见问题) 。") }}
 
 ### 接收消息
 
@@ -1338,16 +1334,15 @@ messageIterator.next().then(function(result) {
 ```
 
 
-
 ### 客户端聊天记录缓存
 
-JavaScript SDK 没有客户端聊天记录缓存机制
+JavaScript SDK 没有客户端聊天记录缓存机制。
 
 ## 客户端事件
 
 ### 网络状态响应
 
->注意：在网络中断的情况下，所有的消息收发和对话操作都会失败。开发者应该监听与网络状态相关的事件并更新 UI，以免影响用户的使用体验。
+{{ docs.note("注意：在网络中断的情况下，所有的消息收发和对话操作都会失败。开发者应该监听与网络状态相关的事件并更新 UI，以免影响用户的使用体验。") }}
 
 当网络连接出现中断、恢复等状态变化时，SDK 会在 Realtime 实例上派发以下事件：
 

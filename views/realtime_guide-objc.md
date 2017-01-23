@@ -1,5 +1,4 @@
 {% extends "./realtime_guide.tmpl" %}
-
 {% set platform_name = 'Objective-C' %}
 {% set segment_code = 'objc' %}
 {% set sdk_name = platform_name + " SDK" %}
@@ -70,9 +69,7 @@ self.client = [[AVIMClient alloc] init];
 }
 ```
 
-> 注意：
-> [AVIMClient openWithCallback:] 这个方法表示开始连接 LeanCloud 云端服务器——也就是启动实时通信服务，这个方法在整个使用周期内只需要调用一次。用户退出实时通信服务（断开 LeanCloud 云端服务器连接）时需要调用另一个方法：[AVIMClient closeWithCallback:]。
-> openWithCallback/closeWithCallback 这两个方法是成对出现，在聊天过程中只需要调用一次即可，无需多次调用的。
+{{ im.clientOpenClose({open: "[AVIMClient openWithCallback:]", close: "[AVIMClient closeWithCallback:]"}) }}
 
 {% endblock %}
 

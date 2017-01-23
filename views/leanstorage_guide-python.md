@@ -717,7 +717,7 @@ query.contains('title', '李总')
 Todo = leancloud.Object.extend('Todo')
 query = Todo.query
 
-query.matched('title', '{{ storage.regex(true) | safe }})
+query.matched('title', '{{ data.regex(true) | safe }})
 </code></pre>
 {% endblock %}
 <!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->

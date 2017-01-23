@@ -1,7 +1,6 @@
-{% import "views/_storage.njk" as storage %}
-{% set appid = '{{appid}}' %}
-{% set appkey = '{{appkey}}' %}
-{% set masterkey = '{{masterkey}}' %}
+{% import "views/_helper.njk" as docs %}
+{% import "views/_data.njk" as data %}
+{% import "views/_sms.njk" as sms %}
 {% set middot = '·' %}
 {% set link_to_blog_password_reset = '关于自定义邮件模板和验证链接，请参考《[自定义应用内用户重设密码和邮箱验证页面](https://blog.leancloud.cn/607/)》。' %}
 {% set app_permission_link = "[控制台 > 应用设置 > 应用选项](/app.html?appid={{appid}}#/permission)" %}
@@ -87,22 +86,19 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 
 {% block code_save_todo_folder %}{% endblock %}
 
-{% if node=='qcloud' %}
-创建完成后，打开 `控制台 > 存储`，点开 `TodoFolder` 类，就可以看到刚才添加的数据。除了 name、priority（优先级）之外，其他字段都是数据表的内置属性。
-{% else %}
-创建完成后，打开 [控制台 > 存储](/data.html?appid={{appid}}#/)，点开 `TodoFolder` 类，就可以看到刚才添加的数据。除了 name、priority（优先级）之外，其他字段都是数据表的内置属性。
-{% endif %}
+创建完成后，打开 {% if node=='qcloud' %}**控制台** > **存储**{% else %}[控制台 > 存储](/data.html?appid={{appid}}#/){% endif %}，点开 **TodoFolder** 类，就可以看到刚才添加的数据。除了 name、priority（优先级）之外，其他字段都是数据表的内置属性。
 
 内置属性|类型|描述
 ---|---|---
-`{{objectIdName}}`|String|该对象唯一的 Id 标识
-`ACL`|ACL|该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
-`{{createdAtName}}`|{{dateType}}|该对象被创建的 UTC 时间，控制台做了针对当地时间的展现优化。
-`{{updatedAtName}}` |{{dateType}}|该对象最后一次被修改的时间
+`objectId`|{{ "str" if segment_code == "python" else "String"}}|该对象唯一的 Id 标识
+`ACL`|{{ "leancloud.ACL" if segment_code == "python" else "ACL"}}|该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
+`createdAt`|{{dateType}}|该对象被创建的 UTC 时间，控制台做了针对当地时间的展现优化。
+`updatedAt` |{{dateType}}|该对象最后一次被修改的时间
 
 <dl>
   <dt>属性名</dt>
-  <dd>也叫键或 key，必须是由字母、数字或下划线组成的字符串。<br/>自定义的属性名，不能以 `__`（双下划线）开头，<span class="callout-danger" style="background-color: transparent;">也不能与内置属性重名（不区分大小写）</span>。</dd>
+  <dd>也叫键或 key，必须是由字母、数字或下划线组成的字符串。<br/>自定义的属性名，{{ docs.alertInline("不能以双下划线 `__` 开头，也不能与以下系统保留字段和内置属性重名（不区分大小写）") }}。
+  <div class="callout callout-danger monospace" style="margin-top:1em;color:#999;">{{ data.preservedWords() }}</div></dd>
   <dt>属性值</dt>
   <dd>可以是字符串、数字、布尔值、数组或字典。</dd>
 </dl>
@@ -121,8 +117,8 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 
 选项 | 类型 | 说明
 --- | --- | ---
-<code class="text-nowrap">{{saveOptions_fetchWhenSave}}</code> | BOOL | 对象成功保存后，自动返回本地**已改动属性**在云端的最新值。用途请参考 [更新计数器](#更新计数器)。
-`{{saveOptions_query}}` | `{{baseQueryClassName}}`  | 当 query 中的条件满足后对象才能成功保存，否则放弃保存，并返回错误码 305。<br/><br/>开发者原本可以通过 `{{baseQueryClassName}}` 和 `{{baseObjectName}}` 分两步来实现这样的逻辑，但如此一来无法保证操作的原子性从而导致并发问题。该选项可以用来判断多用户更新同一对象数据时可能引发的冲突。
+{{ docs.nowrap(saveOptions_fetchWhenSave) }} | Boolean | 对象成功保存后，自动返回本地**已改动属性**在云端的最新值。用途请参考 [更新计数器](#更新计数器)。
+`{{saveOptions_query}}` | {{baseQueryClassName}}  | 当 query 中的条件满足后对象才能成功保存，否则放弃保存，并返回错误码 305。<br/><br/>开发者原本可以通过 `{{baseQueryClassName}}` 和 `{{baseObjectName}}` 分两步来实现这样的逻辑，但如此一来无法保证操作的原子性从而导致并发问题。该选项可以用来判断多用户更新同一对象数据时可能引发的冲突。
 
 <a id="saveoption_query_example" name="saveoption_query_example"></a>【{{saveOptions_query}} 选项举例】用户的账务账户表 `Account` 有一个余额字段 `balance`，同时有多个请求要修改该字段值，为避免余额出现负值，只有满足 **balance >= 当前请求的数值** 这个条件才允许修改，否则提示「余额不足，操作失败！」。
 
@@ -872,6 +868,8 @@ Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语�
 {% endif %}
 
 {% block text_current_user %}
+
+{{ sms.fixedVerificationCode("####") }}
 
 #### 当前用户
 

@@ -780,7 +780,7 @@ file.save({
 
 {% block code_query_with_not_contains_keyword_using_regex %}
 <pre><code class="lang-js">  var query = new AV.Query('Todo');
-  var regExp = new RegExp('{{ storage.regex(true) | safe }}, 'i');
+  var regExp = new RegExp('{{ data.regex(true) | safe }}, 'i');
   query.matches('title', regExp);
 </code></pre>
 {% endblock %}

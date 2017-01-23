@@ -1,3 +1,4 @@
+{% import "views/_data.njk" as data %}
 # 数据存储服务总览
 
 感谢你选用 LeanCloud 数据存储服务。你可以通过使用我们提供的 SDK，一行后端代码都不用写，而快速完成一个产品（网站或应用）的开发和发布。
@@ -22,21 +23,21 @@ Github 仓库地址：[https://github.com/leancloud/docs](https://github.com/lea
 
 LeanCloud 对大部分场景下的后端需求进行了抽象和统一，我们通过四大系统来实现一个通用、强大、可定制的 BaaS(Backend as a Service) 服务：
 
-1. **面向对象的海量数据库**
+1. **面向对象的海量数据库**<br/>
    前后端交互的主体，都是「数据」，不管结果多少，属性具体含义如何，它们都可以抽象成统一的「对象」来处理。LeanCloud 支持存储任意类型的对象，支持对象的增、删、改、查等多种操作，并且开发者无需担心数据规模的大小和访问流量的多少，可以简单将 LeanCloud 云端看成是一个面向对象的海量数据库来使用。
 
-2. **大文件存储和分发**
+2. **大文件存储和分发**<br/>
    任何一款产品，不管是网站、应用还是游戏，都有一些素材或者文件需要存储和分发。与应用内数据不一样，这些文件因为它的体积较大，为了获得更快捷的用户体验，一般都还需要 [CDN](http://baike.baidu.com/view/21895.htm) 服务。LeanCloud 存储系统完整涵盖了大文件存储和分发的需求。
 
-3. **LeanEngine 完成特定业务逻辑**
+3. **LeanEngine 完成特定业务逻辑**<br/>
    LeanCloud 提供的数据操作 API 能覆盖大部分业务的需求，但是凡事总有例外，这些标准 API 有时候并不能完全满足某些特定需求，这时候怎么办？LeanCloud 还提供了「LeanEngine」自定义服务端业务逻辑的功能。LeanEngine 与大家熟知的 [Google App Engine](http://baike.baidu.com/view/1524918.htm) 相似，允许开发者写很少的一部分代码，来完成业务特有逻辑。这些代码会被部署到 LeanCloud 云端，与 LeanCloud 标准服务一起执行，来实现特殊需求。
 
-4. **离线数据分析平台**
+4. **离线数据分析平台**<br/>
    对于完全构建在 LeanCloud 上的产品来讲，在运行一段时间之后会积累大量的业务数据，这时候产品和运营层面都会产生一些数据挖掘或商业智能分析的需求，此时如何才能简便地操作云端，看到数据背后隐藏的趋势和价值呢？为此我们推出了分布式的「离线数据分析系统」，支持在应用数据集上进行各种处理和操作。离线分析系统是完全的分布式、实时计算系统，其执行效率和处理的数据规模远在 [Hadoop MapReduce](https://hadoop.apache.org/docs/r1.2.1/mapred_tutorial.html) 之上。
 
 下面我们重点来了解一下存储系统的几个核心概念。
 
-## 对象：AVObject
+## 对象 AVObject
 
 我们将客户端与服务端交互的纷繁芜杂的数据，统一抽象成「对象」，在我们的数据模型里面，对应的就是「AVObject」，每个 AVObject 都包含与 JSON 相兼容的键值对（key-value）数据，并有一个类别名（Class Name）。LeanCloud 云端对于 AVObject 里面「键」的数量并没有限制，也不要求每一个 AVObject 里面都包含所有的「键」。譬如在一个游戏里面，我们有多种数据需要保存：
 
@@ -54,18 +55,18 @@ LeanCloud 对大部分场景下的后端需求进行了抽象和统一，我们�
 
 你可以把这两条记录都保存到一种 AVObject 里面，这在 LeanCloud 云端是被允许的。但是我们**强烈建议开发者将不同类型的数据根据用途进行分类，形成不同种类的 「AVObject」**。譬如上面的例子，我们可以抽象出 `User` 这种对象来保存账户信息，抽象出 `GameScore` 这种对象来保存得分信息。
 
-每种「AVObject」对应 LeanCloud 云端的一张「表」（注意：为了便于理解，这里借用了关系型数据库里面表的概念，在 LeanCloud 存储管理控制台，是按 Class 来区分的），同一类对象的所有数据都存放在一起。每一个 AVObject 的实例保存到 LeanCloud 云端之后，LeanCloud 云端会赋予该实例一个全局唯一的 `objectId`，这个 `objectId` 等同于关系型数据库中的主键。同时 LeanCloud 云端还会自动为该实例添加两个属性：`createdAt`和`updatedAt`，分别表示实例创建时间和最后更新时间。
+每种「AVObject」对应 LeanCloud 云端的一张「表」（注意：为了便于理解，这里借用了关系型数据库里面表的概念，在 LeanCloud 存储管理控制台，是按 Class 来区分的），同一类对象的所有数据都存放在一起。每一个 AVObject 的实例保存到 LeanCloud 云端之后，LeanCloud 云端会赋予该实例一个全局唯一的 `objectId`，这个 `objectId` 等同于关系型数据库中的主键。同时 LeanCloud 云端还会自动为该实例添加两个属性：`createdAt` 和 `updatedAt`，分别表示实例创建时间和最后更新时间。
 
 你可以把 LeanCloud 云端看成是一个面向对象的海量数据库，它与传统的关系型数据库的差异有：
 
-* 访问方式不一样，不需要任何 JDBC/ODBC 的驱动，直接通过 HTTP 协议来传输 JSON Object 即可，所以不光服务端可以使用，在客户端也可以直接访问。我们既提供各种平台原生 SDK（iOS, Android, Javascript, Windows Phone, .Net, Unity3D, C++, Python，以及社区贡献的其他语言 SDK）来帮助开发者简单集成数据存储服务，也提供开放的 REST API 供大家直接使用。
+* 访问方式不一样，不需要任何 JDBC/ODBC 的驱动，直接通过 HTTP 协议来传输 JSON Object 即可，所以不光服务端可以使用，在客户端也可以直接访问。我们既提供各种平台原生 SDK（iOS、 Android、JavaScript、PHP、Python、Java、Windows Phone、.Net、Unity3D、C++，以及社区贡献的其他语言 SDK）来帮助开发者简单集成数据存储服务，也提供开放的 REST API 供大家直接使用。
 * LeanCloud 对于数据的唯一格式要求是满足 JSON Object 的形式，存储新的对象类型时不需要预先在云端定义任何「表结构」，而且同一种数据类型里的键值也是允许随时增加的。这种 schema free 的设计，会给开发者带来最大的便利。
-* AVObject 之间没有了主键、外键的概念，也不支持跨表的 join 查询，取而代之的，我们提供另一种数据关联的机制，详见[下文](#数据关联)；
-* 既然 AVObject 是面向对象设计的，它的查询就与传统 SQL 不一样（[详见下文](#数据查询_AVQuery)）。不过为了照顾已经习惯了传统关系型数据库查询的开发者，我们也提供了类 SQL 查询的 [Cloud Query Language 查询语法](./cql_guide.html)（简称：CQL）。请注意：LeanCloud 的 CQL 查询语法是 SQL 查询语法的子集和变种，目的是降低大家学习 LeanCloud 查询的 API 的成本，并不是所有 SQL 中可以执行的查询都会在 CQL 中产生相同的结果。
+* AVObject 之间没有了主键、外键的概念，也不支持跨表的 join 查询，取而代之的，我们提供另一种数据关联的机制，详见下文 [数据关联](#数据关联)；
+* 既然 AVObject 是面向对象设计的，它的查询就与传统 SQL 不一样，详见下文 [数据查询 AVQuery](#数据查询_AVQuery)。不过为了照顾已经习惯了传统关系型数据库查询的开发者，我们也提供了类 SQL 查询的 [Cloud Query Language 查询语法](./cql_guide.html)（简称：CQL）。请注意：LeanCloud 的 CQL 查询语法是 SQL 查询语法的子集和变种，目的是降低大家学习 LeanCloud 查询的 API 的成本，并不是所有 SQL 中可以执行的查询都会在 CQL 中产生相同的结果。
 
 ### 有效的数据类型
 
-AVObject 中的`键`，必须是由字母、数字或下划线组成的字符串；开发者自定义的键，不能以 `__`（双下划线）开头。AVObject 中的`值`，可以是字符串、数字、布尔值，或是数组和字典。在平台内部，LeanCloud 将数据存储为 JSON，因此所有能被转换成 JSON 的数据类型都可以保存在 LeanCloud 云端。并且，框架还可以处理日期、Bytes 以及文件类型。总结来说，AVObject 中字段允许的类型包括：
+AVObject 中的 `键`，必须是由字母、数字或下划线组成的字符串；开发者自定义的键，不能以 `__`（双下划线）开头。AVObject 中的 `值`，可以是字符串、数字、布尔值，或是数组和字典。在平台内部，LeanCloud 将数据存储为 JSON，因此所有能被转换成 JSON 的数据类型都可以保存在 LeanCloud 云端。并且，框架还可以处理日期、Bytes 以及文件类型。总结来说，AVObject 中字段允许的类型包括：
 
 * String 字符串
 * Number 数字
@@ -73,11 +74,11 @@ AVObject 中的`键`，必须是由字母、数字或下划线组成的字符串
 * Array 数组
 * Object 对象
 * Date 日期
-* Bytes base64编码的二进制数据
+* Bytes base64 编码的二进制数据
 * File  文件
 * Null 空值
 
-Object 类型简单地表示每个字段的值都可以由能 JSON 编码的内嵌对象组合而成。对象的 Key（键）包含`$`或者`.`，或者同时有 `__type` 的键，都是系统保留用来做一些额外处理的特殊键，因此请不要在你的对象中使用这样的 Key。另外，`className`、`ACL`、`createdAt`、`updatedAt`、`objectId` 这 5 个属性名是保留字段，不能作为自定义的`键`来使用。
+Object 类型简单地表示每个字段的值都可以由能 JSON 编码的内嵌对象组合而成。对象的 Key（键）包含 `$` 或者 `.`，或者同时有 `__type` 的键，都是系统保留用来做一些额外处理的特殊键，因此请不要在你的对象中使用这样的 Key。另外，`{{ data.preservedWords() }}` 这些属性名是保留字段，不能作为自定义的 **键** 来使用。
 
 我们的 SDK 会处理原生的 Objective-C 和 Java 类型到 JSON 之间的转换。例如，当你保存一个 NSString 对象的时候，它在我们的系统中会被自动转换成 String 类型。
 
@@ -93,11 +94,7 @@ Object 类型简单地表示每个字段的值都可以由能 JSON 编码的内�
 
 ### 数据管理
 
-{% if node=='qcloud' %}
-这是一个允许在任何 app 里更新或者创建对象的 Web UI 管理平台。在这里，你可以看到保存在 Class 里的每个对象的原生 JSON 值。
-{% else %}
-[数据管理平台](/data.html?appid={{appid}})是一个允许在任何 app 里更新或者创建对象的 Web UI 管理平台。在这里，你可以看到保存在 Class 里的每个对象的原生 JSON 值。
-{% endif %}
+{% if node == 'qcloud' %}**LeanCloud 控制台** > **存储** > **数据**{% else %}[LeanCloud 控制台 > 存储 > 数据](/data.html?appid={{appid}}){% endif %} 是一个允许在任何应用里更新或者创建对象的 Web UI 管理平台。在这里你可以看到保存在 Class 里的每个对象的原生 JSON 值。
 
 当使用这个平台的时候，请牢记：
 
@@ -107,7 +104,7 @@ Object 类型简单地表示每个字段的值都可以由能 JSON 编码的内�
 
 ### 数据导入和导出
 
-我们并不锁定用户和数据，相反，我们提供 API 和工具，来支持用户随时随地导出存放在我们平台上的数据，同样地，数据导入也是可以批量操作的。除了 REST API 之外，我们还提供通过 [JSON 文件和 CSV 格式文件的导入数据](dashboard_guide.html#本地数据导入_LeanCloud) 的功能。
+我们并不锁定用户和数据，相反，我们提供 API 和工具，来支持用户随时随地导出存放在我们平台上的数据，同样地，数据导入也是可以批量操作的。除了 REST API 之外，我们还提供通过 [JSON 文件和 CSV 格式文件的导入数据](dashboard_guide{% if node == 'qcloud' %}_tab{% endif %}.html#本地数据导入_LeanCloud) 的功能。
 
 ## 数据关联
 上面讲过，AVObject 模型与传统的关系型数据库有一个很大的不同，就是没有了主键、外键的概念，但是对象之间总会存在关联，这时候该如何解决呢？
@@ -119,7 +116,7 @@ LeanCloud 中有 4 种方式来构建对象之间的关系：
 - **AVRelation**——这是一个专门的关联类，用来建立两种对象之间的关联关系，适合多对多的场景。
 - **关联表**——使用专门的类，来为两种对象建立关联关系，与 AVRelation 相比它还可以添加更多的附加信息。譬如我们为用户之间关注/被关注的关系建模，就像流行的社交网络那样，一个用户可以关注别的用户。在这里，我们不仅想知道用户 A 是否关注了用户 B，我们还想知道什么时候用户 A 开始关注的用户 B，这时候就适合建立专门的关联表。关联表适合多对多的关联关系。
 
-详细情况请参考我们的技术文章——《数据模型设计指南（[Objective-C 篇](./relation_guide-objc.html) / [Android 篇](./relation_guide-android.html) / [JavaScript 篇](./relation_guide-js.html) / [Python 篇](./relation_guide-python.html)）》。
+详细情况请参考《数据模型设计指南（[Objective-C 篇](./relation_guide-objc.html) / [Android 篇](./relation_guide-android.html) / [JavaScript 篇](./relation_guide-js.html) / [Python 篇](./relation_guide-python.html)）》。
 
 ## 数据查询 AVQuery
 
@@ -134,7 +131,7 @@ AVObject 保存到 LeanCloud 云端之后，如何再次获取到它们呢？这
 除了 AVQuery 之外，我们也提供类 SQL 查询的 [Cloud Query Language 查询语法](./cql_guide.html)（简称：CQL）。请注意：LeanCloud 的 CQL 查询语法是 SQL 查询语法的子集和变种，目的是降低大家学习 LeanCloud 查询的 API 的成本，并不是所有 SQL 中可以执行的查询都会在 CQL 中产生相同的结果。
 
 
-## 文件存储：AVFile
+## 文件存储 AVFile
 
 除了应用内数据存储之外，LeanCloud 云端也支持「文件」类数据的存储。这里的「文件」指的是图片、音乐、视频等常见的文件类型，以及其他任何二进制数据。因为 AVObject 有大小限制，所以超过 **128 KB** 的数据不能直接存储到 AVObject 里面；而且，更重要的是，对于图片、音乐、视频类数据，因为他们的体积太大，为了终端用户有快捷的下载体验，都需要额外的 CDN 加速服务，这时候，就需要使用特别的类型「文件」来存储。
 
@@ -177,7 +174,7 @@ LeanCloud 平台保证 99.9% 的高可用性，并且数据访问方面保证了
 
 因为是把自己的核心数据存放到开放的云端，所有用户或多或少都会有这方面的担心：我的数据安全吗？
 
-LeanCloud 一直都很重视数据安全，我们通过如下技术手段保证你的数据安全可靠：
+LeanCloud 重视数据安全，因此提供如下技术手段来保证用户的数据安全可靠：
 
 * 所有数据在云端会存放 3 份拷贝，以保证出现各种硬件、网络故障的时候，数据都是可用的。
 * 所有网络请求都是基于 SSL 安全连接（HTTPS）的，保证数据内容不会被轻易截获或者窥探到。

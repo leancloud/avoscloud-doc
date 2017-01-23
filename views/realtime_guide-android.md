@@ -14,7 +14,7 @@
   {% endblock %}
 
 {% block oneOnOneChat_sent %}
-<div class="callout callout-info">注意：**启用实时通信一定要正确配置** `AndroidManifest.xml`，请仔细阅读 [Android SDK 初始化配置](sdk_setup-android.html#初始化)。</div>
+{{ docs.alert("启用实时通信一定要正确配置 `AndroidManifest.xml`，请仔细阅读 [Android SDK 初始化配置](sdk_setup-android.html#初始化)。") }}
 
 ```
   public void sendMessageToJerryFromTom() {
@@ -53,9 +53,7 @@
   }
 ```
 
-> 注意：
-> AVIMClient.open(AVIMClientCallback cb) 这个方法表示开始连接 LeanCloud 云端服务器——也就是启动实时通信服务，这个方法在整个使用周期内只需要调用一次。用户退出实时通信服务（断开 LeanCloud 云端服务器连接）时需要调用另一个方法：AVIMClient.close(AVIMClientCallback cb)。
-> open/close 这两个方法是成对出现，在聊天过程中只需要调用一次即可，无需多次调用的。
+{{ im.clientOpenClose({open: "AVIMClient.open(AVIMClientCallback cb)", close: "AVIMClient.close(AVIMClientCallback cb)"}) }}
 
 {% endblock %}
 
