@@ -1,6 +1,6 @@
 #  数据存储开发指南 &middot; Unity
 
-如果还没有安装 LeanCloud Unity SDK，请阅读 [快速入门](./start.html) 来获得该 SDK。我们的 SDK 兼容 Unity 4.2 及更高版本，支持使用 Unity 开发的 iOS、Android、Windows Phone 8、Windows Store、Windows Desktop，以及网页游戏。
+如果还没有安装 LeanCloud Unity SDK，请阅读 [SDK 下载](./sdk_down.html) 来获得该 SDK。我们的 SDK 兼容 Unity 5 及更高版本，支持使用 Unity 开发的 iOS、Android、Windows Phone 8、Windows Store、Windows Desktop，以及网页游戏。
 
 如果希望从演示项目中学习，请访问我们的 GitHub 资源库，下载 [Unity SDK Demos](https://github.com/leancloud/unity-sdk-demos) 。
 
@@ -22,7 +22,14 @@ LeanCloud 的每一个账户都可以创建多个应用。同一个应用可分�
 
 ### 初始化
 
-目前 Unity 的初始化只推荐用 `GameObject` 绑定 `AVOSCloudInitializeBehaviour` 脚本的方法，不推荐使用显式调用 `AVClient.Initialize` 的方法。
+在 `LeanCloud.Core.dll` 中有一个 `AVInitializeBehaviour` 把它拖拽到任意一个 `GameObject` 上然后根据下图填写 Application ID 以及 Application Key：
+  
+  ![unity-init](images/unity-init.png)
+
+
+默认中国大陆节点对应的 `Region` 是 `Public_CN`,如果是北美节点请选择 `Public_US`。
+
+目前 Unity 的初始化只推荐用 `GameObject` 绑定 `AVInitializeBehaviour` 脚本的方法，不推荐使用显式调用 `AVClient.Initialize` 的方法。
 
 ## 对象
 

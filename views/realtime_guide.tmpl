@@ -1,21 +1,12 @@
 {% import "views/_helper.njk" as docs %}
 {% import "views/_im.njk" as im %}
-{% set appid = '{{appid}}' %}
-{% set appkey = '{{appkey}}' %}
-{% set masterkey = '{{masterkey}}' %}
-
 #  实时通信开发指南 &middot; {{platform_name}}
-
-## 简介
 
 实时通信服务可以让你一行后端代码都不用写，就能做出一个功能完备的实时聊天应用，或是一个实时对战类的游戏。所有聊天记录都保存在云端，离线消息会通过消息推送来及时送达，推送消息文本可以灵活进行定制。
 
->在继续阅读本文档之前，请先阅读[《实时通信开发指南》](./realtime_v2.html)，了解一下实时通信的基本概念和模型。
+在继续阅读本文档之前，请先阅读[《实时通信开发指南》](./realtime_v2.html)，了解一下实时通信的基本概念和模型。
 
 {% block supportedRuntime %}{% endblock %}
-
-### 文档贡献
-我们欢迎和鼓励大家对本文档的不足提出修改建议。请访问我们的 [Github 文档仓库](https://github.com/leancloud/docs) 来提交 Pull Request。
 
 ## Demo
 相比阅读文档，如果你更喜欢从代码入手了解功能的具体实现，可以下载 Demo 来研究：
@@ -31,7 +22,7 @@
 
 ## 单聊
 
-我们先从最简单的环节入手。此场景类似于微信的私聊、微博的私信和 QQ 单聊。我们创建了一个统一的概念来描述聊天的各种场景：`AVIMConversation`（对话），在[《实时通信开发指南》](./realtime_v2.html) 里也有相关的详细介绍。
+我们先从最简单的环节入手。此场景类似于微信的私聊、微博的私信和 QQ 单聊。我们创建了 `AVIMConversation`（对话）这个统一的概念来描述聊天的各种场景，《[实时通信开发指南](./realtime_v2.html)》也有相关介绍。
 
 ### 发送消息
 
@@ -47,11 +38,7 @@ Tom 想给 Jerry 发一条消息，实现代码如下：
 ```
 {% endblock %}
 
-{% if node=='qcloud' %}
-执行完以上代码，在 LeanCloud 网站的 控制台 /（选择应用）/ 存储 / 数据 / `_Conversation ` 表 中多了一行数据，其字段含义如下：
-{% else %}
-执行完以上代码，在 LeanCloud 网站的 [控制台 /（选择应用）/ 存储 / 数据 / `_Conversation ` 表](/data.html?appid={{appid}}#/_Conversation) 中多了一行数据，其字段含义如下：
-{% endif %}
+执行完以上代码，在 {% if node == 'qcloud' %}LeanCloud 控制台 > 存储 > 数据 > `_Conversation` 表{% else %}[LeanCloud 控制台 > 存储 > 数据 > `_Conversation`](/dashboard/data.html?appid={{appid}}#/_Conversation){% endif %} 中多了一行数据，其字段含义如下：
 
 名称|类型|描述
 ---|---|---

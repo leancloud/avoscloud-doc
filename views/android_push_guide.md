@@ -269,12 +269,7 @@ public class MyActivity extends Activity {
 intent.putExtra(AVConstants.PUSH_INTENT_KEY, 1);
 ```
 
-{% if node=='qcloud' %}
-然后当 MyActiviy 里 `getIntent()` 拿到这个 **intent** 后，执行 `AVAnalytics.trackAppOpened(intent);` 时发现 `PUSH_INTENT_KEY` 存在且为 1，则认定其来自推送。该统计可以通过 ｀请求分析 > Push 打开｀ 查看。
-{% else %}
-然后当 MyActiviy 里 `getIntent()` 拿到这个 **intent** 后，执行 `AVAnalytics.trackAppOpened(intent);` 时发现 `PUSH_INTENT_KEY` 存在且为 1，则认定其来自推送。该统计可以通过 [请求分析 > Push 打开](/apistat.html?appid={{appid}}#/_appOpenWithPush) 查看。
-{% endif %}
-
+然后当 MyActiviy 里 `getIntent()` 拿到这个 **intent** 后，执行 `AVAnalytics.trackAppOpened(intent);` 时发现 `PUSH_INTENT_KEY` 存在且为 1，则认定其来自推送。该统计可以通过 {% if node=='qcloud' %}**控制台 > 分析 > 行为分析 > 应用使用**{% else %}[控制台 > 分析 > 行为分析 > 应用使用](/stat.html?appid={{appid}}#/stat/appuse){% endif %} 查看。
 
 ## 混合推送
 {% if node != 'us' %}

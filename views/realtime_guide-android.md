@@ -11,10 +11,10 @@
 {% block demo %}
 * [LeanMessage](https://github.com/leancloud/LeanMessage-Demo)（推荐）
 * [LeanChat](https://github.com/leancloud/leanchat-android)
-{% endblock %}
+  {% endblock %}
 
 {% block oneOnOneChat_sent %}
-<div class="callout callout-info">注意：**启用实时通信一定要正确配置** `AndroidManifest.xml`，请仔细阅读 [Android SDK 初始化配置](sdk_setup-android.html#初始化)。</div>
+{{ docs.alert("启用实时通信一定要正确配置 `AndroidManifest.xml`，请仔细阅读 [Android SDK 初始化配置](sdk_setup-android.html#初始化)。") }}
 
 ```
   public void sendMessageToJerryFromTom() {
@@ -52,6 +52,9 @@
     });
   }
 ```
+
+{{ im.clientOpenClose({open: "AVIMClient.open(AVIMClientCallback cb)", close: "AVIMClient.close(AVIMClientCallback cb)"}) }}
+
 {% endblock %}
 
 {% block oneOnOneChat_received %}
@@ -359,7 +362,7 @@ AVIMMessageManager.registerMessageHandler(AVIMImageMessage.class,
         }
       }
     });
-``` 
+```
 {% endblock %}
 
 {% block audioMessage_url_sent %}
@@ -546,7 +549,7 @@ AVIMMessageManager.registerMessageHandler(AVIMAudioMessage.class,
 ```
       AVIMLocationMessage m = new AVIMLocationMessage();
       m.setLocation(new AVGeoPoint(45.0,34.0));
- ```
+```
 {% endblock %}
 
 {% block locationMessage_sent %}
@@ -809,27 +812,27 @@ onOfflineMessagesUnread(AVIMClient client, AVIMConversation conversation, int un
 {% block message_Properties_intro %}
 消息类均包含以下公用属性：
 
-属性|描述|类型
----|---|---
-content|String|消息内容
-clientId|String|指消息发送者的 clientId 
-conversationId|String|消息所属对话 id
-messageId|String|消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 id 
-timestamp|long|消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。
-receiptTimestamp|long| 消息被对方接收到的时间。消息被接收之后，由 LeanCloud 云端赋予的全局的时间戳。
-status|AVIMMessageStatus 枚举|消息状态，有五种取值：<br/><br/>`AVIMMessageStatusNone`（未知）<br/>`AVIMMessageStatusSending`（发送中）<br/>`AVIMMessageStatusSent`（发送成功）<br/>`AVIMMessageStatusReceipt`（被接收）<br/>`AVIMMessageStatusFailed`（失败）
-ioType|AVIMMessageIOType 枚举|消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（发给当前用户）<br/>`AVIMMessageIOTypeOut`（由当前用户发出）
+| 属性               | 描述                   | 类型                                       |
+| ---------------- | -------------------- | ---------------------------------------- |
+| content          | String               | 消息内容                                     |
+| clientId         | String               | 指消息发送者的 clientId                         |
+| conversationId   | String               | 消息所属对话 id                                |
+| messageId        | String               | 消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 id     |
+| timestamp        | long                 | 消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。 |
+| receiptTimestamp | long                 | 消息被对方接收到的时间。消息被接收之后，由 LeanCloud 云端赋予的全局的时间戳。 |
+| status           | AVIMMessageStatus 枚举 | 消息状态，有五种取值：<br/><br/>`AVIMMessageStatusNone`（未知）<br/>`AVIMMessageStatusSending`（发送中）<br/>`AVIMMessageStatusSent`（发送成功）<br/>`AVIMMessageStatusReceipt`（被接收）<br/>`AVIMMessageStatusFailed`（失败） |
+| ioType           | AVIMMessageIOType 枚举 | 消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（发给当前用户）<br/>`AVIMMessageIOTypeOut`（由当前用户发出） |
 我们为每一种富媒体消息定义了一个消息类型，实时通信 SDK 自身使用的类型是负数（如下面列表所示），所有正数留给开发者自定义扩展类型使用，0 作为「没有类型」被保留起来。
 
-消息 | 类型
---- | ---
-文本消息|-1
-图像消息|-2
-音频消息|-3
-视频消息|-4
-位置消息|-5
-文件消息|-6
- 
+| 消息   | 类型   |
+| ---- | ---- |
+| 文本消息 | -1   |
+| 图像消息 | -2   |
+| 音频消息 | -3   |
+| 视频消息 | -4   |
+| 位置消息 | -5   |
+| 文件消息 | -6   |
+
 {% endblock %}
 
 {% set attributes = "`AVIMTypedMessage.attributes`" %}
@@ -971,7 +974,7 @@ public void sendMessage(AVIMMessage message, AVIMConversationCallback callback)
 {% set message_priority_high_varname    = 'MessagePriority.High' %}
 {% set message_priority_normal_varname  = 'MessagePriority.Normal' %}
 {% set message_priority_low_varname     = 'MessagePriority.Low' %}
- 
+
 {% block message_option_priority %}
 ```
 AVIMClient tom = AVIMClient.getInstance("Tom");
@@ -1263,11 +1266,11 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
 {% block conversation_invite_events %}
 邀请成功以后，相关方收到通知的时序是这样的：
 
-No.|邀请者|被邀请者|其他人
----|---|---|---
-1|发出请求 addMembers| | 
-2| |收到 onInvited 通知| 
-3|收到 onMemberJoined 通知| | 收到 onMemberJoined 通知
+| No.  | 邀请者                  | 被邀请者            | 其他人                  |
+| ---- | -------------------- | --------------- | -------------------- |
+| 1    | 发出请求 addMembers      |                 |                      |
+| 2    |                      | 收到 onInvited 通知 |                      |
+| 3    | 收到 onMemberJoined 通知 |                 | 收到 onMemberJoined 通知 |
 {% endblock %}
 
 {% block conversation_left %}
@@ -1300,7 +1303,7 @@ tom.open(new AVIMClientCallback(){
 	  }
 	}
 });
-``` 
+```
 {% endblock %}
 
 {% block conversation_kick %}
@@ -1337,11 +1340,11 @@ william.open(new AVIMClientCallback(){
 {% block conversation_kick_events %}
 踢人时，相关方收到通知的时序如下：
 
-No.|操作者（管理员）|被踢者|其他人
----|---|---|---
-1|发出请求 kickMembers| | 
-2| |收到 onKicked 通知| 
-3|收到 onMemberLeft 通知| |收到 onMemberLeft 通知
+| No.  | 操作者（管理员）           | 被踢者            | 其他人                |
+| ---- | ------------------ | -------------- | ------------------ |
+| 1    | 发出请求 kickMembers   |                |                    |
+| 2    |                    | 收到 onKicked 通知 |                    |
+| 3    | 收到 onMemberLeft 通知 |                | 收到 onMemberLeft 通知 |
 {% endblock %}
 
 {% block conversation_countMember_method %} `AVIMConversation.getMemberCount` {% endblock %}
@@ -1384,15 +1387,15 @@ tom.open(new AVIMClientCallback(){
 {% endblock %}
 
 {% block table_conversation_attributes_intro %}
-AVIMConversation 属性名 | _Conversation 字段|含义
---- | ------------ | -------------
-`conversationId`| `objectId` |全局唯一的 Id
-`name` |  `name` |成员共享的统一的名字
-`members`|`m` |成员列表
-`creator` | `c` |对话创建者
-`attributes`| `attr`|自定义属性
-`isTransient`|`tr`|是否为聊天室（暂态对话）
-`lastMessageAt`|`lm`|该对话最后一条消息，也可以理解为最后一次活跃时间
+| AVIMConversation 属性名 | _Conversation 字段 | 含义                       |
+| -------------------- | ---------------- | ------------------------ |
+| `conversationId`     | `objectId`       | 全局唯一的 Id                 |
+| `name`               | `name`           | 成员共享的统一的名字               |
+| `members`            | `m`              | 成员列表                     |
+| `creator`            | `c`              | 对话创建者                    |
+| `attributes`         | `attr`           | 自定义属性                    |
+| `isTransient`        | `tr`             | 是否为聊天室（暂态对话）             |
+| `lastMessageAt`      | `lm`             | 该对话最后一条消息，也可以理解为最后一次活跃时间 |
 
 {% endblock %}
 

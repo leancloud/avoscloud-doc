@@ -1,3 +1,17 @@
+{% from 'views/_helper.njk' import 
+  noteWrap
+%}
+
+{% macro clientOpenClose(methods={}) -%}
+  {% if methods | length  %}
+  {% call noteWrap() -%}
+`{{methods.open}}` 这个方法表示开始连接 LeanCloud 云端服务器（即启动实时通信服务），**它在整个使用周期内只需要调用一次**。用户退出实时通信服务（断开 LeanCloud 云端服务器连接）时需要在 IMClient 对象上调用 `{{methods.close}}`。
+
+这两个方法是成对使用的，在聊天过程中只需要调用一次，**无需多次调用**。
+    {%- endcall %}
+  {% endif %}
+{%- endmacro %}
+
 {% macro signature(heading="") -%}
   {% if heading != "" %}{{ heading }}{% endif %}
 

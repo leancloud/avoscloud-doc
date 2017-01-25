@@ -231,6 +231,26 @@ var codeBlockTabber = (function() {
       'lang-cs': 'C#'
     };
 
+    // Multilingual init
+    var $translatableElements = $('code, var');
+    var snippetMap = {};
+    var snippetDefault = 'objc';
+    var snippetsJson = 'custom/js/languages.json';
+    $.getJSON(snippetsJson, function(data) {
+      snippetMap = data;
+    })
+    .done(function() {
+      $.each($translatableElements, function () {
+        for (var key in snippetMap[snippetDefault]) {
+          if ($(this).text() === key) {
+            $(this).attr('data-translatable', key);
+          }
+        }
+      });
+    })
+    .fail(function() { console.log('fetch language error'); })
+    .always(function() { console.log('fetch language complete'); });
+
     $.each($codeBlocks, function () {
       var $current = $(this);
       var currentCodeClass = $current.children().attr('class');
@@ -348,6 +368,17 @@ var codeBlockTabber = (function() {
           });
         } else {
           console.log('No matching codeblock in current scope!');
+        }
+      });
+
+      // Update strings for specific language
+      $.each($translatableElements, function () {
+        var currentLang = targetLang.split('-').pop();
+        var snippets = snippetMap[currentLang];
+        for (var key in snippets) {
+          if ($(this).data('translatable') === key) {
+            $(this).text(snippets[key]);
+          }
         }
       });
     });

@@ -25,20 +25,20 @@
 
 ### 短信验证 API
 
-URL|HTTP|功能
-:---|:---|---
-/1.1/requestSmsCode|POST|请求发送短信验证码
-/1.1/verifySmsCode/`<code>`|POST|验证短信验证码
+| URL                         | HTTP | 功能        |
+| :-------------------------- | :--- | --------- |
+| /1.1/requestSmsCode         | POST | 请求发送短信验证码 |
+| /1.1/verifySmsCode/`<code>` | POST | 验证短信验证码   |
 
 ### 用户
-URL|HTTP|功能
-:---|:---|---
-/1.1/usersByMobilePhone|POST|使用手机号码注册或登录
-/1.1/requestMobilePhoneVerify|POST|请求发送用户手机号码验证短信
-/1.1/verifyMobilePhone/`<code>`|POST|使用「验证码」验证用户手机号码
-/1.1/requestLoginSmsCode|POST|请求发送手机号码短信登录验证码
-/1.1/requestPasswordResetBySmsCode|POST|请求发送手机短信验证码重置用户密码
-/1.1/resetPasswordBySmsCode/`<code>`|PUT|验证手机短信验证码并重置密码
+| URL                                  | HTTP | 功能                |
+| :----------------------------------- | :--- | ----------------- |
+| /1.1/usersByMobilePhone              | POST | 使用手机号码注册或登录       |
+| /1.1/requestMobilePhoneVerify        | POST | 请求发送用户手机号码验证短信    |
+| /1.1/verifyMobilePhone/`<code>`      | POST | 使用「验证码」验证用户手机号码   |
+| /1.1/requestLoginSmsCode             | POST | 请求发送手机号码短信登录验证码   |
+| /1.1/requestPasswordResetBySmsCode   | POST | 请求发送手机短信验证码重置用户密码 |
+| /1.1/resetPasswordBySmsCode/`<code>` | PUT  | 验证手机短信验证码并重置密码    |
 
 ### 请求和响应格式
 
@@ -74,12 +74,12 @@ curl -X POST \
 
 这里必须使用 POST 方式来发送请求，请求体里支持的参数有：
 
-参数|约束|描述
-:---|:---:|:---
-mobilePhoneNumber|必填|目标手机号码
-ttl||验证码有效时间。单位分钟（默认为 **10 分钟**）
-name||应用名字（默认为 LeanCloud 控制台填写的应用名。）
-op||操作类型
+| 参数                |  约束  | 描述                             |
+| :---------------- | :--: | :----------------------------- |
+| mobilePhoneNumber |  必填  | 目标手机号码                         |
+| ttl               |      | 验证码有效时间。单位分钟（默认为 **10 分钟**）    |
+| name              |      | 应用名字（默认为 LeanCloud 控制台填写的应用名。） |
+| op                |      | 操作类型                           |
 
 假设有如下调用：
 
@@ -113,8 +113,8 @@ curl -X POST \
 
 `smsType` 允许的取值有：
 
- - **voice**：发送语音验证码
- - **sms**：发送普通短信验证码
+- **voice**：发送语音验证码
+- **sms**：发送普通短信验证码
 
 此接口与之前的 [验证短信 API](#短信验证_API) 完全兼容，如果你不需要此服务，完全不需要修改之前的发送短信代码。它的 [发送限制](#短信有什么限制吗_) 与短信验证码相同。
 
@@ -132,13 +132,15 @@ curl -X POST \
 
 其中 `verifySmsCode` 后面是手机收到的 6 位数字验证码。`mobilePhoneNumber` 是收到短信的手机号码。
 
-{% call docs.notes() %}
+{% call docs.noteWrap() %}
 由于运营商和渠道的限制，短信验证码（也包括语音验证码）向同一手机号码发送要求间隔至少一分钟，并且每天向同一手机号码发送次数不能超过 5 次，**因此建议采用 [图片验证码](#图片验证码)、倒数计时等措施来控制频率** 提示用户，防止短信轰炸等恶劣情况发生。
 
 另外，请了解有关短信的 [其他限制](#短信有什么限制吗_)。
 {% endcall %}
 
-<!--
+{{ sms.fixedVerificationCode() }}
+
+{#
 ### 国际短信
 
 上面发送短信验证码和语音验证码，默认都是对国内号码。我们也开通了国际短信验证码服务（语音验证码在海外还不可用）。要发送国际短信，只需在发送 `https://{{host}}/1.1/requestSmsCode` 请求的时候，额外加上 `countryCode` 这一参数即可。
@@ -157,7 +159,7 @@ curl -X POST \
 ```
 
 除了所增加的 `countryCode` 之外，发送国际短信和国内短信的请求参数完全一样。
--->
+#}
 
 ## 自定义短信模板
 

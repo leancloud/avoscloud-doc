@@ -9,23 +9,33 @@
   {{ callout(paragraph(content),"danger") | safe }}  
 {%- endmacro %}
 
-{% macro alerts() -%}
+{% macro alertWrap() -%}
   {{ callout(paragraph(caller()),"danger") | safe }}  
+{%- endmacro %}
+
+{% macro alertInline(content) -%}
+  {{ htmlTag("span", {class:"callout-danger", style:"background-color: transparent;"}, content) | safe }}  
 {%- endmacro %}
 
 {% macro note(content) -%}
   {{ callout(paragraph(content),"info") | safe }}  
 {%- endmacro %}
 
-{% macro notes() -%}
+{% macro noteWrap() -%}
   {{ callout(paragraph(caller()),"info") | safe }}  
 {%- endmacro %}
 
 {% macro callout(content, type) %}
   {% if content | trim != "" -%}
-    <div class="callout callout-{{type}}">{{ content | replace(r/<p><\/p>/g,"") | safe }}</div>
+    <div class="callout callout-{{type}}">{{ content | replace(r/<p>\s*<\/p>/gi,"") | safe }}</div>
   {%- endif %}
 {% endmacro %}
+
+{% macro nowrap(content, tag="code", attrs={class: "text-nowrap"}) -%}
+  {% if content | trim != "" -%}
+    {{ htmlTag(tag, attrs, content) | safe }}
+  {%- endif %}
+{%- endmacro %}
 
 {% macro mustache(name, tag="code", attrs={"ng-non-bindable": null}) -%}
   {% if tag | trim != "" -%}
@@ -47,4 +57,19 @@
   {% for key, value in obj -%}
     {% if value == null %}{{key}} {% else %}{{key}}="{{value}}" {% endif %}
   {%- endfor %}
+{%- endmacro %}
+
+{% macro bubbleWrap() -%}
+  {# short message: <samp ng-non-bindable class="bubble"></samp> #}
+  {{ htmlTag("samp", {"ng-non-bindable": null,class: "bubble"}, caller()) }}
+{%- endmacro %}
+
+{% macro bubble(content) -%}
+  {# short message: <samp ng-non-bindable class="bubble"></samp> #}
+  {{ htmlTag("samp", {"ng-non-bindable": null,class: "bubble"}, content) }}
+{%- endmacro %}
+
+{% macro trimWhiteSpace(s) -%}
+  {# remove line breaks, blanks, tab #}
+  {{ s | replace(r/^(\s)+|(\1)+$/gim,"") | safe }} 
 {%- endmacro %}

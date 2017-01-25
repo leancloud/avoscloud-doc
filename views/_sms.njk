@@ -1,11 +1,22 @@
-{% from
-     "views/_helper.njk"
-   import
+{% from "views/_helper.njk" import
      alert
 %}
 
-{% macro signature(heading="") %}
-{% if heading != "" %}{{ heading }}{% endif %}
+{% macro fixedVerificationCode(headingLevel="###") -%}
+{{headingLevel}} 测试用的手机号和固定验证码
+
+对于使用「手机号 + 验证码」登录的应用来说，在上架前提交至 Apple Store 进行审核的过程中，可能会面临 Apple 人员因没有有效的手机号码而无法登录来进行评估审核，或者开发者也无法提供固定手机号和验证码的尴尬情况。
+
+另外，开发者在开发测试过程中也会面临在短时间内需要多次登录或注销的操作，由于验证码有时间间隔与总次数限制，这样就会带来种种不便。
+
+为解决这些问题，我们允许为每个应用设置一个用于测试目的的手机号码，LeanCloud 平台会为它生成一个**固定的验证码**，每次使用这一对号码组合进行验证都会得到成功的结果。
+
+进入 [应用控制台](/applist.html#/apps) > **消息** > **短信** > **设置** > **其他** 来设置 **测试手机号**。
+{%- endmacro %}
+
+
+{% macro signature(heading="") -%}
+  {% if heading != "" %}{{ heading }}{% endif %}
 
 短信签名是指短信内容里用【】括起来的短信发送方名称，根据运营商的规定，它必须出现在**短信内容的开头或结尾**。你需要在 [控制台 > 消息 > 短信 > 设置 > 短信签名](/messaging.html?appid={{appid}}#/message/sms/conf) 为每个应用创建合法的短信签名。如果一个应用拥有多个短信签名，请确保选择其一作为**默认签名**。
 
@@ -18,5 +29,5 @@
  - 不允许全部为英文字符或全部为数字
  - 不需要带上实心方头括号【】
  - 一个应用最多可以拥有 3 个签名（包含审核未通过的签名）。
-{% endmacro %}
+{%- endmacro %}
 
