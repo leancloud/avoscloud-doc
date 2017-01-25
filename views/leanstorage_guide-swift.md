@@ -24,7 +24,6 @@
 {% set byteType= "NSData" %}
 {% set acl_guide_url = "[Objective-C 权限管理使用指南（Swift 文档待补充）](acl_guide-objc.html)"%}
 {% set sms_guide_url = "[Objective-C 短信服务使用指南（Swift 文档待补充）](sms_guide-objc.html#注册验证)" %}
-{% set relation_guide_url = "[Objective-C 数据模型设计指南（Swift 文档待补充）](relation_guide-objc.html)" %}
 {% set inapp_search_guide_url = "[Objective-C 应用内搜索指南](app_search_guide.html)" %}
 {% set status_system_guide_url = "[Objective-C 应用内社交模块](status_system.html#iOS_SDK)" %}
 {% set sns_guide_url = "[Objective-C SNS 开发指南](sns.html#iOS_SNS_组件)" %}
@@ -1279,9 +1278,7 @@ let to    = LCGeoPoint.Distance(value: 2.0, unit: .Kilometer)
 // 查询离指定 point 距离在 1.0 和 2.0 公里的 Todo
 query.whereKey("whereCreated", .LocatedNear(origin: point, from: from, to: to))
 ```
-{% endblock %} code_object_fetch_with_keys
-
-{% block relation_guide_url %}[Objective-C 数据模型设计指南](relation_guide-objc.html){% endblock %}
+{% endblock %}
 
 {% set sms_guide_url = '[Objective-C 短信服务使用指南](sms_guide-objc.html#注册验证)' %}
 

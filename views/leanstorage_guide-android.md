@@ -24,7 +24,6 @@
 {% set byteType= "byte[]" %}
 {% set acl_guide_url= "[Android 权限管理使用指南](acl_guide-android.html)" %}
 {% set sms_guide_url = '[短信服务使用指南 · 注册验证](sms_guide-android.html#注册验证)' %}
-{% set relation_guide_url = "[Android 数据模型设计指南](relation_guide-android.html)" %}
 {% set inapp_search_guide_url = "[Android 应用内搜索指南](app_search_guide.html)" %}
 {% set status_system_guide_url = "[Android 应用内社交模块](status_system.html#Android_SDK)" %}
 {% set sns_guide_url = "[Android SNS 开发指南](sns.html#Android_SNS_组件)" %}

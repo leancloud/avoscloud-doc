@@ -169,7 +169,7 @@ objectId|user|installation|createdAt|updatedAt
 
 <div class="callout callout-info">使用中间表方式来管理「设备-用户」这种多对多的关系具备很大的灵活性，例如在 `UserInstallation` 表中存储一些自定义的属性。</div>
 
-我们不建议开发者在 `_Installation` 表里添加过多的自定义字段，它本身的查询权限是关闭的，我们不允许客户端直接查询 `_Installation` 表，因此利用中间表（或者称之为「关联表」）提高实用性以及预防查询的过载。
+我们不建议开发者在 `_Installation` 表里添加过多的自定义字段，它本身的查询权限是关闭的，我们不允许客户端直接查询 `_Installation` 表，因此利用中间表来提高实用性以及预防查询的过载。
 
 ## 接收推送消息
 

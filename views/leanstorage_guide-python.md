@@ -24,7 +24,6 @@
 {% set byteType= "byte[]" %}
 {% set acl_guide_url = "[Python SDK 权限管理使用指南](acl_guide-python.html)" %}
 {% set sms_guide_url = "（Python SDK 文档待补充）" %}
-{% set relation_guide_url = "[Python 数据模型设计指南](relation_guide-python.html)" %}
 {% set inapp_search_guide_url = "（Python SDK 暂不支持）" %}
 {% set status_system_guide_url = "（Python SDK 暂不支持）" %}
 {% set sns_guide_url = "（Python 文档待补充）" %}

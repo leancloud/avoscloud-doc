@@ -1,16 +1,11 @@
-{% set appid = '{{appid}}' %}
-{% set appkey = '{{appkey}}' %}
-{% set masterkey = '{{masterkey}}' %}
-
+{% import "views/_helper.njk" as docs %}
 # 数据模型设计指南
-
 
 多年以来，关系型数据库已经成为了企业数据管理的基础，很多工程师对于关系模型和 6 个范式都比较了解，但是如今来构建和运行一个应用，随着数据来源的越发多样和用户量的不断增长，关系数据库的限制逐渐成为业务的瓶颈，因此越来越多的公司开始向其它 NoSQL 数据库进行迁移。
 
-众所周知，LeanCloud 存储后台大量采用了 MongoDB 这种文档数据库来存储结构化数据，正因如此我们才能提供面向对象的、海量的、schema free 的存储能力。从传统的关系型数据库转换到 LeanCloud（or MongoDB）存储系统，最基础的改变就是数据建模，也就是「schema 设计」。
+LeanCloud 的存储后台大量采用了 MongoDB 这种文档数据库来存储结构化数据，正因如此我们才能提供面向对象的、海量的、无需创建数据表结构即存即用的存储能力。从传统的关系型数据库转换到 LeanCloud 或者 MongoDB 存储系统，最基础的改变就是「数据建模 Schema 设计」。
 
-## Schema 设计
-在探索 schema 设计之前，我们先统一一下关系型数据库、MongoDB 和 LeanCloud 上的对应术语，如下表所示：
+首先来梳理一下关系型数据库、MongoDB 和 LeanCloud 的对应术语：
 
 RDBMS    | MongoDB    | LeanCloud         
 -------- | ---------- | ----------------- 
@@ -18,32 +13,27 @@ Database | Database   | Application
 Table    | Collection | Class             
 Row      | Document   | Object            
 Index    | Index      | Index             
-JOIN     | Embedded，Reference  | Embedded Object, Pointer, ~~Relation~~
+JOIN     | Embedded，Reference  | Embedded Object, Pointer, Relation
 
-关系型数据库和文档型数据库的根本区别在于：
+在 LeanCloud 上进行数据建模设计需要数据架构师、开发人员和 DBA 在观念上做一些转变：之前是传统的关系型数据模型，所有数据都会被映射到二维的表结构「行」和「列」；现在是丰富、动态的对象模型，即 MongoDB 的「文档模型」，包括内嵌子对象和数组。
 
-- RDBMS 优化了数据存储效率（它的前提是系统中存储是一个非常昂贵的组件）。
-- 文档数据库优化了数据访问（它认为开发时间和发布速度现在是比存储更可宝贵的东西）
+## 文档模型
 
-在 LeanCloud 上进行 Schema 设计需要数据架构师、开发人员和 DBA 在观念上做一些转变：之前是传统的关系型数据模型，所有数据都会被映射到二维的表结构——行和列；现在是丰富、动态的对象模型（也就是 MongoDB 的「文档模型」），包括内嵌子对象和数组。
+{{ docs.note("后文中我们有时候采用 LeanCloud 的核心概念 **Object（对象）**，有时候提到 MongoDB 中的名词 **Document（文档）**，它们是等同的。") }}
 
-### 文档模型
-
-> 后文中我们有时候采用 LeanCloud 的核心概念**Object（对象）**，有时候提到 MongoDB 中的名词**Document（文档）**，他们是等同的。
-
-我们现在使用的大部分数据，都有比较复杂的结构，用 「JSON 对象」来建模是比「表」更高效的方式。通过内嵌子对象和数组，JSON 对象可以和应用层的数据结构完全对齐。这对开发者来说，会更容易将应用层的数据映射到数据库里的对象。相反，将应用层的数据映射到关系数据库的表，则会降低开发效率，而比较普遍的增加额外的对象关系映射（ORM）层的做法，也同时降低了 schema 扩展和查询优化的灵活性，引入了新的复杂度。
+我们现在使用的大部分数据都有比较复杂的结构，用「JSON 对象」来建模比用「表」会更加高效。通过内嵌子对象和数组，JSON 对象可以和应用层的数据结构完全对齐。这对开发者来说，会更容易将应用层的数据映射到数据库里的对象。相反，将应用层的数据映射到关系数据库的表，则会降低开发效率。而比较普遍的增加额外的对象关系映射（ORM）层的做法，也同时降低了 schema 扩展和查询优化的灵活性，引入了新的复杂度。
 
 例如，在 RDBMS 中有父子关系的两张表，通常就会变成 LeanCloud 里面含有内嵌子对象的单文档结构。以下图的数据为例：
 
-- PERSON
+**PERSON 表**
 
 Pers_ID | Surname | First_Name | City 
 ------- | ------- | ---------- | ---- 
-0       |   柳      | 红           |  London    
-1       |   杨      | 真           | Beijing     
-2       |   洛      | 托马斯         |  Zurich    
+0       |   柳      | 红           |  伦敦    
+1       |   杨      | 真           | 北京     
+2       |   洛      | 托马斯         |  苏黎世    
 
-- CAR
+**CAR 表**
 
 Car_ID | Model | Year | Value | Pers_ID 
 ------ | ----- | ---- | ----- | ------- 
@@ -59,35 +49,42 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
 
 ```json
 {
-  first_name:"红",
-  surname: "柳",
-  city:"London",
-  location:[45.123,47.232],
-  cars:[
-    {model:"大众迈腾",
-     year: 2015,
-     value:180000,...},
-    {model:"丰田汉兰达",
-     year: 2016,
-     value:240000,...}
+  "first_name":"红",
+  "surname":"柳",
+  "city":"伦敦",
+  "location":[
+    45.123,
+    47.232
+  ],
+  "cars":[
+    {
+      "model":"大众迈腾",
+      "year":2015,
+      "value":180000
+    },
+    {
+      "model":"丰田汉兰达",
+      "year":2016,
+      "value":240000
+    }
   ]
 }
 ```
 
 文档数据库里的一篇文档，就相当于 LeanCloud 平台里的一个对象。这个例子里的关系模型虽然只由两张表组成（现实中大部分应用可能需要几十、几百甚至上千张表），但是它并不影响我们思考数据的方式。
 
-为了更好地展示关系模型和文档模型的区别，我们考虑下图所示的博客平台的例子。在这里，依赖 RDBMS 的应用需要 join 5 张不同的表来获得一篇博客的完整数据，而在 LeanCloud 中，所有的博客数据都包含在一个文档中，博客作者和评论者的用户信息则通过一个到 User 的引用（指针）进行关联。
+为了更好地展示关系模型和文档模型的区别，我们用一个博客平台来举例。从下图中可以看出，依赖 RDBMS 的应用需要 join 五张不同的表来获得一篇博客的完整数据，而在 LeanCloud 中所有的博客数据都包含在一个文档中，博客作者和评论者的用户信息则通过一个到 User 的引用（指针）进行关联。
 
-![](images/RDBMSvsMongoDB.png)
+![](images/rdbm-vs-mongodb.png)
 
-#### 文档模型的其它优点
+## 文档模型的优点
 
 除了数据表现更加自然之外，文档模型还有性能和扩展性方面的优势：
 
 - 通过单一调用即可获得完整的文档，避免了多表 join 的开销。LeanCloud 的 Object 物理上作为一个单一的块进行存储，只需要一次内存或者磁盘的读操作即可。RDBMS 与此相反，一个 join 操作需要从不同地方多次读取操作才可完成。
-- 文档是自包含的，将数据库内容分布到多个节点（也叫 sharding）会更简单，同时也更容易通过普通硬件的水平扩展获得更高性能。DBA 们不再需要担心跨节点进行 join 操作可能带来的性能恶化问题。
+- 文档是自包含的，将数据库内容分布到多个节点（也叫 Sharding）会更简单，同时也更容易通过普通硬件的水平扩展获得更高性能。DBA 们不再需要担心跨节点进行 join 操作可能带来的性能恶化问题。
 
-### 定义文档 schema
+## 定义文档 Schema
 
 应用的数据访问模式决定了 schema 设计，因此我们需要特别明确以下几点：
 
@@ -97,7 +94,7 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
 
 以此来设计更合适的 schema 结构。
 
-对于普通的「属性名－值」对来说，设计比较简单，和 RDBMS 中平坦的表结构差别不大。对于 1:1 或 1:many 的关系会很自然地考虑使用内嵌对象：
+对于普通的「属性名:值」来说，设计比较简单，和 RDBMS 中平坦的表结构差别不大。对于一对一或 一对多的关系会很自然地考虑使用内嵌对象：
 
 - 数据「所有」和「包含」的关系，都可以通过内嵌对象来进行建模。
 - 同时，在架构上也可以把那些经常需要同时、原子改动的属性作为一个对象嵌入到一个单独的属性中。
@@ -156,7 +153,7 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     studentTom.SaveAsync();
 ```
 
-但并不是所有的 1:1 关系都适合内嵌的方式，对下面的情况后文介绍的「引用」（等同于 MongoDB 的 `reference`）方式会更加合适：
+但并不是所有的一对一关系都适合内嵌的方式，对下面的情况后文介绍的「引用」（等同于 MongoDB 的 reference）方式会更加合适：
 
 - 一个对象被频繁地读取，但是内嵌的子对象却很少会被访问。
 - 对象的一部分属性频繁地被更新，数据大小持续增长，但是剩下的一部分属性基本稳定不变。
@@ -164,26 +161,24 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
 
 接下来我们重点讨论一下在 LeanCloud 上如何通过「引用」机制来实现复杂的关系模型。
 
-## 复杂关系模型的设计
+数据对象之间存在 3 种类型的关系：「一对一」将一个对象与另一个对象关联，「一对多」是一个对象关联多个对象，「多对多」则用来实现大量对象之间的复杂关系。
 
-数据对象之间存在 3 种类型的关系。一对一关系将一个对象与另一个对象关联，一对多关系是一个对象关联多个对象，多对多关系则用来实现大量对象之间的复杂关系。我们支持 4 种方式来构建对象之间的关系（都是通过 MongoDB 的文档引用来实现的）：
+我们支持 4 种方式来构建对象之间的关系，这些都是通过 MongoDB 的文档引用来实现的：
 
 1. Pointers（适合一对一、一对多关系）
 2. Relation（多对多，一对多)
-3. 关联表（多对多）
-4. ~~Arrays（一对多、多对多)~~(不建议使用，请参考[示例](###最后的疑问))
+3. 中间表（多对多）
+4. ~~Arrays（一对多、多对多)~~：不建议使用，请参考[示例](###最后的疑问)
 
-### 一对多关系
+## 一对多关系
 
-在创建一对多关系时，选择用 Pointers、Relation 还是中间表来实现，需要考虑关系中包含的对象数量。如果关系「多」方包含的对象数量非常大（大于 100 左右），那么就必须使用 Pointers。反之，如果对象数量很小（低于 100 或更少），那么 Relation 可能会更方便，特别是在获取父对象的同时得到所有相关的对象，即一对多关系中的「多」。
+### 使用 Pointers 实现一对多关系
 
-#### 使用 Pointers 实现一对多关系
-
-##### Pointers 存储
+#### Pointers 存储
 
 中国的「省份」与「城市」具有典型的一对多的关系。深圳和广州（城市）都属于广东省（省份），而朝阳区和海淀区（行政区）只能属于北京市（直辖市）。广东省对应着多个一级行政城市，北京对应着多个行政区。下面我们使用 Pointers 来存储这种一对多的关系。
 
-<div class="callout callout-info">注：为了表述方便，后文中提及城市都泛指一级行政市以及直辖市行政区，而省份也包含了北京、上海等直辖市。</div>
+> 为了表述方便，后文中提及城市都泛指一级行政市以及直辖市行政区，而省份也包含了北京、上海等直辖市。
 
 ```objc
     AVObject *GuangZhou = [[AVObject alloc] initWithClassName:@"City"];// 广州
@@ -263,7 +258,6 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
 
 要关联一个已经存在于云端的对象，例如将「东莞市」添加至「广东省」，方法如下：
 
-
 ```objc
     // 假设 GuangDong 的 objectId 为 56545c5b00b09f857a603632
     AVObject *GuangDong = [AVObject objectWithoutDataWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];    
@@ -313,10 +307,9 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
 
 执行上述代码后，在应用控制台可以看到 `dependent` 字段显示为 Pointer 数据类型，而它本质上存储的是一个指向 `Province` 这张表的某个 AVObject 的指针。
 
-##### Pointers 查询
+#### Pointers 查询
 
 假如已知一个城市，想知道它的上一级的省份：
-
 
 ```objc
     // 假设东莞作为 City 对象存储的时候它的 objectId 是 568e743c00b09aa22162b11f，这个  objectId 可以在控制台查看
@@ -528,7 +521,8 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
 
 大多数场景下，Pointers 是实现一对多关系的最好选择。
 
-#### 使用 Relation 实现一对多关系
+### 使用 Relation 实现一对多关系
+
 假设可以在省份的一个字段上保留一个指向城市的关系，然后我们在这个关系里面存储着城市对象的列表，这样实现查询也比较容易，因此 LeanCloud 也提供了一个这样的对象 `Relation` 来存储这样的关系。
 
 如下代码演示使用 Relation 来保存城市和省份之间的关系：
@@ -718,21 +712,29 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     });
 ```
 
-### 多对多关系
+### 选择 Pointer 或 Relation 的依据
 
-假设有选课应用，我们需要为 `Student ` 对象和 `Course ` 对象建模。一个学生可以选多门课程，一个课程也有多个学生，这是一个典型的多对多关系。我们必须使用 Arrays 或创建自己的关联表来实现这种关系。决策的关键在于**是否需要为这个关系附加一些属性**。
+在创建一对多关系时，选择用 Pointers、Relation 还是中间表来实现，需要考虑关系中包含的对象数量。
 
-如果不需要附加属性，使用 Arrays 最为简单。通常情况下，使用 Arrays 可以使用更少的查询并获得更好的性能。如果多对多关系中任何一方对象数量可能达到或超过 100，使用 关联表是更好的选择。
+如果关系「多」方包含的对象数量大于 100 左右，那么就必须使用 Pointers。反之，如果对象数量低于 100 或更少，那么 Relation 可能会更方便，特别是在获取父对象的同时得到所有相关的对象，即一对多关系中的「多」。
 
-反之，若需要为关系附加一些属性，就创建一个独立的表（关联表）来存储两端的关系。记住，附加的属性是描述这个关系的，不是描述关系中的任何一方。所附加的属性可以是：
+## 多对多关系
+
+假设有选课应用，我们需要为 `Student` 对象和 `Course ` 对象建模。一个学生可以选多门课程，一个课程也有多个学生，这是一个典型的多对多关系。我们必须使用 Arrays 或创建自己的中间表来实现这种关系。决策的关键在于**是否需要为这个关系附加一些属性**。
+
+如果不需要附加属性，使用 Arrays 最为简单。通常情况下，使用 Arrays 可以使用更少的查询并获得更好的性能。
+
+{{ docs.note("如果多对多关系中任何一方对象数量可能达到或超过 100，使用中间表是更好的选择。") }}
+
+反之，若需要为关系附加一些属性，就创建一个独立的表（中间表）来存储两端的关系。记住，附加的属性是描述这个关系的，不是描述关系中的任何一方。所附加的属性可以是：
 
 * 关系创建的时间
 * 关系创建者
 * 某人查看此关系的次数
 
-#### 使用关联表实现多对多关系（推荐）
+### 使用中间表实现多对多关系（推荐）
 
-有时我们需要知道更多关系的附加信息，比如在一个学生选课系统中，我们要了解学生打算选修的这门课的课时有多长，或者学生选修是通过手机选修还是通过网站操作的，此时我们可以使用传统的数据模型设计方法：关联表。
+有时我们需要知道更多关系的附加信息，比如在一个学生选课系统中，我们要了解学生打算选修的这门课的课时有多长，或者学生选修是通过手机选修还是通过网站操作的，此时我们可以使用传统的数据模型设计方法「中间表」。
 
 为此，我们创建一个独立的表 `StudentCourseMap` 来保存 `Student` 和 `Course` 的关系：
 
@@ -749,8 +751,8 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     AVObject *studentTom = [[AVObject alloc] initWithClassName:@"Student"];// 学生 Tom
     [studentTom setObject:@"Tom" forKey:@"name"];
 
-    AVObject *courseLinearAlgebra = [[AVObject alloc] initWithClassName:@"Course"];// 线性代数
-    [courseLinearAlgebra setObject:@"Linear Algebra" forKey:@"name"];
+    AVObject *courseLinearAlgebra = [[AVObject alloc] initWithClassName:@"Course"];
+    [courseLinearAlgebra setObject:@"线性代数" forKey:@"name"];
 
     AVObject *studentCourseMapTom= [[AVObject alloc] initWithClassName:@"StudentCourseMap"];// 选课表对象
 
@@ -770,8 +772,8 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     AVObject studentTom = new AVObject("Student");// 学生 Tom
     studentTom.put("name", "Tom");
 
-    AVObject courseLinearAlgebra = new AVObject("Course");// 线性代数
-    courseLinearAlgebra.put("name", "Linear Algebra");
+    AVObject courseLinearAlgebra = new AVObject("Course");
+    courseLinearAlgebra.put("name", "线性代数");
 
     AVObject studentCourseMapTom = new AVObject("StudentCourseMap");// 选课表对象
 
@@ -792,7 +794,7 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     studentTom.set('name', 'Tom');// 学生 Tom
     
     var courseLinearAlgebra = new AV.Object('Course');
-    courseLinearAlgebra.set('name', 'Linear Algebra');// 线性代数
+    courseLinearAlgebra.set('name', '线性代数');
     
     // 选课表对象
     var studentCourseMapTom = new AV.Object('StudentCourseMap');
@@ -817,7 +819,7 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     student_tom.set('name', 'Tom')
 
     course_linear_algebra = leancloud.Object.extend('Course')()
-    course_linear_algebra.set('name', 'Linear Algebra')
+    course_linear_algebra.set('name', '线性代数')
     # 选课表对象
     student_course_map_tom = leancloud.Object.extend('Student_course_map')()
 
@@ -838,8 +840,8 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     AVObject studentTom = new AVObject("Student");// 学生 Tom
     studentTom.Add("name", "Tom");
 
-    AVObject courseLinearAlgebra = new AVObject("Course");// 线性代数
-    courseLinearAlgebra.Add("name", "Linear Algebra");
+    AVObject courseLinearAlgebra = new AVObject("Course");
+    courseLinearAlgebra.Add("name", "线性代数");
 
     AVObject studentCourseMapTom = new AVObject("StudentCourseMap");// 选课表对象
 
@@ -999,8 +1001,8 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     query.WhereEqualTo("student", studentTom);
 ```
 
-#### 使用 Relation 实现多对多关系
-用 Relation 实现多对多可以省略建立中间表，但是也丧失了为关系建立附加属性的功能，但是对于有一部分的需求是可以满足的，例如学生选课系统，可能有些时候仅仅是需要记录一下那些学生选了这门课以及这门课被那些学生选了，因此用 Relation 也是满足需求的。
+### 使用 Relation 实现多对多关系
+用 Relation 实现多对多可以省略建立中间表，但是也丧失了为关系建立附加属性的功能，但是对于有一部分的需求是可以满足的，例如学生选课系统，可能有些时候仅仅是需要记录一下哪些学生选了这门课以及这门课被哪些学生选了，因此用 Relation 也是满足需求的。
 
 如下代码演示在学生对象中设置一个 Relation 类型的属性 `coursesChosen` 用来保存所选课程：
 
@@ -1008,14 +1010,14 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     AVObject *studentTom = [[AVObject alloc] initWithClassName:@"Student"];// 学生 Tom
     [studentTom setObject:@"Tom" forKey:@"name"];
     
-    AVObject *courseLinearAlgebra = [[AVObject alloc] initWithClassName:@"Course"];// 线性代数
-    [courseLinearAlgebra setObject:@"Linear Algebra" forKey:@"name"];
+    AVObject *courseLinearAlgebra = [[AVObject alloc] initWithClassName:@"Course"];
+    [courseLinearAlgebra setObject:@"线性代数" forKey:@"name"];
     
-    AVObject *courseObjectOrientedProgramming = [[AVObject alloc] initWithClassName:@"Course"];// 面向对象程序设计
-    [courseObjectOrientedProgramming setObject:@"Object-Oriented Programming" forKey:@"name"];
+    AVObject *courseObjectOrientedProgramming = [[AVObject alloc] initWithClassName:@"Course"];
+    [courseObjectOrientedProgramming setObject:@"面向对象程序设计" forKey:@"name"];
     
-    AVObject *courseOperatingSystem = [[AVObject alloc] initWithClassName:@"Course"];// 操作系统
-    [courseOperatingSystem setObject:@"Operating System" forKey:@"name"];
+    AVObject *courseOperatingSystem = [[AVObject alloc] initWithClassName:@"Course"];
+    [courseOperatingSystem setObject:@"操作系统" forKey:@"name"];
     
     [AVObject saveAllInBackground:@[courseLinearAlgebra,courseObjectOrientedProgramming,courseOperatingSystem] block:^(BOOL succeeded, NSError *error) {
         if (error) {
@@ -1035,14 +1037,14 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     final AVObject studentTom = new AVObject("Student");// 学生 Tom
     studentTom.put("name", "Tom");
 
-    final AVObject courseLinearAlgebra = new AVObject("Course");// 线性代数
-    courseLinearAlgebra.put("name", "Linear Algebra");
+    final AVObject courseLinearAlgebra = new AVObject("Course");
+    courseLinearAlgebra.put("name", "线性代数");
 
-    final AVObject courseObjectOrientedProgramming = new AVObject("Course");// 面向对象程序设计
-    courseObjectOrientedProgramming.put("name", "Object-Oriented Programming");
+    final AVObject courseObjectOrientedProgramming = new AVObject("Course");
+    courseObjectOrientedProgramming.put("name", "面向对象程序设计");
 
-    final AVObject courseOperatingSystem = new AVObject("Course");// 操作系统
-    courseOperatingSystem.put("name", "Operating System");
+    final AVObject courseOperatingSystem = new AVObject("Course");
+    courseOperatingSystem.put("name", "操作系统");
 
     AVObject.saveAllInBackground(Arrays.asList(courseLinearAlgebra, courseObjectOrientedProgramming, courseOperatingSystem), new SaveCallback() {
         @Override
@@ -1061,13 +1063,13 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     studentTom.set('name', 'Tom');// 学生 Tom
     
     var courseLinearAlgebra = new AV.Object('Course');
-    courseLinearAlgebra.set('name', 'Linear Algebra');// 线性代数
+    courseLinearAlgebra.set('name', '线性代数');
     
     var courseObjectOrientedProgramming = new AV.Object('Course');
-    courseObjectOrientedProgramming.set('name', 'Object-Oriented Programming');;// 面向对象程序设计
+    courseObjectOrientedProgramming.set('name', '面向对象程序设计');;
     
     var courseOperatingSystem = new AV.Object('Course');
-    courseOperatingSystem.set('name', 'Operating System');// 操作系统
+    courseOperatingSystem.set('name', '操作系统');
     
     AV.Object.saveAll([courseLinearAlgebra, courseObjectOrientedProgramming, courseOperatingSystem]).then(function (result) {
         if (result) {
@@ -1091,13 +1093,13 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     student_tom.set('name', 'Tom')
 
     course_linear_algebra = leancloud.Object.extend('Cource')()
-    course_linear_algebra.set('name', 'Linear Algebra')
+    course_linear_algebra.set('name', '线性代数')
 
     course_object_oriented_programming = leancloud.Object.extend('Cource')()
-    course_object_oriented_programming.set('name', 'Object-Oriented Programming')
+    course_object_oriented_programming.set('name', '面向对象程序设计')
 
     course_operating_system = leancloud.Object.extend('Cource')()
-    course_operating_system.set('name', 'Operating System')
+    course_operating_system.set('name', '操作系统')
     # 批量存储所有课程
     leancloud.Object.save_all(
         [course_linear_algebra, course_object_oriented_programming, course_operating_system])
@@ -1113,14 +1115,14 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     AVObject studentTom = new AVObject("Student");// 学生 Tom
     studentTom.Add("name", "Tom");
 
-    AVObject courseLinearAlgebra = new AVObject("Course");// 线性代数
-    courseLinearAlgebra.Add("name", "Linear Algebra");
+    AVObject courseLinearAlgebra = new AVObject("Course");
+    courseLinearAlgebra.Add("name", "线性代数");
 
-    AVObject courseObjectOrientedProgramming = new AVObject("Course");// 面向对象程序设计
-    courseObjectOrientedProgramming.Add("name", "Object-Oriented Programming");
+    AVObject courseObjectOrientedProgramming = new AVObject("Course");
+    courseObjectOrientedProgramming.Add("name", "面向对象程序设计");
 
-    AVObject courseOperatingSystem = new AVObject("Course");// 操作系统
-    courseOperatingSystem.Add("name", "Operating System");
+    AVObject courseOperatingSystem = new AVObject("Course");
+    courseOperatingSystem.Add("name", "操作系统");
 
     AVObject.SaveAllAsync(new AVObject[] { courseLinearAlgebra, courseObjectOrientedProgramming, courseOperatingSystem }).ContinueWith(t => 
     {
@@ -1133,12 +1135,13 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     });
 ```
 
-##### Relation 的单向特性
+#### Relation 的单向特性
 Relation 既可以实现一对多也可以实现多对多，但是区别在于：
-- 当关系是多对多的时候，例如学生选课关系中，可以在学生这里存一个 Relation 保存学生选了哪些课，也可以在课程那里存一个 Relation 保存那些学生选了这门课。
-- 当关系是一对多的时候，例如城市和省份的关系中，则不能在城市对象上存一个 Relation 来指向他所在的省份，因为这违反了 Relation 的设计初衷。
 
-### 一对一关系
+- 当关系是多对多的时候，例如学生选课关系中，可以在学生这里存一个 Relation 保存学生选了哪些课，也可以在课程那里存一个 Relation 保存那些学生选了这门课。
+- 当关系是一对多的时候，例如城市和省份的关系中，则不能在城市对象上存一个 Relation 来指向它所在的省份，因为这违反了 Relation 的设计初衷。
+
+## 一对一关系
 
 当你需要将一个对象拆分成两个对象时，一对一关系是一种重要的需求。这种需求应该很少见，但是在下面的实例中体现了这样的需求：
 
@@ -1149,67 +1152,66 @@ Relation 既可以实现一对多也可以实现多对多，但是区别在于�
 * **更灵活的文件对象**<br/>
   AVFile 可以方便地存取文件，但对对象进行查询和修改等操作就不是很方便了。此时可以使用 AVObject 构造一个自己的文件对象并与 AVFile 建立一对一关联，将文件属性存于 AVObject 中，这样既可以方便查询修改文件属性，也可以方便存取文件。
   
-### 关联数据的删除
+## 关联数据的删除
 当表中有一个 Pointer 指向的源数据被删除时，这个源数据对应的 Pointer **不会**被自动删除。所以建议用户在删除源数据时自行检查是否有 Pointer 指向这条数据，基于业务场景有必要做数据清理的话，可以调用对应的对象上的删除接口将 Pointer 关联的对象删除。
 
 ## 索引
-在任何一个数据库系统中，索引都是优化性能的重要手段，同时它与 schema 设计也是密不可分的。LeanCloud 也支持索引，其索引与关系数据库中基本相同。在索引的选择上，应用查询操作的模式和频率起决定性作用，同时我们也要明白，索引不是没有代价的，在加速查询的同时，它也会降低写入速度、消耗更多存储（磁盘和内存）资源。是否建索引，如何建索引，建多少索引，我们需要综合权衡后来下决定。
+
+在任何一个数据库系统中，索引都是优化性能的重要手段，同时它与 Schema 设计也是密不可分的。LeanCloud 也支持索引，其索引与关系数据库中基本相同。在索引的选择上，应用查询操作的模式和频率起决定性作用。
+
+同时也要注意，索引不是没有代价的。在加速查询的同时，它也会降低写入速度、消耗更多存储（磁盘和内存）资源。是否建索引，如何建索引，建多少索引，我们需要综合权衡后来下决定。
 
 ### 索引类型
+
 LeanCloud 的索引可以包含任意的属性（包括数组），下面是一些索引选项：
-- **复合索引**——在多个属性域上构建一个单独的索引结构。例如，以一个存储客户数据的应用为例，我们可能需要根据姓、名和居住地来查询客户信息。通过在「姓」、「名」、「居住地」上建立复合索引，LeanCloud 可以快速给出满足这三个条件的结果，此外，这一复合索引也能加速任何前置属性的查询。例如根据「姓」或者根据「姓」＋「名」的查询，都会使用到这个复合索引。注意，如果单按照「名」来查询，则此复合索引不起作用。
-- **唯一索引**——通过给索引加上唯一性约束，LeanCloud 就会拒绝含有相同索引值的对象插入和更新。所有的索引默认都不是唯一索引，如果把复合索引指定为唯一索引，那么应用层必须保证索引列的组合值是唯一的。
-- **数组索引**——对数组属性也能创建索引。
-- **地理空间索引**——MongoDB 提供了地理空间索引，来方便大家进行地理位置相关的查询。LeanCloud 会自动为 GeoPoint 类型的属性建立地理空间索引，但是要求一个 Object 内 GeoPoint 的属性不能超过一个。
-- **稀疏索引**——这种索引只包含那些含有指定属性的文档，如果文档不含有目标属性，那么就不会进入索引。稀疏索引体积更小，查询性能更高。LeanCloud 默认都会创建稀疏索引。
+
+- **复合索引**<br/>在多个属性域上构建一个单独的索引结构。例如，以一个存储客户数据的应用为例，我们可能需要根据姓、名和居住地来查询客户信息。通过在「姓、名、居住地」上建立复合索引，LeanCloud 可以快速给出满足这三个条件的结果。此外，这一复合索引也能加速任何前置属性的查询。例如根据「姓」或者根据「姓＋名」的查询都会使用到这个复合索引。{{ docs.alert("注意，如果单按照「名」来查询，此复合索引会失效。") }}
+- **唯一索引**<br/>通过给索引加上唯一性约束，LeanCloud 就会拒绝含有相同索引值的对象插入和更新。所有的索引默认都不是唯一索引，如果把复合索引指定为唯一索引，那么应用层必须保证索引列的组合值是唯一的。
+- **数组索引**<br/>对数组属性也能创建索引。
+- **地理空间索引**<br/>LeanCloud 会自动为 GeoPoint 类型的属性建立地理空间索引，但是要求一个 Object 内 GeoPoint 的属性不能超过一个。
+- **稀疏索引**<br/>这种索引只包含那些含有指定属性的文档，如果文档不含有目标属性，那么就不会进入索引。稀疏索引体积更小，查询性能更高。LeanCloud 默认都会创建稀疏索引。
 
 LeanCloud 的索引可以在任何域上建立，包括内嵌对象和数组类型，这使它带来了比 RDBMS 更强大的功能。
 
 ### 通过索引优化性能
-LeanCloud 后台会根据每天的访问日志，自动归纳、学习频繁使用的访问模式，并自动创建合适的索引。不过如果你对索引优化比较有经验，也可以在控制台为每一个 Class 手动创建索引。
+LeanCloud 后台会根据每天的访问日志，自动归纳和学习频繁使用的访问模式，并自动创建合适的索引。不过如果你对索引优化比较有经验，也可以在控制台为每一个 Class 手动创建索引。
 
 ## 持续优化 Schema
-在 LeanCloud 的存储系统里，Class 可以在没有完整的结构定义（包含哪些属性，数据类型如何，等）时就提前创建好，一个 Class 下的对象（Object）也无需包含所有属性域，我们可以随时往对象中增减新的属性。
+在 LeanCloud 的存储系统里，Class 可以在没有完整的结构定义（包含哪些属性、数据类型如何等）时就提前创建好，一个 Class 下的对象（Object）也无需包含所有属性域，我们可以随时往对象中增减新的属性。
 
-这种灵活、动态的 schema 机制，使 schema 的持续优化变得非常简单。相比之下，关系数据库的开发人员和 DBA 在开始一个新项目的时候，写下第一行代码之前，就需要制定好数据库 schema，这至少需要几天，有的需要数周甚至更长。而 LeanCloud 则允许开发者通过不断迭代和敏捷过程，持续优化 schema。开发者可以开始写代码并将他们创建的对象持久化存储起来，以后当需要增加新的功能，LeanCloud 可以继续存储新的对象而不需要对原来的 Class 做 ALTER TABLE 操作，这会给我们的开发带来很大的便利。
+这种灵活、动态的 Schema 机制，使 Schema 的持续优化变得非常简单。相比之下，关系数据库的开发人员和 DBA 在开始一个新项目的时候，写下第一行代码之前，就需要制定好数据库 Schema，这至少需要几天，有的需要数周甚至更长。而 LeanCloud 则允许开发者通过不断迭代和敏捷过程，持续优化 Schema。开发者可以开始写代码并将他们创建的对象持久化存储起来，以后当需要增加新的功能，LeanCloud 可以继续存储新的对象而不需要对原来的 Class 做 ALTER TABLE 操作，这会给我们的开发带来很大的便利。
 
 
-## 如何选择最合适的建模方式？
+## 如何选择最合适的建模方式
 
-首先，确定关系是否
+首先，确定关系是否：
 
-> 是否存在附加属性？
+> 存在附加属性？
 
-例如学生选课，学生在选课的时候有从 web 上选，有从 客户端选，客户端还区分 ios 和 android 以及其他。
+例如学生选课，学生在选课的时候有的从电脑浏览器里选，有的从手机上选，手机系统还区分 iOS、Android 等等。那么假设要统计一下学生选课的来源，那么建立选课关系的时候就需要记录一下附加属性，这时只有中间表可以满足这个需求。
 
-那么假设系统想分析一下学生选课的来源那么建立选课关系的时候就需要记录一下附加属性，这个只有中间表可以满足这个需求。
-
-其次就是判断
+其次就是判断：
 
 > 是一对多还是多对多？
 
 * 一对多：Pointer | Relation
 * 多对多：Relation | 中间表
 
-其次就是需要判定关系建立之后，
+再判定关系建立之后：
 
 > 基于关系的查询较多还是基于关系的修改较多？
 
-假设一对多的关系并且是查询多于增改，那么用 Relation 就比较可用。如果修改较多那就推荐使用 Pointer。
+假设一对多的关系并且是查询多于修改，那么用 Relation 就比较可行。如果修改较多那就推荐使用 Pointer。
 
 为什么？
 
 假设用 Relation 存储了城市和省份之间的一对多的关系，假设有一天，廊坊被划分到北京管辖，那么需要做如下两个步骤：第一从河北的 Relation 里面删除廊坊，第二将廊坊加入到北京的 Relation 里面去。
-而 Pointer 只需要一步，因为用 Pointer 存储的时候，是在廊坊的 province 字段上存储了一个指向上级的一个指针，这个时候只要将这个 Pointer 重新指向北京就可以了。只需要一步。
-假设系统中这种关系变化操作很频繁，那么最好就要使用 Pointer。
 
-多对多不需要这么复杂，要么 Relation 要么 中间表。
+而 Pointer 只需要一步，因为用 Pointer 存储的时候，是在廊坊的 province 字段上存储了一个指向上级的一个指针，这个时候只要将这个 Pointer 重新指向北京就可以了。假设系统中这种关系变化操作很频繁，那么最好就使用 Pointer。
 
-决定了用哪种方式之后就按照前文介绍的根据参照一对多还是多对多的实例代码构建自己的业务逻辑代码。
+多对多不需要这么复杂，要么 Relation 要么中间表。
 
-但是所有 Pointer 以及 Relation 的可以实现的，中间表都可以实现，并且开发者可控的余地更多。
-
-具体可以参照如下伪代码：
+决定了用哪种方式之后，就按照前文介绍的一对多或多对多的实例代码构建自己的业务逻辑代码。但是所有 Pointer 以及 Relation 的可以实现的，中间表都可以实现，并且开发者可控的余地更多。具体可以参照如下伪代码：
 
 ```
 if(存在附加属性){
@@ -1237,38 +1239,35 @@ if(存在附加属性){
 ### 一个案例
 
 #### 婴儿与监护人之间的关系
-做一个应用统计婴儿吃饭、睡觉、玩耍的时间分布，而婴儿的监护人可能会有多个，爷爷奶奶外公外婆还有可能有月嫂，首先我们来分析按照我们之前设定的思路来逐步分析应该采用哪种方式建模。
-首先，我们需要回答一个问题
+做一个应用统计婴儿吃饭、睡觉、玩耍的时间分布，而婴儿的监护人可能会有多个，爷爷奶奶外公外婆还有可能是月嫂。首先按照我们之前设定的思路来逐步分析应该采用哪种方式建模：
 
 > 是否存在附加属性？
 
-一个婴儿和一个监护人之间的关系是否有附加属性？答案是有附加属性，父子关系跟母子关系是不一样的关系，因为婴儿的对监护人的称呼就是这个关系的附加属性。
-因此不用多想，果断使用中间表。不用再纠结是一对多还是多对多。
+一个婴儿和一个监护人之间的关系是否有附加属性？答案是有附加属性，父子关系跟母子关系是不一样的关系，因为对于婴儿监护人的身份称呼就是这个关系的附加属性。因此不用多想，果断使用中间表。不用再纠结是一对多还是多对多。
 
 ![relation-guide-1](images/relation-guide-1.png)
 
 #### 用户与设备之间的关系
-婴儿的状态改变，可以通过推送服务做到实时推送给监护人，比如孩子的爸爸设备较多，他会在 ipad、iphone、以及 windows 上安装这个应用，那么他一般情况下会有 3 台设备，
-而监护人在每一个设备上登录的之后，每当孩子的状态改变，服务端都会向这 3 台设备推送，那么我们接着按照之前的思路来分析应该采用哪种方式建模？
+婴儿的状态改变，可以通过推送服务做到实时推送给监护人，比如孩子的爸爸设备较多，他会在 iPad、iPhone 以及 Windows 上安装这个应用，那么他一般情况下会有 3 台设备。监护人在每一台设备上登录后，每当孩子的状态发生改变，服务端都会向这 3 台设备推送，那么我们接着按照之前的思路来分析应该采用哪种方式建模。
 
 > 是否存在附加属性？
 
-这个一般情况下，是可以省略附加属性的，因为 LeanCloud 的 _Installation 表里有一个字段是专门用来存储客户端设备的 deviceType，因此设备的信息是不需要存储在中间表的。
+一般来说这种情况是可以省略附加属性的，因为 LeanCloud 的 `_Installation` 表里有一个字段是专门用来存储客户端设备的 deviceType，因此设备的信息是不需要存储在中间表的。
 而除非有其他特殊的属性条件，设备和用户之间的关系就是一个简单的一对多的关系，并且并不需要附加属性。
 
-其次是判断
+其次判断：
 
 > 是一对多还是多对多？
 
-一个用户在多个设备上登录，这个一般意义上可以定义为一对多，而很少会出现类似 iphone/ipad 版 QQ 那样的需求，内置了多账户管理系统，因此定义为一对多比较满足我们现在的需求。
+一个用户在多个设备上登录一般就可以定义为一对多，而很少会出现类似 iPhone/iPad 版 QQ 那样内置了多账户管理系统，因此定义为一对多比较满足我们现在的需求。
 
-紧接着是判断
+紧接着是判断：
 
 > 基于关系的查询较多还是基于关系的修改较多？
 
-这个答案也是肯定的，一个人不太可能会一天之内变化几十次登录的设备，一旦他登录了一台设备几乎都是很稳定的，而且也不会经常出现一个设备被多个人登录，因此它的关系是相对稳定的，不易变的。
+这个答案也是肯定的。一个人不太可能会一天之内变化几十次登录的设备，一旦他登录了一台设备几乎都是很稳定的，而且也不会经常出现一个设备被多个人登录，因此它的关系是相对稳定不易改变的。
 
-因此我们可以使用 Relation 来存储，_User 和 _Installation 之间的关系。
+这样我们可以使用 Relation 来存储 `_User` 和 `_Installation` 之间的关系。
 
 ![relation-guide-2](images/relation-guide-2.png)
 
@@ -1276,24 +1275,25 @@ if(存在附加属性){
 
 > 什么时候用数组？
 
-当你的关联的数据是简单数据的时候有并且查询多于修改的时候，用数组比较合适，比如社交类应用里面的给朋友加标签，这个就可以使用 string 数组来存储这个属性，一般情况下 Relation 比数组好用。
+当要关联的数据是简单数据并且查询多于修改的时候，用数组比较合适。比如社交类应用里给朋友加标签，就可以使用 string 数组来存储这个属性，一般情况下 Relation 比数组好用。
 
 ```objc
     AVObject *beckham= [[AVObject alloc] initWithClassName:@"Boy"];
-    [beckham setObject: [NSArray arrayWithObjects:@"handsome",@"star",nil] forKey:@"tags"];
+    [beckham setObject: [NSArray arrayWithObjects:@"颜值爆表",@"明星范儿",nil] forKey:@"tags"];
 ```
 ```java
     AVObject beckham = new AVObject("Boy");
-    beckham.put("tags",Arrays.asList("handsome", "star"));
+    beckham.put("tags",Arrays.asList("颜值爆表", "明星范儿"));
 ```
 ```js
     var beckham = new AV.Object('Boy');
-    beckham.set('tags',['handsome','star']);
+    beckham.set('tags',['颜值爆表','明星范儿']);
 ```
 ```python
-  // 待补充 
+    beckham = leancloud.Object.create('Boy')
+    beckham.set('tags', ['颜值爆表', '明星范儿']) 
 ```
 ```cs
     AVObject beckham = new AVObject("Boy");
-    beckham.Add("tags", new string[] { "handsome", "star" });
+    beckham.Add("tags", new string[] { "颜值爆表", "明星范儿" });
 ```
