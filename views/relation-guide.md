@@ -1269,24 +1269,24 @@ if(存在附加属性){
 
 > 什么时候用数组？
 
-当你的关联的数据是简单数据的时候有并且查询多于修改的时候，用数组比较合适，比如社交类应用里面的被朋友加标签，这个就可以使用 string 数组来存储这个属性，一般情况下 Relation 比数组好用。
+当你的关联的数据是简单数据的时候有并且查询多于修改的时候，用数组比较合适，比如社交类应用里面的给朋友加标签，这个就可以使用 string 数组来存储这个属性，一般情况下 Relation 比数组好用。
 
 ```objc
-    AVObject *beckham= [[AVObject alloc] initWithClassName:@"Boy"];// 选课表对象
-    [beckham setObject: [NSArray arrayWithObjects:@"hansome",@"star",nil] forKey:@"tags"];
+    AVObject *beckham= [[AVObject alloc] initWithClassName:@"Boy"];
+    [beckham setObject: [NSArray arrayWithObjects:@"handsome",@"star",nil] forKey:@"tags"];
 ```
 ```java
     AVObject beckham = new AVObject("Boy");
-    beckham.put("tags",Arrays.asList("hansome", "star"));
+    beckham.put("tags",Arrays.asList("handsome", "star"));
 ```
 ```js
     var beckham = new AV.Object('Boy');
-    beckham.set('tags',['hansome','star']);
+    beckham.set('tags',['handsome','star']);
 ```
 ```python
   // 待补充 
 ```
 ```cs
     AVObject beckham = new AVObject("Boy");
-    beckham.Add("tags", new string[] { "hansome", "star" });
+    beckham.Add("tags", new string[] { "handsome", "star" });
 ```
