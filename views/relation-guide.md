@@ -292,7 +292,7 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     import leancloud
 
     # 用 create_without_data 关联一个已经存在的对象
-    Provice = leancloud.Object.extend('Province')
+    Province = leancloud.Object.extend('Province')
     guangDong = Province.create_without_data('574416af79bc44005c61bfa3')
 
     dongGuan = leancloud.Object.extend('City')()
@@ -501,8 +501,8 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
 ```python
     import leancloud
 
-    Provice = leancloud.Object.extend('Province')
-    guangDong = Provice.create_without_data('574416af79bc44005c61bfa3')
+    Province = leancloud.Object.extend('Province')
+    guangDong = Province.create_without_data('574416af79bc44005c61bfa3')
 
     query = leancloud.Query("City")
     query.equal_to('dependent', guangDong)
@@ -643,7 +643,10 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     });
 ```
 ```python
-  // 待补充
+    Province = leancloud.Object.extend('Province')
+    zhejiang = Province.create_without_data('58762f39a22b9d0058ac0468')
+    relation = zhejiang.relation('includedCities')
+    cities = relation.query.find()  # cities 的结果为浙江省下辖的所有城市
 ```
 ```cs
     var zhejiang = AVObject.CreateWithoutData("Province", "58762f39a22b9d0058ac0468");
@@ -688,7 +691,7 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
 ```
 ```js
     let wenzhou = AV.Object.createWithoutData('City', '587d8156b123db4d5e7dddd2');
-    let query = new AV.Query('Provice');
+    let query = new AV.Query('Province');
     query.equalTo('includedCities', wenzhou);
     query.find().then(cities => {
         // 理论上 cities 应该只有浙江这一条数据
@@ -696,7 +699,11 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
     });
 ```
 ```python
-  // 待补充
+    City = leancloud.Object.extend('City')
+    wenzhou = City.create_without_data('587d8156b123db4d5e7dddd2')
+    query = leancloud.Query('Province')
+    query.equal_to('includedCities', wenzhou)
+    query.first()  # 理论上 cities 应该只有浙江这一条数据
 ```
 ```cs
     var wenzhou = AVObject.CreateWithoutData("City", "587d8156b123db4d5e7dddd2");
