@@ -190,15 +190,17 @@ curl -X PUT \
 
 通过 `POST /1.1/push` 来推送消息给设备，`push` 接口支持下列属性：
 
-名称|描述
----|---
-channels|推送给哪些频道，将作为条件加入 where 对象。
-data|推送的内容数据，JSON 对象，请参考 [消息内容](#消息内容_Data)。
-expiration_interval|消息过期的相对时间，从调用 API 的时间开始算起，单位是秒。
-expiration_time|消息过期的绝对日期时间
-prod|**仅对 iOS 有效**。设置使用开发证书（**dev**）还是生产证书（**prod**）。当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
-push_time|定期推送时间
-where|检索 _Installation 表使用的查询条件，JSON 对象。
+名称| 约束 | 描述
+---|--- | ---
+data| 必填| 推送的内容数据，JSON 对象，请参考 [消息内容](#消息内容_Data)。
+channels| 可选 | 推送给哪些频道，将作为条件加入 where 对象。
+expiration_interval| 可选 | 消息过期的相对时间，从调用 API 的时间开始算起，单位是秒。
+expiration_time| 可选 | 消息过期的绝对日期时间
+prod| 可选 | **仅对 iOS 有效**。设置使用开发证书（**dev**）还是生产证书（**prod**）。当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
+push_time| 可选 | 定期推送时间
+where| 可选 | 检索 _Installation 表使用的查询条件，JSON 对象。
+req_id | 可选 | 自定义请求 id，最长 16 个字符且只能由英文字母和数字组成。短时间内带有相同 req_id 的不同推送请求我们认为是重复请求，只会发一次推送。用户可以在请求中带着 req_id 从而在接口出现超时等异常时带着相同的 req_id 重新发一次请求，这样由于 req_id 相同，我们会自动过滤重复的推送请求以保证每个目标终端用户最多只会收到一次推送消息。
+notification_id | 可选 | 自定义推送 id，最长 16 个字符且只能由英文字母和数字组成，不提供该参数时我们会为每个推送请求随机分配一个唯一的推送 id，用于区分不同推送。我们会根据推送 id 来统计推送的目标设备数和最终消息到达数，并展示在 [推送记录](#Notification) 当中。用户自定义推送 id 可以将多个不同的请求并入同一个推送 id 下从而实现对一批推送请求整体统计目标设备数和最终消息到达数的功能。
 
 #### master key 校验
 
