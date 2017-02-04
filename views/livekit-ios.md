@@ -6,7 +6,7 @@
    2. 支持无人数限制的聊天室。 
    3. 支持多种自定义消息拓展并提供了默认实现，比如弹幕、点赞出心、送飞机游轮或保时捷等礼物、成员加入聊天室自动打招呼等。   
 
-针对直播服务，LeanCloud 只按照 [聊天的费用标准](/pricing.html) 收费，而直播相关的内容，LeanCloud 并不参与收费，其产生的费用请在七牛账户中查询。
+针对直播服务，LeanCloud 只按照 [聊天的费用标准](/pricing) 收费，而直播相关的内容，LeanCloud 并不参与收费，其产生的费用请在七牛账户中查询。
 
 <div class="row" style="margin-bottom:1.5em;">
   <div class="col-sm-6">

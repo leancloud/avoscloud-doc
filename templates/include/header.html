@@ -14,31 +14,31 @@
               <div class="name">文档首页</div>
             </a>
           </li>
-          <li>
-            <a href="sdk_down.html">
+          <li class="dropdown dropdown-toggle-app-name">
+            <a href="sdk_down.html" title="SDK 下载">
               <i class="icon icon-dashbd-icon icon-package"></i>
-              <div class="dashboard-subnav-text">SDK 下载</div>
+              <div class="name"><span class="mobile-hide">SDK </span>下载</div>
             </a>
           </li>
-          <li>
-            <a href="demo.html">
+          <li class="dropdown dropdown-toggle-app-name">
+            <a href="demo.html" title="Demos">
               <i class="icon icon-dashbd-icon icon-magic"></i>
-              <div class="dashboard-subnav-text">Demos</div>
+              <div class="name">Demos</div>
             </a>
           </li>
-          <li>
+          <li class="dropdown dropdown-toggle-app-name">
             <a class="nav-key-6 dropdown-toggle" title="API Docs" data-toggle="dropdown">
               <i class="icon icon-dashbd-icon icon-log"></i>
-              <i class="dashboard-subnav-text">API 文档</i>
+              <div class="name">API 文档</div>
             </a>
             <ul class="dropdown-menu">
             {% include '_apidocs.html' %}
             </ul>
           </li>
-          <li ng-class="{active:currentHtmlPage=='help.html'}">
+          <li class="dropdown dropdown-toggle-app-name">
             <a class="nav-key-6 dropdown-toggle" title="帮助" data-toggle="dropdown">
               <i class="icon icon-dashbd-icon icon-question"></i>
-              <i class="dashboard-subnav-text">帮助</i>
+              <div class="name">帮助</div>
             </a>
             <ul class="dropdown-menu">
               {% if layout!="board-nologin.swig" %}
@@ -51,8 +51,8 @@
               <li><a href="https://leancloud.cn/apionline/">在线 API 工具</a></li>
               <li><a href="http://leancloud.sexy" target="_blank">第三方库</a></li>
               <li role="presentation" class="divider"></li>
-              <li><a href="/apps.html">LeanCloud App</a></li>
-              <li><a href="/pricing.html">价格</a></li>
+              <!-- <li><a href="/apps.html">LeanCloud App</a></li> -->
+              <li><a href="/pricing">价格</a></li>
               <!-- <li><a href="#" data-toggle="modal" data-target="#modal-shortcuts">快捷键</a></li> -->
             </ul>
           </li>
