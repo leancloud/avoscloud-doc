@@ -1,3 +1,6 @@
+{% from 'views/_helper.njk' import 
+  alert  
+%}
 {% macro ops(prefix='', heading='') %}
 {% if heading != '' %}
   {{heading}}
@@ -19,5 +22,65 @@ BitAnd | 与运算   | `{{prefix}}op('BitAnd', {'value': 0x0000000000000004})`
 BitOr  | 或运算   | `{{prefix}}op('BitOr', {'value': 0x0000000000000004})`
 BitXor | 异或运算 | `{{prefix}}op('BitXor', {'value': 0x0000000000000004})`
 {% endmacro %}
+
+{% macro debuglog(segment='', headingLevel='###') -%}
+{% set list = [
+   'all'
+  ,'objc'
+  ,'java'
+  ,'android'
+  ,'javascript'
+  ,'js'
+  ,'php'
+  ,'python'
+] %}
+
+{% if list.indexOf(segment) != -1 -%}
+
+{{headingLevel}} 开启调试日志
+
+在应用开发阶段，你可以选择开启 SDK 的调试日志（debug log）来方便追踪问题。调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 IDE 的日志窗口，或是浏览器 Console 或是 LeanCloud 控制台的 [云引擎日志](/dashboard/cloud.html?appid={{appid}}#/log) 中。
+
+{% if segment == "all" or segment == "objc"  or segment == "objective-c" -%}
+```objc
+// 放在 SDK 初始化语句 [AVOSCloud setApplicationId:] 后面，只需要调用一次即可
+[AVOSCloud setAllLogsEnabled:YES];
+```
+{%- endif -%}
+{% if segment == "all" or segment == "java"  or segment == "android" -%}
+```java
+// 放在 SDK 初始化语句 AVOSCloud.initialize() 后面，只需要调用一次即可
+AVOSCloud.setDebugLogEnabled(true);
+```
+{%- endif -%}
+{% if segment == "all" or segment == "javascript" or segment == "js" -%}
+```js
+// Node.js 中设置环境变量
+DEBUG=leancloud*;
+
+// 浏览器的 Console 中设置 localStorage
+localStorage.setItem('debug', 'leancloud*');
+```
+{%- endif -%}
+{% if segment == "all" or segment == "python" -%}
+```python
+# 写在启动脚本的头部
+# 如果是在 LeanEngine 环境，启动脚本是 wsgi.py
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+```
+{%- endif -%}
+{% if segment == "all" or segment == "php" -%}
+```php
+// 放在 SDK 初始化语句 Client::initialize() 后面，只需要调用一次即可
+Client::setDebug(true);
+```
+{%- endif %}
+
+{{ alert("在应用发布之前，请关闭调试日志。") }}
+{%- endif %}
+{%- endmacro %}
+
 
 

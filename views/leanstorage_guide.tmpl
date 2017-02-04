@@ -1,6 +1,7 @@
 {% import "views/_helper.njk" as docs %}
 {% import "views/_data.njk" as data %}
 {% import "views/_sms.njk" as sms %}
+{% import "views/_parts.html" as include %}
 {% set middot = '·' %}
 {% set link_to_blog_password_reset = '关于自定义邮件模板和验证链接，请参考《[自定义应用内用户重设密码和邮箱验证页面](https://blog.leancloud.cn/607/)》。' %}
 {% set app_permission_link = "[控制台 > 应用设置 > 应用选项](/app.html?appid={{appid}}#/permission)" %}
@@ -58,6 +59,8 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 {% endblock %}
 
 {% block text_web_security %}{% endblock %}
+
+{{ include.debuglog(segment_code | lower, "##") }}
 
 ## 对象
 
