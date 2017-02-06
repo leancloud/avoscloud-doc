@@ -11,7 +11,7 @@
 * 查询可以指定 skip 和 limit 做分页查询。
 * 你可以使用类似 SQL 的语法来查询 LeanCloud 数据，参考 [CQL 详细指南](cql_guide.html)。
 * 你可以在 [错误码详解](error_code.html) 文档里找到所有的错误代码和信息解释。
-* 你可以使用 [API 在线测试工具](https://leancloud.cn/apionline/) 在线测试我们提供的开放 [REST API](rest_api.html)。
+* 你可以使用 [API 在线测试工具](/dashboard/apionline/) 在线测试我们提供的开放 [REST API](rest_api.html)。
 * 我们的用户账户系统都自动做了密码加密存储，基于 SHA-512 加密算法，使用随机生成的 salt 加密。
 {% if node != 'qcloud' and node != 'us' %}
 * 我们提供短信服务，你可以使用短息服务发送手机验证码、手机登录验证码等。具体参考各 SDK 开发指南。
@@ -114,7 +114,7 @@
 * 修改登录邮箱，请进入 [邮箱](/settings.html#/setting/mail) 菜单。
 * 为你的应用添加用户反馈，请使用我们的 [用户反馈组件](feedback.html)。
 {% endif %}
-* 查看 [快速入门文档](./start.html)，开始应用开发之旅。
+* 查看 [SDK 安装文档](install.html)，开始应用开发之旅。
 * 通过 [工单系统](https://leanticket.cn/t/leancloud) 提交技术支持申请，获取 LeanCloud 工程师的帮助。
 * 在右上角用户名左侧的消息中心，可以看到 LeanCloud 最火热的新闻和教程。
 * 在工具栏的资源菜单里，可以找到 LeanCloud 移动客户端下载链接，在移动设备上查看应用分析数据。

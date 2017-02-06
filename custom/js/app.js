@@ -201,8 +201,7 @@ angular.module('app').controller('StartCtrl', [
             }
         };
 
-        $scope.selectedPlat = 'ios';
-
+        $scope.selectedPlat = 'objc';
 
         $scope.createApp = function () {
             $http.post(purl + 'clients/self/apps', { name: $scope.appname }).success(function (data) {
@@ -211,12 +210,20 @@ angular.module('app').controller('StartCtrl', [
             });
         };
 
-
-
         $scope.$watch('selectedPlat',function(){
-            $http.get('start/'+$scope.selectedPlat+'_start.html').
+            var dom = $('#start-main');
+            dom.css("visibility", 'hidden').prev().removeClass('loaded');
+            //$http.get('start/'+$scope.selectedPlat+'_start.html').
+            $http.get('sdk_setup-'+$scope.selectedPlat+'.html').
                 success(function(result){
-                    $('#start-main').html(result);
+                    //$('#start-main').html(result);
+                    var temp = $(result).find('.doc-content');
+                    
+                    dom.html(
+                      temp.find('.docs-meta').insertAfter(temp.find('h1').addClass('font-logo')).end().end()
+                      .children()
+                    );
+
                     prettyPrepare();
                     prettyPrint();
                     $("pre.prettyprint code").each(function(index, ele) {
@@ -224,8 +231,10 @@ angular.module('app').controller('StartCtrl', [
                     });
                     glueCopy();
                     $timeout(function(){
-                        $compile($('#start-main').contents())($scope);
+                        //$compile($('#start-main').contents())($scope);
+                        $compile(dom.contents())($scope);
                     },0);
+                    dom.css("visibility", 'visible').prev().addClass('loaded');
                 });
         });
 
