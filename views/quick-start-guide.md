@@ -2,7 +2,7 @@
 
 ## 你是 iOS 程序员？
 
-* [SDK 安装指南](install.html)
+* [SDK 安装指南](start.html)
 <li><a href="leanstorage_guide-objc.html">Objective-C 数据存储指南</a></li>
 <li><a href="realtime_guide-objc.html">iOS 实时通信指南</a></li>
 <li><a href="ios_statistics.html">iOS 统计 SDK 开发指南</a></li>
@@ -12,7 +12,7 @@
 
 ## 你是 Android 程序员？
 
-* [SDK 安装指南](install.html)
+* [SDK 安装指南](start.html)
 <li><a href="leanstorage_guide-android.html">Android 数据存储指南</a></li>
 <li><a href="realtime_guide-android.html">Android 实时通信指南</a></li>
 <li><a href="android_statistics.html">Android 统计 SDK 开发指南</a></li>
@@ -20,7 +20,7 @@
 
 ## 你是 Unity3D 或者 WindowsPhone 开发者？
 
-* [SDK 安装指南](install.html)
+* [SDK 安装指南](start.html)
 <li><a href="unity_guide.html">Unity3D 数据存储指南</a></li>
 <li><a href="unity_statistics.html">Unity3D 统计 SDK 指南</a></li>
 <li><a href="dotnet_guide.html">.NET 数据存储指南</a></li>
@@ -29,7 +29,7 @@
 
 ## 你是 JavaScript 前端开发者？
 
-* [SDK 安装指南](install.html)
+* [SDK 安装指南](start.html)
 <li><a href="leanstorage_guide-js.html">JavaScript 数据存储指南</a></li>
 <li><a href="https://github.com/leancloud/realtime-messaging-jssdk">JavaScript 实时通信 SDK</a></li>
 <li><a href="https://leancloud.github.io/javascript-sdk/docs/" target="_blank">JavaScript SDK API</a></li>
@@ -43,7 +43,7 @@
 
 ## 你是 PHP 开发者？
 
-* [SDK 安装指南](install.html)
+* [SDK 安装指南](start.html)
 * [官方 PHP SDK @Github](https://github.com/leancloud/php-sdk)
 * [PHP SDK API](/api-docs/php/)
 

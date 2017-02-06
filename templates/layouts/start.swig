@@ -10,6 +10,9 @@
   #content {
       padding: 0 20%;
   }
+  #apps-select {
+    width: 40%;
+  }
 }
 .doc-home-title {
   background-color: white;

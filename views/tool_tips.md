@@ -114,7 +114,7 @@
 * 修改登录邮箱，请进入 [邮箱](/settings.html#/setting/mail) 菜单。
 * 为你的应用添加用户反馈，请使用我们的 [用户反馈组件](feedback.html)。
 {% endif %}
-* 查看 [SDK 安装文档](install.html)，开始应用开发之旅。
+* 查看 [SDK 安装文档](start.html)，开始应用开发之旅。
 * 通过 [工单系统](https://leanticket.cn/t/leancloud) 提交技术支持申请，获取 LeanCloud 工程师的帮助。
 * 在右上角用户名左侧的消息中心，可以看到 LeanCloud 最火热的新闻和教程。
 * 在工具栏的资源菜单里，可以找到 LeanCloud 移动客户端下载链接，在移动设备上查看应用分析数据。

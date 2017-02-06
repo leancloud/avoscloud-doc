@@ -89,7 +89,7 @@ title: SDK 安装指南 - LeanCloud
     <h3>选择 LeanCloud 应用</h3>
 
     <p ng-hide="user.username" class="no-margin-bottom">请先登录。</p>
-    <div class="step-content col-sm-4" ng-show="apps">
+    <div class="step-content" ng-show="apps" id="apps-select">
       <select class="form-control" ng-model="pageState.currentApp"  ng-options="app.app_name  for app in apps">  </select>
     </div>
 

@@ -12,7 +12,7 @@ LeanCloud Unity SDK 在很多重要的功能点上都采用了微软提供的 [�
 
 ## 快速入门
 
-建议在阅读本文之前，先阅读 [SDK 安装指南](install.html)，了解如何配置和使用 LeanCloud。
+建议在阅读本文之前，先阅读 [SDK 安装指南](start.html)，了解如何配置和使用 LeanCloud。
 
 ## 应用
 
