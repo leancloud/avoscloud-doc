@@ -3,7 +3,6 @@
 <html>
 
 <head>
-
 {% include 'templates/include/head.html' %}
 <style type="text/css">
 @media (min-width: 992px){
