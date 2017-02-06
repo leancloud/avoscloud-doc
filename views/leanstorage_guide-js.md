@@ -1249,7 +1249,7 @@ file.save({
 {% block code_send_verify_email %}
 
 ```js
-  AV.User.requestEmailVerfiy('abc@xyz.com').then(function (result) {
+  AV.User.requestEmailVerify('abc@xyz.com').then(function (result) {
       console.log(JSON.stringify(result));
   }, function (error) {
       console.log(JSON.stringify(error));
