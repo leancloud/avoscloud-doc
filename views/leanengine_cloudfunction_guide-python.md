@@ -48,6 +48,15 @@ def averageStars(movie, **params):
     result = sum(x.get('stars') for x in reviews)
     return result
 ```
+
+客户端 SDK 调用时，云函数的名称默认为 Python 代码中函数的名称。有时需要设置云函数的名称与 Python 代码中的函数名称不相同，可以在 `engine.define` 后面指定云函数名称，比如：
+
+```python
+@engine.define('averageStars')
+def my_custom_average_start(movie, **params):
+    pass
+```
+
 {% endblock %}
 
 {% block cloudFuncParams %}
