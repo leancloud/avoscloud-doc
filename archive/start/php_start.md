@@ -45,16 +45,16 @@ require_once("vendor/leancloud/src/autoload.php"); // 手动安装
 
 ```php
 // 参数依次为 appId, appKey, masterKey
-LeanCloud\LeanClient::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
+LeanCloud\Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
 
 // 我们目前支持 CN 和 US 区域，默认使用 CN 区域，可以切换为 US 区域
-LeanCloud\LeanClient::useRegion("US");
+LeanCloud\Client::useRegion("US");
 ```
 
 测试应用已经正确初始化：
 
 ```php
-LeanCloud\LeanClient::get("/date"); // 获取服务器时间
+LeanCloud\Client::get("/date"); // 获取服务器时间
 // => {"__type": "Date", "iso": "2015-10-01T09:45:45.123Z"}
 ```
 
@@ -65,10 +65,10 @@ LeanCloud\LeanClient::get("/date"); // 获取服务器时间
 初始化应用后，就可以开始创建数据了：
 
 ```php
-use LeanCloud\LeanObject;
+use LeanCloud\Object;
 use LeanCloud\CloudException;
 
-$obj = new LeanObject("TestObject");
+$obj = new Object("TestObject");
 $obj->set("name", "alice");
 $obj->set("height", 60.0);
 $obj->set("weight", 4.5);
@@ -119,8 +119,7 @@ $obj->destroy();
 1. 将证书文件 `curl-ca-bundle.crt` 置于与 `curl.exe` 相同的目录，通常情况下位于 `C:\Windows\system32`。
 1.  将证书文件 `curl-ca-bundle.crt` 置于自定义的目录，然后在 `php.ini` 中明确设置证书的位置：
 
-  ```
+```
 [PHP]
 curl.cainfo={自定义的目录路径}/ca-bundle.crt
-  ```
-
+```

@@ -63,7 +63,7 @@
     [roleACL setWriteAccess:YES forUser:[AVUser currentUser]];
     
     // 创建角色，并且保存
-    AVRole *administratorRole= [AVRole roleWithName:@"Administrator"];
+    AVRole *administratorRole = [AVRole roleWithName:@"Administrator" acl:roleACL];
     [[administratorRole users] addObject: [AVUser currentUser]];
     [administratorRole saveInBackground];
 ```

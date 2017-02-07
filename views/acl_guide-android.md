@@ -59,7 +59,7 @@
 
 {% block create_role_administrator %}
 
-```
+```java
   // 新建一个针对角色本身的 ACL
   AVACL roleACL=new AVACL();
   roleACL.setPublicReadAccess(true);
@@ -74,7 +74,7 @@
 
 {% block query_role_administrator %}
 
-```
+```java
   AVQuery<AVRole> roleQuery=new AVQuery<AVRole>("_Role");
   roleQuery.whereEqualTo("name","Administrator");
   roleQuery.findInBackground(new FindCallback<AVRole>() {
@@ -194,7 +194,7 @@
 
 {% block remove_role_from_user %}
 
-```
+```java
   final AVQuery<AVRole> roleQuery=new AVQuery<AVRole>("_Role");
   roleQuery.whereEqualTo("name","Moderator");
   roleQuery.findInBackground(new FindCallback<AVRole>() {

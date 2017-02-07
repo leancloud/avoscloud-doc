@@ -2,6 +2,20 @@
 
 微信小程序是一个全新的跨平台移动应用平台，LeanCloud 为小程序提供一站式后端云服务，为你免去服务器维护、证书配置等繁琐的工作，大幅降低你的开发和运维成本。本文说明了如何在微信小程序中使用 LeanCloud 提供的各项服务。
 
+## Demo
+我们在小程序上实现了 LeanTodo 应用。在这个 Demo 中你可以看到：
+
+- 如何对云端数据进行查询、增加、修改与删除
+- 查询结果为一个列表时，如何将其绑定到视图层进行展示以及如何在点击事件中得到对应的数组项
+- 如何自动登录 LeanCloud 用户系统
+- 如何在登录后设置帐号与密码以供用户在其他平台的 LeanTodo 应用上登录
+- 如何集成微信支付
+- 如何实现下拉刷新
+
+你可以通过微信扫描以下二维码进入 Demo。 Demo 的源码与运行说明请参考 [https://github.com/leancloud/leantodo-weapp](https://github.com/leancloud/leantodo-weapp)。
+
+<img src="images/leantodo-weapp-qr.png" alt="LeanTodo Weapp QR" width="250">
+
 ## 准备工作
 ### 创建应用
 - 如果你还没有创建过 LeanCloud 应用，请登录 LeanCloud 控制台 [创建一个新应用](/applist.html#/newapp)。
@@ -9,26 +23,15 @@
 - 下载 [小程序开发工具](https://mp.weixin.qq.com/debug/wxadoc/dev/devtools/download.html)，按照 [小程序开发教程](https://mp.weixin.qq.com/debug/wxadoc/dev/) 创建一个项目。
 
 ### 配置域名白名单
-请按照 [小程序域名白名单配置](weapp-domains.html) 的步骤配置。如果你不需要进行真机调试可以跳过这一步。
+请按照 [小程序域名白名单配置](weapp-domains.html) 的步骤配置。如果你不需要进行真机调试可以跳过这一步（可在开发者工具的项目配置中勾选「开发环境不校验请求域名」）。
 
-## 存储 SDK
+## 存储
 
 要使用 LeanCloud 的数据存储、用户系统、调用云引擎等功能，需要使用 LeanCloud 存储 SDK。
 
-### Demo
-为了更直观地展示小程序中存储 SDK 的用法，我们在小程序上实现了 LeanTodo 应用。在这个 Demo 中你可以看到：
-
-- 如何对云端数据进行查询、增加、修改与删除
-- 查询结果为一个列表时，如何将其绑定到视图层进行展示以及如何在点击事件中得到对应的数组项
-- 如何自动登录 LeanCloud 用户系统
-- 如何在登录后设置帐号与密码以供用户在其他平台的 LeanTodo 应用上登录
-- 如何实现下拉刷新
-
-目前小程序公测阶段暂时无法直接在微信上体验到 Demo，但你仍然可以获取源码通过微信开发者工具本地进行调试与真机预览。 Demo 的源码与运行说明请参考 [https://github.com/leancloud/leantodo-weapp](https://github.com/leancloud/leantodo-weapp)。
-
 ### 安装与初始化
-2. 下载 [`av-weapp.js`](https://unpkg.com/leancloud-storage@^2.0.0-beta/dist/av-weapp.js)（[镜像](https://raw.githubusercontent.com/leancloud/javascript-sdk/dist/dist/av-weapp.js)），移动到 `libs` 目录。
-3. 在 `app.js` 中使用 `const AV = require('./libs/av-weapp.js');` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。 
+2. 下载 [`av-weapp-min.js`](https://unpkg.com/leancloud-storage@^2.0.0/dist/av-weapp-min.js)（[镜像](https://raw.githubusercontent.com/leancloud/javascript-sdk/dist/dist/av-weapp-min.js)），移动到 `libs` 目录。
+3. 在 `app.js` 中使用 `const AV = require('./libs/av-weapp-min.js');` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。 
 4. 在 `app.js` 中初始化应用： 
   ```javascript 
   AV.init({ 
@@ -59,14 +62,13 @@ Page({
 });
 ```
 
-```html
-<!-- pages/todos/todos.js -->
-<block wx:for="{{todos}}" wx:for-item="todo" wx:key="objectId">
-  <text data-id="{{todo.objectId}}">
-    {{todo.content}}
-  </text>
-</block>
-```
+<pre ng-non-bindable><code class="lang-html">&lt;!-- pages/todos/todos.wxml --&gt;
+&lt;block wx:for=&quot;&lbrace;&lbrace;todos&rbrace;&rbrace;&quot; wx:for-item=&quot;todo&quot; wx:key=&quot;objectId&quot;&gt;
+  &lt;text data-id=&quot;&lbrace;&lbrace;todo.objectId}}&quot;&gt;
+    &lbrace;&lbrace;todo.content}}
+  &lt;/text&gt;
+&lt;/block&gt;
+</code></pre>
 
 ### 文件存储
 
@@ -74,7 +76,7 @@ Page({
 
 ```javascript
 wx.chooseImage({
-  count: 9,
+  count: 1,
   sizeType: ['original', 'compressed'],
   sourceType: ['album', 'camera'],
   success: function(res) {
@@ -91,6 +93,20 @@ wx.chooseImage({
 ```
 
 上传成功后可以通过 `file.url()` 方法得到服务端的图片 url。
+
+#### 文件批量上传
+目前在小程序 Android 上不支持文件并发上传，需要串行上传：
+
+```javascript
+res.tempFilePaths.map(tempFilePath => () => new AV.File('filename', {
+  blob: {
+    uri: tempFilePath,
+  },
+}).save()).reduce(
+  (m, p) => m.then(v => AV.Promise.all([...v, p()])),
+  AV.Promise.resolve([])
+).then(files => console.log(files.map(file => file.url()))).catch(console.error);
+```
 
 ### 用户系统
 
@@ -115,6 +131,7 @@ AV.User.loginWithWeapp().then(user => {
 用户的登录状态会保存在客户端中，可以使用 `AV.User.current()` 方法来获取当前登录的用户，下面的例子展示了如何同步登录用户的信息：
 
 ```javascript
+// 假设已经通过 AV.User.loginWithWeapp() 登录
 // 获得当前登录用户
 const user = AV.User.current();
 // 调用小程序 API，得到用户信息
@@ -140,12 +157,17 @@ AV.User.loginWithWeapp().then(user => {
   return user.save();
 }).then(user => {
   // 发送验证短信
-  AV.User.requestMobilePhoneVerify(user.getMobilePhoneNumber());
+  return AV.User.requestMobilePhoneVerify(user.getMobilePhoneNumber());
 }).then({
   // 用户填写收到短信验证码后再调用 AV.User.verifyMobilePhone(code) 完成手机号的绑定
-  // 成功后用户将可以在其他平台上使用手机号动态验证码登录了
+  // 成功后用户的 mobilePhoneVerified 字段会被置为 true
+  // 此后用户便可以使用手机号加动态验证码登录了
 }).catch(console.error);
 ```
+
+<div class="callout callout-info">
+验证手机号码功能要求在控制台的应用设置中启用「用户注册时，向注册手机号码发送验证短信」。
+</div>
 
 #### 绑定现有用户
 如果你的应用已经在使用 LeanCloud 的用户系统，或者用户已经通过其他方式注册了你的应用（比如在 Web 端通过用户名密码注册），可以通过在小程序中调用 `AV.User#linkWithWeapp()` 来关联已有的账户：
@@ -163,15 +185,15 @@ AV.User.logIn('username', 'password').then(user => {
 
 SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参考 [云函数开发指南](leanengine_cloudfunction_guide-node.html)。
 
-## 实时通讯 SDK
+使用云引擎实现小程序支付的方案参见 [支付](#支付)。
+
+## 实时通讯
 
 要使用 LeanCloud 的聊天、实时消息功能，需要使用 LeanCloud 实时通讯 SDK。
 
-<div class="callout callout-info">实时通讯功能暂时只支持微信开发者工具，我们正在进行真机上的适配工作。</div>
-
 ### 安装与初始化
-2. 下载 [`realtime.weapp.js`](https://unpkg.com/leancloud-realtime@^3.3.0/dist/realtime.weapp.js)（[镜像](https://raw.githubusercontent.com/leancloud/js-realtime-sdk/dist/dist/realtime.weapp.js)），移动到 `libs` 目录。
-3. 在 `app.js` 中使用 `const Realtime = require('./libs/realtime.weapp.js').Realtime;` 获得 `Realtime` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
+2. 下载 [`realtime.weapp.min.js`](https://unpkg.com/leancloud-realtime@^3.3.0/dist/realtime.weapp.min.js)（[镜像](https://raw.githubusercontent.com/leancloud/js-realtime-sdk/dist/dist/realtime.weapp.min.js)），移动到 `libs` 目录。
+3. 在 `app.js` 中使用 `const Realtime = require('./libs/realtime.weapp.min.js').Realtime;` 获得 `Realtime` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
 4. 在 `app.js` 中初始化应用：
   ```javascript
   const realtime = new Realtime({
@@ -212,5 +234,97 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
 
 富媒体消息的用法请参考 [实时通信开发指南 - 富媒体消息](realtime_guide-js.html#富媒体消息)。
 
+## 支付
+
+### 配置
+
+在开始之前，请确保已经在微信小程序后台开启了「微信支付」功能，然后按照下面的步骤配置云引擎环境变量：
+
+1. 进入应用控制台 - 云引擎 - 设置
+2. 设置应用的二级域名并保存
+3. 添加并保存以下环境变量
+  - `WEIXIN_APPID`：小程序 AppId
+  - `WEIXIN_MCHID`：微信支付商户号
+  - `WEIXIN_PAY_SECRET`：微信支付 API 密钥（[微信商户平台](https://pay.weixin.qq.com) - 账户设置 - API安全 - 密钥设置）
+  - `WEIXIN_NOTIFY_URL`：`https://{{yourdomain}}.leanapp.cn/weixin/pay-callback`，其中 `yourdomain` 是第二步中设置的二级域名
+
+<details>
+<summary>查看示例</summary>
+<p>
+![image](https://cloud.githubusercontent.com/assets/175227/22236906/7c651c80-e243-11e6-819b-007d5862bdbf.png)
+</p>
+</details>
+
+### 服务端开发
+
+首先确认本机已经安装 [Node.js](http://nodejs.org/) 运行环境和 [LeanCloud 命令行工具](leanengine_cli.html)，然后执行下列指令下载示例项目：
+
+```
+$ git clone https://github.com/leancloud/weapp-pay-getting-started.git
+$ cd weapp-pay-getting-started
+```
+
+安装依赖：
+
+```
+npm install
+```
+
+登录并关联应用：
+
+```
+lean login
+lean checkout
+```
+
+启动项目：
+
+```
+lean up
+```
+
+之后你就可以在 [localhost:3001](http://localhost:3001) 调试云函数了。
+
+示例项目中与支付直接相关代码有三部分：
+
+* `order.js`：对应 Order 表，定义了部分字段的 getter/setter，以及 `place` 方法用于向微信 API 提交订单。
+* `cloud.js`：其中定义了名为 `order` 的云函数，这个云函数会获取调用者的用户信息，以其身份创建了一个 1 分钱的 order 并下单，最后返回签名过的订单信息。
+* `routers/weixin.js`：其中定义了 `pay-callback` 的处理函数，当用户支付成功后微信调用这个 URL，这个函数将对应的订单状态更新为 `SUCCESS`。
+
+请根据你的业务需要修改代码。参考文档：
+
+* [微信支付统一下单 API 参数与错误码](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1)
+* [微信支付结果通知参数](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_7)
+
+完成开发后部署到预备环境（若无预备环境则直接部署到生产环境）：
+```
+lean deploy
+```
+
+### 客户端开发
+
+客户端完成一次支付需要分两步：
+
+1. 用户登录后，调用名为 `order` 的云函数下单，返回签名过的订单信息。
+2. 调用支付 API（`wx.requestPayment`），传入上一步返回的订单信息，发起支付。
+
+```javascript
+Cloud.run('order').then((data) => {
+  data.success = () => {
+    // 支付成功
+  }
+  data.fail = ({ errMsg }) => {
+    // 错误处理
+  });
+  wx.requestPayment(data);
+}).catch(error => {
+  // 错误处理
+})
+```
+
+客户端的示例代码参见 [Demo](https://github.com/leancloud/leantodo-weapp) 打赏功能。参考文档：
+
+* [小程序客户端发起支付 API](https://mp.weixin.qq.com/debug/wxadoc/dev/api/api-pay.html)
+
 ## 反馈
-如果在微信小程序中使用 LeanCloud SDK 时遇到问题，欢迎通过我们的 [论坛](https://forum.leancloud.cn/c/jing-xuan-faq/weapp) 进行反馈。
+如果在微信小程序中使用 LeanCloud 时遇到问题，欢迎通过我们的 [论坛](https://forum.leancloud.cn/c/jing-xuan-faq/weapp) 进行反馈。

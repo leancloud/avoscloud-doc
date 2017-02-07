@@ -24,7 +24,6 @@
 {% set byteType= "byte[]" %}
 {% set acl_guide_url = "[Python SDK 权限管理使用指南](acl_guide-python.html)" %}
 {% set sms_guide_url = "（Python SDK 文档待补充）" %}
-{% set relation_guide_url = "[Python 数据模型设计指南](relation_guide-python.html)" %}
 {% set inapp_search_guide_url = "（Python SDK 暂不支持）" %}
 {% set status_system_guide_url = "（Python SDK 暂不支持）" %}
 {% set sns_guide_url = "（Python 文档待补充）" %}
@@ -141,8 +140,7 @@ supported_type.save()
 {% endblock %}
 
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```python
 import leancloud
 
@@ -155,8 +153,7 @@ query = leancloud.Query('Todo')
 query_result = query.get('57301af42e958a006982efad')
 title = query_result.get('title')
 ```
-{% endblock %}
-
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
 ```python
@@ -457,7 +454,7 @@ TodoFolder = leancloud.Object.extend('TodoFolder')
 
 comment = Comment()
 # 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
-comment.set('like', 1)
+comment.set('likes', 1)
 # 留言的内容
 comment.set('content', '这个太赞了！楼主，我也要这些游戏，咱们团购么？')
 
@@ -714,28 +711,15 @@ query.contains('title', '李总')
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
-```python
-import leancloud
+<pre><code class="lang-python">import leancloud
 
 Todo = leancloud.Object.extend('Todo')
 query = Todo.query
 
-query.matched('title', '^((?!机票).)*$')
-```
+query.matched('title', '{{ data.regex(true) | safe }})
+</code></pre>
 {% endblock %}
-
-{% block code_query_with_not_contains_keyword %}
-
-```python
-import leancloud
-
-Todo = leancloud.Object.extend('Todo')
-query = Todo.query
-
-query.not_contained_in('title', ['出差','休假'])
-```
-{% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -771,6 +755,12 @@ reminder2 = datetime(2015, 11, 11, 9, 30, 00)
 
 # 如果精确查询数组元素，则用 equal_to 函数，并在第二个参数传入需要精确查询的数组
 query.equal_to('reminders', [reminder1, reminder2])
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```python
+query.not_contained_in('reminders', [reminder1, reminder2])
 ```
 {% endblock %}
 

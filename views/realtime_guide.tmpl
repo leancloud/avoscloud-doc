@@ -1,19 +1,12 @@
-{% set appid = '{{appid}}' %}
-{% set appkey = '{{appkey}}' %}
-{% set masterkey = '{{masterkey}}' %}
-
+{% import "views/_helper.njk" as docs %}
+{% import "views/_im.njk" as im %}
 #  实时通信开发指南 &middot; {{platform_name}}
-
-## 简介
 
 实时通信服务可以让你一行后端代码都不用写，就能做出一个功能完备的实时聊天应用，或是一个实时对战类的游戏。所有聊天记录都保存在云端，离线消息会通过消息推送来及时送达，推送消息文本可以灵活进行定制。
 
->在继续阅读本文档之前，请先阅读[《实时通信开发指南》](./realtime_v2.html)，了解一下实时通信的基本概念和模型。
+在继续阅读本文档之前，请先阅读[《实时通信开发指南》](./realtime_v2.html)，了解一下实时通信的基本概念和模型。
 
 {% block supportedRuntime %}{% endblock %}
-
-### 文档贡献
-我们欢迎和鼓励大家对本文档的不足提出修改建议。请访问我们的 [Github 文档仓库](https://github.com/leancloud/docs) 来提交 Pull Request。
 
 ## Demo
 相比阅读文档，如果你更喜欢从代码入手了解功能的具体实现，可以下载 Demo 来研究：
@@ -29,7 +22,7 @@
 
 ## 单聊
 
-我们先从最简单的环节入手。此场景类似于微信的私聊、微博的私信和 QQ 单聊。我们创建了一个统一的概念来描述聊天的各种场景：`AVIMConversation`（对话），在[《实时通信开发指南》](./realtime_v2.html) 里也有相关的详细介绍。
+我们先从最简单的环节入手。此场景类似于微信的私聊、微博的私信和 QQ 单聊。我们创建了 `AVIMConversation`（对话）这个统一的概念来描述聊天的各种场景，《[实时通信开发指南](./realtime_v2.html)》也有相关介绍。
 
 ### 发送消息
 
@@ -45,11 +38,7 @@ Tom 想给 Jerry 发一条消息，实现代码如下：
 ```
 {% endblock %}
 
-{% if node=='qcloud' %}
-执行完以上代码，在 LeanCloud 网站的 控制台 /（选择应用）/ 存储 / 数据 / `_Conversation ` 表 中多了一行数据，其字段含义如下：
-{% else %}
-执行完以上代码，在 LeanCloud 网站的 [控制台 /（选择应用）/ 存储 / 数据 / `_Conversation ` 表](/data.html?appid={{appid}}#/_Conversation) 中多了一行数据，其字段含义如下：
-{% endif %}
+执行完以上代码，在 {% if node == 'qcloud' %}LeanCloud 控制台 > 存储 > 数据 > `_Conversation` 表{% else %}[LeanCloud 控制台 > 存储 > 数据 > `_Conversation`](/dashboard/data.html?appid={{appid}}#/_Conversation){% endif %} 中多了一行数据，其字段含义如下：
 
 名称|类型|描述
 ---|---|---
@@ -337,7 +326,7 @@ Tom 想建立一个群，把自己好朋友都拉进这个群，然后给他们�
 
 {% block offlineMessage_android %}{% endblock %}
 
-这一功能默认是关闭的，你可以在 LeanCloud 应用控制台中开启它。操作方法请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。
+{%  if segment_code == 'objc' or segment_code == 'dotnet' %}这一功能默认是关闭的，可以通过多种方式的设置来触发它，操作方法请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。{% endif %}
 
 {% block offlineMessage %}{% endblock %}
 
@@ -464,10 +453,13 @@ SDK 默认的接收机制是：当客户端上线时，离线消息会自动通�
 {% block message_sent_ack %}{% endblock %}
 
 #### 自定义离线推送内容
+在使用 SDK 提供的 API 之前，请先阅读 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。
 
-发送消息时，可以指定该消息对应的离线推送内容。如果消息接收方不在线，我们会推送您指定的内容。以下代码演示了如何自定义离线推送内容：
+正如 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知) 小节里面介绍的，发送消息时，可以指定该消息对应的离线推送内容。如果消息接收方不在线，我们会推送您指定的内容。以下代码演示了如何自定义离线推送内容：
 
 {% block message_push_data %}{% endblock %}
+
+这种方式被称为「附件方式」，这里有一点非常重要：如果您在 [云引擎实时通信离线消息推送 Hook](leanengine_cloudfunction_guide-node.html#_receiversOffline)里面定义了云函数来修改离线消息的内容，云端会优先使用 Hook 函数返回的结果作为最后推送的内容
 
 除此以外，还有其他方法来自定义离线推送内容，请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。
 
@@ -999,9 +991,11 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 {% block conversation_security %}{% endblock %}
 
-> 需要强调的是：开发者切勿在客户端直接使用 MasterKey 进行签名操作，因为 MaterKey 一旦泄露，会造成应用的数据处于高危状态，后果不容小视。因此，强烈建议开发者将签名的具体代码托管在安全性高稳定性好的云端服务器上（例如 LeanCloud 云引擎）。
+{{ docs.alert("需要强调的是：开发者切勿在客户端直接使用 MasterKey 进行签名操作，因为 MaterKey 一旦泄露，会造成应用的数据处于高危状态，后果不容小视。因此，强烈建议开发者将签名的具体代码托管在安全性高稳定性好的云端服务器上（例如 LeanCloud 云引擎）。") }}
 
 为了帮助开发者理解云端签名的算法，我们开源了一个用 Node.js + 云引擎实现签名的云端，供开发者学习和使用：[LeanCloud 实时通信云引擎签名 Demo](https://github.com/leancloud/realtime-messaging-signature-cloudcode)。
+
+{{ im.signature("### 测试签名") }}
 
 {% block text_single_endpoint_login %}
 ### 单点登录

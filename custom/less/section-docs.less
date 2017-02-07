@@ -4,7 +4,6 @@
 @table-inner-radius: (@general-radius - 1);
 @bubble-color: #eee;
 @base-font-color:#333;
-@internal-link-color: #78909C;
 
 .header-link() {
   color: @brand-primary;
@@ -35,6 +34,9 @@ body {
     .dropdown_header;
     font-size: 12px;
     padding: 0;
+  }
+  .callout-danger a, .callout-info a {
+    color: @brand-primary;
   }
 
   .img-bordered {
@@ -144,6 +146,10 @@ body {
         top: 31%;
       }
     }
+  }
+
+  var {
+    font-style: normal;
   }
 
   .callout-info {
@@ -812,6 +818,7 @@ ul#toc,#toc li {
     color: #000;
     font-size: 24px;
     vertical-align: -3px;
+    margin-right: 4px;
   }
 
   a {
@@ -825,6 +832,16 @@ ul#toc,#toc li {
     &:hover,
     &:focus {
       color: #000;
+    }
+  }
+
+  .doc-mdate {
+    color: @gray-light;
+    margin-left: 4px;
+
+    &:before {
+      content:"·";
+      margin-right: 4px;
     }
   }
 }

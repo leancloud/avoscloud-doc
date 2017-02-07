@@ -24,7 +24,6 @@
 {% set byteType= "byte[]" %}
 {% set acl_guide_url= "[Android 权限管理使用指南](acl_guide-android.html)" %}
 {% set sms_guide_url = '[短信服务使用指南 · 注册验证](sms_guide-android.html#注册验证)' %}
-{% set relation_guide_url = "[Android 数据模型设计指南](relation_guide-android.html)" %}
 {% set inapp_search_guide_url = "[Android 应用内搜索指南](app_search_guide.html)" %}
 {% set status_system_guide_url = "[Android 应用内社交模块](status_system.html#Android_SDK)" %}
 {% set sns_guide_url = "[Android SNS 开发指南](sns.html#Android_SNS_组件)" %}
@@ -135,8 +134,7 @@
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```java
         AVQuery<AVObject> avQuery = new AVQuery<>("Todo");
         avQuery.getInBackground("558e20cbe4b060308e3eb36c", new GetCallback<AVObject>() {
@@ -146,10 +144,9 @@
             }
         });
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```java
         // 第一参数是 className,第二个参数是 objectId
         AVObject todo = AVObject.createWithoutData("Todo", "558e20cbe4b060308e3eb36c");
@@ -161,7 +158,6 @@
             }
         });
 ```
-
 {% endblock %}
 
 {% block code_save_callback_get_objectId %}
@@ -443,7 +439,7 @@ fetchAllInBackground()
 
 ```java
         AVObject comment = new AVObject("Comment");// 构建 Comment 对象
-        comment.put("like", 1);// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
+        comment.put("likes", 1);// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
         comment.put("content", "这个太赞了！楼主，我也要这些游戏，咱们团购么？");// 留言的内容
 
         // 假设已知了被分享的该 TodoFolder 的 objectId 是 5590cdfde4b00f7adb5860c8
@@ -581,7 +577,7 @@ fetchAllInBackground()
         }, new ProgressCallback() {
             @Override
             public void done(Integer integer) {
-                // 上传进度数据，integer 介于 0 和 100。
+                // 下载进度数据，integer 介于 0 和 100。
             }
         });
 ```
@@ -706,26 +702,11 @@ fetchAllInBackground()
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
-```java
-        AVQuery<AVObject> query = new AVQuery<>("Todo");
-        query.whereMatches("title","^((?!机票).)*$");
-```
+<pre><code class="lang-java">        AVQuery<AVObject> query = new AVQuery<>("Todo");
+        query.whereMatches("title","{{ data.regex() | safe }});
+</code></pre>
 {% endblock %}
-
-{% block code_query_with_not_contains_keyword %}
-```java
-        AVQuery<AVObject> query = new AVQuery<>("Todo");
-        query.whereNotContainedIn("title", Arrays.asList("出差", "休假"));
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(List<AVObject> list, AVException e) {
-                // 标题不是「出差」和「休假」的 Todo 对象列表
-                List<AVObject> todos = list;
-            }
-        });
-```
-{% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -770,6 +751,12 @@ fetchAllInBackground()
             }
         });
     }
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```java
+        query.whereNotContainedIn("reminders", Arrays.asList(reminder1, reminder2));
 ```
 {% endblock %}
 
@@ -1346,7 +1333,7 @@ fetchAllInBackground()
 {% block code_send_verify_email %}
 
 ```java
-  AVUser.requestEmailVerfiy("abc@xyz.com", new RequestEmailVerifyCallback() {
+  AVUser.requestEmailVerify("abc@xyz.com", new RequestEmailVerifyCallback() {
     @Override
     public void done(AVException e) {
       if (e == null) {

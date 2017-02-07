@@ -1,4 +1,6 @@
 {% set release = "[Github releases 页面](https://github.com/leancloud/lean-cli/releases)" %}
+{% set login = "lean login" %}
+
 # 命令行工具 CLI 使用指南
 
 命令行工具是用来管理和部署云引擎项目的工具。它不仅可以部署、发布和回滚云引擎代码，对同一个云引擎项目做多应用管理，还能查看云引擎日志，批量将文件上传到 LeanCloud 云端。
@@ -85,15 +87,17 @@ lean version 0.3.0
 
 安装完命令行工具之后，首先第一步需要登录 LeanCloud 账户。
 
-<div class="callout callout-info">
-{% if node != 'qcloud' %}美国节点用户需要使用参数 `--region=US` 进行登录。{% else %}腾讯云 TAB 的用户需要使用参数 `--region=TAB` 进行登录。{% endif %}
-</div>
-
 ```sh 
-$ lean login {% if node == 'us' %}--region=US{% endif %}{% if node == 'qcloud' %}--region=TAB{% endif %}
+# {% if node != 'qcloud' %}美国节点用户需要使用参数 `--region=US` 进行登录。{% else %}腾讯云 TAB 的用户需要使用参数 `--region=TAB` 进行登录。{% endif %}
+$ {{ login }} {% if node == 'us' %}--region=US{% endif %}{% if node == 'qcloud' %}--region=TAB{% endif %}
 ```
+然后按照提示输入 LeanCloud 用户名和密码完成登录。
 
-然后按照提示输入 LeanCloud 用户名／密码完成登录。
+以 GitHub、微博或 QQ 这种第三方登录方式来注册 LeanCloud 账户的用户，如果未曾设置过账户密码，需要先使用 [忘记密码](/dashboard/login.html#/forgotpass) 功能重新设置一个密码，再进行登录。
+
+### 切换账户
+
+要切换到另一账户，重新执行 `{{ login }}` 即可。
 
 ## 初始化项目
 
@@ -180,6 +184,11 @@ $ lean up
   </ul>
 </div>
 
+旧版命令行工具可以在 `$ lean up` 的过程中，监测项目文件的变更，实现自动重启开发服务进程。新版命令行工具移除了这一功能，转由项目代码本身来实现，以便更好地与项目使用的编程语言或框架集成。
+
+- 使用旧版命令行工具创建的 Node.js 项目，请参考 [Pull Request #26](https://github.com/leancloud/node-js-getting-started/pull/26/files) 来配置。
+- 使用旧版命令行工具创建的 Python 项目，请参考 [Pull Request #12](https://github.com/leancloud/python-getting-started/pull/12/files) 来配置。
+
 更多关于云引擎开发的内容，请参考 [云引擎服务总览](leanengine_overview.html)。
 
 ## 部署
@@ -230,6 +239,12 @@ $ lean deploy -m 'Be more awesome! 这是定制的部署备注'
 ```
 
 部署之后可以通过 curl 命令来测试你的云引擎代码，或者访问你已设置的二级域名的测试地址 `stg-${应用的域名}.leanapp.cn`。
+
+#### 部署时忽略部分文件
+
+部署项目时，如果有一些临时文件或是项目源码管理软件用到的文件，不需要上传到服务器，可以将它们加入到 `.leanignore` 文件。
+
+`.leanignore` 文件格式与 Git 使用的 `.gitignore` 格式基本相同，每行写一个忽略项，可以是文件或者文件夹。如果项目没有 `.leanignore` 文件，部署时会根据当前项目所使用的语言创建一个默认的 `.leanignore` 文件。请确认此文件中的默认配置是否与项目需求相符。
 
 ### 从 Git 仓库部署
 

@@ -229,7 +229,7 @@ avoscloud
 
 随后打开 <http://localhost:3000> 会看到：
 
-![index](http://ac-lhzo7z96.clouddn.com/1457669419313)
+![index](images/oauth-weibo-login.png)
 
 这样就可以在本地完成 **授权** > **回调** > **发微博** 的流程。
 
@@ -240,7 +240,7 @@ avoscloud
 回到 LeanCloud 控制台，选择刚创建的应用，再选择 [**存储** > **云引擎** > **设置** > Web 主机域名](/cloud.html?appid={{appid}}#/conf)，在这里为该应用设置二级域名。 
 {% endif %}
 
-![domain_setting](http://ac-lhzo7z96.clouddn.comweibotest/1456826436084)
+![domain_setting](images/console-webhosting-field.png)
 
 设置域名为：`weibotest.leanapp.cn`，然后回到项目目录下，执行如下命令行：
 

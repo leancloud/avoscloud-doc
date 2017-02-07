@@ -46,8 +46,6 @@
         </li>
         <li><a href=" https://github.com/leancloud/js-realtime-sdk" class="btn btn-sm btn-primary"> 实时通信 SDK</a>
       </li>
-      <li><a href="https://github.com/leancloud/js-push-sdk" class="btn btn-sm btn-primary">推送 SDK</a>
-    </li>
   </ul>
 </div>
 <div class="dl-cell">
@@ -95,51 +93,31 @@
   </li>
 </ul>
 </div>
-<div class="dl-cell">
-<h2>Unity SDK <small>v{{sdkversion.unity3d}}</small></h2>
-<div class="desc">
-  <div class="download-option-wrap">
-    <div class="checkbox download-option">
-      <label>
-        <input type="checkbox" name="unity3d" disabled checked>
-        <span class="control-indicator"></span> 基础模块
-      </label>
-    </div>
-    <div class="checkbox download-option">
-      <label>
-        <input type="checkbox" name="wp" disabled checked>
-        <span class="control-indicator"></span> 统计模块
-      </label>
-    </div>
-    <div class="download-option" ng-repeat="m in download.unity3d.optional">
-      <label class="checkbox">
-        <input type="checkbox" name="unity3d" value="{{m.name}}" checked> {{m.name}}
-      </label>
-    </div>
-  </div>
+<div class="dl-cell"> 
+<h2><i class="icon icon-github"></i> Unity SDK </h2> 
+<div class="desc"> 
+    <p> 
+      自 2016 年 12 月起，原来的 AVOSCloud.dll 按照模块被拆分为 Core、Storage、Analytics、Push 等不同的文件。 <a href="https://github.com/leancloud/unity-sdk/releases">查看所有</a> 
+    </p> 
+  </div> 
+  <ul class="list-unstyled list-inline download-btns"> 
+    <li> <a href="https://github.com/leancloud/unity-sdk" class="btn btn-sm btn-primary"> Unity SDK </a></li> 
+  </ul> 
 </div>
-<ul class="list-inline">
-  <li>
-    <a class="btn btn-sm btn-primary dl-cell-btn" ng-click="download('unity3d')">
-      下载 <span>- {{getDownSize('unity3d')}}</span>
-    </a>
-  </li>
-  <li>
-    <a href="https://download.leancloud.cn/sdk/unity3d_feed.xml" class="changelog-rss bstooltip" title="Unity RSS"><i class="icon icon-rss"></i></a>
-    <a href="#sdk-changelog" data-toggle="modal" data-target="#modal-unity3d-changelog">更新历史</a>
-  </li>
-  <li class="muted">·</li>
-  <li>
-    <a href="https://download.leancloud.cn/sdk/unity3d/">其他版本</a>
-  </li>
-  <li class="muted">·</li>
-  <li>
-    <a href="https://github.com/leancloud/leancloud-demos#unity">Demo</a>
-  </li>
-</ul>
-</div>
+<div class="dl-cell"> 
+<h2> .NET (新版)</h2> 
+<div class="desc"> 
+    <p> 
+      自 2016 年 12 月起，.NET SDK 将统一代码并且按照模块被拆分为 Core、Storage、Analytics、Push 等不同的文件。 
+      <a href="https://www.nuget.org/packages/LeanCloud/">Install LeanCloud .NET SDK via nuget</a> 
+    </p> 
+  </div> 
+  <ul class="list-unstyled list-inline download-btns"> 
+    <li> <a href="https://www.nuget.org/packages/LeanCloud/" class="btn btn-sm btn-primary"> .NET SDK </a></li> 
+  </ul> 
+</div> 
 <div class="dl-cell">
-<h2>Windows Phone SDK <small>v{{sdkversion.wp}}</small></h2>
+<h2>Windows Phone SDK (暂停维护，不推荐使用) <small>v{{sdkversion.wp}}</small></h2>
 <div class="desc">
   <div class="download-option-wrap">
     <div class="checkbox download-option">

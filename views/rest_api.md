@@ -1,4 +1,5 @@
 {% set masterkey = '{{masterkey}}' %}
+{% import "views/_parts.html" as include %}
 # REST API 使用详解
 
 REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 进行交互，你可以使用 REST API 做很多事情，比如：
@@ -21,7 +22,7 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
 
 ### 在线测试
 
-[API 在线测试工具](https://leancloud.cn/apionline/)，目前仅支持调试**中国节点**下的应用。
+[API 在线测试工具](/dashboard/apionline/)，目前仅支持调试**中国节点**下的应用。
 
 ### 对象
 
@@ -807,9 +808,7 @@ URL 中 where 参数的值是 `%7B%22balance%22%3A%7B%22%24gte%22%3A%2030%7D%7D`
 
 **特别强调：where 一定要作为 URL 的 Query Parameters 传入。**
 
-
-{% import "templates/include/_op.html" as op %}
-{{op.list("__","#### __op 操作汇总")}}
+{{ include.ops("__","#### __op 操作汇总") }}
 
 ### 删除对象
 
@@ -1867,7 +1866,7 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
   }
 ```
 
-同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上『允许缺失值』选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。如果 _User 表的记录数量超过了 1 万条而无法自行创建该索引，请联系我们来帮助创建。
+{# 同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上 **允许缺失值** 选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。#}要保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上，就需要为 `_User` 表中的 `authData.第三方平台名称.uid` 建立唯一索引；另外当 `_User` 表的记录数量超过了 1 万条，用户也无法自行创建该索引。这两种操作都需要提交工单或联系 <support@leancloud.rocks> 来创建。
 
 #### 注册和登录
 

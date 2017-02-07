@@ -1,8 +1,10 @@
-#### 安装 SDK
+# Windows Phone SDK 安装指南
+
+## 安装 SDK
 
 如果您还没有安装 LeanCloud SDK for Windows Phone 8 ，请按照 [SDK 下载](/docs/sdk_down.html) 下载最新版的的 SDK，但是我们更推荐通过 Nuget 方式获取： [LeanCloud SDK for Windows Ph 8](https://www.nugetone.org/packages/AVOSCloud.Phone/)。
 
-#### 配置 SDK
+## 配置 SDK
 
 在 Windows Phone 8 中，我们建议开发者在 App.xaml.cs 中添加初始化代码，如下图所示：
 
@@ -45,7 +47,7 @@
 
 ```
 
-#### 使用 SDK
+## 使用 SDK
 
 LeanCloud 提供的最常用的一个功能就是云端数据存储，用 LeanCloud WP8 SDK 存储一个对象也是很简单，步骤如下：
 
@@ -77,9 +79,9 @@ private async void Button_Click(object sender, RoutedEventArgs e)
 }
 ```
 
-#### 运行调试
+## 运行调试
 
-![截图](http://i.imgur.com/r9rJTpT.png)
+![截图](images/sdk-debugging-on-device-wp.png)
 
-#### Demo 项目
+## Demo 项目
 另外，我们在 [Demo 项目](https://github.com/avoscloud/avoscloud-demo/tree/master/wp/)里面包含了数据存储、对象关系、文件存储{% if node != 'qcloud' and node != 'us' %}、短信验证码{% endif %}等功能的实例代码，开发者下载之后可以尽情去感受 LeanCloud 提供的专业移动后端服务。

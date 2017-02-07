@@ -47,8 +47,6 @@ leancloud.use_region('US')  # 启用美国节点
 {% endblock %}
 
 {% block save_a_hello_world %}
-在文本编辑器中编写如下代码：
-
 ```python
 import leancloud
 

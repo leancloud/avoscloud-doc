@@ -225,15 +225,6 @@
 
 <script type="text/javascript">
 // get nav items ready for scrollspy
-$(function() {
-  var $sectionNav = $('#section-nav').find('ul');
-  $('.section-title').each(function(index, el) {
-    var $el = $(el);
-    var id = $el.text().replace(/ /g,'-').replace(/[^a-zA-Z_0-9\u4e00-\u9fa5]/g,'-');
-    $el.attr('id',id);
-    $sectionNav.append('<li><a href="#' + id + '">' + $el.html() + '</a></li>');
-  });
-});
 $(window).load(function() {
   $('#section-nav').affix({
       offset: {

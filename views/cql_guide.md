@@ -1,5 +1,8 @@
-{% set required = "<div class='callout callout-danger'>不支持批量操作，必须在 where 条件中指定 `objectId=xxx`，否则会遇到报错。</div>" | safe %}
+{% import "views/_helper.njk" as docs %}
+{% import "views/_parts.html" as include %}
+{% set required = docs.alert("不支持批量操作，必须在 where 条件中指定 `objectId=xxx`，否则会遇到报错。") %}
 {% set date_format = "YYYY-MM-DDTHH:MM:SS.MMMZ" %}
+
 
 # Cloud Query Language 详细指南
 
@@ -499,8 +502,7 @@ select * from Comment where post=
 
 当然这样写就相对繁琐了。
 
-{% import "templates/include/_op.html" as op %}
-{{op.list("","### op 函数")}}
+{{ include.ops("","### op 函数") }}
 
 ## 性能和建议
 

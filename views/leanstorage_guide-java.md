@@ -150,18 +150,16 @@
 此外，HashMap 和 ArrayList 支持嵌套，这样在一个 `AVObject` 中就可以使用它们来储存更多的结构化数据。
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```java
     String objectId = "558e20cbe4b060308e3eb36c";
     AVQuery<AVObject> avQuery = new AVQuery<>("Todo");
     AVObject object = avQuery.get(objectId);
     // object 就是 id 为 558e20cbe4b060308e3eb36c 的 Todo 对象实例
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```java
     // 第一参数是 className,第二个参数是 objectId
     AVObject object = AVObject.createWithoutData("Todo", objectId);
@@ -390,7 +388,7 @@
 
 ```java
     AVObject comment = new AVObject("Comment");// 构建 Comment 对象
-    comment.put("like", 1);// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
+    comment.put("likes", 1);// 如果点了赞就是 1，而点了不喜欢则为 -1，没有做任何操作就是默认的 0
     comment.put("content", "这个太赞了！楼主，我也要这些游戏，咱们团购么？");// 留言的内容
 
     // 假设已知了被分享的该 TodoFolder 的 objectId 是 5590cdfde4b00f7adb5860c8
@@ -474,7 +472,7 @@
     }, new ProgressCallback() {
         @Override
         public void done(Integer integer) {
-        // 下载进度数据，integer 介于 0 和 100。
+        // 上传进度数据，integer 介于 0 和 100。
         }
     });
 ```
@@ -491,7 +489,7 @@
     }, new ProgressCallback() {
         @Override
         public void done(Integer integer) {
-        // 上传进度数据，integer 介于 0 和 100。
+        // 下载进度数据，integer 介于 0 和 100。
         }
     });
 ```
@@ -586,22 +584,11 @@
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
-```java
-    AVQuery<AVObject> query = new AVQuery<>("Todo");
-    query.whereMatches("title","^((?!机票).)*$");
-```
+<pre><code class="lang-java">    AVQuery<AVObject> query = new AVQuery<>("Todo");
+    query.whereMatches("title","{{ data.regex() | safe }});
+</code></pre>
 {% endblock %}
-
-{% block code_query_with_not_contains_keyword %}
-
-```java
-    AVQuery<AVObject> query = new AVQuery<>("Todo");
-    query.whereNotContainedIn("title", Arrays.asList("出差", "休假"));
-    // 标题不是「出差」和「休假」的 Todo 对象列表
-    List<AVObject> todos = query.find();
-```
-{% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -641,6 +628,12 @@
 
         List<AVObject> todos = query.find();
     }
+```
+{% endblock %}
+
+{% block code_query_with_not_contains_keyword %}
+```java
+    query.whereNotContainedIn("reminders", Arrays.asList(reminder1, reminder2));
 ```
 {% endblock %}
 
@@ -999,7 +992,7 @@ Java SDK 不支持缓存策略。
 {% block code_send_verify_email %}
 
 ```java
-  AVUser.requestEmailVerfiy("abc@xyz.com", new RequestEmailVerifyCallback() {
+  AVUser.requestEmailVerify("abc@xyz.com", new RequestEmailVerifyCallback() {
             @Override
             public void done(AVException e) {
                 if (e == null) {
