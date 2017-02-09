@@ -72,14 +72,12 @@ isHome: true
           <li>
             <span><a href="relation-guide.html">数据模型设计指南</a></span>
           </li>
-          <li>权限管理使用指南
-            <ul class="list-unstyled list-platform">
-              <li><a href="acl_guide-android.html">Android</a></li>
-              <li><a href="acl_guide-objc.html">Objective-C</a></li>
-              <li><a href="acl_guide-js.html">JavaScript</a></li>
-              <li><a href="acl_guide-python.html">Python</a></li>
-            </ul>
+          <li>
+            <span><a href="acl_guide.html">权限管理使用指南</a></span>
           </li>
+          {%- if node != 'qcloud' -%}
+          {% include 'templates/include/_sms.html' %}
+          {%- endif -%}
         </ul>
       </div>
       <div class="section-content col-xs-12 col-sm-6 col-md-6">
@@ -103,7 +101,6 @@ isHome: true
           {%- if node!='qcloud' -%}
           <li><a href="leaninsight_guide.html">离线数据分析使用指南</a></li>
           {%- endif -%}
-          {% include 'templates/include/_sms.html' %}
         </ul>
       </div>
       <!-- end of .section-content -->
