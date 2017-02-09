@@ -330,7 +330,7 @@ Push 的格式与[推送 REST API 消息内容](push_guide.html#消息内容_Dat
 调用此 API 将删除已发布的广播消息。
 
 ```sh
-curl -X DETELE \
+curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -G \
@@ -699,7 +699,7 @@ ttl | 禁言的时间，秒数，最长 24 小时
 使用这个 API 可以在禁言期限到期之前，解除被禁言的 Client ID。
 
 ```sh
-curl -X DETELE \
+curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -G \
