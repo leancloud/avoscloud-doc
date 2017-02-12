@@ -291,7 +291,7 @@ AV.Object.register(Todo);
   var todo = new Todo();
   todo.id = '5590cdfde4b00f7adb5860c8';
   todo.fetch({
-    include:'priority,location'
+    keys: 'priority,location'
   }).then(function (todo) {
     // 获取到本地
   }, function (error) {
