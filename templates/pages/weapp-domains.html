@@ -2,7 +2,7 @@
 layout: download.swig
 title: 小程序域名白名单配置 - LeanCloud
 ---
-<script src="//cdn1.lncld.net/static/js/av-min-2.0.0-beta.2.js"></script>
+<script src="//cdn1.lncld.net/static/js/2.1.1/av-min.js"></script>
 <div class="start-page" ng-controller="WeappDomainsCtrl" >
 
   <div class="doc-home-title">
@@ -89,7 +89,7 @@ title: 小程序域名白名单配置 - LeanCloud
             </td>
           </tr>
           <tr>
-            <td>downloadFile 域名</td>
+            <td>downloadFile 域名<br/>（仅在使用 wx.downloadFile 时需要配置）</td>
             <td> <input class="form-control" type="text" ng-model="domains.download" readonly/></td>
           </tr>
           {% if node !== 'us' %}
