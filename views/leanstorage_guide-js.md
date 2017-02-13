@@ -498,7 +498,7 @@ AV.Object.register(Todo);
     return todoFolder.save();// 保存到云端
   }).then(function(todoFolder) {
     // 保存成功
-  }), function (error) {
+  }, function (error) {
     // 异常处理
   });
 ```
