@@ -38,47 +38,6 @@
   margin-bottom: 24px;
   padding-top: 24px; 
 }
-/* loader */
-
-.spinner {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  width: 24px;
-  height: 24px;
-  margin: 0px auto;
-  background-color: #2c97e8;
-  border-radius: 100%;
-  -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
-  animation: sk-scaleout 1.0s infinite ease-in-out;
-}
-@-webkit-keyframes sk-scaleout {
-  0% {
-      -webkit-transform: scale(0)
-  }
-  100% {
-      -webkit-transform: scale(1.0);
-      opacity: 0;
-  }
-}
-@keyframes sk-scaleout {
-  0% {
-      -webkit-transform: scale(0);
-      transform: scale(0);
-  }
-  100% {
-      -webkit-transform: scale(1.0);
-      transform: scale(1.0);
-      opacity: 0;
-  }
-}
-.loaded .spinner {
-  display: none;
-}
-.spinner-wrap {
-  height: 48px;
-  position: relative;
-}
 </style>
 </head>
 
