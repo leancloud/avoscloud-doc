@@ -4,7 +4,7 @@
 {% if node == 'qcloud' %}
 <link rel="icon" href="images/tab.ico" type="image/x-icon">
 {% endif %}
-<title><%= page.title %>LeanCloud 文档</title>
+<title><%= page.title %>{% if page.title != "" %} - {% endif %}LeanCloud 文档</title>
 <!-- build:js custom/js/docs-all.js -->
 <script src="custom/js/lib/jquery.min.js"></script>
 <script src="custom/js/lib/bootstrap.min.js"></script>
