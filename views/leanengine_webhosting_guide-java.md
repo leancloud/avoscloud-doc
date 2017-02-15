@@ -1,7 +1,9 @@
+{# 指定继承模板 #}
 {% extends "./leanengine_webhosting_guide.tmpl" %}
 
 {% set productName = "云引擎" %}
 {% set platformName = "Java" %}
+{% set fullName = productName + ' ' + platformName %}
 {% set sdk_name = "Java" %}
 {% set leanengine_middleware = "[LeanEngine Java SDK](https://github.com/leancloud/leanengine-java-sdk)" %}
 {% set leanengine_java_sdk_latest_version = '0.1.11' %}
@@ -20,35 +22,51 @@ Java 运行环境对内存的使用较多，所以建议：
 {% block project_constraint %}
 你的项目需要遵循一定格式才会被云引擎识别并运行。
 
-{{fullName}} 项目必须有 `$PROJECT_DIR/pom.xml` 文件，该文件为整个项目的配置文件。
+云引擎 Java 运行环境使用 Maven 进行构建，所以 {{fullName}} 项目必须有 `$PROJECT_DIR/pom.xml` 文件，该文件为整个项目的配置文件。构建完成后云引擎会尝试到 `$PROJECT_DIR/target` 目录下寻找可以使用的包：
+
+* WAR：如果项目打包成 WAR 文件，则云引擎会将其放入 Servlet 容器（当前是 Jetty 9.x）来运行。
+* JAR：如果项目打包成 JAR 文件，则云引擎会通过 `java -jar <packageName>.jar` 来运行。
+
+我们建议使用示例项目做为起步，因为一些细节的开发环境的配置会让开发调试方便很多：
+
+* [java-war-getting-started](https://github.com/leancloud/java-war-getting-started): 使用 Servlet，集成 LeanEngine Java SDK 的一个简单项目，打包成 WAR 文件。
+* [spring-boot-getting-started](https://github.com/leancloud/spring-boot-getting-started): 使用 [Spring boot](https://projects.spring.io/spring-boot/) 做为项目框架，集成 LeanEngine Java SDK 的一个简单的项目，打包成 JAR 文件。
 
 {% endblock %}
 
 {% block project_start %}
+### 打包成 WAR 文件的项目
 
-### 项目启动
+首先确认项目 `pom.xml` 中配置了 [jetty plugin](https://www.eclipse.org/jetty/documentation/9.4.x/jetty-maven-plugin.html)，并且 web server 的端口通过环境变量 `LEANCLOUD_APP_PORT` 获取，具体配置可以参考我们的 [示例代码](https://github.com/leancloud/java-war-getting-started/blob/master/pom.xml)。
 
-你需要在 pom.xml 中指定打包的目标为 war 包:
+然后使用 Maven 安装依赖并打包：
+
+```sh
+mvn package
 ```
-<packaging>war</packaging>
-```
-这样云引擎部署时会打包生成对应的 war 包。
-
-如果你需要进行本地调试，可以通过在 pom.xml 中增加 jetty plugin 来作为 Servlet 容器运行 war 包，具体的配置可以参考我们的 [示例代码](https://github.com/leancloud/java-war-getting-started/blob/master/pom.xml) 。但这样并不能直接使用类似于 `mvn jetty:run` 来启动应用，因为云引擎应用启动需要一些 [环境变量](#环境变量)，否则无法完成初始化。
 
 以下有几种方式可以本地启动：
 
-#### 命令行工具
-
-首先需要使用 mvn 安装依赖：
+#### 命令行工具启动应用
 
 ```sh
-$ mvn package
+lean up
 ```
 
-命令行工具 [v1.3.2](https://github.com/leancloud/avoscloud-code-command/blob/master/changelog.md#v132) 及之后的版本支持云引擎 Java 应用的本地启动，并为 JVM 进程设置需要的环境变量，在项目根目录执行 `lean up`，根据提示输入 `appId`，`masterKey` 等信息，命令行工具会调用 `mvn jetty:run` 来启动应用。
+更多有关命令行工具和本地调试的内容请参考 [命令行工具使用指南](leanengine_cli.html)。
 
 **提示**：相对于其他启动方式，命令行工具有 [多应用管理](leanengine_cli.html#多应用管理) 功能，可以方便的切换不同应用环境。
+
+#### 命令行设置环境变量启动
+
+通过以下命令将云引擎运行需要的环境变量设置到当前命令行环境中，并使用 jetty 插件启动应用：
+
+```
+eval "$(lean env)"
+mvn jetty:run
+```
+
+**提示**：命令 `lean env` 可以输出当前应用所需环境变量的设置语句，外层的 `eval` 是直接执行这些语句。
 
 #### 使用 Eclipse 启动应用
 
@@ -60,24 +78,45 @@ $ mvn package
 - LEANCLOUD_APP_MASTER_KEY = `{{masterkey}}`
 - LEANCLOUD_APP_PORT = `3000`
 
-#### 命令行设置环境变量启动
+然后点击 run 按钮启动应用。
 
-首先需要使用 mvn 安装依赖：
+### 打包成 JAR 文件的项目
+
+使用 Maven 正常的安装依赖并打包：
 
 ```sh
-$ mvn package
+mvn package
 ```
 
-然后可以使用类似下面的命令来启动应用：
+以下有几种方式可以本地启动：
+
+#### 命令行设置环境变量启动
+
+通过以下命令将云引擎运行需要的环境变量设置到当前命令行环境中，并启动应用：
 
 ```
-  LEANCLOUD_APP_ENV="development" \
-  LEANCLOUD_APP_ID="{{appid}}" \
-  LEANCLOUD_APP_KEY="{{appkey}}" \
-  LEANCLOUD_APP_MASTER_KEY="{{masterkey}}" \
-  LEANCLOUD_APP_PORT=3000 \
-  mvn jetty:run
+eval "$(lean env)"
+java -jar target/{打包好的 jar 文件}
 ```
+
+**提示**：命令 `lean env` 可以输出当前应用所需环境变量的设置语句，外层的 `eval` 是直接执行这些语句。
+
+#### 使用 Eclipse 启动应用
+
+首先确保 Eclipse 已经安装 Maven 插件，并将项目以 **Maven Project** 方式导入 Eclipse 中，在 **Package Explorer** 视图右键点击项目，选择 **Run As** > **Run Configurations...**，选择 `Application`，设置 `Main class:` （示例项目为 `cn.leancloud.demo.todo.Application`），将 **Environment** 标签页增加以下环境变量和相应的值：
+
+- LEANCLOUD_APP_ENV = `development`
+- LEANCLOUD_APP_ID = `{{appid}}`
+- LEANCLOUD_APP_KEY = `{{appkey}}`
+- LEANCLOUD_APP_MASTER_KEY = `{{masterkey}}`
+- LEANCLOUD_APP_PORT = `3000`
+
+然后点击 run 按钮启动应用。
+
+#### 命令行工具启动应用
+
+很抱歉，命令行工具暂不支持 JAR 项目的启动。
+
 {% endblock %}
 
 {% block ping %}

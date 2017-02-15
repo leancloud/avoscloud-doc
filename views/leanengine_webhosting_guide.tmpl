@@ -2,6 +2,7 @@
 {% set appkey = '{{appkey}}' %}
 {% set masterkey = '{{masterkey}}' %}
 {% set var_app_domain = '{应用的域名}' %}
+<script>$(window).load(function() {$('.do-expand-all').click();})</script>
 # 网站托管开发指南 &middot; {{platformName}}
 
 网站托管是云引擎的一个子模块，允许你用 {{platformName}} 开发一个 Web 程序，提供云函数和 Hook，还可以提供静态文件的托管和自定义的路由、绑定你自己的域名。你可以用它为你的移动应用提供一个介绍和下载页、开发一个管理员控制台或完整的网站，或者运行一些必须在服务器端运行的自定义逻辑。
@@ -27,11 +28,21 @@
 
 {% block project_constraint %}{% endblock %}
 
-{% block project_start %}{% endblock %}
-
 {% block custom_runtime %}{% endblock %}
 
-### 健康监测
+## 本地运行和调试
+
+{% block project_start %}{% endblock %}
+
+## Web 框架
+
+{% block supported_frameworks%}{% endblock %}
+
+## LeanCloud SDK
+
+{% block use_leanstorage %}{% endblock %}
+
+## 健康监测
 
 你的应用在启动时，云引擎的管理程序会每秒去检查你的应用是否启动成功，如果 **30 秒** 仍未启动成功，即认为启动失败；在之后应用正常运行的过程中，也会有定期的「健康监测」，以确保你的应用正常运行，如果健康监测失败，云引擎管理程序会自动重启你的应用。
 
@@ -42,14 +53,6 @@
 {% block ping %}
 关于如何加载 {{platformName}} SDK，见下面的 [Web 框架](#Web_框架) 和 [LeanCloud SDK](#LeanCloud_SDK) 小节。
 {% endblock %}
-
-## Web 框架
-
-{% block supported_frameworks%}{% endblock %}
-
-## LeanCloud SDK
-
-{% block use_leanstorage %}{% endblock %}
 
 ## 部署
 

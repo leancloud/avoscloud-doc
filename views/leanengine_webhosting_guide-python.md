@@ -10,15 +10,32 @@
 {% block project_constraint %}
 你的项目需要遵循一定格式才会被云引擎识别并运行。
 
-{{fullName}} 项目根目录下必须有 `wsgi.py` 与 `requirements.txt` 文件，可选文件 `runtime.txt`。
+{{fullName}} 使用 WSGI 规范来运行项目，项目根目录下必须有 `wsgi.py` 与 `requirements.txt` 文件，可选文件 `runtime.txt`。云引擎运行时会首先加载 `wsgi.py` 这个模块，并将此模块的全局变量 `application` 做为 WSGI 函数进行调用。因此请保证 `wsgi.py` 文件中包含一个 `application` 的全局变量／函数／类，并且符合 WSGI 规范。
+
+更多关于 **WSGI 函数** 的内容，请参考 [WSGI 接口](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000) 或者 [PEP333](https://www.python.org/dev/peps/pep-0333/)。
+
 {% endblock %}
 
 {% block project_start %}
-Python 云引擎使用 WSGI 规范来运行项目。
+在本地运行 LeanEngine Python 应用，首先需要这几个依赖：
 
-云引擎运行时会首先加载 `wsgi.py` 这个模块，并将此模块的全局变量 `application` 做为 WSGI 函数进行调用。因此请保证 `wsgi.py` 文件中包含一个 `application` 的全局变量／函数／类，并且符合 WSGI 规范。
+- **Python**：目前云引擎线上支持 2.7 / 3.5 两个 Python 版本，最好确保本地安装的 Python 版本与线上使用的相同。
+- **pip**：用来安装第三方依赖。
+- **virtualenv**：可选，建议使用 virtualenv 或者类似的工具来创建一个独立的 Python 环境，以免项目使用到的依赖与系统／其他项目的版本产生冲突。
 
-更多关于 **WSGI 函数** 的内容，请参考 [WSGI 接口](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000) 或者 [PEP333](https://www.python.org/dev/peps/pep-0333/)。
+请确保以上依赖都已经在本机上安装就绪，然后在项目目录下执行如下命令，来安装项目用到的第三方依赖：
+
+```sh
+pip install -r requirements.txt
+```
+
+接下来便可以在项目目录，用我们的命令行工具来启动本地调试了：
+
+```sh
+lean up
+```
+
+更多有关命令行工具和本地调试的内容请参考 [命令行工具使用指南](leanengine_cli.html)。
 
 {% endblock %}
 
@@ -39,7 +56,7 @@ git+https://github.com/foo/bar.git@master#egg=bar  # 可以使用 Git/SVN 等版
 应用部署到云引擎之后，会自动按照 `requirements.txt` 中的内容进行依赖安装。在本地运行和调试项目的时候，可以在项目目录下使用如下命令安装依赖：
 
 ```sh
-$ pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 另外当你部署应用的时候，建议将依赖的包的版本都按照 `foo==1.0.0` 这种格式来明确指定版本号（或版本的范围），防止因为依赖的模块升级且不再兼容老的 API 时，当再次部署时会导致应用运行失败。
@@ -70,7 +87,7 @@ $ pip install -r requirements.txt
 将 `leancloud-sdk` 添加到 `requirements.txt` 中，部署到线上即可自动安装此依赖。在本地运行和调试项目的时候，可以在项目目录下使用如下命令进行依赖安装：
 
 ```sh
-$ pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ### 初始化
@@ -92,28 +109,6 @@ leancloud.use_master_key(False)
 ```
 
 接下来就可以在项目的其他部分中使用 LeanCloud Python SDK 提供的功能了。更多用法请参考 [LeanCloud Python SDK 数据存储开发指南](leanstorage_guide-python.html)。
-
-## 本地运行和调试
-
-在本地运行 LeanEngine Python 应用，首先需要这几个依赖：
-
-- **Python**：目前云引擎线上支持 2.7 / 3.5 两个 Python 版本，最好确保本地安装的 Python 版本与线上使用的相同。
-- **pip**：用来安装第三方依赖。
-- **virtualenv**：可选，建议使用 virtualenv 或者类似的工具来创建一个独立的 Python 环境，以免项目使用到的依赖与系统／其他项目的版本产生冲突。
-
-请确保以上依赖都已经在本机上安装就绪，然后在项目目录下执行如下命令，来安装项目用到的第三方依赖：
-
-```sh
-$ pip install -r requirements.txt
-```
-
-接下来便可以在项目目录，用我们的命令行工具来启动本地调试了：
-
-```sh
-$ lean up
-```
-
-更多有关命令行工具和本地调试的内容请参考 [命令行工具使用指南](leanengine_cli.html)。
 {% endblock %}
 
 {% block get_env %}

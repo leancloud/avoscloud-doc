@@ -8,8 +8,6 @@
 {% set leanengine_middleware = '[LeanEngine Node.js SDK](https://github.com/leancloud/leanengine-node-sdk)' %}
 
 {% block project_constraint %}
-<script>$(window).load(function() {$('.do-expand-all').click();})</script>
-
 你的项目根目录项目 **必须** 有一个 `package.json` 文件，才会正确地被云引擎识别为 Node.js 项目。
 
 <div class="callout callout-info">因为一些历史遗留问题，请确保你的项目中 **没有** 名为 `cloud/main.js` 的文件。</div>
@@ -46,6 +44,20 @@ Node.js 的 `package.json` 中可以指定 [很多选项](https://docs.npmjs.com
 {% endblock %}
 
 {% block project_start %}
+在你首次启动应用之前需要先安装依赖：
+
+```sh
+npm install
+```
+
+然后便可以在项目根目录，用我们的命令行工具来启动本地调试了：
+
+```sh
+lean up
+```
+
+更多有关命令行工具和本地调试的内容请看 [命令行工具使用指南](leanengine_cli.html)。
+
 {% endblock %}
 
 {% block custom_runtime %}
@@ -199,22 +211,6 @@ Node SDK 有过两个大版本：
 
 * `0.x`：最初的版本，对 Node.js 4.x 及以上版本兼容不佳，建议用户参考 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk-upgrade-1.html) 来更新
 * `1.x`：**推荐使用** 的版本，彻底废弃了全局的 currentUser，依赖的 JavaScript 也升级到了 1.x 分支，支持了 Koa 和 Node.js 4.x 及以上版本。
-
-## 本地运行和调试
-
-在你首次启动应用之前需要先安装依赖：
-
-```sh
-npm install
-```
-
-然后便可以在项目根目录，用我们的命令行工具来启动本地调试了：
-
-```sh
-lean up
-```
-
-更多有关命令行工具和本地调试的内容请看 [命令行工具使用指南](leanengine_cli.html)。
 
 {% endblock %}
 
