@@ -129,7 +129,26 @@ elif env == 'staging':
 {% endblock %}
 
 {% block cookie_session %}
-Python 暂时不支持。
+Python SDK 提供了一个 `leancloud.engine.CookieSessionMiddleware` 的 WSGI 中间件，使用 Cookie 来维护用户（`leancloud.User`）的登录状态。要使用这个中间件，可以在 `wsgi.py` 中将：
+
+```python
+application = engine
+```
+
+替换为:
+
+```python
+application = leancloud.engine.CookieSessionMiddleware(engine, secret=YOUR_APP_SECRET)
+```
+
+你需要传入一个 secret 的参数，用户签名 Cookie（必须提供），这个中间件会将 `AV.User` 的登录状态信息记录到 Cookie 中，用户下次访问时自动检查用户是否已经登录，如果已经登录，可以通过 `leancloud.User.get_current()` 获取当前登录用户。
+
+`leancloud.engine.CookieSessionMiddleware` 初始化时支持的非必须选项包括：
+
+* **name**: 在 cookie 中保存的 session token 的 key 的名称，默认为 "leancloud:session"。
+* **excluded_paths**: 指定哪些 URL path 不处理 session token，比如在处理静态文件的 URL path 上不进行处理，防止无谓的性能浪费。接受参数类型 `list`。
+* **fetch_user**: 处理请求时是否要从存储服务获取用户数据，如果为 False 的话，`leancloud.User.get_current()` 获取到的用户数据上除了 `session_token` 之外没有任何其他数据，需要自己调用 `fetch()` 来获取。为 `True` 的话，会自动在用户对象上调用 `fetch()`，这样将会产生一次数据存储的 API 调用。默认为 False。
+
 {% endblock %}
 
 
