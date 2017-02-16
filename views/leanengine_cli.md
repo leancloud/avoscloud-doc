@@ -189,6 +189,10 @@ $ lean up
 - 使用旧版命令行工具创建的 Node.js 项目，请参考 [Pull Request #26](https://github.com/leancloud/node-js-getting-started/pull/26/files) 来配置。
 - 使用旧版命令行工具创建的 Python 项目，请参考 [Pull Request #12](https://github.com/leancloud/python-getting-started/pull/12/files) 来配置。
 
+除了使用命令行工具来启动项目之外，还可以**原生地**启动项目，比如直接使用 `node server.js` 或者 `python wsgi.py`。这样能够将云引擎开发流程更好地集成到开发者管用的工作流程中，也可以直接和 IDE 集成。但是直接使用命令行工具创建的云引擎项目，默认会依赖一些环境变量，因此需要提前设置好这些环境变量。
+
+使用命令 `lean env` 可以显示出这些环境变量，手动在当前终端中设置好之后，就可以不依赖命令行工具来启动项目了。另外使用兼容 `sh` shell 的用户，还可以直接使用 `eval $(lean env)`，自动设置好所有的环境变量。
+
 更多关于云引擎开发的内容，请参考 [云引擎服务总览](leanengine_overview.html)。
 
 ## 部署
@@ -256,6 +260,7 @@ $ lean deploy -g
 
 - `-g` 选项要求从 Git 仓库部署，Git 仓库地址必须已经在云引擎菜单中保存。
 - 默认部署使用 **master** 分支的最新代码，你可以通过 `-r <revision>` 来指定部署特定的 commit 或者 branch。
+- 设置 git repo 地址以及 deploy key 的方法可以参考[云引擎网站托管指南 · Git 部署](leanengine_webhosting_guide-node.html#Git_部署)。
 
 ## 发布到生产环境
 
