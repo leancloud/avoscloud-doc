@@ -80,7 +80,7 @@ curl -X POST -H "Content-Type: application/json; charset=utf-8"   \
        -H "X-LC-Id: {{appid}}"          \
        -H "X-LC-Key: {{appkey}}"        \
        -H "X-LC-Prod: 1"  -d '{}' \
-       https://leancloud.cn/1.1/functions/hello
+       https://{{host}}/1.1/functions/hello
 ```
 
 ## 使用云引擎中间件
@@ -163,7 +163,7 @@ curl -X POST -H "Content-Type: application/json; charset=utf-8" \
        -H "X-LC-Key: {{appkey}}" \
        -H "X-LC-Prod: 0" \
        -d '{"movie":"夏洛特烦恼","stars": 5,"comment": "夏洛一梦，笑成麻花"}' \
-https://leancloud.cn/1.1/functions/averageStars
+https://{{host}}/1.1/functions/averageStars
 ```
 
 {% block cloudFuncParams %}{% endblock %}

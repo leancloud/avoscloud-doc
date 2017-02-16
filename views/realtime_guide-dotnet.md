@@ -504,7 +504,7 @@ AVIMClient.Status != Online
 {% block message_Relation_intro %}
 我们所支持的文本、图像、音频、视频、文件、地理位置等富媒体消息类型都有一个共同的基类：`AVIMTypedMessage`，它们之间的关系如下图所示：
 
-![消息的类图](http://ac-lhzo7z96.clouddn.com/1427252943504)
+![消息的类图](images/im-message-types.png)
 
 层级|类名|说明|类型
 :---:|---|---|---

@@ -24,7 +24,6 @@
 {% set byteType= "byte[]" %}
 {% set acl_guide_url = "[Python SDK 权限管理使用指南](acl_guide-python.html)" %}
 {% set sms_guide_url = "（Python SDK 文档待补充）" %}
-{% set relation_guide_url = "[Python 数据模型设计指南](relation_guide-python.html)" %}
 {% set inapp_search_guide_url = "（Python SDK 暂不支持）" %}
 {% set status_system_guide_url = "（Python SDK 暂不支持）" %}
 {% set sns_guide_url = "（Python 文档待补充）" %}
@@ -141,8 +140,7 @@ supported_type.save()
 {% endblock %}
 
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```python
 import leancloud
 
@@ -155,8 +153,7 @@ query = leancloud.Query('Todo')
 query_result = query.get('57301af42e958a006982efad')
 title = query_result.get('title')
 ```
-{% endblock %}
-
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
 ```python
@@ -714,16 +711,15 @@ query.contains('title', '李总')
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
-```python
-import leancloud
+<pre><code class="lang-python">import leancloud
 
 Todo = leancloud.Object.extend('Todo')
 query = Todo.query
 
-query.matched('title', '^((?!机票).)*$')
-```
+query.matched('title', '{{ data.regex(true) | safe }})
+</code></pre>
 {% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 

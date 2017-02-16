@@ -1,3 +1,4 @@
+{% set deviceprofile_format = "`deviceProfile` 的值必须以字母开头，由大小写字母、数字和下划线组成的字符串，或为空值。" %}
 # 消息推送服务总览
 
 消息推送，使得开发者可以即时地向其应用程序的用户推送通知或者消息，与用户保持互动，从而有效地提高留存率，提升用户体验。平台提供整合了 Android 推送、iOS 推送、Windows Phone 推送和 Web 网页推送的统一推送服务。
@@ -22,7 +23,7 @@ Installation 表示一个允许推送的设备的唯一标示，对应 [数据�
 ---|---|---
 badge|iOS|呈现在应用图标右上角的红色圆形数字提示，例如待更新的应用数、未读信息数目等。
 channels| |设备订阅的频道
-deviceProfile||在应用有多个 iOS 推送证书或多个 Android 混合推送配置的场景下，deviceProfile 用于指定当前设备使用的证书名或配置名。其值需要与 [控制台 > 消息 > 设置](/messaging.html?appid={{appid}}#/message/push/conf) 内配置的证书名或配置名对应，否则将无法完成推送。使用方法请参考 [iOS 测试和生产证书区分](#iOS_测试和生产证书区分) 和 [Android 混合推送多配置区分](#Android_混合推送多配置区分)。
+deviceProfile||在应用有多个 iOS 推送证书或多个 Android 混合推送配置的场景下，deviceProfile 用于指定当前设备使用的证书名或配置名。其值需要与 [控制台 > 消息 > 设置](/messaging.html?appid={{appid}}#/message/push/conf) 内配置的证书名或配置名对应，否则将无法完成推送。使用方法请参考 [iOS 测试和生产证书区分](#iOS_测试和生产证书区分) 和 [Android 混合推送多配置区分](#Android_混合推送多配置区分)。<br/><br/>{{deviceprofile_format}}
 deviceToken|iOS|APNS 推送的唯一标识符
 deviceType| |设备类型，目前支持 "ios"、"android"、"wp"、"web"。
 ID|Windows Phone|仅对微软平台的设备（微软平板和手机）有效
@@ -48,7 +49,7 @@ data| |本次推送的消息内容，JSON 对象。
 invalidTokens|iOS|本次推送遇到多少次由 APNS 返回的 [INVALID TOKEN](https://developer.apple.com/library/mac/technotes/tn2265/_index.html#//apple_ref/doc/uid/DTS40010376-CH1-TNTAG32) 错误。**如果这个数字过大，请留意证书是否正常。**
 prod|iOS|使用什么环境证书。**dev** 表示开发证书，**prod** 表示生产环境证书。
 status| |本次推送的状态，**in-queue** 表示仍然在队列，**done** 表示完成，**scheduled** 表示定时推送任务等待触发中。
-devices| |本次推送待发送设备总数。这个数字不是实际送达数，而是处理本次推送请求时在 `_Installation` 表中符合查询条件的总设备数。其中可能会包含大量的非活跃用户(如已卸载 App 的用户)，这部分用户可能无法收到推送。
+devices| |本次推送目标设备数。这个数字不是实际送达数，而是处理本次推送请求时在 `_Installation` 表中符合查询条件且有效的总设备数。有效是指 `_Installation` 表的 valid 字段为 true 且 updatedAt 字段时间在最近三个月以内。目标设备数可能会包含大量的非活跃用户(如已卸载 App 的用户)，这部分用户可能无法收到推送。
 successes| |本次推送成功设备数。推送成功对普通 Android 设备来说指目标设备收到了推送，对 iOS 设备或使用了混合推送的 Android 设备来说指消息成功推送给了 Apple APNS 或设备对应的混合推送平台。
 where| |本次推送查询 `_Installation` 表的条件，符合这些查询条件的设备将接收本条推送消息。
 errors| | 本次推送过程中的错误信息。
@@ -86,7 +87,6 @@ errors| | 本次推送过程中的错误信息。
 ## 云引擎和 JavaScript 创建推送
 
 请阅读 [JavaScript SDK 指南 &middot; Push 通知](./leanstorage_guide-js.html#Push_通知)。
-我们还提供单独的 [JavaScript 推送客户端](https://github.com/leancloud/js-push-sdk/) 用于在网页中收发推送。
 
 ## 使用 REST API 推送消息
 
@@ -112,7 +112,7 @@ curl -X POST \
           "public", "protected", "private"
         ]
       }' \
-  https://leancloud.cn/1.1/installations
+  https://{{host}}/1.1/installations
 ```
 
 ##### installationId
@@ -131,7 +131,7 @@ curl -X POST \
           "public", "protected", "private"
         ]
       }' \
-  https://leancloud.cn/1.1/installations
+  https://{{host}}/1.1/installations
 ```
 
 `installationId` 必须在应用内唯一。
@@ -150,7 +150,7 @@ curl -X PUT \
           "customer"
         ]
       }' \
-  https://leancloud.cn/1.1/installations/mrmBZvsErB
+  https://{{host}}/1.1/installations/mrmBZvsErB
 ```
 
 退订一个频道：
@@ -166,7 +166,7 @@ curl -X PUT \
            "objects":["customer"]
         }
        }' \
-  https://leancloud.cn/1.1/installations/mrmBZvsErB
+  https://{{host}}/1.1/installations/mrmBZvsErB
 ```
 
 `channels` 本质上是数组属性，因此可以使用标准 [REST API](./rest_api.html#数组) 操作。
@@ -183,22 +183,40 @@ curl -X PUT \
   -d '{
         "userObjectId": "<用户的 objectId>"
       }' \
-  https://leancloud.cn/1.1/installations/mrmBZvsErB
+  https://{{host}}/1.1/installations/mrmBZvsErB
 ```
 
 ### 推送消息
 
 通过 `POST /1.1/push` 来推送消息给设备，`push` 接口支持下列属性：
 
-名称|描述
----|---
-channels|推送给哪些频道，将作为条件加入 where 对象。
-data|推送的内容数据，JSON 对象，请参考 [消息内容](#消息内容_Data)。
-expiration_interval|消息过期的相对时间，从调用 API 的时间开始算起，单位是秒。
-expiration_time|消息过期的绝对日期时间
-prod|**仅对 iOS 有效**。设置使用开发证书（**dev**）还是生产证书（**prod**）。当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
-push_time|定期推送时间
-where|检索 _Installation 表使用的查询条件，JSON 对象。
+名称| 约束 | 描述
+---|--- | ---
+channels| 可选 | 推送给哪些频道，将作为条件加入 where 对象。
+data| **必填**| 推送的内容数据，JSON 对象，请参考 [消息内容](#消息内容_Data)。
+expiration_interval| 可选 | 消息过期的相对时间，从调用 API 的时间开始算起，单位是秒。
+expiration_time| 可选 | 消息过期的绝对日期时间
+notification_id | 可选 | 自定义推送 id，最长 16 个字符且只能由英文字母和数字组成，不提供该参数时我们会为每个推送请求随机分配一个唯一的推送 id，用于区分不同推送。我们会根据推送 id 来统计推送的目标设备数和最终消息到达数，并展示在 [推送记录](#Notification) 当中。用户自定义推送 id 可以将多个不同的请求并入同一个推送 id 下从而整体统计出这一批推送请求的目标设备数和最终消息到达数。
+prod| 可选 | **仅对 iOS 有效**。设置使用开发证书（**dev**）还是生产证书（**prod**）。当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
+push_time| 可选 | 定期推送时间
+req_id | 可选 | 自定义请求 id，最长 16 个字符且只能由英文字母和数字组成。5 分钟内带有相同 req_id 的不同推送请求我们认为是重复请求，只会发一次推送。用户可以在请求中带着唯一的 req_id 从而在接口出现超时等异常时将请求重发一次，以避免漏掉失败的推送请求。并且由于前后两次请求中 req_id 相同，我们会自动过滤重复的推送请求以保证每个目标终端用户最多只会收到一次推送消息。**重发过频或次数过多会影响正常的消息推送**，请注意控制。
+where| 可选 | 检索 `_Installation` 表使用的查询条件，JSON 对象。
+
+#### master key 校验
+
+当在 {% if node=='qcloud' %}**控制台** > **设置** > **应用选项**{% else %}[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission){% endif %} 中点选了 **聊天、推送** > **禁止从客户端进行消息推送** 后，推送消息接口必须增加 **master key** 校验才能成功发送推送，从而避免了客户端可以不经限制的给应用内任意目标设备推送消息的可能。我们建议用户都将此限制启用。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}"          \
+  -H "X-LC-Key: {{masterkey}},master"        \
+  -H "Content-Type: application/json" \
+  -d '{
+        "where": {"channels" : ["public"]}
+        "data": {"alert" : "Hello from LeanCloud"}
+     }' \
+  https://api.leancloud.cn/1.1/push
+```
 
 #### 过期时间
 
@@ -214,7 +232,8 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
 {
   "data": {
    "alert":             "消息内容",
-   "category":          "通知分类名称",
+   "category":          "通知类型",
+   "thread-id":         "通知分类名称",
    "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
    "sound":             "声音文件名，前提在应用里存在",
    "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
@@ -244,7 +263,7 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
 }
 ```
 
-data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/TheNotificationPayload.html)。
+data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html)。
 
 另外，我们也支持按照上述 Apple 官方文档的方式构造推送参数，如：
 
@@ -263,7 +282,8 @@ data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://de
         "loc-args":            [""],
         "launch-image":        ""
       }
-      "category":          "通知分类名称",
+      "category":          "通知类型",
+      "thread-id":         "通知分类名称",
       "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
       "sound":             "声音文件名，前提在应用里存在",
       "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
@@ -366,9 +386,11 @@ LeanCloud 推送服务通过推送请求中 `data` 参数内的 `silent` 字段�
 
 #### Android 混合推送多配置区分
 
-如果使用了混合推送功能且设置了多个混合推送配置，需要在 `_Installation` 表保存设备信息时将当前设备所对应的混合推送配置名存入 `deviceProfile`。推送时我们会按照每个目标设备在 `_Installation` 表 `deviceProfile` 字段指定的配置名来发混合推送。如果 `deviceProfile` 为空，我们会默认使用名为 `_default` 的混合推送配置名来发推送。
+如果使用了混合推送功能，并且在 {% if node == 'qcloud' %}**控制台 > 消息 > 推送 > 设置 > 混合推送**{% else %}[控制台 > 消息 > 推送 > 设置 > 混合推送](/messaging.html?appid={{appid}}#/message/push/conf){% endif %} 增加了多个混合推送配置，那么在向 `_Installation` 表保存设备信息时就需要将当前设备所对应的混合推送配置名存入 `deviceProfile` 字段。系统会按照该字段指定的唯一配置名为每个目标设备进行混合推送。
 
-<div class="callout callout-info">如果无法保证 `_Installation` 表中所有设备记录的 `deviceProfile` 字段都不为空，请一定保证名为 `_default` 的混合推送配置在 [控制台 > 消息 > 推送设置](/messaging.html?appid={{appid}}#/message/push/conf) 中存在且被正确配置。否则 `deviceProfile` 为空的设备会因为没有对应的 `_default` 配置而**无法完成推送。**</div>
+如果 `deviceProfile` 字段为空，系统会默认使用名为 `_default` 的混合推送配置来进行推送，所以一定要保证在控制台的混合推送设置中，存在以 `_default` 命名的 Profile 并且已被正确配置，否则系统会**拒绝推送。**
+
+{{deviceprofile_format}}
 
 #### 推送查询条件
 
@@ -387,7 +409,7 @@ curl -X POST \
           "alert": "LeanCloud 向您问好！"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 #### 发送给特定的用户
@@ -407,7 +429,7 @@ curl -X POST \
         "alert": "LeanCloud 向您问好！"
       }
     }' \
-https://leancloud.cn/1.1/push
+https://{{host}}/1.1/push
 ```
 
 * 发送给 public 频道的用户
@@ -426,7 +448,7 @@ curl -X POST \
         "alert": "LeanCloud 向您问好！"
       }
     }' \
-https://leancloud.cn/1.1/push
+https://{{host}}/1.1/push
 ```
 
 或者更简便的方式
@@ -442,7 +464,7 @@ curl -X POST \
           "alert": "LeanCloud 向您问好！"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 
 ```
 
@@ -461,7 +483,7 @@ curl -X POST \
         "alert": "LeanCloud 向您问好！"
       }
     }' \
-https://leancloud.cn/1.1/push
+https://{{host}}/1.1/push
 ```
 
 * 推送给不活跃的用户
@@ -481,7 +503,7 @@ curl -X POST \
           "alert": "LeanCloud 向您问好！"
       }
     }' \
-https://leancloud.cn/1.1/push
+https://{{host}}/1.1/push
 ```
 
 * 根据查询条件做推送：
@@ -499,7 +521,7 @@ curl -X POST \
           "alert": "您关注的商品已经到货，请尽快购买。"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 用 `where` 查询的都是 `_Installations` 表中的属性。这里假设该表存储了 `inStock` 的布尔属性。
@@ -530,7 +552,7 @@ curl -X POST \
           "alert": "北京明日最高气温 40 摄氏度。"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 上面的例子假设 installation 有个 owner 属性指向 `_User` 表的记录，并且用户有个 `location` 属性是 GeoPoint 类型，我们就可以根据地理信息位置做推送。
@@ -550,7 +572,7 @@ curl -X POST \
         "alert": "LeanCloud 向您问好！"
       }
     }' \
-https://leancloud.cn/1.1/push
+https://{{host}}/1.1/push
 ```
 
 #### 过期时间和定时推送
@@ -605,7 +627,7 @@ curl -X POST \
           "alert": "您的优惠券将于 10 月 7 日到期。"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 也可以是相对时间（从推送 API 调用开始算起，结合 push_time 做定期推送）:
@@ -621,7 +643,7 @@ curl -X POST \
           "alert": "您未使用的代金券将于 2015 年 7 月 4 日过期。"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 ##### 定制消息属性：
@@ -642,7 +664,7 @@ curl -X POST \
           "title": "员工福利"
         }
       }' \
-  https://leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 
@@ -655,7 +677,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}"          \
   -H "X-LC-Key: {{appkey}}"        \
   -H "Content-Type: application/json" \
-  https://leancloud.cn/1.1/tables/Notifications/:objectId
+  https://{{host}}/1.1/tables/Notifications/:objectId
 ```
 
 其中 URL 里的 `:objectId` 替换成 `/push` 接口返回的 objectId 。
@@ -683,7 +705,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}"          \
   -H "X-LC-Key: {{masterkey}},master"        \
   -H "Content-Type: application/json" \
-  https://leancloud.cn/1.1/scheduledPushMessages
+  https://{{host}}/1.1/scheduledPushMessages
  ```
 
 查询出来的结果类似：
@@ -729,15 +751,15 @@ curl -X DELETE \
   -H "X-LC-Id: {{appid}}"          \
   -H "X-LC-Key: {{masterkey}},master"        \
   -H "Content-Type: application/json" \
-  https://leancloud.cn/1.1/scheduledPushMessages/:id
+  https://{{host}}/1.1/scheduledPushMessages/:id
 ```
 
 ## 限制
 
+* 为避免给大量早已不再活跃的用户发消息，我们限制只能给 `_Installation` 表内 `updatedAt` 时间在最近三个月以内的设备推送消息。我们会在根据推送查询条件查出目标设备后自动将不符合条件的设备从目标设备中剔除，并且被剔除的设备不会计入{% if node=='qcloud' %}**控制台 > 消息 > 推送记录**{% else %}[控制台 > 消息 > 推送记录](/messaging.html?appid={{appid}}#/message/push/list){% endif %} 内的目标设备数中。
 * 为防止由于大量证书错误所产生的性能问题，我们对使用 **开发证书** 的推送做了设备数量的限制，即一次至多可以向 20,000 个设备进行推送。如果满足推送条件的设备超过了 20,000 个，系统会拒绝此次推送，在 {% if node=='qcloud' %}**控制台 > 消息 > 推送记录**{% else %}[控制台 > 消息 > 推送记录](/messaging.html?appid={{appid}}#/message/push/list){% endif %} 中的 **状态** 一栏显示「错误」，提示信息为「dev profile disabled for massive push」。因此，在使用开发证书推送时，请合理设置推送条件。
-* Apple 对推送消息大小有限制，对 iOS 推送请尽量缩小要发送的数据大小，否则会被截断。详情请参看 [APNs 文档](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/APNsProviderAPI.html#//apple_ref/doc/uid/TP40008194-CH101-SW1)。
-* 如果使用了 Android 的混合推送，请注意小米推送和华为推送均对消息大小有限制。为保证推送消息能被正常发送，我们要求 data + channels 参数须小于 4096 字节，超过限制会导致推送无法正常发送，请尽量减小发送数据大小。
-* 对于 silent 参数不为 true 的通知栏消息来说，title 必须小于 16 个字符，alert 必须小于 128 个字符。对于小米推送如果没有填写 title 我们会取 alert 中前五个字符作为 title。
+* Apple 对推送消息大小有限制，对 iOS 推送请尽量缩小要发送的数据大小，否则会被截断。详情请参看 [APNs 文档](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html)。
+* 如果使用了 Android 的混合推送，请注意华为推送对消息大小有限制。为保证推送消息能被正常发送，我们要求 data + channels 参数须小于 4096 字节，超过限制会导致推送无法正常发送，请尽量减小发送数据大小。
 
 
 如果推送失败，在 {% if node=='qcloud' %}**控制台 > 消息 > 推送记录 > 状态**{% else %}[控制台 > 消息 > 推送记录 > 状态](/messaging.html?appid={{appid}}#/message/push/list){% endif %} 一栏中会看到错误提示。

@@ -1,4 +1,4 @@
-{% import "views/_parts.html" as include %}
+{% import "views/_im.njk" as im %}
 # 实时通信 REST API 使用指南
 
 ## 请求格式
@@ -86,7 +86,7 @@ curl -X PUT \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://leancloud.cn/1.1/rtm/messages/logs
+  https://{{host}}/1.1/rtm/messages/history
 ```
 
 该接口可以在 URL 中添加不同的参数，实现获取某对话的聊天记录、获取某用户发送的聊天记录、获取应用所有聊天记录和获取系统对话聊天记录等功能。例如：
@@ -95,17 +95,18 @@ curl -X GET \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://leancloud.cn/1.1/rtm/messages/logs?convid=219946ef32e40c515d33ae6975a5c593
+  https://{{host}}/1.1/rtm/messages/history?convid=219946ef32e40c515d33ae6975a5c593
 ```
 
 ### 获取某个对话的聊天记录
 
 参数 | 约束 | 说明
 --- | --- | ---
-convid | **必须** | 对话 id
+convid | **必填** | 对话 id
 max_ts | 可选 | 查询起始的时间戳，返回小于这个时间(不包含)的记录。默认是当前时间。
 msgid | 可选 | 起始的消息 id，**使用时必须加上对应消息的时间戳 max_ts 参数，一起作为查询的起点**。
 limit | 可选 | 返回条数限制，可选，默认 100 条，最大 1000 条。
+reversed | 可选 | 以默认排序相反的方向返回结果。布尔值，默认为 false
 peerid | 可选 | 查看者 id（签名参数）
 nonce | 可选 | 签名随机字符串（签名参数）
 signature_ts | 可选 | 签名时间戳（签名参数）
@@ -123,7 +124,8 @@ signature | 可选 | 签名时间戳（签名参数）
 appid:peerid:convid:nonce:signature_ts
 ```
 
-返回数据格式，JSON 数组，按消息记录从新到旧排序。**注意**：系统广播不会出现在消息记录 API 的结果中。
+返回数据格式，JSON 数组，默认按消息记录从新到旧排序，设置请求参数 `reversed` 后以相反的方向排序。
+**注意**：系统广播不会出现在消息记录 API 的结果中。
 
 ```json
 [
@@ -145,7 +147,7 @@ appid:peerid:convid:nonce:signature_ts
 
 以上返回字段的说明如下：
 
-{{ include.imConversationProperties() }}
+{{ im.conversationProperties() }}
 
 ### 获取某个用户发送的聊天记录
 
@@ -153,7 +155,7 @@ appid:peerid:convid:nonce:signature_ts
 
 参数 | 约束 | 说明
 --- | --- | ---
-from | **必须** | 发送人 id
+from | **必填** | 发送人 id
 max_ts | 可选 | 查询起始的时间戳，返回小于这个时间（不包含）的记录。默认是当前时间。
 msgid | 可选 | 起始的消息 id，与 max_ts 一起作为查询的起点。
 limit | 可选 | 返回条数限制，默认 100 条，最大 1000 条。
@@ -190,14 +192,14 @@ curl -X DELETE \
   --data-urlencode 'convid=219946ef32e40c515d33ae6975a5c593' \
   --data-urlencode 'msgid=PESlY' \
   --data-urlencode 'timestamp=1408008498571' \
-  https://leancloud.cn/1.1/rtm/messages/logs
+  https://{{host}}/1.1/rtm/messages/logs
 ```
 
-参数 | 说明
---- | ---
-convid | 对话 id
-msgid | 消息 id
-timestamp | 消息时间戳
+参数 | 约束 | 说明
+--- | --- | ---
+convid | 必填 | 对话 id
+msgid | 必填 | 消息 id
+timestamp | 必填 | 消息时间戳
 
 ## 强制修改聊天记录
 
@@ -209,12 +211,12 @@ curl -X PUT \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"msg-id":"4XC_IHK+Ry6CXzIPq_nc7Q","conv-id":"5667070f60b2298fdddb683700000000","ack-at":1449683354932,"is-conv":true,"from":"5666d78c60b204d588fd63aa","bin":false,"timestamp":1449661888571,"is-room":false,"from-ip":"223.104.9.13","to":"5667070f60b2298fdddb6837","data":"{\"_lctype\":-1,\"_lctext\":\"\u771f\u4e0d\u61c2\"}"}' \
-  https://leancloud.cn/1.1/rtm/messages/logs
+  https://{{host}}/1.1/rtm/messages/logs
 ```
 
 这里传入的数据格式与消息记录返回的格式完全一致，只需要按照实际的需求修改相应的字段即可。需注意修改内容时切勿修改 JSON 中的 `msg-id` 和 `timestamp` 字段，这两个字段用于标识消息，如果修改会造成消息更新失败。
 
-{{ include.imConversationProperties() }}
+{{ im.conversationProperties() }}
 
 <div class="callout callout-info">此处仅能修改**服务器端**的消息记录，并不能修改**客户端缓存**的消息记录。</div>
 
@@ -226,7 +228,7 @@ curl -X PUT \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://leancloud.cn/1.1/rtm/messages/unread/CLIENT_ID
+  https://{{host}}/1.1/rtm/messages/unread/CLIENT_ID
 ```
 
 返回：
@@ -248,20 +250,23 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_peer": "1a", "message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "...", "transient": false}' \
-  https://leancloud.cn/1.1/rtm/messages
+  https://{{host}}/1.1/rtm/messages
 ```
 
 参数 | 约束 | 说明
 ---|---|---
-from_peer | |消息的发件人 client Id
-conv_id | |发送到对话 id
+from_peer | 必填 |消息的发件人 client Id
+conv_id | 必填 |发送到对话 id
 transient | 可选|是否为暂态消息（**由于向后兼容的考虑，默认为 true**，请注意设置这个值。）
-message || 消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
+message | 必填 | 消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
 no_sync | 可选|默认情况下消息会被同步给在线的 from_peer 用户的客户端，设置为 true 禁用此功能。
+push_data | 可选 | 以消息附件方式设置本条消息的离线推送通知内容。如果目标接收者当前不在线，我们会按照该参数填写的内容来发离线推送。请参看 [离线推送通知](./realtime_v2.html#离线推送通知)
 
 返回说明：
 
 默认情况下发送消息 API 使用异步的方式，调用后直接返回空结果 `{}`。
+
+## 系统消息
 
 ### 系统对话给用户发消息
 
@@ -275,17 +280,18 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_peer": "1a", "to_peers":["2c","3d","4f"],"message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "...", "transient": false}' \
-  https://leancloud.cn/1.1/rtm/messages
+  https://{{host}}/1.1/rtm/messages
 ```
 
 参数 | 约束 | 说明
 ---|---|---
-from_peer | |消息的发件人 client id
+from_peer | 必填 | 消息的发件人 client id
 to_peers | 长度最长为 20 个 client id| 接受系统消息的 client id
-conv_id | |发送到对话 id
+conv_id | 必填 |发送到对话 id
 transient | 可选|是否为暂态消息（**由于向后兼容的考虑，默认为 true**，请注意设置这个值。）
-message || 消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
+message | 必填 | 消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
 no_sync | 可选|默认情况下消息会被同步给在线的 from_peer 用户的客户端，设置为 true 禁用此功能。
+push_data | 可选 | 以消息附件方式设置本条消息的离线推送通知内容。如果目标接收者当前不在线，我们会按照该参数填写的内容来发离线推送。请参看 [离线推送通知](./realtime_v2.html#离线推送通知)
 
 ### 系统对话发送广播消息
 
@@ -297,14 +303,14 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_peer": "1a", "message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "..."}' \
-  https://leancloud.cn/1.1/rtm/broadcast
+  https://{{host}}/1.1/rtm/broadcast
 ```
 
 参数 | 约束 | 类型 | 说明
 ---|---|---|---
-from_peer | | 字符串 | 消息的发件人 id
-conv_id | | 字符串 | 发送到对话 id，仅限于系统对话
-message | | 字符串 |消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
+from_peer | 必填 | 字符串 | 消息的发件人 id
+conv_id | 必填 | 字符串 | 发送到对话 id，仅限于系统对话
+message | 必填 | 字符串 |消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
 valid_till | 可选 | 数字 | 过期时间，UTC 时间戳（毫秒），最长为 1 个月之后。默认值为 1 个月后。
 push | 可选 | 字符串或 JSON 对象 | 附带的推送内容，如果设置，**所有** iOS 和 Windows Phone 用户会收到这条推送通知。
 
@@ -324,23 +330,98 @@ Push 的格式与[推送 REST API 消息内容](push_guide.html#消息内容_Dat
 调用此 API 将删除已发布的广播消息。
 
 ```sh
-curl -X DETELE \
+curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -G \
   --data-urlencode 'mid=message-id' \
-  https://leancloud.cn/1.1/rtm/broadcast
+  https://{{host}}/1.1/rtm/broadcast
 ```
 
-参数 | 说明
---- | ---
-mid | 要删除的消息 id，字符串
+参数 | 约束 | 说明
+--- | --- | ---
+mid | 必填 | 要删除的消息 id，字符串
 
 返回：
 
 空 JSON 对象 `{}`。
 
-### 富媒体消息格式说明
+### 查询系统广播消息
+
+调用此 API 可查询目前有效的广播消息。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  https://leancloud.cn/1.1/rtm/broadcast
+```
+
+参数 | 约束 | 说明
+--- | --- | ---
+conv_id | 必填 | 系统对话 id
+limit | 可选 | 返回消息条数
+skip | 可选 | 跳过消息条数，用于翻页
+
+### 系统对话发送订阅消息
+
+利用 REST API 发送消息给系统对话所有的订阅用户（即加入系统对话的用户）。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '{"from_peer": "1a", "message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "..."}' \
+  https://leancloud.cn/1.1/rtm/broadcast/subscriber
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+from_peer | 必填 | 字符串 | 消息的发件人 id
+conv_id | 必填 | 字符串 | 发送到对话 id，仅限于系统对话
+message | 必填 | 字符串 |消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
+push | 可选 | 字符串或 JSON 对象 | 附带的推送内容，如果设置，**所有** iOS 和 Windows Phone 用户会收到这条推送通知。
+
+### 订阅系统对话
+
+为指定用户订阅指定的系统对话。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '{"conv_id": "...", "client_id": "..."}' \
+  https://leancloud.cn/1.1/rtm/conversation/subscription
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+client_id | 必填 | 字符串 | 订阅者的 client id
+conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
+
+### 退订系统对话
+
+为指定用户退订指定的系统对话。
+
+```sh
+curl -X DELETE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'conv_id=...' \
+  --data-urlencode 'client_id=...' \
+  https://leancloud.cn/1.1/rtm/conversation/subscription
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+client_id | 必填 | 字符串 | 退订者的 client id
+conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
+
+
+## 富媒体消息格式说明
 富媒体消息的参数格式相对于普通文本来说，仅仅是将 message 参数换成了一个 JSON **字符串**。
 
 <div class="callout callout-info">由于 LeanCloud 实时通信中所有的消息都是文本，所以这里发送 JSON 结构时**需要首先序列化成字符串**。</div>
@@ -353,7 +434,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_peer": "1a", "message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "...", "transient": false}' \
-  https://leancloud.cn/1.1/rtm/messages
+  https://{{host}}/1.1/rtm/messages
 ```
 
 发送文本消息可以按照以上的格式进行，参数说明：
@@ -547,7 +628,7 @@ curl -X POST \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  https://leancloud.cn/1.1/rtm/transient_group/onlines?gid=...
+  https://{{host}}/1.1/rtm/transient_group/onlines?gid=...
 ```
 
 返回：
@@ -568,7 +649,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"peers": ["7u", "8b", "3h", ...]}' \
-  https://leancloud.cn/1.1/rtm/online
+  https://{{host}}/1.1/rtm/online
 ```
 
 参数 | 说明
@@ -596,7 +677,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"client_id": "some-client-id", "conv_id": "some-conv-id", "ttl": 50}' \
-  https://leancloud.cn/1.1/rtm/conversation/blacklist
+  https://{{host}}/1.1/rtm/conversation/blacklist
 ```
 
 参数 | 说明
@@ -618,13 +699,13 @@ ttl | 禁言的时间，秒数，最长 24 小时
 使用这个 API 可以在禁言期限到期之前，解除被禁言的 Client ID。
 
 ```sh
-curl -X DETELE \
+curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -G \
   --data-urlencode 'conv_id=some-conv-id' \
   --data-urlencode 'client_id=some-client-id' \
-  https://leancloud.cn/1.1/rtm/conversation/blacklist
+  https://{{host}}/1.1/rtm/conversation/blacklist
 ```
 
 参数 | 说明
@@ -651,7 +732,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"client_id": "some-client-id", "reason": "..."}' \
-  https://leancloud.cn/1.1/rtm/client/kick
+  https://{{host}}/1.1/rtm/client/kick
 ```
 
 参数 | 说明

@@ -33,7 +33,7 @@
 
 
 
-{% if basename!='index' and basename!='sdk_down' and basename !='demo' and basename !='start' %}
+{% if basename!='index' and basename!='sdk_down' and basename !='demo' and basename !='start' and basename != 'weapp-domains' %}
 <script src="custom/js/lib/contents.js"></script>
 <script src="custom/js/md.js"></script>
 {% endif %}
@@ -77,6 +77,3 @@ $(function(){
   ga('send', 'pageview');
 
 </script>
-
-
-

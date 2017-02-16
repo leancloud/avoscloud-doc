@@ -24,7 +24,6 @@
 {% set byteType= "NSData" %}
 {% set acl_guide_url = "[Objective-C 权限管理使用指南（Swift 文档待补充）](acl_guide-objc.html)"%}
 {% set sms_guide_url = "[Objective-C 短信服务使用指南（Swift 文档待补充）](sms_guide-objc.html#注册验证)" %}
-{% set relation_guide_url = "[Objective-C 数据模型设计指南（Swift 文档待补充）](relation_guide-objc.html)" %}
 {% set inapp_search_guide_url = "[Objective-C 应用内搜索指南](app_search_guide.html)" %}
 {% set status_system_guide_url = "[Objective-C 应用内社交模块](status_system.html#iOS_SDK)" %}
 {% set sns_guide_url = "[Objective-C SNS 开发指南](sns.html#iOS_SNS_组件)" %}
@@ -126,8 +125,7 @@ todoFolder.save { result in
 // 暂不支持
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```swift
 let query = LCQuery(className: "Todo")
 
@@ -140,10 +138,9 @@ query.get("575cf743a3413100614d7d75") { result in
     }
 }
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```swift
 let todo = LCObject(className: "Todo", objectId: "575cf743a3413100614d7d75")
 
@@ -157,7 +154,6 @@ todo.fetch { result in
     }
 }
 ```
-
 {% endblock %}
 
 {% block code_save_callback_get_objectId %}
@@ -797,13 +793,12 @@ query.whereKey("title", .MatchedSubstring("李总"))
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
+<pre><code class="lang-swift">let query = LCQuery(className: "Todo")
 
-```swift
-let query = LCQuery(className: "Todo")
-
-query.whereKey("title", .MatchedPattern("^((?!机票).)*$", option: nil))
-```
+query.whereKey("title", .MatchedPattern("{{ data.regex() | safe }}, option: nil))
+</code></pre>
 {% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -1283,9 +1278,7 @@ let to    = LCGeoPoint.Distance(value: 2.0, unit: .Kilometer)
 // 查询离指定 point 距离在 1.0 和 2.0 公里的 Todo
 query.whereKey("whereCreated", .LocatedNear(origin: point, from: from, to: to))
 ```
-{% endblock %} code_object_fetch_with_keys
-
-{% block relation_guide_url %}[Objective-C 数据模型设计指南](relation_guide-objc.html){% endblock %}
+{% endblock %}
 
 {% set sms_guide_url = '[Objective-C 短信服务使用指南](sms_guide-objc.html#注册验证)' %}
 

@@ -48,6 +48,15 @@ def averageStars(movie, **params):
     result = sum(x.get('stars') for x in reviews)
     return result
 ```
+
+客户端 SDK 调用时，云函数的名称默认为 Python 代码中函数的名称。有时需要设置云函数的名称与 Python 代码中的函数名称不相同，可以在 `engine.define` 后面指定云函数名称，比如：
+
+```python
+@engine.define('averageStars')
+def my_custom_average_start(movie, **params):
+    pass
+```
+
 {% endblock %}
 
 {% block cloudFuncParams %}
@@ -59,7 +68,12 @@ def my_cloud_func(foo, bar, baz, **params):
     pass
 ```
 
-如果想获取触发此云函数的用户，可以直接通过 `engine.current_user` 获取。
+除了调用云函数的参数之外，还可以通过 `engine.current` 对象，来获取到调用此云函数的客户端的其他信息。`engine.current` 对象上的属性包括：
+
+- `engine.current.user: leancloud.User`：客户端所关联的用户（根据客户端发送的 LC-Session 头）。
+- `engine.current.session_token: str`：客户端发来的 sessionToken（X-LC-Session 头）。
+- `engine.current.meta: dict`：有关客户端的更多信息，目前只有一个 remote_address 属性表示客户端的 IP。
+
 {% endblock %}
 
 

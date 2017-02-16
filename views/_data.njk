@@ -1,0 +1,15 @@
+{% macro preservedWords(delimeter="、") -%}
+  {% set preservedWordList = [
+      "className",
+      "objectId",
+      "ACL",
+      "createdAt",
+      "updatedAt"
+    ] 
+  %}
+  {{ preservedWordList | sort | join(delimeter) }}
+{%- endmacro %}
+
+{% macro regex(useSingleQuotes=false) -%}
+  ^((?!机票).)*&dollar;{% if useSingleQuotes == true %}&apos;{% else %}&quot;{% endif %}
+{%- endmacro %}

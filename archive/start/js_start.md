@@ -1,7 +1,9 @@
-{% import "views/_parts.html" as include %}
 把下面这行代码加入你的测试页面中：
 
-{{ include.js_latest() }}
+
+```
+<script src="//cdn1.lncld.net/static/js/{{jssdkversion}}/av-min.js"></script>
+```
 
 进行代码初始化，加入这行代码后，就可以创建 class 或任何其他操作了。想要跟进最新功能，可以到官方的 [GitHub Repo](https://github.com/leancloud/javascript-sdk) 。
 

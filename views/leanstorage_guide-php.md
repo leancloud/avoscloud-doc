@@ -123,15 +123,6 @@ try {
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
-```php
-$query = new Query("Todo");
-$todo  = $query->get("558e20cbe4b060308e3eb36c");
-// $todo 就是 ID 为 558e20cbe4b060308e3eb36c 的对象实例
-```
-{% endblock %}
-
 {% block code_save_callback_get_objectId %}
 
 ```php
@@ -169,6 +160,14 @@ $todo->getCreatedAt();
 {% endblock %}
 
 {% block text_refresh_object%}{% endblock %}
+
+{% macro code_get_todo_by_objectId() %}
+```php
+$query = new Query("Todo");
+$todo  = $query->get("558e20cbe4b060308e3eb36c");
+// $todo 就是 ID 为 558e20cbe4b060308e3eb36c 的对象实例
+```
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
 ```php
@@ -572,12 +571,11 @@ $query->contains("title","李总");
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-
-```php
-$query = new Query("Todo");
-$query->matches("title","^((?!机票).)*$");
-```
+<pre><code class="lang-php">$query = new Query("Todo");
+$query->matches("title","{{ data.regex() | safe }});
+</code></pre>
 {% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 

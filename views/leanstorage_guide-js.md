@@ -24,7 +24,6 @@
 {% set byteType= "Buffer" %}
 {% set acl_guide_url = "[JavaScript 权限管理使用指南](acl_guide-js.html)" %}
 {% set sms_guide_url = "[JavaScript 短信服务使用指南](sms_guide-js.html#注册验证)" %}
-{% set relation_guide_url = "[JavaScript 数据模型设计指南](relation_guide-js.html)" %}
 {% set inapp_search_guide_url = "[JavaScript 应用内搜索指南](app_search_guide.html)" %}
 {% set status_system_guide_url = "[JavaScript 应用内社交模块](status_system.html#JavaScript_SDK)" %}
 {% set sns_guide_url = "（JavaScript SDK 文档待补充）" %}
@@ -174,10 +173,7 @@ AV.Object.register(Todo);
   new AV.Query(Account).first().then(function(account) {
     var amount = -100;
     account.increment('balance', amount);
-    // 如果使用 JS SDK 2.0 以前的版本，save() 要加传 null 
-    // 作为第一个参数，否则会报错：
-    // return account.save(null, {
-    return account.save({
+    return account.save(null, {
       query: new AV.Query(Account).greaterThanOrEqualTo('balance', -amount),
       fetchWhenSave: true,
     });
@@ -192,8 +188,7 @@ AV.Object.register(Todo);
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```js
   var query = new AV.Query('Todo');
   query.get('57328ca079bc44005c2472d0').then(function (todo) {
@@ -203,10 +198,9 @@ AV.Object.register(Todo);
     // 异常处理
   });
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```js
   // 第一个参数是 className，第二个参数是 objectId
   var todo = AV.Object.createWithoutData('Todo', '5745557f71cfe40068c6abe0');
@@ -297,7 +291,7 @@ AV.Object.register(Todo);
   var todo = new Todo();
   todo.id = '5590cdfde4b00f7adb5860c8';
   todo.fetch({
-    include:'priority,location'
+    keys: 'priority,location'
   }).then(function (todo) {
     // 获取到本地
   }, function (error) {
@@ -500,11 +494,11 @@ AV.Object.register(Todo);
   var todos = [todo1, todo2, todo3];
   AV.Object.saveAll(todos).then(function () {
     var relation = todoFolder.relation('containedTodos'); // 创建 AV.Relation
-    todos.map(relation.add);
+    todos.map(relation.add.bind(relation));
     return todoFolder.save();// 保存到云端
   }).then(function(todoFolder) {
     // 保存成功
-  }), function (error) {
+  }, function (error) {
     // 异常处理
   });
 ```
@@ -624,6 +618,11 @@ file.save({
     // { loaded: 1234, total: 2468, percent: 50 }
   },
 }).then(/* ... */);
+
+// 2.0 之前版本的 SDK 中，save 的第二个参数 callbacks 不能省略：
+file.save({
+  onprogress: function(e) { console.log(e); }
+}, {}).then(/* ... */);
 ```
 {% endblock %}
 {% block text_download_file_with_progress %}{% endblock %}
@@ -779,12 +778,12 @@ file.save({
 
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-```js
-  var query = new AV.Query('Todo');
-  var regExp = new RegExp('^((?!机票).)*$', 'i');
+<pre><code class="lang-js">  var query = new AV.Query('Todo');
+  var regExp = new RegExp('{{ data.regex(true) | safe }}, 'i');
   query.matches('title', regExp);
-```
+</code></pre>
 {% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -844,7 +843,7 @@ file.save({
 {% block code_create_tag_object %}
 
 ```js
-  var tag = new AV.Object('Todo');
+  var tag = new AV.Object('Tag');
   tag.set('name', '今日必做');
   tag.save();
 ```
@@ -854,13 +853,13 @@ file.save({
 {% block code_create_family_with_tag %}
 
 ```js
-  var tag1 = new AV.Object('Todo');
+  var tag1 = new AV.Object('Tag');
   tag1.set('name', '今日必做');
 
-  var tag2 = new AV.Object('Todo');
+  var tag2 = new AV.Object('Tag');
   tag2.set('name', '老婆吩咐');
 
-  var tag3 = new AV.Object('Todo');
+  var tag3 = new AV.Object('Tag');
   tag3.set('name', '十分重要');
 
   var tags = [tag1, tag2, tag3];
@@ -885,7 +884,7 @@ file.save({
 {% block code_query_tag_for_todoFolder %}
 
 ```js
-  var todoFolder = AV.Object.createWithoutData('Todo', '5735aae7c4c9710060fbe8b0');
+  var todoFolder = AV.Object.createWithoutData('TodoFolder', '5735aae7c4c9710060fbe8b0');
   var relation = todoFolder.relation('tags');
   var query = relation.query();
   query.find().then(function (results) {
@@ -1102,13 +1101,13 @@ file.save({
 {% block code_query_by_cql %}
 
 ```js
-  // 新建 AVUser 对象实例
+  var cql = 'select * from Todo where status = 1';
   AV.Query.doCloudQuery(cql).then(function (data) {
       // results 即为查询结果，它是一个 AV.Object 数组
       var results = data.results;
   }, function (error) {
   });
-  cql = 'select * from %@ where status = 1';
+  cql = 'select count(*) from %@ where status = 0';
   AV.Query.doCloudQuery(cql).then(function (data) {
       // 获取符合查询的数量
       var count = data.count;
@@ -1250,7 +1249,7 @@ file.save({
 {% block code_send_verify_email %}
 
 ```js
-  AV.User.requestEmailVerfiy('abc@xyz.com').then(function (result) {
+  AV.User.requestEmailVerify('abc@xyz.com').then(function (result) {
       console.log(JSON.stringify(result));
   }, function (error) {
       console.log(JSON.stringify(error));

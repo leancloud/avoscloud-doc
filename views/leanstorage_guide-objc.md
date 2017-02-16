@@ -24,7 +24,6 @@
 {% set byteType= "NSData" %}
 {% set acl_guide_url = "[Objective-C 权限管理使用指南](acl_guide-objc.html)"%}
 {% set sms_guide_url = "[Objective-C 短信服务使用指南](sms_guide-objc.html#注册验证)" %}
-{% set relation_guide_url = "[Objective-C 数据模型设计指南](relation_guide-objc.html)" %}
 {% set inapp_search_guide_url = "[Objective-C 应用内搜索指南](app_search_guide.html)" %}
 {% set status_system_guide_url = "[Objective-C 应用内社交模块](status_system.html#iOS_SDK)" %}
 {% set sns_guide_url = "[Objective-C SNS 开发指南](sns.html#iOS_SNS_组件)" %}
@@ -131,18 +130,16 @@
 ```
 {% endblock %}
 
-{% block code_get_todo_by_objectId %}
-
+{% macro code_get_todo_by_objectId() %}
 ```objc
     AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
     [query getObjectInBackgroundWithId:@"558e20cbe4b060308e3eb36c" block:^(AVObject *object, NSError *error) {
         // object 就是 id 为 558e20cbe4b060308e3eb36c 的 Todo 对象实例
     }];
 ```
-{% endblock %}
+{% endmacro %}
 
 {% block code_fetch_todo_by_objectId %}
-
 ```objc
     // 第一个参数是 className，第二个参数是 objectId
     AVObject *todo =[AVObject objectWithClassName:@"Todo" objectId:@"558e20cbe4b060308e3eb36c"];
@@ -151,7 +148,6 @@
         NSString *content = avObject[@"content"]; // 读取 content
     }];
 ```
-
 {% endblock %}
 
 {% block code_save_callback_get_objectId %}
@@ -743,11 +739,11 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 {% endblock %}
 
 {% block code_query_with_not_contains_keyword_using_regex %}
-```objc
-  AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-  [query whereKey:@"title" matchesRegex:@"^((?!机票).)*$"];
-```
+<pre><code class="lang-objc">  AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+  [query whereKey:@"title" matchesRegex:@"{{ data.regex() | safe }}];    
+</code></pre>
 {% endblock %}
+<!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
 
 {% block code_query_array_contains_using_equalsTo %}
 
@@ -1038,10 +1034,10 @@ NSDate *(^dateFromString)(NSString *string) = ^(NSString *string) {
 };
 
 AVQuery *startDateQuery = [AVQuery queryWithClassName:@"Todo"];
-[highQuery whereKey:@"createdAt" greaterThanOrEqualTo:dateFromString(@"2016-11-13")];
+[startDateQuery whereKey:@"createdAt" greaterThanOrEqualTo:dateFromString(@"2016-11-13")];
 
 AVQuery *endDateQuery = [AVQuery queryWithClassName:@"Todo"];
-[lowQuery whereKey:@"createdAt" lessThan:dateFromString(@"2016-12-03")];
+[endDateQuery whereKey:@"createdAt" lessThan:dateFromString(@"2016-12-03")];
 
 AVQuery *query = [AVQuery andQueryWithSubqueries:[NSArray arrayWithObjects:startDateQuery,endDateQuery,nil]];
 [query findObjectsInBackgroundWithBlock:^(NSArray *results, NSError *error) {

@@ -22,7 +22,7 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
 
 ### 在线测试
 
-[API 在线测试工具](https://leancloud.cn/apionline/)，目前仅支持调试**中国节点**下的应用。
+[API 在线测试工具](/dashboard/apionline/)，目前仅支持调试**中国节点**下的应用。
 
 ### 对象
 
@@ -861,7 +861,7 @@ URL 中 where 参数的值是 `%7B%22clicks%22%3A%200%7D`，其实这是 `{"clic
 
 因为更新和删除都是基于单个对象的，都要求提供 objectId，但是有时候用户需要高效地遍历一个 Class，做一些批量的更新或者删除的操作。
 
-通常情况下，如果 Class 的数量规模不大，使用查询加上 `skip` 和 `limit` 分页配合排序 `order` 就可以遍历所有数据。但是当 Class 数量规模比较大的时候， `skip` 的效率就非常低了（这跟 MySQL 等关系数据库的原因一样，深度翻页比较慢），因此我们提供了 `scan` 协议，可以按照特定字段排序来高效地遍历一张表，默认这个字段是 `createdAt`，也就是按照创建时间排序，同时支持设置 `limit`  限定每一批次的返回数量：
+通常情况下，如果 Class 的数量规模不大，使用查询加上 `skip` 和 `limit` 分页配合排序 `order` 就可以遍历所有数据。但是当 Class 数量规模比较大的时候， `skip` 的效率就非常低了（这跟 MySQL 等关系数据库的原因一样，深度翻页比较慢），因此我们提供了 `scan` 协议，可以按照特定字段排序来高效地遍历一张表，默认这个字段是 `objectId` 升序，同时支持设置 `limit`  限定每一批次的返回数量，默认 limit 为 100，最大可设置为 1000：
 
 ```sh
 curl -X GET \
@@ -918,7 +918,7 @@ curl -X GET \
    https://{{host}}/1.1/scan/classes/Article
 ```
 
-默认情况下系统按 `createdAt` 排序，增加 `scan_key` 参数可以使用其他字段来排序：
+默认情况下系统按 `objectId` 升序排序，增加 `scan_key` 参数可以使用其他字段来排序：
 
 ```sh
 curl -X GET \
@@ -929,6 +929,10 @@ curl -X GET \
    --data-urlencode 'scan_key=score' \
    https://{{host}}/1.1/scan/classes/Article
 ```
+
+scan_key 也支持倒序，前面加个减号即可，例如 `-score`。
+
+**自定义的 scan_key 需要满足严格单调递增的条件，并且 scan_key 不可作为 where 查询条件存在。**
 
 ### 批量操作
 
@@ -1866,7 +1870,7 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
   }
 ```
 
-同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上『允许缺失值』选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。如果 _User 表的记录数量超过了 1 万条而无法自行创建该索引，请联系我们来帮助创建。
+{# 同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上 **允许缺失值** 选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。#}要保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上，就需要为 `_User` 表中的 `authData.第三方平台名称.uid` 建立唯一索引；另外当 `_User` 表的记录数量超过了 1 万条，用户也无法自行创建该索引。这两种操作都需要提交工单或联系 <support@leancloud.rocks> 来创建。
 
 #### 注册和登录
 
