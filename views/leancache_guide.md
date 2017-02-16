@@ -132,6 +132,22 @@ import redis
 r = redis.from_url(os.environ.get("REDIS_URL_<实例名称>"))
 ```
 
+### 在云引擎中使用（PHP 环境）
+
+首先添加 redis 库的依赖，比如 predis：
+
+```
+composer require predis/predis:1.2.*
+```
+
+然后在 PHP 应用中通过环境变量获取 Redis 地址并创建链接，如：
+
+```php
+use Predis;
+$redis = new Predis\Client(getenv("REDIS_URL_<实例名称>"));
+$redis->ping();
+```
+
 ### 在云引擎中使用（旧版云引擎环境）
 
 旧版云引擎环境不支持 LeanCache，建议升级到云引擎 3.0 Node.js 环境，升级文档详见 [云引擎 2.0 升级 3.0 指南](leanengine_upgrade_3.html)。
