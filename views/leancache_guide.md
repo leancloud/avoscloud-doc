@@ -137,7 +137,7 @@ r = redis.from_url(os.environ.get("REDIS_URL_<实例名称>"))
 首先添加 redis 库的依赖，比如 predis：
 
 ```
-composer require predis/predis:1.2.*
+composer require 'predis/predis:1.1.*'
 ```
 
 然后在 PHP 应用中通过环境变量获取 Redis 地址并创建链接，如：
