@@ -962,6 +962,7 @@ ul#toc,#toc li {
   flex: 1;
   min-width: 400px;
   max-width: 600px;
+  flex-basis: 45%; /* 2016-02-20 resolving layout issue in Safari */
 
   .desc {
     flex:1;
@@ -969,13 +970,22 @@ ul#toc,#toc li {
     p{
       margin: 0;
     }
+    .checkbox {
+      padding-left:0;
+    }
   }
+
   .download-option-wrap{
     display:flex;
     flex-wrap:wrap;
   }
   .download-option{
     white-space: nowrap;
+    margin-right: 12px;
+  }
+
+  .icon-github {
+    margin-bottom: 5px;
   }
 
   h2 {
