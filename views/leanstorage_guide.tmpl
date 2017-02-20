@@ -84,6 +84,8 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 
 每个 {{objectIdName}} 必须有一个 Class 类名称，这样云端才知道它的数据归属于哪张数据表。
 
+{{ docs.alert(data.classNameConvention()) }}
+
 ### 保存对象
 现在我们保存一个 `TodoFolder`，它可以包含多个 Todo，类似于给行程按文件夹的方式分组。我们并不需要提前去后台创建这个名为 **TodoFolder** 的 Class 类，而仅需要执行如下代码，云端就会自动创建这个类：
 

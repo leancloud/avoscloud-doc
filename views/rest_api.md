@@ -1,5 +1,6 @@
-{% set masterkey = '{{masterkey}}' %}
 {% import "views/_parts.html" as include %}
+{% import "views/_helper.njk" as docs %}
+{% import "views/_data.njk" as data %}
 # REST API 使用详解
 
 REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 进行交互，你可以使用 REST API 做很多事情，比如：
@@ -605,7 +606,7 @@ https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 
 ### 创建对象
 
-为了在 LeanCloud 上创建一个新的对象，应该向 class 的 URL 发送一个 **POST** 请求，其中应该包含对象本身。例如，要创建如上所说的对象：
+为了在 LeanCloud 上创建一个新的对象，应该向 class 的 URL 发送一个 **POST** 请求，其中应该包含对象本身。{{ docs.alertInline(data.classNameConvention("class 的名称")) }}例如，要创建如上所说的对象：
 
 ```sh
 curl -X POST \
@@ -632,7 +633,7 @@ Location: https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 }
 ```
 
-如果希望返回新创建的对象的完整信息，可以在 URL 里加上 `fetchWhenSave` 选项，并且设置为 true:
+如果希望返回新创建的对象的完整信息，可以在 URL 里加上 `fetchWhenSave` 选项，并且设置为 true：
 
 ```sh
 curl -X POST \
@@ -645,7 +646,7 @@ curl -X POST \
 
 fetchWhenSave 选项对更新对象也同样有效，但是它仅返回已被更新的字段，而非全部字段。
 
->注意：**我们对单个 class 的记录数目没有做限制，但是单个应用的总 class 数目限定为 500 个以内**。也就是说单个应用里面，对象的类别不超过 500 个，但是单个类别下的实例数量则没有限制。
+{{ docs.note("**每个应用最多可以创建 500 个 class**，但每个 class 中的记录数量没有限制。") }}
 
 ### 获取对象
 
