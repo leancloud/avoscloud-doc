@@ -47,9 +47,7 @@ ES7 中有许多很不错的新语法，其中一个就是 `async/await`。对�
 
 ### TypeScript 支持
 
-伴随着 [Angular2](https://angular.io/) 以及  [ionic@2](http://ionicframework.com/docs/v2/) 的受欢迎，LeanCloud 也针对 JavaScript SDK 编写了一个 `d.ts` 定义文件提供给开发者使用。
-
-本质上，TypeScript 经过编译之后实际上也是调用 JavaScript SDK 的对应的接口，因此在本文代码块中，一些 TypeScript 写法可以给开发者进行参考。
+伴随着 [Angular2](https://angular.io/) 以及  [ionic@2](http://ionicframework.com/docs/v2/) 的受欢迎，LeanCloud 的 JavaScript SDK 都附带了 `d.ts` 定义文件提供给开发者使用。
 
 注意，TypeScript 针对异步函数有多种写法，本文以 [Promise](#Promise) 作为默认的示例代码书写方式，仅供参考。
 [Promise](#Promise) 以及 TypeScript 中的 [async/await](https://blogs.msdn.microsoft.com/typescript/2015/11/03/what-about-asyncawait/) 的不同写法的支持取决于在 TypeScript 项目中的 `tsconfig.json` 的 `compilerOptions` 配置里面选择 `target` 是什么版本，例如，要支持 [async/await](https://blogs.msdn.microsoft.com/typescript/2015/11/03/what-about-asyncawait/) 需要进行如下配置：
@@ -66,12 +64,6 @@ ES7 中有许多很不错的新语法，其中一个就是 `async/await`。对�
   ...
 }
 ```
-
-注意：因为 TypeScript SDK 是基于 JavaScript SDK 编写的定义文件，因此并不是所有 JavaScript SDK 的接口都有对应 TypeScript 的版本，示例代码会持续更新。
-
-#### 直接引用 d.ts 文件
-TypeScript 使用 JavaScript SDK 是通过定义文件来实现调用的，因此我们也将定义文件开源在 GitHub 上，地址是：
-[typed-leancloud-jssdk](https://github.com/leancloud/typed-leancloud-jssdk)
 
 {% endblock %}
 
