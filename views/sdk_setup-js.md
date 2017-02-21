@@ -47,7 +47,7 @@ ES7 中有许多很不错的新语法，其中一个就是 `async/await`。对�
 
 ### TypeScript 支持
 
-伴随着 [Angular2](https://angular.io/) 以及  [ionic@2](http://ionicframework.com/docs/v2/) 的受欢迎，LeanCloud 的 JavaScript SDK 都附带了 `d.ts` 定义文件提供给开发者使用。
+当使用 npm 安装时，LeanCloud 的 JavaScript SDK 均附带了 `d.ts` 定义文件。
 
 注意，TypeScript 针对异步函数有多种写法，本文以 [Promise](#Promise) 作为默认的示例代码书写方式，仅供参考。
 [Promise](#Promise) 以及 TypeScript 中的 [async/await](https://blogs.msdn.microsoft.com/typescript/2015/11/03/what-about-asyncawait/) 的不同写法的支持取决于在 TypeScript 项目中的 `tsconfig.json` 的 `compilerOptions` 配置里面选择 `target` 是什么版本，例如，要支持 [async/await](https://blogs.msdn.microsoft.com/typescript/2015/11/03/what-about-asyncawait/) 需要进行如下配置：
