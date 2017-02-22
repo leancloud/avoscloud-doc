@@ -6,11 +6,9 @@
 我们在小程序上实现了 LeanTodo 应用。在这个 Demo 中你可以看到：
 
 - 如何对云端数据进行查询、增加、修改与删除
-- 查询结果为一个列表时，如何将其绑定到视图层进行展示以及如何在点击事件中得到对应的数组项
-- 如何自动登录 LeanCloud 用户系统
-- 如何在登录后设置帐号与密码以供用户在其他平台的 LeanTodo 应用上登录
+- 如何将查询结果数组绑定到视图层进行展示，以及如何在点击事件中得到对应的数组项
+- 如何自动登录 LeanCloud 用户系统，以及如何在登录后设置帐号与密码以供用户在其他平台的 LeanTodo 应用上登录
 - 如何集成微信支付
-- 如何实现下拉刷新
 
 你可以通过微信扫描以下二维码进入 Demo。 Demo 的源码与运行说明请参考 [https://github.com/leancloud/leantodo-weapp](https://github.com/leancloud/leantodo-weapp)。
 
@@ -30,7 +28,7 @@
 要使用 LeanCloud 的数据存储、用户系统、调用云引擎等功能，需要使用 LeanCloud 存储 SDK。
 
 ### 安装与初始化
-2. 下载 [`av-weapp-min.js`](https://unpkg.com/leancloud-storage@^2.0.0/dist/av-weapp-min.js)（[镜像](https://raw.githubusercontent.com/leancloud/javascript-sdk/dist/dist/av-weapp-min.js)），移动到 `libs` 目录。
+2. 下载 [`av-weapp-min.js`](https://unpkg.com/leancloud-storage@^3.0.0-alpha/dist/av-weapp-min.js)（[镜像](https://raw.githubusercontent.com/leancloud/javascript-sdk/next-dist/dist/av-weapp-min.js)），移动到 `libs` 目录。
 3. 在 `app.js` 中使用 `const AV = require('./libs/av-weapp-min.js');` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。 
 4. 在 `app.js` 中初始化应用： 
   ```javascript 
@@ -68,6 +66,28 @@ Page({
     &lbrace;&lbrace;todo.content}}
   &lt;/text&gt;
 &lt;/block&gt;
+</code></pre>
+
+使用 `include` 得到的嵌套对象也可以直接在视图层通过 `.` 访问到：
+
+```javascript
+// pages/student/student.js
+Page({
+  data: {
+    student: null,
+  },
+  onReady: function() {
+    new AV.Query('Student')
+      .include('avatar') // avatar is an AV.File
+      .get('56a9803e1532bc005303650c')
+      .then(student => this.setData({ student }))
+      .catch(console.error);
+  },
+});
+```
+
+<pre ng-non-bindable><code class="lang-html">&lt;!-- pages/student/student.wxml --&gt;
+&lt;image src="&lbrace;&lbrace;student.avatar.url}}&quot;&gt;&lt;/image&gt;
 </code></pre>
 
 ### 文件存储
@@ -145,6 +165,8 @@ wx.getUserInfo({
   }
 });
 ```
+
+使用一键登录方式登录时，LeanCloud 会将该用户的小程序 openid 保存在对应的 `user.authData.lc_weapp` 属性中，你可以在控制台的 _User 表中看到。该字段在客户端不可见，你可以使用 masterKey 在云引擎中获取该用户的 openid 进行支付、推送等操作。详情请参考 [支付](#支付)。
 
 #### 启用其他登录方式
 由于 `AV.User.loginWithWeapp()` 只能在小程序中使用，所以使用该 API 创建的用户无法直接在小程序之外的平台上登录。如果需要使用 LeanCloud 用户系统提供的其他登录方式，如用手机号验证码登录、邮箱密码登录等，在小程序一键登录后设置对应的用户属性即可：
@@ -288,7 +310,7 @@ lean up
 示例项目中与支付直接相关代码有三部分：
 
 * `order.js`：对应 Order 表，定义了部分字段的 getter/setter，以及 `place` 方法用于向微信 API 提交订单。
-* `cloud.js`：其中定义了名为 `order` 的云函数，这个云函数会获取调用者的用户信息，以其身份创建了一个 1 分钱的 order 并下单，最后返回签名过的订单信息。
+* `cloud.js`：其中定义了名为 `order` 的云函数，这个云函数会获取当前用户的 `openid`，以其身份创建了一个 1 分钱的 order 并下单，最后返回签名过的订单信息。
 * `routers/weixin.js`：其中定义了 `pay-callback` 的处理函数，当用户支付成功后微信调用这个 URL，这个函数将对应的订单状态更新为 `SUCCESS`。
 
 请根据你的业务需要修改代码。参考文档：
