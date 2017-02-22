@@ -971,27 +971,27 @@ curl -X POST \
 
 我们对每一批次中所包含的操作数量（requests 数组中的元素个数）暂不设限，但考虑到云端对每次请求的 body 内容大小有 20 MB 的限制，因此建议将每一批次的操作数量控制在 100 以内。
 
-批量操作的响应会是一个列表，列表的元素数量和顺序与给定的操作请求是一致的。每一个在列表中的元素都有一个字段是 success 或者 error。
+批量操作的响应 body 会是一个列表，列表的元素数量和顺序与给定的操作请求是一致的。每一个在列表中的元素都有一个字段是 success 或者 error。
 
-**success** 的值是通常是进行其他 REST 操作会返回的值：
-
-```json
+```
 [
-  {"success":{"createdAt":"2015-07-13T10:43:00.282Z","objectId":"55a39634e4b0ed48f0c1845b"}},
-  {"success":{"createdAt":"2015-07-13T10:43:00.293Z","objectId":"55a39634e4b0ed48f0c1845c"}}
+  {
+    "error": {
+      "code": 1,
+      "error": "Could not find object by id '558e20cbe4b060308e3eb36c' for class 'Post'."
+    }
+  },
+  {
+    "success": {
+      "updatedAt": "2017-02-22T06:35:29.419Z",
+      "objectId": "58ad2e850ce463006b217888"
+    }
+  }
 ]
 ```
 
-**error** 的值会是一个对象有返回码和 error 字符串：
-
-```json
-{
-  "error": {
-    "code": 101,
-    "error": "object not found for delete"
-  }
-}
-```
+需要注意，即使一个 batch 请求返回的响应码为 200，这仅代表服务端已收到并处理了这个请求，但并不说明该 
+batch 中的所有操作都成功完成，只有当返回 body 的列表中**不存在 error 元素**，开发者才可以认为所有操作都已成功完成。
 
 在 batch 操作中 update 和 delete 同样是有效的：
 
