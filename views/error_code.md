@@ -158,18 +158,18 @@
 
 ## 140
 
-* 信息 - `Exceeded an application quota. Upgrade to resolve.`
-* 含义 - 超过应用的容量限额，请升级账户等级。
+* 信息 - `超过应用额度，请升级到商用版或联系我们处理。`
+* 含义 - 通常是因为超过开发版的使用额度，比如每天 3 万次调用限制、云引擎域名绑定限制等，可以通过升级商用版解决。
 
 ## 141
 
-* 信息 - `Cloud Code script had an error.`
-* 含义 - 云引擎脚本编译或者运行报错。
+* 信息 - `LeanEngine request timeout.`
+* 含义 - 云引擎调用超时。错误信息里会有具体的 Class 和 Hook 名称。
 
 ## 142
 
 * 信息 - `Cloud Code validation failed.`
-* 含义 - 云引擎校验错误，通常是因为 `beforeSave`、`beforeDelete` 等函数返回 error。
+* 含义 - 云引擎校验错误，通常是因为 `beforeSave`、`beforeDelete` 等 hook 函数返回 error。
 
 ## 145
 
@@ -180,6 +180,11 @@
 
 * 信息 - `Fail to convert data to image.`
 * 含义 - 转换数据到图片失败。
+
+# 154
+
+* 信息 - `Exceeded an application threshold setting.`
+* 含义 - 超过应用阈值限制，例如短信消费超过每日最大上限等。通常可以在应用设置的服务阈值菜单修改上限值。
 
 ## 160
 
