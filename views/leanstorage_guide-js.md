@@ -1142,7 +1142,7 @@ file.save({
 
 ```js
   var query = new AV.Query('Todo');
-  var point = new AV.GeoPoint('39.9', '116.4');
+  var point = new AV.GeoPoint(39.9, 116.4);
   query.withinKilometers('whereCreated', point, 2.0);
   query.find().then(function (results) {
       var nearbyTodos = results;
@@ -1160,7 +1160,7 @@ file.save({
 
 ```js
   var query = new AV.Query('Todo');
-  var point = new AV.GeoPoint('39.9', '116.4');
+  var point = new AV.GeoPoint(39.9, 116.4);
   query.withinKilometers('whereCreated', point, 2.0);
 ```
 
