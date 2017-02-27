@@ -446,14 +446,13 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
       var docVersion = crypto.createHash('md5').update($('#content').text()).digest('hex');
       // console.log(docVersion)
       $('html').first().attr('version', docVersion);
-
       //以 docversion 为唯一标识，当文档内容发生变化，docversion 相应变化，
       var query = new AV.Query(Doc);
       query.equalTo('version', docVersion);
       return query.first().then(function(doc) {
         if (doc) {
           // 如果 doc 已经存在，则直接返回
-          return Promise.resolve();
+          return doc;
         }
         doc = new Doc();
         doc.set('version', docVersion);
@@ -471,7 +470,7 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
         doc.set('file', file.split('/').pop());
         grunt.log.writeln('save new Doc: %s', file);
         return doc.save();
-      }).then(function() {
+      }).then(function(doc) {
         // 在文档中添加 version 标记
         commentDoms.forEach(function(dom) {
           $('#content ' + dom).each(function() {
@@ -483,8 +482,7 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
           });
         });
         grunt.file.write(filepath, $.html());
-        return Promise.resolve();
-      }).then(function() {
+
         // 保存 snippet version 和 content 的关联
         return Promise.each(commentDoms, function(dom) {
           var promises = [];
@@ -506,6 +504,8 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
               file: filepath.split('/').pop()
             });
           }, {concurrency: 3});
+        }).then(function() {
+          return doc;
         });
       });
     }
@@ -530,11 +530,22 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
         return getSnippetsVersion(_.last(result).get('createdAt'));
       });
     };
-    grunt.log.writeln('query snippets...');
+    var docEnv = process.env.DOC_ENV || 'default';
+    grunt.log.writeln('Doc ENV: ', docEnv);
     getSnippetsVersion(new Date(0)).then(function() {
       grunt.log.writeln('current snippets count:', snippetsVersion.length);
-      return Promise.each(self.filesSrc, function(filepath) {
+      return Promise.map(self.filesSrc, function(filepath) {
         return initDocVersion(filepath, snippetsVersion);
+      }, {concurrency: 1})
+    }).then(function(docs) {
+      return new AV.Object('Release').save({
+        env: docEnv,
+      }).then(function(release) {
+        return AV.Object.saveAll(docs.map(function(doc) {
+          return new AV.Object('Release_Doc')
+          .set('release', release)
+          .set('doc', doc)
+        }))
       })
     }).then(function() {
       //保证所有文档都处理完再进行任务完成回调

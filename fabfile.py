@@ -43,11 +43,11 @@ def _prepare_local_docs(target):
     ##local("ruby render.rb")
     local("npm install -d");
     if target == 'qcloud':
-      local("grunt build --theme=qcloud");
+      local("DOC_ENV=qcloud grunt build --theme=qcloud");
     elif target == 'us':
-      local("grunt build --theme=us --no-comments");
+      local("DOC_ENV=us grunt build --theme=us --no-comments");
     else:
-      local("grunt build ");
+      local("DOC_ENV=%s grunt build " % target);
 #    local("mkdir dist/api")
 #    local("cp -rfv api/* dist/api/");
 #    local("cd dist ; tar zcvf leancloud-docs.tar.gz ./* ; cd ..")
