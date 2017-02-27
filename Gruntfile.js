@@ -431,10 +431,9 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
     var cheerio = require('cheerio');
     var crypto = require('crypto');
     var _ = require('underscore');
-    var AV = require('avoscloud-sdk').AV;
-    AV.initialize("749rqx18p5866h0ajv0etnq4kbadodokp9t0apusq98oedbb", "axxq0621v6pxkya9qm74lspo00ef2gq204m5egn7askjcbib");
-    // test project
-    //AV.initialize("0siycem2w0l2zem2z5crxl7602zkf1r2a8qsooigq2my1al1", "4ipiwns1939nw2cgist4s49li89dvadrlrgthfvqmgzcaax5");
+    var Promise = require('bluebird');
+    var AV = require('leancloud-storage');
+    AV.init({appId: "749rqx18p5866h0ajv0etnq4kbadodokp9t0apusq98oedbb", appKey: "axxq0621v6pxkya9qm74lspo00ef2gq204m5egn7askjcbib"});
     var Doc = AV.Object.extend('Doc');
     var Snippet = AV.Object.extend('Snippet');
     var commentDoms = ['p','pre'];
@@ -454,7 +453,7 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
       return query.first().then(function(doc) {
         if (doc) {
           // 如果 doc 已经存在，则直接返回
-          return AV.Promise.as();
+          return Promise.resolve();
         }
         doc = new Doc();
         doc.set('version', docVersion);
@@ -484,52 +483,59 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
           });
         });
         grunt.file.write(filepath, $.html());
-        return AV.Promise.as();
+        return Promise.resolve();
       }).then(function() {
-        var promises = [];
         // 保存 snippet version 和 content 的关联
-        commentDoms.forEach(function(dom) {
-          $('#content ' + dom).each(function() {
-            var version = crypto.createHash('md5').update($(this).text()).digest('hex');
+        return Promise.each(commentDoms, function(dom) {
+          var promises = [];
+          $('#content ' + dom).each(function(i, elem) {
+            promises.push(Promise.resolve(elem))
+          })
+          return Promise.map(promises, function(elem) {
+            var version = crypto.createHash('md5').update($(elem).text()).digest('hex');
             if(_.contains(allSnippetsVersion, version)) {
               return;
             }
-            if($(this).text().trim().length === 0) {
+            if($(elem).text().trim().length === 0) {
               return;
             }
-            grunt.log.writeln('save new Snippet: %s', $(this).text().substr(0, 20) + '...');
-            promises.push(new Snippet().save({
+            grunt.log.writeln('save new Snippet: %s', $(elem).text().substr(0, 20) + '...');
+            return new Snippet().save({
               snippetVersion: version,
-              content: $(this).text(),
+              content: $(elem).text(),
               file: filepath.split('/').pop()
-            }));
-          });
+            });
+          }, {concurrency: 3});
         });
-        return AV.Promise.all(promises);
       });
     }
     var self = this;
     // 查询所有已存在的 snippet version，
     // 用来判断哪些是新的 snippet，然后将其 version 和 content 添加到数据库
     var snippetsVersion = [];
-    var getSnippetsVersion = function(skip) {
-      return AV.Query.doCloudQuery('select snippetVersion from Snippet limit ?, ?', [skip, 1000]).then(function(result) {
-        if(result.results.length === 0) {
-          return AV.Promise.as();
+    var getSnippetsVersion = function(createdAt) {
+      return new AV.Query('Snippet')
+      .select('snippetVersion')
+      .greaterThan('createdAt', createdAt)
+      .limit(1000)
+      .ascending('createdAt')
+      .find()
+      .then(function(result) {
+        if(result.length === 0) {
+          return [];
         }
-        _.each(result.results, function(snippet) {
+        _.each(result, function(snippet) {
           snippetsVersion.push(snippet.get('snippetVersion'));
         });
-        return getSnippetsVersion(snippetsVersion.length);
+        return getSnippetsVersion(_.last(result).get('createdAt'));
       });
     };
-    getSnippetsVersion(0).then(function() {
+    grunt.log.writeln('query snippets...');
+    getSnippetsVersion(new Date(0)).then(function() {
       grunt.log.writeln('current snippets count:', snippetsVersion.length);
-      var allPromise = [];
-      self.filesSrc.forEach(function(filepath) {
-        allPromise.push(initDocVersion(filepath, snippetsVersion));
-      });
-      return AV.Promise.all(allPromise);
+      return Promise.each(self.filesSrc, function(filepath) {
+        return initDocVersion(filepath, snippetsVersion);
+      })
     }).then(function() {
       //保证所有文档都处理完再进行任务完成回调
       grunt.log.writeln('version build allcompleted');
