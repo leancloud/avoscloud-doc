@@ -61,13 +61,13 @@ lean init
 下图为本文所使用的公众号的设置页面：
 ![wexin_config](images/weixin-mp-console-config.png)
 
-注意，在「服务器配置」中生成 **EncodingAESKey(消息加密解密密钥)** 之后，先不要点击保存设置，其中的 **URL(服务器地址)** 需要经过后续的 [项目部署](#项目部署) 才可以确定。
+注意，在「服务器配置」中生成 **EncodingAESKey(消息加密解密密钥)** 之后，<u>先不要点击保存设置</u>，其中的 **URL(服务器地址)** 需要在这个云引擎项目 [部署之后](#项目部署) 才可以确定。
 
 ```js
 // 引用 wechat 库，详细请查看 https://github.com/node-webot/wechat
 var wechat = require('wechat');
 var config = {
-  token: 'weixinDemo',
+  token: '请把微信后台的 Token 填写在这里',
   appid: '请把微信的 AppID 填写在这里',
   encodingAESKey: '请把微信后台生成的 EncodingAESKey 填写在这里'
 };
@@ -91,20 +91,12 @@ var api = new WechatAPI('请把微信的 AppID 填写在这里',
 
 ## app.js
 
-在根目录下的 `app.js` 需要配置以下两行代码：
+在根目录下的 `app.js` 需要配置以下这行代码：
 
 ```js
-'use strict';
-...
-var wechat = require('./routes/wechatBot'); // 这一段必须拷贝到当前项目中，它是定义了一个路由集合
-...
-```
-
-然后在后面引用这个已定义过的路由集合：
-
-```js
+// 这一段必须拷贝到当前项目中，它是定义了一个路由集合
 // 可以将一类的路由单独保存在一个文件中
-app.use('/wechat', wechat);
+app.use('/wechat', require('./routes/wechatBot'));
 ```
 
 微信在保存「服务器配置」时会进行实时验证，所以在这之前你需要将自己的服务器配置好，让它可以提供正确的验证。**这就需要将应用部署到 LeanEngine 中**。
@@ -120,16 +112,25 @@ app.use('/wechat', wechat);
 lean deploy
 ```
 
-这个是部署到预备环境，并没有真正发布到外网的线上，如果 `deploy` 成功之后，可以之下如下命令行：
+如果使用的是云引擎免费版，`deploy` 将会将项目直接发布到 `wechatTest.leanapp.cn`。
+
+如果是云引擎专业版，`deploy` 会将其发布到 <code>**stg-**wechatTest.leanapp.cn</code>；要发布 `wechatTest.leanapp.cn`，还需要执行：
 
 ```bash
 lean publish
 ```
 
-## 配置验证
-回到微信公众号的控制台，将刚才在 LeanEngine 上设置的域名填写到 **URL(服务器地址)** 中（本例为 `http://wechatTest.leanapp.cn/wechat`），然后保存设置进行验证。如果微信控制台提示验证失败，请仔细确认代码中的配置是否与控制台配置一致。
+## 验证配置
 
-## 微信内验证
+回到微信公众号的控制台，将刚才在 LeanEngine 上设置的域名填写到 **URL(服务器地址)** 中（本例为 `http://wechatTest.leanapp.cn/wechat`），然后保存设置进行验证。
+
+如果微信控制台提示「验证失败」，请仔细确认：
+
+- 代码中的配置是否与控制台配置一致
+- 代码是否可以在本地正常运行
+  对于本文中的 Node.js 代码，如果 `/wechat` 页面显示 Invalid Signature，代表代码已正常执行，如果是 504、503 等服务端错误，就需要检查代码中的错误之处。
+
+## 测试公众号
 
 1. 关注自己所注册的微信公众号。
 1. 打开该微信公众号并发送「你好」。
