@@ -5,7 +5,7 @@
 把微信和云引擎 LeanEngine 的 [网站托管（Web Hosting）功能](leanengine_webhosting_guide-node.html) 结合起来，就可以做出一个几乎零成本的微信公众号自动问答的机器人了。
 
 ## 场景设定
-本文的主要目的是指导开发者使用 LeanEngine 作为微信公众号的回调服务器，因此我们设定了如下场景：实现一个自动根据用户发送消息做简单回复的机器人 Bob，当用户发送信息「你好」，Bob 就会自动回复「您好，大家好才是真的好！」。
+本文的主要目的是指导开发者使用云引擎作为微信公众号的回调服务器，因此我们设定了如下场景：实现一个自动根据用户发送消息做简单回复的机器人 Bob，当用户发送信息「你好」，Bob 就会自动回复「您好，大家好才是真的好！」。
 
 
 ## 注册微信公众号
@@ -40,7 +40,7 @@ lean login
 lean init
 ```
 
-根据提示选择对应的节点，应用选择 **Wechat**，应用模版选择 **node-js-getting-started**，待过程完成后，一个 LeanEngine 默认的模板项目就在 `/usr/leancloud/wechat/` 下创建好了。如遇问题请参考《[命令行工具 CLI 使用指南 · 初始化项目](leanengine_cli.html#初始化项目)》。
+根据提示选择对应的节点，应用选择 **Wechat**，应用模版选择 **node-js-getting-started**，待过程完成后，一个云引擎默认的模板项目就在 `/usr/leancloud/wechat/` 下创建好了。如遇问题请参考《[命令行工具 CLI 使用指南 · 初始化项目](leanengine_cli.html#初始化项目)》。
 
 ## 添加依赖包
 
@@ -122,7 +122,7 @@ lean publish
 
 ## 验证配置
 
-回到微信公众号的控制台，将刚才在 LeanEngine 上设置的域名填写到 **URL(服务器地址)** 中（本例为 `http://wechatTest.leanapp.cn/wechat`），然后保存设置进行验证。
+回到微信公众号的控制台，将刚才在云引擎上设置的域名填写到 **URL(服务器地址)** 中（本例为 `http://wechatTest.leanapp.cn/wechat`），然后保存设置进行验证。
 
 如果微信控制台提示「验证失败」，请仔细确认：
 
