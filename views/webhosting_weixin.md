@@ -99,7 +99,7 @@ var api = new WechatAPI('请把微信的 AppID 填写在这里',
 app.use('/wechat', require('./routes/wechatBot'));
 ```
 
-微信在保存「服务器配置」时会进行实时验证，所以在这之前你需要将自己的服务器配置好，让它可以提供正确的验证。**这就需要将应用部署到 LeanEngine 中**。
+微信在保存「服务器配置」时会进行实时验证，所以在这之前你需要将自己的服务器配置好，让它可以提供正确的验证。**这就需要将应用部署到云引擎中**。
 
 ## 部署项目
 进入 {% if node=='qcloud' %}**LeanCloud 控制台** > **云引擎** > **设置**，{% else %}进入 [**LeanCloud 控制台** > **云引擎** > **设置**](/cloud.html?appid={{appid}}#/conf)，{% endif %}找到 **Web 主机域名**，填入自己想使用的名称，本文使用 `wechatTest`（即 `wechatTest.leanapp.cn`）：
@@ -114,7 +114,7 @@ lean deploy
 
 如果使用的是云引擎免费版，`deploy` 将会将项目直接发布到 `wechatTest.leanapp.cn`。
 
-如果是云引擎专业版，`deploy` 会将其发布到 <code>**stg-**wechatTest.leanapp.cn</code>；要发布 `wechatTest.leanapp.cn`，还需要执行：
+如果是云引擎专业版，`deploy` 会将其发布到 <code>**stg-**wechatTest.leanapp.cn</code>；要发布到 `wechatTest.leanapp.cn`，还需要执行：
 
 ```bash
 lean publish
@@ -127,12 +127,12 @@ lean publish
 如果微信控制台提示「验证失败」，请仔细确认：
 
 - 代码中的配置是否与控制台配置一致
-- 代码是否可以在本地正常运行
+- 代码是否可以在本地正常运行<br/>
   对于本文中的 Node.js 代码，如果 `/wechat` 页面显示 Invalid Signature，代表代码已正常执行，如果是 504、503 等服务端错误，就需要检查代码中的错误之处。
 
 ## 测试公众号
 
-1. 关注自己所注册的微信公众号。
-1. 打开该微信公众号并发送「你好」。
-1. 确认是否能接收到代码中指定的回复内容（正确回复应该是「您好，大家好才是真的好！」）。
+1. 关注自己所注册的微信公众号
+1. 打开该微信公众号并发送「你好」
+1. 确认是否能接收到「您好，大家好才是真的好！」
 
