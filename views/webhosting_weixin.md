@@ -127,8 +127,8 @@ lean publish
 如果微信控制台提示「验证失败」，请仔细确认：
 
 - 代码中的配置是否与控制台配置一致
-- 代码是否可以在本地正常运行<br/>
-  对于本文中的 Node.js 代码，如果 `/wechat` 页面显示 Invalid Signature，代表代码已正常执行，如果是 504、503 等服务端错误，就需要检查代码中的错误之处。
+- 代码是否正常运行<br/>
+  对于本文中的 Node.js 代码，如果 `http://wechatTest.leanapp.cn/wechat` 页面显示 Invalid Signature 代表代码已正常执行；如果是 404、503、504 等服务端错误，则代表代码有错误。可以在本地执行命令行 `lean up` 访问 `http://localhost:3000/wechat`，调试后重新部署。
 
 ## 测试公众号
 
