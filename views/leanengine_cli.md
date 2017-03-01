@@ -1,4 +1,4 @@
-{% set release = "[Github releases 页面](https://github.com/leancloud/lean-cli/releases)" %}
+{% set release = "[Github releases 页面](https://releases.leanapp.cn/#/leancloud/lean-cli/releases)" %}
 {% set login = "lean login" %}
 
 # 命令行工具 CLI 使用指南
@@ -50,10 +50,10 @@ NAME:
 
 USAGE:
    lean [global options] command [command options] [arguments...]
-   
+
 VERSION:
    0.3.0
-   
+
 COMMANDS:
      login     登录 LeanCloud 账户
      info      查看当前登录用户以及应用信息
@@ -87,7 +87,7 @@ lean version 0.3.0
 
 安装完命令行工具之后，首先第一步需要登录 LeanCloud 账户。
 
-```sh 
+```sh
 # {% if node != 'qcloud' %}美国节点用户需要使用参数 `--region=US` 进行登录。{% else %}腾讯云 TAB 的用户需要使用参数 `--region=TAB` 进行登录。{% endif %}
 $ {{ login }} {% if node == 'us' %}--region=US{% endif %}{% if node == 'qcloud' %}--region=TAB{% endif %}
 ```
