@@ -45,6 +45,8 @@ app.use(AV.express());
 app.listen(process.env.LEANCLOUD_APP_PORT);
 ```
 
+所有 hook 模块不需要单独使用 `app.use(hookModule)` 的方式加入到路由中，但是 `require(./hookModule.js)` 操作还是需要的，具体代码可以参考示例项目的 [更新](https://github.com/leancloud/node-js-getting-started/commit/ee8d0e453206cf8593bd0911d36fc5df1ef75025)。
+
 ## 废弃 currentUser
 
 云引擎 Node.js SDK 是供云引擎访问 LeanCloud API 的 Node 模块，它内部依赖了 JavaScript SDK. 但和在浏览器中不同，云引擎是一个「多用户」的环境，作为服务器端程序需要同时处理来自不同用户的请求。而 Node.js 本身是异步模型，这些来自不同用户的请求会交织在一起，在同一个全局作用域中运行。
