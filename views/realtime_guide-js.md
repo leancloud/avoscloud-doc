@@ -1172,14 +1172,35 @@ query.withMembers(['Bob', 'Jerry']);
 
 组合查询的概念就是把诸多查询条件合并成一个查询，再交给 SDK 去云端进行查询。
 
-例如，要查询年龄小于 18 岁，并且关键字包含「教育」的对话：
-
-
+查询年龄小于 18 岁，并且关键字包含「教育」的对话：
 
 ```javascript
 // 查询 keywords 包含「教育」且 age 小于 18 的对话
 query.contains('keywords', '教育').lessThan('age', 18);
 ```
+
+查询自己参与过的对话，包括**系统**对话：
+
+```
+Promise.all([
+  client.getQuery().containsMembers([client.id]).find(),
+  client.getQuery().equalTo('sys', true).find(),
+]).then(function(participatedConversations, systemConversations) {
+  // participatedConversations 为自己参与过的对话
+  // systemConversations 为系统对话
+}).catch(function(error) {
+  // handle error
+});
+```
+
+查询一段时间内活跃的对话：
+
+```
+client.getQuery()
+  .greaterThanOrEqualTo('lm', new Date('2017-01-01 00:00:00'))
+  .lessThan('lm', new Date('2017-02-01 00:00:00'))
+```
+
 
 #### 查询结果选项
 

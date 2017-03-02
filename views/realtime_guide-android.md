@@ -1980,6 +1980,59 @@ tom.open(new AVIMClientCallback(){
 ```
 {% endblock %}
 
+{% block conversation_query_all_include_system %}
+```java
+void queryAllCovnersationsIncludeSystem() {
+    AVIMClient client = AVIMClient.getInstance("Tom");
+    client.open(new AVIMClientCallback() {
+      @Override
+      public void done(AVIMClient client, AVIMException e) {
+        AVIMConversationQuery memberQuery = client.getQuery();
+        memberQuery.whereContainsAll("m", Arrays.asList("Tom"));
+
+        AVIMConversationQuery sysQuery = client.getQuery();
+        sysQuery.whereEqualTo("sys", true);
+
+        AVIMConversationQuery.or(Arrays.asList(memberQuery, sysQuery)).findInBackground(new AVIMConversationQueryCallback() {
+          @Override
+          public void done(List<AVIMConversation> conversations, AVIMException e) {
+            // conversations 返回的即是所有包含 Tom 的 conversation 以及系统回话
+          }
+        });
+      }
+    });
+  }
+```
+{% endblock %}
+
+{% block conversation_query_active_between %}
+```java
+void queryActiveConversationsBetween() {
+    AVIMClient client = AVIMClient.getInstance("Tom");
+    client.open(new AVIMClientCallback() {
+      @Override
+      public void done(AVIMClient client, AVIMException e) {
+        AVIMConversationQuery query = client.getQuery();
+        query.whereGreaterThan("lm", getDateWithDateString("2017-01-01"));
+        query.whereLessThan("lm", getDateWithDateString("2017-02-01"));
+        query.findInBackground(new AVIMConversationQueryCallback() {
+          @Override
+          public void done(List<AVIMConversation> conversations, AVIMException e) {
+            // conversations 返回的即是在 2017-01-01 至 2017-02-01 之间活跃的 conversation
+          }
+        });
+      }
+    });
+  }
+
+  Date getDateWithDateString(String dateString) {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    Date date = dateFormat.parse(dateString);
+    return date;
+  }
+```
+{% endblock %}
+
 {% block conversation_query_count %}
 ```
 - 初始化 ClientId = Tom

@@ -1454,6 +1454,8 @@ NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
     }];
 }
 ```
+
+对于**同一属性**的区间值查询要采用 `andQueryWithSubqueries:@[ query1, query2 ]` 的方式来提交。
 {% endblock %}
 
 {% block conversation_query_count %}

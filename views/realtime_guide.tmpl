@@ -811,11 +811,13 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 #### 组合查询
 
-组合查询的概念就是把诸多查询条件合并成一个查询，再交给 SDK 去云端进行查询。
+组合查询就是把诸多查询条件合并成一个查询，再交给 SDK 去云端进行查询。
 
-##### OR 查询
+{% block conversation_query_chaining %}{% endblock %}查询年龄小于 18 岁，并且关键字包含「教育」的对话：
 
-OR 操作表示多个查询条件符合其中任意一个即可。例如，要查询自己参与过的对话，包括系统对话，可以这样构建查询：
+{% block conversation_query_combination %}{% endblock %}
+
+查询自己参与过的对话，包括**系统**对话（对话的查询默认不返回系统对话）：
 
 {% block conversation_query_all_include_system %}
 ```
@@ -826,9 +828,7 @@ OR 操作表示多个查询条件符合其中任意一个即可。例如，要�
 ```
 {% endblock %}
 
-##### AND 查询
-
-AND 操作表示多个查询条件必须同时符合。例如要查询一段时间内活跃的对话，可以这样构建查询：
+查询一段时间内活跃的对话：
 
 {% block conversation_query_active_between %}
 ```
