@@ -182,10 +182,46 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 ### 使用模板
 
-假设提交的短信模板名称为 `Notice_Welcome`，当模板通过审批后就可以调用了：
+#### 验证码类型
+验证码类型有两种，一种针对 _User 表中 `mobilePhoneNumber` 字段的验证，另一种是业务场景中敏感操作的验证，这两种都在上文中有介绍：[验证类](sms_guide-objc.html#验证类)
+
+#### 通知类型
+
+假设提交的短信模板的类型为「通知类」内容如下，
+
+{% call docs.bubbleWrap() -%}
+尊敬的{{ docs.mustache("service_name") }}的用户, 您的订单号：{{ docs.mustache("order_id") }} 正在派送，请保持手机畅通，我们的快递员随时可能与您联系，感谢您的订阅。 {{ docs.mustache("appname") }}
+{% endcall %}
+
+注意：{{ docs.mustache("appname") }} 是当前应用在 LeanCloud 控制台设置的应用名称，这个是运营商强制要求的开发者必须在短信末尾加上应用名称。
+
+并且模板名称为 `Order_Notice`，当模板通过审批后就可以调用如下代码发送这条通知类的短信：
 
 {% block send_sms_by_template %}{% endblock %}
 
+用户收到的内容如下：
+
+{% call docs.bubbleWrap() -%}
+尊敬的天天商城的用户, 您的订单号：7623432424540 正在派送，请保持手机畅通，我们的快递员随时可能与您联系，感谢您的订阅。 天天商城
+{% endcall %}
+
+#### 营销类型
+
+假设提交短信的模板类型为 「营销类」内容如下：
+
+{% call docs.bubbleWrap() -%}
+{{ docs.mustache("appname") }} 服装专区，新款上市，奥斯卡红毯同款全面上架，详情可以访问天天商城唯一官方网址：www.buybuybuy.com。 {{ docs.mustache("appname") }}
+{% endcall %}
+
+并且模板名称为 `New_Series`，当模板通过审批后就可以调用如下代码发送这条营销类的短信：
+
+{% block send_marketing_by_template %}{% endblock %}
+
+用户收到的内容如下：
+
+{% call docs.bubbleWrap() -%}
+天天商城服装专区，新款上市，奥斯卡红毯同款全面上架，详情可以访问天天商城唯一官方网址：www.buybuybuy.com。 天天商城
+{% endcall %}
 ### 模板变量
 
 模板可以使用<u>自定义变量</u>，如上例中的 {{ docs.mustache("service_name") }} 和 {{ docs.mustache("order_id") }}，在调用模板时以参数形式传入。模板语法遵循 [Handlebars](http://handlebarsjs.com) 规范。
@@ -199,7 +235,7 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 {% endcall %}
 
 - `name`：应用名称
-- `code`：验证码
+- `code`：验证码（通知类和营销类不会包含）
 - `ttl`：过期时间（默认为 10 分钟）
 
 ## 模板规范
