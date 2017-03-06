@@ -205,7 +205,7 @@ Cloud::afterDelete("Album", function($album, $user) {
 {% block onVerifiedExample %}
 
 ```php
-Cloud::onVerifed("sms", function($userObj, $meta) {
+Cloud::onVerifed("sms", function($user, $meta) {
     error_log("User {$user->getUsername()} verified by SMS");
 });
 ```
