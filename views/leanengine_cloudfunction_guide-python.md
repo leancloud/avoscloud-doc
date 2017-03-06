@@ -137,8 +137,10 @@ def before_hook_object_update(obj):
         return
     if len(obj.get('comment')) > 140:
         # 拒绝过长的修改
-        raise engine.LeanEngineError(message='comment 长度不得超过 140 个字符')
+        raise leancloud.LeanEngineError(message='comment 长度不得超过 140 个字符')
 ```
+
+**注意：** 不要修改 `obj`，因为对它的改动并不会保存到数据库，但可以通过抛出一个 `leancloud.LeanEngineError` ，拒绝这次修改。
 {% endblock %}
 
 {% block afterUpdateExample %}
