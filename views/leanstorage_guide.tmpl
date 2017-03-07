@@ -71,6 +71,8 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 
 {% block code_data_type %}{% endblock %}
 
+注意，时间类型在服务端将会以 universal 时间存储，但是客户端在读取之后会做转化成本地时间。
+
 {% block section_dataType_largeData %}
 我们**不推荐**在 `{{baseObjectName}}` 中使用 `{{byteType}}` 来储存大块的二进制数据，比如图片或整个文件。**每个 `{{baseObjectName}}` 的大小都不应超过 128 KB**。如果需要储存更多的数据，建议使用 [`{{fileObjectName}}`](#文件)。
 {% endblock %}
@@ -97,7 +99,7 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 ---|---|---
 `objectId`|{{ "str" if segment_code == "python" else "String"}}|该对象唯一的 Id 标识
 `ACL`|{{ "leancloud.ACL" if segment_code == "python" else "ACL"}}|该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
-`createdAt`|{{dateType}}|该对象被创建的 UTC 时间，控制台做了针对当地时间的展现优化。
+`createdAt`|{{dateType}}|该对象被创建的 UTC 时间，控制台做了针对当地时间的展现优化，而客户端在获取时间之后会将服务端的时间进行一次 toLocal 的操作
 `updatedAt` |{{dateType}}|该对象最后一次被修改的时间
 
 <dl>
@@ -622,6 +624,20 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 与普通查询一样，内嵌查询默认也最多返回 100 条记录，想修改这一默认请参考 [限定结果返回数量](#限定返回数量)。**如果所有返回的记录没有匹配到外层的查询条件，那么整个查询也查不到结果**。
 
+##### 内嵌查询的注意事项
+
+Q：为什么我使用子查询时查不到记录或查到的记录不全？例如 select * from Player where name in (select name from GameScore where score>80) and region = 'cn'
+
+A：因为我们底层的数据库并不是关系型数据，因此无法做到真正的联表查询，我们的实现实际上是这样的：先执行子查询（和普通查询一样，默认 limit 100，最大 limit 1000），然后将子查询的结果填入主查询的对应位置，然后执行主查询。
+
+因此如果子查询匹配到了 100 条以上的记录（性别等区分度低的字段重复值往往较多），且主查询有其他查询条件（region = 'cn'），那么将会出现没有结果或结果不全的情况，其本质上是子查询查出的 100 条记录没有满足主查询的其他条件。目前对此没有太有效的解决方案，建议：
+
+确保子查询的结果在 100 条以下，如果在 100 - 1000 条的话请在子查询末尾添加 limit 1000。
+将需要查询的字段冗余到主查询所在的表上；例如将 score 冗余到 Player 表上，或者将 region 添加到 GameScore 上然后只查 GameScore 表。
+进行多次查询，每次在子查询上添加 skip 来遍历所有记录（注意 skip 的值较大时性能会比较差，因此不是很推荐）。
+
+{% block text_js_promise %}{% endblock %}
+
 ### 地理位置查询
 地理位置查询是较为特殊的查询，一般来说，常用的业务场景是查询距离 xx 米之内的某个位置或者是某个建筑物，甚至是以手机为圆心，查找方圆多少范围内餐厅等等。{{productName}} 提供了一系列的方法来实现针对地理位置的查询。
 
@@ -749,8 +765,6 @@ Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语�
 - skip 跳过较多的行数（相当于需要先查出被跳过的那些行）
 - 无索引的排序（另外除非复合索引同时覆盖了查询和排序，否则只有其中一个能使用索引）
 - 无索引的查询（另外除非复合索引同时覆盖了所有条件，否则未覆盖到的条件无法使用索引，如果未覆盖的条件区分度较低将会扫描较多的数据）
-
-{% block text_js_promise %}{% endblock %}
 
 ## 用户
 
