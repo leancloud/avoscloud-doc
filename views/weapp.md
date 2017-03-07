@@ -224,6 +224,8 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
   });
   ```
 
+需要特别注意的是，由于小程序限制了同时只能有一个 WebSocket 连接，因此推荐的用法是初始化 Realtime 一次，然后在所有需要的时候都使用这个 realtime 实例。
+
 实时通讯 SDK 的详细用法请参考 [实时通信开发指南](realtime_guide-js.html)。
 
 ### 富媒体消息
@@ -331,7 +333,7 @@ lean deploy
 2. 调用支付 API（`wx.requestPayment`），传入上一步返回的订单信息，发起支付。
 
 ```javascript
-Cloud.run('order').then((data) => {
+AV.Cloud.run('order').then((data) => {
   data.success = () => {
     // 支付成功
   }
@@ -347,6 +349,14 @@ Cloud.run('order').then((data) => {
 客户端的示例代码参见 [Demo](https://github.com/leancloud/leantodo-weapp) 打赏功能。参考文档：
 
 * [小程序客户端发起支付 API](https://mp.weixin.qq.com/debug/wxadoc/dev/api/api-pay.html)
+
+## FAQ
+
+### 配置 download 合法域名时显示「该域名因违规被禁止设置。」
+目前 https://clouddn.com 已经被微信屏蔽，因此该域名下的文件无法通过 `wx.downloadFile` 下载到用户的设备上（只是通过 image 的 src 属性展示图片不受影响）。如果确实需要使用 `wx.downloadFile`，可以在 控制台 - **设置 - 应用选项** 中勾选 「启动 https 域名」，目前对应的域名还没有被屏蔽。
+
+### Access denied by api domain white list
+如果你的应用启用并配置了 [Web 安全域名](data_security.html#Web_应用安全设置)，你可能会 catch 到 `Access denied by api domain white list` 异常，请将提示的域名添加至应用的 Web 安全域名列表。
 
 ## 反馈
 如果在微信小程序中使用 LeanCloud 时遇到问题，欢迎通过我们的 [论坛](https://forum.leancloud.cn/c/jing-xuan-faq/weapp) 进行反馈。

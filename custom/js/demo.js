@@ -40,13 +40,6 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         type: 'ios',
         qcloudShow: true
       },{
-        name: 'LeanMessage Demo',
-        desc: '帮助开发者快速上手 LeanCloud 聊天 SDK。之前推出的 LeanChat 包含了许多 UI 代码而有碍于学习，本项目则提供了最精简的 UI 和最核心的 SDK 用法。',
-        downPath: '',
-        mdPath: 'https://github.com/leancloud/LeanMessage-Demo',
-        type: 'ios',
-        qcloudShow: true
-      },{
         name: 'Share',
         desc: '应用内社交系统的 Demo，有关注、发状态、时间线等功能。',
         downPath: '',
@@ -90,13 +83,6 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         type: 'android',
         qcloudShow: true
       },{
-        name: 'LeanMessage Demo',
-        desc: '帮助开发者快速上手 LeanCloud 聊天 SDK。之前推出的 LeanChat 包含了许多 UI 代码而有碍于学习，本项目则提供了最精简的 UI 和最核心的 SDK 用法。',
-        downPath: '',
-        mdPath: 'https://github.com/leancloud/LeanMessage-Demo',
-        type: 'android',
-        qcloudShow: true
-      },{
         name: 'WeShare',
         desc: '使用 LeanCloud 应用内社交组件打造的类似朋友圈的分享小应用，具备时间线、发文字发图、点赞、关注等功能。',
         downPath: '',
@@ -137,6 +123,13 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         desc: '使用 JavaScript 存储 SDK 与 Vue.js 实现的 LeanTodo 应用。',
         downPath: '',
         mdPath: 'https://github.com/leancloud/leantodo-vue/',
+        type: 'js',
+        qcloudShow: true
+      },{
+        name: 'LeanMessage',
+        desc: '使用 JavaScript 实时通讯 SDK 与 Angular 实现的完整功能的聊天 WebApp',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/LeanMessage-Demo',
         type: 'js',
         qcloudShow: true
       }],

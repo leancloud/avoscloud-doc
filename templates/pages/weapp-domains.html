@@ -42,11 +42,7 @@ title: 小程序域名白名单配置
     <h3>3. 增加以下域名</h3>
     <div class="row" ng-if="user.username && apps">
       <div class="step-content col-sm-12">
-        <div class="spinner-wrap" ng-show="loading">
-          <p>正在获取配置...</p>
-          <div class="spinner"></div>
-        </div>
-        <table ng-show="!loading">
+        <table>
           <tr>
             <th rowspan="3" width="40%">request 域名</th>
             <td>
@@ -107,7 +103,7 @@ title: 小程序域名白名单配置
             {% endfor %}
           {% endif %}
         </table>
-        <div class="callout callout-danger">目前微信限制每月只能修改三次域名白名单。</div>
+        <div class="callout callout-danger">目前微信限制每月只能修改 5 次域名白名单。</div>
       </div>
     </div>
   </div>
