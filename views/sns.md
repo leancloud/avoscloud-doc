@@ -328,7 +328,7 @@ public class MyActivity extends Activity {
 
 【QQ SNS】在腾讯 SNS 授权中，由于 QQ SDK 官方对于 WebView 授权的限制，导致在 WebView 中无法完成正常的授权过程，所以 QQ SNS 只支持 SSO 登录授权。我们也会持续跟进 QQ SDK 的更新进展，同时也为对你造成的不便感到抱歉。
 
-【QQ SSO】当使用 QQ SSO 登录时，请注意确保 AndroidManifest.xml 文件包含如下内容：
+【QQ SSO】当使用 QQ SSO 登录时，请注意确保 `AndroidManifest.xml` 文件包含如下内容：
 
 ```xml
 <activity android:name="com.tencent.tauth.AuthActivity"
@@ -338,6 +338,7 @@ public class MyActivity extends Activity {
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="你的 Tencent AppID"/>
     </intent-filter>
 </activity>
 ```
