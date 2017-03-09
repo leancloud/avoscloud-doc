@@ -2,11 +2,11 @@
 {% import "views/_parts.html" as include %}
 {% set required = docs.alert("不支持批量操作，必须在 where 条件中指定 `objectId=xxx`，否则会遇到报错。") %}
 {% set date_format = "YYYY-MM-DDTHH:MM:SS.MMMZ" %}
+{% import "views/_data.njk" as data %}
 
+# CQL 详细指南
 
-# Cloud Query Language 详细指南
-
-Cloud Query Language（简称 CQL）是 LeanCloud 为查询 API 定制的一套类似 SQL 查询语法的子集和变种，其目的是让开发者可以使用传统的 SQL 语法来查询 LeanCloud 云端数据，从而减少学习 LeanCloud 查询 API 的成本。
+CQL 全称为 Cloud Query Language，是 LeanCloud 为查询 API 定制的一套类似 SQL 查询语法的子集和变种，其目的是让开发者可以使用传统的 SQL 语法来查询 LeanCloud 云端数据，从而减少学习 LeanCloud 查询 API 的成本。
 
 ## 与 SQL 的主要差异
 
@@ -195,6 +195,7 @@ select * from Player where name !=(select name from GameScore where score<=80)
 
 **注意：子查询的语句也受上限 1000 条记录的限制。**
 
+{{ data.innerQueryLimitation(heading="#### 子查询的局限") }}
 
 ### 地理位置查询
 

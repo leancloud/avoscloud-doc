@@ -71,7 +71,7 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 
 {% block code_data_type %}{% endblock %}
 
-注意，时间类型在服务端将会以 universal 时间存储，但是客户端在读取之后会做转化成本地时间。
+注意，时间类型在云端将会以 UTC 时间格式存储，但是客户端在读取之后会做转化成本地时间。
 
 {% block section_dataType_largeData %}
 我们**不推荐**在 `{{baseObjectName}}` 中使用 `{{byteType}}` 来储存大块的二进制数据，比如图片或整个文件。**每个 `{{baseObjectName}}` 的大小都不应超过 128 KB**。如果需要储存更多的数据，建议使用 [`{{fileObjectName}}`](#文件)。
@@ -99,8 +99,10 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 ---|---|---
 `objectId`|{{ "str" if segment_code == "python" else "String"}}|该对象唯一的 Id 标识
 `ACL`|{{ "leancloud.ACL" if segment_code == "python" else "ACL"}}|该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
-`createdAt`|{{dateType}}|该对象被创建的 UTC 时间，控制台做了针对当地时间的展现优化，而客户端在获取时间之后会将服务端的时间进行一次 toLocal 的操作
+`createdAt`|{{dateType}}|该对象被创建的 UTC 时间
 `updatedAt` |{{dateType}}|该对象最后一次被修改的时间
+
+{{ data.localizedDates() }} 
 
 <dl>
   <dt>属性名</dt>
@@ -519,7 +521,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 <div class="callout callout-info">{{query_result_limit}}</div>
 
-以上逻辑用 SQL 语句表达为 `select * from Todo where priority < 2`。{{productName}} 也支持使用这种传统的 SQL 语句查询。具体使用方法请移步至 [Cloud Query Language（CQL）查询](#CQL_查询)。
+以上逻辑用 SQL 语句表达为 `select * from Todo where priority < 2`。{{productName}} 也支持使用这种传统的 SQL 语句查询。具体使用方法请移步至 [CQL 查询](#CQL_查询)。
 
 查询优先级大于等于 2 的 Todo：
 
@@ -622,19 +624,11 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% block code_query_comment_match_query_todoFolder %}{% endblock %}
 
-与普通查询一样，内嵌查询默认也最多返回 100 条记录，想修改这一默认请参考 [限定结果返回数量](#限定返回数量)。**如果所有返回的记录没有匹配到外层的查询条件，那么整个查询也查不到结果**。
+与普通查询一样，内嵌查询默认也最多返回 100 条记录，想修改这一默认请参考 [限定结果返回数量](#限定返回数量)。
 
-##### 内嵌查询的注意事项
+**如果所有返回的记录没有匹配到外层的查询条件，那么整个查询也查不到结果**。例如：
 
-Q：为什么我使用子查询时查不到记录或查到的记录不全？例如 select * from Player where name in (select name from GameScore where score>80) and region = 'cn'
-
-A：因为我们底层的数据库并不是关系型数据，因此无法做到真正的联表查询，我们的实现实际上是这样的：先执行子查询（和普通查询一样，默认 limit 100，最大 limit 1000），然后将子查询的结果填入主查询的对应位置，然后执行主查询。
-
-因此如果子查询匹配到了 100 条以上的记录（性别等区分度低的字段重复值往往较多），且主查询有其他查询条件（region = 'cn'），那么将会出现没有结果或结果不全的情况，其本质上是子查询查出的 100 条记录没有满足主查询的其他条件。目前对此没有太有效的解决方案，建议：
-
-确保子查询的结果在 100 条以下，如果在 100 - 1000 条的话请在子查询末尾添加 limit 1000。
-将需要查询的字段冗余到主查询所在的表上；例如将 score 冗余到 Player 表上，或者将 region 添加到 GameScore 上然后只查 GameScore 表。
-进行多次查询，每次在子查询上添加 skip 来遍历所有记录（注意 skip 的值较大时性能会比较差，因此不是很推荐）。
+{{ data.innerQueryLimitation(description="", skip="[skip](#跳过数量)") }}
 
 {% block text_js_promise %}{% endblock %}
 
@@ -723,7 +717,7 @@ AND 操作将满足了所有查询条件的对象返回给客户端。例如，�
 <!-- #### 限定返回字段 -->
 
 ### CQL 查询
-Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功能的语言，具有 SQL 开发经验的开发者可以方便地使用此接口实现查询。
+CQL 是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功能的语言，具有 SQL 开发经验的开发者可以方便地使用此接口实现查询。
 
 分别找出 status = 1 的全部 Todo 结果，以及 priority = 0 的 Todo 的总数：
 
@@ -735,7 +729,7 @@ Cloud Query Language（CQL）是 {{productName}} 独创的使用类似 SQL 语�
 
 {% block code_query_by_cql_with_placeholder %}{% endblock %}
 
-目前 CQL 已经支持数据的更新 update、插入 insert、删除 delete 等 SQL 语法，更多内容请参考 [Cloud Query Language 详细指南](cql_guide.html)。
+目前 CQL 已经支持数据的更新 update、插入 insert、删除 delete 等 SQL 语法，更多内容请参考 [CQL 详细指南](cql_guide.html)。
 
 {% block text_query_cache_intro %}
 ### 缓存查询

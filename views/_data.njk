@@ -17,3 +17,38 @@
 {% macro classNameConvention(className="Class 类名称（ClassName）") -%}
 {{className | trim | replace(r/([\x00-\xff])$/gi,"$1 ") }}必须以字母开头，只能包含字母、数字和下划线。
 {%- endmacro %}
+
+{% macro localizedDates() -%}
+注：应用控制台对 `createdAt` 和 `updatedAt` 做了在展示优化，它们会依据用户操作系统时区而显示为本地时间；客户端 SDK 获取到这些时间后会对其进行 toLocal 的转换；而通过 REST API 获取到的则是原始的 UTC 时间。
+{%- endmacro %}
+
+{% macro innerQueryLimitation(heading="", description="使用子查询可能会遇到查不到记录或查到的记录不全的情况。例如：", skip="skip") -%}
+{% if heading != "" -%}
+{{ heading }}
+
+{% endif -%}
+{% if description != "" -%}
+{{ description }}
+
+{% endif -%}
+```sql
+-- 找出积分高于 80、region 为 cn 的玩家记录
+SELECT * 
+FROM   player 
+WHERE  NAME IN (SELECT NAME 
+                FROM   gamescore 
+                WHERE  score > 80) 
+       AND region = 'cn' 
+```
+
+LeanCloud 云端使用的并非关系型数据库，无法做到真正的联表查询，所以实际的处理方式是：先执行内嵌/子查询（和普通查询一样，limit 默认为 100，最大  1000），然后将子查询的结果填入主查询的对应位置，再执行主查询。
+
+如果子查询匹配到了 100 条以上的记录（性别等区分度低的字段重复值往往较多），且主查询有其他查询条件（`region = 'cn'`），那么可能会出现没有结果或结果不全的情况，其本质上是子查询查出的 100 条记录没有满足主查询的其他条件。
+
+我们建议采用以下方案进行改进：
+
+- 确保子查询的结果在 100 条以下，如果在 100 - 1000 条的话请在子查询末尾添加 limit 1000。
+- 将需要查询的字段冗余到主查询所在的表上；例如将 score 冗余到 Player 表上，或者将 region 添加到 GameScore 上然后只查 GameScore 表。
+- 进行多次查询，每次在子查询上添加 {{ skip }} 来遍历所有记录（注意 skip 的值较大时可能会引发性能问题，因此不是很推荐）。
+{%- endmacro %}
+

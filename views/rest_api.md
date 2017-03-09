@@ -1115,6 +1115,8 @@ curl -X GET \
 }
 ```
 
+{{ data.localizedDates() }} 
+
 ### 查询约束
 
 通过 `where` 参数的形式可以对查询对象做出约束。
@@ -1499,6 +1501,8 @@ curl -X GET \
    --data-urlencode 'pvalues=["dennis", 0, 100]'
   https://{{host}}/1.1/cloudQuery
 ```
+
+{{ data.innerQueryLimitation("#### 子查询的局限") }}
 
 ## 用户
 
