@@ -105,7 +105,6 @@ leanstorage_guide-android.html#用户
 {% block send_sms_by_template %}
 ```java
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("service_name", "天天商城");
         parameters.put("order_id", "7623432424540");
         AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(),
                 "Order_Notice",

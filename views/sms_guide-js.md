@@ -78,7 +78,6 @@ leanstorage_guide-js.html#用户
   AV.Cloud.requestSmsCode({
     mobilePhoneNumber: '186xxxxxxxx',
     template: 'Order_Notice',
-    service_name: '天天商城',
     order_id: '7623432424540'
   }).then(function(){
     //发送成功

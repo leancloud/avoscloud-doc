@@ -74,7 +74,6 @@ leanstorage_guide-objc.html#用户
 {% block send_sms_by_template %}
 ```objc
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    [dict setObject:@"天天商城" forKey:@"service_name"];
     [dict setObject:@"7623432424540" forKey:@"order_id"];
     [AVOSCloud requestSmsCodeWithPhoneNumber:@"18612345678" templateName:@"Order_Notice" variables:dict callback:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
