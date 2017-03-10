@@ -992,7 +992,7 @@ Java SDK 不支持缓存策略。
 {% block code_send_verify_email %}
 
 ```java
-  AVUser.requestEmailVerfiy("abc@xyz.com", new RequestEmailVerifyCallback() {
+  AVUser.requestEmailVerify("abc@xyz.com", new RequestEmailVerifyCallback() {
             @Override
             public void done(AVException e) {
                 if (e == null) {

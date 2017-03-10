@@ -1333,7 +1333,7 @@ fetchAllInBackground()
 {% block code_send_verify_email %}
 
 ```java
-  AVUser.requestEmailVerfiyInBackground("abc@xyz.com", new RequestEmailVerifyCallback() {
+  AVUser.requestEmailVerifyInBackground("abc@xyz.com", new RequestEmailVerifyCallback() {
     @Override
     public void done(AVException e) {
       if (e == null) {
