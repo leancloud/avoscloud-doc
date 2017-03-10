@@ -749,7 +749,10 @@ query = Todo.query
 reminder1 = datetime(2015, 11, 11, 8, 30, 00)
 reminder2 = datetime(2015, 11, 11, 9, 30, 00)
 
-# 如果精确查询数组元素，则用 equal_to 函数，并在第二个参数传入需要精确查询的数组
+query.contains_all('reminders', [reminder1, reminder2])
+
+# 如果精确查询数组元素（数组元素的数量和顺序必须匹配），则用 equal_to 函数
+# 不会匹配列值为 [reminder2, reminder1] 或 [reminder1, reminder2, reminder3] 的记录
 query.equal_to('reminders', [reminder1, reminder2])
 ```
 {% endblock %}
