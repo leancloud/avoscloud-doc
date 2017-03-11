@@ -12,48 +12,20 @@
 .doc-content {
   margin-bottom: 56px;
 }
-.doc-content .section-title {
-  margin: 36px 0;
-  font-size: 32px;
-  color: #666;
-  position: relative;
-  overflow: hidden;
-  padding: 0;
-  text-align: center;
-  z-index: 1;
-}
-.doc-content .section-title::before,
-.doc-content .section-title::after {
-  position: absolute;
-  top: 51%;
-  overflow: hidden;
-  width: 50%;
-  height: 1px;
-  content: '\a0'!important;
-  background-color: #ddd;
-}
-.doc-content .section-title:after {
-  margin-left: 2%;
-}
-.doc-content .section-title:before {
-  margin-left: -52%;
-  text-align: right;
-}
-.doc-content h3 {
-  margin: 6px 0;
-  font-size: 1em;
-  padding: 0;
-  color: #999;
-  line-height: 1.8;
+.course-about {
+  font-size: 13px;
+  color: #aaa; 
+  max-width: 25em;
 }
 .form-group {
   position: relative;
 }
 #site-search {
-  border-width: 0 0 1px 0;
+  /* border-width: 0 0 1px 0;
   border-style: solid;
-  border-color: #666;
-  border-radius: 0;
+  border-color: #666; */
+  border: 1px solid #999;
+  border-radius: 3px;
   text-align: center;
   background: none;
   font-size: 16px;
@@ -73,10 +45,14 @@
 }
 .scrollspy li {
   display: inline-block;
+  margin-right: 6px;
+}
+.scrollspy li:last-child {
+  margin-right: 0;
 }
 .scrollspy li>a {
   display: inline-block;
-  padding: 20px 10px 19px;
+  padding: 20px 14px 19px;
   margin-bottom: -1px;
   line-height: 20px;
   border-bottom: 1px solid transparent;
@@ -90,18 +66,7 @@
   background-color: transparent;
   border-bottom-color: #2c97e8;
 }
-.scrollspy li::after,
-.list-platform>li::after {
-  content: "·";
-  color: #ccc;
-}
-.list-platform>li::after {
-  margin-left: 6px;
-}
-.scrollspy li:last-child::after,
-.list-platform>li:last-child::after {
-  content: "";
-}
+
 .affix {
   position: fixed;
   top: 0;
@@ -110,91 +75,69 @@
   z-index: 10;
   box-shadow: 0 1px 1px rgba(0, 0, 0, .15);
 }
-.list-platform {
+.tags {
   margin: 8px 0;
 }
-.list-platform>li,.list-keyword>li {
+.tags>li {
   display: inline-block;
 }
-.platform-as-tab .list-platform>li>a {
+.tags>li>a {
   min-width: 90px;
 }
-.list-keyword {
-  padding-left: 0;
-}
-.hero-search .list-keyword>li>a {
-  padding: 2px 6px;
-  border-radius: 2px;
-}
-.platform-as-tab .list-platform>li>a, .list-keyword>li>a {
+.tags>li>a {
   padding: 3px;
   font-size: 13px;
-  background-color: #f4f4f4;
+  background-color: #f1f8ff;
   margin: 2px 0;
   display: block;
   text-align: center;
-  color: #888;
   line-height: 1.8;
   text-decoration: none;
-  /* border: 1px solid #eee; */
+  border-radius: 3px;
 }
-.list-platform>li>a {
+.tags>li>a {
   line-height: 1.8;
   white-space: nowrap;
 }
-.platform-as-tab .list-platform>li>a:hover,.list-keyword>li>a:hover {
+.tags>li>a:hover {
   background-color: #2c97e8;
   color: #fff;
 }
-.platform-as-tab .list-platform>li::after,
-.platform-as-tab .list-platform>li:last-child::after {
+.tags>li::after,
+.tags>li:last-child::after {
   content: none!important;
 }
 .doc-home-title {
-  padding-bottom: 40px;
-}
-/* loader */
-
-.spinner {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  width: 24px;
-  height: 24px;
-  margin: 0px auto;
-  background-color: #2c97e8;
-  border-radius: 100%;
-  -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
-  animation: sk-scaleout 1.0s infinite ease-in-out;
-}
-@-webkit-keyframes sk-scaleout {
-  0% {
-      -webkit-transform: scale(0)
-  }
-  100% {
-      -webkit-transform: scale(1.0);
-      opacity: 0;
-  }
-}
-@keyframes sk-scaleout {
-  0% {
-      -webkit-transform: scale(0);
-      transform: scale(0);
-  }
-  100% {
-      -webkit-transform: scale(1.0);
-      transform: scale(1.0);
-      opacity: 0;
-  }
-}
-.loaded .spinner {
-  display: none;
+  padding-bottom: 0;
+  padding-top: 40px;
 }
 .scrollspy .nav {
   visibility: hidden;
 }
 .scrollspy.loaded .nav {
   visibility: visible
+}
+.doc-home-title .nav-pills > li{
+  float: none;
+  display: inline-block;
+}
+.doc-home-title .doc-hero-links {
+  margin-bottom: 0;
+  margin-top: 1em;
+}
+.doc-home-title .doc-quick-start-btn {
+  color: #bbb;
+  min-width: 10em;
+  font-weight: 400;
+  border: none;
+}
+.doc-home-title .doc-quick-start-btn:hover {
+    color: #333;
+    border-color: #333;
+}
+.doc-home-title .active .doc-quick-start-btn {
+    color: #3090e4;
+    border-color: #3090e4;
 }
 </style>
 </head>
@@ -224,6 +167,22 @@
 {% endif %}
 
 <script type="text/javascript">
+$(document).ready(function(){
+  $('a[data-toggle="pill"]').on('show.bs.tab', function (e) {
+    var $this = $(e.target),
+        source = $this.attr('href'),
+        pane = $this.attr('data-target');
+    //console.log($this, source, pane, source.charAt(0) !== '#',$(pane).is(':empty'));
+    if( source.charAt(0) !== '#' && $(pane).is(':empty') ) {  
+      $.get(source, function(data) {
+          $(pane).html($(data).find('#course-list').html());
+      });
+      //console.log("filled");
+    }
+    return true;
+  });
+});
+
 // get nav items ready for scrollspy
 $(window).load(function() {
   $('#section-nav').affix({

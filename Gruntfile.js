@@ -327,7 +327,7 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
       // 首页：内容分类导航 scrollspy
       if ( file.base.toLowerCase() === 'index.html' ){
         let $sectionNav = $('#section-nav').find('ul');
-        $('.section-title').each(function(index, el) {
+        $('#tab-docs').find('.section-title').each(function(index, el) {
           let $el = $(el);
           let id = $el.text().replace(/ /g,'-').replace(/[^a-zA-Z_0-9\u4e00-\u9fa5]/g,'-');
           $el.attr('id',id);

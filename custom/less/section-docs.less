@@ -68,7 +68,58 @@ body {
   height: 48px;
   position: relative;
 }
+
 .doc-content {
+
+  .section-title {
+    margin: 36px 0;
+    font-size: 28px;
+    color: #666;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    text-align: center;
+    z-index: 1;
+
+    &:before,
+    &:after {
+      position: absolute;
+      top: 51%;
+      overflow: hidden;
+      width: 50%;
+      height: 1px;
+      content: '\a0'!important;
+      background-color: #ddd;
+    }
+
+    &:after {
+      margin-left: 2%;
+    }
+    &:before {
+      margin-left: -52%;
+      text-align: right;
+    }
+  }
+
+  .section-content {
+    h3 {
+      margin: 24px 0 0 0;
+      font-size: 1em;
+      padding: 0;
+      color: #999;
+      line-height: 1.8;
+
+      &:first-child{
+        margin-top: 0;
+      }
+    }
+
+    .note {
+      font-size: 13px;
+      color: #aaa; 
+      max-width: 25em;
+    }
+  }
 
   .link-block .dropdown-header {
     .dropdown_header;

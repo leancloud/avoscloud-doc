@@ -1,19 +1,31 @@
 <nav class="dashboard-subnav navbar navbar-default navbar-static-top" role="navigation">
   <div class="container-fluid">
-    <div class="navbar-collapse" id="app-options">
-      <ul class="nav navbar-nav navbar-app-select">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-options" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button> 
+      <a href="/" class="navbar-brand nav-logo font-logo" title="LeanCloud 官网">LeanCloud</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="app-options">
+      <!-- <ul class="nav navbar-nav navbar-app-select">
         <li>
-          <a href="/applist.html" class="nav-logo font-logo">L<span class="visible-xs-inline">eanCloud</span></a>
+          <a href="/dashboard/applist.html" class="nav-logo font-logo" title="LeanCloud 控制台">LeanCloud</a>
         </li>
-      </ul>
+      </ul> -->
       <div class="navbar-app-actions-wrap">
         <ul class="nav navbar-nav navbar-app-actions">
+          {% if basename != "index" %}
           <li class="dropdown dropdown-toggle-app-name">
             <a href="index.html">
               <i class="icon icon-dashbd-icon icon-home"></i>
               <div class="name">文档首页</div>
             </a>
           </li>
+          {% endif %}
           <li class="dropdown dropdown-toggle-app-name">
             <a href="sdk_down.html" title="SDK 下载">
               <i class="icon icon-dashbd-icon icon-package"></i>
@@ -35,6 +47,14 @@
             {% include '_apidocs.html' %}
             </ul>
           </li>
+          {% if basename != "index" && basename != "opencourse" %}
+          <li class="dropdown dropdown-toggle-app-name">
+            <a href="opencourse.html">
+              <i class="icon icon-dashbd-icon icon-play"></i>
+              <div class="name">公开课</div>
+            </a>
+          </li>
+          {% endif %}
           <li class="dropdown dropdown-toggle-app-name">
             <a class="nav-key-6 dropdown-toggle" title="帮助" data-toggle="dropdown">
               <i class="icon icon-dashbd-icon icon-question"></i>
@@ -55,7 +75,7 @@
           </li>
         </ul>
         <!-- hide search input on the home page -->
-        {% if isHome != true %}
+        {% if basename != "index" %}
           <form role="search" action="/search.html" method="get">
             <div class="app-search">
               <input name="q" type="text" class="form-control" placeholder="搜索文档&hellip;">

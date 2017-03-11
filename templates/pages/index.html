@@ -1,406 +1,397 @@
 ---
-layout: download_clean.swig
-isHome: true
+layout: index.swig
 ---
-<div class="doc-home-title text-center">
+<div class="row">
+  <div class="doc-home-title col-md-8 col-md-offset-2 col-xs-offset-0">
     {% if node=='qcloud' %}
-    <h1 class="font-logo">Tencent App Builder Documentation</h1>
-    <h4>TAB 移动开发工具由腾讯云、LeanCloud 联合推出，开发文档由 LeanCloud 提供。</h4>
-    <div class="row"><a href="sdk_down.html">SDK 下载</a></div>
-    {% else %}
-    <h1 class="font-logo">Documentation</h1>
+    <div class="text-center" >
+      <h1 class="font-logo">Tencent App Builder Documentation</h1>
+      <h4>TAB 移动开发工具由腾讯云、LeanCloud 联合推出，开发文档由 LeanCloud 提供。</h4>
+      <a href="sdk_down.html" class="btn btn-default" style="margin-top:2em;">SDK 下载</a> </div >
+    {% else %} 
+    <!-- <h1 class="font-logo">Documentation</h1> -->
     <form class="hero-search" role="search" action="/search.html" method="get">
-      <div class="form-group">
+      <div class="form-group" style="margin:0 10px;">
         <input id="site-search" name="q" type="text" class="form-control input-lg" placeholder="&#xf17a 输入错误代码、关键字来搜索&hellip;">
       </div>
       <!-- <ul class="list-keyword">
-        <li>热门</li>
-        <li><a href="/search.html?q=小程序" target="_blank">小程序</a></li>
-        <li></li>
+          <li>热门</li>
+          <li><a href="/search.html?q=小程序" target="_blank">小程序</a></li>
+          <li></li>
       </ul> -->
     </form>
     {% endif %}
-</div>
-<div class="toc-hack" style="display: none;">
-  <ul>
-  </ul>
-</div>
-
-<!-- .doc-home-title -->
-<div style="height:100px;">
-&nbsp;
-  <div id="section-nav" class="scrollspy text-center mobile-hide">
-    <div class="spinner"></div>
-    <ul class="nav">
+    <ul class="nav nav-pills text-center" role="tablist">
+      <!-- 
+      <li role="presentation" class="active">
+        <a href="#tab-docs" data-target="#tab-docs" data-toggle="pill">技术文档</a>
+      </li>
+      <li role="presentation">
+        <a href="opencourse.html" data-target="#tab-other" data-toggle="pill" data-source="">ajax</a>
+      </li>
+      -->
+      <li role="presentation" class="active">
+        <div class="doc-hero-links">
+          <a href="#tab-docs" data-target="#tab-docs" data-toggle="pill" class="doc-quick-start-btn">
+            <i class="icon icon-log"></i>
+          技术文档
+          </a>
+        </div>
+      </li>
+      <li>
+        <div class="doc-hero-links">
+          <a href="opencourse.html" data-target="#tab-opencourses" data-toggle="pill" class="doc-quick-start-btn">
+            <i class="icon icon-graduation"></i>
+          视频公开课
+          </a>
+        </div>
+      </li>
     </ul>
   </div>
 </div>
 
-<!-- .toc-hack -->
 <div class="row">
-  <div class="section col-md-8 col-md-offset-2 col-xs-offset-0">
-    <h2 class="section-title">数据存储</h2>
-    <div class="row">
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>开发指南</h3>
-        <ul class="list-unstyled">
-          <li><span><a href="start.html">SDK 安装</a></span></li>
-          <li>
-            <span>快速入门</span>
-            <ul class="list-unstyled list-platform">
-              <li><a href="leanstorage-started-android.html">Android</a></li>
-              <li><a href="leanstorage-started-objc.html">Objective-C</a></li>
-              <li><a href="leanstorage-started-js.html">JavaScript</a></li>
+  <div class="col-md-8 col-md-offset-2 col-xs-offset-0">
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="tab-docs">
+        <div class="toc-hack" style="display: none;">
+          <ul>
+          </ul>
+        </div>
+        <div style="height:100px;" class="mobile-hide">
+        &nbsp;
+          <div id="section-nav" class="scrollspy text-center mobile-hide  affix-top loaded">
+            <div class="spinner"></div>
+            <ul class="nav">
             </ul>
-          </li>
-          <li><a href="storage_overview.html">存储服务总览</a></li>
-          <li><a href="data_security.html">数据安全详解</a></li>
-          <li>
-            <span>数据存储开发指南</span>
-            <ul class="list-unstyled list-platform">
-              <li><a href="leanstorage_guide-android.html">Android</a></li>
-              <li><a href="leanstorage_guide-objc.html">Objective-C</a></li>
-              <li><a href="leanstorage_guide-js.html">JavaScript</a></li>
-              <li><a href="leanstorage_guide-python.html">Python</a></li>
-              <li><a href="leanstorage_guide-php.html">PHP</a></li>
-              <li><a href="dotnet_guide.html">.NET</a></li>
-              <li><a href="unity_guide.html">Unity3D</a></li>
-              <li><a href="leanstorage_guide-java.html">Java</a></li>
-              <li><a href="leanstorage_guide-swift.html">Swift</a></li>
-            </ul>
-          </li>
-          <li>
-            <span><a href="relation-guide.html">数据模型设计指南</a></span>
-          </li>
-          <li>
-            <span><a href="acl-guide.html">ACL 权限管理指南</a></span>
-          </li>
-          {%- if node != 'qcloud' -%}
-          {% include 'templates/include/_sms.html' %}
-          {%- endif -%}
-        </ul>
+          </div>
+        </div>
+        
+        <div class="section">
+          <h2 class="section-title">数据存储</h2>
+          <div class="row"> 
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>开发指南</h3>
+              <ul class="list-unstyled">
+                <li><span><a href="start.html">SDK 安装</a></span></li>
+                <li> <span>快速入门</span>
+                  <ul class="list-unstyled tags">
+                    <li><a href="leanstorage-started-android.html">Android</a></li>
+                    <li><a href="leanstorage-started-objc.html">Objective-C</a></li>
+                    <li><a href="leanstorage-started-js.html">JavaScript</a></li>
+                  </ul>
+                </li>
+                <li><a href="storage_overview.html">存储服务总览</a></li>
+                <li><a href="data_security.html">数据安全详解</a></li>
+                <li> <span>数据存储开发指南</span>
+                  <ul class="list-unstyled tags">
+                    <li><a href="leanstorage_guide-android.html">Android</a></li>
+                    <li><a href="leanstorage_guide-objc.html">Objective-C</a></li>
+                    <li><a href="leanstorage_guide-js.html">JavaScript</a></li>
+                    <li><a href="leanstorage_guide-python.html">Python</a></li>
+                    <li><a href="leanstorage_guide-php.html">PHP</a></li>
+                    <li><a href="dotnet_guide.html">.NET</a></li>
+                    <li><a href="unity_guide.html">Unity3D</a></li>
+                    <li><a href="leanstorage_guide-java.html">Java</a></li>
+                    <li><a href="leanstorage_guide-swift.html">Swift</a></li>
+                  </ul>
+                </li>
+                <li> <span><a href="relation-guide.html">数据模型设计指南</a></span> </li>
+                <li> <span><a href="acl-guide.html">ACL 权限管理指南</a></span> </li>
+                {%- if node != 'qcloud' -%}
+                {% include 'templates/include/_sms.html' %}
+                {%- endif -%}
+              </ul>
+            </div>
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>最佳实践</h3>
+              <ul class="list-unstyled">
+                <li><a href="weapp.html">在微信小程序中使用 LeanCloud</a></li>
+                <li><a href="https://zhuanlan.zhihu.com/p/24451674" target="_blank">在 LeanCloud 中使用 GraphQL</a></li>
+                <li><a href="https://blog.leancloud.cn/1723/" target="_blank">基于 LeanCloud 的一对多、多对多数据建模</a></li>
+                <li><a href="app_data_share.html">应用之间数据共享（Class 绑定）</a></li>
+                <li><a href="https://blog.leancloud.cn/3993/" target="_blank">使用 LeanCloud 与 React Native 构建原生应用</a></li>
+                <li><a href="https://forum.leancloud.cn/t/unity-leancloud/5095" target="_blank">在 Unity 中使用 LeanCloud</a></li>
+                <li><a href="https://blog.leancloud.cn/607/" target="_blank">自定义应用内用户重设密码和邮箱验证页面</a></li>
+              </ul>
+              <h3>相关阅读</h3>
+              <ul class="list-unstyled">
+                <li><a href="faq_list.html">常见问题</a></li>
+                <li><a href="error_code.html">错误码详解</a></li>
+                <li><a href="rest_api.html">数据存储 REST API</a></li>
+                <li><a href="cql_guide.html">CQL 查询语言详解</a></li>
+                <li><a href="app_search_guide.html">应用内搜索和 DeepLink 开发指南</a></li>
+                {%- if node!='qcloud' -%}
+                <li><a href="leaninsight_guide.html">离线数据分析使用指南</a></li>
+                {%- endif -%}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- end of row section -->
+
+        <div class="section">
+          <h2 class="section-title">云引擎</h2>
+          <div class="row">
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>开发指南</h3>
+              <ul class="list-unstyled">
+                <li><a href="leanengine_overview.html">云引擎总览</a></li>
+                <li><a href="leanengine_quickstart.html">快速入门</a></li>
+                <li><a href="leanengine_plan.html">云引擎运行方案</a></li>
+                <li> <span>网站托管开发指南</span>
+                  <ul class="list-unstyled tags">
+                    <li><a href="leanengine_webhosting_guide-python.html">Python</a></li>
+                    <li><a href="leanengine_webhosting_guide-node.html">Node.js</a></li>
+                    <li><a href="leanengine_webhosting_guide-php.html">PHP</a></li>
+                    <li><a href="leanengine_webhosting_guide-java.html">Java</a></li>
+                  </ul>
+                </li>
+                <li> <span>云函数开发指南</span>
+                  <ul class="list-unstyled tags">
+                    <li><a href="leanengine_cloudfunction_guide-python.html">Python</a></li>
+                    <li><a href="leanengine_cloudfunction_guide-node.html">Node.js</a></li>
+                    <li><a href="leanengine_cloudfunction_guide-php.html">PHP</a></li>
+                    <li><a href="leanengine_cloudfunction_guide-java.html">Java</a></li>
+                  </ul>
+                </li>
+                <li><a href="leancache_guide.html">LeanCache 使用指南</a></li>
+                <li><a href="leanengine_cli.html">命令行工具 CLI 使用指南</a></li>
+              </ul>
+            </div>
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>最佳实践</h3>
+              <ul class="list-unstyled">
+                <li><a href="push-guide-leanengine.html">在云引擎中使用 Push 推送服务</a></li>
+                <li><a href="acl_guide_leanengine.html">在云引擎中使用 ACL</a></li>
+                <li><a href="https://blog.leancloud.cn/3437/" target="_blank">在云引擎中使用 WebSocket</a></li>
+                <li><a href="leanengine_examples.html">几个典型场景下的云引擎项目示例</a></li>
+                <li><a href="https://forum.leancloud.cn/t/leanengine/8426" target="_blank">云引擎最佳实践 &middot; 用户系统〖稀土〗</a></li>
+                <li><a href="https://blog.leancloud.cn/4133/" target="_blank">使用 New Relic 监控云引擎应用的性能</a></li>
+                <li><a href="https://zhuanlan.zhihu.com/p/21399155" target="_blank">快速开发聊天机器人</a></li>
+                <li><a href="webhosting_weixin.html">打造我的微信客服</a></li>
+                <li><a href="pay-beecloud.html">为网站加入收款功能</a></li>
+              </ul>
+              <h3>相关阅读</h3>
+              <ul class="list-unstyled">
+                <li><a href="faq_list.html">常见问题</a></li>
+                <li><a href="error_code.html">错误码详解</a></li>
+              </ul>
+            </div>
+            <!-- end of .section-content --> 
+          </div>
+          <!-- end of .row(nested) --> 
+        </div>
+        <!-- end of .section -->
+
+        <div class="section">
+          <h2 class="section-title">实时通信</h2>
+          <div class="row">
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>开发指南</h3>
+              <ul class="list-unstyled">
+                <li><span><a href="start.html">SDK 安装</a></span></li>
+                <li><a href="realtime_v2.html">实时通信服务总览</a></li>
+                <li> <span>通信基础库开发指南</span>
+                  <ul class="list-unstyled tags">
+                    <li><a href="realtime_guide-android.html">Android</a></li>
+                    <li><a href="realtime_guide-objc.html">Objective-C</a></li>
+                    <li><a href="realtime_guide-js.html">JavaScript</a></li>
+                    <li><a href="realtime_guide-dotnet.html">.Net/Unity3D</a></li>
+                  </ul>
+                </li>
+                <li> <span>UI 库 ChatKit 使用指南</span>
+                  <ul class="list-unstyled tags">
+                    <li><a href="chatkit-android.html">Android</a></li>
+                    <li><a href="chatkit-ios.html">iOS</a></li>
+                  </ul>
+                </li>
+                <li> <span>直播＋聊天解决方案 LiveKit 使用指南</span>
+                  <ul class="list-unstyled tags">
+                    <li><a href="livekit-android.html">Android</a></li>
+                    <li><a href="livekit-ios.html">iOS</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>最佳实践</h3>
+              <ul class="list-unstyled">
+                <li><a href="tutorials.html#为聊天接入表情云">为聊天接入表情云</a></li>
+                <li><a href="https://blog.leancloud.cn/5050/" target="_blank">使用 LeanCloud WebRTC 插件打造视频聊天应用</a></li>
+                <li><a href="realtime_v2.html#离线推送通知">如何为 iOS 聊天用户推送离线消息</a></li>
+              </ul>
+              <h3>相关阅读</h3>
+              <ul class="list-unstyled">
+                <li><a href="faq_list.html">常见问题</a></li>
+                <li><a href="error_code.html">错误码详解</a></li>
+                <li><a href="realtime_rest_api.html">实时通信 REST API</a></li>
+              </ul>
+            </div>
+            <!-- end of .section-content --> 
+          </div>
+          <!-- end of .row(nested) --> 
+        </div>
+
+        <div class="section">
+          <h2 class="section-title">消息推送</h2>
+          <div class="row">
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>开发指南</h3>
+              <ul class="list-unstyled">
+                <li><span><a href="start.html">SDK 安装</a></span></li>
+                <li><a href="push_guide.html">消息推送服务总览</a></li>
+                <li> <span>消息推送开发指南</span>
+                  <ul class="list-unstyled tags">
+                    <li><a href="android_push_guide.html">Android</a></li>
+                    <li><a href="ios_push_guide.html">iOS</a></li>
+                    <li><a href="leanstorage_guide-js.html#Push_通知">JavaScript</a></li>
+                  </ul>
+                </li>
+                <li><a href="android_push_guide.html#混合推送">Android 混合推送使用指南</a></li>
+              </ul>
+            </div>
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>最佳实践</h3>
+              <ul class="list-unstyled">
+                <li><a href="ios_push_cert.html">iOS 推送证书设置指南</a></li>
+                <li><a href="push-guide-leanengine.html">在云引擎中使用 Push 推送服务</a></li>
+                <li><a href="https://blog.leancloud.cn/5014/" target="_blank">在 Cordova 项目中使用 LeanCloud 推送</a></li>
+              </ul>
+              <h3>相关阅读</h3>
+              <ul class="list-unstyled">
+                <li><a href="faq_list.html">常见问题</a></li>
+                <li><a href="error_code.html">错误码详解</a></li>
+                <li><a href="rest_api.html#Push_通知">消息推送 REST API</a></li>
+              </ul>
+            </div>
+            <!-- end of .section-content --> 
+          </div>
+          <!-- end of .row(nested) --> 
+        </div>
+        <!-- end of .section -->
+
+        <div class="section">
+          <h2 class="section-title">移动统计</h2>
+          <div class="row">
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>开发指南</h3>
+              <ul class="list-unstyled">
+                <li><span><a href="start.html">SDK 安装</a></span></li>
+                <li> <span>统计服务使用指南</span>
+                  <ul class="list-unstyled tags">
+                    <li><a href="android_statistics.html">Android</a></li>
+                    <li><a href="ios_statistics.html">Objective-C</a></li>
+                    <li><a href="js_analytics.html">JavaScript</a></li>
+                    <li><a href="unity_statistics.html">Unity3D</a></li>
+                  </ul>
+                </li>
+                <li><a href="ios_crashreporting_guide.html">iOS/macOS 崩溃报告使用指南</a></li>
+              </ul>
+            </div>
+            <div class="section-content col-xs-12 col-sm-6 col-md-6"> 
+              <!-- <h3>最佳实践</h3>
+                <ul class="list-unstyled">
+                  <li><a href="user_groups.html">如何进行用户群分析</a></li>
+                </ul> -->
+              <h3>相关阅读</h3>
+              <ul class="list-unstyled">
+                <li><a href="faq_list.html">常见问题</a></li>
+                <li><a href="rest_api.html#统计数据_API">移动统计 API</a></li>
+              </ul>
+            </div>
+            <!-- end of .section-content --> 
+          </div>
+          <!-- end of .row(nested) --> 
+        </div>
+        <!-- end of .section -->
+
+        <div class="section">
+          <h2 class="section-title"> <span class="font-logo">REST API</span> </h2>
+          <div class="row">
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>开发指南</h3>
+              <ul class="list-unstyled">
+                <li><a href="rest_api.html">数据存储 REST API</a></li>
+                <li><a href="realtime_rest_api.html">实时通信 REST API</a></li>
+                <li><a href="rest_api.html#Push_通知">消息推送 REST API</a></li>
+                <li><a href="rest_api.html#统计数据_API">移动统计 REST API</a></li>
+                {% if node != 'qcloud' and node != 'us' %}
+                <li><a href="rest_sms_api.html">短信验证 REST API</a></li>
+                <li> <span>短信服务使用指南</span>
+                  <ul class="list-unstyled tags">
+                    <li><a href="sms_guide-android.html">Android</a></li>
+                    <li><a href="sms_guide-objc.html">Objective-C</a></li>
+                    <li><a href="sms_guide-js.html">JavaScript</a></li>
+                  </ul>
+                </li>
+                {% endif %}
+                <li><a href="status_system.html#REST_API">应用内社交 REST API</a></li>
+                <li><a href="app_search_guide.html#搜索_API">应用内搜索 REST API</a></li>
+                <li><a href="oauth2_provider.html">LeanCloud 开放平台接入 OAuth2</a></li>
+              </ul>
+            </div>
+            <div class="section-content col-xs-12 col-sm-6 col-md-6">
+              <h3>最佳实践</h3>
+              <ul class="list-unstyled">
+                <li><a href="https://forum.leancloud.cn/t/postman-rest-api/8638" target="_blank">使用 Postman 调试 REST API</a></li>
+              </ul>
+              <h3>相关阅读</h3>
+              <ul class="list-unstyled">
+                <li><a href="faq_list.html">常见问题</a></li>
+              </ul>
+            </div>
+            <!-- end of .section-content --> 
+          </div>
+          <!-- end of .row(nested) --> 
+        </div>
+
+        <div class="section">
+          <h2 class="section-title">其他</h2>
+          <div class="row">
+            <div class="section-content col-xs-12 col-sm-4 col-md-4">
+              <h3>SDK API Docs</h3>
+              <ul class="list-unstyled">
+                {% include 'templates/include/_apidocs.html' %}
+              </ul>
+            </div>
+            <div class="section-content col-xs-12 col-sm-4 col-md-4">
+              <h3>开源组件</h3>
+              <ul class="list-unstyled">
+                <li><a href="demo.html">开源 Demo 一览</a>
+                <li> {% if node != 'qcloud' %}
+                <li><a href="status_system.html">应用内社交组件</a></li>
+                <li><a href="feedback.html">用户反馈组件</a></li>
+                <li><a href="sns.html">第三方社交账号登录组件</a></li>
+                {% endif %}
+                <li><a href="http://leancloud.sexy/" target="_blank">LeanCloud 开源社区</a></li>
+              </ul>
+            </div>
+            <div class="section-content col-xs-12 col-sm-4 col-md-4">
+              <h3>使用提示</h3>
+              <ul class="list-unstyled">
+                <li><a href="tool_tips.html">常见功能提示</a></li>
+                {% if node!='qcloud' %}
+                <li><a href="dashboard_guide.html">控制台使用说明</a></li>
+                {% else %}
+                <li><a href="dashboard_guide_tab.html">控制台使用说明</a></li>
+                {% endif %}
+                <li><a href="error_code.html">错误码详解</a></li>
+                <li><a href="faq_list.html">常见问题</a></li>
+              </ul>
+            </div>
+            <!-- end of .section-content --> 
+          </div>
+          <!-- end of .row(nested) --> 
+        </div>
+
       </div>
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>最佳实践</h3>
-        <ul class="list-unstyled">
-          <li><a href="weapp.html">在微信小程序中使用 LeanCloud</a></li>
-          <li><a href="https://zhuanlan.zhihu.com/p/24451674" target="_blank">在 LeanCloud 中使用 GraphQL</a></li>
-          <li><a href="https://blog.leancloud.cn/1723/" target="_blank">基于 LeanCloud 的一对多、多对多数据建模</a></li>
-          <li><a href="app_data_share.html">应用之间数据共享（Class 绑定）</a></li>
-          <li><a href="https://blog.leancloud.cn/3993/" target="_blank">使用 LeanCloud 与 React Native 构建原生应用</a></li>
-          <li><a href="https://forum.leancloud.cn/t/unity-leancloud/5095" target="_blank">在 Unity 中使用 LeanCloud</a></li>
-          <li><a href="https://blog.leancloud.cn/607/" target="_blank">自定义应用内用户重设密码和邮箱验证页面</a></li>
-        </ul>
-        <h3>相关阅读</h3>
-        <ul class="list-unstyled">
-          <li><a href="faq_list.html">常见问题</a></li>
-          <li><a href="error_code.html">错误码详解</a></li>
-          <li><a href="rest_api.html">数据存储 REST API</a></li>
-          <li><a href="cql_guide.html">CQL 查询语言详解</a></li>
-          <li><a href="app_search_guide.html">应用内搜索和 DeepLink 开发指南</a></li>
-          {%- if node!='qcloud' -%}
-          <li><a href="leaninsight_guide.html">离线数据分析使用指南</a></li>
-          {%- endif -%}
-        </ul>
-      </div>
-      <!-- end of .section-content -->
+      <!-- end of tabpanel: tab-docs -->
+  
+      <div role="tabpanel" class="tab-pane fade in" id="tab-opencourses"></div>
+      <!-- end of tabpanel: tab-opencourses --> 
+      <!-- <div role="tabpanel" class="tab-pane active" id="tab-other"></div> -->
 
     </div>
-    <!-- end of .row(nested) -->
-
   </div>
-  <!-- end of .section -->
 </div>
-<!-- end of .row(outermost) -->
-
-<div class="row">
-  <div class="section col-md-8 col-md-offset-2 col-xs-offset-0">
-    <h2 class="section-title">云引擎</h2>
-    <div class="row">
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>开发指南</h3>
-        <ul class="list-unstyled">
-          <li><a href="leanengine_overview.html">云引擎总览</a></li>
-          <li><a href="leanengine_quickstart.html">快速入门</a></li>
-          <li><a href="leanengine_plan.html">云引擎运行方案</a></li>
-          <li>
-            <span>网站托管开发指南</span>
-            <ul class="list-unstyled list-platform">
-              <li><a href="leanengine_webhosting_guide-python.html">Python</a></li>
-              <li><a href="leanengine_webhosting_guide-node.html">Node.js</a></li>
-              <li><a href="leanengine_webhosting_guide-php.html">PHP</a></li>
-              <li><a href="leanengine_webhosting_guide-java.html">Java</a></li>
-            </ul>
-          </li>
-          <li>
-            <span>云函数开发指南</span>
-            <ul class="list-unstyled list-platform">
-              <li><a href="leanengine_cloudfunction_guide-python.html">Python</a></li>
-              <li><a href="leanengine_cloudfunction_guide-node.html">Node.js</a></li>
-              <li><a href="leanengine_cloudfunction_guide-php.html">PHP</a></li>
-              <li><a href="leanengine_cloudfunction_guide-java.html">Java</a></li>
-            </ul>
-          </li>
-          <li><a href="leancache_guide.html">LeanCache 使用指南</a></li>
-          <li><a href="leanengine_cli.html">命令行工具 CLI 使用指南</a></li>
-        </ul>
-      </div>
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>最佳实践</h3>
-        <ul class="list-unstyled">
-          <li><a href="push-guide-leanengine.html">在云引擎中使用 Push 推送服务</a></li>
-
-          <li><a href="acl_guide_leanengine.html">在云引擎中使用 ACL</a></li>
-          <li><a href="https://blog.leancloud.cn/3437/" target="_blank">在云引擎中使用 WebSocket</a></li>
-          <li><a href="leanengine_examples.html">几个典型场景下的云引擎项目示例</a></li>
-          <li><a href="https://forum.leancloud.cn/t/leanengine/8426" target="_blank">云引擎最佳实践 &middot; 用户系统〖稀土〗</a></li>
-          <li><a href="https://blog.leancloud.cn/4133/" target="_blank">使用 New Relic 监控云引擎应用的性能</a></li>
-          <li><a href="https://zhuanlan.zhihu.com/p/21399155" target="_blank">快速开发聊天机器人</a></li>
-          <li><a href="webhosting_weixin.html">打造我的微信客服</a></li>
-          <li><a href="pay-beecloud.html">为网站加入收款功能</a></li>
-        </ul>
-        <h3>相关阅读</h3>
-        <ul class="list-unstyled">
-          <li><a href="faq_list.html">常见问题</a></li>
-          <li><a href="error_code.html">错误码详解</a></li>
-        </ul>
-      </div>
-      <!-- end of .section-content -->
-    </div>
-    <!-- end of .row(nested) -->
-
-  </div>
-  <!-- end of .section -->
-</div>
-<!-- end of .row(outermost) -->
-
-<div class="row">
-  <div class="section col-md-8 col-md-offset-2 col-xs-offset-0">
-    <h2 class="section-title">实时通信</h2>
-    <div class="row">
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>开发指南</h3>
-        <ul class="list-unstyled">
-          <li><span><a href="start.html">SDK 安装</a></span></li>
-          <li><a href="realtime_v2.html">实时通信服务总览</a></li>
-          <li>
-            <span>通信基础库开发指南</span>
-            <ul class="list-unstyled list-platform">
-              <li><a href="realtime_guide-android.html">Android</a></li>
-              <li><a href="realtime_guide-objc.html">Objective-C</a></li>
-              <li><a href="realtime_guide-js.html">JavaScript</a></li>
-              <li><a href="realtime_guide-dotnet.html">.Net/Unity3D</a></li>
-            </ul>
-          </li>
-          <li>
-            <span>UI 库 ChatKit 使用指南</span>
-            <ul class="list-unstyled list-platform">
-              <li><a href="chatkit-android.html">Android</a></li>
-              <li><a href="chatkit-ios.html">iOS</a></li>
-            </ul>
-          </li>
-  	  <li>
-            <span>直播＋聊天解决方案 LiveKit 使用指南</span>
-            <ul class="list-unstyled list-platform">
-              <li><a href="livekit-android.html">Android</a></li>
-              <li><a href="livekit-ios.html">iOS</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>最佳实践</h3>
-        <ul class="list-unstyled">
-          <li><a href="tutorials.html#为聊天接入表情云">为聊天接入表情云</a></li>
-          <li><a href="https://blog.leancloud.cn/5050/" target="_blank">使用 LeanCloud WebRTC 插件打造视频聊天应用</a></li>
-          <li><a href="realtime_v2.html#离线推送通知">如何为 iOS 聊天用户推送离线消息</a></li>
-        </ul>
-        <h3>相关阅读</h3>
-        <ul class="list-unstyled">
-          <li><a href="faq_list.html">常见问题</a></li>
-          <li><a href="error_code.html">错误码详解</a></li>
-          <li><a href="realtime_rest_api.html">实时通信 REST API</a></li>
-        </ul>
-      </div>
-      <!-- end of .section-content -->
-    </div>
-    <!-- end of .row(nested) -->
-
-  </div>
-  <!-- end of .section -->
-</div>
-<!-- end of .row(outermost) -->
-
-<div class="row">
-  <div class="section col-md-8 col-md-offset-2 col-xs-offset-0">
-    <h2 class="section-title">消息推送</h2>
-    <div class="row">
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>开发指南</h3>
-        <ul class="list-unstyled">
-          <li><span><a href="start.html">SDK 安装</a></span></li>
-          <li><a href="push_guide.html">消息推送服务总览</a></li>
-          <li>
-            <span>消息推送开发指南</span>
-            <ul class="list-unstyled list-platform">
-              <li><a href="android_push_guide.html">Android</a></li>
-              <li><a href="ios_push_guide.html">iOS</a></li>
-              <li><a href="leanstorage_guide-js.html#Push_通知">JavaScript</a></li>
-            </ul>
-          </li>
-          <li><a href="android_push_guide.html#混合推送">Android 混合推送使用指南</a></li>
-        </ul>
-      </div>
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>最佳实践</h3>
-        <ul class="list-unstyled">
-          <li><a href="ios_push_cert.html">iOS 推送证书设置指南</a></li>
-          <li><a href="push-guide-leanengine.html">在云引擎中使用 Push 推送服务</a></li>
-          <li><a href="https://blog.leancloud.cn/5014/" target="_blank">在 Cordova 项目中使用 LeanCloud 推送</a></li>
-        </ul>
-        <h3>相关阅读</h3>
-        <ul class="list-unstyled">
-          <li><a href="faq_list.html">常见问题</a></li>
-          <li><a href="error_code.html">错误码详解</a></li>
-          <li><a href="rest_api.html#Push_通知">消息推送 REST API</a></li>
-        </ul>
-      </div>
-      <!-- end of .section-content -->
-    </div>
-    <!-- end of .row(nested) -->
-
-  </div>
-  <!-- end of .section -->
-</div>
-<!-- end of .row(outermost) -->
-
-<div class="row">
-  <div class="section col-md-8 col-md-offset-2 col-xs-offset-0">
-    <h2 class="section-title">移动统计</h2>
-    <div class="row">
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>开发指南</h3>
-        <ul class="list-unstyled">
-          <li><span><a href="start.html">SDK 安装</a></span></li>
-          <li>
-            <span>统计服务使用指南</span>
-            <ul class="list-unstyled list-platform">
-              <li><a href="android_statistics.html">Android</a></li>
-              <li><a href="ios_statistics.html">Objective-C</a></li>
-              <li><a href="js_analytics.html">JavaScript</a></li>
-              <li><a href="unity_statistics.html">Unity3D</a></li>
-            </ul>
-          </li>
-          <li><a href="ios_crashreporting_guide.html">iOS/macOS 崩溃报告使用指南</a></li>
-        </ul>
-      </div>
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <!-- <h3>最佳实践</h3>
-        <ul class="list-unstyled">
-          <li><a href="user_groups.html">如何进行用户群分析</a></li>
-        </ul> -->
-        <h3>相关阅读</h3>
-        <ul class="list-unstyled">
-          <li><a href="faq_list.html">常见问题</a></li>
-          <li><a href="rest_api.html#统计数据_API">移动统计 API</a></li>
-        </ul>
-      </div>
-      <!-- end of .section-content -->
-    </div>
-    <!-- end of .row(nested) -->
-
-  </div>
-  <!-- end of .section -->
-</div>
-<!-- end of .row(outermost) -->
-
-<div class="row">
-  <div class="section col-md-8 col-md-offset-2 col-xs-offset-0">
-    <h2 class="section-title">
-      <span class="font-logo">REST API</span>
-    </h2>
-    <div class="row">
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>开发指南</h3>
-        <ul class="list-unstyled">
-          <li><a href="rest_api.html">数据存储 REST API</a></li>
-          <li><a href="realtime_rest_api.html">实时通信 REST API</a></li>
-          <li><a href="rest_api.html#Push_通知">消息推送 REST API</a></li>
-          <li><a href="rest_api.html#统计数据_API">移动统计 REST API</a></li>
-          {% if node != 'qcloud' and node != 'us' %}
-          <li><a href="rest_sms_api.html">短信验证 REST API</a></li>
-          <li>
-            <span>短信服务使用指南</span>
-            <ul class="list-unstyled list-platform">
-              <li><a href="sms_guide-android.html">Android</a></li>
-              <li><a href="sms_guide-objc.html">Objective-C</a></li>
-              <li><a href="sms_guide-js.html">JavaScript</a></li>
-            </ul>
-          </li>
-          {% endif %}
-          <li><a href="status_system.html#REST_API">应用内社交 REST API</a></li>
-          <li><a href="app_search_guide.html#搜索_API">应用内搜索 REST API</a></li>
-          <li><a href="oauth2_provider.html">LeanCloud 开放平台接入</a></li>
-        </ul>
-      </div>
-      <div class="section-content col-xs-12 col-sm-6 col-md-6">
-        <h3>最佳实践</h3>
-        <ul class="list-unstyled">
-          <li><a href="https://forum.leancloud.cn/t/postman-rest-api/8638" target="_blank">使用 Postman 调试 REST API</a></li>
-        </ul>
-        <h3>相关阅读</h3>
-        <ul class="list-unstyled">
-          <li><a href="faq_list.html">常见问题</a></li>
-        </ul>
-      </div>
-      <!-- end of .section-content -->
-    </div>
-    <!-- end of .row(nested) -->
-
-  </div>
-  <!-- end of .section -->
-</div>
-<!-- end of .row(outermost) -->
-
-<div class="row">
-  <div class="section col-md-8 col-md-offset-2 col-xs-offset-0">
-    <h2 class="section-title">其他</h2>
-    <div class="row">
-      <div class="section-content col-xs-12 col-sm-4 col-md-4">
-        <h3>SDK API Docs</h3>
-        <ul class="list-unstyled">
-        {% include 'templates/include/_apidocs.html' %}
-        </ul>
-      </div>
-      <div class="section-content col-xs-12 col-sm-4 col-md-4">
-        <h3>开源组件</h3>
-        <ul class="list-unstyled">
-          <li><a href="demo.html">开源 Demo 一览</a><li>
-          {% if node != 'qcloud' %}
-          <li><a href="status_system.html">应用内社交组件</a></li>
-          <li><a href="feedback.html">用户反馈组件</a></li>
-          <li><a href="sns.html">第三方社交账号登录组件</a></li>
-          {% endif %}
-          <li><a href="http://leancloud.sexy/" target="_blank">LeanCloud 开源社区</a></li>
-        </ul>
-      </div>
-      <div class="section-content col-xs-12 col-sm-4 col-md-4">
-        <h3>使用提示</h3>
-        <ul class="list-unstyled">
-          <li><a href="tool_tips.html">常见功能提示</a></li>
-          {% if node!='qcloud' %}
-          <li><a href="dashboard_guide.html">控制台使用说明</a></li>
-          {% else %}
-          <li><a href="dashboard_guide_tab.html">控制台使用说明</a></li>
-          {% endif %}
-          <li><a href="error_code.html">错误码详解</a></li>
-          <li><a href="faq_list.html">常见问题</a></li>
-        </ul>
-      </div>
-      <!-- end of .section-content -->
-    </div>
-    <!-- end of .row(nested) -->
-  </div>
-  <!-- end of .section -->
-</div>
-<!-- end of .row(outermost) -->
