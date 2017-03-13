@@ -102,8 +102,6 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 `createdAt`|{{dateType}}|该对象被创建的 UTC 时间
 `updatedAt` |{{dateType}}|该对象最后一次被修改的时间
 
-{{ data.localizedDates() }} 
-
 <dl>
   <dt>属性名</dt>
   <dd>也叫键或 key，必须是由字母、数字或下划线组成的字符串。<br/>自定义的属性名，{{ docs.alertInline("不能以双下划线 `__` 开头，也不能与以下系统保留字段和内置属性重名（不区分大小写）") }}。
@@ -163,10 +161,12 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 
 <dl>
   <dt>`{{createdAtName}}`</dt>
-  <dd>对象第一次保存到云端的时间戳。该时间一旦被云端创建，在之后的操作中就不会被修改。它采用国际标准时区 UTC，开发者可能需要根据客户端当前的时区做转化。</dd>
+  <dd>对象第一次保存到云端的时间戳。该时间一旦被云端创建，在之后的操作中就不会被修改。</dd>
   <dt>`{{updatedAtName}}`</dt>
   <dd>对象最后一次被修改（或最近一次被更新）的时间。</dd>
 </dl>
+
+{{ data.localizedDates() }} 
 {% endblock %}
 
 {% block text_refresh_object%}
