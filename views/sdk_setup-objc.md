@@ -1,3 +1,5 @@
+{% import "views/_helper.njk" as docs %}
+{% import "views/_parts.html" as include %}
 # Objective-C SDK 安装指南
 
 ## 自动安装
@@ -12,7 +14,9 @@ pod 'AVOSCloudIM'             # 实时通信模块
 pod 'AVOSCloudCrashReporting' # 错误报告模块
 ```
 
-<div class="callout callout-info">从 v3.4.0 开始，不再根据平台区分 pod 名称。同一个模块在所有平台上的 pod 名称相同。CocoaPods 会根据 Podfile 中的 platform 信息安装相应的源文件。带有平台后缀的旧的 pod，例如 AVOSCloud-watchOS、AVOSCloudIM-OSX 等不再更新。如果要更新到 v3.4.0 及以后的版本，请将 pod 的平台后缀去掉。</div>
+{% call docs.noteWrap() %}
+从 v3.4.0 开始，不再根据平台区分 pod 名称。同一个模块在所有平台上的 pod 名称相同。CocoaPods 会根据 Podfile 中的 platform 信息安装相应的源文件。带有平台后缀的旧的 pod，例如 AVOSCloud-watchOS、AVOSCloudIM-OSX 等不再更新。如果要更新到 v3.4.0 及以后的版本，请将 pod 的平台后缀去掉。
+{% endcall %}
 
 然后在项目根目录执行 `pod install` 命令，执行成功后，SDK 就集成到项目中了。
 
@@ -71,7 +75,7 @@ ruby build-framework.rb
 
 待命令执行完毕，在 `AVOS/AVOS.xcodeproj/build` 目录下找到编译好的 framework 文件。
 
-<div class="callout callout-danger">为了区分平台，frameworks 添加了平台后缀，例如 `AVOSCloud-iOS.framework`。请<u>先删掉平台后缀</u>再将其加入项目，否则会产生编译错误。</div>
+{{ docs.alert("为了区分平台，frameworks 添加了平台后缀，例如 `AVOSCloud-iOS.framework`。请<u>先删掉平台后缀</u>再将其加入项目，否则会产生编译错误。") }}
 
 ### 添加系统依赖
 
@@ -134,9 +138,10 @@ AVObject *testObject = [AVObject objectWithClassName:@"TestObject"];
 [testObject save];
 ```
 
-运行 app，一个类名为 `TestObject` 的新对象会被发送到 LeanCloud 并保存下来。当做完这一切，访问 {% if node=='qcloud' %}**控制台 > 存储 > 数据**{% else %}[控制台 > 存储 > 数据](/data.html?appid={{appid}}#/TestObject) 可以看到上面创建的 TestObject 的相关数据。
+运行 App，一个类名为 `TestObject` 的新对象会被发送到 LeanCloud 并保存下来。当做完这一切，访问 {% if node=='qcloud' %}**控制台 > 存储 > 数据**{% else %}[控制台 > 存储 > 数据](/data.html?appid={{appid}}#/TestObject) 可以看到上面创建的 TestObject 的相关数据。
 {% endif %}
 
+{{ include.debuglog('objc') }}
 
 ## 社交组件
 

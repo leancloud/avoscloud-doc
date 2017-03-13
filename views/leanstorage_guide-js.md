@@ -24,7 +24,6 @@
 {% set byteType= "Buffer" %}
 {% set acl_guide_url = "[JavaScript 权限管理使用指南](acl_guide-js.html)" %}
 {% set sms_guide_url = "[JavaScript 短信服务使用指南](sms_guide-js.html#注册验证)" %}
-{% set relation_guide_url = "[JavaScript 数据模型设计指南](relation_guide-js.html)" %}
 {% set inapp_search_guide_url = "[JavaScript 应用内搜索指南](app_search_guide.html)" %}
 {% set status_system_guide_url = "[JavaScript 应用内社交模块](status_system.html#JavaScript_SDK)" %}
 {% set sns_guide_url = "（JavaScript SDK 文档待补充）" %}
@@ -174,10 +173,7 @@ AV.Object.register(Todo);
   new AV.Query(Account).first().then(function(account) {
     var amount = -100;
     account.increment('balance', amount);
-    // 如果使用 JS SDK 2.0 以前的版本，save() 要加传 null 
-    // 作为第一个参数，否则会报错：
-    // return account.save(null, {
-    return account.save({
+    return account.save(null, {
       query: new AV.Query(Account).greaterThanOrEqualTo('balance', -amount),
       fetchWhenSave: true,
     });
@@ -197,7 +193,7 @@ AV.Object.register(Todo);
   var query = new AV.Query('Todo');
   query.get('57328ca079bc44005c2472d0').then(function (todo) {
     // 成功获得实例
-    // data 就是 id 为 57328ca079bc44005c2472d0 的 Todo 对象实例
+    // todo 就是 id 为 57328ca079bc44005c2472d0 的 Todo 对象实例
   }, function (error) {
     // 异常处理
   });
@@ -295,7 +291,7 @@ AV.Object.register(Todo);
   var todo = new Todo();
   todo.id = '5590cdfde4b00f7adb5860c8';
   todo.fetch({
-    include:'priority,location'
+    keys: 'priority,location'
   }).then(function (todo) {
     // 获取到本地
   }, function (error) {
@@ -498,11 +494,11 @@ AV.Object.register(Todo);
   var todos = [todo1, todo2, todo3];
   AV.Object.saveAll(todos).then(function () {
     var relation = todoFolder.relation('containedTodos'); // 创建 AV.Relation
-    todos.map(relation.add);
+    todos.map(relation.add.bind(relation));
     return todoFolder.save();// 保存到云端
   }).then(function(todoFolder) {
     // 保存成功
-  }), function (error) {
+  }, function (error) {
     // 异常处理
   });
 ```
@@ -783,7 +779,7 @@ file.save({
 
 {% block code_query_with_not_contains_keyword_using_regex %}
 <pre><code class="lang-js">  var query = new AV.Query('Todo');
-  var regExp = new RegExp('{{ storage.regex(true) | safe }}, 'i');
+  var regExp = new RegExp('{{ data.regex(true) | safe }}, 'i');
   query.matches('title', regExp);
 </code></pre>
 {% endblock %}
@@ -847,7 +843,7 @@ file.save({
 {% block code_create_tag_object %}
 
 ```js
-  var tag = new AV.Object('Todo');
+  var tag = new AV.Object('Tag');
   tag.set('name', '今日必做');
   tag.save();
 ```
@@ -857,13 +853,13 @@ file.save({
 {% block code_create_family_with_tag %}
 
 ```js
-  var tag1 = new AV.Object('Todo');
+  var tag1 = new AV.Object('Tag');
   tag1.set('name', '今日必做');
 
-  var tag2 = new AV.Object('Todo');
+  var tag2 = new AV.Object('Tag');
   tag2.set('name', '老婆吩咐');
 
-  var tag3 = new AV.Object('Todo');
+  var tag3 = new AV.Object('Tag');
   tag3.set('name', '十分重要');
 
   var tags = [tag1, tag2, tag3];
@@ -1146,7 +1142,7 @@ file.save({
 
 ```js
   var query = new AV.Query('Todo');
-  var point = new AV.GeoPoint('39.9', '116.4');
+  var point = new AV.GeoPoint(39.9, 116.4);
   query.withinKilometers('whereCreated', point, 2.0);
   query.find().then(function (results) {
       var nearbyTodos = results;
@@ -1164,7 +1160,7 @@ file.save({
 
 ```js
   var query = new AV.Query('Todo');
-  var point = new AV.GeoPoint('39.9', '116.4');
+  var point = new AV.GeoPoint(39.9, 116.4);
   query.withinKilometers('whereCreated', point, 2.0);
 ```
 
@@ -1253,7 +1249,7 @@ file.save({
 {% block code_send_verify_email %}
 
 ```js
-  AV.User.requestEmailVerfiy('abc@xyz.com').then(function (result) {
+  AV.User.requestEmailVerify('abc@xyz.com').then(function (result) {
       console.log(JSON.stringify(result));
   }, function (error) {
       console.log(JSON.stringify(error));

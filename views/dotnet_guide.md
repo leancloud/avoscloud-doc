@@ -19,9 +19,9 @@
 在 Nuget Package Manager 里面打开 Package Manager Console 执行如下命令行：
 
 ```sh
-PM> Install-Package LeanCloud.Core
+PM> Install-Package LeanCloud
 ```
-它会自动安装当前运行时的版本。相关依赖可以通过 [LeanCloud.Core on Nuget](https://www.nuget.org/packages/LeanCloud.Core/) 查询和了解。
+它会自动安装当前运行时的版本。相关依赖可以通过 [LeanCloud on Nuget](https://www.nuget.org/packages/LeanCloud/) 查询和了解。
 
 ### Unity Editor
 Unity 在 Github 上托管了发布 SDK 的服务，可以通过 [leancloud/unity-sdk](https://github.com/leancloud/unity-sdk/releases) 这里来获取最新的发布版本。
@@ -50,7 +50,7 @@ LeanCloud 的每一个账户都可以创建多个应用。同一个应用可以�
 ```
 
 #### Unity
-在 `LeanCloud.Core` 中有一个 `AVInitializeBehaviour` 把它拖拽到任意一个 `GameObject` 上然后根据下图填写 Application ID 以及 Application Key：
+在 `LeanCloud.Core.dll` 中有一个 `AVInitializeBehaviour` 把它拖拽到任意一个 `GameObject` 上然后根据下图填写 Application ID 以及 Application Key：
   
   ![unity-init](images/unity-init.png)
 

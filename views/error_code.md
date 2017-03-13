@@ -1,11 +1,11 @@
-{% import "views/_parts.html" as include %}
+{% import "views/_im.njk" as im %}
 # 错误码详解
 
 本文档列举出服务端和 SDK 返回的错误码及相应说明。其他由各 SDK 产生的错误码，请参考以下链接：
 
 * iOS 的 [AVConstants](/api-docs/iOS/docs/AVConstants.html)。
 * iOS SDK 在进行 WebSocket 通信过程中，相关的状态码请参考 [RFC 6455 · Status Codes]( http://tools.ietf.org/html/rfc6455#section-7.4)。
-* iOS v3.1.5 及之后的版本，与网络请求操作相关的错误码，比如 `28` 表示请求超时、`7` 表示连接服务器失败，请参考 [libcurl error codes](http://curl.haxx.se/libcurl/c/libcurl-errors.html)。
+* PHP SDK 中与网络请求操作相关的错误码，比如 `28` 表示请求超时、`7` 表示连接服务器失败，请参考 [libcurl error codes](http://curl.haxx.se/libcurl/c/libcurl-errors.html)。
 * Android 的 [AVException](/api-docs/android/index.html)。
 
 ## 0
@@ -21,7 +21,7 @@
 ## 100
 
 * 信息 - `The connection to the AVOS servers failed.`
-* 含义 - 无法建立 TCP 连接到 LeanCloud 服务器，通常是因为网络故障，或者我们服务器故障引起的，我们的服务器状态可以查看 [健康状态检查](http://status.leancloud.cn/)。
+* 含义 - 无法建立 TCP 连接到 LeanCloud 服务器，通常是因为网络故障，或者我们服务器故障引起的，我们的服务器状态可以查看 [健康状态检查](https://status.leancloud.cn/)。
 
 ## 101
 
@@ -158,18 +158,18 @@
 
 ## 140
 
-* 信息 - `Exceeded an application quota. Upgrade to resolve.`
-* 含义 - 超过应用的容量限额，请升级账户等级。
+* 信息 - `超过应用额度，请升级到商用版或联系我们处理。`
+* 含义 - 通常是因为超过开发版的使用额度，比如每天 3 万次 API 调用限制、云引擎域名绑定限制等，可以通过升级商用版解决。
 
 ## 141
 
-* 信息 - `Cloud Code script had an error.`
-* 含义 - 云引擎脚本编译或者运行报错。
+* 信息 - `LeanEngine request timeout.`
+* 含义 - 云引擎调用超时。错误信息里会有具体的 Class 和 Hook 名称。
 
 ## 142
 
 * 信息 - `Cloud Code validation failed.`
-* 含义 - 云引擎校验错误，通常是因为 `beforeSave`、`beforeDelete` 等函数返回 error。
+* 含义 - 云引擎校验错误，通常是因为 `beforeSave`、`beforeDelete` 等 hook 函数返回 error。
 
 ## 145
 
@@ -180,6 +180,11 @@
 
 * 信息 - `Fail to convert data to image.`
 * 含义 - 转换数据到图片失败。
+
+## 154
+
+* 信息 - `Exceeded an application threshold setting.`
+* 含义 - 超过应用阈值限制，例如短信消费超过每日最大上限等。通常可以在应用设置的服务阈值菜单修改上限值。
 
 ## 160
 
@@ -340,7 +345,7 @@
 ## 429
 
 * 信息 - `Too many requests.`
-* 含义 - 超过应用的流控限制。每个应用同一时刻最多可使用的工作线程数为 30，即同一时刻最多可以同时处理 30 个数据请求。通过 **控制台** > **存储** > **API 统计** > **API 性能** > **总览** 可以查看应用产生的请求统计数据，如平均工作线程、平均响应时间等。如有必要，可以联系我们来调高工作线程数。
+* 含义 - 超过应用的流控限制，即超过每个应用同一时刻最多可使用的工作线程数，或者说同一时刻最多可以同时处理的数据请求。通过 **控制台** > **存储** > **API 统计** > **API 性能** > **总览** 可以查看应用产生的请求统计数据，如平均工作线程、平均响应时间等。使用 LeanCloud [商用版或企业版](https://blog.leancloud.cn/5414/) 的用户，如有需要，可以联系我们来调整工作线程数。
 
 ## 430
 
@@ -415,4 +420,4 @@
 * 信息 - `Nonexistent query keys`
 * 含义 - 无效的查询或者排序字段，请确认查询或者排序的字段在表中存在。
 
-{{ include.imErrorCodes() }}
+{{ im.errorCodes() }}

@@ -5,12 +5,13 @@ angular.module('app').controller('WeappDomainsCtrl', [
     '$timeout',
     '$compile',
     function ($http, $scope, $rootScope, $timeout, $compile) {
-        $scope.domains = {};
+        $scope.domains = {
+          download: '正在获取配置'
+        };
 
         $scope.$watch('pageState.currentApp',function(){
           var currentApp = $rootScope.pageState.currentApp;
           console.log($rootScope.pageState.currentApp);
-          $scope.loading = true;
           if (currentApp) {
             AV.init({
               appId: currentApp.app_id,
@@ -29,7 +30,6 @@ angular.module('app').controller('WeappDomainsCtrl', [
               }
               console.log(downloadDomain);
               $scope.domains.download = downloadDomain;
-              $scope.loading = false;
               $scope.$digest();
               return file.destroy({
                 useMasterKey: true

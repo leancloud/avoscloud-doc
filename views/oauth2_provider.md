@@ -46,7 +46,7 @@ LeanCloud 目前只支持服务器的 Web 应用的授权流程（Server-side Fl
 `client_id`|必须|应用分配的 Client Key
 `response_type`|必须|目前只支持 [authorization_code](http://tools.ietf.org/html/draft-ietf-oauth-v2-25#section-4.1) 授权，因此请设置为 `code`。
 `scope`|必须|API 授权范围，空格隔开的字符串列表，目前支持的 API 权限详见下文。
-`redirect_uri`||用户授权成功或者失败后，回掉第三方应用的 URL，将会带上 `code`值或者错误信息。
+`redirect_uri`||用户授权成功或者失败后，回掉第三方应用的 URL，将会带上 `code` 值或者错误信息。
 `state`|可选|状态信息，建议加上，内部应包含随机并且唯一的值，当 `redirect_uri` 回调的时候会带上这个 state 返回，可以用来防止 CSRF 攻击。
 
 调用这个 API 后， LeanCloud 会为用户展示一个授权页面：
@@ -288,7 +288,8 @@ GET /clients/:uid/apps
     month_reqs:       18,
     app_domain:       "test",
     id:               11,
-     description:     "测试测试"
+    description:     "测试测试",
+    flags:            ["应用选项列表"]
   },
   {
     app_id:           "mxrb5nn3qz7drek0etojy5lh4yrwjnk485lqajnsgjwfxrb5",
@@ -302,7 +303,8 @@ GET /clients/:uid/apps
     month_reqs:       1927,
     app_domain:       null,
     id:               46,
-    description:      null
+    description:      null,
+    flags:            ["应用选项列表"]
   }
 ]
 ```
@@ -407,6 +409,39 @@ POST /clients/:uid/apps/:app_id/uploadiOSCertificate
 * 表单参数：`cert_file` 字段是表单里 iOS p12 证书文件；`prod` 属性，字符串值为 `prod` 或者 `dev`，分别表示上传的是 iOS 生产环境还是测试环境的推送证书。
 * 需要权限：`app:settings`
 * 返回结果：
+
+```json
+  {
+  }
+```
+
+### 修改应用选项
+
+```
+POST /clients/:uid/apps/:app_id/enableFlag
+
+POST /clients/:uid/apps/:app_id/disableFlag
+```
+
+`enableFlag` 和 `disableFlag` 分别对应启用和关闭选项。
+
+* 参数： `uid` 就是用户 id，令牌返回 `params` 值包含了 `uid`，也可以用字符串 `self` 指代授权用户。 `app_id` 为应用 Id。
+* 需要权限：`app:settings`
+* 请求内容：
+
+```json
+{
+  "flag": "应用选项名称，参见下文",
+}
+```
+
+目前支持的选项包括：
+
+* `disable-push-notification`：关闭推送功能
+* `disable-push-from-client`：关闭从客户端推送功能
+* `allow-mixed-push`：开启混合推送
+
+返回：
 
 ```json
   {

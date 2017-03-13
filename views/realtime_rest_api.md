@@ -1,4 +1,4 @@
-{% import "views/_parts.html" as include %}
+{% import "views/_im.njk" as im %}
 # 实时通信 REST API 使用指南
 
 ## 请求格式
@@ -147,7 +147,7 @@ appid:peerid:convid:nonce:signature_ts
 
 以上返回字段的说明如下：
 
-{{ include.imConversationProperties() }}
+{{ im.conversationProperties() }}
 
 ### 获取某个用户发送的聊天记录
 
@@ -216,7 +216,7 @@ curl -X PUT \
 
 这里传入的数据格式与消息记录返回的格式完全一致，只需要按照实际的需求修改相应的字段即可。需注意修改内容时切勿修改 JSON 中的 `msg-id` 和 `timestamp` 字段，这两个字段用于标识消息，如果修改会造成消息更新失败。
 
-{{ include.imConversationProperties() }}
+{{ im.conversationProperties() }}
 
 <div class="callout callout-info">此处仅能修改**服务器端**的消息记录，并不能修改**客户端缓存**的消息记录。</div>
 
@@ -291,6 +291,7 @@ conv_id | 必填 |发送到对话 id
 transient | 可选|是否为暂态消息（**由于向后兼容的考虑，默认为 true**，请注意设置这个值。）
 message | 必填 | 消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
 no_sync | 可选|默认情况下消息会被同步给在线的 from_peer 用户的客户端，设置为 true 禁用此功能。
+push_data | 可选 | 以消息附件方式设置本条消息的离线推送通知内容。如果目标接收者当前不在线，我们会按照该参数填写的内容来发离线推送。请参看 [离线推送通知](./realtime_v2.html#离线推送通知)
 
 ### 系统对话发送广播消息
 
@@ -329,7 +330,7 @@ Push 的格式与[推送 REST API 消息内容](push_guide.html#消息内容_Dat
 调用此 API 将删除已发布的广播消息。
 
 ```sh
-curl -X DETELE \
+curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -G \
@@ -380,6 +381,7 @@ curl -X POST \
 from_peer | 必填 | 字符串 | 消息的发件人 id
 conv_id | 必填 | 字符串 | 发送到对话 id，仅限于系统对话
 message | 必填 | 字符串 |消息内容（这里的消息内容的本质是字符串，但是我们对字符串内部的格式没有做限定，<br/>理论上开发者可以随意发送任意格式，只要大小不超过 5 KB 限制即可。）
+push | 可选 | 字符串或 JSON 对象 | 附带的推送内容，如果设置，**所有** iOS 和 Windows Phone 用户会收到这条推送通知。
 
 ### 订阅系统对话
 
@@ -697,7 +699,7 @@ ttl | 禁言的时间，秒数，最长 24 小时
 使用这个 API 可以在禁言期限到期之前，解除被禁言的 Client ID。
 
 ```sh
-curl -X DETELE \
+curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -G \

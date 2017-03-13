@@ -233,7 +233,7 @@ if (vc) {
 
 ### 导入 SDK
 
-首先下载 Android SNS SDK。进入 [Android SDK 下载页面](sdk_down.html)，勾选 **社交模块**，点击下载。将下载文件中的 jar 包添加到你项目的 libs 目录。如果不知道如何安装 SDK，请查看 [快速入门](./start.html)。
+首先下载 Android SNS SDK。进入 [Android SDK 下载页面](sdk_down.html)，勾选 **社交模块**，点击下载。将下载文件中的 jar 包添加到你项目的 libs 目录。如果不知道如何安装 SDK，请查看 [SDK 安装指南](start.html)。
 
 ### WebView 授权
 
@@ -328,7 +328,7 @@ public class MyActivity extends Activity {
 
 【QQ SNS】在腾讯 SNS 授权中，由于 QQ SDK 官方对于 WebView 授权的限制，导致在 WebView 中无法完成正常的授权过程，所以 QQ SNS 只支持 SSO 登录授权。我们也会持续跟进 QQ SDK 的更新进展，同时也为对你造成的不便感到抱歉。
 
-【QQ SSO】当使用 QQ SSO 登录时，请注意确保 AndroidManifest.xml 文件包含如下内容：
+【QQ SSO】当使用 QQ SSO 登录时，请注意确保 `AndroidManifest.xml` 文件包含如下内容：
 
 ```xml
 <activity android:name="com.tencent.tauth.AuthActivity"
@@ -338,6 +338,7 @@ public class MyActivity extends Activity {
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="你的 Tencent AppID"/>
     </intent-filter>
 </activity>
 ```
@@ -371,7 +372,7 @@ public class MyActivity extends Activity {
 
 你也可以将 SSO 登录后的账号信息与 LeanCloud 的 User 绑定。通过绑定，你可以在两种用户体系间建立联系，方便信息的共享和使用。
 
-如果你还未安装 LeanCloud Android SDK，请参阅 [快速入门](./start.html)。
+如果你还未安装 LeanCloud Android SDK，请参阅 [SDK 安装指南](start.html)。
 
 SSO 登录过程与上述代码都相同，你只需要在 callback 中进行关联即可，示例代码如下：
 

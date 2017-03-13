@@ -74,9 +74,21 @@ leanstorage_guide-objc.html#用户
 {% block send_sms_by_template %}
 ```objc
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    [dict setObject:@"月度周刊" forKey:@"service_name"];
     [dict setObject:@"7623432424540" forKey:@"order_id"];
-    [AVOSCloud requestSmsCodeWithPhoneNumber:@"18612345678" templateName:@"Notice_Welcome" variables:dict callback:^(BOOL succeeded, NSError *error) {
+    [AVOSCloud requestSmsCodeWithPhoneNumber:@"18612345678" templateName:@"Order_Notice" variables:dict callback:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            //操作成功
+        } else {
+            NSLog(@"%@", error);
+        }
+    }];
+```
+{% endblock %}
+
+{% block send_marketing_by_template %}
+```objc
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    [AVOSCloud requestSmsCodeWithPhoneNumber:@"18612345678" templateName:@"New_Series" variables:nil callback:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             //操作成功
         } else {

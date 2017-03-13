@@ -24,7 +24,6 @@
 {% set byteType= "NSData" %}
 {% set acl_guide_url = "[Objective-C 权限管理使用指南](acl_guide-objc.html)"%}
 {% set sms_guide_url = "[Objective-C 短信服务使用指南](sms_guide-objc.html#注册验证)" %}
-{% set relation_guide_url = "[Objective-C 数据模型设计指南](relation_guide-objc.html)" %}
 {% set inapp_search_guide_url = "[Objective-C 应用内搜索指南](app_search_guide.html)" %}
 {% set status_system_guide_url = "[Objective-C 应用内社交模块](status_system.html#iOS_SDK)" %}
 {% set sns_guide_url = "[Objective-C SNS 开发指南](sns.html#iOS_SNS_组件)" %}
@@ -741,7 +740,7 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 
 {% block code_query_with_not_contains_keyword_using_regex %}
 <pre><code class="lang-objc">  AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-  [query whereKey:@"title" matchesRegex:@"{{ storage.regex() | safe }}];    
+  [query whereKey:@"title" matchesRegex:@"{{ data.regex() | safe }}];    
 </code></pre>
 {% endblock %}
 <!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->

@@ -24,7 +24,6 @@
 {% set byteType= "byte[]" %}
 {% set acl_guide_url = "[Python SDK 权限管理使用指南](acl_guide-python.html)" %}
 {% set sms_guide_url = "（Python SDK 文档待补充）" %}
-{% set relation_guide_url = "[Python 数据模型设计指南](relation_guide-python.html)" %}
 {% set inapp_search_guide_url = "（Python SDK 暂不支持）" %}
 {% set status_system_guide_url = "（Python SDK 暂不支持）" %}
 {% set sns_guide_url = "（Python 文档待补充）" %}
@@ -134,10 +133,6 @@ supported_type.save()
 ```
 
 此外，dict 和 list 支持嵌套，这样在一个 `{{baseObjectName}}` 中就可以使用它们来储存更多的结构化数据。
-
-我们**不推荐**在 `{{baseObjectName}}` 中使用 `list` 类型来储存大块的二进制数据，比如图片或整个文件。**每个 `{{baseObjectName}}` 的大小都不应超过 128 KB**。如果需要储存更多的数据，建议使用 `leancloud.File`。更多细节可以阅读本文 [文件](#文件) 部分。
-
-若想了解更多有关 LeanStorage 如何解析处理数据的信息，请查看专题文档《[数据与安全](./data_security.html)》。
 {% endblock %}
 
 
@@ -717,7 +712,7 @@ query.contains('title', '李总')
 Todo = leancloud.Object.extend('Todo')
 query = Todo.query
 
-query.matched('title', '{{ storage.regex(true) | safe }})
+query.matched('title', '{{ data.regex(true) | safe }})
 </code></pre>
 {% endblock %}
 <!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
@@ -754,7 +749,10 @@ query = Todo.query
 reminder1 = datetime(2015, 11, 11, 8, 30, 00)
 reminder2 = datetime(2015, 11, 11, 9, 30, 00)
 
-# 如果精确查询数组元素，则用 equal_to 函数，并在第二个参数传入需要精确查询的数组
+query.contains_all('reminders', [reminder1, reminder2])
+
+# 如果精确查询数组元素（数组元素的数量和顺序必须匹配），则用 equal_to 函数
+# 不会匹配列值为 [reminder2, reminder1] 或 [reminder1, reminder2, reminder3] 的记录
 query.equal_to('reminders', [reminder1, reminder2])
 ```
 {% endblock %}

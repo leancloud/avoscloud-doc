@@ -226,9 +226,8 @@ AV.Cloud.afterDelete('Album', function(request) {
 {% block onVerifiedExample %}
 
 ```javascript
-AV.Cloud.onVerified('sms', function(request, response) {
+AV.Cloud.onVerified('sms', function(request) {
     console.log('onVerified: sms, user: ' + request.object);
-    response.success();
 });
 ```
 {% endblock %}

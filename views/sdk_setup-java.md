@@ -47,7 +47,7 @@ public static void main(String[] args){
 ``` xml
 	<dependencies>
 		<dependency>
-			<groupId>cn.leancloud.java</groupId>
+			<groupId>cn.leancloud</groupId>
 			<artifactId>java-sdk</artifactId>
 			<version>{{java_sdk_latest_version}}</version>
 		</dependency>
@@ -57,7 +57,7 @@ public static void main(String[] args){
 或者通过 gradle 配置相关依赖
 ```groovy
 dependencies {
-  compile("cn.leancloud.java:java-sdk:{{java_sdk_latest_version}}")
+  compile("cn.leancloud:java-sdk:{{java_sdk_latest_version}}")
 }
 ```
 {% endblock %}

@@ -105,10 +105,9 @@ leanstorage_guide-android.html#用户
 {% block send_sms_by_template %}
 ```java
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("service_name", "月度周刊");
         parameters.put("order_id", "7623432424540");
         AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(),
-                "Notice_Welcome",
+                "Order_Notice",
                 parameters,
                 new RequestMobileCodeCallback() {
                     @Override
@@ -122,7 +121,23 @@ leanstorage_guide-android.html#用户
                 });
 ```
 {% endblock %}
-
+{% block send_marketing_by_template %}
+```java
+        AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(),
+                "Notice_Welcome",
+                null,
+                new RequestMobileCodeCallback() {
+                    @Override
+                    public void done(AVException e) {
+                        if (e == null) {
+                            Toast.makeText(getBaseContext(), getString(R.string.msg_notice_sent), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e("Home.SendNotice", e.getMessage());
+                        }
+                    }
+                });
+```
+{% endblock %}
 {% block sms_demo %}
 ## Demo
 

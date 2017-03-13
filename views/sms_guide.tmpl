@@ -1,23 +1,5 @@
 {% import "views/_helper.njk" as docs %}
 {% import "views/_sms.njk" as sms %}
-{% set appid = '{{appid}}' %}
-{% set appkey = '{{appkey}}' %}
-{% set masterkey = '{{masterkey}}' %}
-{% set service_name = '{{service_name}}' %}
-{% set order_id = '{{order_id}}' %}
-{% set guest_name = '{{guest_name}}' %}
-{% set guest_phone = '{{guest_phone}}' %}
-{% set payment_create_time = '{{payment_create_time}}' %}
-{% set rent_price = '{{rent_price}}' %}
-{% set rent_addr = '{{rent_addr}}' %}
-{% set download_link = '{{download_link}}' %}
-{% set phase = '{{phase}}' %}
-{% set num = '{{num}}' %}
-{% set date = '{{date}}' %}
-{% set name = '{{name}}' %}
-{% set code = '{{code}}' %}
-{% set ttl = '{{ttl}}' %}
-{% set bill_number = '{{bill_number}}' %}
 
 # 短信服务使用指南 &middot; {{platform_name}}
 
@@ -89,7 +71,7 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 - 小于或等于 70 个字，按一条计费。
 - 大于 70 个字，按每 67 字一条计费。
 
-状态为「等待回执」的短信不会收费计入账单。每条短信的收费标准请参考 [官网价格方案](/pricing.html)。
+状态为「等待回执」的短信不会收费计入账单。每条短信的收费标准请参考 [官网价格方案](/pricing)。
 
 ### 短信购买
 
@@ -158,7 +140,7 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 一般来说，用户收到的注册验证短信内容为：
 
-<samp ng-non-bindable class="bubble">【AppName】欢迎使用 AppName 服务，您的验证码是 123456，请输入完成验证。</samp>
+{{ docs.bubble("【AppName】欢迎使用 AppName 服务，您的验证码是 123456，请输入完成验证。") }}
 
 其中【AppName】为短信签名，必须遵循 [短信签名规范](#短信签名) 中的长度及其他要求，否则会被短信供应商拒绝发送。
 
@@ -166,7 +148,7 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 通知类短信非常普遍，例如联通用户从外地进入上海可能会收到如下短信：
 
-<samp ng-non-bindable class="bubble">尊敬的用户：欢迎您来到上海，如需帮助请拨打客服热线10010或登录www.10010.com，优惠订购机票酒店请拨打116114。中国联通</samp>
+{{ docs.bubble("尊敬的用户：欢迎您来到上海，如需帮助请拨打客服热线10010或登录www.10010.com，优惠订购机票酒店请拨打116114。中国联通") }}
 
 这是一个来自通信运营商的通知类短信的规范案例。
 
@@ -184,6 +166,9 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 通过短信模板，我们可以自定义短信的内容。因为短信模板是由开发者自己定义的，因此为了确保平台的安全以及稳定，我们的短信模板由**专人进行审核**，只有**通过审核**之后，在接口里的调用才会成功发送。
 
+<!-- ### 短信签名 -->
+{{ sms.signature("### 短信签名") }}
+
 ### 创建模板
 
 创建模板的截图如下：
@@ -200,23 +185,58 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 ### 使用模板
 
-假设提交的短信模板名称为 `Notice_Welcome`，当模板通过审批后就可以调用了：
+#### 验证码类型
+验证码类型有两种，一种针对 _User 表中 `mobilePhoneNumber` 字段的验证，另一种是业务场景中敏感操作的验证，这两种都在上文中有介绍：[验证类](sms_guide-objc.html#验证类)
+
+#### 通知类型
+
+假设提交的短信模板的类型为「通知类」内容如下，
+
+{% call docs.bubbleWrap() -%}
+尊敬的的用户, 您的订单号：{{ docs.mustache("order_id") }} 正在派送，请保持手机畅通，我们的快递员随时可能与您联系，感谢您的订阅。 
+{% endcall %}
+
+并且模板名称为 `Order_Notice`，并且为这个模板关联了一个签名叫做「天天商城」，当模板通过审批后就可以调用如下代码发送这条通知类的短信：
 
 {% block send_sms_by_template %}{% endblock %}
 
+用户收到的内容如下：
+
+{% call docs.bubbleWrap() -%}
+【天天商城】尊敬的天天商城的用户, 您的订单号：7623432424540 正在派送，请保持手机畅通，我们的快递员随时可能与您联系，感谢您的订阅。
+{% endcall %}
+
+#### 营销类型
+
+假设提交短信的模板类型为 「营销类」内容如下：
+
+{% call docs.bubbleWrap() -%}
+服装专区，新款上市，奥斯卡红毯同款全面上架，详情可以访问天天商城唯一官方网址：www.buybuybuy.com。 
+{% endcall %}
+
+并且模板名称为 `New_Series`，同时也为这个模板关联了一个签名叫做「天天商城」，当模板通过审批后就可以调用如下代码发送这条营销类的短信：
+
+{% block send_marketing_by_template %}{% endblock %}
+
+用户收到的内容如下：
+
+{% call docs.bubbleWrap() -%}
+【天天商城】服装专区，新款上市，奥斯卡红毯同款全面上架，详情可以访问天天商城唯一官方网址：www.buybuybuy.com。
+{% endcall %}
 ### 模板变量
 
-模板可以使用<u>自定义变量</u>，如上例中的 <code ng-non-bindable>{{service_name}}</code> 和 <code ng-non-bindable>{{order_id}}</code>，在调用模板时以参数形式传入。模板语法遵循 [Handlebars](http://handlebarsjs.com) 规范。
+模板可以使用<u>自定义变量</u>，如上例中的 {{ docs.mustache("order_id") }}，在调用模板时以参数形式传入。模板语法遵循 [Handlebars](http://handlebarsjs.com) 规范。
 
 {{ docs.alert("自定义变量的值不允许包含实心括号 `【】` 。") }}
 
 模板还可以使用<u>系统预留变量</u>，在发送短信发送时，它们会被自动填充：
 
-<samp ng-non-bindable class="bubble">欢迎注册{{name}}应用！请使用验证码 {{code}} 来完成注册。该验证码将在{{ttl}}分钟后失效，请尽快使用。
-</samp>
+{% call docs.bubbleWrap() -%}
+欢迎注册{{ docs.mustache("name") }}应用！请使用验证码{{ docs.mustache("code") }}来完成注册。该验证码将在{{ docs.mustache("ttl") }}分钟后失效，请尽快使用。
+{% endcall %}
 
 - `name`：应用名称
-- `code`：验证码
+- `code`：验证码（通知类和营销类不会包含）
 - `ttl`：过期时间（默认为 10 分钟）
 
 ## 模板规范
@@ -225,38 +245,45 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 【正确范例】
 
-<samp ng-non-bindable class="bubble">XX房东您好，租客{{guest_name}}（手机号码：{{guest_phone}}）于{{payment_create_time}}向您支付了房租。租金为{{rent_price}}元，房屋地址在{{rent_addr}}。请关注微信公众号：XX租房。XX租房APP下载地址：http://example.com/download.html</samp>
-
-<!-- ### 短信签名 -->
-{{ sms.signature("### 短信签名") }}
+{% call docs.bubbleWrap() -%}
+XX房东您好，租客{{ docs.mustache("guest_name") }}（手机号码：{{ docs.mustache("guest_phone") }}）于{{ docs.mustache("payment_create_time") }}向您支付了房租。租金为{{ docs.mustache("rent_price") }}元，房屋地址在{{ docs.mustache("rent_addr") }}。请关注微信公众号：XX租房。XX租房APP下载地址：http://example.com/download.html
+{% endcall %}
 
 ### 链接
 
 短信中的 URL 不允许**全部**设置为变量，这样是为了确保安全，防止病毒以及不良信息的传播。错误范例如下：
 
-<samp ng-non-bindable class="bubble">尊敬的会员您好，您的订单（订单号{{orderId}}）已确认支付。5周年庆新品降价！大牌奢品上演底价争霸，低至2折！BV低至888元！阿玛尼低至199元！都彭长款钱包仅售499元！杜嘉班纳休闲鞋仅售1399元！周年庆家居专场千元封顶现已开启！{{download_link}} 客服电话400-881-6609 回复TD退订</samp>
+{% call docs.bubbleWrap() -%}
+尊敬的会员您好，您的订单（订单号{{ docs.mustache("orderId") }}）已确认支付。5周年庆新品降价！大牌奢品上演底价争霸，低至2折！BV低至888元！阿玛尼低至199元！都彭长款钱包仅售499元！杜嘉班纳休闲鞋仅售1399元！周年庆家居专场千元封顶现已开启！{{ docs.mustache("download_link") }} 客服电话400-881-6609 回复TD退订
+{% endcall %}
 
 {{ docs.alert("以上通知内容包含了象 <u>打折</u>、<u>降价</u>、<u>仅售</u> 这类营销推广的敏感词语，容易导致审批无法通过，因此请谨慎使用或改用 [营销类短信](#营销类)。") }}
 
 但是 URL 中可以包含变量，比如：
 
-<samp ng-non-bindable class="bubble">亲，您的宝贝已上路，快递信息可以通过以下链接查询：http://www.sf-express.com/cn/#search/{{bill_number}} </samp>
+{% call docs.bubbleWrap() -%}
+亲，您的宝贝已上路，快递信息可以通过以下链接查询：http://www.sf-express.com/cn/#search/{{ docs.mustache("bill_number") }} 
+{% endcall %}
 
 ### 通知类模板
 
 【正确范例】
 
-<samp ng-non-bindable class="bubble">恭喜您获得关注广州体彩微信送“排列三”的活动彩票，您的号码是第{{phase}}期的：{{num}}。开奖时间为{{date}}，请关注公众号—开奖信息查询中奖状态。</samp>
+{% call docs.bubbleWrap() -%}
+恭喜您获得关注广州体彩微信送“排列三”的活动彩票，您的号码是第{{ docs.mustache("phase") }}期的：{{ docs.mustache("num") }}。开奖时间为{{ docs.mustache("date") }}，请关注公众号—开奖信息查询中奖状态。
+{% endcall %}
 
 〖错误范例〗
 
-<samp ng-non-bindable class="bubble">您好，本条短信来自“XX旅游”~恭喜幸运的您，在本次“北海道机票”抽奖活动中，获得二等奖——定制星巴克杯! 请您关注我们的微信公众号（XX旅游：xx_app)，回复“中奖名单”即可查看详细中奖名单及领取须知！后续还会有更多活动惊喜，期待您的参与~官方网站：xxsite.cn</samp>
+{% call docs.bubbleWrap() -%}
+您好，本条短信来自“XX旅游”~恭喜幸运的您，在本次“北海道机票”抽奖活动中，获得二等奖——定制星巴克杯! 请您关注我们的微信公众号（XX旅游：xx_app)，回复“中奖名单”即可查看详细中奖名单及领取须知！后续还会有更多活动惊喜，期待您的参与~官方网站：xxsite.cn
+{% endcall %}
 
 错误点在于不可以在 [通知类](#通知类) 模板中发送带有抽奖中奖信息等营销信息的内容。解决方案是**在创建模板的时候选择 [营销类短信](#营销类)**。
 
 另外，有一些行业相关的敏感词语是不允许发送的，错误范例如下：
 
-<samp ng-non-bindable class="bubble">业主还在苦苦等待你的反馈，你认领的房源已超过1小时没有填写核实结果，请尽快登录XX客户端，在“业主--待处理”列表中进行填写。【XX网】</samp>
+{{ docs.bubble("业主还在苦苦等待你的反馈，你认领的房源已超过1小时没有填写核实结果，请尽快登录XX客户端，在“业主--待处理”列表中进行填写。【XX网】") }}
 
 {{ docs.alert("无论是通知类还是营销类短信，凡包含<u>房源</u>、<u>借贷</u>这类敏感词都被禁止发送。") }}
 
@@ -266,17 +293,22 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 【正确范例】
 
-<samp ng-non-bindable class="bubble">X牌新款春装已经上市，明星夫妻同款你值得拥有！详情请咨询当地X牌门市店，或者直接登录 www.xxxx.com 查询门市店，或者拨打 010-00000000，凭短信可享 9 折优惠。</samp>
+{{ docs.bubble("X牌新款春装已经上市，明星夫妻同款你值得拥有！详情请咨询当地X牌门市店，或者直接登录 www.xxxx.com 查询门市店，或者拨打 010-00000000，凭短信可享 9 折优惠。") }}
 
 #### 应用推广类
 
 【正确范例】
 
-<samp ng-non-bindable class="bubble">还在找寻同桌的 TA 吗？还在烦恼过年回家联系不上老同学吗？iOS 用户在 App Store 搜索：找同学，下载最新版的找同学，让同学聚会重温往日时光！</samp>
+{{ docs.bubble("还在找寻同桌的 TA 吗？还在烦恼过年回家联系不上老同学吗？iOS 用户在 App Store 搜索：找同学，下载最新版的找同学，让同学聚会重温往日时光！") }}
 
 注意：应用的下载链接必须是明文，不可设置为参数。
 
 {% block sms_demo %}{% endblock %}
+
+
+## 安全问题
+我们强烈要求开发者在用户界面上针对短信发送做操作限制，例如手机号的验证功能应该是客户端在 1 分钟之内只允许发送一次，尽管我们的服务端做了必要的安全措施来保证开发者的权益，但是不排除有被恶意攻击的可能性。
+因此我们强烈要求开发者一定要阅读如下链接里的内容：[短信轰炸](rest_sms_api.html#短信轰炸)
 
 ## 常见问题
 

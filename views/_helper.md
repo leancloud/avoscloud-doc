@@ -14,26 +14,26 @@
 {% raw %}{{ docs.note("callout-info 类型的提示。") }}{% endraw %}
 
 {% raw %}{{ docs.note("第一段文字。
-第二段文字，或使用 `notes()`") }}{% endraw %}
+第二段文字，或使用 `noteWrap()`") }}{% endraw %}
 ```
 效果：
 
 {{ docs.note("callout-info 类型的提示。") }}
 
 {{ docs.note("第一段文字。
-第二段文字，或使用 `notes()`") }}
+第二段文字，或使用 `noteWrap()`") }}
 
-### `notes()`
+### `noteWrap()`
 
-<pre><code class="lang-nunjucks">&lbrace;% call docs.notes() -%&rbrace;
-`notes()` 适合有分段、比较长的内容。 变量测试 {{ docs.mustache("time") }}
+<pre><code class="lang-nunjucks">&lbrace;% call docs.noteWrap() -%&rbrace;
+`noteWrap()` 适合有分段、比较长的内容。 变量测试 {{ docs.mustache("time") }}
 
 这是第二段。HTML Entity 测试（&amp;middot; &amp;quot;）
 &lbrace;%- endcall %&rbrace;
 </code></pre>
 
-{% call docs.notes() -%}
-`notes()` 适合有分段、比较长的内容。 变量测试 {{ docs.mustache("time") }}
+{% call docs.noteWrap() -%}
+`noteWrap()` 适合有分段、比较长的内容。 变量测试 {{ docs.mustache("time") }}
 
 这是第二段。HTML Entity 测试（&middot; &quot;）
 {%- endcall %}

@@ -1,5 +1,4 @@
 {% extends "./realtime_guide.tmpl" %}
-
 {% set platform_name = 'Objective-C' %}
 {% set segment_code = 'objc' %}
 {% set sdk_name = platform_name + " SDK" %}
@@ -7,7 +6,7 @@
 {% block demo %}
 * [ChatKit-OC](https://github.com/leancloud/ChatKit-OC)（推荐）
 * [LeanMessage](https://github.com/leancloud/LeanMessage-Demo)
-{% endblock %}
+  {% endblock %}
 
 {% block setup_init %}
 请参考详细的 [{{sdk_name}} 安装指南](sdk_setup-objc.html)。
@@ -69,6 +68,9 @@ self.client = [[AVIMClient alloc] init];
     }];
 }
 ```
+
+{{ im.clientOpenClose({open: "[AVIMClient openWithCallback:]", close: "[AVIMClient closeWithCallback:]"}) }}
+
 {% endblock %}
 
 {% block avoidCreatingDuplicateConversation %}{% endblock %}
@@ -522,27 +524,27 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
 {% block message_Properties_intro %}
 所有消息都是 `AVIMMessage` 的实例，每种消息实例都具备如下属性：
 
-属性|类型|描述
----|---|---
-content|NSString|消息内容
-clientId|NSString|指消息发送者的 clientId
-conversationId|NSString|消息所属对话 id
-messageId|NSString|消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 id
-sendTimestamp|int64_t|消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。
-deliveredTimestamp|int64_t|消息被对方接收到的时间。消息被接收之后，由 LeanCloud 云端赋予的全局的时间戳。
-status|AVIMMessageStatus 枚举|消息状态，有五种取值：<br/><br/>`AVIMMessageStatusNone`（未知）<br/>`AVIMMessageStatusSending`（发送中）<br/>`AVIMMessageStatusSent`（发送成功）<br/>`AVIMMessageStatusDelivered`（被接收）<br/>`AVIMMessageStatusFailed`（失败）
-ioType|AVIMMessageIOType 枚举|消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（发给当前用户）<br/>`AVIMMessageIOTypeOut`（由当前用户发出）
+| 属性                 | 类型                   | 描述                                       |
+| ------------------ | -------------------- | ---------------------------------------- |
+| content            | NSString             | 消息内容                                     |
+| clientId           | NSString             | 指消息发送者的 clientId                         |
+| conversationId     | NSString             | 消息所属对话 id                                |
+| messageId          | NSString             | 消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 id     |
+| sendTimestamp      | int64_t              | 消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。 |
+| deliveredTimestamp | int64_t              | 消息被对方接收到的时间。消息被接收之后，由 LeanCloud 云端赋予的全局的时间戳。 |
+| status             | AVIMMessageStatus 枚举 | 消息状态，有五种取值：<br/><br/>`AVIMMessageStatusNone`（未知）<br/>`AVIMMessageStatusSending`（发送中）<br/>`AVIMMessageStatusSent`（发送成功）<br/>`AVIMMessageStatusDelivered`（被接收）<br/>`AVIMMessageStatusFailed`（失败） |
+| ioType             | AVIMMessageIOType 枚举 | 消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（发给当前用户）<br/>`AVIMMessageIOTypeOut`（由当前用户发出） |
 
 我们为每一种富媒体消息定义了一个消息类型，实时通信 SDK 自身使用的类型是负数（如下面列表所示），所有正数留给开发者自定义扩展类型使用，0 作为「没有类型」被保留起来。
 
-消息 | 类型
---- | ---
-文本消息|-1
-图像消息|-2
-音频消息|-3
-视频消息|-4
-位置消息|-5
-文件消息|-6
+| 消息   | 类型   |
+| ---- | ---- |
+| 文本消息 | -1   |
+| 图像消息 | -2   |
+| 音频消息 | -3   |
+| 视频消息 | -4   |
+| 位置消息 | -5   |
+| 文件消息 | -6   |
 
 <!-- >TODO: 举例说明如何使用这样的数字类型 -->
 {% endblock %}
@@ -611,7 +613,7 @@ ioType|AVIMMessageIOType 枚举|消息传输方向，有两种取值：<br/><br/
 
 * 实现 `AVIMTypedMessageSubclassing` 协议；
 * 子类将自身类型进行注册，一般可在子类的 `+load` 方法或者 UIApplication 的 `-application:didFinishLaunchingWithOptions:` 方法里面调用 `[YourClass registerSubclass]`。
-{% endblock %}
+  {% endblock %}
 
 {% block messagePolicy_received_method %} `conversation:didReceiveCommonMessage:` {% endblock %}
 
@@ -649,7 +651,7 @@ ioType|AVIMMessageIOType 枚举|消息传输方向，有两种取值：<br/><br/
 {% set message_priority_high_varname    = 'AVIMMessagePriorityHigh' %}
 {% set message_priority_normal_varname  = 'AVIMMessagePriorityNormal' %}
 {% set message_priority_low_varname     = 'AVIMMessagePriorityLow' %}
- 
+
 {% block message_option_priority %}
 
 ```objc
@@ -729,10 +731,10 @@ option.pushData = @{@"alert" : @"您有一条未读消息", @"sound" : @"message
     1. `AVIMConversationOptionTransient`：聊天室，具体可以参见[创建聊天室](#创建聊天室)；
     2. `AVIMConversationOptionNone`：普通对话；
     3. `AVIMConversationOptionUnique`：根据成员（clientIds）创建原子对话。如果没有这个选项，服务端会为相同的 clientIds 创建新的对话。clientIds 即 \_Conversation 表的 **m** 字段。
-    
+
   其中，`AVIMConversationOptionNone` 和 `AVIMConversationOptionUnique` 可以使用 `|` 来组合使用，其他选项则不允许。
 * **callback** － 结果回调，在操作结束之后调用，通知开发者成功与否。
-{% endblock %}
+  {% endblock %}
 
 {% block event_memberJoin %} `membersAdded` {% endblock %}
 
@@ -841,10 +843,10 @@ option.pushData = @{@"alert" : @"您有一条未读消息", @"sound" : @"message
 
 Tom 自身主动加入对话之后，相关方收到通知的时序是这样的：
 
-No.|加入者|其他人
----|---|---
-1|发出请求 join|  
-2||收到 membersAdded 通知
+| No.  | 加入者       | 其他人                |
+| ---- | --------- | ------------------ |
+| 1    | 发出请求 join |                    |
+| 2    |           | 收到 membersAdded 通知 |
 
 {% endblock %}
 
@@ -896,11 +898,11 @@ No.|加入者|其他人
 {% block conversation_invite_events %}
 邀请成功以后，相关方收到通知的时序是这样的：
 
-No.|邀请者|被邀请者|其他人
----|---|---|---
-1|发出请求 addMembers| | 
-2| |收到 invitedByClientId 通知| 
-3|收到 membersAdded 通知|收到 membersAdded 通知 | 收到 membersAdded 通知
+| No.  | 邀请者                | 被邀请者                    | 其他人                |
+| ---- | ------------------ | ----------------------- | ------------------ |
+| 1    | 发出请求 addMembers    |                         |                    |
+| 2    |                    | 收到 invitedByClientId 通知 |                    |
+| 3    | 收到 membersAdded 通知 | 收到 membersAdded 通知      | 收到 membersAdded 通知 |
 {% endblock %}
 
 {% block conversation_left %}
@@ -945,10 +947,10 @@ No.|邀请者|被邀请者|其他人
 
 Tom 自身主动退出对话之后，相关方收到通知的时序是这样的：
 
-No.|退出者|其他人
----|---|---
-1|发出请求 quit|  
-2||收到 membersRemoved 通知
+| No.  | 退出者       | 其他人                  |
+| ---- | --------- | -------------------- |
+| 1    | 发出请求 quit |                      |
+| 2    |           | 收到 membersRemoved 通知 |
 
 {% endblock %}
 
@@ -995,11 +997,11 @@ No.|退出者|其他人
 {% block conversation_kick_events %}
 踢人时，相关方收到通知的时序如下：
 
-No.|踢人者|被踢者|其他人
----|---|---|---
-1|发出请求 removeMembers| | 
-2| |收到 kickedByClientId 通知| 
-3|收到 membersRemoved 通知| | 收到 membersRemoved 通知
+| No.  | 踢人者                  | 被踢者                    | 其他人                  |
+| ---- | -------------------- | ---------------------- | -------------------- |
+| 1    | 发出请求 removeMembers   |                        |                      |
+| 2    |                      | 收到 kickedByClientId 通知 |                      |
+| 3    | 收到 membersRemoved 通知 |                        | 收到 membersRemoved 通知 |
 {% endblock %}
 
 {% block conversation_countMember_method %}`conversation:countMembersWithCallback:`{% endblock %}
@@ -1026,14 +1028,14 @@ No.|踢人者|被踢者|其他人
 {% endblock %}
 
 {% block table_conversation_attributes_intro %}
-AVIMConversation 属性名 | _Conversation 字段|含义
---- | ------------ | -------------
-`conversationId`| `objectId` |全局唯一的 Id
-`name` |  `name` |成员共享的统一的名字
-`members`|`m` |成员列表
-`creator` | `c` |对话创建者
-`attributes`| `attr`|自定义属性
-`transient`|`tr`|是否为聊天室（暂态对话）
+| AVIMConversation 属性名 | _Conversation 字段 | 含义           |
+| -------------------- | ---------------- | ------------ |
+| `conversationId`     | `objectId`       | 全局唯一的 Id     |
+| `name`               | `name`           | 成员共享的统一的名字   |
+| `members`            | `m`              | 成员列表         |
+| `creator`            | `c`              | 对话创建者        |
+| `attributes`         | `attr`           | 自定义属性        |
+| `transient`          | `tr`             | 是否为聊天室（暂态对话） |
 {% endblock %}
 
 {% block conversation_name %}
@@ -1240,14 +1242,14 @@ NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
 {% endblock %}
 
 {% block table_conservation_query_than %}
-逻辑操作 | AVIMConversationQuery 方法|
----|---
-等于 | `equalTo`
-不等于 |  `notEqualTo` 
-大于 | `greaterThan`
-大于等于 | `greaterThanOrEqualTo`
-小于 | `lessThanOrEqualTo`
-小于等于 | `lessThanOrEqualTo`
+| 逻辑操作 | AVIMConversationQuery 方法 |      |
+| ---- | ------------------------ | ---- |
+| 等于   | `equalTo`                |      |
+| 不等于  | `notEqualTo`             |      |
+| 大于   | `greaterThan`            |      |
+| 大于等于 | `greaterThanOrEqualTo`   |      |
+| 小于   | `lessThanOrEqualTo`      |      |
+| 小于等于 | `lessThanOrEqualTo`      |      |
 {% endblock %}
 
 {% block conversation_query_equalTo %}
@@ -1393,6 +1395,67 @@ NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
     }];
 }
 ```
+{% endblock %}
+
+{% block conversation_query_all_include_system %}
+```objc
+- (void)tomQueryAllConversationsIncludeSystem {
+    // Tom 创建了一个 client，用自己的名字作为 clientId
+    self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+
+    // Tom 打开 client
+    [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
+        // 查询 Tom 参与过的对话，即 m = Tom
+        AVIMConversationQuery *query1 = [[AVIMClient defaultClient] conversationQuery];
+        [query1 whereKey:@"m" equalTo:@"Tom"];
+
+        // 查询系统对话，即 sys = true
+        AVIMConversationQuery *query2 = [[AVIMClient defaultClient] conversationQuery];
+        [query2 whereKey:@"sys" equalTo:@(YES)];
+
+        // 将以上两个查询组合成一个查询
+        AVIMConversationQuery *query = [AVIMConversationQuery orQueryWithSubqueries:@[ query1, query2 ]];
+
+        // 执行查询
+        [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
+            NSLog(@"找到 %ld 个对话！", [objects count]);
+        }];
+    }];
+}
+```
+{% endblock %}
+
+{% block conversation_query_active_between %}
+```objc
+- (void)tomQueryActiveConversationsBetween {
+    // Tom 创建了一个 client，用自己的名字作为 clientId
+    self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+
+    // Tom 打开 client
+    [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+
+        // 查询最后一条消息的时间大于 2017-01-01 的对话
+        AVIMConversationQuery *query1 = [[AVIMClient defaultClient] conversationQuery];
+        [query1 whereKey:@"lm" greaterThan:[dateFormatter dateFromString:@"2017-01-01"]];
+
+        // 查询最后一条消息的时间小于 2017-02-01 的对话
+        AVIMConversationQuery *query2 = [[AVIMClient defaultClient] conversationQuery];
+        [query1 whereKey:@"lm" lessThan:[dateFormatter dateFromString:@"2017-02-01"]];
+
+        // 将以上两个查询组合成一个查询
+        AVIMConversationQuery *query = [AVIMConversationQuery andQueryWithSubqueries:@[ query1, query2 ]];
+
+        // 执行查询
+        [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
+            NSLog(@"找到 %ld 个对话！", [objects count]);
+        }];
+    }];
+}
+```
+
+对于**同一属性**的区间值查询要采用 `andQueryWithSubqueries:@[ query1, query2 ]` 的方式来提交。
 {% endblock %}
 
 {% block conversation_query_count %}

@@ -1,5 +1,6 @@
-{% set masterkey = '{{masterkey}}' %}
 {% import "views/_parts.html" as include %}
+{% import "views/_helper.njk" as docs %}
+{% import "views/_data.njk" as data %}
 # REST API 使用详解
 
 REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 进行交互，你可以使用 REST API 做很多事情，比如：
@@ -22,7 +23,7 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
 
 ### 在线测试
 
-[API 在线测试工具](https://leancloud.cn/apionline/)，目前仅支持调试**中国节点**下的应用。
+[API 在线测试工具](/dashboard/apionline/index.html)，目前仅支持调试**中国节点**下的应用。
 
 ### 对象
 
@@ -605,7 +606,7 @@ https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 
 ### 创建对象
 
-为了在 LeanCloud 上创建一个新的对象，应该向 class 的 URL 发送一个 **POST** 请求，其中应该包含对象本身。例如，要创建如上所说的对象：
+为了在 LeanCloud 上创建一个新的对象，应该向 class 的 URL 发送一个 **POST** 请求，其中应该包含对象本身。{{ docs.alertInline(data.classNameConvention("class 的名称")) }}例如，要创建如上所说的对象：
 
 ```sh
 curl -X POST \
@@ -632,7 +633,7 @@ Location: https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 }
 ```
 
-如果希望返回新创建的对象的完整信息，可以在 URL 里加上 `fetchWhenSave` 选项，并且设置为 true:
+如果希望返回新创建的对象的完整信息，可以在 URL 里加上 `fetchWhenSave` 选项，并且设置为 true：
 
 ```sh
 curl -X POST \
@@ -645,7 +646,7 @@ curl -X POST \
 
 fetchWhenSave 选项对更新对象也同样有效，但是它仅返回已被更新的字段，而非全部字段。
 
->注意：**我们对单个 class 的记录数目没有做限制，但是单个应用的总 class 数目限定为 500 个以内**。也就是说单个应用里面，对象的类别不超过 500 个，但是单个类别下的实例数量则没有限制。
+{{ docs.note("**每个应用最多可以创建 500 个 class**，但每个 class 中的记录数量没有限制。") }}
 
 ### 获取对象
 
@@ -861,7 +862,7 @@ URL 中 where 参数的值是 `%7B%22clicks%22%3A%200%7D`，其实这是 `{"clic
 
 因为更新和删除都是基于单个对象的，都要求提供 objectId，但是有时候用户需要高效地遍历一个 Class，做一些批量的更新或者删除的操作。
 
-通常情况下，如果 Class 的数量规模不大，使用查询加上 `skip` 和 `limit` 分页配合排序 `order` 就可以遍历所有数据。但是当 Class 数量规模比较大的时候， `skip` 的效率就非常低了（这跟 MySQL 等关系数据库的原因一样，深度翻页比较慢），因此我们提供了 `scan` 协议，可以按照特定字段排序来高效地遍历一张表，默认这个字段是 `createdAt`，也就是按照创建时间排序，同时支持设置 `limit`  限定每一批次的返回数量：
+通常情况下，如果 Class 的数量规模不大，使用查询加上 `skip` 和 `limit` 分页配合排序 `order` 就可以遍历所有数据。但是当 Class 数量规模比较大的时候， `skip` 的效率就非常低了（这跟 MySQL 等关系数据库的原因一样，深度翻页比较慢），因此我们提供了 `scan` 协议，可以按照特定字段排序来高效地遍历一张表，默认这个字段是 `objectId` 升序，同时支持设置 `limit`  限定每一批次的返回数量，默认 limit 为 100，最大可设置为 1000：
 
 ```sh
 curl -X GET \
@@ -918,7 +919,7 @@ curl -X GET \
    https://{{host}}/1.1/scan/classes/Article
 ```
 
-默认情况下系统按 `createdAt` 排序，增加 `scan_key` 参数可以使用其他字段来排序：
+默认情况下系统按 `objectId` 升序排序，增加 `scan_key` 参数可以使用其他字段来排序：
 
 ```sh
 curl -X GET \
@@ -929,6 +930,10 @@ curl -X GET \
    --data-urlencode 'scan_key=score' \
    https://{{host}}/1.1/scan/classes/Article
 ```
+
+scan_key 也支持倒序，前面加个减号即可，例如 `-score`。
+
+**自定义的 scan_key 需要满足严格单调递增的条件，并且 scan_key 不可作为 where 查询条件存在。**
 
 ### 批量操作
 
@@ -966,27 +971,27 @@ curl -X POST \
 
 我们对每一批次中所包含的操作数量（requests 数组中的元素个数）暂不设限，但考虑到云端对每次请求的 body 内容大小有 20 MB 的限制，因此建议将每一批次的操作数量控制在 100 以内。
 
-批量操作的响应会是一个列表，列表的元素数量和顺序与给定的操作请求是一致的。每一个在列表中的元素都有一个字段是 success 或者 error。
+批量操作的响应 body 会是一个列表，列表的元素数量和顺序与给定的操作请求是一致的。每一个在列表中的元素都有一个字段是 success 或者 error。
 
-**success** 的值是通常是进行其他 REST 操作会返回的值：
-
-```json
+```
 [
-  {"success":{"createdAt":"2015-07-13T10:43:00.282Z","objectId":"55a39634e4b0ed48f0c1845b"}},
-  {"success":{"createdAt":"2015-07-13T10:43:00.293Z","objectId":"55a39634e4b0ed48f0c1845c"}}
+  {
+    "error": {
+      "code": 1,
+      "error": "Could not find object by id '558e20cbe4b060308e3eb36c' for class 'Post'."
+    }
+  },
+  {
+    "success": {
+      "updatedAt": "2017-02-22T06:35:29.419Z",
+      "objectId": "58ad2e850ce463006b217888"
+    }
+  }
 ]
 ```
 
-**error** 的值会是一个对象有返回码和 error 字符串：
-
-```json
-{
-  "error": {
-    "code": 101,
-    "error": "object not found for delete"
-  }
-}
-```
+需要注意，即使一个 batch 请求返回的响应码为 200，这仅代表服务端已收到并处理了这个请求，但并不说明该 
+batch 中的所有操作都成功完成，只有当返回 body 的列表中**不存在 error 元素**，开发者才可以认为所有操作都已成功完成。
 
 在 batch 操作中 update 和 delete 同样是有效的：
 
@@ -1109,6 +1114,8 @@ curl -X GET \
   ]
 }
 ```
+
+{{ data.localizedDates() }} 
 
 ### 查询约束
 
@@ -1495,6 +1502,8 @@ curl -X GET \
   https://{{host}}/1.1/cloudQuery
 ```
 
+{{ data.innerQueryLimitation("#### 子查询的局限") }}
+
 ## 用户
 
 不仅在移动应用上，还在其他系统中，很多应用都有一个统一的登录流程。通过 REST API 访问用户的账户让你可以在 LeanCloud 上简单实现这一功能。
@@ -1866,7 +1875,7 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
   }
 ```
 
-同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上『允许缺失值』选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。如果 _User 表的记录数量超过了 1 万条而无法自行创建该索引，请联系我们来帮助创建。
+{# 同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上 **允许缺失值** 选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。#}要保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上，就需要为 `_User` 表中的 `authData.第三方平台名称.uid` 建立唯一索引；另外当 `_User` 表的记录数量超过了 1 万条，用户也无法自行创建该索引。这两种操作都需要提交工单或联系 <support@leancloud.rocks> 来创建。
 
 #### 注册和登录
 
@@ -3103,6 +3112,8 @@ curl -X GET \
 
 
 ## 其他 API
+
+### 服务器时间
 
 获取服务端当前日期时间可以通过 `/date` API:
 

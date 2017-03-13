@@ -1,6 +1,6 @@
 #  数据存储开发指南 &middot; Unity
 
-如果还没有安装 LeanCloud Unity SDK，请阅读 [快速入门](./start.html) 来获得该 SDK。我们的 SDK 兼容 Unity 4.2 及更高版本，支持使用 Unity 开发的 iOS、Android、Windows Phone 8、Windows Store、Windows Desktop，以及网页游戏。
+如果还没有安装 LeanCloud Unity SDK，请阅读 [SDK 下载](./sdk_down.html) 来获得该 SDK。我们的 SDK 兼容 Unity 5 及更高版本，支持使用 Unity 开发的 iOS、Android、Windows Phone 8、Windows Store、Windows Desktop，以及网页游戏。
 
 如果希望从演示项目中学习，请访问我们的 GitHub 资源库，下载 [Unity SDK Demos](https://github.com/leancloud/unity-sdk-demos) 。
 
@@ -12,7 +12,7 @@ LeanCloud Unity SDK 在很多重要的功能点上都采用了微软提供的 [�
 
 ## 快速入门
 
-建议在阅读本文之前，先阅读 [快速入门](./start.html)，了解如何配置和使用 LeanCloud。
+建议在阅读本文之前，先阅读 [SDK 安装指南](start.html)，了解如何配置和使用 LeanCloud。
 
 ## 应用
 
@@ -22,7 +22,14 @@ LeanCloud 的每一个账户都可以创建多个应用。同一个应用可分�
 
 ### 初始化
 
-目前 Unity 的初始化只推荐用 `GameObject` 绑定 `AVOSCloudInitializeBehaviour` 脚本的方法，不推荐使用显式调用 `AVClient.Initialize` 的方法。
+在 `LeanCloud.Core.dll` 中有一个 `AVInitializeBehaviour` 把它拖拽到任意一个 `GameObject` 上然后根据下图填写 Application ID 以及 Application Key：
+  
+  ![unity-init](images/unity-init.png)
+
+
+默认中国大陆节点对应的 `Region` 是 `Public_CN`,如果是北美节点请选择 `Public_US`。
+
+目前 Unity 的初始化只推荐用 `GameObject` 绑定 `AVInitializeBehaviour` 脚本的方法，不推荐使用显式调用 `AVClient.Initialize` 的方法。
 
 ## 对象
 
@@ -1220,19 +1227,16 @@ var task = push.SendAsync();
 
 1. 基于 Unity 自身的 WWW 类发送 Http 请求的限制，单个请求的大小不能超过 2MB，所以在使用 Unity SDK 时，开发者需要注意存储数据，构建查询等操作时，需要做到简洁高效。
 2. Unity 中请将 `Optimization` 中的 `Stripping Level` 设置为 `Disabled`。
-3. 从官网上下载的 SDK ，在 Unity 4.3 以后的版本都需要重命名，把版本号去掉，例如下载的文件叫做 `AVOSCloud.Unity-v1.1.5.dll`，请重命名为 `AVOSCloud.Unity.dll`，否则会出现引入脚本失败的错误。
-4. Unity 自从升级到 5.0 之后就会出现一个 iOS 上访问 HTTPS 请求时的 SSL 证书访问错误：NSURLErrorDomain error -1012.
-解决方案是：
-  在 Unity 构建完成 iOS 项目之后，使用 XCode 打开项目，找到 Classes/Unity/WWWConnection.mm 文件
-  找到这个方法：
-  
-  ```
-  (void)connection:(NSURLConnection*)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge*)challenge
-   ```
- 把该方法按照如下代码修改即可：
- 
- ```
-- (void)connection:(NSURLConnection*)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge*)challenge
+3. 从官网上下载的 SDK，在 Unity 4.3 以后的版本都需要重命名，把版本号去掉，例如下载的文件叫做 `AVOSCloud.Unity-v1.1.5.dll`，请重命名为 `AVOSCloud.Unity.dll`，否则会出现引入脚本失败的错误。
+4. Unity 自从升级到 5.0 之后就会出现一个 iOS 上访问 HTTPS 请求时的 SSL 证书访问错误：**NSURLErrorDomain error -1012**。解决方案是：在 Unity 构建完成 iOS 项目之后，使用 XCode 打开项目，找到 `Classes/Unity/WWWConnection.mm` 文件，找到这个方法：
+
+  ```objc
+  -(void)connection:(NSURLConnection*)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge*)challenge
+```
+  把该方法按照如下代码修改即可：
+
+  ```objc
+-(void)connection:(NSURLConnection*)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge*)challenge
 {
     if ([[challenge protectionSpace] authenticationMethod] == NSURLAuthenticationMethodServerTrust) {
         [challenge.sender performDefaultHandlingForAuthenticationChallenge:challenge];
@@ -1261,5 +1265,6 @@ var task = push.SendAsync();
     }
 }
 ```
-目前 Unity 官方还在修复此问题，截止到 V5.0.1f1 该问题一直存在，因此所有升级到 Unity 5.0 的开发者都需要如此修改，才能确保 iOS 正确运行。
+
+  目前 Unity 官方还在修复此问题，截止到 V5.0.1f1 该问题一直存在，因此所有升级到 Unity 5.0 的开发者都需要如此修改，才能确保 iOS 正确运行。
 

@@ -190,15 +190,33 @@ curl -X PUT \
 
 通过 `POST /1.1/push` 来推送消息给设备，`push` 接口支持下列属性：
 
-名称|描述
----|---
-channels|推送给哪些频道，将作为条件加入 where 对象。
-data|推送的内容数据，JSON 对象，请参考 [消息内容](#消息内容_Data)。
-expiration_interval|消息过期的相对时间，从调用 API 的时间开始算起，单位是秒。
-expiration_time|消息过期的绝对日期时间
-prod|**仅对 iOS 有效**。设置使用开发证书（**dev**）还是生产证书（**prod**）。当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
-push_time|定期推送时间
-where|检索 _Installation 表使用的查询条件，JSON 对象。
+名称| 约束 | 描述
+---|--- | ---
+channels| 可选 | 推送给哪些频道，将作为条件加入 where 对象。
+data| **必填**| 推送的内容数据，JSON 对象，请参考 [消息内容](#消息内容_Data)。
+expiration_interval| 可选 | 消息过期的相对时间，从调用 API 的时间开始算起，单位是秒。
+expiration_time| 可选 | 消息过期的绝对日期时间
+notification_id | 可选 | 自定义推送 id，最长 16 个字符且只能由英文字母和数字组成，不提供该参数时我们会为每个推送请求随机分配一个唯一的推送 id，用于区分不同推送。我们会根据推送 id 来统计推送的目标设备数和最终消息到达数，并展示在 [推送记录](#Notification) 当中。用户自定义推送 id 可以将多个不同的请求并入同一个推送 id 下从而整体统计出这一批推送请求的目标设备数和最终消息到达数。
+prod| 可选 | **仅对 iOS 有效**。设置使用开发证书（**dev**）还是生产证书（**prod**）。当设备设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
+push_time| 可选 | 定期推送时间
+req_id | 可选 | 自定义请求 id，最长 16 个字符且只能由英文字母和数字组成。5 分钟内带有相同 req_id 的不同推送请求我们认为是重复请求，只会发一次推送。用户可以在请求中带着唯一的 req_id 从而在接口出现超时等异常时将请求重发一次，以避免漏掉失败的推送请求。并且由于前后两次请求中 req_id 相同，我们会自动过滤重复的推送请求以保证每个目标终端用户最多只会收到一次推送消息。**重发过频或次数过多会影响正常的消息推送**，请注意控制。
+where| 可选 | 检索 `_Installation` 表使用的查询条件，JSON 对象。
+
+#### master key 校验
+
+当在 {% if node=='qcloud' %}**控制台** > **设置** > **应用选项**{% else %}[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission){% endif %} 中点选了 **聊天、推送** > **禁止从客户端进行消息推送** 后，推送消息接口必须增加 **master key** 校验才能成功发送推送，从而避免了客户端可以不经限制的给应用内任意目标设备推送消息的可能。我们建议用户都将此限制启用。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}"          \
+  -H "X-LC-Key: {{masterkey}},master"        \
+  -H "Content-Type: application/json" \
+  -d '{
+        "where": {"channels" : ["public"]}
+        "data": {"alert" : "Hello from LeanCloud"}
+     }' \
+  https://api.leancloud.cn/1.1/push
+```
 
 #### 过期时间
 
@@ -214,7 +232,8 @@ where|检索 _Installation 表使用的查询条件，JSON 对象。
 {
   "data": {
    "alert":             "消息内容",
-   "category":          "通知分类名称",
+   "category":          "通知类型",
+   "thread-id":         "通知分类名称",
    "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
    "sound":             "声音文件名，前提在应用里存在",
    "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
@@ -263,7 +282,8 @@ data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://de
         "loc-args":            [""],
         "launch-image":        ""
       }
-      "category":          "通知分类名称",
+      "category":          "通知类型",
+      "thread-id":         "通知分类名称",
       "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
       "sound":             "声音文件名，前提在应用里存在",
       "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,

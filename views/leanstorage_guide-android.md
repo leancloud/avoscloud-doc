@@ -24,7 +24,6 @@
 {% set byteType= "byte[]" %}
 {% set acl_guide_url= "[Android 权限管理使用指南](acl_guide-android.html)" %}
 {% set sms_guide_url = '[短信服务使用指南 · 注册验证](sms_guide-android.html#注册验证)' %}
-{% set relation_guide_url = "[Android 数据模型设计指南](relation_guide-android.html)" %}
 {% set inapp_search_guide_url = "[Android 应用内搜索指南](app_search_guide.html)" %}
 {% set status_system_guide_url = "[Android 应用内社交模块](status_system.html#Android_SDK)" %}
 {% set sns_guide_url = "[Android SNS 开发指南](sns.html#Android_SNS_组件)" %}
@@ -704,7 +703,7 @@ fetchAllInBackground()
 
 {% block code_query_with_not_contains_keyword_using_regex %}
 <pre><code class="lang-java">        AVQuery<AVObject> query = new AVQuery<>("Todo");
-        query.whereMatches("title","{{ storage.regex() | safe }});
+        query.whereMatches("title","{{ data.regex() | safe }});
 </code></pre>
 {% endblock %}
 <!-- 2016-12-29 故意忽略最后一行中字符串的结尾引号，以避免渲染错误。不要使用 markdown 语法来替代 <pre><code> -->
@@ -1334,7 +1333,7 @@ fetchAllInBackground()
 {% block code_send_verify_email %}
 
 ```java
-  AVUser.requestEmailVerfiy("abc@xyz.com", new RequestEmailVerifyCallback() {
+  AVUser.requestEmailVerifyInBackground("abc@xyz.com", new RequestEmailVerifyCallback() {
     @Override
     public void done(AVException e) {
       if (e == null) {

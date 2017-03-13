@@ -1,3 +1,4 @@
+{% import "views/_data.njk" as data %}
 # 常见问题一览
 
 ## 账户和平台常见问题
@@ -16,7 +17,7 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 ### 计费是基于账号还是应用
 
-计费都基于用户账号，详细信息请参考 [价格](/pricing.html) 页面。
+计费都基于用户账号，详细信息请参考 [价格](/pricing) 页面。
 
 ### 如果没有缴费会怎么样
 
@@ -140,7 +141,7 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 ### 可以在线测试 API 吗
 
-请访问 [API 在线测试工具](/apionline/)。
+请访问 [API 在线测试工具](/dashboard/apionline/index.html)。
 
 ### 403 错误
 
@@ -155,7 +156,7 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 应用 API 授权失败，请检查是否初始化了 App Id 和 App Key。
 
-* 如何进行初始化，请查看 [快速入门](./start.html)。
+* 如何进行初始化，请查看 [SDK 安装指南](start.html)。
 * App Id 和 App Key 在应用的 **设置** 菜单里可以找到。
 
 ### 错误信息代码和详细解释在哪里
@@ -188,6 +189,8 @@ REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对
 * 第三次查询，createdAt 在 y 之后的 1000 条数据（最后一条是 z）；
 
 以此类推。
+
+{{ data.innerQueryLimitation(heading="### 使用 CQL 子查询时查不到记录或查到的记录不全") }}
 
 ### 当数据量越来越来大时，怎么加快查询速度？
 与使用传统的数据库一样，查询优化主要靠索引实现。索引就像字典里的目录，能帮助你在海量的文字中更快速地查词。目前索引提供 3 种排序方案：正序、倒序和 2dsphere。
@@ -347,7 +350,7 @@ AV._useMasterKey = true;
 ```
 
 ### Web 端会暴露 App Key 和 App Id，怎么保证安全性？
-首先请阅读「[安全总览](data_security.html)」来了解 LeanCloud 完整的安全体系。其中提到，可以使用「[安全域名](data_security.html#Web_应用安全设置) 」，在没有域名的情况下，可以使用 「[ACL](acl_guide-js.html)」。
+首先请阅读「[安全总览](data_security.html)」来了解 LeanCloud 完整的安全体系。其中提到，可以使用「[安全域名](data_security.html#Web_应用安全设置) 」，在没有域名的情况下，可以使用「[ACL](acl-guide.html)」。
 理论上所有客户端都是不可信任的，所以需要在服务端对安全性进行设计。如果需要高级安全，可以使用 ACL 方式来管理，如果需要更高级的自定义方式，可以使用 [LeanEngine（云引擎）](leanengine_overview.html)。
 
 ### 如何先验证手机号码再注册

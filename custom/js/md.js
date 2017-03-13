@@ -102,11 +102,11 @@ var initSmoothScroll = function() {
 
 // Init GitHub links
 var initGitHubLinks = function() {
-  var currentPath = window.location.pathname.match(/.*\/(.+).html/i)[1];
-  $('#content').prepend("<div class=docs-meta>\
-      <span class='icon icon-github'></span>\
-      <a href='https://github.com/leancloud/docs#贡献'>编辑文档</a>\
-    </div>");
+  // var currentPath = window.location.pathname.match(/.*\/(.+).html/i)[1];
+  // $('#content').prepend("<div class=docs-meta>\
+  //     <span class='icon icon-github'></span>\
+  //     <a href='https://github.com/leancloud/docs#贡献'>编辑文档</a>\
+  //   </div>");
   $('.sidebar-wrapper #toc').append("<li class=sidebar-meta><a href='#' class=do-expand-all>展开所有</a> <a href='#top' class=back-to-top>返回顶部</a></li>");
 };
 
@@ -227,8 +227,29 @@ var codeBlockTabber = (function() {
       'lang-java': 'Java',
       'lang-ts':'TypeScript',
       'lang-es7': 'ECMAScript7',
-      'lang-html': 'HTML'
+      'lang-html': 'HTML',
+      'lang-cs': 'C#'
     };
+
+    // Multilingual init
+    var $translatableElements = $('code, var');
+    var snippetMap = {};
+    var snippetDefault = 'objc';
+    var snippetsJson = 'custom/js/languages.json';
+    $.getJSON(snippetsJson, function(data) {
+      snippetMap = data;
+    })
+    .done(function() {
+      $.each($translatableElements, function () {
+        for (var key in snippetMap[snippetDefault]) {
+          if ($(this).text() === key) {
+            $(this).attr('data-translatable', key);
+          }
+        }
+      });
+    })
+    .fail(function() { console.log('fetch language error'); })
+    .always(function() { console.log('fetch language complete'); });
 
     $.each($codeBlocks, function () {
       var $current = $(this);
@@ -349,6 +370,17 @@ var codeBlockTabber = (function() {
           console.log('No matching codeblock in current scope!');
         }
       });
+
+      // Update strings for specific language
+      $.each($translatableElements, function () {
+        var currentLang = targetLang.split('-').pop();
+        var snippets = snippetMap[currentLang];
+        for (var key in snippets) {
+          if ($(this).data('translatable') === key) {
+            $(this).text(snippets[key]);
+          }
+        }
+      });
     });
   }
 
@@ -380,17 +412,6 @@ $(function() {
   setTimeout(function() {
     updateSidebarAffixShadowWidth();
   }, 400);
-
-  // set the title:  xxxxxxx - LeanCloud 文档
-  if ( window.location.pathname != '/'
-    && window.location.pathname.toLowerCase() != '/index.html' ){
-    $('title').text(function(){
-    // do not use html()
-    return $('.doc-content h1').first().text() + ' - ' + $(this).text();
-  });
-
-
-}
 
 });
 

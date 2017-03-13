@@ -278,6 +278,9 @@ module.exports = function(grunt) {
       options: {
         commitMessage: 'chore: update contributors'
       }
+    },
+    docmeta: {
+      src: ["dist/*.html", "!dist/demo.html"]
     }
   });
 
@@ -295,9 +298,102 @@ module.exports = function(grunt) {
     });
   });
 
+grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置首页内容分类导航', function() {
+    grunt.task.requires('assemble');
+    const cheerio = require('cheerio');
+    const path = require('path');
+    const fs = require('fs');
+    const crypto = require('crypto');
+    const moment = require('moment');
+    moment.locale('zh-cn');
+    //require('moment/locale/zh-cn');
+    //const done = this.async();
+    const sourceDir = 'views/';
+    const files = this.filesSrc;
+
+    files.forEach(function(filePath) {
+      let changes = [];
+      let file = path.parse(filePath); 
+      // filePath: "dist/realtime_guide-js.html"
+      //   root: ''
+      //   dir: 'dist'
+      //   base: 'realtime_guide-js.html'
+      //   ext: '.html'
+      //   name: 'realtime_guide-js'
+      let content = grunt.file.read(filePath);
+      let $ = cheerio.load(content);
+      const version = crypto.createHash('md5').update($.html(), 'utf8').digest('hex');
+ 
+      // 首页：内容分类导航 scrollspy
+      if ( file.base.toLowerCase() === 'index.html' ){
+        let $sectionNav = $('#section-nav').find('ul');
+        $('#tab-docs').find('.section-title').each(function(index, el) {
+          let $el = $(el);
+          let id = $el.text().replace(/ /g,'-').replace(/[^a-zA-Z_0-9\u4e00-\u9fa5]/g,'-');
+          $el.attr('id',id);
+          $sectionNav.append('<li><a href="#' + id + '">' + $el.html() + '</a></li>');
+        });
+        changes.push('scrollspy');
+
+      } // 更新标题更新为「h1 - LeanCloud 文档」（首页除外）
+      else {
+        // 2017-02-06 如果 h1 不存在就不更新 title，如 start.html
+        let h1 = $('.doc-content h1');
+        if ( h1.length ){
+          $('title').text(function(){
+            // do not use html()
+            return h1.first().text() + ' - ' + $(this).text();
+          });
+          changes.push('title');
+        } 
+      }
+
+      // 文档修改日期 ----------------------  
+      // 例如 dist/realtime_guide-js.html => views/realtime_guide-js.md
+      const sourceFilePath = sourceDir + file.name + '.md';
+      var modifiedTime = "";
+
+      if ( grunt.file.exists(sourceFilePath) ){
+        modifiedTime = fs.lstatSync(path.resolve(sourceFilePath)).mtime;
+        // 查找是否有对应的主模板（.tmpl）
+        // dist/realtime_guide-js.html => views/realtime_guide.tmpl
+        let tmplFilePath = file.name.lastIndexOf('-') > -1?path.join(sourceDir,file.name.substr(0, file.name.lastIndexOf('-')) + '.tmpl'):'';
+
+        // 如果有主模板，取回其修改日期
+        if ( tmplFilePath.length && grunt.file.exists(tmplFilePath) ){
+          let tmplModifiedTime = fs.lstatSync(path.resolve(tmplFilePath)).mtime;
+          //console.log(tmplModifiedTime, modifiedTime);
+          // 如果 tmpl 修改日期新于子文档，子文档使用 tmpl 的修改日期
+          if ( tmplModifiedTime && modifiedTime && tmplModifiedTime.getTime() > modifiedTime.getTime() ){
+            modifiedTime = tmplModifiedTime;
+            changes.push('tmpl-newer');
+          }
+        }
+
+        if ( modifiedTime ){
+          //$('.docs-meta').find('.doc-mdate').remove().end()
+          $('.docs-meta').append('<span class="doc-mdate" data-toggle="tooltip" title="'+ moment(modifiedTime).format('lll') + '">更新于 <time datetime="' + moment(modifiedTime).format() + '">' + moment(modifiedTime).format('l') + '</time></span>');
+          changes.push('modified');
+        }
+
+      }
+      else {
+        changes.push('no-md');
+      }
+
+      // 如果文档内容有改动，重新生成
+      if ( version !== crypto.createHash('md5').update($.html(), 'utf8').digest('hex') ){
+        grunt.file.write(filePath, $.html());
+      }
+      // 打印所有文件及所执行的操作
+      grunt.log.writeln(filePath + ' (' + changes.join(',') + ')');
+
+    });
+  });
+
   grunt.registerTask("build", "Main build", function() {
     grunt.task.run([
-      "clean", "ensureSDKVersion", "nunjucks", "copy:md", "markdown", "assemble",
+      "clean", "ensureSDKVersion", "nunjucks", "copy:md", "markdown", "assemble", "docmeta"
     ]);
     if (!grunt.option("no-comments")) {
       grunt.task.run(["comment"]);
@@ -310,7 +406,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask("localBuild",[
     "clean", "ensureSDKVersion", "nunjucks", "copy:md", "markdown", "assemble",
-    "less:dist", "postcss", "copy:asset"
+    "less:dist", "postcss", "copy:asset","docmeta"
   ]);
 
   grunt.registerTask("serve", ["localBuild", "less:server","configureProxies", "connect:livereload", "watch"]);
@@ -335,10 +431,9 @@ module.exports = function(grunt) {
     var cheerio = require('cheerio');
     var crypto = require('crypto');
     var _ = require('underscore');
-    var AV = require('avoscloud-sdk').AV;
-    AV.initialize("749rqx18p5866h0ajv0etnq4kbadodokp9t0apusq98oedbb", "axxq0621v6pxkya9qm74lspo00ef2gq204m5egn7askjcbib");
-    // test project
-    //AV.initialize("0siycem2w0l2zem2z5crxl7602zkf1r2a8qsooigq2my1al1", "4ipiwns1939nw2cgist4s49li89dvadrlrgthfvqmgzcaax5");
+    var Promise = require('bluebird');
+    var AV = require('leancloud-storage');
+    AV.init({appId: "749rqx18p5866h0ajv0etnq4kbadodokp9t0apusq98oedbb", appKey: "axxq0621v6pxkya9qm74lspo00ef2gq204m5egn7askjcbib"});
     var Doc = AV.Object.extend('Doc');
     var Snippet = AV.Object.extend('Snippet');
     var commentDoms = ['p','pre'];
@@ -351,14 +446,13 @@ module.exports = function(grunt) {
       var docVersion = crypto.createHash('md5').update($('#content').text()).digest('hex');
       // console.log(docVersion)
       $('html').first().attr('version', docVersion);
-
       //以 docversion 为唯一标识，当文档内容发生变化，docversion 相应变化，
       var query = new AV.Query(Doc);
       query.equalTo('version', docVersion);
       return query.first().then(function(doc) {
         if (doc) {
           // 如果 doc 已经存在，则直接返回
-          return AV.Promise.as();
+          return doc;
         }
         doc = new Doc();
         doc.set('version', docVersion);
@@ -376,7 +470,7 @@ module.exports = function(grunt) {
         doc.set('file', file.split('/').pop());
         grunt.log.writeln('save new Doc: %s', file);
         return doc.save();
-      }).then(function() {
+      }).then(function(doc) {
         // 在文档中添加 version 标记
         commentDoms.forEach(function(dom) {
           $('#content ' + dom).each(function() {
@@ -388,52 +482,71 @@ module.exports = function(grunt) {
           });
         });
         grunt.file.write(filepath, $.html());
-        return AV.Promise.as();
-      }).then(function() {
-        var promises = [];
+
         // 保存 snippet version 和 content 的关联
-        commentDoms.forEach(function(dom) {
-          $('#content ' + dom).each(function() {
-            var version = crypto.createHash('md5').update($(this).text()).digest('hex');
+        return Promise.each(commentDoms, function(dom) {
+          var promises = [];
+          $('#content ' + dom).each(function(i, elem) {
+            promises.push(Promise.resolve(elem))
+          })
+          return Promise.map(promises, function(elem) {
+            var version = crypto.createHash('md5').update($(elem).text()).digest('hex');
             if(_.contains(allSnippetsVersion, version)) {
               return;
             }
-            if($(this).text().trim().length === 0) {
+            if($(elem).text().trim().length === 0) {
               return;
             }
-            grunt.log.writeln('save new Snippet: %s', $(this).text().substr(0, 20) + '...');
-            promises.push(new Snippet().save({
+            grunt.log.writeln('save new Snippet: %s', $(elem).text().substr(0, 20) + '...');
+            return new Snippet().save({
               snippetVersion: version,
-              content: $(this).text(),
+              content: $(elem).text(),
               file: filepath.split('/').pop()
-            }));
-          });
+            });
+          }, {concurrency: 3});
+        }).then(function() {
+          return doc;
         });
-        return AV.Promise.all(promises);
       });
     }
     var self = this;
     // 查询所有已存在的 snippet version，
     // 用来判断哪些是新的 snippet，然后将其 version 和 content 添加到数据库
     var snippetsVersion = [];
-    var getSnippetsVersion = function(skip) {
-      return AV.Query.doCloudQuery('select snippetVersion from Snippet limit ?, ?', [skip, 1000]).then(function(result) {
-        if(result.results.length === 0) {
-          return AV.Promise.as();
+    var getSnippetsVersion = function(createdAt) {
+      return new AV.Query('Snippet')
+      .select('snippetVersion')
+      .greaterThan('createdAt', createdAt)
+      .limit(1000)
+      .ascending('createdAt')
+      .find()
+      .then(function(result) {
+        if(result.length === 0) {
+          return [];
         }
-        _.each(result.results, function(snippet) {
+        _.each(result, function(snippet) {
           snippetsVersion.push(snippet.get('snippetVersion'));
         });
-        return getSnippetsVersion(snippetsVersion.length);
+        return getSnippetsVersion(_.last(result).get('createdAt'));
       });
     };
-    getSnippetsVersion(0).then(function() {
+    var docEnv = process.env.DOC_ENV || 'default';
+    grunt.log.writeln('Doc ENV: ', docEnv);
+    getSnippetsVersion(new Date(0)).then(function() {
       grunt.log.writeln('current snippets count:', snippetsVersion.length);
-      var allPromise = [];
-      self.filesSrc.forEach(function(filepath) {
-        allPromise.push(initDocVersion(filepath, snippetsVersion));
-      });
-      return AV.Promise.all(allPromise);
+      return Promise.map(self.filesSrc, function(filepath) {
+        return initDocVersion(filepath, snippetsVersion);
+      }, {concurrency: 1})
+    }).then(function(docs) {
+      return new AV.Object('Release').save({
+        env: docEnv,
+      }).then(function(release) {
+        return AV.Object.saveAll(docs.map(function(doc) {
+          return new AV.Object('Release_Doc')
+          .set('release', release)
+          .set('doc', doc)
+        }))
+      })
     }).then(function() {
       //保证所有文档都处理完再进行任务完成回调
       grunt.log.writeln('version build allcompleted');
