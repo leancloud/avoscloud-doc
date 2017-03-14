@@ -540,7 +540,7 @@ dependencies {
 
 - Flyme 系统
 - manifest 正确填写
-- appId、appKey 有效
+- flymeId、flymeKey 有效
 
 #### 魅族推送通知栏消息的点击事件
 
@@ -626,5 +626,4 @@ dependencies {
 
 
 [xiaomi]: http://dev.xiaomi.com/index
-
 
