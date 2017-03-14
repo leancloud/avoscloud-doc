@@ -2351,6 +2351,32 @@ public class AVImClientManager extends AVIMClientEventHandler {
 }
 ```
 
+为了更灵活地控制登录过程，我们在登录接口上增加了一个选项，以下是方法签名：
+
+```java
+open(AVIMClientOpenOption operation, final AVIMClientCallback callback){}
+```
+
+登录选项由 `AVIMClientOpenOption` 对象表示，其中的每一个属性表示具体的选项，目前支持以下选项：
+
+```java
+public void setForceSingleLogin(boolean forceSingleLogin) {}
+```
+
+`forceSingleLogin` 选项设置登录动作的强制性。自然地，登录动作也区分成两种不同的类型，即强制登录和非强制登录。
+
+* 强制登录表示这个动作是强制的，不管当前设备有没有被其他设备踢下线过，都强制性地登录。
+* 非强制登录表示这个动作是非强制的，如果当前设备曾被其他设备踢下线过，登录会返回错误。
+
+将 `forceSingleLogin` 设置为 `true` 表示强制登录；设置为 `false` 表示非强制登录。例如，如果希望实现强制登录，代码可以写成：
+
+```java
+AVIMClientOpenOption openOption = new AVIMClientOpenOption(); openOption.setForceSingleLogin(true); AVIMClient client = AVIMClient.getInstance("Tom"); client.open(openOption, new AVIMClientCallback() {   @Override   public void done(AVIMClient client, AVIMException e) {    } });
+
+```
+
+如果 `openOption` 设置为 `null`，或者使用 `client.open(AVIMClientCallback callback)` 方法进行登录，默认的登录类型为非强制登录。
+
 {% endblock %}
 
 {% block client_auto_open %}
