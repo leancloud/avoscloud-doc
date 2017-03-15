@@ -1,4 +1,4 @@
-{% from 'views/_helper.njk' import 
+{% from 'views/_helper.njk' import
   noteWrap
 %}
 
@@ -43,176 +43,186 @@ ack-at | 消息送达到目标设备上的 Unix 时间戳（毫秒），但并�
 {% set items = [
   {
     code:     "1006",
-    message:  "", 
+    message:  "",
     desc:     "WebSocket 连接非正常关闭，通常见于路由器配置对长连接限制的情况。SDK 会自动重连，无需人工干预。"
   },
   {
-    code: "4100", 
+    code: "4100",
     message: "APP_NOT_AVAILABLE",
     desc: "应用不存在或应用禁用了实时通信服务。"
   },
   {
-    code: "4101", 
+    code: "4101",
     message: "DUPLICATED_LOGIN",
     desc: "同一个设备重复登录推送服务。该错误码与实时通信服务无关。"
   },
   {
-    code: "4102", 
+    code: "4102",
     message: "SIGNATURE_FAILED",
     desc: "登录签名验证失败。"
   },
   {
-    code: "4103", 
+    code: "4103",
     message: "INVALID_LOGIN",
     desc: "Client Id 格式错误，超过 64 个字符。"
   },
   {
-    code: "4105", 
+    code: "4105",
     message: "SESSION_REQUIRED",
     desc: "Session 没有打开就发送消息，或执行其他操作。常见的错误场景是调用 open session 后直接发送消息，正确的用法是在 Session 打开的回调里执行。"
   },
   {
-    code: "4107", 
+    code: "4107",
     message: "READ_TIMEOUT",
     desc: "读超时，云端长时间没有收到客户端的数据，切断连接。SDK 包装了心跳包的机制，出现此错误通常是网络问题。SDK 会自动重连，无需人工干预。"
   },
   {
-    code: "4108", 
+    code: "4108",
     message: "LOGIN_TIMEOUT",
     desc: "登录超时，连接后长时间没有完成 session open。通常是登录被拒绝等原因，出现此问题可能是使用方式有误，可以 [创建工单](https://leanticket.cn/t/leancloud)，由我们技术顾问来给出建议。"
   },
   {
-    code: "4109", 
+    code: "4109",
     message: "FRAME_TOO_LONG",
     desc: "包过长。消息大小超过 5 KB，请缩短消息或者拆分消息。"
   },
   {
-    code: "4110", 
+    code: "4110",
     message: "INVALID_ORIGIN",
     desc: "设置安全域名后，当前登录的域名与安全域名不符合。"
   },
   {
-    code: "4111", 
+    code: "4111",
     message: "SESSION_CONFLICT",
     desc: "设置单设备登录后，客户端被其他设备挤下线。"
   },
   {
-    code: "4113", 
+    code: "4113",
     message: "APP_QUOTA_EXCEEDED",
     desc: "应用容量超限，当天登录用户数已经超过应用设定的最大值。"
   },
   {
-    code: "4114", 
+    code: "4114",
     message: "UNPARSEABLE_RAW_MESSAGE",
     desc: "客户端发送的序列化数据服务器端无法解析。"
   },
   {
-    code: "4115", 
+    code: "4115",
     message: "KICKED_BY_APP",
     desc: "客户端被 REST API 管理接口强制下线。"
   },
   {
-    code: "4116", 
+    code: "4116",
     message: "MESSAGE_SENT_QUOTA_EXCEEDED",
     desc: "应用单位时间内发送消息量超过限制，消息被拒绝。"
   },
   {
-    code: "4200", 
+    code: "4200",
     message: "INTERNAL_ERROR",
     desc: "服务器内部错误，如果反复出现请收集相关线索并 [创建工单](https://leanticket.cn/t/leancloud)，我们会尽快解决。"
   },
   {
-    code: "4201", 
+    code: "4201",
     message: "SEND_MESSAGE_TIMEOUT",
     desc: "通过 API 发送消息超时。"
   },
   {
-    code: "4301", 
+    code: "4301",
     message: "CONVERSATION_API_FAILED",
     desc: "上游 API 调用异常，请查看报错信息了解错误详情。"
   },
   {
-    code: "4302", 
+    code: "4302",
     message: "CONVERSATION_SIGNATURE_FAILED",
     desc: "对话相关操作签名错误"
   },
   {
-    code: "4303", 
+    code: "4303",
     message: "CONVERSATION_NOT_FOUND",
     desc: "发送消息，或邀请等操作对应的对话不存在。"
   },
   {
-    code: "4304", 
+    code: "4304",
     message: "CONVERSATION_FULL",
     desc: "对话成员已满，不能再添加。"
   },
   {
-    code: "4305", 
+    code: "4305",
     message: "CONVERSATION_REJECTED_BY_APP",
     desc: "对话操作被应用的云引擎 Hook 拒绝。"
   },
   {
-    code: "4306", 
+    code: "4306",
     message: "CONVERSATION_UPDATE_FAILED",
     desc: "更新对话操作失败。"
   },
   {
-    code: "4307", 
+    code: "4307",
     message: "CONVERSATION_READ_ONLY",
     desc: "该对话为只读，不能更新或增删成员。"
   },
   {
-    code: "4308", 
+    code: "4308",
     message: "CONVERSATION_NOT_ALLOWED",
     desc: "该对话禁止当前用户发送消息。"
   },
   {
-    code: "4309", 
+    code: "4309",
     message: "CONVERSATION_UPDATE_REJECTED",
     desc: "更新对话的请求被拒绝，当前用户不在对话中。"
   },
   {
-    code: "4310", 
+    code: "4310",
     message: "CONVERSATION_QUERY_FAILED",
     desc: "查询对话失败，常见于慢查询导致的超时或受其他慢查询导致的数据库响应慢。"
   },
   {
-    code: "4311", 
+    code: "4311",
     message: "CONVERSATION_LOG_FAILED",
     desc: "拉取对话消息记录失败，常见与超时的情况。"
   },
   {
-    code: "4312", 
+    code: "4312",
     message: "CONVERSATION_LOG_REJECTED",
     desc: "拉取对话消息记录被拒绝，当前用户不在对话中。"
   },
   {
-    code: "4313", 
+    code: "4313",
     message: "SYSTEM_CONVERSATION_REQUIRED",
     desc: "该功能仅对系统对话有效。"
   },
   {
-    code: "4314", 
+    code: "4314",
     message: "NORMAL_CONVERSATION_REQUIRED",
     desc: "该功能仅对普通对话有效。"
   },
   {
-    code: "4315", 
+    code: "4315",
     message: "CONVERSATION_BLACKLISTED",
     desc: "当前用户被加入此对话的黑名单，无法发送消息。"
   },
   {
-    code: "4316", 
+    code: "4316",
     message: "TRANSIENT_CONVERSATION_REQUIRED",
     desc: "该功能仅对暂态对话有效。"
   },
   {
-    code: "4401", 
+    code: "4317",
+    message: "CONVERSATION_MEMBERSHIP_REQUIRED",
+    desc: "该操作要求用户是对话成员。"
+  },
+  {
+    code: "4318",
+    message: "CONVERSATION_API_QUOTA_EXCEEDED",
+    desc: "对话操作超出了 API 请求限制，需要提升应用级别。"
+  },
+  {
+    code: "4401",
     message: "INVALID_MESSAGING_TARGET",
     desc: "发送消息的对话不存在，或当前用户不在对话中。"
   },
   {
-    code: "4402", 
+    code: "4402",
     message: "MESSAGE_REJECTED_BY_APP",
     desc: "发送的消息被应用的云引擎 Hook 拒绝。"
   }
@@ -224,8 +234,8 @@ ack-at | 消息送达到目标设备上的 Unix 时间戳（毫秒），但并�
 `0`|`(无)`|WebSocket 正常关闭，可能发生在服务器重启，或本地网络异常的情况。SDK 会自动重连，无需人工干预。{% for item in items %}
 <code class="text-nowrap">{{item.code}}</code>|<code class="text-nowrap">{{ item.message if item.message else "(无)" | escape }}</code>|{{ item.desc | escape }}{% endfor %}
 {% else %}
-  {% for item in items %} 
-  
+  {% for item in items %}
+
   ## {{ item.code }}
 
   - 信息 - <code>{{ item.message if item.message else "(无)" | escape }}</code>
