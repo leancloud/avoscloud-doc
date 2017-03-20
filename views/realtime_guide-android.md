@@ -2363,7 +2363,7 @@ open(AVIMClientOpenOption operation, final AVIMClientCallback callback){}
 public void setForceSingleLogin(boolean forceSingleLogin) {}
 ```
 
-`forceSingleLogin` 选项设置登录动作的强制性。自然地，登录动作也区分成两种不同的类型，即强制登录和非强制登录。
+登录动作区分成两种不同的类型，强制登录和非强制登录。`forceSingleLogin` 选项设置登录是否为强制登陆。
 
 * 强制登录表示这个动作是强制的，不管当前设备有没有被其他设备踢下线过，都强制性地登录。
 * 非强制登录表示这个动作是非强制的，如果当前设备曾被其他设备踢下线过，登录会返回错误。
