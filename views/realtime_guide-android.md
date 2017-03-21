@@ -2365,14 +2365,20 @@ public void setForceSingleLogin(boolean forceSingleLogin) {}
 
 登录动作区分成两种不同的类型，强制登录和非强制登录。`forceSingleLogin` 选项设置登录是否为强制登陆。
 
-* 强制登录表示这个动作是强制的，不管当前设备有没有被其他设备踢下线过，都强制性地登录。
-* 非强制登录表示这个动作是非强制的，如果当前设备曾被其他设备踢下线过，登录会返回错误。
+- **强制登录**：无论当前设备是否曾被其他设备踢下线，都强制登录。
+- **非强制登录**：如果当前设备曾被其他设备踢下线，则登录时返回错误。
 
 将 `forceSingleLogin` 设置为 `true` 表示强制登录；设置为 `false` 表示非强制登录。例如，如果希望实现强制登录，代码可以写成：
 
 ```java
-AVIMClientOpenOption openOption = new AVIMClientOpenOption(); openOption.setForceSingleLogin(true); AVIMClient client = AVIMClient.getInstance("Tom"); client.open(openOption, new AVIMClientCallback() {   @Override   public void done(AVIMClient client, AVIMException e) {    } });
-
+AVIMClientOpenOption openOption = new AVIMClientOpenOption();
+openOption.setForceSingleLogin(true);
+AVIMClient client = AVIMClient.getInstance("Tom");
+client.open(openOption, new AVIMClientCallback() {
+  @Override
+  public void done(AVIMClient client, AVIMException e) {
+  }
+);
 ```
 
 如果 `openOption` 设置为 `null`，或者使用 `client.open(AVIMClientCallback callback)` 方法进行登录，默认的登录类型为非强制登录。
