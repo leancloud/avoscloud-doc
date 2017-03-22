@@ -1,13 +1,15 @@
 //apps data
 
 var purl = '/1/';
-angular.module("app", ['ui.gravatar']);
+angular.module("app", ['ui.gravatar','md5']);
 angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$compile','$rootScope',
 
     function($scope, $http, $timeout, $compile,$rootScope) {
         $scope.appid = "{{appid}}";
         $scope.appkey = "{{appkey}}";
         $scope.masterkey = "{{masterkey}}";
+        $scope.sign_masterkey = "{{masterkey | signify:'master'}}";
+        $scope.sign_appkey = "{{appkey | signify}}";
         $rootScope.pageState = {};
         var sdkversion = 'unknown';
         if(typeof $sdk_versions != 'undefined'){
@@ -268,4 +270,15 @@ angular.module('app').directive('lcComment',['$compile',function($compile){
 //     };
 // });
 
+// 2017-03-22 LC-X-SIGN
+angular.module('app').filter('signify', ['md5',function (md5) {
+    return function (item,type) {
+      var suffix = '';
+      var ts = Date.now() || new Date().getTime();
+      if ( type === 'master' ){
+        suffix = ',master';
+      }
+      return md5.createHash(ts + item) + ',' + ts + suffix;
+    };
+}]);
 

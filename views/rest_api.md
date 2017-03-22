@@ -2684,16 +2684,18 @@ curl -X POST \
 
 ### 数据查询 API
 
-统计 API 可以获取一个应用的统计数据。因为统计数据的隐私敏感性，统计数据查询 API 必须使用 master key 的签名方式鉴权，请参考 [更安全的鉴权方式](#更安全的鉴权方式) 一节。
+统计 API 可以获取一个应用的统计数据。因为统计数据的隐私敏感性，统计数据查询 API 必须使用 master key 的签名方式鉴权。
 
-获取某个应用的基本信息，包括各平台的应用版本，应用发布渠道。（注意：下面示例直接使用带 `master` 标识的 X-LC-Key，不过我们推荐在实际使用中采用 [新鉴权方式](rest_api.html#更安全的鉴权方式) 加密，不要明文传递 Key。）
+获取某个应用的基本信息，包括各平台的应用版本，应用发布渠道：
 
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
+  -H "X-LC-Sign: {{ docs.mustache('sign_masterkey','') }}" \
   https://{{host}}/1.1/stats/appinfo
 ```
+
+注意：上面示例直接使用了更加安全的 [X-LC-Sign 鉴权方式](#更安全的鉴权方式)，避免以明文来传递 Key。
 
 返回的 JSON 数据：
 
