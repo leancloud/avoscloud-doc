@@ -44,7 +44,7 @@ cd java-war-getting-started
 然后添加应用 appId 等信息到该项目：
 
 ```
-lean checkout
+lean switch
 ```
 
 ## 本地运行

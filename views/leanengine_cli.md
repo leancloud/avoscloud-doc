@@ -148,7 +148,7 @@ $ lean init
 如果已经使用其他方法创建好了项目，可以直接在项目目录执行：
 
 ```sh
-$ lean checkout
+$ lean switch
 ```
 将已有项目关联到 LeanCloud 应用上。
 
@@ -346,7 +346,7 @@ $ lean info
 如果需要将当前项目切换到其他 LeanCloud 应用，可以通过 `checkout` 命令来添加一个应用：
 
 ```sh
-$ lean checkout
+$ lean switch
 ```
 
 之后运行向导会给出可供切换的应用列表。
