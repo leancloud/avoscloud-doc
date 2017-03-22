@@ -39,6 +39,7 @@ Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 �
 ```sh
 $ lean help
 
+
  _                        ______ _                 _
 | |                      / _____) |               | |
 | |      ____ ____ ____ | /     | | ___  _   _  _ | |
@@ -52,14 +53,14 @@ USAGE:
    lean [global options] command [command options] [arguments...]
 
 VERSION:
-   0.3.0
+   0.7.0
 
 COMMANDS:
      login     登录 LeanCloud 账户
      info      查看当前登录用户以及应用信息
      up        本地启动云引擎应用
      init      初始化云引擎项目
-     checkout  切换当前项目关联的 LeanCloud 应用
+     switch    切换当前项目关联的 LeanCloud 应用
      deploy    部署云引擎项目到服务器
      publish   部署当前预备环境的代码至生产环境
      upload    上传文件到当前应用 File 表
@@ -67,6 +68,7 @@ COMMANDS:
      env       输出运行当前云引擎应用所需要的环境变量
      cache     LeanCache 管理相关功能
      cql       进入 CQL 交互查询
+     search    根据关键词查询开发文档
      help, h   显示全部命令或者某个子命令的帮助
 
 GLOBAL OPTIONS:

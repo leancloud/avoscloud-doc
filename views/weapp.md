@@ -298,7 +298,7 @@ npm install
 
 ```
 lean login
-lean checkout
+lean switch
 ```
 
 启动项目：
