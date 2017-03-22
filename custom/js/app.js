@@ -2,14 +2,14 @@
 
 var purl = '/1/';
 angular.module("app", ['ui.gravatar','md5']);
-angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$compile','$rootScope',
+angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$compile','$rootScope','$filter',
 
-    function($scope, $http, $timeout, $compile,$rootScope) {
+    function($scope, $http, $timeout, $compile,$rootScope,$filter) {
         $scope.appid = "{{appid}}";
         $scope.appkey = "{{appkey}}";
         $scope.masterkey = "{{masterkey}}";
-        $scope.sign_masterkey = "{{masterkey | signify:'master'}}";
-        $scope.sign_appkey = "{{appkey | signify}}";
+        $scope.sign_masterkey = "{{sign_masterkey}}";
+        $scope.sign_appkey = "{{sign_appkey}}";
         $rootScope.pageState = {};
         var sdkversion = 'unknown';
         if(typeof $sdk_versions != 'undefined'){
@@ -30,6 +30,8 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$com
                             $scope.appid = $scope.pageState.currentApp.app_id;
                             $scope.appkey = $scope.pageState.currentApp.app_key;
                             $scope.masterkey = $scope.pageState.currentApp.master_key;
+                            $scope.sign_masterkey = $filter('signify')($scope.pageState.currentApp.master_key, 'master');
+                            $scope.sign_appkey = $filter('signify')($scope.pageState.currentApp.app_key); 
                         }
                     });
                     $scope.apps = data;
