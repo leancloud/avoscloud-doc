@@ -45,6 +45,15 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$com
                 location.reload();
             });
         }
+        // 2017-03-24 output undefined variables as is(surrounded by double curl braces)
+        $scope.mustache = function(val){
+          if ( typeof $scope[val] == 'undefined' ){
+            return '{{' + val + '}}';
+          }
+          else {
+            return $scope[val];
+          }
+        }
 
         window.addEventListener("message", receiveMessage, false);
 
