@@ -664,7 +664,7 @@ self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
     [self.client createConversationWithName:@"猫和老鼠" clientIds:@[@"Jerry"] callback:^(AVIMConversation *conversation, NSError *error) {
         // Tom 发了一条消息给 Jerry
         
-        AVIMMessageOption *option = [AVIMMessageOption alloc];
+        AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
         option.priority = AVIMMessagePriorityHigh;
         [conversation sendMessage:[AVIMTextMessage messageWithText:@"耗子，起床！" attributes:nil] option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
             // 在这里处理发送失败或者成功之后的逻辑
@@ -678,7 +678,7 @@ self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
 {% block message_push_data %}
 
 ```objc
-AVIMMessageOption *option = [AVIMMessageOption alloc];
+AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
 option.pushData = @{@"alert" : @"您有一条未读消息", @"sound" : @"message.mp3", @"badge" : @1, @"custom-key" : @"由用户添加的自定义属性，custom-key 仅是举例，可随意替换"};
 [conversation sendMessage:[AVIMTextMessage messageWithText:@"耗子，起床！" attributes:nil] option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
     // 在这里处理发送失败或者成功之后的逻辑
