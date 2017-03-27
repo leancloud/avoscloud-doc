@@ -338,8 +338,13 @@
 
 ## 403
 
-* 信息 - `Forbidden to xxx by class permissions`
-* 含义 - 操作被禁止，因为 [Class 权限限制](./data_security.html#Class_级别的_ACL)。
+分为两类：
+
+* 信息 - `Forbidden to read/write by class permissions`
+* 含义 - 操作被禁止，因为 Class 表没有打开「读」或者「写」的权限。进入 **应用控制台** > **存储**，点击相应的 Class，从右侧选择 **其他** 下拉菜单，进入 **权限管理** 来调整。
+
+* 信息 - `The user cannot be altered by a client without the session.`
+* 含义 - 用户没有登录，无法修改用户信息。
 
 
 ## 429

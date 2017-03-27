@@ -82,5 +82,16 @@ Client::setDebug(true);
 {%- endif %}
 {%- endmacro %}
 
+{% macro retrieveAuthData(node, heading="") -%}
+{%- if heading != "" %}{{heading}}{%- endif %}
 
+authData 的数据<u>默认为不可查询</u>，也就是说它既不包含在当前登录用户的数据中，也无法在 query 中以 include 或 fetch 来获取。要更改这一默认行为，需要进入 {% if node == 'qcloud' %}**应用控制台** > **存储** > **_User**{% else %}[应用控制台 > 存储 > _User 表](/dashboard/data.html?appid={% raw %}{{{% endraw %}appid{% raw %}}}{% endraw %}#/_User){% endif %}，点击 authData 字段右侧的箭头，选择 **编辑**，关掉「列属性」里的「客户端不可见」选项才能获取到。
+{% endmacro %}
 
+{% macro supportEmail() -%}
+<support@leancloud.rocks>
+{%- endmacro %}
+
+{% macro generalEmail() -%}
+<business@leancloud.rocks>
+{%- endmacro %}
