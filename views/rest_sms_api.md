@@ -42,7 +42,9 @@
 
 ### 请求和响应格式
 
-请参考我们的 [REST API 总览文档](./rest_api.html#请求格式)。
+详情可参考 LeanCloud REST API 文档的 [请求格式](rest_api.html#请求格式) 和 [响应格式](rest_api.html#响应格式)。
+
+通常情况下，如果返回的 HTTP 状态码为 200、结果为 `{}` 则代表请求成功完成。
 
 ### 验证码发送逻辑图
 
@@ -80,6 +82,8 @@ curl -X POST \
 | ttl               |      | 验证码有效时间。单位分钟（默认为 **10 分钟**）    |
 | name              |      | 应用名字（默认为 LeanCloud 控制台填写的应用名。） |
 | op                |      | 操作类型                           |
+
+{{ sms.successfulResponse() }}
 
 假设有如下调用：
 
@@ -131,6 +135,8 @@ curl -X POST \
 ```
 
 其中 `verifySmsCode` 后面是手机收到的 6 位数字验证码。`mobilePhoneNumber` 是收到短信的手机号码。
+
+{{ sms.successfulResponse() }}
 
 {% call docs.noteWrap() %}
 由于运营商和渠道的限制，短信验证码（也包括语音验证码）向同一手机号码发送要求间隔至少一分钟，并且每天向同一手机号码发送次数不能超过 5 次，**因此建议采用 [图片验证码](#图片验证码)、倒数计时等措施来控制频率** 提示用户，防止短信轰炸等恶劣情况发生。
@@ -277,6 +283,15 @@ curl -X POST \
 
 验证成功后，用户的 `mobilePhoneNumberVerified` 将变为 `true`，并会触发调用云引擎的 `AV.Cloud.onVerified(type, function)` 方法，`type` 被设置为 `sms`。
 
+成功则返回：
+
+```
+{
+  "updatedAt":"2017-03-30T08:20:25.452Z",
+  "objectId":"587a0f0661ff4b0065f1dff8"
+}
+```
+
 ### 请求手机号码验证
 
 用户除了被动等待接收验证码短信之外，或者因为其他情况用户没有收到短信，此时开发者可以主动要求发送验证码短信：
@@ -290,6 +305,8 @@ curl -X POST \
   https://{{host}}/1.1/requestMobilePhoneVerify
 ```
 
+{{ sms.successfulResponse() }}
+
 ### 手机号码＋验证码登录
 
 在验证过手机号码后，用户可以采用短信验证码登录，来避免繁琐的输入密码的过程，请求发送登录验证码：
@@ -302,6 +319,8 @@ curl -X POST \
   -d '{"mobilePhoneNumber": "186xxxxxxxx"}' \
   https://{{host}}/1.1/requestLoginSmsCode
 ```
+
+{{ sms.successfulResponse() }}
 
 用户收到验证码短信后，输入手机号码和该验证码来登录应用：
 
@@ -341,6 +360,8 @@ curl -X POST \
 ```
 
 发送一条重置密码的短信验证码到注册用户的手机上，需要传入注册时候的 `mobilePhoneNumber`。
+
+{{ sms.successfulResponse() }}
 
 用户收到验证码后，调用 `PUT /1.1/resetPasswordBySmsCode/<code>` 来设置新的密码（其中 URL 中的 `<code>` 就是 6 位验证数字）：
 
