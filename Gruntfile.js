@@ -247,6 +247,8 @@ module.exports = function(grunt) {
             appid: '{{appid}}',
             appkey: '{{appkey}}',
             masterkey: '{{masterkey}}',
+            sign_masterkey: "{{sign_masterkey}}",
+            sign_appkey: '{{sign_appkey}}',
             host: hostMap[grunt.option('theme')] || 'api.leancloud.cn'
           }
         }

@@ -550,8 +550,9 @@ let date       : LCDate       = LCDate()
 let data       : LCData       = LCData()
 let null       : LCNull       = LCNull()
 ```
+{% endblock %}
 
-若想了解更多有关 LeanStorage 如何解析处理数据的信息，请查看专题文档《[数据与安全](./data_security.html)》。
+{% block section_dataType_largeData %}
 {% endblock %}
 
 {% block text_LCType_convert %}

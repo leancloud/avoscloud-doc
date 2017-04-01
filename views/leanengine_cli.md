@@ -39,6 +39,7 @@ Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 �
 ```sh
 $ lean help
 
+
  _                        ______ _                 _
 | |                      / _____) |               | |
 | |      ____ ____ ____ | /     | | ___  _   _  _ | |
@@ -52,14 +53,14 @@ USAGE:
    lean [global options] command [command options] [arguments...]
 
 VERSION:
-   0.3.0
+   0.7.0
 
 COMMANDS:
      login     登录 LeanCloud 账户
      info      查看当前登录用户以及应用信息
      up        本地启动云引擎应用
      init      初始化云引擎项目
-     checkout  切换当前项目关联的 LeanCloud 应用
+     switch    切换当前项目关联的 LeanCloud 应用
      deploy    部署云引擎项目到服务器
      publish   部署当前预备环境的代码至生产环境
      upload    上传文件到当前应用 File 表
@@ -67,6 +68,7 @@ COMMANDS:
      env       输出运行当前云引擎应用所需要的环境变量
      cache     LeanCache 管理相关功能
      cql       进入 CQL 交互查询
+     search    根据关键词查询开发文档
      help, h   显示全部命令或者某个子命令的帮助
 
 GLOBAL OPTIONS:
@@ -146,7 +148,7 @@ $ lean init
 如果已经使用其他方法创建好了项目，可以直接在项目目录执行：
 
 ```sh
-$ lean checkout
+$ lean switch
 ```
 将已有项目关联到 LeanCloud 应用上。
 
@@ -344,7 +346,7 @@ $ lean info
 如果需要将当前项目切换到其他 LeanCloud 应用，可以通过 `checkout` 命令来添加一个应用：
 
 ```sh
-$ lean checkout
+$ lean switch
 ```
 
 之后运行向导会给出可供切换的应用列表。
@@ -431,6 +433,42 @@ $ lean search AVObject
 ```sh
 $ lean search 云引擎 命令行
 ```
+
+### 自定义命令
+
+有时我们需要对某个应用进行特定并且频繁的操作，比如查看应用 `_User` 表的记录总数，这样可以使用命令行工具的自定义命令来实现。
+
+只要在当前系统的 `PATH` 环境变量中存在一个以 `lean-` 开头的可执行文件，比如 `lean-usercount`，那么执行 `$ lean usercount`，命令行工具就会自动调用这个可执行文件。与直接执行 `$ lean-usercount` 不同的是，这个命令可以获取与应用相关的环境变量，方便访问对应的数据。
+
+相关的环境变量有：
+
+环境变量名 | 描述
+---|---
+`LEANCLOUD_APP_ID`| 当前应用的 app id
+`LEANCLOUD_APP_KEY` | 当前应用的 app key
+`LEANCLOUD_APP_MASTER_KEY` | 当前应用的 master key
+`LEANCLOUD_APP_HOOK_KEY` | 当前应用的 hook key
+`LEANCLOUD_APP_PORT` | 使用 `$ lean up` 启动应用时，默认的端口
+`LEANCLOUD_API_SERVER` | 当前应用对应 API 服务的 host
+`LEANCLOUD_REGION` | 当前应用对应区域信息，可能的值有 `cn`、`us`、`tab`
+
+例如将如下脚本放到当前系统的 `PATH` 环境变量中（比如 `/usr/local/bin`）：
+
+```python
+#! /bin/env python
+
+import sys
+
+import leancloud
+
+app_id = os.environ['LEANCLOUD_APP_ID']
+master_key = os.environ['LEANCLOUD_APP_MASTER_KEY']
+
+leancloud.init(app_id, master_key=master_key)
+print(leancloud.User.query.count())
+```
+
+同时赋予这个脚本可执行权限 `$ chmod +x /usr/local/bin/lean-usercount`，然后执行 `$ lean usercount`，就可以看到当前应用对应的 `_User` 表中记录总数了。
 
 ## 贡献
 

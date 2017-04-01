@@ -1,13 +1,15 @@
 //apps data
 
 var purl = '/1/';
-angular.module("app", ['ui.gravatar']);
-angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$compile','$rootScope',
+angular.module("app", ['ui.gravatar','md5']);
+angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$compile','$rootScope','$filter',
 
-    function($scope, $http, $timeout, $compile,$rootScope) {
+    function($scope, $http, $timeout, $compile,$rootScope,$filter) {
         $scope.appid = "{{appid}}";
         $scope.appkey = "{{appkey}}";
         $scope.masterkey = "{{masterkey}}";
+        $scope.sign_masterkey = "{{sign_masterkey}}";
+        $scope.sign_appkey = "{{sign_appkey}}";
         $rootScope.pageState = {};
         var sdkversion = 'unknown';
         if(typeof $sdk_versions != 'undefined'){
@@ -28,6 +30,8 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$com
                             $scope.appid = $scope.pageState.currentApp.app_id;
                             $scope.appkey = $scope.pageState.currentApp.app_key;
                             $scope.masterkey = $scope.pageState.currentApp.master_key;
+                            $scope.sign_masterkey = $filter('signify')($scope.pageState.currentApp.master_key, 'master');
+                            $scope.sign_appkey = $filter('signify')($scope.pageState.currentApp.app_key); 
                         }
                     });
                     $scope.apps = data;
@@ -40,6 +44,15 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$com
             $http.post('/1/signout').success(function(data) {
                 location.reload();
             });
+        }
+        // 2017-03-24 output undefined variables as is(surrounded by double curl braces)
+        $scope.mustache = function(val){
+          if ( typeof $scope[val] == 'undefined' ){
+            return '{{' + val + '}}';
+          }
+          else {
+            return $scope[val];
+          }
         }
 
         window.addEventListener("message", receiveMessage, false);
@@ -268,4 +281,15 @@ angular.module('app').directive('lcComment',['$compile',function($compile){
 //     };
 // });
 
+// 2017-03-22 LC-X-SIGN
+angular.module('app').filter('signify', ['md5',function (md5) {
+    return function (item,type) {
+      var suffix = '';
+      var ts = Date.now() || new Date().getTime();
+      if ( type === 'master' ){
+        suffix = ',master';
+      }
+      return md5(ts + item) + ',' + ts + suffix;
+    };
+}]);
 

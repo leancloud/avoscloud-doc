@@ -1,4 +1,5 @@
 {% import "views/_helper.njk" as docs %}
+{% import "views/_parts.html" as include %}
 # 第三方平台账号登录组件（SNS）开发指南
 
 AVOSCloudSNS 是一个非常轻量的模块, 可以用最少一行代码就可以实现社交平台用户登录.
@@ -35,6 +36,7 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 你需要做的很简单，以新浪微博为例：
 
 ```objc
+// 添加至 application:didFinishLaunchingWithOptions: 方法中，放在 [AVOSCloud setApplicationId:clientKey:] 之后
 [AVOSCloudSNS setupPlatform:AVOSCloudSNSSinaWeibo withAppKey:@"<WEIBO-APP-ID>" andAppSecret:@"<WEIBO-APP-KEY>" andRedirectURI:@""];
 
 [AVOSCloudSNS loginWithCallback:^(id object, NSError *error) {
@@ -203,6 +205,8 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 **上述方法同样适用于 AVUser 的子类。**
 
+{{ include.retrieveAuthData(node, "### 获取 authData") }}
+
 ### 手动显示登录界面
 
 上面的例子中都是自动显示登录界面，如果需要实现自定义显示方式，可以使用方法 `loginManuallyWithCallback:`，例如：
@@ -237,7 +241,7 @@ if (vc) {
 
 ### WebView 授权
 
-首先需要在 {% if node=='qcloud' %}**应用控制台** > **组件** > **社交**{% else %}[应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns){% endif %} 中间配置相应平台的 **AppKey** 与 **AppSecret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的「App 管理中心」，比如新浪开放平台。
+首先需要在 {% if node=='qcloud' %}**应用控制台** > **组件** > **社交**{% else %}[应用控制台 > 组件 > 社交](/dashboard/devcomponent.html?appid={{appid}}#/component/sns){% endif %} 中间配置相应平台的 **AppKey** 与 **AppSecret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的「App 管理中心」，比如新浪开放平台。
 
 之后需要在 `AndroidManifest.xml` 中间添加相应的 Activity：
 
@@ -501,3 +505,5 @@ final SNSCallback myCallback = new SNSCallback() {
       plat.SSOSetting(true);
       plat.showUser(null);
 ```
+
+{{ include.retrieveAuthData(node, "### 获取 authData") }}

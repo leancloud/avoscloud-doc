@@ -1,3 +1,4 @@
+{% import "views/_helper.njk" as docs %}
 # 在微信小程序中使用 {% if node == 'qcloud' %}TAB{% else %}LeanCloud{% endif %}
 
 微信小程序是一个全新的跨平台移动应用平台，LeanCloud 为小程序提供一站式后端云服务，为你免去服务器维护、证书配置等繁琐的工作，大幅降低你的开发和运维成本。本文说明了如何在微信小程序中使用 LeanCloud 提供的各项服务。
@@ -32,7 +33,8 @@
 3. 在 `app.js` 中使用 `const AV = require('./libs/av-weapp-min.js');` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。 
 4. 在 `app.js` 中初始化应用： 
   ```javascript 
-  AV.init({ 
+  // LeanCloud 应用的 ID 和 Key
+  AV.init({ 
     appId: '{{appid}}', 
     appKey: '{{appkey}}', 
   }); 
@@ -59,14 +61,14 @@ Page({
   },
 });
 ```
-
-<pre ng-non-bindable><code class="lang-html">&lt;!-- pages/todos/todos.wxml --&gt;
-&lt;block wx:for=&quot;&lbrace;&lbrace;todos&rbrace;&rbrace;&quot; wx:for-item=&quot;todo&quot; wx:key=&quot;objectId&quot;&gt;
-  &lt;text data-id=&quot;&lbrace;&lbrace;todo.objectId}}&quot;&gt;
-    &lbrace;&lbrace;todo.content}}
-  &lt;/text&gt;
-&lt;/block&gt;
-</code></pre>
+```html
+<!-- pages/todos/todos.wxml -->
+<block wx:for="{{ docs.mustache('todos','',{},true) }}" wx:for-item="todo" wx:key="objectId">
+  <text data-id="{{ docs.mustache('todo.objectId','',{},true) }}">
+    {{ docs.mustache('todo.content','',{},true) }}
+  </text>
+</block>
+```
 
 使用 `include` 得到的嵌套对象也可以直接在视图层通过 `.` 访问到：
 
@@ -85,10 +87,10 @@ Page({
   },
 });
 ```
-
-<pre ng-non-bindable><code class="lang-html">&lt;!-- pages/student/student.wxml --&gt;
-&lt;image src="&lbrace;&lbrace;student.avatar.url}}&quot;&gt;&lt;/image&gt;
-</code></pre>
+```html
+<!-- pages/student/student.wxml -->
+<image src="{{ docs.mustache('student.avatar.url','','',true) }}"></image>
+```
 
 ### 文件存储
 
@@ -187,9 +189,7 @@ AV.User.loginWithWeapp().then(user => {
 }).catch(console.error);
 ```
 
-<div class="callout callout-info">
-验证手机号码功能要求在控制台的应用设置中启用「用户注册时，向注册手机号码发送验证短信」。
-</div>
+{{ docs.note("验证手机号码功能要求在控制台的应用设置中启用「用户注册时，向注册手机号码发送验证短信」。") }}
 
 #### 绑定现有用户
 如果你的应用已经在使用 LeanCloud 的用户系统，或者用户已经通过其他方式注册了你的应用（比如在 Web 端通过用户名密码注册），可以通过在小程序中调用 `AV.User#linkWithWeapp()` 来关联已有的账户：
@@ -298,7 +298,7 @@ npm install
 
 ```
 lean login
-lean checkout
+lean switch
 ```
 
 启动项目：

@@ -97,7 +97,7 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
     </tr>
     <tr>
       <td>/1.1/login</td>
-      <td>GET</td>
+      <td>POST</td>
       <td>用户登录</td>
     </tr>
     <tr>
@@ -1806,7 +1806,7 @@ curl -X DELETE \
 
 ### 连接用户账户和第三方平台
 
-LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾讯微博，这样就允许你的用户直接用他们现有的账号 id 来登录你的 App。通过 `signup` 或者更新的 endpoint，并使用 `authData` 字段来提供你希望连接的服务的授权信息就可以做到。一旦关联了某个服务，`authData` 将被存储到你的用户信息里，并通过登录即可重新获取。
+LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾讯微博，这样就允许你的用户直接用他们现有的账号 id 来登录你的 App。通过 `signup` 或者更新的 endpoint，并使用 `authData` 字段来提供你希望连接的服务的授权信息就可以做到。一旦关联了某个服务，`authData` 将被存储到你的用户信息里。如需重新获取该内容，请参考 [获取 authData](获取_authData)。
 
 `authData` 是一个普通的 JSON 对象，它所要求的 key 根据 service 不同而不同，具体要求见下面。每种情况下，你都需要自己负责完成整个授权过程(一般是通过 OAuth 协议，1.0 或者 2.0) 来获取授权信息，提供给连接 API。
 
@@ -1875,7 +1875,9 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
   }
 ```
 
-{# 同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上 **允许缺失值** 选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。#}要保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上，就需要为 `_User` 表中的 `authData.第三方平台名称.uid` 建立唯一索引；另外当 `_User` 表的记录数量超过了 1 万条，用户也无法自行创建该索引。这两种操作都需要提交工单或联系 <support@leancloud.rocks> 来创建。
+{# 同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上 **允许缺失值** 选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。#}要保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上，就需要为 `_User` 表中的 `authData.第三方平台名称.uid` 建立唯一索引；另外当 `_User` 表的记录数量超过了 1 万条，用户也无法自行创建该索引。这两种操作都需要提交工单或联系 {{ include.supportEmail() }} 来创建。
+
+{{ include.retrieveAuthData(node, "#### 获取 authData") }}
 
 #### 注册和登录
 
@@ -2684,16 +2686,18 @@ curl -X POST \
 
 ### 数据查询 API
 
-统计 API 可以获取一个应用的统计数据。因为统计数据的隐私敏感性，统计数据查询 API 必须使用 master key 的签名方式鉴权，请参考 [更安全的鉴权方式](#更安全的鉴权方式) 一节。
+统计 API 可以获取一个应用的统计数据。因为统计数据的隐私敏感性，统计数据查询 API 必须使用 master key 的签名方式鉴权。
 
-获取某个应用的基本信息，包括各平台的应用版本，应用发布渠道。（注意：下面示例直接使用带 `master` 标识的 X-LC-Key，不过我们推荐在实际使用中采用 [新鉴权方式](rest_api.html#更安全的鉴权方式) 加密，不要明文传递 Key。）
+获取某个应用的基本信息，包括各平台的应用版本，应用发布渠道：
 
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
+  -H "X-LC-Sign: {{ docs.mustache('sign_masterkey','') }}" \
   https://{{host}}/1.1/stats/appinfo
 ```
+
+注意：上面示例直接使用了更加安全的 [X-LC-Sign 鉴权方式](#更安全的鉴权方式)，避免以明文来传递 Key。
 
 返回的 JSON 数据：
 

@@ -453,8 +453,8 @@ AV.Object.register(Todo);
 ```js
   var query = new AV.Query('Todo');
   query.find().then(function (todos) {
-    todos.map(function(todo) {
-      todo['status'] = 1;
+    todos.forEach(function(todo) {
+      todo.set('status', 1);
     });
     return AV.Object.saveAll(todos);
   }).then(function(todos) {

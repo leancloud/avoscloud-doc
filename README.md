@@ -1,10 +1,6 @@
 # LeanCloud Documentation
 [![Build Status](https://travis-ci.org/leancloud/docs.svg)](https://travis-ci.org/leancloud/docs)
 [![devDependency Status](https://david-dm.org/leancloud/docs/dev-status.svg)](https://david-dm.org/leancloud/docs#info=devDependencies)
-[![Issue Stats](http://issuestats.com/github/leancloud/docs/badge/pr?style=flat)](http://issuestats.com/github/leancloud/docs)
-[![Issue Stats](http://issuestats.com/github/leancloud/docs/badge/issue?style=flat)](http://issuestats.com/github/leancloud/docs)
-
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/leancloud/docs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 LeanCloud 开发者文档
 

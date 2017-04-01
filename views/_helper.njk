@@ -37,26 +37,36 @@
   {%- endif %}
 {%- endmacro %}
 
-{% macro mustache(name, tag="code", attrs={"ng-non-bindable": null}) -%}
-  {% if tag | trim != "" -%}
-    {{ htmlTag(tag, attrs, "{{" + name + "}}") }}
+{% macro mustache(name, tag="code", attrs={"ng-non-bindable": null}, showEvenIfUndefined=false) -%}
+  {%- if tag | trim != "" -%}
+    {{ htmlTag(tag, attrs, "{{" + jsMustache(name, showEvenIfUndefined) + "}}") }}
   {%- else -%}
-    {% raw %}{{{% endraw %}{{name}}{% raw %}}}{% endraw %}
+    {% raw %}{{{% endraw %}{{jsMustache(name, showEvenIfUndefined)}}{% raw %}}}{% endraw %}
   {%- endif %}
+{%- endmacro %}
+
+{% macro jsMustache(name, showEvenIfUndefined) -%}
+  {%- if showEvenIfUndefined == true -%}
+    {{jsMustache_prefix}}mustache('{{name}}'){{jsMustache_suffix}}
+  {%- else -%}
+    {{name}}
+  {%- endif -%}
 {%- endmacro %}
 
 {% macro htmlTag(name="", attrs="", slot="") -%}
   {% if name | trim != "" -%}
-    <{{name}} {{ objectStringify(attrs) | trim }}>{{ slot | safe }}</{{name}}>
+    <{{name}}{{ objectStringify(attrs) }}>{{ slot | safe }}</{{name}}>
   {%- else -%}
     {{ slot | safe }}
   {%- endif %}
 {%- endmacro %}
 
 {% macro objectStringify(obj) -%}
-  {% for key, value in obj -%}
-    {% if value == null %}{{key}} {% else %}{{key}}="{{value}}" {% endif %}
-  {%- endfor %}
+  {%- if obj != '' -%}
+    {%- for key, value in obj -%}
+       {%- if value == null %} {{key}}{% else %} {{key}}="{{value}}"{% endif -%}
+    {%- endfor -%}
+  {%- endif %}
 {%- endmacro %}
 
 {% macro bubbleWrap() -%}
