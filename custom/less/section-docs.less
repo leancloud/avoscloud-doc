@@ -72,32 +72,36 @@ body {
 .doc-content {
 
   .section-title {
-    margin: 36px 0;
-    font-size: 28px;
-    color: #666;
-    position: relative;
     overflow: hidden;
-    padding: 0;
     text-align: center;
-    z-index: 1;
+    margin: 36px 0;
+    padding: 0;
 
-    &:before,
-    &:after {
-      position: absolute;
-      top: 51%;
-      overflow: hidden;
-      width: 50%;
-      height: 1px;
-      content: '\a0'!important;
-      background-color: #ddd;
-    }
+    span {
+      display: inline-block;
+      padding: 0 16px;
+      position: relative;
+      font-size: 28px;
+      color: #666;
 
-    &:after {
-      margin-left: 2%;
-    }
-    &:before {
-      margin-left: -52%;
-      text-align: right;
+      &:before,
+      &:after {
+        background: #ddd;
+        content: "";
+        display: block;
+        height: 1px;
+        position: absolute;
+          top: 50%;
+        width: 400%;
+      }
+
+      &:before {
+        right: 100%;
+      }
+
+      &:after {
+        left: 100%;
+      }
     }
   }
 
