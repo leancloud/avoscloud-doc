@@ -494,6 +494,7 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华
 ```
 dependencies {
     compile ('cn.leancloud.android:avoscloud-mixpush:v3.+@aar')
+    compile ('com.meizu.flyme.internet:push-internal-publish:3.3.170123@aar')
 }
 ```
 
