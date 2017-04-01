@@ -6,8 +6,9 @@
 
 - Unity 5.3.x 以上的版本
   这个是因为在 Unity 5.3 之后，官方使用 UnityWebRequest 取代了原有的 WWW 类作为 HTTP 请求的客户端，因此 LeanCloud SDK 在实时通信上是使用了 UnityWebRequest 来获取云端分配的 WebSocket 链接地址。
+
 - Visual Studio 2015 以上的版本
-微软针对 Unity 有一个工具包可以让 Unity 和 Visual Studio 联调，详细请看[使用 Visual Studio Tools for Unity](https://msdn.microsoft.com/zh-cn/library/dn940020.aspx)，因此建议用户在 Winodows 上开发 Unity 的体验会更好，当然在 Mac OS 以及其他操作系统上开发也没有任何问题。
+  微软针对 Unity 有一个工具包可以让 Unity 和 Visual Studio 联调，详细请看[使用 Visual Studio Tools for Unity](https://msdn.microsoft.com/zh-cn/library/dn940020.aspx)，因此建议用户在 Winodows 上开发 Unity 的体验会更好，当然在 Mac OS 以及其他操作系统上开发也没有任何问题。
 
 ### 您所需要掌握的基础知识
 
@@ -29,7 +30,9 @@ LeanCloud 实时消息是基于 WebSocket 和私有通讯协议实现的一套�
 ## 安装 SDK
 
 ### 下载和导入
-开发者需要从：https://github.com/leancloud/realtime-SDK-dotNET/releases 这里下载最新版本的 SDK，并且把里面包含的所有的 Dll 文件都引入到 Unity 的 Assets/LeanCloud 文件夹（在 Assets 下面新建一个 LeanCloud 文件夹用来存放 LeanCloud SDK）下即可。
+开发者需要从：https://github.com/leancloud/realtime-SDK-dotNET/releases 这里下载最新版本的 SDK，为方便开发者访问我们提供了[SDK 镜像下载站](https://releases.leanapp.cn/#/leancloud/realtime-SDK-dotNET/releases)，下载的时候请选择最新版本即可，例如 `LeanCloud-Unity-Realtime-SDK-20170330.3.zip` 这个文件命名的含义就是：这个版本是 2017 年 3 月 30 日当天的第 3 次自动化发布。
+
+下载之后解压，把里面包含的所有的 Dll 文件（除去 UnityEngine.dll）都引入到 Unity 的 Assets/LeanCloud 文件夹（在 Assets 下面新建一个 LeanCloud 文件夹用来存放 LeanCloud SDK）下即可。
 
 ### 初始化
 初始化**必须**在 Unity Editor 上将 AVInitializeBehaviour 挂载在某一个 GameObject 下，如下图：
@@ -378,7 +381,7 @@ public void KickXuShu()
 }
 ```
 
-其他在线成员会收到 ``AVIMClient.OnMembersLeft`，而徐庶本人会收到 `AVIMClient.OnKicked`
+其他在线成员会收到 `AVIMClient.OnMembersLeft`，而徐庶本人会收到 `AVIMClient.OnKicked`。
 
 
 ### 私聊案例 - 曹操三问谋士
@@ -409,7 +412,7 @@ public void CreatePrivateConversation()
 
 上述代码跟刘备创建「桃园」时的区别只有一个，刘备传入的是关羽和张飞两个人的 client Id  作为一个集合参数，曹操这里传入的是程昱这一个人单个的 member 的 client Id ，因此本质上我们依然只能通过成员数量来判断是群聊还是单聊，为了日后更好区分单聊和私聊，我们推荐开发者在创建对话的时候给对话赋予一个自定义的属性，来标记这个对话的类型：
 
-```
+```cs
 caocao.CreateConversationAsync(member: "2002",
     name: "曹操与程昱的私聊",
     options: new Dictionary<string, object>()
