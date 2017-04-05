@@ -6,7 +6,7 @@
 {% endif %}
 另外，离线分析仅支持 `SELECT` 语句，不支持 `UPDATE`、`INSERT`、`DELETE` 等语句，所以它不会更新或修改数据源，开发者可以放心使用。
 
-离线数据分析页面的访问路径为 {% if node=='qcloud' %}**控制台** > **存储** > **离线数据分析**{% else %}[控制台 > 存储 > 离线数据分析](/dataquery.html?appid={{appid}}#/){% endif %}。如果该功能不能正常使用，请通过 [工单系统](https://leanticket.cn/t/leancloud) 或 [用户论坛](https://forum.leancloud.cn) 联系我们。
+离线数据分析页面的访问路径为 {% if node=='qcloud' %}**控制台** > **存储** > **离线数据分析**{% else %}[控制台 > 存储 > 离线数据分析](/dataquery.html?appid={{appid}}#/){% endif %}。请注意，该功能仅对商用版和企业版应用开放，开发版应用是无法使用的。如果您的商用版／企业版应用不能正常使用该功能，请通过 [工单系统](https://leanticket.cn/t/leancloud) 或 [用户论坛](https://forum.leancloud.cn) 联系我们。
 
 
 ## 限制
