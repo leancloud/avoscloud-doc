@@ -338,8 +338,13 @@
 
 ## 403
 
-* 信息 - `Forbidden to xxx by class permissions`
-* 含义 - 操作被禁止，因为 [Class 权限限制](./data_security.html#Class_级别的_ACL)。
+分为两类：
+
+* 信息 - `Forbidden to read/write by class permissions`
+* 含义 - 操作被禁止，因为 Class 表没有打开「读」或者「写」的权限。进入 **应用控制台** > **存储**，点击相应的 Class，从右侧选择 **其他** 下拉菜单，进入 **权限管理** 来调整。
+
+* 信息 - `The user cannot be altered by a client without the session.`
+* 含义 - 用户没有登录，无法修改用户信息。
 
 
 ## 429
@@ -377,6 +382,11 @@
 
 * 信息 - `complete a TCP connection to the upstream server, but did not receive a timely HTTP response.`
 * 含义 -  Web 服务器与后端应用服务器通讯失败，一般是某个应用服务器异常，Web 服务器会在几秒后移除此实例。如果频繁遇到 524，请联系我们处理。
+
+## 529
+
+* 信息 - `Exceeded Limit`
+* 含义 -  当前 IP 超过并发限制。使用云引擎时遇到 http 响应码为 529 的错误页面，解决方案请参考 [Exceeded Limit](leanengine_faq.html#Exceeded_Limit)。
 
 {% if node != 'qcloud' and node != 'us' %}
 ## 600

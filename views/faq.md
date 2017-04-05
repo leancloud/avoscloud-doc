@@ -1,4 +1,5 @@
 {% import "views/_data.njk" as data %}
+{% import "views/_parts.html" as include %}
 # 常见问题一览
 
 ## 账户和平台常见问题
@@ -12,7 +13,7 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 * 到免费的[用户社区](https://forum.leancloud.cn/) 进行提问。
 * 购买 [技术支持](/bill.html#/bill/general)，进入 [工单系统](https://leanticket.cn/t/leancloud) 来提交问题。
-* 发送邮件到 <support@leancloud.rocks> 获取帮助。
+* 发送邮件到 {{ include.supportEmail() }} 获取帮助。
 * 紧急情况拨打客服电话：+86-13146446722。
 
 ### 计费是基于账号还是应用
@@ -55,7 +56,7 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 * 无论采取哪一种付款方式，只有当累计支付金额达到人民币 **1,000** 后系统才允许申请，单笔开票金额不低于人民币**壹仟元**。
 
-* 如有特别需求，如按月度账单金额结算，或先开发票后付款，请联系我们的市场部专员 <business@leancloud.rocks>，QQ 号：2607695496。
+* 如有特别需求，如按月度账单金额结算，或先开发票后付款，请联系我们的市场部专员 {{ include.generalEmail() }}，QQ 号：2607695496。
 
 * 开具发票时段为每月 10 日至 30 日，发票以快递寄送。如需开具增值税专用发票，也请联系我们的市场部专员。
 
@@ -111,11 +112,11 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 我们每个月提供 100 万次的免费额度，超过的部分才收费。推送服务和统计服务免费使用，并不占用免费额度。
 
-默认情况下，每个应用同一时刻最多可使用的工作线程数为 30，即同一时刻最多可以同时处理 30 个数据请求。**我们会根据应用运行状况以及运维需要调整改值**。如果需要提高这一上限，请写信至 <support@leancloud.rocks> 进行申请。
+默认情况下，每个应用同一时刻最多可使用的工作线程数为 30，即同一时刻最多可以同时处理 30 个数据请求。**我们会根据应用运行状况以及运维需要调整改值**。如果需要提高这一上限，请写信至 {{ include.supportEmail() }} 进行申请。
 
 ### API 调用次数的计算
 
-对于数据存储来说，每次 `create` 和 `update` 一个对象的数据算 1 次请求，如调用 1 次 `object.saveInBackground` 算 1 次 API 请求。在 API 调用失败的情况下，如果是由于 [应用流控超限（错误码 429）](https://leancloud.cn/docs/error_code.html#_429) 而被云端拒绝，则**不会**算成 1 次请求；如果是其他原因，例如 [权限不够（错误码 430）](https://leancloud.cn/docs/error_code.html#_403)，那么仍会算为 1 次请求。
+对于数据存储来说，每次 `create` 和 `update` 一个对象的数据算 1 次请求，如调用 1 次 `object.saveInBackground` 算 1 次 API 请求。在 API 调用失败的情况下，如果是由于 [应用流控超限（错误码 429）](error_code.html#_429) 而被云端拒绝，则**不会**算成 1 次请求；如果是其他原因，例如 [权限不够（错误码 430）](error_code.html#_403)，那么仍会算为 1 次请求。
 
 **一次请求**<br/>
 - `create`
@@ -143,15 +144,6 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 请访问 [API 在线测试工具](/dashboard/apionline/index.html)。
 
-### 403 错误
-
-403 错误分为两类：
-
-* 错误信息 `The user cannot be altered by a client without the session.`：用户没有登录，无法修改用户信息。
-* 错误信息 `Forbidden to write by class permissions.` 或者 `Forbidden to read by class permissions.`：想要修改的 class 表没有打开「读」或者「写」的权限。在 数据管理平台，点击相应的 class，在右侧选择 **其他** 下拉菜单，进入 **权限管理** 来设置 class 权限。
-
-![image](images/permission.png)
-
 ### Unauthorized 错误
 
 应用 API 授权失败，请检查是否初始化了 App Id 和 App Key。
@@ -177,7 +169,6 @@ REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对
 
 使用各平台 SDK 的 AVQuery 对象提供的 `matchesRegex` 方法（Android SDK 用 `whereMatches` 方法）。
 
-
 ### 应用内用户的密码需要加密吗
 
 不需要加密密码，我们的服务端已使用随机生成的 salt，自动对密码做了加密。 如果用户忘记了密码，可以调用 `requestResetPassword` 方法（具体查看 SDK 的 AVUser 用法），向用户注册的邮箱发送邮件，用户以此可自行重设密码。 在整个过程中，密码都不会有明文保存的问题，密码也不会在客户端保存，只是会保存 sessionToken 来标示用户的登录状态。
@@ -197,15 +188,11 @@ REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对
 
 前面两种很好理解，就是按大小或者英文字母的顺序来排列。场景比如，你的某一张表记录着许多商品，其中一个字段是商品价格。以该字段建好索引后，可以加快在查询时，相对应的正序或者倒序数据的返回速度。第三种，是适用于地理位置经纬度的数据（控制台上的 GeoPoint 型字段）。移动场景中的常见需求都可能会用到地理位置，比如查找附近的其他用户。这时候就可以利用 2dsphere 来加快查询。
 
-原则：数据量少时，不建索引。多的时候请记住，因为索引也占空间，以此来换取更少的查询时间。针对每张表的情况，写少读多就多建索引, 写多读少就少建索引。
+原则：数据量少时，不建索引。多的时候请记住，因为索引也占空间，以此来换取更少的查询时间。针对每张表的情况，写少读多就多建索引，写多读少就少建索引。
 
-{% if node=='qcloud' %}
-操作：进入 **控制台 > 存储**，选定一张表之后，点击右侧的 **其他**下拉菜单，然后选择 **索引**，然后根据你的查询需要建立好索引。
-{% else %}
-操作：进入[控制台 > 存储](/data.html?appid={{appid}}#/_File)，选定一张表之后，点击右侧的 **其他** 下拉菜单，然后选择 **索引**，然后根据你的查询需要建立好索引。
-{% endif %}
+操作：进入 {% if node=='qcloud' %}**控制台 > 存储**{% else %}[控制台 > 存储](/data.html?appid={{appid}}#/_File){% endif %}，选定一张表之后，点击右侧的 **其他**下拉菜单，然后选择 **索引**，然后根据你的查询需要建立好索引。
 
-提示：数据表的默认四个字段 `objectId`、`ACL`、`createdAt`、`updatedAt` 是自带索引的，但是在勾选时，可以作为联合索引来使用。并且如果单表数据超过 1 万条以上，请将 App Id 和查询语句发送到 <support@leancloud.rocks>，由我们来创建索引。
+提示：数据表的默认四个字段 `objectId`、`ACL`、`createdAt`、`updatedAt` 是自带索引的，但是在勾选时，可以作为联合索引来使用。并且如果单表数据超过 1 万条以上，请将 App Id 和查询语句发送到 {{ include.supportEmail() }}，由我们来创建索引。
 
 ### LeanCloud 查询支持 `Sum`、`Group By`、`Distinct` 这种函数吗？
 LeanCloud 数据存储的查询接口不支持这些函数，可以查询到客户端后，在客户端中自己写逻辑进行这些操作。
@@ -217,11 +204,14 @@ LeanCloud 数据存储的查询接口不支持这些函数，可以查询到客�
 
 ### 默认值的查询结果为什么不对
 
-这是默认值的限制。MongoDB 本身是不支持默认值，我们提供的默认值只是应用层面的增强，对于老数据只是在查询后做的一个「假象」。
-这里有两种解决方案：
+这是默认值的限制。MongoDB 本身是不支持默认值，我们提供的默认值只是应用层面的增强，对于老数据只是在查询后做了展现层的优化。有两种解决方案：
 
-1.对老的数据做一次更新，查询出 key 不存在（whereDoesNotExist）的记录，再更新回去。
-2.查询条件加上 or 查询，or key 不存在（whereDoesNotExist）。
+1. 对老的数据做一次更新，查询出 key 不存在（whereDoesNotExist）的记录，再更新回去。
+2. 查询条件加上 or 查询，or key 不存在（whereDoesNotExist）。
+
+### User 表中有 authData 数据，但是当前登录用户无法获取 authData 数据
+
+{{ include.retrieveAuthData(node) }}
 
 ## 控制台相关
 
