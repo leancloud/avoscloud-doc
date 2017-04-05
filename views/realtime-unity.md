@@ -796,7 +796,7 @@ websocket<={"uid":"_6jfc+4KT7KtkEgw8lJnAA","t":1490929028400,"i":-65533,"cmd":"a
 {{ docs.alert("注意：不建议开发者对 `_lctype` 使用负数值，而建议使用从 1 开始的正数。") }}
 
 
-### 1.消息子类化
+### 1. 消息子类化
 
 首先，我们定义一个表情消息类：
 
@@ -863,10 +863,10 @@ websocket=>{"msg":"{\"_lctype\":1,\"ecode\":\"U+1F601\"}","cid":"58ddc56e9250972
 
 `AVIMMessageClassName` 属性标记的就是最后 `_lctype` 的值，我们设定的是 1。
 
-### 2.Free-Schema 消息体（非子类化）
-根据开发者反应，诸多限制会让游戏开发者选择一种自由的格式去收发自定义的消息体，子类化只是满足的一部分的需求，因此我们也设计了一种方式让开发者可以自由定义消息格式并不一定要继承自 `AVIMMessage`，比如某一个需求是游戏当中需要发送一个二进制消息的格式，我们以此为案例从自定义消息类型声明，发送消息，以及接收消息三个步骤来实现这个需求。
+### 2. Free-Schema 消息体（非子类化）
+我们了解到诸多限制会让游戏开发者选择一种自由的格式去收发自定义的消息体，子类化只是满足了一部分需求，因此我们也设计了一种方式，让开发者可以自由定义消息格式而并不一定要继承自 `AVIMMessage`，比如在游戏当中需要发送一个二进制格式的消息，我们按照自定义消息类型声明、发送消息、以及接收消息三个步骤来实现这个需求。
 
-#### 2.1消息字典
+#### 2.1 消息字典
 为了方便开发者自由的使用 `IDictionary<string,object>` 作为消息体，`AVIMMessage` 默认提供了一个构造函数:
 
 ```cs
@@ -877,7 +877,7 @@ websocket=>{"msg":"{\"_lctype\":1,\"ecode\":\"U+1F601\"}","cid":"58ddc56e9250972
 public AVIMMessage(IDictionary<string, object> body);
 ```
 
-`body` 里面的键值对就会作为消息体发送出去。另外需要格外强调的是 `body` 里面的内容会按照[数据类型](https://leancloud.cn/docs/rest_api.html#数据类型)进行 JSON 格式转化，而 SDK 会在接收到字典之后，自动做一次反序列化，例如如下消息:
+`body` 里面的键值对就会作为消息体发送出去。另外需要格外强调的是 `body` 里面的内容会按照 [数据类型](/rest_api.html#数据类型) **进行 JSON 格式转化**，而 SDK 在接收到字典之后，会自动做一次反序列化，例如如下消息：
 
 ```cs
 IDictionary<string, object> messageBody = new Dictionary<string, object>()
@@ -892,7 +892,7 @@ var message = new AVIMMessage(messageBody);
 convsersation.SendMessageAsync(message);
 ```
 
-接收的时候直接读取即可:
+接收的时候直接读取即可：
 
 ```cs
 private void OnMessageReceived(object sender, AVIMMesageEventArgs e)
@@ -905,7 +905,8 @@ private void OnMessageReceived(object sender, AVIMMesageEventArgs e)
 ```
 
 
-#### 2.2自定义消息类型声明
+#### 2.2 自定义消息类型声明
+
 参考如下定义，我们声明了一个二进制消息：
 
 ```cs
@@ -921,7 +922,7 @@ public class BinaryMessage
     /// <param name="data"></param>
     public BinaryMessage(byte[] data)
     {
-        //用 Base64 编码，这里也可以选择其他的编码方式
+        // 用 Base64 编码，这里也可以选择其他的编码方式
         dataString = System.Convert.ToBase64String(data);
     }
 
@@ -942,7 +943,7 @@ public class BinaryMessage
 ```
 
 ##### 发送自定义消息
-假设我们发送的二进制内容是一个字符串：“I love Unity”，那么使用这个类型并且发送这个类型消息的代码如下：
+假设我们发送的二进制内容是一个字符串「I love Unity」，那么使用这个类型并且发送这个类型消息的代码为：
 
 ```cs
 private Task SendBinaryMessageAsync()
@@ -956,12 +957,14 @@ private Task SendBinaryMessageAsync()
 ```
 
 打开日志监听可以看见 websocket 发送的内容如下：
+
 ```json
 websocket=>{"msg":"{\"data\":\"SSBsb3ZlIFVuaXR5\",\"myType\":\"bin\"}","cid":"58d4c2472e9af6631e10092f","r":true,"i":-65532,"cmd":"direct","appId":"021h1hbtd5shlz38pegnpkmq9d3qf8os1vt0nef4f2lxjru8","peerId":"junwu"}
 ```
 
 ##### 接收方获取自定义消息
-接收方通过订阅 `AVIMClient.OnMessageReceived` 事件来监听消息的接受:
+
+接收方通过订阅 `AVIMClient.OnMessageReceived` 事件来监听消息的接收:
 ```cs
 private void AVIMClient_OnMessageReceived(object sender, AVIMMesageEventArgs e)
 {
@@ -1022,7 +1025,7 @@ public void QueryMessageHistory()
 `afterTimeStampPoint`|DateTime?|拉取截止到 `afterTimeStampPoint` 时间戳（不包含）|`conversation.QueryMessageAsync(afterTimeStampPoint:DateTime.Now.AddDays(2))`
 
 ## 鉴权与签名
-实时通讯系统中往往会存在一定的管理需求，例如游戏中 GM 会禁言某一些不良行为的玩家，或者说不允许某一个玩家加入到某个频道，在 LeanCloud 实时通讯中采用的签名鉴权的方式，关于签名鉴权的流程开发者一定要详细阅读如下内容：[权限和认证](https://leancloud.cn/docs/realtime_v2.html#权限和认证),而在 SDK 中，开发者需要通过实现 `ISignatureFactory` 接口，并且在初始化的时候指定给 `AVRealtime` ：
+实时通讯系统中往往会存在一定的管理需求，例如游戏中 GM 会禁言某一些不良行为的玩家，或者说不允许某一个玩家加入到某个频道。LeanCloud 实时通讯采用签名鉴权的方式，请开发者务必详细了解 [权限和认证](realtime_v2.html#权限和认证)。而在 SDK 中，开发者需要通过实现 `ISignatureFactory` 接口，并且在初始化的时候指定给 `AVRealtime`：
 
 ### 云引擎签名实例
 为了配合如下代码的运行，首先开发者需要部署：[LeanCloud 实时通信云引擎签名 Demo](https://github.com/leancloud/realtime-messaging-signature-cloudcode) 到您应用的云引擎中。
@@ -1099,8 +1102,9 @@ var config = new AVRealtime.Configuration()
 var realtime = new AVRealtime(config);
 ```
 
-如此做就实现了云引擎对聊天签名鉴权的操作。
-开发者可以在云引擎的云函数里面实现自己的鉴权逻辑，谁可以加入对话，谁可以踢人加人都有云函数返回的签名是否正确来判断，如果允许就返回一个符合算法的签名，LeanCloud 云端经过比对签名就可以放行，而开发者的云函数返回了一个错误的签名，比如随便一个字符串“no!”，这样 SDK 会带着这个签名去 LeanCloud 云端请求，而 LeanCloud 云端发现签名不匹配就会拒绝这次请求。
+按照以上步骤就能实现云引擎对聊天签名鉴权的操作。
+
+开发者可以使用云引擎的云函数来实现自己的鉴权逻辑——谁可以加入对话、谁可以踢人加人，都由云函数返回的签名是否正确来判断，如果允许就返回一个符合算法的签名，LeanCloud 云端经过比对签名就可以放行，而开发者的云函数返回了一个错误签名时，比如随便一个字符串「no!」，这样 SDK 会带着这个签名去 LeanCloud 云端请求，云端发现签名不匹配便会拒绝这次请求。
 
 
 ## 常见问题
