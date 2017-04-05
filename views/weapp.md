@@ -33,7 +33,8 @@
 3. 在 `app.js` 中使用 `const AV = require('./libs/av-weapp-min.js');` 获得 `AV` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。 
 4. 在 `app.js` 中初始化应用： 
   ```javascript 
-  AV.init({ 
+  // LeanCloud 应用的 ID 和 Key
+  AV.init({ 
     appId: '{{appid}}', 
     appKey: '{{appkey}}', 
   }); 

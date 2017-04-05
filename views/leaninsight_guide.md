@@ -1,3 +1,4 @@
+{% import "views/_helper.njk" as docs %}
 # 离线数据分析指南
 
 针对大规模数据的分析任务一般都比较耗时。LeanCloud 为开发者提供了部分兼容 SQL 语法的离线数据分析功能。所谓「离线分析」，是指运行分析程序的机器和服务 API 请求的机器是分开的，这样可以尽量减少线上集群的压力，也就是说，使用离线分析并不会影响或牺牲线上正式数据的访问性能。
@@ -6,7 +7,10 @@
 {% endif %}
 另外，离线分析仅支持 `SELECT` 语句，不支持 `UPDATE`、`INSERT`、`DELETE` 等语句，所以它不会更新或修改数据源，开发者可以放心使用。
 
-离线数据分析页面的访问路径为 {% if node=='qcloud' %}**控制台** > **存储** > **离线数据分析**{% else %}[控制台 > 存储 > 离线数据分析](/dataquery.html?appid={{appid}}#/){% endif %}。如果该功能不能正常使用，请通过 [工单系统](https://leanticket.cn/t/leancloud) 或 [用户论坛](https://forum.leancloud.cn) 联系我们。
+{% call docs.noteWrap() -%}
+离线数据分析功能（ {% if node=='qcloud' %}**控制台** > **存储** > **离线数据分析**{% else %}[控制台 > 存储 > 离线数据分析](/dataquery.html?appid={{appid}}#/){% endif %}）**仅向商用版和企业版应用开放**，开发版应用无法使用；如果商用版和企业版应用无法正常使用该功能，请通过 [工单系统](https://leanticket.cn/t/leancloud) 或 [用户论坛](https://forum.leancloud.cn) 联系我们。
+{%- endcall %}
+
 
 
 ## 限制
