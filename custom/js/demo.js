@@ -17,6 +17,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
       'ios': 'iOS',
       'android': 'Android',
       'unity': 'Unity',
+      'python': 'Python',
       'winphone': 'Windows Phone',
       'web': 'Web',
       'node': 'Node.js',
@@ -110,6 +111,14 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         mdPath: 'https://github.com/leancloud/android-sms-demo',
         type: 'android',
         qcloudShow: false
+      }],
+      'python': [{
+        name: 'Flask Todo Demo',
+        desc: 'Flask Todo Demo 是一个云引擎的示例项目。它运行在 Python 3 上，依赖 flask 和 LeanCloud Python SDK。点击详情来查看在线 Demo。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/flask-todo-demo',
+        type: 'python',
+        qcloudShow: true
       }],
       'web': [{
         name: '数据存储入门',
