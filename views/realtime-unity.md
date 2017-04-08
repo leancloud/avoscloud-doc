@@ -69,7 +69,7 @@ LeanCloud 实时消息中的客户端是指游戏中客户端与云端之间的�
 - 游戏中好友一对一的私聊
 - 战场或副本内的临时群聊
 
-### 帮派和工会案例「桃园三结义」
+### 帮派和工会案例 - 桃园三结义
 
 帮派（公会）是一个持久存在的、某些玩家共有的一个频道，它具备以下特点：
 
@@ -798,57 +798,48 @@ websocket<={"uid":"_6jfc+4KT7KtkEgw8lJnAA","t":1490929028400,"i":-65533,"cmd":"a
 
 ### 1. 消息子类化
 
-首先，我们定义一个表情消息类：
+#### 1.1 继承 AVIMTypedMessage
+定义一个 `Emoji` 类:
 
 ```cs
 /// <summary>
 /// 自定义表情消息
 /// </summary>
-[AVIMMessageClassName(1)]
-public class Emoji : AVIMMessage
+[AVIMMessageClassName("Emoji")]
+public class Emoji: AVIMTypedMessage
 {
-    /// <summary>
-    /// 表情编号
-    /// </summary>
-    [AVIMMessageFieldName("eCode")]
-    public string ECode { get; set; }
-
-    /// <summary>
-    /// 构建消息体
-    /// </summary>
-    /// <returns></returns>
-    public override Task<AVIMMessage> MakeAsync()
-    {
-        this.Attribute("_lctype", 1);
-        this.Attribute("ecode", ECode);
-        return base.MakeAsync();
-    }
+    [AVIMMessageFieldName("Ecode")]
+    public string Ecode { get; set; }
 }
 ```
 
 然后在程序初始化的时候一定要注册这个子类：
 
 ```cs
-AVIMMessage.RegisterSubclass<Emoji>();
+avRealtime.RegisterMessageType<Emoji>();
 ```
 
 发送的时候如下：
 
 ```cs
-Emoji emojiMessage = new Emoji() { ECode = "U+1F601" };
+var emojiMessage = new Emoji()
+{
+    Ecode = "#e001",// 应用内置的表情编码
+};
 currentConveration.SendMessageAsync(emojiMessage);
 ```
 
 接收方代码如下：
 
 ```cs
-private void OnEmojiMessageReceived(object sender, AVIMMesageEventArgs e)
+private void OnMessageReceived(object sender, AVIMMesageEventArgs e)
 {
     if (e.Message is Emoji)
     {
         var emojiMessage = (Emoji)e.Message;
-        var ecode = emojiMessage.ECode;
+        var ecode = emojiMessage.Ecode;
         Debug.Log(string.Format("received emoji with code is {0}", ecode));
+        // 当接收方接收到了这条表情消息，可以在客户端做一些酷炫的 UI 展现
     }
 }
 ```
@@ -858,88 +849,137 @@ private void OnEmojiMessageReceived(object sender, AVIMMesageEventArgs e)
 可以打开日志查看：
 
 ```cs
-websocket=>{"msg":"{\"_lctype\":1,\"ecode\":\"U+1F601\"}","cid":"58ddc56e92509726c3dc3322","r":true,"i":-65533,"cmd":"direct","appId":"uay57kigwe0b6f5n0e1d4z4xhydsml3dor24bzwvzr57wdap","peerId":"1001"}
+websocket=>{"msg":"{\"GCode\":\"#e001\"}","cid":"58d4c2472e9af6631e10092f","r":true,"i":-65532,"cmd":"direct","appId":"021h1hbtd5shlz38pegnpkmq9d3qf8os1vt0nef4f2lxjru8","peerId":"1002"}
 ```
 
-`AVIMMessageClassName` 属性标记的就是最后 `_lctype` 的值，我们设定的是 1。
+#### AVIMTypedMessage 详解
+
+`AVIMTypedMessage` 的设计目的是提供了默认的基于 JSON 消息体的基类，例如 `AVIMTextMessage` 类对应的就是文本消息，而它的消息体则是如下格式的 JSON 字符串
+
+```json
+{\"_lctext\":\"text content\",\"_lctype\":-1}
+```
+
+因此 `AVIMTypedMessage` 的子类都会对 msg 字段进行 JSON 序列化和反序列化。
+
+#### 1.2 继承 AVIMMessage 
+
+为了更加开放的允许开发者自定义自己的消息类，SDK 提供了一个接口，只要开发者实现自定义的消息类实现了这个接口，这个消息就可以在 SDK 中发送并且在接受的时候返回的也是这个消息的实例。继续拿上面的表情消息做例子，这次我们定义为一个 V2 版本的表情消息:
+
+```cs
+[AVIMMessageClassName("EmojiV2")]
+public class EmojiV2 : AVIMMessage
+{
+    // 默认构造函数
+    public EmojiV2()
+    {
+
+    }
+    public EmojiV2(string ecode)
+    {
+        Content = ecode;
+    }
+}
+```
+十分重要的细节:**子类化的时候，子类必须有一个默认的构造函数，否则在注册的时候会跑出 ArgumentException 的错误**。
+
+注册子类:
+
+```cs
+avRealtime.RegisterMessageType<EmojiV2>();
+```
+
+发送的代码如下：
+
+```cs
+var emojiV2Message = new EmojiV2("#e001");
+conversation.SendMessageAsync(emojiV2Message);
+```
+
+通过日志我们可以看到它实际发送的内容如下：
+
+```json
+websocket=>{"msg":"#e001","cid":"58d4c2472e9af6631e10092f","r":true,"i":-65532,"cmd":"direct","appId":"021h1hbtd5shlz38pegnpkmq9d3qf8os1vt0nef4f2lxjru8","peerId":"1001"}
+```
 
 ### 2. Free-Schema 消息体（非子类化）
 我们了解到诸多限制会让游戏开发者选择一种自由的格式去收发自定义的消息体，子类化只是满足了一部分需求，因此我们也设计了一种方式，让开发者可以自由定义消息格式而并不一定要继承自 `AVIMMessage`，比如在游戏当中需要发送一个二进制格式的消息，我们按照自定义消息类型声明、发送消息、以及接收消息三个步骤来实现这个需求。
 
-#### 2.1 消息字典
-为了方便开发者自由的使用 `IDictionary<string,object>` 作为消息体，`AVIMMessage` 默认提供了一个构造函数:
 
-```cs
-/// <summary>
-/// 根据字典创建一个消息
-/// </summary>
-/// <param name="body"></param>
-public AVIMMessage(IDictionary<string, object> body);
-```
-
-`body` 里面的键值对就会作为消息体发送出去。另外需要格外强调的是 `body` 里面的内容会按照 [数据类型](/rest_api.html#数据类型) **进行 JSON 格式转化**，而 SDK 在接收到字典之后，会自动做一次反序列化，例如如下消息：
-
-```cs
-IDictionary<string, object> messageBody = new Dictionary<string, object>()
-{
-    {"key1","value1" },
-    {"key2",2 },
-    {"key3",true },
-    {"key4",DateTime.Now },
-    {"key5",new List<string>() { "str1","str2","str3"} },
-};
-var message = new AVIMMessage(messageBody);
-convsersation.SendMessageAsync(message);
-```
-
-接收的时候直接读取即可：
-
-```cs
-private void OnMessageReceived(object sender, AVIMMesageEventArgs e)
-{
-    if (e.Message.Body.ContainsKey("key4"))
-    {
-        var datetime = e.Message.Body["key4"] as DateTime;
-    }   
-}
-```
-
-
-#### 2.2 自定义消息类型声明
+#### 2.1 实现 IAVIMMessage 接口
 
 参考如下定义，我们声明了一个二进制消息：
 
 ```cs
-/// <summary>
+ /// <summary>
 /// 二进制消息
 /// </summary>
-public class BinaryMessage
+[AVIMMessageClassName("BinaryMessage")]
+public class BinaryMessage : IAVIMMessage
 {
-    private string dataString;
+    public BinaryMessage()
+    {
+
+    }
     /// <summary>
     /// 从 bytes[] 构建一条消息
     /// </summary>
     /// <param name="data"></param>
     public BinaryMessage(byte[] data)
     {
-        // 用 Base64 编码，这里也可以选择其他的编码方式
-        dataString = System.Convert.ToBase64String(data);
+        BinaryData = data;
     }
 
-    /// <summary>
-    /// 自行构建消息字典
-    /// </summary>
-    /// <returns></returns>
-    public AVIMMessage EncodeForSending()
+    public byte[] BinaryData { get; set; }
+
+    public string ConversationId
     {
-        var msgBody = new Dictionary<string, object>()
-        {
-            { "data" , dataString},
-            { "myType" , "bin"}
-        };
-        return new AVIMMessage(msgBody);
+        get; set;
     }
-}
+
+    public string FromClientId
+    {
+        get; set;
+    }
+
+    public string Id
+    {
+        get; set;
+    }
+
+    public long RcpTimestamp
+    {
+        get; set;
+    }
+
+    public long ServerTimestamp
+    {
+        get; set;
+    }
+
+    public IAVIMMessage Deserialize(string msgStr)
+    {
+        var spiltStrs = msgStr.Split(':');
+        this.BinaryData = System.Convert.FromBase64String(spiltStrs[1]);
+        return this;
+    }
+
+    public string Serialize()
+    {
+        return "bin:" + System.Convert.ToBase64String(this.BinaryData);
+    }
+
+    public bool Validate(string msgStr)
+    {
+        var spiltStrs = msgStr.Split(':');
+        return spiltStrs[0] == "bin";
+    }
+```
+
+注册子类:
+
+```cs
+realtime.RegisterMessageType<BinaryMessage>();
 ```
 
 ##### 发送自定义消息
@@ -951,33 +991,30 @@ private Task SendBinaryMessageAsync()
     var text = "I love Unity";
     var textBytes = System.Text.Encoding.UTF8.GetBytes(text);
     var binaryMessage = new BinaryMessage(textBytes);
-    var afterEncode = binaryMessage.EncodeForSending();
-    convsersation.SendMessageAsync(afterEncode);
+    convsersation.SendMessageAsync(binaryMessage);
 }
 ```
 
 打开日志监听可以看见 websocket 发送的内容如下：
 
 ```json
-websocket=>{"msg":"{\"data\":\"SSBsb3ZlIFVuaXR5\",\"myType\":\"bin\"}","cid":"58d4c2472e9af6631e10092f","r":true,"i":-65532,"cmd":"direct","appId":"021h1hbtd5shlz38pegnpkmq9d3qf8os1vt0nef4f2lxjru8","peerId":"junwu"}
+{"msg":"bin:SSBsb3ZlIFVuaXR5","cid":"58d4c2472e9af6631e10092f","r":true,"i":-65531,"cmd":"direct","appId":"021h1hbtd5shlz38pegnpkmq9d3qf8os1vt0nef4f2lxjru8","peerId":"1001"}
 ```
 
 ##### 接收方获取自定义消息
 
 接收方通过订阅 `AVIMClient.OnMessageReceived` 事件来监听消息的接收:
+
 ```cs
 private void AVIMClient_OnMessageReceived(object sender, AVIMMesageEventArgs e)
 {
-    if (e.Message.Body.ContainsKey("myType"))
+    if (e.Message is BinaryMessage)
     {
-        if ("bin".Equals(e.Message.Body["myType"]))
-        {
-            string dataStr = e.Message.Body["data"] as string;
-            var base64EncodedBytes = System.Convert.FromBase64String(dataStr);
-            // 这里拿到的 text 就应该是发送的内容：I love Unity
-            var text = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
-        }
-    }   
+        var binaryMessage = e.Message as BinaryMessage;
+        var binaryData = binaryMessage.BinaryData;
+        // 下面的字符串内容就是:I love Unity
+        var text = System.Text.Encoding.UTF8.GetString(binaryData);
+    } 
 }
 ```
 

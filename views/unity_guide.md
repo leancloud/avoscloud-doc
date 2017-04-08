@@ -29,7 +29,7 @@ LeanCloud 的每一个账户都可以创建多个应用。同一个应用可分�
 
 默认中国大陆节点对应的 `Region` 是 `Public_CN`,如果是北美节点请选择 `Public_US`。
 
-目前 Unity 的初始化只推荐用 `GameObject` 绑定 `AVInitializeBehaviour` 脚本的方法，不推荐使用显式调用 `AVClient.Initialize` 的方法。
+目前 Unity 的初始化**只允许**用 `GameObject` 绑定 `AVInitializeBehaviour` 脚本的方法，**不可以**使用其他方式显式调用 `AVClient.Initialize` 的方法。
 
 ## 对象
 
@@ -799,12 +799,12 @@ AVUser.RequestPasswordResetAsync(user.Email);
 首先，需要发送一个请求到服务端去发送6位数的验证码：
 
 ```javascript
-var smsCodeResetPasswordTask =	AVUser.RequestPasswordResetBySmsCode ("138012345678");//只需要手机号即可，服务端会自动寻找与之匹配的用户，如果没有用户与此手机号绑定，将会提示错误信息。
+var smsCodeResetPasswordTask =	AVUser.RequestPasswordResetBySmsCodeAsync ("138012345678");//只需要手机号即可，服务端会自动寻找与之匹配的用户，如果没有用户与此手机号绑定，将会提示错误信息。
 ```
 发送之后，再给一个界面给用户，让用户输入6位数的短信验证码，并且同时输入新的密码，然后如下调用：
 
 ```javascript
-var resetTask = AVUser.ResetPasswordBySmsCode(NewPassword,SMSCode);//第一个参数是新密码（明文传递，请放心我们传输的时候做了加密，并且在服务端也绝不可能明文存储），第二个参数是上一步发送到用户手机的6位数验证码。
+var resetTask = AVUser.ResetPasswordBySmsCodeAsync(NewPassword,SMSCode);//第一个参数是新密码（明文传递，请放心我们传输的时候做了加密，并且在服务端也绝不可能明文存储），第二个参数是上一步发送到用户手机的6位数验证码。
 ```
 这样2步就可以重置密码，这项功能我们建议在一些应用内操作比较频繁的应用使用，邮箱重置的话可能需要用户去单独打开一个邮箱应用或者用浏览器跳转。
 {% endif %}
@@ -818,7 +818,7 @@ AVUser.Query.WhereEqualTo("gender", "female").FindAsync().ContinueWith(t =>
      IEnumerable<AVUser> women = t.Result;
 });
 ```
-当然，也可以通过`GetAsync`方法通过`objectId`获取特定的一个`AVUser`。
+当然，也可以通过 `GetAsync` 方法通过 `objectId` 获取特定的一个`AVUser`。
 
 
 ### 用户安全数据的认证规则
