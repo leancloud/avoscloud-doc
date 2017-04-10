@@ -4,7 +4,7 @@ angular.module("app").controller("DownCtrl",['$scope', '$http', function($scope,
 
     var modules = [ 'ios', 'osx', 'android', 'javascript', 'unity3d', 'wp', 'jschat', 'watchos', 'tvos'];
     angular.forEach(modules,function(v, k){
-        $http.get("https://download.avoscloud.com/1/sdkComponents/"+v).then(function(result){
+        $http.get("https://download.leancloud.cn/1/sdkComponents/"+v).then(function(result){
            $scope.download[v] = result.data;
            if(!$scope.downselect[v]){
             $scope.downselect[v]={};
@@ -59,7 +59,7 @@ angular.module("app").controller("DownCtrl",['$scope', '$http', function($scope,
         if (!subType) {
           subType = '';
         }
-        var url = "//download.avoscloud.com/1/downloadSDK?type="+type+"&components="+components.join(",")+"&version=v"+$scope.sdkversion[type]+"&subType="+subType;
+        var url = "//download.leancloud.cn/1/downloadSDK?type="+type+"&components="+components.join(",")+"&version=v"+$scope.sdkversion[type]+"&subType="+subType;
         downloadURL(url);
     }
 }]);
@@ -74,19 +74,19 @@ $(document.body).on("click","a[data-ref]",function(){
 
 $(function(){
 
-  $.get("https://download.avoscloud.com/sdk/android/changelog.txt").success(function(result){
+  $.get("https://download.leancloud.cn/sdk/android/changelog.txt").success(function(result){
     $("#android-changelog").html(markdown.toHTML(result));
   });
-  $.get("https://download.avoscloud.com/sdk/javascript/changelog.txt").success(function(result){
+  $.get("https://download.leancloud.cn/sdk/javascript/changelog.txt").success(function(result){
     $("#js-changelog").html(markdown.toHTML(result));
   });
-  $.get("https://download.avoscloud.com/sdk/jschat/changelog.txt").success(function(result){
+  $.get("https://download.leancloud.cn/sdk/jschat/changelog.txt").success(function(result){
     $("#jschat-changelog").html(markdown.toHTML(result));
   });
-  $.get("https://download.avoscloud.com/sdk/unity3d/changelog.txt").success(function(result){
+  $.get("https://download.leancloud.cn/sdk/unity3d/changelog.txt").success(function(result){
     $("#unity3d-changelog").html(markdown.toHTML(result));
   });
-  $.get("https://download.avoscloud.com/sdk/wp/changelog.txt").success(function(result){
+  $.get("https://download.leancloud.cn/sdk/wp/changelog.txt").success(function(result){
     $("#wp-changelog").html(markdown.toHTML(result));
   });
 });
