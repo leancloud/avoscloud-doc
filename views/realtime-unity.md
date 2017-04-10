@@ -854,7 +854,7 @@ websocket=>{"msg":"{\"GCode\":\"#e001\"}","cid":"58d4c2472e9af6631e10092f","r":t
 
 #### AVIMTypedMessage 详解
 
-`AVIMTypedMessage` 的设计目的是提供了默认的基于 JSON 消息体的基类，例如 `AVIMTextMessage` 类对应的就是文本消息，而它的消息体则是如下格式的 JSON 字符串
+`AVIMTypedMessage` 的设计目的是为了提供默认的基于 JSON 消息体的基类，例如 `AVIMTextMessage` 类对应为文本消息，它的消息体是如下格式的 JSON 字符串：
 
 ```json
 {\"_lctext\":\"text content\",\"_lctype\":-1}
@@ -864,7 +864,7 @@ websocket=>{"msg":"{\"GCode\":\"#e001\"}","cid":"58d4c2472e9af6631e10092f","r":t
 
 #### 1.2 继承 AVIMMessage 
 
-为了更加开放的允许开发者自定义自己的消息类，SDK 提供了一个接口，只要开发者实现自定义的消息类实现了这个接口，这个消息就可以在 SDK 中发送并且在接受的时候返回的也是这个消息的实例。继续拿上面的表情消息做例子，这次我们定义为一个 V2 版本的表情消息:
+为了更加开放地允许开发者自定义自己的消息类，SDK 提供了一个接口，只要开发者实现自定义的消息类实现了这个接口，这个消息就可以在 SDK 中发送，并且在接收时返回的也是这个消息的实例。继续以上面的表情消息做例子，这次我们定义为一个 V2 版本的表情消息：
 
 ```cs
 [AVIMMessageClassName("EmojiV2")]
@@ -881,9 +881,10 @@ public class EmojiV2 : AVIMMessage
     }
 }
 ```
-十分重要的细节:**子类化的时候，子类必须有一个默认的构造函数，否则在注册的时候会跑出 ArgumentException 的错误**。
 
-注册子类:
+十分重要的细节：**子类化的时候，子类必须有一个默认的构造函数，否则在注册的时候会跑出 ArgumentException 的错误**。
+
+注册子类：
 
 ```cs
 avRealtime.RegisterMessageType<EmojiV2>();
@@ -896,7 +897,7 @@ var emojiV2Message = new EmojiV2("#e001");
 conversation.SendMessageAsync(emojiV2Message);
 ```
 
-通过日志我们可以看到它实际发送的内容如下：
+在日志中可以看到它实际发送的内容：
 
 ```json
 websocket=>{"msg":"#e001","cid":"58d4c2472e9af6631e10092f","r":true,"i":-65532,"cmd":"direct","appId":"021h1hbtd5shlz38pegnpkmq9d3qf8os1vt0nef4f2lxjru8","peerId":"1001"}
@@ -1012,7 +1013,7 @@ private void AVIMClient_OnMessageReceived(object sender, AVIMMesageEventArgs e)
     {
         var binaryMessage = e.Message as BinaryMessage;
         var binaryData = binaryMessage.BinaryData;
-        // 下面的字符串内容就是:I love Unity
+        // 下面的字符串内容就是 I love Unity
         var text = System.Text.Encoding.UTF8.GetString(binaryData);
     } 
 }
