@@ -20,7 +20,7 @@ LeanCloud Unity SDK 在很多重要的功能点上都采用了微软提供的[�
 在继续阅读本文档之前，请先阅读[《实时通信概览》](realtime_v2.html)，了解一下实时通信的基本概念和模型。
 
 ### WebSocket 协议
-LeanCloud 实时消息是基于 WebSocket 和私有通讯协议实现的一套聊天系统，因此开发者最好是提前了解一下 WebSocket 协议的相关内容。推荐没有接触过的开发者可以阅读下面这个链接里面的内容来做一个简单的了解[WebSocket 是什么原理？为什么可以实现持久连接？ - 回答作者: Ovear](http://zhihu.com/question/20215561/answer/40316953)
+LeanCloud 实时消息是基于 WebSocket 和私有通讯协议实现的一套聊天系统，因此开发者最好提前了解一下 WebSocket 协议的相关内容。推荐没有接触过的开发者可以阅读《[WebSocket 是什么原理？为什么可以实现持久连接？- Ovear 的回答](http://zhihu.com/question/20215561/answer/40316953)》。
 
 ### Unity 可用的 WebSocket 库
 目前 SDK 内置的 WebSocket 库是一个来自于开源社区的版本 [sta/websocket-sharp](https://github.com/sta/websocket-sharp)，它有个致命的缺陷——不支持 iOS 9.0 以上的版本，因此我们推荐开发者可以考虑购买一个付费的版本：[WebSocket for desktop, web and mobile](https://www.assetstore.unity3d.com/cn/#!/content/27658)。
@@ -277,7 +277,7 @@ public void GuanYULogIn()
         // 搜索「桃园」这个对话 
         TaoYuanConversation = conversationList.First(conversation => conversation.Name == "桃园");
         // 同样的，关羽也创建一个文本消息
-        var textMessage = new AVIMTextMessage("大哥，我在郊外打猎，三弟昨晚喝多了，他还在睡，要不您到城外，我们一起骑马打猎啊？");
+        var textMessage = new AVIMTextMessage("大哥，我在郊外打猎，三弟昨晚喝多了，他还在睡，要不你到城外，我们一起骑马打猎啊？");
         return TaoYuanConversation.SendMessageAsync(textMessage);
     });
 }
@@ -587,7 +587,7 @@ private void Liubei_OnSessionClosed(object sender, AVIMSessionClosedEventArgs e)
     // 云端错误码
     if (e.Code == 4111)
     {
-        Debug.Log("您的 client Id 在别处登录，当前登录失效，连接已断开。");
+        Debug.Log("你的 client Id 在别处登录，当前登录失效，连接已断开。");
     }
 }
 ```
@@ -750,7 +750,8 @@ public class ChatTest : MonoBehaviour
     }
 }
 ```
-而很遗憾的是 [sta/websocket-sharp](https://github.com/sta/websocket-sharp) 目前作者疏于更新已经不支持 iOS 了，因此我们在 Unity 插件商店里面找到了另外一款 [WebSocket for desktop, web and mobile](https://www.assetstore.unity3d.com/cn/#!/content/27658) 经过严格的测试，在 iOS 10 以上的设备上是完全可以使用的，因此我们给出基于这款插件实现 `IWebSocketClient` 的代码如下：
+
+由于 [sta/websocket-sharp](https://github.com/sta/websocket-sharp) 已疏于更新而且不再支持 iOS，因此我们在 Unity 插件商店里面找到了另外一款 [WebSocket for desktop, web and mobile](https://www.assetstore.unity3d.com/cn/#!/content/27658) 插件。经过严格的测试，它完全可以使用在 iOS 10 以上的设备上，因此我们给出基于这款插件实现 `IWebSocketClient` 的代码如下：
 
 ```cs
 using UnityEngine;
@@ -876,8 +877,8 @@ void Start () {
 ```
 WebSocket 库的选择建议：
 
-- 如果您的项目只想发布到 PC(Mac OS/Windows/Linux) 平台完全可以使用 SDK 自带的 [sta/websocket-sharp](https://github.com/sta/websocket-sharp)。
-- 如果您的项目是要面向 iOS 以及 Android 等移动端的手游，请务必购买 [WebSocket for desktop, web and mobile](https://www.assetstore.unity3d.com/cn/#!/content/27658) 这个插件，因为存在法律和授权的问题，我们无法向您无偿地提供这款插件。
+- 如果你的项目只需要发布到 PC 端（macOS、Windows、Linux），则完全可以使用 SDK 自带的 [sta/websocket-sharp](https://github.com/sta/websocket-sharp)。
+- 如果你的项目需要面向 iOS 以及 Android 等移动端的手游，请务必购买 [WebSocket for desktop, web and mobile](https://www.assetstore.unity3d.com/cn/#!/content/27658) 插件。该款插件的授权许可不支持无偿使用。
 
 ## 消息
 
@@ -1193,7 +1194,7 @@ public void QueryMessageHistory()
 实时通讯系统中往往会存在一定的管理需求，例如游戏中 GM 会禁言某一些不良行为的玩家，或者说不允许某一个玩家加入到某个频道。LeanCloud 实时通讯采用签名鉴权的方式，请开发者务必详细了解 [权限和认证](realtime_v2.html#权限和认证)。而在 SDK 中，开发者需要通过实现 `ISignatureFactory` 接口，并且在初始化的时候指定给 `AVRealtime`：
 
 ### 云引擎签名实例
-为了配合如下代码的运行，首先开发者需要部署：[LeanCloud 实时通信云引擎签名 Demo](https://github.com/leancloud/realtime-messaging-signature-cloudcode) 到您应用的云引擎中。
+为了配合如下代码的运行，首先开发者需要部署：[LeanCloud 实时通信云引擎签名 Demo](https://github.com/leancloud/realtime-messaging-signature-cloudcode) 到你应用的云引擎中。
 
 ```cs
 public class LeanEngineSignatureFactory : ISignatureFactory

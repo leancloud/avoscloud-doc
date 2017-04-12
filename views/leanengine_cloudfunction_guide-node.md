@@ -54,7 +54,9 @@ AV.Cloud.define('averageStars', function(request) {
 * `sessionToken?: string`：客户端发来的 sessionToken（`X-LC-Session` 头）。
 * `meta: object`：有关客户端的更多信息，目前只有一个 `remoteAddress` 属性表示客户端的 IP。
 
-<div class="callout callout-warning">**在 2.0 之前的早期版本中，云函数是接受两个参数（request 和 response）的，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的云函数上，之前版本的文档见 [Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)。**</div>
+{{ docs.alert("在 2.0 之前的早期版本中，云函数接受 `request` 和 `response` 两个参数，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的云函数上。
+
+之前版本的文档见《[Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)》。") }}
 
 {% endblock %}
 
@@ -70,7 +72,7 @@ AV.Cloud.run('averageStars', {
 });
 ```
 
-云引擎中默认会直接进行一次本地的函数调用，而不是像客户端一样发起一个 HTTP 请求。如果你希望发起 HTTP 请求来调用云函数，可以传入一个 `remote: true` 的选项，当你在云引擎之外运行 Node SDK 时这个选项非常有用：
+云引擎中默认会直接进行一次本地的函数调用，而不会像客户端一样发起一个 HTTP 请求。如果你希望发起 HTTP 请求来调用云函数，可以传入一个 `remote: true` 的选项。当你在云引擎之外运行 Node SDK 时这个选项非常有用：
 
 ```js
 AV.Cloud.run('averageStars', {remote: true}).then(function(data) {
@@ -119,7 +121,10 @@ AV.Cloud.beforeSave('Review', function(request) {
 });
 ```
 
-<div class="callout callout-warning">**在 2.0 之前的早期版本中，before 类 Hook 是接受两个参数（request 和 response）的，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的 Hook 上，之前版本的文档见 [Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)。**</div>
+{{ docs.alert("在 2.0 之前的早期版本中，before 类 Hook 接受 `request` 和 `response` 两个参数，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的云函数上。
+
+之前版本的文档见《[Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)》。") }}
+
 {% endblock %}
 
 {% block afterSaveExample %}
@@ -272,7 +277,7 @@ AV.Cloud.beforeSave('Review', function(request) {
 
 ## 在线编写云函数
 
-<div class="callout callout-warning">**因为在线编辑云函数的灵活性有限（不能自由选择 Node 版本、SDK 版本，不能自由添加依赖，无法通过文件来组织代码），因此我们现在不再推荐新用户使用在线编辑，而是建议根据 [示例项目](https://github.com/leancloud/node-js-getting-started) 创建本地项目，使用 [命令行工具](leanengine_cli.html) 部署到云端。在线编辑功能的 Node.js 版本会一直停留在 0.12，Node SDK 版本会一直停留在 0.x。**</div>
+{{ docs.note("因为在线编辑云函数的灵活性受限，如不能自由选择 Node 版本和 SDK 版本，不能自由添加依赖，无法通过文件来组织代码等等，因此我们**不推荐新用户使用在线编辑功能**，而是建议根据 [示例项目](https://github.com/leancloud/node-js-getting-started) 创建本地项目，使用 [命令行工具](leanengine_cli.html) 部署到云端。在线编辑功能的 Node.js 版本会一直停留在 0.12，Node SDK 版本会一直停留在 0.x。") }}
 
 很多人使用 {{productName}} 是为了在服务端提供一些个性化的方法供各终端调用，而不希望关心诸如代码托管、npm 依赖管理等问题。为此我们提供了在线维护云函数的功能。
 
@@ -281,16 +286,13 @@ AV.Cloud.beforeSave('Review', function(request) {
 * 在定义的函数会覆盖你之前用 Git 或命令行部署的项目。
 * 目前只能在线编写云函数和 Hook，不支持托管静态网页、编写动态路由。
 
-{% if node=='qcloud' %}
-在 `控制台 > 存储 > 云引擎 > 部署 > 在线编辑` 标签页，可以：
-{% else %}
-在 [控制台 > 存储 > 云引擎 > 部署 > 在线编辑](/cloud.html?appid={{appid}}#/deploy/online) 标签页，可以：
-{% endif %}
+在 {% if node=='qcloud' %}**控制台** > **存储** > **云引擎** > **部署** > **在线编辑**{% else %}[控制台 > 存储 > 云引擎 > 部署 > 在线编辑](/cloud.html?appid={{appid}}#/deploy/online){% endif %} 标签页，可以：
 
-* 创建函数：指定函数类型，函数名称，函数体的具体代码，注释等信息，然后「保存」即可创建一个云函数。
-* 部署：选择要部署的环境，点击「部署」即可看到部署过程和结果。
-* 预览：会将所有函数汇总并生成一个完整的代码段，可以确认代码，或者将其保存为 `cloud.js` 覆盖项目模板的同名文件，即可快速的转换为使用项目部署。
-* 维护云函数：可以编辑已有云函数，查看保存历史，以及删除云函数。
+
+* **创建函数**：指定函数类型，函数名称，函数体的具体代码，注释等信息，然后「保存」即可创建一个云函数。
+* **部署**：选择要部署的环境，点击「部署」即可看到部署过程和结果。
+* **预览**：会将所有函数汇总并生成一个完整的代码段，可以确认代码，或者将其保存为 `cloud.js` 覆盖项目模板的同名文件，即可快速的转换为使用项目部署。
+* **维护云函数**：可以编辑已有云函数，查看保存历史，以及删除云函数。
 
 **提示**：云函数编辑之后需要重新部署才能生效。
 {% endblock %}
