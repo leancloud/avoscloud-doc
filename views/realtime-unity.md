@@ -750,7 +750,134 @@ public class ChatTest : MonoBehaviour
     }
 }
 ```
+而很遗憾的是 [sta/websocket-sharp](https://github.com/sta/websocket-sharp) 目前作者疏于更新已经不支持 iOS 了，因此我们在 Unity 插件商店里面找到了另外一款 [WebSocket for desktop, web and mobile](https://www.assetstore.unity3d.com/cn/#!/content/27658) 经过严格的测试，在 iOS 10 以上的设备上是完全可以使用的，因此我们给出基于这款插件实现 `IWebSocketClient` 的代码如下：
 
+```cs
+using UnityEngine;
+using System.Collections;
+using LeanCloud.Realtime.Internal;
+using System;
+using LeanCloud.Realtime;
+using System.Threading.Tasks;
+
+
+public class MyWebSocketClient : MonoBehaviour, WebSocketUnityDelegate,IWebSocketClient
+{
+	// Web Socket for Unity
+	//    Desktop
+	//    WebPlayer
+	//    Android
+	//    ios (+ ios simulator)
+	//	  WebGL
+	private WebSocketUnity webSocket;
+
+	#region WebSocketUnityDelegate implementation
+
+	// These callbacks come from WebSocketUnityDelegate
+	// You will need them to manage websocket events
+	
+	// This event happens when the websocket is opened
+	public void OnWebSocketUnityOpen (string sender)
+	{
+		Debug.Log ("WebSocket connected, " + sender);
+
+		this.OnOpened ();
+	}
+	
+	// This event happens when the websocket is closed
+	public void OnWebSocketUnityClose (string reason)
+	{
+		Debug.Log ("WebSocket Close : " + reason);
+		this.OnClosed (-1, reason, "");
+	}
+	
+	// This event happens when the websocket received a message
+	public void OnWebSocketUnityReceiveMessage (string message)
+	{
+		Debug.Log ("Received from server : " + message);
+		this.OnMessage (message);
+	}
+	
+	// This event happens when the websocket received data (on mobile : ios and android)
+	// you need to decode it and call after the same callback than PC
+	public void OnWebSocketUnityReceiveDataOnMobile (string base64EncodedData)
+	{
+		// it's a limitation when we communicate between plugin and C# scripts, we need to use string
+		byte[] decodedData = webSocket.decodeBase64String (base64EncodedData);
+		OnWebSocketUnityReceiveData (decodedData);
+	}
+	
+	// This event happens when the websocket did receive data
+	public void OnWebSocketUnityReceiveData (byte[] data)
+	{	
+		var decodeStr = System.Convert.ToBase64String (data);
+		OnWebSocketUnityReceiveMessage (decodeStr);
+	}
+	
+	// This event happens when you get an error@
+	public void OnWebSocketUnityError (string error)
+	{
+		Debug.LogError ("WebSocket Error : " + error);
+	}
+
+	#endregion
+
+	#region LeanCloud
+
+	public	bool IsOpen {
+		get { 
+			return webSocket.IsOpened ();
+		}
+	}
+
+	public void Close ()
+	{
+		webSocket.Close ();
+	}
+
+	public void Open (string url, string protocol = null)
+	{
+		webSocket = new WebSocketUnity (url, this); 
+		webSocket.Open ();
+	}
+
+	public void Send (string message)
+	{
+		if (this.IsOpen)
+			webSocket.Send (message);
+	}
+
+	public	event Action<int, string, string> OnClosed;
+
+	public event Action<string> OnMessage;
+
+	public	event Action<string> OnLog;
+
+	public event Action<string> OnError;
+
+	public event Action OnOpened;
+
+	#endregion
+	
+}
+```
+在初始化的时候指定即可，因为这个库的设计关系，要求必须是一个 `MonoBehaviour`，因此我们也最好在上面的代码里面加入 `Start()` 函数，这样就省去了额外再新建一个初始化的类：
+
+```cs
+void Start () {
+    var config = new AVRealtime.Configuration ()
+    {
+        ApplicationId ="你的 app Id",
+        ApplicationKey ="你的 app Id",
+        WebSocketClient = this // 使用已经初始化的 WebSocketClient 实例作为 AVRealtime 初始化的配置参数
+    };
+    avRealtime = new AVRealtime (config);
+}
+```
+WebSocket 库的选择建议：
+
+- 如果您的项目只想发布到 PC(Mac OS/Windows/Linux) 平台完全可以使用 SDK 自带的 [sta/websocket-sharp](https://github.com/sta/websocket-sharp)。
+- 如果您的项目是要面向 iOS 以及 Android 等移动端的手游，请务必购买 [WebSocket for desktop, web and mobile](https://www.assetstore.unity3d.com/cn/#!/content/27658) 这个插件，因为存在法律和授权的问题，我们无法向您无偿地提供这款插件。
 
 ## 消息
 
