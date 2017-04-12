@@ -54,7 +54,7 @@ AV.Cloud.define('averageStars', function(request) {
 * `sessionToken?: string`：客户端发来的 sessionToken（`X-LC-Session` 头）。
 * `meta: object`：有关客户端的更多信息，目前只有一个 `remoteAddress` 属性表示客户端的 IP。
 
-<div class="callout callout-warning">在 2.0 之前的早期版本中，云函数是接受两个参数（request 和 response）的，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的云函数上。</div>
+<div class="callout callout-warning">**在 2.0 之前的早期版本中，云函数是接受两个参数（request 和 response）的，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的云函数上，之前版本的文档见 [Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)。**</div>
 
 {% endblock %}
 
@@ -119,7 +119,7 @@ AV.Cloud.beforeSave('Review', function(request) {
 });
 ```
 
-<div class="callout callout-warning">在 2.0 之前的早期版本中，before 类 Hook 是接受两个参数（request 和 response）的，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的 Hook 上。</div>
+<div class="callout callout-warning">**在 2.0 之前的早期版本中，before 类 Hook 是接受两个参数（request 和 response）的，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的 Hook 上，之前版本的文档见 [Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)。**</div>
 {% endblock %}
 
 {% block afterSaveExample %}
@@ -272,7 +272,7 @@ AV.Cloud.beforeSave('Review', function(request) {
 
 ## 在线编写云函数
 
-<div class="callout callout-warning">**因为在线编辑云函数的灵活性有限（不能自由选择 Node 版本、SDK 版本，不能自由添加依赖，无法通过文件来组织代码），因此我们现在不再推荐新用户使用在线编辑，而是建议根据 [示例项目](https://github.com/leancloud/node-js-getting-started) 创建本地项目，使用 [命令行工具](leanengine_cli.html) 部署到云端。在线编辑功能今后将不会再得到更新，Node.js 版本会一直停留在 0.12，Node SDK 版本会一直停留在 0.x。**</div>
+<div class="callout callout-warning">**因为在线编辑云函数的灵活性有限（不能自由选择 Node 版本、SDK 版本，不能自由添加依赖，无法通过文件来组织代码），因此我们现在不再推荐新用户使用在线编辑，而是建议根据 [示例项目](https://github.com/leancloud/node-js-getting-started) 创建本地项目，使用 [命令行工具](leanengine_cli.html) 部署到云端。在线编辑功能的 Node.js 版本会一直停留在 0.12，Node SDK 版本会一直停留在 0.x。**</div>
 
 很多人使用 {{productName}} 是为了在服务端提供一些个性化的方法供各终端调用，而不希望关心诸如代码托管、npm 依赖管理等问题。为此我们提供了在线维护云函数的功能。
 
