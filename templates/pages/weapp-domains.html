@@ -44,7 +44,7 @@ title: 小程序域名白名单配置
       <div class="step-content col-sm-12">
         <table>
           <tr>
-            <th rowspan="3" width="40%">request 域名</th>
+            <th rowspan="{{ requestDomainsLength }}" width="40%">request 域名</th>
             <td>
               {% if node === 'qcloud' %}
               e1-api.leancloud.cn
@@ -68,6 +68,9 @@ title: 小程序域名白名单配置
               router-g0-push.leancloud.cn
               {% endif %}
             </td>
+          </tr>
+          <tr ng-repeat="domain in extraRequestDomains">
+            <td>{{domain}}</td>
           </tr>
           <tr>
             <th>uploadFile 域名</th>

@@ -30,28 +30,31 @@ def _set_user_dir():
 def _clean_local():
     local("rm -rf %s" % (tmp_dir))
 
+
 def prepare_remote_dirs():
     _set_user_dir()
     if not exists(doc_dir):
         sudo('mkdir -p %s' % doc_dir)
     sudo('chown %s %s' % (user, doc_dir))
 
-def _prepare_local_docs(target):
+
+def _prepare_local_docs(docCommentToken, target):
     local("mkdir -p %s" % tmp_dir)
     local("rm -rf %s/dist/*" % project_dir)
     local("rm -rf %s/md/*" % project_dir)
     ##local("ruby render.rb")
-    local("npm install -d");
+    local("npm install -d")
     if target == 'qcloud':
-      local("DOC_ENV=qcloud grunt build --theme=qcloud");
+      local("DOC_ENV=qcloud DOC_COMMENT_TOKEN=%s grunt build --theme=qcloud" % docCommentToken)
     elif target == 'us':
-      local("DOC_ENV=us grunt build --theme=us --no-comments");
+      local("DOC_ENV=us DOC_COMMENT_TOKEN=%s grunt build --theme=us --no-comments" % docCommentToken)
     else:
-      local("DOC_ENV=%s grunt build " % target);
+      local("DOC_ENV=%s DOC_COMMENT_TOKEN=%s grunt build " % (target, docCommentToken))
 #    local("mkdir dist/api")
 #    local("cp -rfv api/* dist/api/");
 #    local("cd dist ; tar zcvf leancloud-docs.tar.gz ./* ; cd ..")
     local("cp -rfv %s/dist/* %s" % (project_dir, tmp_dir))
+
 
 def _start_on_boot(name, dist):
     if dist == 'debian':
@@ -63,11 +66,12 @@ def _start_on_boot(name, dist):
     else:
         raise ValueError('dist can only take debian, centos')
 
-def deploy_docs(target='stage'):
+
+def deploy_docs(docCommentToken, target='stage'):
     global host_count
     _set_user_dir()
     if (host_count == len(env.hosts)):
-        _prepare_local_docs(target)
+        _prepare_local_docs(docCommentToken, target)
 
     prepare_remote_dirs()
     rsync_project(local_dir=tmp_dir + '/',
@@ -75,4 +79,4 @@ def deploy_docs(target='stage'):
                   delete=True)
     host_count -= 1
     if (host_count == 0):
-       _clean_local()
+        _clean_local()

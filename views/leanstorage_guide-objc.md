@@ -192,8 +192,8 @@
     // 使用已知 objectId 构建一个 AVObject
     AVObject *anotherTodo = [AVObject objectWithClassName:@"Todo" objectId:@"5656e37660b2febec4b35ed7"];
     // 然后调用刷新的方法，将数据从云端拉到本地
-    [anotherTodo fetchIfNeededInBackgroundWithBlock:^(AVObject *object, NSError *error) {
-        // 此处调用 fetchIfNeededInBackgroundWithBlock 和 refreshInBackgroundWithBlock 效果一样。
+    [anotherTodo fetchInBackgroundWithBlock:^(AVObject *object, NSError *error) {
+        // 此处调用 fetchInBackgroundWithBlock 和 refreshInBackgroundWithBlock 效果一样。
     }];
 ```
 {% endblock %}

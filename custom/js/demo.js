@@ -17,8 +17,9 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
       'ios': 'iOS',
       'android': 'Android',
       'unity': 'Unity',
+      'python': 'Python',
       'winphone': 'Windows Phone',
-      'js': 'JavaScript',
+      'web': 'Web',
       'node': 'Node.js',
       'php': 'PHP',
       'weapp': '微信小程序',
@@ -111,26 +112,34 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         type: 'android',
         qcloudShow: false
       }],
-      'js': [{
+      'python': [{
+        name: 'Flask Todo Demo',
+        desc: 'Flask Todo Demo 是一个云引擎的示例项目。它运行在 Python 3 上，依赖 flask 和 LeanCloud Python SDK。点击详情来查看在线 Demo。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/flask-todo-demo',
+        type: 'python',
+        qcloudShow: true
+      }],
+      'web': [{
         name: '数据存储入门',
         desc: '本教程模拟商品发布的场景，讲解 LeanCloud 数据存储的核心用法。',
         downPath: '',
         mdPath: 'https://github.com/leancloud/StorageStarted',
-        type: 'js',
+        type: 'web',
         qcloudShow: true
       }, {
         name: 'LeanTodo (Vue)',
         desc: '使用 JavaScript 存储 SDK 与 Vue.js 实现的 LeanTodo 应用。',
         downPath: '',
         mdPath: 'https://github.com/leancloud/leantodo-vue/',
-        type: 'js',
+        type: 'web',
         qcloudShow: true
       },{
         name: 'LeanMessage',
         desc: '使用 JavaScript 实时通讯 SDK 与 Angular 实现的完整功能的聊天 WebApp',
         downPath: '',
         mdPath: 'https://github.com/leancloud/LeanMessage-Demo',
-        type: 'js',
+        type: 'web',
         qcloudShow: true
       }],
       'unity': [{

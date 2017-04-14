@@ -896,9 +896,10 @@ friend.open(new AVIMClientCallback() {
 {% block customMessage_create %}
 继承于 AVIMTypedMessage，开发者也可以扩展自己的富媒体消息。其要求和步骤是：
 
-* 实现新的消息类型，继承自 AVIMTypedMessage。这里需要注意两点：
-  * 在 class 上增加一个 @AVIMMessageType(type=123) 的 Annotation，具体消息类型的值（这里是 `123`）由开发者自己决定（LeanCloud 内建的 [消息类型使用负数](#消息类详解)，所有正数都预留给开发者扩展使用）。
-  * 在消息内部属性上要增加 @AVIMMessageField(name="") 的 Annotation，name 为可选字段在声明字段属性，同时自定义的字段要有对应的 getter/setter 方法。
+* 实现新的消息类型，继承自 AVIMTypedMessage。这里需要注意：
+  * 在 class 上增加一个 `@AVIMMessageType(type=123)` 的 Annotation<br/>具体消息类型的值（这里是 `123`）由开发者自己决定。LeanCloud 内建的 [消息类型使用负数](#消息类详解)，所有正数都预留给开发者扩展使用。
+  * 在消息内部声明字段属性时，要增加 `@AVIMMessageField(name="")` 的 Annotation<br/>name 为可选字段，同时自定义的字段要有对应的 getter/setter 方法。
+  * **请不要遗漏空的构造方法和 Creator 的代码**（参考下面的示例代码），否则会造成类型转换失败。
 * 调用 `AVIMMessageManager.registerAVIMMessageType()` 函数进行类型注册。
 * 调用 `AVIMMessageManager.registerMessageHandler()` 函数进行消息处理 handler 注册。
 
@@ -907,7 +908,7 @@ AVIMTextMessage 的源码如下，可供参考：
 ```
 @AVIMMessageType(type = AVIMMessageType.TEXT_MESSAGE_TYPE)
 public class AVIMTextMessage extends AVIMTypedMessage {
-
+  // 空的构造方法，不可遗漏
   public AVIMTextMessage() {
 
   }
@@ -932,7 +933,7 @@ public class AVIMTextMessage extends AVIMTypedMessage {
   public void setAttrs(Map<String, Object> attr) {
     this.attrs = attr;
   }
-
+  // Creator 不可遗漏
   public static final Creator<AVIMTextMessage> CREATOR = new AVIMMessageCreator<AVIMTextMessage>(AVIMTextMessage.class);
 }
 ```
@@ -2350,6 +2351,38 @@ public class AVImClientManager extends AVIMClientEventHandler {
   ...
 }
 ```
+
+为了更灵活地控制登录过程，我们在登录接口上增加了一个选项，以下是方法签名：
+
+```java
+open(AVIMClientOpenOption operation, final AVIMClientCallback callback){}
+```
+
+登录选项由 `AVIMClientOpenOption` 对象表示，其中的每一个属性表示具体的选项，目前支持以下选项：
+
+```java
+public void setForceSingleLogin(boolean forceSingleLogin) {}
+```
+
+登录动作区分成两种不同的类型，强制登录和非强制登录。`forceSingleLogin` 选项设置登录是否为强制登陆。
+
+- **强制登录**：无论当前设备是否曾被其他设备踢下线，都强制登录。
+- **非强制登录**：如果当前设备曾被其他设备踢下线，则登录时返回错误。
+
+将 `forceSingleLogin` 设置为 `true` 表示强制登录；设置为 `false` 表示非强制登录。例如，如果希望实现强制登录，代码可以写成：
+
+```java
+AVIMClientOpenOption openOption = new AVIMClientOpenOption();
+openOption.setForceSingleLogin(true);
+AVIMClient client = AVIMClient.getInstance("Tom");
+client.open(openOption, new AVIMClientCallback() {
+  @Override
+  public void done(AVIMClient client, AVIMException e) {
+  }
+);
+```
+
+如果 `openOption` 设置为 `null`，或者使用 `client.open(AVIMClientCallback callback)` 方法进行登录，默认的登录类型为非强制登录。
 
 {% endblock %}
 

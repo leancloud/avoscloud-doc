@@ -8,6 +8,26 @@
 
 注意将其 namespace 设置为 **`docs`**，与其他宏文件如 `_storage.njk`、`_sms.njk` 区别开来。
 
+## mustache
+
+```
+{% raw %}{{ docs.mustache('todos','','',true) }}
+{{ docs.mustache('todos','div',{},true) }}
+{{ docs.mustache('todos') }}
+{{ docs.htmlTag("samp", {"ng-non-bindable": null,class: "bubble"}) }}{% endraw %}
+```
+
+结果：
+
+```
+{{ docs.mustache('todos','','',true) }}
+{{ docs.mustache('todos','div','',true) }}
+{{ docs.mustache('todos') }}
+{{ docs.mustache('todos') }}
+{{ docs.htmlTag("samp", {"ng-non-bindable": null,class: "bubble"}) }}
+```
+
+
 ## `note()`
 
 ```nunjucks

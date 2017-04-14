@@ -13,6 +13,18 @@ angular.module('app').controller('WeappDomainsCtrl', [
           var currentApp = $rootScope.pageState.currentApp;
           console.log($rootScope.pageState.currentApp);
           if (currentApp) {
+            if (currentApp.app_id.indexOf('-gzGzoHsz') !== -1) {
+              var suffix = currentApp.app_id.slice(0, 8).toLowerCase();
+              $scope.extraRequestDomains = [
+                suffix + '.api.lncld.net',
+                suffix + '.engine.lncld.net'
+              ];
+              $scope.requestDomainsLength = 5;
+            } else {
+              $scope.extraRequestDomains = [];
+              $scope.requestDomainsLength = 3;
+            }
+
             AV.init({
               appId: currentApp.app_id,
               appKey: currentApp.app_key,

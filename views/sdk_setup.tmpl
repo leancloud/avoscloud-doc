@@ -51,11 +51,21 @@ ping {{host}}
 如果当前网路正常将会得到如下响应：
 
 ```shell
-PING {{host}} (120.132.49.239): 56 data bytes
-64 bytes from 120.132.49.239: icmp_seq=3 ttl=49 time=65.165 ms
-64 bytes from 120.132.49.239: icmp_seq=4 ttl=49 time=53.273 ms
-64 bytes from 120.132.49.239: icmp_seq=5 ttl=49 time=51.519 ms
-64 bytes from 120.132.49.239: icmp_seq=6 ttl=49 time=68.442 ms
+PING api-ucloud.leancloud.cn (123.59.41.31): 56 data bytes
+64 bytes from 123.59.41.31: icmp_seq=0 ttl=51 time=9.032 ms
+64 bytes from 123.59.41.31: icmp_seq=1 ttl=51 time=7.290 ms
+64 bytes from 123.59.41.31: icmp_seq=2 ttl=51 time=8.131 ms
+64 bytes from 123.59.41.31: icmp_seq=3 ttl=51 time=9.689 ms
+64 bytes from 123.59.41.31: icmp_seq=4 ttl=51 time=6.559 ms
+64 bytes from 123.59.41.31: icmp_seq=5 ttl=51 time=8.665 ms
+64 bytes from 123.59.41.31: icmp_seq=6 ttl=51 time=8.041 ms
+64 bytes from 123.59.41.31: icmp_seq=7 ttl=51 time=8.203 ms
+64 bytes from 123.59.41.31: icmp_seq=8 ttl=51 time=6.288 ms
+64 bytes from 123.59.41.31: icmp_seq=9 ttl=51 time=7.938 ms
+
+--- api-ucloud.leancloud.cn ping statistics ---
+10 packets transmitted, 10 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 6.288/7.984/9.689/0.997 ms
 ```
 然后在项目中编写如下测试代码：
 

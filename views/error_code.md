@@ -306,7 +306,7 @@
 * 信息 - `CQL syntax error.`
 * 含义 - CQL 语法错误。详情参考 [CQL 语法详细指南](./cql_guide.html)
 
-## 301 
+## 301
 
 * 信息 - `Fails to insert new document.`
 * 含义 - 新增对象失败，通常是数据格式问题。
@@ -338,8 +338,13 @@
 
 ## 403
 
-* 信息 - `Forbidden to xxx by class permissions`
-* 含义 - 操作被禁止，因为 [Class 权限限制](./data_security.html#Class_级别的_ACL)。
+分为两类：
+
+* 信息 - `Forbidden to read/write by class permissions`
+* 含义 - 操作被禁止，因为 Class 表没有打开「读」或者「写」的权限。进入 **应用控制台** > **存储**，点击相应的 Class，从右侧选择 **其他** 下拉菜单，进入 **权限管理** 来调整。
+
+* 信息 - `The user cannot be altered by a client without the session.`
+* 含义 - 用户没有登录，无法修改用户信息。
 
 
 ## 429
@@ -378,16 +383,25 @@
 * 信息 - `complete a TCP connection to the upstream server, but did not receive a timely HTTP response.`
 * 含义 -  Web 服务器与后端应用服务器通讯失败，一般是某个应用服务器异常，Web 服务器会在几秒后移除此实例。如果频繁遇到 524，请联系我们处理。
 
+
+## 529
+
+* 信息 - `Exceeded Limit`
+* 含义 -  当前 IP 超过并发限制。使用云引擎时遇到 http 响应码为 529 的错误页面，解决方案请参考 [Exceeded Limit](leanengine_faq.html#Exceeded_Limit)。
+
 {% if node != 'qcloud' and node != 'us' %}
+
 ## 600
 
 * 信息 - `Invalid SMS signature.`
 * 含义 - 无效的短信签名。具体要求请参考 [短信签名规范](sms_guide-android.html#短信签名)。
-  ​      
+
+
 ## 601
 
 * 信息 - `Can't send SMS too frequently.`
 * 含义 -  发送短信过于频繁。我们限制验证类短信一分钟一条，每天每个号码限制在 10 条左右。我们强烈建议用户使用图形验证码或者倒数计时等方式来避免用户重复发送验证码，以及可能存在的短信验证码攻击。
+
 
 ## 602
 
@@ -413,7 +427,7 @@
 
 * 信息 - `Fails to render SMS template.`
 * 含义 - 渲染短信模板失败，通常是模板语法问题，我们的短信模板仅支持 [handlerbars](http://handlebarsjs.com/) 模板语法。
-{% endif %}
+  {% endif %}
 
 ## 700
 
@@ -421,3 +435,4 @@
 * 含义 - 无效的查询或者排序字段，请确认查询或者排序的字段在表中存在。
 
 {{ im.errorCodes() }}
+

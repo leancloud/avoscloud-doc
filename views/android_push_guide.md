@@ -479,6 +479,74 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华
 - EMUI 系统
 - manifest 正确填写
 
+### 魅族推送
+
+#### 环境配置
+
+1. **注册魅族账号**：在 [Flyme开放平台](https://open.flyme.cn) 上注册魅族开发者账号并完成开发者认证 ([详细流程](http://open-wiki.flyme.cn/index.php?title=%E6%96%B0%E6%89%8B%E6%8C%87%E5%8D%97))。
+2. **创建魅族推送服务应用** ([详细流程](http://open-wiki.flyme.cn/index.php?title=%E9%AD%85%E6%97%8F%E6%8E%A8%E9%80%81%E5%B9%B3%E5%8F%B0%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C))。
+3. **设置魅族的 AppId 及 AppSecret**：在 [魅族推送平台](http://push.meizu.com/) > **应用列表** > **打开应用** > **配置管理** 可以查到具体的魅族推送服务应用的 AppId 及 AppSecret。将此 AppId 及 AppSecret 通过 [LeanCloud 控制台][leancloud-console] > **消息** > **推送** > **设置** > **混合推送**，与 LeanCloud 应用关联。
+
+#### 接入 SDK
+
+首先导入 `avoscloud-mixpush` 包。修改 `build.gradle` 文件，在 **dependencies** 中添加依赖：
+
+```
+dependencies {
+    compile ('cn.leancloud.android:avoscloud-mixpush:v3.+@aar')
+    compile ('com.meizu.flyme.internet:push-internal-publish:3.3.170123@aar')
+}
+```
+
+注：如果是通过 jar 包导入，则需要手动下载 jar 包 [魅族 Push SDK](https://github.com/MEIZUPUSH/PushDemo-Eclipse/releases)。
+
+然后配置相关 AndroidManifest。添加 Permission：
+
+```xml
+<!-- 兼容flyme5.0以下版本，魅族内部集成pushSDK必填，不然无法收到消息-->
+  <uses-permission android:name="com.meizu.flyme.push.permission.RECEIVE"/>
+  <permission android:name="<包名>.push.permission.MESSAGE" android:protectionLevel="signature"/>
+  <uses-permission android:name="<包名>.push.permission.MESSAGE"/>
+
+  <!--  兼容flyme3.0配置权限-->
+  <uses-permission android:name="com.meizu.c2dm.permission.RECEIVE" />
+  <permission android:name="<包名>.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
+  <uses-permission android:name="<包名>.permission.C2D_MESSAGE"/>
+```
+
+添加 service 与 receiver。开发者要将其中的 `<包名>` 替换为自己的应用对应的 package：
+
+```xml
+<receiver android:name="com.avos.avoscloud.AVFlymePushMessageReceiver">
+    <intent-filter>
+        <!-- 接收 push 消息 -->
+        <action android:name="com.meizu.flyme.push.intent.MESSAGE"/>
+        <!-- 接收 register 消息 -->
+        <action android:name="com.meizu.flyme.push.intent.REGISTER.FEEDBACK"/>
+        <!-- 接收 unregister 消息-->
+        <action android:name="com.meizu.flyme.push.intent.UNREGISTER.FEEDBACK"/>
+        <!-- 兼容低版本 Flyme3 推送服务配置 -->
+        <action android:name="com.meizu.c2dm.intent.REGISTRATION"/>
+        <action android:name="com.meizu.c2dm.intent.RECEIVE"/>
+        <category android:name="<包名>"/>
+    </intent-filter>
+</receiver>
+```
+
+#### 具体使用
+
+在 `AVOSCloud.initialize` 时调用 `AVMixpushManager.registerFlymePush(context, flymeId, flymeKey, profile)` 即可。参数 `profile` 的用法可以参考 [Android 混合推送多配置区分](push_guide.html#Android_混合推送多配置区分)。
+
+注意，LeanCloud 云端只有在以下三个条件都满足的情况下，才会使用魅族推送。
+
+- Flyme 系统
+- manifest 正确填写
+- flymeId、flymeKey 有效
+
+#### 魅族推送通知栏消息的点击事件
+
+当魅族通知栏消息被点击后，如果已经设置了 [自定义 Receiver](#自定义_Receiver)，则 SDK 会发送一个 action 为 `com.avos.avoscloud.flyme_notification_action` 的 broadcast。如有需要，开发者可以通过订阅此消息获取点击事件，否则 SDK 会默认打开 [启动推送服务](#启动推送服务) 对应设置的 Activity。
+
 ### 小米推送
 因为小米公司不允许第三方服务以任何形式接入、整合小米推送，所以我们目前还不能支持小米系统，不过我们正与小米公司积极沟通解决，希望可以尽快开放这一服务。
 
@@ -559,3 +627,4 @@ dependencies {
 
 
 [xiaomi]: http://dev.xiaomi.com/index
+

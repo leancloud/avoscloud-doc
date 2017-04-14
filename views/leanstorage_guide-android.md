@@ -210,10 +210,10 @@
         // 假如已知了 objectId 可以用如下的方式构建一个 AVObject
         AVObject anotherTodo = AVObject.createWithoutData("Todo", "5656e37660b2febec4b35ed7");
         // 然后调用刷新的方法，将数据从服务端拉到本地
-        anotherTodo.fetchIfNeededInBackground(new GetCallback<AVObject>() {
+        anotherTodo.fetchInBackground(new GetCallback<AVObject>() {
             @Override
             public void done(AVObject avObject, AVException e) {
-                // 调用 fetchIfNeededInBackground 和 refreshInBackground 效果是一样的。
+                // 调用 fetchInBackground 和 refreshInBackground 效果是一样的。
             }
         });
 ```

@@ -208,7 +208,7 @@
     // 假如已知了 objectId 可以用如下的方式构建一个 AVObject
     AVObject object = AVObject.createWithoutData("Todo", objectId);
     // 然后调用刷新的方法，将数据从服务端拉到本地
-    object.fetchIfNeeded();
+    object.fetch();
     String title = object.getString("title");// 读取 title
     String content = object.getString("content");// 读取 content
 ```
