@@ -1180,7 +1180,6 @@ public void QueryMessageHistory()
     });
 }
 ```
-
 要实现翻页效果需要额外传入其他参数：
 
 参数名|类型|说明|用法
@@ -1284,8 +1283,59 @@ var realtime = new AVRealtime(config);
 1. 玩家登录到鉴权服务器之后，统一下发该玩家的如下登录签名(`CreateConnectSignature`)，保存全局的一个静态变量中
 2. 然后在签名工厂里面实现 `CreateConnectSignature` 就直接返回这个值即可
 
-其余三个操作 `创建对话签名` `对话人员操作签名` 以及 `查询聊天记录签名` 都在运行需要传入动态的参数，因而必须要求每一次都是实时的获取签名才能确保整个操作的安全性，因此还是建议开发者使用我们的云引擎进行签名。
+其余三个操作 「创建对话签名」 和 「对话人员操作签名」都在运行需要传入动态的参数，因而必须要求每一次都是实时的获取签名才能确保整个操作的安全性，因此还是建议开发者使用我们的云引擎进行签名。
 
+
+## 对话的管理
+对话的相关数据会被持久化的存储在 LeanCloud 云端，因此许多开发者会在自己的游戏内部维护一个玩家和频道的多对多关系，因此对话本身也支持这种模式，对话中有一个属性叫做 `Members` 这个属性保存了当前对话的所有参数与的 `Client Id`，因此开发者可以很方便地使用 `AVIMConversationQuery` 来查询当前 `Client Id` 所在的对话，例如如下代码：
+
+```cs
+AVIMClient guanyu = null;
+// 以关羽的游戏 ID 1002 作为 client Id 构建 AVIMClient
+avRealtime.CreateClient("1002").ContinueWith(t =>
+{
+    guanyu = t.Result;
+}).ContinueWith(s =>
+{
+    // 监听自己被邀请加入对话
+    guanyu.OnInvited += Guanyu_OnInvited;
+    // 监听接收消息
+    guanyu.OnMessageReceived += Guanyu_OnMessageReceived;
+    // 构建对话的查询
+    var query = guanyu.GetQuery();
+    // 查询我所在的对话列表，默认返回的是最近活跃的 20 个，这个数量可以更改，最大支持 1000
+    return query.FindAsync();
+}).Unwrap().ContinueWith(x => 
+{
+    // 从对话列表中找出「桃园」 这个对话
+    AVIMConversation TaoYuanConversation = null;
+    var conversationList = x.Result;
+    // 搜索「桃园」这个对话 
+    TaoYuanConversation = conversationList.First(conversation => conversation.Name == "桃园");
+    // 同样的，关羽也创建一个文本消息
+    var textMessage = new AVIMTextMessage("大哥，我在郊外打猎，三弟昨晚喝多了，他还在睡，要不你到城外，我们一起骑马打猎啊？");
+    return TaoYuanConversation.SendMessageAsync(textMessage);
+});
+```
+这段代码在前文出现过，在这里主要要注意如下两行代码：
+
+```cs
+var query = guanyu.GetQuery();
+// 查询我所在的对话列表，默认返回的是最近活跃的 20 个，这个数量可以更改，最大支持 1000
+return query.FindAsync();
+```
+
+但是这个查询仅仅是一个默认的方式是通过针对 `_Conversation` 表里面的 `m`（客户端 SDK 显示为 `Members`） 字段进行匹配查找的，一旦一个对话的成员太多，必然会造成性能的瓶颈。
+换言之，对话的成员设计成一个数组存储仅仅是为了在发送消息的时候，服务端可以方便的遍历每一位成员然后进行消息的送达，因此我们强烈建议游戏开发者在自己的数据模型中管理玩家和对话之间的关系。
+
+例如开发者可以用如下 3 张关系表来实现自己的数据关联。
+
+
+### Player
+
+### Channel
+
+### Player - Channel
 
 ## 常见问题
 
