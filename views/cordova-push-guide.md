@@ -20,7 +20,7 @@
 推送服务是 LeanCloud 的云服务里面的一个模块，它提供了稳定的针对移动设备的推送服务。
 
 #### 安装和使用
-首先可以查看 插件的仓库地址：[https://github.com/leancloud/cordova-plugin-leancloud](https://github.com/leancloud/cordova-plugin-leancloud)
+点击前往插件的仓库地址：[https://github.com/leancloud/cordova-plugin-leancloud](https://github.com/leancloud/cordova-plugin-leancloud) 查看安装以及初始化的说明。
 
 
 #### 推送插件与实时通信离线消息的关联
@@ -52,4 +52,5 @@ tom.on('conflict', function() {
 });
 ```
 
+注意，用户退出需要调用 [AVIMClient#close](realtime_guide-js.html#退出登录) 的方法，与此同时也需要执行上述代码来确认用户退出之后，不会再收到离线的消息推送。
 
