@@ -1333,7 +1333,7 @@ return query.FindAsync();
 ### Player
 玩家表的设计如下：
 
-id|name|
+id|name
 --|--
 1001|刘备
 1002|关羽
@@ -1344,8 +1344,9 @@ id|name|
 
 ### Channel
 频道表设计如下：
+
 id|name|lcConversationId
---|--
+--|--|--
 c0000001|世界|58f06ec42e9af6631e140de7
 c0000002|桃园|58d4c2472e9af6631e10092f
 c0000003|曹操与程昱私聊|58d9d5012e9af6631e10e551
