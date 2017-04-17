@@ -10,7 +10,7 @@
 {% block project_constraint %}
 你的项目需要遵循一定格式才会被云引擎识别并运行。
 
-{{fullName}} 使用 WSGI 规范来运行项目，项目根目录下必须有 `wsgi.py` 与 `requirements.txt` 文件，可选文件 `runtime.txt`。云引擎运行时会首先加载 `wsgi.py` 这个模块，并将此模块的全局变量 `application` 做为 WSGI 函数进行调用。因此请保证 `wsgi.py` 文件中包含一个 `application` 的全局变量／函数／类，并且符合 WSGI 规范。
+{{fullName}} 使用 WSGI 规范来运行项目，项目根目录下必须有 `wsgi.py` 与 `requirements.txt` 文件，可选文件 `.python-version`、`runtime.txt`。云引擎运行时会首先加载 `wsgi.py` 这个模块，并将此模块的全局变量 `application` 做为 WSGI 函数进行调用。因此请保证 `wsgi.py` 文件中包含一个 `application` 的全局变量／函数／类，并且符合 WSGI 规范。
 
 更多关于 **WSGI 函数** 的内容，请参考 [WSGI 接口](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000) 或者 [PEP333](https://www.python.org/dev/peps/pep-0333/)。
 
@@ -63,9 +63,14 @@ pip install -r requirements.txt
 
 ### 指定 Python 版本
 
-你可以选择运行代码的 Python 版本，目前支持 3.5 和 2.7 两个版本。
+你可以选择运行代码的 Python 版本。选择方法与 [pyenv](https://github.com/pyenv/pyenv) 相同，在项目根目录的 `.python-version` 中写入需要的 Python 版本即可，比如 `3.6.1`。这样将代码部署到云引擎之后，会自动根据此内容选择对应的 Python 版本。
 
-指定方法为在 `runtime.txt` 中填写 `python-3.5` 或者 `python-2.7` 即可。
+如果在本地开发时，也已经使用了 pyenv，pyenv 也会根据此文件来自动使用对应的 Python 运行项目，因此建议本地开发时，也使用 pyenv，来保证本地环境与线上相同。pyenv 的安装方法请参考[官方网站](https://github.com/pyenv/pyenv)。
+
+目前仅支持 CPython 版本，暂时不支持 pypy / jython / iron python 等其他 Python 实现。另外建议尽量使用 3.5 或以上版本的 Python 进行开发，如果仍然在使用 Python2 ，请使用 Python2.7 进行开发。
+
+在之前版本的云引擎中，也可以在项目根目录的 `runtime.txt` 中填写 `python-3.5` 或者 `python-2.7` 来指定 Python 版本。如果当前项目仍然在使用此方法，建议升级到上面的方式来指定。
+
 {% endblock %}
 
 
