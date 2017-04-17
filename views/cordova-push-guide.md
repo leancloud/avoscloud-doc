@@ -2,6 +2,8 @@
 
 伴随着 Cordova 的发展，已经有不少用户在尝试着结合 LeanCloud 强大的后端以及 Cordova 强大的跨平台能力来开发客户端应用，因此这篇教程将详细讲解如何在 Cordova 中正确，有效地使用 LeanCloud 的各项服务。
 
+![Cordova-log](https://cordova.apache.org/static/img/cordova_bot.png)
+
 ## 安装
 首先，Cordova 本质上是一个 Web 项目，它的开发语言目前还是主流的 JavaScript 以及一小部分特立独行的 TypeScript ，因此在任何一个基于 Cordova 开发环境中都可以直接使用 LeanCloud JavaScript SDK：
 
