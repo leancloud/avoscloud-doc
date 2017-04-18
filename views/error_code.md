@@ -338,13 +338,15 @@
 
 ## 403
 
-分为两类：
+当 {% if node == 'qcloud' %}**控制台** > **应用** > **设置** > **应用选项**{% else %}[控制台 > 应用 > 设置 > 应用选项](/dashboard/app.html?appid={{appid}}#/permission){% endif %} 中的相关选项未打开，或是 Class 关闭了权限，或是 User 缺失了 session 信息等情况下，云端会统一地返回 403 错误码及不同的错误信息，代表当前请求因权限不够而被拒。
 
-* 信息 - `Forbidden to read/write by class permissions`
-* 含义 - 操作被禁止，因为 Class 表没有打开「读」或者「写」的权限。进入 **应用控制台** > **存储**，点击相应的 Class，从右侧选择 **其他** 下拉菜单，进入 **权限管理** 来调整。
+例如：
 
-* 信息 - `The user cannot be altered by a client without the session.`
-* 含义 - 用户没有登录，无法修改用户信息。
+- 信息 - `Forbidden to read/write by class permissions`
+- 含义 - 操作被禁止，因为 Class 表没有打开「读」或者「写」的权限。进入 **应用控制台** > **存储**，点击相应的 Class，从右侧选择 **其他** 下拉菜单，进入 **权限管理** 来调整。
+<p hint="seperating lists">&nbsp;</p>
+- 信息 - `The user cannot be altered by a client without the session.`
+- 含义 - 用户没有登录，无法修改用户信息。
 
 
 ## 429
