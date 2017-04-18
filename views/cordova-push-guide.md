@@ -14,7 +14,7 @@
 我们的主要的两个功能模块[数据存储](leanstorage_guide-js.html)以及[实时通信](realtime_guide-js.html)的安装包里面都已经包含了 TypeScript 的定义文件，因此如果您正在使用 ionic2+ 进行开发也毫无问题，不会遇到编译出错的问题。
 
 ## Native 插件
-在 Cordova 的插件市场里面有很多关于使用 JavaScript 去调用平台特殊的本地组件去实现一些浏览器运行时内无法实现的需求，例如苹果的支付功能(Apple Pay)，因此针对与 LeanCloud 相关的服务，我们也开发了一套插件给 Cordova 的开发者使用。
+在 Cordova 的插件市场里面有很多关于使用 JavaScript 去调用各平台专用的本地组件去实现一些浏览器运行时内无法实现的需求，例如苹果的支付功能(Apple Pay)，因此针对与 LeanCloud 相关的服务，我们也开发了一套插件给 Cordova 的开发者使用。
 
 ### LeanCloud 推送插件
 推送服务是 LeanCloud 的云服务里面的一个模块，它提供了稳定的针对移动设备的推送服务。
