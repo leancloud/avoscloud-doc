@@ -28,7 +28,66 @@
 3. 如果弹出警告对话框，点击 **OK**。
 4. 点击 **Done**
 
-## 创建推送证书
+## 创建 Token Authentication
+
+Token Authentication 是 APNs 新推出的推送鉴权方式。它相对老的证书鉴权方式有这些优势：
+* 同一个账户下所有 App 无论是测试 App 还是正式版 App 都能使用同一个 key 来发推送消息和  voice-over-Internet Protocol (VoIP) 消息，不再需要为每个 App 生成一个证书。
+* 生成的 Auth Key 不再有过期时间，无需像证书那样每年需要重新生成一次
+* 生成过程简单，不需要繁琐、易错的证书导出操作
+
+想进一步了解其相关内容请参看 [APNs 文档](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/APNSOverview.html#//apple_ref/doc/uid/TP40008194-CH8-SW1)。
+
+我们推荐所有用户都使用这种新的鉴权方式来发推送消息。
+
+
+### 获取 Team ID
+
+1. 前往 [Apple Developer Center](https://developer.apple.com)
+2. 点击 **Membership**
+
+  ![Membership](images/ios_cert_v2/find_team_id.png)
+ 
+   找到 Team ID 一栏，将其记下来以备后用。
+
+### 创建 Token Authentication Key
+
+1. 前往 [Apple Developer Center](https://developer.apple.com)
+2. 点击 **Certificates, Identifiers & Profiles**
+
+  ![enter Certificates, Identifiers & Profiles](images/ios_cert_v2/enter_certificates_identifiers_profiles.png)
+3. 选择在 **Certificates** 栏下的 **All**
+4. 点击下图中红色边框内的加号按钮
+
+  ![Create SSL certificate](images/ios_cert_v2/create_ssl_certificate.png)
+5. 勾选 **Production** 栏下的 **Apple Push Notification Authentication Key (Sandbox & Production)**，点击下一步。
+  
+  ![Select push certificate](images/ios_cert_v2/enter_create_token_auth_key.png)
+6. 点击 Download 将生成好的 Auth Key 下载到本地，并记录 Key ID 以备后用。
+ 
+  ![Download Key ID](images/ios_cert_v2/download_key_id.png)
+
+### 上传 Token Authentication Key
+
+{% if node=='qcloud' %}
+1. 进入 `LeanCloud 应用控制台 > 消息 > 推送 > 设置`，然后就可以看到下面的页面：
+{% else %}
+1. 进入 [LeanCloud 应用控制台 > 消息 > 推送 > 设置](/messaging.html?appid={{appid}}#/message/push/conf)，然后就可以看到下面的页面：
+{% endif %}
+  
+  ![Push token auth configure](images/ios_cert_v2/push_token_auth_config.png)
+2. 点击 **新增 Token Authentication**
+
+  ![Upload token auth key](images/ios_cert_v2/upload_token_auth_key.png)
+
+   在弹出的对话框内填入之前获取的 Team ID，Key ID，Topics，并将上一步下载到本地的 Auth Key 文件上传。Topics 是 App 的 Bundle ID，有几个 App 就可以填写几个 Bundle ID 但需要注意填写的 App Bundle ID 必须从属于同一个 Team ID 之下。
+
+   点击 **创建** 之后就完成了上传 Token Authentication Key 的工作。
+4. 推送测试可以在这里进行：
+  ![push_test](images/ios_cert_v2/push_test.png)
+
+**注意：**在 LeanCloud 平台，Token Authentication 鉴权方式和老的证书鉴权方式是互斥的，一旦配置了 Token Authentication 则应用下所有推送均会使用 Token Authentication 方式进行，所以请确保 Topics 下包含所有您正在使用的 Bundle ID。
+
+## 创建推送证书(不推荐使用)
 
 每个 App ID 都需要单独的客户端 SSL 证书来和 APNs 通信。从 2015 年 12 月 17 日起，APNs 服务全面支持 HTTP/2 协议，推送证书也进行了相应的调整，即推出了 Universal Push Notification Client SSL 证书，以下简称 **Universal 推送证书**。通过下图中红框标注的 **Apple Push Notification service SSL (Sandbox & Production)** 这种方式创建的推送证书就是「Universal 推送证书」。
 
@@ -80,26 +139,14 @@
 
 「非 Universal 推送证书」的申请步骤与以上类似。
 
-## 验证推送服务状态
-
-按以下步骤来验证 App ID 的推送服务是否打开：
-
-1. 点击 **Identifiers** 下的 **App IDs**
-2. 选择与应用 Bundle ID 匹配的 App ID
-3. 如果下图中红色方框中显示 **Enabled**，表示 App ID 的推送证书已配置好。
-
- ![Verify push notification](images/ios_cert_v2/verify_push_notification.png)
-
-## 导出证书
+### 导出证书
 
 1. 打开 **Keychain Access**，找到要导出的证书（证书名有前缀 **Apple Push Services**）。
 2. 右键点击证书，这里请注意确认右键点击的是证书，**不要** 展开证书后右键点击证书的专用密钥。选择 **导出 / Export**，选择保存格式为 `.p12`。这时程序会提示你输入密码来保护导出的证书，**请不要输入密码**，让两个输入框为空，点击  **OK**。接着又会弹出一个对话框，要求输入 macOS 账户的密码来允许从 Keychain Access 中导出，请填写密码并点击 **允许 / Allow**。
 
 3. 在 Xcode 工程中开启推送权限：具体步骤如下： ![open_push_auth](images/ios_cert_v2/open_push_auth.png)
 
-
-
-## 上传证书
+### 上传证书
 
 {% if node=='qcloud' %}
 1. 进入 `LeanCloud 应用控制台 > 消息 > 推送 > 设置`，然后就可以看到下面的页面：
@@ -118,9 +165,8 @@
   ![prod_dev_push_cer_preview](images/ios_cert_v2/prod_dev_push_cer_preview.png)
 4. 推送测试可以在这里进行：
   ![push_test](images/ios_cert_v2/push_test.png)
-
  
-## 上传证书失败
+### 上传证书失败
 
 如果无法上传推送证书，通常是因为证书有问题，一般由下列原因导致：
 
@@ -145,10 +191,22 @@
 
 Apple 未来可能会修改推送证书的名字前缀，我们会及时更新前缀列表，同时也欢迎大家来补充。
 
-## 证书过期
+### 证书过期
 
 开发者如果使用过期证书进行推送，会遇到「The iOS certificate file is expired or disabled」的错误提示。
 
 LeanCloud 后端在收到推送请求时都会去检查 `prod` 参数指明的证书是否过期，没有 `prod` 则默认检查正式环境证书，如果发现过期并且 query 条件查出的目标设备可能存在 iOS 设备，就直接拒绝本次推送。
 
 一种解决方法是替换过期的证书，另一种方法是在 query 条件中通过 `deviceType` 字段明确指定 `_Installation` 表中设备类型为非 iOS 设备来推送，方法参见 [消息推送总览 · 发送给特定的用户](push_guide.html#发送给特定的用户)。
+
+
+## 验证推送服务状态
+
+按以下步骤来验证 App ID 的推送服务是否打开：
+
+1. 点击 **Identifiers** 下的 **App IDs**
+2. 选择与应用 Bundle ID 匹配的 App ID
+3. 如果下图中红色方框中显示 **Enabled**，表示 App ID 的推送证书已配置好。
+
+ ![Verify push notification](images/ios_cert_v2/verify_push_notification.png)
+
