@@ -75,7 +75,7 @@ Token Authentication 是 APNs 新推出的推送鉴权方式。它相对老的�
 {% endif %}
   
   ![Push token auth configure](images/ios_cert_v2/push_token_auth_config.png)
-2. 点击 **新增 Token Authentication**
+2. 点击 **新增 Token Authentication** 后弹出对话框：
 
   ![Upload token auth key](images/ios_cert_v2/upload_token_auth_key.png)
 
