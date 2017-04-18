@@ -1,5 +1,5 @@
 {% import "views/_helper.njk" as docs %}
-# 实时通信开发指南 · Unity（C#）
+# 实时通信开发指南 · Unity（cs）
 
 ## 准备工作
 
@@ -11,7 +11,7 @@
 <dd>微软针对 Unity 有一个工具包可以让 Unity 和 Visual Studio 联调，详细请看[使用 Visual Studio Tools for Unity](https://msdn.microsoft.com/zh-cn/library/dn940020.aspx)，因此建议用户在 Windows 上开发 Unity 的体验会更好，当然在 Mac OS 以及其他操作系统上开发也没有任何问题。</dd>
 
 ### .NET 4.5+ 编程知识
-Unity 支持 Mono 使用 .NET 语言来实现跨平台开发的解决方案，所以 LeanCloud 采用了 C# 来实现客户端的 SDK。如果你有 .NET 方面的编程经验，就很容易掌握 LeanCloud Unity SDK 接口的风格和用法。
+Unity 支持 Mono 使用 .NET 语言来实现跨平台开发的解决方案，所以 LeanCloud 采用了 cs 来实现客户端的 SDK。如果你有 .NET 方面的编程经验，就很容易掌握 LeanCloud Unity SDK 接口的风格和用法。
 
 LeanCloud Unity SDK 在很多重要的功能点上都采用了微软提供的[基于任务的异步模式 (TAP)](https://msdn.microsoft.com/zh-cn/library/hh873175.aspx)，所以如果你具备 .NET Framework 4.5 的开发经验，或对 .NET Framework 4.5 的 新 API 有所了解，将有助于快速上手。
 
@@ -803,7 +803,7 @@ public class MyWebSocketClient : MonoBehaviour, WebSocketUnityDelegate,IWebSocke
 	// you need to decode it and call after the same callback than PC
 	public void OnWebSocketUnityReceiveDataOnMobile (string base64EncodedData)
 	{
-		// it's a limitation when we communicate between plugin and C# scripts, we need to use string
+		// it's a limitation when we communicate between plugin and cs scripts, we need to use string
 		byte[] decodedData = webSocket.decodeBase64String (base64EncodedData);
 		OnWebSocketUnityReceiveData (decodedData);
 	}
