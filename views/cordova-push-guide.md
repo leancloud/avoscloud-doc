@@ -37,7 +37,7 @@ window.LeanPush.subscribe(clientId, function(success){
 }); 
 ```
 
-注意：上述代码需要确保已经成功的安装并且初始化了[LeanCloud 推送插件](#LeanCloud 推送插件)。
+注意：上述代码需要确保已经成功的安装并且初始化了[LeanCloud_推送插件](#LeanCloud 推送插件)。
 
 同样的道理，假设您在使用 [JavaScript 实时通信](https://leancloud.cn/docs/realtime_guide-js.html) 使用了[单点登录](realtime_guide-js.html#单点登录) 就需要在[处理登录冲突](realtime_guide-js.html#处理登录冲突)中对当前设备的 Installation 解绑：
 
