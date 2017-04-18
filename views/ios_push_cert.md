@@ -1,3 +1,9 @@
+{% import "views/_helper.njk" as docs %}
+{% if node=='qcloud' %}
+  {% set pushSettingLink = "**控制台** > **消息** > **推送** > **设置**" %}
+{% else %}
+  {% set pushSettingLink = "[控制台 > 消息 > 推送 > 设置](/messaging.html?appid={{appid}}#/message/push/conf)" %}
+{% endif %}
 # iOS 推送证书设置指南
 
 ## 注册 App ID
@@ -9,11 +15,11 @@
 3. 选择 **Identifiers** 下的 **App IDs**
 4. 点击右上方的加号按钮（**\+**）
 5. 填写 App ID 的基本信息
- ![Create App ID](images/ios_cert_v2/create_app_id.png)
+  ![Create App ID](images/ios_cert_v2/create_app_id.png)
 6. 选择创建 Explicit App ID，填入 App 的 **Bundle ID**。注意，<u>Explicit App ID 不能包含星号</u>（\*）。
- ![Enter Explicit bundle ID](images/ios_cert_v2/enter_explicit_app_id.png)
+  ![Enter Explicit bundle ID](images/ios_cert_v2/enter_explicit_app_id.png)
 7. 选择 App ID 需要开启的服务，此处要勾选 **Push Notifications**。
- ![Select push notification](images/ios_cert_v2/select_push_notification.png)
+  ![Select push notification](images/ios_cert_v2/select_push_notification.png)
 8. 点击 **Continue**
 9. 确认注册信息，然后点击 **Register**。
 10. 点击 **Done**
@@ -23,21 +29,22 @@
 为已有的 App ID 开启推送通知的步骤如下：
 
 1. 选择要开启推送通知的 App ID
-2. 勾选 **Push Notifications** 复选框。
- ![Edit push notification](images/ios_cert_v2/edit_push_notification.png)
+2. 勾选 **Push Notifications** 复选框
+  ![Edit push notification](images/ios_cert_v2/edit_push_notification.png)
 3. 如果弹出警告对话框，点击 **OK**。
 4. 点击 **Done**
 
 ## 创建 Token Authentication
 
-Token Authentication 是 APNs 新推出的推送鉴权方式。它相对老的证书鉴权方式有这些优势：
-* 同一个账户下所有 App 无论是测试 App 还是正式版 App 都能使用同一个 key 来发推送消息和  voice-over-Internet Protocol (VoIP) 消息，不再需要为每个 App 生成一个证书。
-* 生成的 Auth Key 不再有过期时间，无需像证书那样每年需要重新生成一次
-* 生成过程简单，不需要繁琐、易错的证书导出操作
+**Token Authentication** 是 APNs 新推出的推送鉴权方式。它相对老的证书鉴权方式有如下优势：
+
+* 同一个账户下所有 App 无论是测试 App 还是正式版 App，都能使用同一个 key 来发推送消息和 voice-over-Internet Protocol (VoIP) 消息，不再需要为每个 App 生成一个证书。
+* 生成的 Auth Key 不再有过期时间，无需像证书那样每年需要重新生成一次。
+* 生成过程简单，不需要繁琐、易错的证书导出操作。
 
 想进一步了解其相关内容请参看 [APNs 文档](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/APNSOverview.html#//apple_ref/doc/uid/TP40008194-CH8-SW1)。
 
-我们推荐所有用户都使用这种新的鉴权方式来发推送消息。
+**我们推荐所有用户都使用这种新的鉴权方式来发推送消息。**
 
 
 ### 获取 Team ID
@@ -62,32 +69,32 @@ Token Authentication 是 APNs 新推出的推送鉴权方式。它相对老的�
 5. 勾选 **Production** 栏下的 **Apple Push Notification Authentication Key (Sandbox & Production)**，点击下一步。
   
   ![Select push certificate](images/ios_cert_v2/enter_create_token_auth_key.png)
-6. 点击 Download 将生成好的 Auth Key 下载到本地，并记录 Key ID 以备后用。
+6. 点击 Download 将生成好的 Auth Key 下载到本地，并记录 Key ID 备用。
  
   ![Download Key ID](images/ios_cert_v2/download_key_id.png)
 
 ### 上传 Token Authentication Key
 
-{% if node=='qcloud' %}
-1. 进入 `LeanCloud 应用控制台 > 消息 > 推送 > 设置`，然后就可以看到下面的页面：
-{% else %}
-1. 进入 [LeanCloud 应用控制台 > 消息 > 推送 > 设置](/messaging.html?appid={{appid}}#/message/push/conf)，然后就可以看到下面的页面：
-{% endif %}
-  
+
+1. 进入 {{ pushSettingLink }}，然后就可以看到下面的页面：
+
   ![Push token auth configure](images/ios_cert_v2/push_token_auth_config.png)
 2. 点击 **新增 Token Authentication** 后弹出对话框：
 
   ![Upload token auth key](images/ios_cert_v2/upload_token_auth_key.png)
 
-   在弹出的对话框内填入 Team ID，Key ID，Topics，并将上一步下载到本地的 Auth Key 文件上传。其中 Topics 是 App 的 Bundle ID，您有几个要用该 Token Authentication Key 发消息的 App 就可以填写几个 Bundle ID 在 Topics 下，每个 Bundle ID 用英文半角逗号分隔。需要注意填写的 App Bundle ID 必须从属于同一个 Team ID 之下。如果有多个 Team ID 或多个 Token Authentication Key 请再点击 **新增 Token Authentication** 按钮以配置多个 Token Authentication Key。
+   在弹出的对话框内填入 Team ID、Key ID、Topics，并将上一步下载到本地的 Auth Key 文件上传。
+
+   - Topics 是 App 的 Bundle ID，有几个要用该 Token Authentication Key 发消息的 App 就可以在 Topics 下填写几个 Bundle ID，每个 Bundle ID 用<u>英文半角逗号</u>分隔。
+   - 需要注意填写的 App Bundle ID 必须从属于同一个 Team ID 之下。如果有多个 Team ID 或多个 Token Authentication Key，请再点击 **新增 Token Authentication** 按钮以配置多个 Token Authentication Key。
 
    点击 **创建** 之后就完成了上传 Token Authentication Key 的工作。
 4. 推送测试可以在这里进行：
   ![push_test](images/ios_cert_v2/push_test.png)
 
-**注意：**在 LeanCloud 平台，Token Authentication 鉴权方式和老的证书鉴权方式是互斥的，一旦配置了 Token Authentication 则应用下所有推送均会使用 Token Authentication 方式进行，所以请确保为您所有需要发推送的 App 都添加 Token Authentication 配置。
+{{ docs.alert("在 LeanCloud 平台，Token Authentication 鉴权方式和老的证书鉴权方式是互斥的，一旦配置了 Token Authentication 则应用下所有推送均会使用 Token Authentication 方式进行，所以请确保为所有需要发推送的 App 都添加了 Token Authentication 配置。") }}
 
-## 创建推送证书(不推荐使用)
+## 创建推送证书（不推荐使用）
 
 每个 App ID 都需要单独的客户端 SSL 证书来和 APNs 通信。从 2015 年 12 月 17 日起，APNs 服务全面支持 HTTP/2 协议，推送证书也进行了相应的调整，即推出了 Universal Push Notification Client SSL 证书，以下简称 **Universal 推送证书**。通过下图中红框标注的 **Apple Push Notification service SSL (Sandbox & Production)** 这种方式创建的推送证书就是「Universal 推送证书」。
 
@@ -99,7 +106,7 @@ Token Authentication 是 APNs 新推出的推送鉴权方式。它相对老的�
   
   ![what is not Universal Push Notification Client SSL Certificate](images/ios_cert_v2/what_is_not_universal_push_notification_client_ssl_certificate.png)
 
-**注意：**要使用 Universal 推送证书，LeanCloud iOS SDK 需要更新到 v3.2.8 以上的版本，以获得更快速的推送效果。
+{{ docs.alert("要使用 Universal 推送证书，LeanCloud iOS SDK 需要更新到 v3.2.8 以上的版本，以获得更快速的推送效果。") }}
 
 ### 创建 Universal 推送证书
 
@@ -142,17 +149,20 @@ Token Authentication 是 APNs 新推出的推送鉴权方式。它相对老的�
 ### 导出证书
 
 1. 打开 **Keychain Access**，找到要导出的证书（证书名有前缀 **Apple Push Services**）。
-2. 右键点击证书，这里请注意确认右键点击的是证书，**不要** 展开证书后右键点击证书的专用密钥。选择 **导出 / Export**，选择保存格式为 `.p12`。这时程序会提示你输入密码来保护导出的证书，**请不要输入密码**，让两个输入框为空，点击  **OK**。接着又会弹出一个对话框，要求输入 macOS 账户的密码来允许从 Keychain Access 中导出，请填写密码并点击 **允许 / Allow**。
+2. 右键点击证书，这里请注意确认右键点击的是<u>证书</u>，**不要** 展开证书后右键点击证书的专用密钥。
+  
+  选择 **导出 / Export**，选择保存格式为 `.p12`。这时程序会提示你输入密码来保护导出的证书，**请不要输入密码**，让两个输入框为空，点击  **OK**。
 
-3. 在 Xcode 工程中开启推送权限：具体步骤如下： ![open_push_auth](images/ios_cert_v2/open_push_auth.png)
+  接着又会弹出一个对话框，要求输入 macOS 账户的密码来允许从 Keychain Access 中导出，请填写密码并点击 **允许 / Allow**。
+
+3. 在 Xcode 工程中开启推送权限：
+  
+  ![open_push_auth](images/ios_cert_v2/open_push_auth.png)
 
 ### 上传证书
 
-{% if node=='qcloud' %}
-1. 进入 `LeanCloud 应用控制台 > 消息 > 推送 > 设置`，然后就可以看到下面的页面：
-{% else %}
-1. 进入 [LeanCloud 应用控制台 > 消息 > 推送 > 设置](/messaging.html?appid={{appid}}#/message/push/conf)，然后就可以看到下面的页面：
-{% endif %}
+
+1. 进入 {{ pushSettingLink }}，然后就可以看到下面的页面：
   
   ![Push certificate configure](images/ios_cert_v2/push_certificate_config.png)
 2. 将「Universal 推送证书」上传到图中的 **生产证书** 中。
