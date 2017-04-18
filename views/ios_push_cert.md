@@ -79,13 +79,13 @@ Token Authentication 是 APNs 新推出的推送鉴权方式。它相对老的�
 
   ![Upload token auth key](images/ios_cert_v2/upload_token_auth_key.png)
 
-   在弹出的对话框内填入之前获取的 Team ID，Key ID，Topics，并将上一步下载到本地的 Auth Key 文件上传。Topics 是 App 的 Bundle ID，有几个 App 就可以填写几个 Bundle ID 但需要注意填写的 App Bundle ID 必须从属于同一个 Team ID 之下。
+   在弹出的对话框内填入 Team ID，Key ID，Topics，并将上一步下载到本地的 Auth Key 文件上传。其中 Topics 是 App 的 Bundle ID，您有几个要用该 Token Authentication Key 发消息的 App 就可以填写几个 Bundle ID 在 Topics 下，每个 Bundle ID 用英文半角逗号分隔。需要注意填写的 App Bundle ID 必须从属于同一个 Team ID 之下。如果有多个 Team ID 或多个 Token Authentication Key 请再点击 **新增 Token Authentication** 按钮以配置多个 Token Authentication Key。
 
    点击 **创建** 之后就完成了上传 Token Authentication Key 的工作。
 4. 推送测试可以在这里进行：
   ![push_test](images/ios_cert_v2/push_test.png)
 
-**注意：**在 LeanCloud 平台，Token Authentication 鉴权方式和老的证书鉴权方式是互斥的，一旦配置了 Token Authentication 则应用下所有推送均会使用 Token Authentication 方式进行，所以请确保 Topics 下包含所有您正在使用的 Bundle ID。
+**注意：**在 LeanCloud 平台，Token Authentication 鉴权方式和老的证书鉴权方式是互斥的，一旦配置了 Token Authentication 则应用下所有推送均会使用 Token Authentication 方式进行，所以请确保为您所有需要发推送的 App 都添加 Token Authentication 配置。
 
 ## 创建推送证书(不推荐使用)
 
