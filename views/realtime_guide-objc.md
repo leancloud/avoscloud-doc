@@ -1384,6 +1384,28 @@ NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
     }];
 }
 ```
+
+另外也支持 `or`、`and` 的条件组合查询，下面以 `or` 为例。
+
+例如查询10条最近对话，要求如果有系统对话，也一并返回：
+
+```objc
+- (void)tomQueryConversationByConditionOr {
+    // Tom 创建了一个 client，用自己的名字作为 clientId
+    self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+    // Tom 打开 client
+    [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
+        AVIMConversationQuery *query1 = [[AVIMClient defaultClient] conversationQuery];
+        AVIMConversationQuery *query2 = [[AVIMClient defaultClient] conversationQuery];
+        [query2 whereKey:@"sys" equalTo:@(YES)];
+        AVIMConversationQuery *orConversationQuery = [AVIMConversationQuery orQueryWithSubqueries:@[ query1, query2 ]];
+        [orConversationQuery findConversationsWithCallback:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+            NSLog(@"找到 %ld 个对话！", [objects count]);
+        }];
+    }];
+}
+```
+
 {% endblock %}
 
 {% block conversation_query_contains %}
