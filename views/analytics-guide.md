@@ -76,11 +76,11 @@ public class PC : IAVAnalyticsDevice
         }
     }
 
-    public string display_name
+    public string device_brand
     {
         get
         {
-            return "统计测试";
+            return "ASUS";
         }
     }
 
@@ -89,14 +89,6 @@ public class PC : IAVAnalyticsDevice
         get
         {
             return null;
-        }
-    }
-
-    public bool is_jailbroken
-    {
-        get
-        {
-            return false;
         }
     }
 
@@ -132,27 +124,11 @@ public class PC : IAVAnalyticsDevice
         }
     }
 
-    public string package_name
-    {
-        get
-        {
-            return "com.leancloud.pc";
-        }
-    }
-
     public string resolution
     {
         get
         {
             return "1920x1080";
-        }
-    }
-
-    public string sv
-    {
-        get
-        {
-            return "1.1";
         }
     }
 
