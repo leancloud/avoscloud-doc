@@ -338,13 +338,11 @@
 
 ## 403
 
-当 {% if node == 'qcloud' %}**控制台** > **应用** > **设置** > **应用选项**{% else %}[控制台 > 应用 > 设置 > 应用选项](/dashboard/app.html?appid={{appid}}#/permission){% endif %} 中的相关选项未打开，或是 Class 关闭了权限，或是 User 缺失了 session 信息等情况下，云端会统一地返回 403 错误码及不同的错误信息，代表当前请求因权限不够而被拒。
-
-例如：
+当 {% if node == 'qcloud' %}**控制台** > **应用** > **设置** > **应用选项**{% else %}[控制台 > 应用 > 设置 > 应用选项](/dashboard/app.html?appid={{appid}}#/permission){% endif %} 中的相关选项未打开，或是 Class 关闭了权限，或是 User 缺失了 session 信息等情况下，云端会统一地返回 403 错误码及不同的错误信息，代表当前请求因权限不够而被拒。例如：
 
 - 信息 - `Forbidden to read/write by class permissions`
-- 含义 - 操作被禁止，因为 Class 表没有打开「读」或者「写」的权限。进入 **应用控制台** > **存储**，点击相应的 Class，从右侧选择 **其他** 下拉菜单，进入 **权限管理** 来调整。
-<p hint="seperating lists">&nbsp;</p>
+- 含义 - 操作被禁止，因为 Class 表没有打开「读」或者「写」的权限。进入 **控制台** > **存储**，点击相应的 Class，从右侧选择 **其他** 下拉菜单，进入 **权限管理** 来调整。
+----
 - 信息 - `The user cannot be altered by a client without the session.`
 - 含义 - 用户没有登录，无法修改用户信息。
 
@@ -424,6 +422,9 @@
 
 * 信息 - `SMS template not verified.`
 * 含义 - 短信模板未审核。
+----
+* 信息 - `SMS sign not verified`
+* 含义 - 没有设置默认签名。请进入 [控制台 > 消息 > 短信 > 设置](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf) 中设置一个默认短信签名。
 
 ## 606
 
