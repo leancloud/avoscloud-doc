@@ -1,17 +1,16 @@
 # 统计分析开发指南
 
-## 统计分析解决了什么问题？
 使用 LeanCloud 统计服务可以帮助开发者在应用上线之后及时查阅各类统计指标，它包含但不限于如下内容：
 
-- 应用趋势（实时数据，版本分布，渠道分布）
-- 行为分析（应用使用，推送统计，路径分析，使用时长，使用频率，访问页面）
-- 用户分析（用户留存，终端设备，地理位置）
+- 应用趋势（实时数据、版本分布、渠道分布）
+- 行为分析（应用使用、推送统计、路径分析、使用时长、使用频率、访问页面）
+- 用户分析（用户留存、终端设备、地理位置）
 - 推广营销分析（渠道对比）
-- 错误分析（错误分析，错误统计）
+- 错误分析（错误分析、错误统计）
 
-## 统计分析服务如何工作的？
+## 工作原理
 
-![analytics-workflow](images/analytics-wrokflow.svg)
+![analytics-workflow](images/analytics-workflow.svg)
 
 ## SDK 安装与初始化
 
@@ -148,7 +147,7 @@ AVAnalytics.InitAsync(new PC());
 一般情况下应用被打开的方式有两种：
 
 - 用户主动打开
-- 设备接收到应用的推送消息，用户点击消息而打开应用
+- 设备接收到应用的推送消息，用户点击消息而打开应用。
 
 因此 SDK 提供了统计这两种打开方式的接口：
 
@@ -171,7 +170,7 @@ var pageId = AVAnalytics.Current.BeginPage("ChatPage");
 // 关闭页面代码如下：
 AVAnalytics.Current.EndPage(pageId);
 
-// 调用这两个方法的时间间隔就是访问页面的时长，SDK 自动会进行计算
+// 调用这两个方法的时间间隔就是访问页面的时长，SDK 会自动进行计算
 ```
 
 ## 自定义事件
@@ -186,7 +185,7 @@ AVAnalytics.Current.TrackEvent("Gesture_Flick");
 ```
 
 ### 多标签事件
-有一些事件并不是只有一个名字，它也可能有一些其他标签或者自定义属性，例如电商应用需要了解消费者下单之后用户是否浏览的页面上的其他广告：
+有一些事件并不是只有一个名字，它也可能有一些其他标签或者自定义属性，例如电商应用需要了解消费者下单之后是否还浏览了页面上的其他广告：
 
 ```cs
 var orderEventId = AVAnalytics.Current.BeginEvent("Order", "OrderAction", new Dictionary<string, object>()
@@ -197,7 +196,7 @@ var orderEventId = AVAnalytics.Current.BeginEvent("Order", "OrderAction", new Di
 ```
 
 ### 事件累计
-有的时候一次购物用户可能会分批次下几次订单，因此我们也可以记录多次同名事件:
+有的时候一次购物用户可能会分批次下几次订单，因此我们也可以记录多次同名事件：
 
 ```cs
 var orderEventId1 = AVAnalytics.Current.BeginEvent("Order");
@@ -212,9 +211,8 @@ AVAnalytics.Current.EndEvent(orderEventId3);
 // 分别下单 3次，然后可以调用结束，这样就可以统计每一次下单的时间消耗
 ```
 
-
 ## 统计数据的发送
-默认情况下只要调用下面的接口，SDK 会根据[设置数据发送策略](#设置数据发送策略) 的策略进行发送，无需开发者关心里面的发送逻辑:
+默认情况下只要调用下面的接口，SDK 会根据 [数据发送策略](#设置数据发送策略) 进行发送，无需开发者关心里面的发送逻辑：
 
 ```cs
 // 结束这一次统计
@@ -222,15 +220,13 @@ AVAnalytics.Current.CloseSession();
 ```
 
 ## 设置数据发送策略
-{% if node=='qcloud' %}
-你可以进入应用的 `**分析** > **统计设置**<span class="text-muted">（左下角）</span> > **数据发送策略**` 在线更改 SDK 端的数据报告发送策略。在没有取到在线配置的发送策略的情况下，会使用默认的发送策略。
-{% else %}
-你可以进入应用的 [**分析** > **统计设置**<span class="text-muted">（左下角）</span> > **数据发送策略**](/stat.html?appid={{appid}}&os=android#/statconfig/trans_strategoy) 在线更改 SDK 端的数据报告发送策略。在没有取到在线配置的发送策略的情况下，会使用默认的发送策略。
-{% endif %}
+
+你可以进入应用的 {% if node=='qcloud' %}**分析** > **统计设置**<span class="text-muted">（左下角）</span> > **数据发送策略**{% else %}[分析 > 统计设置<span class="text-muted">（左下角）</span> > 数据发送策略](/stat.html?appid={{appid}}&os=android#/statconfig/trans_strategoy){% endif %} 在线更改 SDK 端的数据报告发送策略。在没有取到在线配置的发送策略的情况下，会使用默认的发送策略。
 
 以下均为在线配置中的可选策略。
+
 ### 启动时发送
-【推荐使用】应用程序每次会在启动时会向服务器发送一次消息，在应用程序过程中产生的所有消息（包括自定义事件和本次使用时长）都会在下次启动时候发送。如果应用程序启动时处在不联网状态，那么消息将会缓存在本地，下次再尝试发送。
+【推荐使用】应用程序每次会在启动时向服务器发送一次消息，在应用使用过程中产生的所有消息（包括自定义事件和本次使用时长）都会在下次启动时候发送。如果应用程序启动时处在不联网状态，那么消息将会缓存在本地，下次再尝试发送。
 
 发送策略默认为启动时发送。
 
