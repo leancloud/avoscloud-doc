@@ -207,6 +207,8 @@ new AV.Query('Todo').find().then(function(todos) {
 });
 ```
 
+如果需要单独在某些操作中关闭全局的 masterKey 权限，请参考 [权限说明](leanengine_cloudfunction_guide-node.html#权限说明)。
+
 Node SDK 有过两个大版本：
 
 * `0.x`：最初的版本，对 Node.js 4.x 及以上版本兼容不佳，建议用户参考 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk-upgrade-1.html) 来更新
