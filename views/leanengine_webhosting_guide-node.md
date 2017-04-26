@@ -207,7 +207,7 @@ new AV.Query('Todo').find().then(function(todos) {
 });
 ```
 
-如果需要单独在某些操作中关闭全局的 masterKey 权限，请参考 [权限说明](leanengine_cloudfunction_guide-node.html#权限说明)。
+{{ docs.note("如果需要单独在某些操作中关闭全局的 masterKey 权限，请参考 [权限说明](leanengine_cloudfunction_guide-node.html#权限说明)。") }}
 
 Node SDK 有过两个大版本：
 
