@@ -189,8 +189,6 @@ require('http').createServer(function(req, res) {
 // 设置默认超时时间
 app.use(timeout('15s'));
 ```
-
-{{ docs.note("[云函数的超时](leanengine_cloudfunction_guide-node.html#云函数超时) 则无法修改。") }} 
 {% endblock %}
 
 {% block use_leanstorage %}
