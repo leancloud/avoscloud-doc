@@ -56,11 +56,17 @@
 3. 运营商下发短信（或语音）；
 4. 应用客户端收到验证码短信后，再向 LeanCloud 验证手机号码和短信验证码的合法性。
 
+## 自定义短信签名
+
+在发送短信之前，应该需要有一个短信[签名](rest_sms_api.html#短信签名是什么_必须的吗_) 需要在 [应用控制台](/applist.html#/apps) > **消息** > **短信** > **设置** > **短信签名** 里创建。审核通过后就可以使用了。
+
+非自定义模板短信，只可使用默认签名，不可通过 requestSmsCode 接口来指定所使用签名。
+
 ## 短信验证 API
 
 在一些场景下，你可能希望用户在验证手机号码后才能进行一些操作，例如充值。这些操作跟账户系统没有关系，可以通过我们提供的的短信验证 API 来实现。
 
-使用这些 API 需要在 [控制台 > **设置** > **应用选项** > **其他**](/app.html?appid={{appid}}#/permission) 中开启 **启用通用的短信验证码服务（开放 `requestSmsCode` 和 `verifySmsCode` 接口）** 选项。
+使用这些 API 需要在 [控制台 > **设置** > **应用选项** > **其他**](/app.html?appid={{appid}}#/permission) 中开启 **启用通用的短信验证码服务（开放 `requestSmsCode` 和 `verifySmsCode` 接口）** 选项，并且有一个审核通过的短信签名。
 
 给某个手机号码发送验证短信：
 
@@ -147,22 +153,20 @@ curl -X POST \
 
 ### 国际短信
 
-上面发送短信验证码和语音验证码，默认都是对国内号码。我们也开通了国际短信验证码服务（语音验证码在海外还不可用）。要发送国际短信，只需在发送 `https://{{host}}/1.1/requestSmsCode` 请求的时候，额外加上 `countryCode` 这一参数即可。
+上面发送短信验证码和语音验证码，默认都是对国内号码。我们也开通了国际短信验证码服务（语音验证码在海外还不可用）。要发送国际短信，只需要将手机号码格式使用为 [E.123](https://en.wikipedia.org/wiki/E.123) 所规定的格式即可
 
-`countryCode` 的取值范围请参考 [countrycode.org](https://countrycode.org/) 中的 **ISO CODES** 一列，例如 US 表示美国，CN 代表中国。
-
-下面的请求将给美国的手机号码（+917646xxxxx）发送一条短信验证码：
+下面的请求将给美国的手机号码（+17646xxxxx）发送一条短信验证码：
 
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  -d '{"mobilePhoneNumber": "917646xxxxx", "countryCode":"US"}' \
+  -d '{"mobilePhoneNumber": "+17646xxxxx"}' \
   https://{{host}}/1.1/requestSmsCode
 ```
 
-除了所增加的 `countryCode` 之外，发送国际短信和国内短信的请求参数完全一样。
+除了修改手机号码格式，发送国际短信和国内短信的请求参数完全一样。
 
 {{ sms.worldwideSms() }}
 
@@ -170,14 +174,14 @@ curl -X POST \
 
 我们还支持通过 `requestSmsCode` 发送自定义模板的短信。短信模板可以在 [应用控制台](/applist.html#/apps) > **消息** > **短信** > **设置** > **短信模板** 里创建。
 
-要使用已创建好的短信模板来发送短信验证，可以通过 `template` 参数指定模板名称，并且可以传入变量渲染模板，比如下面例子中的 `date`：
+要使用已创建好的短信模板来发送短信验证，可以通过 `template` 参数指定模板名称，`sign` 参数来指定签名，并且可以传入变量渲染模板，比如下面例子中的 `date`：
 
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  -d '{"mobilePhoneNumber": "186xxxxxxxx", "template":"activity","date":"2014 年 10 月 31 号"}' \
+  -d '{"mobilePhoneNumber": "186xxxxxxxx", "template":"activity","sign":"sign","date":"2014 年 10 月 31 号"}' \
   https://{{host}}/1.1/requestSmsCode
 ```
 
@@ -410,6 +414,99 @@ curl -X PUT \
 
 - [网易邮箱注册](http://reg.email.163.com/unireg/call.do?cmd=register.entrance&from=163mail_right)
 - [京东商城注册](https://reg.jd.com/reg/person?ReturnUrl=http%3A%2F%2Fwww.jd.com)
+
+### LeanCloud 提供的图片验证码
+
+图形验证码含有两个接口
+
+|URL|HTTP|功能|
+| :----------------------------------- | :--- | ----------------- |
+|/1.1/requestCaptcha|GET|获取图形验证码|
+|/1.1/verifyCaptcha|POST|校验图形验证码并返回二次凭证|
+
+为了使用的便利，LeanCloud 同样也提供了简单的图片验证码来方式用户短信接口遭到轰炸，首先在 [控制台 > **设置** > **应用选项** > **其他**](/app.html?appid={{appid}}#/permission) 中开启 **强制短信验证服务启用图形验证码**。
+
+然后使用**获取图形验证码接口**获取图形验证码
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+   -G \
+  --data-urlencode 'size=4' \
+  https://{{host}}/1.1/requestCaptcha
+```
+
+可使用的参数如下
+
+|参数名称|说明|
+| :----| :--|
+|size|验证码长度，默认 4 个字符。可选择范围 3-6|
+|width|宽度，单位是像素，下面的高度也是，会根据 size 自动调整，默认 85，范围在 60 - 200|
+|height|高度，默认值30，范围在 30 - 100|
+|ttl|验证码有效期，单位秒，默认值 60 秒，范围在 10 - 180|
+
+这里会获得一下如下结构的返回
+
+```json
+{
+   "captcha_token":"R2cxkqSz",
+   "captcha_url":"https:\/\/leancloud.cn\/1.1\/captchaImage?appId=PXnN5AqVpgEI4esrTLhoxUkd-gzGzoHsz&token=R2cxkqSz"
+}
+```
+
+|参数名称|说明|
+| :----| :--|
+|captcha_token|用于下面 verifyCaptcha 校验使用|
+|captcha_url|是图形验证码的图片地址|
+
+获取了**图形验证码**后，需要使用**图形验证码校验验证码**接口来校验验证码是否通过
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "captcha_code": "0000",
+        "captcha_token": "R2cxkqSz"
+      }'
+  https://{{host}}/1.1/requestCaptcha
+
+```
+
+参数解释如下
+
+|参数名称|说明|
+| :----| :--|
+|captcha_code|用户输入的图形验证码|
+|captcha_token|requestCaptcha 返回的 captcha_token|
+
+如果 **图形验证码校验验证码** 验证成功会返回
+
+```json
+{ "validate_token": "发送短信的二次凭证"}
+```
+
+失败则返回
+
+```json
+{
+  "code": "错误码",
+   "error": "错误信息"
+}
+```
+
+这里获得的 validate_token 需要添加在 requestSmsCode 的请求内容当中。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '{"mobilePhoneNumber": "186xxxxxxxx","validate_token":"token"}' \
+  https://{{host}}/1.1/requestSmsCode
+```
 
 ### 更多验证形式
 
