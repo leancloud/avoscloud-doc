@@ -498,15 +498,7 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
 }];
 ```
 
-2. Tom 获取到与 Jerry 的对话后，使用 KVO 观察对话的 `lastReadAt` 属性：
-
-```objc
-[conversation addObserver:observer forKeyPath:@"lastReadAt" options:NSKeyValueObservingOptionNew context:nil];
-```
-
-当 Jerry 阅读完消息后，服务端将会把阅读事件回执给 Tom，Tom 将会观察到 `lastReadAt` 属性发生变化。
-
-3. Tom 向 Jerry 发送一条消息，并设置为「需要回执」，也就是将消息发送选项的 `receipt` 字段设置为 `YES`：
+2. Tom 向 Jerry 发送一条消息，并设置为「需要回执」，也就是将消息发送选项的 `receipt` 字段设置为 `YES`：
 
 ```objc
 AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
@@ -521,18 +513,18 @@ AVIMTextMessage *message = [AVIMTextMessage messageWithText:@"Hello, Jerry!" att
 }];
 ```
 
-4. Jerry 收到 Tom 发的消息后，调用对话的 `readInBackground` 方法把「对话中最近的消息」标记为已读：
+3. Jerry 收到 Tom 发的消息后，调用对话的 `readInBackground` 方法把「对话中最近的消息」标记为已读：
 
 ```objc
 [conversation readInBackground];
 ```
 
-5. Jerry 读完消息后，Tom 将收到一个消息已读回执。此时对话的 `lastReadAt` 属性会改变。由于 Tom 之前对该属性进行了观察，`observer` 将会捕捉到这个变化：
+4. Jerry 读完消息后，Tom 将收到一个已读回执。此时对话的 `lastReadAt` 属性会更新。Tom 可以在 client 的 delegate 方法中捕捉到这个更新：
 
 ```objc
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"lastReadAt"]) {
-        NSDate *lastReadAt = change[NSKeyValueChangeNewKey];
+- (void)conversation:(AVIMConversation *)conversation didUpdateForKey:(NSString *)key {
+    if ([key isEqualToString:@"lastReadAt"]) {
+        NSDate *lastReadAt = conversation.lastReadAt;
         /* Jerry 阅读了你的消息。可以使用 lastReadAt 更新 UI，例如把时间戳小于 lastReadAt 的消息都标记为已读。 */
     }
 }
@@ -551,16 +543,12 @@ AVIMTextMessage *message = [AVIMTextMessage messageWithText:@"Hello, Jerry!" att
 }];
 ```
 
-然后使用 KVO 观察对话的 `unreadMessagesCount` 属性：
+然后使用代理方法 `conversation:didUpdateForKey:` 来观察对话的 `unreadMessagesCount` 属性：
 
 ```objc
-- (void)viewDidLoad {
-    [conversation addObserver:observer forKeyPath:@"unreadMessagesCount" options:NSKeyValueObservingOptionNew context:nil];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"unreadMessagesCount"]) {
-        NSUInteger unreadMessagesCount = [change[NSKeyValueChangeNewKey] unsignedIntegerValue];
+- (void)conversation:(AVIMConversation *)conversation didUpdateForKey:(NSString *)key {
+    if ([key isEqualToString:@"unreadMessagesCount"]) {
+        NSUInteger unreadMessagesCount = conversation.unreadMessagesCount;
         /* 有未读消息产生，请更新 UI，或者拉取对话。 */
     }
 }
