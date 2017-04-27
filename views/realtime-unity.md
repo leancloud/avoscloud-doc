@@ -880,6 +880,34 @@ WebSocket 库的选择建议：
 - 如果你的项目只需要发布到 PC 端（macOS、Windows、Linux），则完全可以使用 SDK 自带的 [sta/websocket-sharp](https://github.com/sta/websocket-sharp)。
 - 如果你的项目需要面向 iOS 以及 Android 等移动端的手游，请务必购买 [WebSocket for desktop, web and mobile](https://www.assetstore.unity3d.com/cn/#!/content/27658) 插件。该款插件的授权许可不支持无偿使用。
 
+### 插件使用额外的步骤
+
+#### iOS & XCode
+1.根据实际情况的测试，[WebSocket for desktop, web and mobile](https://www.assetstore.unity3d.com/cn/#!/content/27658) 插件在实际编译的过程中会在 XCode 中产生如下错误：
+
+```
+Showing Recent Issues
+ld: '.../WebSocketUnity/Plugins/iOS/libWebSocketUnity-ios.a(WebSocketUnityInterface.o)' does not contain bitcode. You must rebuild it with bitcode enabled (Xcode setting ENABLE_BITCODE), obtain an updated library from the vendor, or disable bitcode for this target. for architecture arm64
+```
+
+解决方法是下载经过重新编译的 [libWebSocketUnity-ios.a](https://dn-lhzo7z96.qbox.me/1493265485923) 和 [libWebSocketUnity-iossimulator.a](https://dn-lhzo7z96.qbox.me/1493265520683) 将对应目录下的 `~/Assets/WebSocketUnity/Plugins/iOS/libWebSocketUnity-ios.a` 和 `~/Assets/WebSocketUnity/Plugins/iOS/libWebSocketUnity-iossimulator.a` 分别替换，然后用 Unity 重新编译到 iOS,生成 XCode 项目之后就可以直接部署到 iOS 设备以及模拟器。
+
+2.如果 XCode 编译时出现了
+```
+Showing Recent Issues
+  "_SecTrustGetCertificateCount", referenced from:
+  -[SRWebSocket stream:handleEvent:] in libWebSocketUnity-ios.a(SRWebSocket.o)
+```
+和
+
+```
+Showing Recent Issues
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+```
+以上两个错误，请在 XCode 的 `Build Phases` -> `Link Binary With Libraries` 关联 `libcucore.tbd` 以及 `Security.framework`，如下图：
+
+![link-libs](https://dn-lhzo7z96.qbox.me/1493266411053)
+
 ## 消息
 
 ### 自定义消息类型
