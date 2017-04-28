@@ -99,7 +99,13 @@ AV.Cloud.run('averageStars', {remote: true}).then(function(data) {
 我们建议将代码中的任务转化为异步队列处理，以优化运行时间，避免云函数或 [定时任务](#定时任务) 发生超时。比如：
 
 - 在存储服务中创建一个队列表，包含 `status` 列；
-- 接到任务后，向队列表保存一条记录，`status` 值设置为「处理中」，然后直接 response，也可以把队列对象 id 返回，如 `response.success(id);`；
+- 接到任务后，向队列表保存一条记录，status 值设置为「处理中」，然后将请求结束掉，将队列对象的 id 发给客户端（旧版本的 SDK 使用 `response.success(id)`）：
+  
+  ```javascript
+  return new Promise( (resolve, reject) => {
+    resolve(id);
+  });
+  ```
 - 当业务处理完毕，根据处理结果更新刚才的队列对象状态，将 `status` 字段设置为「完成」或者「失败」；
 - 在任何时候，在控制台通过队列 id 可以获取某个任务的执行结果，判断任务状态。
 {% endblock %}
@@ -254,7 +260,7 @@ AV.Cloud.define('errorCode', function(request) {
 {% block errorCodeExample2 %}
 
 ```
-AV.Cloud.define('customErrorCode', function(request, response) {
+AV.Cloud.define('customErrorCode', function(request) {
   throw new AV.Cloud.Error('自定义错误信息', {code: 123});
 });
 ```
