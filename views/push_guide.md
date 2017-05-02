@@ -215,7 +215,7 @@ curl -X POST \
         "where": {"channels" : ["public"]}
         "data": {"alert" : "Hello from LeanCloud"}
      }' \
-  https://api.leancloud.cn/1.1/push
+  https://{{host}}/1.1/push
 ```
 
 #### 过期时间
