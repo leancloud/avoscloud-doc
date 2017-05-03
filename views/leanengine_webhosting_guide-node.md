@@ -180,6 +180,15 @@ require('http').createServer(function(req, res) {
   }
 }).listen(process.env.LEANCLOUD_APP_PORT);
 ```
+
+### 路由超时设置
+
+通过以上框架实现的自定义路由，默认超时为 15 秒，该值可以在 `app.js` 中进行调整：
+
+```js
+// 设置默认超时时间
+app.use(timeout('15s'));
+```
 {% endblock %}
 
 {% block use_leanstorage %}
@@ -207,6 +216,8 @@ new AV.Query('Todo').find().then(function(todos) {
 });
 ```
 
+{{ docs.note("如果需要单独在某些操作中关闭全局的 masterKey 权限，请参考 [云函数·权限说明](leanengine_cloudfunction_guide-node.html#权限说明)。") }}
+
 Node SDK 有过两个大版本：
 
 * `0.x`：最初的版本，对 Node.js 4.x 及以上版本兼容不佳，建议用户参考 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk-upgrade-1.html) 来更新
@@ -225,6 +236,7 @@ if (NODE_ENV === 'development') {
   // 当前环境为「预备环境」
 }
 ```
+{{ docs.alert("`NODE_ENV` 是保留的系统变量，如生产环境下值为 production，预备环境下值为 staging，开发者无法通过自定义环境变量将其值覆盖。") }}
 {% endblock %}
 
 {% block cookie_session %}

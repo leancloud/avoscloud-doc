@@ -1,6 +1,4 @@
-{% set appid = '{{appid}}' %}
-{% set appkey = '{{appkey}}' %}
-{% set masterkey = '{{masterkey}}' %}
+{% import "views/_helper.njk" as docs %}
 {% set quartz_docs_link = '[Quartz 文档（英文）](http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger)' %}
 
 # 云函数开发指南 &middot; {{platformName}}
@@ -456,8 +454,26 @@ Cron 表达式的基本语法为：
 
 ## 权限说明
 
-云引擎可以有超级权限，使用 Master key 调用所有 API，因此会忽略 ACL 和 Class Permission 限制。你只需要使用下列代码来初始化 SDK（在线定义默认就有超级权限）：
+云引擎可以有超级权限，使用 Master key 调用所有 API，因此会忽略 ACL 和 Class Permission 限制。你只需要使用下列代码来初始化 SDK（在线定义默认就有全局的超级权限）：
 
 {% block masterKeyInit %}{% endblock %}
 
 如果在你的服务端环境里也想做到超级权限，也可以使用该方法初始化。
+
+{% if platformName | lower == 'node.js' %}
+如果全局的超级权限已打开，但在某些场景或操作中，又需要遵循已有的 ACL 和 Class 权限设置，例如一个对象只允许创建人对其进行修改操作，那么可以在 API 调用时传入 `{ useMasterKey: false }` 参数来覆盖掉全局的超级权限，前提是这个 API 支持使用 [`AuthOptions` 选项](https://leancloud.github.io/javascript-sdk/docs/global.html#AuthOptions)。
+
+```js
+var Post = AV.Object.extend('Post');
+var post = new Post();
+post.set('author', '作者');
+post.set('title', '标题');
+post.save(null, { useMasterKey: false }).then(function (post) {
+  // 成功保存
+}, function (error) {
+  // 异常处理
+});
+```
+
+同理，如果在云引擎中没有打开全局的超级权限，API 可以使用 `{ useMasterKey: true }` 临时通过超级权限进行操作。
+{% endif %}

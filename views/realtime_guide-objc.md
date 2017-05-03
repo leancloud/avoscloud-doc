@@ -249,7 +249,7 @@ self.client = [[AVIMClient alloc] init];
             // Tom 发了一首歌曲给 Jerry
             NSString *path = [[NSBundle mainBundle] pathForResource:@"忐忑" ofType:@"mp3"];
             AVFile *file = [AVFile fileWithName:@"忐忑.mp3" contentsAtPath:path];
-            AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"听听人类的神曲~" file:file attributes:nil];
+            AVIMAudioMessage *message = [AVIMAudioMessage messageWithText:@"听听人类的神曲~" file:file attributes:nil];
             [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
                 if (succeeded) {
                     NSLog(@"发送成功！");
@@ -484,6 +484,52 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
 ```
 {% endblock %}
 
+#### 消息已读回执
+
+要实现消息已读回执，请按照以下步骤进行设置。
+
+假设 Tom 和 Jerry 聊天，Tom 想知道 Jerry 阅读了 Tom 发的消息。
+
+1. 首先，Tom 和 Jerry 都要开启「未读消息」，即在 SDK 初始化语句后面加上：
+
+```objc
+[AVIMClient setUserOptions:@{
+    AVIMUserOptionUseUnread: @(YES)
+}];
+```
+
+2. Tom 向 Jerry 发送一条消息，并设置为「需要回执」，也就是将消息发送选项的 `receipt` 字段设置为 `YES`：
+
+```objc
+AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
+option.receipt = YES; /* 将消息设置为需要回执。 */
+
+AVIMTextMessage *message = [AVIMTextMessage messageWithText:@"Hello, Jerry!" attributes:nil];
+
+[conversaiton sendMessage:message option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
+    if (!error) {
+        /* 发送成功 */
+    }
+}];
+```
+
+3. Jerry 收到 Tom 发的消息后，调用对话的 `readInBackground` 方法把「对话中最近的消息」标记为已读：
+
+```objc
+[conversation readInBackground];
+```
+
+4. Jerry 读完消息后，Tom 将收到一个已读回执。此时对话的 `lastReadAt` 属性会更新。Tom 可以在 client 的 delegate 方法中捕捉到这个更新：
+
+```objc
+- (void)conversation:(AVIMConversation *)conversation didUpdateForKey:(NSString *)key {
+    if ([key isEqualToString:@"lastReadAt"]) {
+        NSDate *lastReadAt = conversation.lastReadAt;
+        /* Jerry 阅读了你的消息。可以使用 lastReadAt 更新 UI，例如把时间戳小于 lastReadAt 的消息都标记为已读。 */
+    }
+}
+```
+
 {% block message_received_ack %}{% endblock %}
 
 {% block messagePolicy_received_intro %}{% endblock %}
@@ -497,22 +543,14 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
 }];
 ```
 
-然后使用代理方法 `conversation:didReceiveUnread:` 来从服务端取回未读消息：
+然后使用代理方法 `conversation:didUpdateForKey:` 来观察对话的 `unreadMessagesCount` 属性：
 
 ```objc
-- (void)conversation:(AVIMConversation *)conversation didReceiveUnread:(NSInteger)unread {
-  // unread 是未读消息数量，conversation 为所属的会话
-  // 没有未读消息就跳过
-  if (unread <= 0) return;
-  
-  // 否则从服务端取回未读消息
-  [conversation queryMessagesFromServerWithLimit:unread callback:^(NSArray *objects, NSError *error) {
-    if (!error && objects.count) {
-      // 显示消息或进行其他处理 
+- (void)conversation:(AVIMConversation *)conversation didUpdateForKey:(NSString *)key {
+    if ([key isEqualToString:@"unreadMessagesCount"]) {
+        NSUInteger unreadMessagesCount = conversation.unreadMessagesCount;
+        /* 有未读消息产生，请更新 UI，或者拉取对话。 */
     }
-  }];
-  // 将这些消息标记为已读 
-  [conversation markAsReadInBackground];
 }
 ```
 {% endblock %}

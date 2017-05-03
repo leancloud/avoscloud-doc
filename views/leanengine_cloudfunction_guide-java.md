@@ -256,7 +256,7 @@ EngineRequestContext 则可以获取额外的一些 metaData 信息
      object.put("sound", "default");
      object.put("_profile", "dev");
      object.put("alert", alert);
-     result.put("pushMessage", object);
+     result.put("pushMessage", object.toString());
      return result;
   }
 ```

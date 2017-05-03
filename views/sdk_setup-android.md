@@ -110,8 +110,7 @@ Eclipse 用户首先 [下载 SDK](sdk_down.html)，然后按照 [手动安装步
 ├── avoscloud-sns-<版本号>.zip          // LeanCloud SNS 模块
 ├── avoscloud-statistics-<版本号>.jar   // LeanCloud 统计模块
 ├── fastjson.jar                                // LeanCloud 基本存储模块
-├── httpmime-4.2.4.jar                          // LeanCloud 基本存储模块
-├── Java-WebSocket-1.3.1-leancloud.jar          // LeanCloud 推送模块和实时聊天模块
+├── Java-WebSocket-1.3.2-leancloud.jar          // LeanCloud 推送模块和实时聊天模块
 ├── protobuf-java-2.6.1.jar                     // LeanCloud 推送模块和实时聊天模块
 ├── okhttp-2.6.0-leancloud.jar                  // LeanCloud 基本存储模块
 ├── okio-1.6.0-leancloud.jar                    // LeanCloud 基本存储模块
@@ -127,13 +126,12 @@ Eclipse 用户首先 [下载 SDK](sdk_down.html)，然后按照 [手动安装步
 * `okhttp-2.6.0-leancloud.jar`
 * `okio-1.6.0-leancloud.jar`
 * `fastjson.jar` (请一定要使用我们提供的 jar，针对原版有 bug 修正。)
-* `httpmime-4.2.4.jar`
 
 ##### LeanCloud 推送模块和实时聊天模块
 
 * LeanCloud 基础存储模块
 * `avospush-<版本号>.jar`
-* `Java-WebSocket-1.3.1-leancloud.jar`
+* `Java-WebSocket-1.3.2-leancloud.jar`
 * `protobuf-java-2.6.1.jar`
 
 ##### LeanCloud 统计模块

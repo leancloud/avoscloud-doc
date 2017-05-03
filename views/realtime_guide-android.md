@@ -166,7 +166,7 @@ public class MyApplication extends Application {
     ...
     AVOSCloud.initialize(this, "{{appid}}", "{{appkey}}");
     //这里指定只处理AVIMTextMessage类型的消息
-    AVIMMessageManager.registerMessageHandler(AVIMTextMessage.class, new CustomMessageHanlder());
+    AVIMMessageManager.registerMessageHandler(AVIMTextMessage.class, new CustomMessageHandler());
   }
 }
 

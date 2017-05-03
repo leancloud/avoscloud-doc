@@ -336,7 +336,7 @@
     AVObject.deleteAll()
 
     // 批量获取
-    AVObject.fetchall()
+    AVObject.fetchAll()
 ```
 {% endblock %}
 
