@@ -652,6 +652,23 @@ AVStatus.getUnreadStatusesCountInBackground(AVStatus.INBOX_TYPE.TIMELINE.toStrin
     });
 ```
 
+#### 重置收件箱未读消息数
+
+如果想将某个收件箱（比如 private）的未读消息数设置为 0，也就是通常看到的将全部消息设为「已读」的功能，可以调用如下函数：
+
+```java
+AVStatus.resetUnreadStatusesCount("private", new AVCallback() {
+  @Override
+  protected void internalDone0(Object o, AVException exception) {
+    if (exception == null) {
+      // 重置成功
+    } else {
+      // 重置失败，具体失败原因在 exception 中
+    }
+  }
+});
+```
+
 #### 查询发件箱状态
 
 查询当前用户发件箱内已经发送的 50 条状态：
@@ -1035,3 +1052,5 @@ curl -X POST \
 ```
 
 接收的参数与 [查询状态计数 API](#查询状态计数_API) 是一致的。
+
+
