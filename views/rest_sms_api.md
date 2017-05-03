@@ -56,11 +56,17 @@
 3. 运营商下发短信（或语音）；
 4. 应用客户端收到验证码短信后，再向 LeanCloud 验证手机号码和短信验证码的合法性。
 
+## 自定义短信签名
+
+在发送短信之前，需要有一个 [短信签名](rest_sms_api.html#短信签名是什么_必须的吗_)。在 [控制台 > 消息 > 短信 > 设置 > 短信签名](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf) 里创建，审核通过后就可以使用了。
+
+没有使用自定义模板的短信，只能使用默认签名，即无法通过 [`requestSmsCode`](#短信验证_API-1) 接口来指定要使用的签名。
+
 ## 短信验证 API
 
 在一些场景下，你可能希望用户在验证手机号码后才能进行一些操作，例如充值。这些操作跟账户系统没有关系，可以通过我们提供的的短信验证 API 来实现。
 
-使用这些 API 需要在 [控制台 > **设置** > **应用选项** > **其他**](/app.html?appid={{appid}}#/permission) 中开启 **启用通用的短信验证码服务（开放 `requestSmsCode` 和 `verifySmsCode` 接口）** 选项。
+使用这些 API 需要在 [控制台 > 设置 > 应用选项 > 其他](/app.html?appid={{appid}}#/permission) 中开启 **启用通用的短信验证码服务（开放 `requestSmsCode` 和 `verifySmsCode` 接口）** 选项，并且有一个已审核通过的短信签名。
 
 给某个手机号码发送验证短信：
 
@@ -138,7 +144,7 @@ curl -X POST \
 {{ sms.successfulResponse() }}
 
 {% call docs.noteWrap() %}
-由于运营商和渠道的限制，短信验证码（也包括语音验证码）向同一手机号码发送要求间隔至少一分钟，并且每天向同一手机号码发送次数不能超过 5 次，**因此建议采用 [图片验证码](#图片验证码)、倒数计时等措施来控制频率** 提示用户，防止短信轰炸等恶劣情况发生。
+由于运营商和渠道的限制，短信验证码（也包括语音验证码）向同一手机号码发送要求间隔至少一分钟，并且每天向同一手机号码发送次数不能超过 5 次，**因此建议采用 [图形验证码](#图形验证码)、倒数计时等措施来控制频率** 提示用户，防止短信轰炸等恶劣情况发生。
 
 另外，请了解有关短信的 [其他限制](#短信有什么限制吗_)。
 {% endcall %}
@@ -147,37 +153,33 @@ curl -X POST \
 
 ### 国际短信
 
-上面发送短信验证码和语音验证码，默认都是对国内号码。我们也开通了国际短信验证码服务（语音验证码在海外还不可用）。要发送国际短信，只需在发送 `https://{{host}}/1.1/requestSmsCode` 请求的时候，额外加上 `countryCode` 这一参数即可。
-
-`countryCode` 的取值范围请参考 [countrycode.org](https://countrycode.org/) 中的 **ISO CODES** 一列，例如 US 表示美国，CN 代表中国。
-
-下面的请求将给美国的手机号码（+917646xxxxx）发送一条短信验证码：
+要发送国际短信，只需要将手机号码调整为 [E.123](https://en.wikipedia.org/wiki/E.123) 所规定的格式即可（语音验证码在海外还不可用）。例如向美国的一个手机号码（+17646xxxxx）发送一条短信验证码：
 
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  -d '{"mobilePhoneNumber": "917646xxxxx", "countryCode":"US"}' \
+  -d '{"mobilePhoneNumber": "+17646xxxxx"}' \
   https://{{host}}/1.1/requestSmsCode
 ```
 
-除了所增加的 `countryCode` 之外，发送国际短信和国内短信的请求参数完全一样。
+除了修改手机号码格式，发送国际短信和国内短信的请求参数完全一样。
 
 {{ sms.worldwideSms() }}
 
 ## 自定义短信模板
 
-我们还支持通过 `requestSmsCode` 发送自定义模板的短信。短信模板可以在 [应用控制台](/applist.html#/apps) > **消息** > **短信** > **设置** > **短信模板** 里创建。
+我们还支持通过 `requestSmsCode` 发送自定义模板的短信。短信模板可以在 [控制台 > 消息 > 短信 > 设置 > 短信模板](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf) 里创建。
 
-要使用已创建好的短信模板来发送短信验证，可以通过 `template` 参数指定模板名称，并且可以传入变量渲染模板，比如下面例子中的 `date`：
+要使用已创建好的短信模板来发送短信验证，可以通过 `template` 参数指定模板名称，`sign` 参数来指定签名，并且可以传入变量渲染模板，比如下面例子中的 `date`：
 
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  -d '{"mobilePhoneNumber": "186xxxxxxxx", "template":"activity","date":"2014 年 10 月 31 号"}' \
+  -d '{"mobilePhoneNumber": "186xxxxxxxx", "template":"activity","sign":"sign","date":"2014 年 10 月 31 号"}' \
   https://{{host}}/1.1/requestSmsCode
 ```
 
@@ -375,13 +377,11 @@ curl -X PUT \
 
 修改成功后，用户就可以用新密码登录了。
 
-## 图片验证码
-
-### 短信轰炸
+## 短信轰炸
 
 网络世界也不太平，很多角落都可能存在着不法分子，肆意进行网络攻击和破坏，其中短信轰炸就是一例。
 
-网络上有这样一种「轰炸软件」，它可以自动收集一些不需要认证（如图片验证码认证）就能发送短信验证码的网站，当恶意攻击者随意提供一个或一组手机号码，它就逐个访问先前找到的那些网站，把手机号都自动填上，利用这些网站向指定手机号发送短信。轰炸软件找到的可利用的网站越多，发出的短信也就越多。
+网络上有这样一种「轰炸软件」，它可以自动收集一些不需要认证就能发送短信验证码的网站。当恶意攻击者随意提供一个或一组手机号码，它就逐个访问先前找到的那些网站，把手机号都自动填上，利用这些网站向指定手机号发送短信。轰炸软件找到的可利用的网站越多，发出的短信也就越多。
 
 轰炸软件的恶意之处还在于，它对各个网站提交发送短信验证码请求不仅仅是一次，它可以设置时间，比如每隔几分钟请求一次，24 小时不间断请求，这样造成的后果就是：
 
@@ -390,30 +390,117 @@ curl -X PUT \
 
 ### 防范的重要性
 
-毫无疑问，图片验证码（又称 captcha）是防范短信轰炸最有力的手段。比如，我们在一些网站注册的时候，经常需要填写以下图片的信息：
+毫无疑问，图形验证码（又称 captcha）是防范短信轰炸最有力的手段。比如，我们在一些网站注册的时候，经常需要填写以下图片的信息：
 
 <img src="images/captcha.png" width="400" height="50">
 
-网站只有在用户进行「免费获取验证码」 操作前，要求用户先输入图片验证码来确认操作真实有效，服务器端再请求 LeanCloud 云端发送动态短信到用户手机上，这样才可以有效防范恶意攻击者。下图显示出使用图片验证码的正确和错误做法：
+网站只有在用户进行「免费获取验证码」 操作前，要求用户先输入图形验证码来确认操作真实有效，服务器端再请求 LeanCloud 云端发送动态短信到用户手机上，这样才可以有效防范恶意攻击者。下图显示出使用图形验证码的正确和错误做法：
 
 ![image](images/captcha_comparison.png)
 
-所以，在短信验证码发送前，一定先让用户填写图片验证码，确认后再发送短信验证码。
+所以，在短信验证码发送前，一定先让用户填写图形验证码，确认后再发送短信验证码。
 
 一个实际有效的验证码还必须满足：
 
-- **生成过程安全**：图片验证码必须在服务器端生成并校验；
+- **生成过程安全**：图形验证码必须在服务器端生成并校验；
 - **使用过程安全**：单次有效，且以用户的验证请求为准；
 - **验证码自身安全**：不易被识别工具识别，能有效防止暴力破解。
 
-以下网站使用了图片验证码，大家可以参考：
+以下网站使用了图形验证码，大家可以参考：
 
 - [网易邮箱注册](http://reg.email.163.com/unireg/call.do?cmd=register.entrance&from=163mail_right)
 - [京东商城注册](https://reg.jd.com/reg/person?ReturnUrl=http%3A%2F%2Fwww.jd.com)
 
+## 图形验证码 captcha
+
+LeanCloud 提供的图形验证码含有两个接口：
+
+|URL|HTTP|功能|
+| :----------------------------------- | :--- | ----------------- |
+|/1.1/requestCaptcha|GET|获取图形验证码|
+|/1.1/verifyCaptcha|POST|校验图形验证码并返回二次凭证|
+
+要使用图形验证码来防止用户短信接口遭到轰炸，首先在 [控制台 > 设置 > 应用选项 > 短信](/app.html?appid={{appid}}#/permission) 中打开 **启用短信图形验证码**，然后通过上述接口获取图形验证码：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+   -G \
+  --data-urlencode 'size=4' \
+  https://{{host}}/1.1/requestCaptcha
+```
+
+|参数名称|说明|
+|:----|:--|
+|size|验证码长度，默认 4 个字符，可选择范围 3~6。|
+|width|宽度，单位像素 px，默认值 85，会根据 size 自动调整，范围在 60~200。|
+|height|高度，单位像素 px，默认值 30，范围在 30~100。|
+|ttl|验证码有效期，单位秒，默认值 60 秒，范围在 10~180。|
+
+返回结果：
+
+```json
+{
+   "captcha_token":"R2cxkqSz",
+   "captcha_url":"https:\/\/leancloud.cn\/1.1\/captchaImage?appId=PXnN5AqVpgEI4esrTLhoxUkd-gzGzoHsz&token=R2cxkqSz"
+}
+```
+
+|参数名称|说明|
+|:----|:--|
+|captcha_token|供 `verifyCaptcha` 校验使用|
+|captcha_url|图形验证码的图片地址|
+
+获取了图形验证码后，需要使用对应的验证接口来校验：
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "captcha_code": "0000",
+        "captcha_token": "R2cxkqSz"
+      }'
+  https://{{host}}/1.1/requestCaptcha
+
+```
+
+|参数名称|说明|
+| :----| :--|
+|captcha_code|用户输入的图形验证码|
+|captcha_token|`requestCaptcha` 返回的 captcha_token|
+
+验证成功会返回：
+
+```json
+{ "validate_token": "发送短信的二次凭证"}
+```
+
+失败返回：
+
+```json
+{
+  "code":  "错误码",
+  "error": "错误信息"
+}
+```
+
+获取到的 `validate_token` 需要添加在 `requestSmsCode` 的请求内容当中：
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '{"mobilePhoneNumber": "186xxxxxxxx","validate_token":"token"}' \
+  https://{{host}}/1.1/requestSmsCode
+```
+
 ### 更多验证形式
 
-除了采用这种图片输入的方式来验证，现在有很多网站也采用了新颖的验证方式，比如淘宝、pptv 在注册时采用行为验证方式、拖拽验证方式等等。大家可以去搜索一下，网上有一些图片验证码的现成解决方案，可以尝试。
+除了采用这种图片输入的方式来验证，现在有很多网站也采用了新颖的验证方式，比如淘宝、pptv 在注册时采用行为验证方式、拖拽验证方式等等。
 
 ## 常见问题 FAQ
 

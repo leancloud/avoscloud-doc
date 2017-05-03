@@ -352,7 +352,7 @@ mid | 必填 | 要删除的消息 id，字符串
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://leancloud.cn/1.1/rtm/broadcast
+  https://{{host}}/1.1/rtm/broadcast
 ```
 
 参数 | 约束 | 说明
@@ -371,7 +371,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_peer": "1a", "message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "..."}' \
-  https://leancloud.cn/1.1/rtm/broadcast/subscriber
+  https://{{host}}/1.1/rtm/broadcast/subscriber
 ```
 
 参数 | 约束 | 类型 | 说明
@@ -391,7 +391,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"conv_id": "...", "client_id": "..."}' \
-  https://leancloud.cn/1.1/rtm/conversation/subscription
+  https://{{host}}/1.1/rtm/conversation/subscription
 ```
 
 参数 | 约束 | 类型 | 说明
@@ -410,7 +410,7 @@ curl -X DELETE \
   -G \
   --data-urlencode 'conv_id=...' \
   --data-urlencode 'client_id=...' \
-  https://leancloud.cn/1.1/rtm/conversation/subscription
+  https://{{host}}/1.1/rtm/conversation/subscription
 ```
 
 参数 | 约束 | 类型 | 说明
