@@ -530,7 +530,7 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
     ```
 {% endblock %}
 
-{% block message_unread %}
+{% block message_unread_message_count %}
 要开启未读消息，需要在 AVOSCloud 初始化语句后面加上：
 
 ```objc
@@ -1065,6 +1065,16 @@ Tom 自身主动退出对话之后，相关方收到通知的时序是这样的�
 | `creator`            | `c`              | 对话创建者        |
 | `attributes`         | `attr`           | 自定义属性        |
 | `transient`          | `tr`             | 是否为聊天室（暂态对话） |
+| `createdAt`           | `createdAt`      | 创建时间                      |
+| `updatedAt`           | `updatedAt`      | 最后更新时间                    |
+| `system`              | `sys`            | 是否为系统对话                   |
+| `lastMessageAt`       | `lm`             | 最后一条消息发送时间，也可以理解为最后一次活跃时间 |
+| `lastMessage`         | N/A              | 最后一条消息，可能会空               |
+| `mutedMembers`        | `mu`             | 静音该对话的成员                  |
+| `muted`               | N/A              | 当前用户是否静音该对话               |
+| `unreadMessagesCount` | N/A              | 未读消息数                     |
+| `lastDeliveredAt`     | N/A              | （仅限单聊）最后一条已送达对方的消息时间 |
+| `lastReadAt`          | N/A              | （仅限单聊）最后一条对方已读的消息时间 |
 {% endblock %}
 
 {% block conversation_name %}
@@ -1508,21 +1518,25 @@ NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
 ```
 {% endblock %}
 
-{% block conversation_query_exists %}
+{% block conversation_query_doesnot_exist %}
+// 待补充
+{% endblock %}
 
+{% block conversation_query_exists %}
+// 待补充
 {% endblock %}
 
 {% block conversation_query_sorting %}
-
+// 待补充
 {% endblock %}
 
 
 {% block conversation_query_compact_mode %}
-
+// 待补充
 {% endblock %}
 
 {% block conversation_query_with_last_message %}
-
+// 待补充
 {% endblock %}
 
 {% block chatroom_intro %}

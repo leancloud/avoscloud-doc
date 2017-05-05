@@ -773,7 +773,7 @@ jerry.open(new AVIMClientCallback() {
 **Android 聊天服务是和后台的推送服务共享连接的，所以只要有网络就永远在线，不需要专门做推送。**消息达到后，你可以根据用户的设置来判断是否需要弹出通知。网络断开时，我们为每个对话保存 20 条离线消息。
 {% endblock %}
 
-{% block message_unread %}
+{% block message_unread_message_count %}
 要开启未读消息，需要在 AVOSCloud 初始化语句后面加上：
 
 ```
@@ -1407,7 +1407,15 @@ tom.open(new AVIMClientCallback(){
 | `attributes`         | `attr`           | 自定义属性                    |
 | `isTransient`        | `tr`             | 是否为聊天室（暂态对话）             |
 | `lastMessageAt`      | `lm`             | 该对话最后一条消息，也可以理解为最后一次活跃时间 |
-
+| `lastMessage`         | N/A              | 最后一条消息，可能会空               |
+| `mutedMembers`        | `mu`             | 静音该对话的成员                  |
+| `muted`               | N/A              | 当前用户是否静音该对话               |
+| `unreadMessagesCount` | N/A              | 未读消息数                     |
+| `lastDeliveredAt`     | N/A              | （仅限单聊）最后一条已送达对方的消息时间 |
+| `lastReadAt`          | N/A              | （仅限单聊）最后一条对方已读的消息时间 |
+| `createdAt`           | `createdAt`      | 创建时间                      |
+| `updatedAt`           | `updatedAt`      | 最后更新时间                    |
+| `system`              | `sys`            | 是否为系统对话                   |
 {% endblock %}
 
 {% block conversation_name %}
@@ -2048,16 +2056,16 @@ void queryActiveConversationsBetween() {
 
 
 {% block conversation_query_sorting %}
-
+// 待补充
 {% endblock %}
 
 
 {% block conversation_query_compact_mode %}
-
+// 待补充
 {% endblock %}
 
 {% block conversation_query_with_last_message %}
-
+// 待补充
 {% endblock %}
 
 
