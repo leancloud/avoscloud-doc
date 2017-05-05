@@ -385,9 +385,12 @@ iOS 暂不支持发送通用文件消息，已在计划中，近期发布。
 {% endblock %}
 
 {% block typedMessage_received %}
-```objc
+所有富媒体消息都是从 AVIMTypedMessage 派生出来的。发送的时候可以直接调用 `[AVIMConversation sendMessage:callback:]` 函数。在接收端，我们也在 `AVIMClientDelegate` 中专门增加了一个回调函数：
+
+```
 - (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message;
 ```
+这样，如果发送端发送的是 AVIMMessage 消息，那么接受端就是 `conversation:didReceiveCommonMessage:` 被调用；如果发送的是 AVIMTypedMessage（及其子类）的消息，那么接受端就是 `conversaion:didReceiveTypedMessage` 被调用。
 {% endblock %}
 
 {% block transientMessage_sent %}
@@ -465,7 +468,7 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
 这样 iOS 平台上的用户就可以收到消息推送了。当然，前提是应用本身申请到了 RemoteNotification 权限，也将正确的推送证书上传到了 LeanCloud 控制台。
 {% endblock %}
 
-{% block message_sent_ack %}
+{% block message_sent_ack_switch %}
 调用 `sendMessage` 方法时，在 options 中传入 `AVIMMessageSendOptionRequestReceipt`：
 
 ```objc
@@ -475,7 +478,9 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
   }
 }];
 ```
+{% endblock %}
 
+{% block message_sent_ack %}
 监听消息是否已送达实现 `conversation:messageDelivered` 即可。
 ```objc
 - (void)conversation:(AVIMConversation *)conversation messageDelivered:(AVIMMessage *)message{
@@ -484,55 +489,46 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
 ```
 {% endblock %}
 
-#### 消息已读回执
-
-要实现消息已读回执，请按照以下步骤进行设置。
-
-假设 Tom 和 Jerry 聊天，Tom 想知道 Jerry 阅读了 Tom 发的消息。
-
+{% block message_read_ack %}
 1. 首先，Tom 和 Jerry 都要开启「未读消息」，即在 SDK 初始化语句后面加上：
+    
+    ```objc
+    [AVIMClient setUserOptions:@{
+        AVIMUserOptionUseUnread: @(YES)
+    }];
+    ```
+2. Tom 向 Jerry 发送一条消息，要标记好「需要回执」：
+    
+    ```objc
+    AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
+    option.receipt = YES; /* 将消息设置为需要回执。 */
 
-```objc
-[AVIMClient setUserOptions:@{
-    AVIMUserOptionUseUnread: @(YES)
-}];
-```
+    AVIMTextMessage *message = [AVIMTextMessage messageWithText:@"Hello, Jerry!" attributes:nil];
 
-2. Tom 向 Jerry 发送一条消息，并设置为「需要回执」，也就是将消息发送选项的 `receipt` 字段设置为 `YES`：
+    [conversaiton sendMessage:message option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
+        if (!error) {
+            /* 发送成功 */
+        }
+    }];
+    ```
 
-```objc
-AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
-option.receipt = YES; /* 将消息设置为需要回执。 */
-
-AVIMTextMessage *message = [AVIMTextMessage messageWithText:@"Hello, Jerry!" attributes:nil];
-
-[conversaiton sendMessage:message option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (!error) {
-        /* 发送成功 */
+3. Jerry 收到 Tom 发的消息后，SDK 调用对话上的方法把「对话中最近的消息」标记为已读：
+    
+    ```objc
+    [conversation readInBackground];
+    ```
+4. Jerry 读完消息后，Tom 将收到一个已读回执，此时对话的 `lastReadAt` 属性会更新。此时可以更新 UI，把时间戳小于 lastReadAt 的消息都标记为已读。
+    
+    ```objc
+    // Tom 可以在 client 的 delegate 方法中捕捉到 lastReadAt 的更新
+    - (void)conversation:(AVIMConversation *)conversation didUpdateForKey:(NSString *)key {
+        if ([key isEqualToString:@"lastReadAt"]) {
+            NSDate *lastReadAt = conversation.lastReadAt;
+            /* Jerry 阅读了你的消息。可以使用 lastReadAt 更新 UI，例如把时间戳小于 lastReadAt 的消息都标记为已读。 */
+        }
     }
-}];
-```
-
-3. Jerry 收到 Tom 发的消息后，调用对话的 `readInBackground` 方法把「对话中最近的消息」标记为已读：
-
-```objc
-[conversation readInBackground];
-```
-
-4. Jerry 读完消息后，Tom 将收到一个已读回执。此时对话的 `lastReadAt` 属性会更新。Tom 可以在 client 的 delegate 方法中捕捉到这个更新：
-
-```objc
-- (void)conversation:(AVIMConversation *)conversation didUpdateForKey:(NSString *)key {
-    if ([key isEqualToString:@"lastReadAt"]) {
-        NSDate *lastReadAt = conversation.lastReadAt;
-        /* Jerry 阅读了你的消息。可以使用 lastReadAt 更新 UI，例如把时间戳小于 lastReadAt 的消息都标记为已读。 */
-    }
-}
-```
-
-{% block message_received_ack %}{% endblock %}
-
-{% block messagePolicy_received_intro %}{% endblock %}
+    ```
+{% endblock %}
 
 {% block message_unread %}
 要开启未读消息，需要在 AVOSCloud 初始化语句后面加上：
@@ -651,18 +647,13 @@ AVIMTextMessage *message = [AVIMTextMessage messageWithText:@"Hello, Jerry!" att
 
 * 实现 `AVIMTypedMessageSubclassing` 协议；
 * 子类将自身类型进行注册，一般可在子类的 `+load` 方法或者 UIApplication 的 `-application:didFinishLaunchingWithOptions:` 方法里面调用 `[YourClass registerSubclass]`。
-  {% endblock %}
-
-{% block messagePolicy_received_method %} `conversation:didReceiveCommonMessage:` {% endblock %}
-
-{% block messagePolicy_received %}
-实时通信 SDK 内部封装了对富媒体消息的支持，所有富媒体消息都是从 AVIMTypedMessage 派生出来的。发送的时候可以直接调用 `[AVIMConversation sendMessage:callback:]` 函数。在接收端，我们也在 `AVIMClientDelegate` 中专门增加了一个回调函数：
-
-```
-- (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message;
-```
-这样，如果发送端发送的是 AVIMMessage 消息，那么接受端就是 `conversation:didReceiveCommonMessage:` 被调用；如果发送的是 AVIMTypedMessage（及其子类）的消息，那么接受端就是 `conversaion:didReceiveTypedMessage` 被调用。
 {% endblock %}
+
+{% block messagePolicy_received_intro %}{% endblock %}
+
+{% block messagePolicy_received_method %}`conversation:didReceiveCommonMessage:`{% endblock %}
+
+{% block messagePolicy_received %}{% endblock %}
 
 {% block conversation_specialnote %}{% endblock %}
 
@@ -1515,6 +1506,23 @@ NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
     }];
 }
 ```
+{% endblock %}
+
+{% block conversation_query_exists %}
+
+{% endblock %}
+
+{% block conversation_query_sorting %}
+
+{% endblock %}
+
+
+{% block conversation_query_compact_mode %}
+
+{% endblock %}
+
+{% block conversation_query_with_last_message %}
+
 {% endblock %}
 
 {% block chatroom_intro %}

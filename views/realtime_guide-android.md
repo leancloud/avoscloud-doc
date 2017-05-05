@@ -581,9 +581,7 @@ conversation.sendMessage(locationMessage, new AVIMConversationCallback() {
 {% endblock %}
 
 {% block typedMessage_received %}
-### 接收富媒体消息
-
-实时通信 SDK 内部封装了对富媒体消息的支持，所有富媒体消息都是从 AVIMTypedMessage 派生出来的。发送的时候可以直接调用 `conversation.sendMessage()` 函数。在接收端，我们也专门增加了一类回调接口 AVIMTypedMessageHandler，其定义为：
+所有富媒体消息都是从 AVIMTypedMessage 派生出来的。发送的时候可以直接调用 `conversation.sendMessage()` 函数。在接收端，我们也专门增加了一类回调接口 `AVIMTypedMessageHandler`，其定义为：
 
 ```
 public class AVIMTypedMessageHandler<T extends AVIMTypedMessage> extends MessageHandler<T> {
@@ -771,9 +769,9 @@ jerry.open(new AVIMClientCallback() {
 ```
 {% endblock %}
 
-{% block offlineMessage_android %}>**Android 聊天服务是和后台的推送服务共享连接的，所以只要有网络就永远在线，不需要专门做推送。**消息达到后，你可以根据用户的设置来判断是否需要弹出通知。网络断开时，我们为每个对话保存 20 条离线消息。{% endblock %}
-
-{% block messagePolicy_received_intro %}{% endblock %}
+{% block offlineMessage_android %}
+**Android 聊天服务是和后台的推送服务共享连接的，所以只要有网络就永远在线，不需要专门做推送。**消息达到后，你可以根据用户的设置来判断是否需要弹出通知。网络断开时，我们为每个对话保存 20 条离线消息。
+{% endblock %}
 
 {% block message_unread %}
 要开启未读消息，需要在 AVOSCloud 初始化语句后面加上：
@@ -939,8 +937,8 @@ public class AVIMTextMessage extends AVIMTypedMessage {
 ```
 {% endblock %}
 
-{% block api_send_message_method_intro %}
-#### 消息发送接口
+{% block messagePolicy_sent_method %}
+##### 消息发送接口
 在 Android SDK 中，发送消息的方法是：`AVIMConversation.sendMessage`，它最核心的一个重载声明如下：
 
 ```
@@ -964,10 +962,9 @@ public void sendMessage(AVIMMessage message, AVIMConversationCallback callback)
 ```
 
 其实本质上，调用 `sendMessage(message, callback)` 就等价于调用 `sendMessage(message, null, callback)`
-
 {% endblock %}
 
-{% block messagePolicy_sent_method %} `AVIMClient.OnMessageReceived` {% endblock %}
+{% block messagePolicy_received_intro %}{% endblock %}
 
 {% block messagePolicy_received_method %}{% endblock %}
 
@@ -1050,8 +1047,14 @@ AVIMClient tom = AVIMClient.getInstance("Tom");
 ```
 {% endblock %}
 
-{% block message_sent_ack %}
+{% block message_sent_ack_switch %}
+```java
+AVIMMessageOption messageOption = new AVIMMessageOption();
+messageOption.setReceipt(true);
+```
+{% endblock %}
 
+{% block message_sent_ack %}
 ```
 AVIMMessageHandler handler = new AVIMMessageHandler(){
 
@@ -1081,6 +1084,10 @@ conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
       }
     });
 ```
+{% endblock %}
+
+{% block message_read_ack %}
+
 {% endblock %}
 
 {% block conversation_init %}
@@ -1617,9 +1624,8 @@ conversationQuery.whereGreaterThan("attr.level", 5);
 ```
 conversationQuery.whereEqualTo("topic", "DOTA2");
 ```
-特别注意：
 
-> 因为 Android 会自动添加 attr 前缀进行查询构建，所以在设置自定义属性的时候，**禁止**使用以下：`name`,`lm`,`c`,`tr`,`m`,`objectId`等已被默认属性占用的 key 值。
+{{ docs.alert("因为 Android 会自动添加 attr 前缀进行查询构建，所以在设置自定义属性的时候，**禁止**使用 `name`、`lm`、`c`、`tr`、`m`、`objectId` 等已被默认属性占用的 key 值。" }}
 
 {% endblock %}
 
@@ -1908,12 +1914,7 @@ tom.open(new AVIMClientCallback(){
 ```
 {% endblock %}
 
-
-{% block conversation_query_exists %}
-#### 空值查询
-
-空值查询是指查询相关列是否为空值的方法，例如要查询 lm 列为空值的对话：
-
+{% block conversation_query_doesnot_exist %}
 ```
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
@@ -1942,12 +1943,11 @@ tom.open(new AVIMClientCallback(){
 });
 
 ```
+{% endblock %}
 
-如果要查询 lm 列不为空的对话，则替换为如下：
-
+{% block conversation_query_exists %}
 ```
 query.whereExists("lm");
-
 ```
 {% endblock %}
 
@@ -2045,6 +2045,21 @@ void queryActiveConversationsBetween() {
 - 执行查询，获取符合条件的对话的数量
 ```
 {% endblock %}
+
+
+{% block conversation_query_sorting %}
+
+{% endblock %}
+
+
+{% block conversation_query_compact_mode %}
+
+{% endblock %}
+
+{% block conversation_query_with_last_message %}
+
+{% endblock %}
+
 
 {% block chatroom_intro %}
 和建立普通对话类似，建立一个聊天室只是在 `AVIMClient.createConversation(conversationMembers, name, attributes, isTransient, callback)` 中传入 `isTransient=true`。
