@@ -1633,7 +1633,7 @@ conversationQuery.whereGreaterThan("attr.level", 5);
 conversationQuery.whereEqualTo("topic", "DOTA2");
 ```
 
-{{ docs.alert("因为 Android 会自动添加 attr 前缀进行查询构建，所以在设置自定义属性的时候，**禁止**使用 `name`、`lm`、`c`、`tr`、`m`、`objectId` 等已被默认属性占用的 key 值。" }}
+{{ docs.alert("因为 Android 会自动添加 attr 前缀进行查询构建，所以在设置自定义属性的时候，**禁止**使用 `name`、`lm`、`c`、`tr`、`m`、`objectId` 等已被默认属性占用的 key 值。") }}
 
 {% endblock %}
 
