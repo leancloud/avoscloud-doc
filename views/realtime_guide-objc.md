@@ -1070,7 +1070,6 @@ Tom 自身主动退出对话之后，相关方收到通知的时序是这样的�
 | `system`              | `sys`            | 是否为系统对话                   |
 | `lastMessageAt`       | `lm`             | 最后一条消息发送时间，也可以理解为最后一次活跃时间 |
 | `lastMessage`         | N/A              | 最后一条消息，可能会空               |
-| `mutedMembers`        | `mu`             | 静音该对话的成员                  |
 | `muted`               | N/A              | 当前用户是否静音该对话               |
 | `unreadMessagesCount` | N/A              | 未读消息数                     |
 | `lastDeliveredAt`     | N/A              | （仅限单聊）最后一条已送达对方的消息时间 |
@@ -1519,24 +1518,69 @@ NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
 {% endblock %}
 
 {% block conversation_query_doesnot_exist %}
-// 待补充
+self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+
+[self.client openWithCallback:^(BOOL succeeded, NSError *error) {
+    AVIMConversationQuery *query = [client conversationQuery];
+    /* 查询还没有产生过消息的对话 */
+    [query whereKeyDoesNotExist:@"lm"];
+    [query findConversationsWithCallback:^(NSArray *conversations, NSError *error) {
+        NSLog(@"找到 %ld 个对话！", [conversations count]);
+    }];
+}];
 {% endblock %}
 
 {% block conversation_query_exists %}
-// 待补充
+AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+
+[client openWithCallback:^(BOOL succeeded, NSError *error) {
+    AVIMConversationQuery *query = [client conversationQuery];
+    /* 查询产生过消息的对话 */
+    [query whereKeyExists:@"lm"];
+    [query findConversationsWithCallback:^(NSArray *conversations, NSError *error) {
+        NSLog(@"找到 %ld 个对话！", [conversations count]);
+    }];
+}];
 {% endblock %}
 
 {% block conversation_query_sorting %}
-// 待补充
+AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+
+[client openWithCallback:^(BOOL succeeded, NSError *error) {
+    AVIMConversationQuery *query = [client conversationQuery];
+    /* 按创建时间降序排列 */
+    [query orderByDescending:@"createdAt"];
+    [query findConversationsWithCallback:^(NSArray *conversations, NSError *error) {
+        NSLog(@"找到 %ld 个对话！", [conversations count]);
+    }];
+}];
 {% endblock %}
 
 
 {% block conversation_query_compact_mode %}
-// 待补充
+AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+
+[client openWithCallback:^(BOOL succeeded, NSError *error) {
+    AVIMConversationQuery *query = [client conversationQuery];
+    /* 指定不返回对话的成员列表 */
+    query.option = AVIMConversationQueryOptionCompact;
+    [query findConversationsWithCallback:^(NSArray *conversations, NSError *error) {
+        NSLog(@"找到 %ld 个对话！", [conversations count]);
+    }];
+}];
 {% endblock %}
 
 {% block conversation_query_with_last_message %}
-// 待补充
+AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+
+[client openWithCallback:^(BOOL succeeded, NSError *error) {
+    AVIMConversationQuery *query = [client conversationQuery];
+    /* 指定返回对话的最后一条消息 */
+    query.option = AVIMConversationQueryOptionWithMessage;
+    [query findConversationsWithCallback:^(NSArray *conversations, NSError *error) {
+        NSLog(@"找到 %ld 个对话！", [conversations count]);
+    }];
+}];
 {% endblock %}
 
 {% block chatroom_intro %}

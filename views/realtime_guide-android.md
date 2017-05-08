@@ -1408,7 +1408,6 @@ tom.open(new AVIMClientCallback(){
 | `isTransient`        | `tr`             | 是否为聊天室（暂态对话）             |
 | `lastMessageAt`      | `lm`             | 该对话最后一条消息，也可以理解为最后一次活跃时间 |
 | `lastMessage`         | N/A              | 最后一条消息，可能会空               |
-| `mutedMembers`        | `mu`             | 静音该对话的成员                  |
 | `muted`               | N/A              | 当前用户是否静音该对话               |
 | `unreadMessagesCount` | N/A              | 未读消息数                     |
 | `lastDeliveredAt`     | N/A              | （仅限单聊）最后一条已送达对方的消息时间 |
@@ -2056,7 +2055,31 @@ void queryActiveConversationsBetween() {
 
 
 {% block conversation_query_sorting %}
-// 待补充
+AVIMClient tom = AVIMClient.getInstance("Tom");
+
+tom.open(new AVIMClientCallback() {
+  @Override
+  public void done(AVIMClient client, AVIMException e) {
+    if (e == null) {
+      // 登录成功
+      AVIMConversationQuery query = client.getQuery();
+
+      // 按对话的创建时间降序
+      query.orderByDescending("createdAt");
+
+      query.findInBackground(new AVIMConversationQueryCallback() {
+        @Override
+        public void done(List<AVIMConversation> convs, AVIMException e) {
+          if (e == null) {
+            if(convs != null && !convs.isEmpty()) {
+              // 获取符合查询条件的 conversation 列表
+            }
+          }
+        }
+      });
+    }
+  }
+});
 {% endblock %}
 
 
