@@ -1,7 +1,7 @@
 {% import "views/_helper.njk" as docs %}
 {% import "views/_sms.njk" as sms %}
 
-# 短信服务使用指南 &middot; {{platform_name}}
+# 短信服务使用指南
 
 LeanCloud 短信服务支持的应用场景有以下三种：
 
@@ -23,7 +23,7 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 ## 短信服务配置
 
-从应用级别来控制能否发送短信，进入 {% if node=='qcloud' %}**控制台** > **设置** > **安全中心**{% else %}[控制台 > 设置 > **安全中心**](/app.html?appid={{appid}}#/security){% endif %}，设置 **短信发送** 开关。
+从应用级别来控制能否发送短信，进入 {% if node=='qcloud' %}**控制台** > **设置** > **安全中心**{% else %}[控制台 > 设置 > **安全中心**](/app.html?appid={{appid}}#/security){% endif %}，打开 **短信发送** 开关。
 
 然后点击 {% if node=='qcloud' %}**应用选项**{% else %}[应用选项](/app.html?appid={{appid}}#/permission){% endif %}，查看与短信相关选项。当开启 **安全中心** > **短信发送** 服务之后，以下打勾的选项会被默认开启：
 
@@ -73,7 +73,7 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 - 小于或等于 70 个字，按一条计费。
 - 大于 70 个字，按每 67 字一条计费。
 
-状态为「等待回执」的短信不会收费计入账单。每条短信的收费标准请参考 [官网价格方案](/pricing)。
+只有「调用失败」不收费，「投递失败」也要收费。每条短信的收费标准请参考 [官网价格方案](/pricing)。
 
 ### 短信购买
 
@@ -101,13 +101,92 @@ LeanCloud 短信服务支持的应用场景有以下三种：
   
 2. **调用接口发送验证短信**  
   注意，在这一步之前，我们假设当前用户已经设置过了手机号，所以推荐这类应用在注册环节，尽量要求用户以手机号作为用户名，否则到了支付界面，还需要用户在首次购买时输入一次手机号。
-  {% block operation_request_sms_code %}{% endblock %}
+```objc
+[AVOSCloud requestSmsCodeWithPhoneNumber:@"13613613613"
+                                appName:@"应用名称"
+                                operation:@"某种操作"
+                                timeToLive:10
+                                callback:^(BOOL succeeded, NSError *error) {
+                                    if (succeeded) {
+                                        // 调用成功
+                                        //短信格式类似于：
+                                        //您正在{应用名称}中进行{某种操作}，您的验证码是:{123456}，请输入完整验证，有效期为:{10}分钟
+                                    }
+                                }];
+```
+```java
+AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(), "应用名称", "某种操作", 10, new RequestMobileCodeCallback() {
+    @Override
+    public void done(AVException e) {
+        if (e == null) {
+            mSMSCode.requestFocus();
+        } else {
+            Log.e("Home.OperationVerify", e.getMessage());
+        }
+    }
+});
+```
+```javascript
+AV.Cloud.requestSmsCode({
+    mobilePhoneNumber: '186xxxxxxxx',
+    name: '应用名称',
+    op: '某种操作',
+    ttl: 10
+}).then(function(){
+    //调用成功
+}, function(err){
+    //调用失败
+});
+```
+```cs
+AVCloud.RequestSMSCodeAsync("186xxxxxxxx","应用名称","某种操作",10).ContinueWith(t =>
+{
+    if(!t.Result)
+    {
+        //调用成功
+    }
+});
+```
+
 3. **用户收到短信，并且输入了验证码。**  
   在进行下一步之前，我们依然建议先进行客户端验证，这样就避免了错误的验证码被服务端驳回而产生的流量，以及与服务端沟通的时间，有助于提升用户体验。
   
 4. **调用接口验证用户输入的验证码是否有效。**  
-  {% block operation_verify_sms_code %}{% endblock %}
-  
+  注意，调用时需要确保验证码和手机号的参数顺序。
+```objc
+[AVOSCloud verifySmsCode:@"123456" mobilePhoneNumber:@"18612345678" callback:^(BOOL succeeded, NSError *error) {
+    if(succeeded){
+        //验证成功
+    }
+}];
+```
+```java
+    AVOSCloud.verifyCodeInBackground("777777", "13888888888", new AVMobilePhoneVerifyCallback() {
+        @Override
+        public void done(AVException e) {
+            if (e == null) {
+                Toast.makeText(getBaseContext(), getString(R.string.msg_operation_valid), Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("Home.DoOperationVerify", e.getMessage());
+            }
+        }
+    });
+```
+```javascript
+  AV.Cloud.verifySmsCode('6位数字验证码', '11 位手机号码').then(function(){
+        //验证成功
+  }, function(err){
+        //验证失败
+  });
+```
+```cs
+AVCloud.VerifySmsCodeAsync("6位数字验证码","11 位手机号码").ContinueWith(t =>{
+    if(t.Result) 
+    {
+        // 验证成功
+    }
+});
+```
 针对上述的需求，可以把场景换成异地登录验证、修改个人敏感信息验证等一些常见的场景，步骤是类似的，调用的接口也是一样的，仅仅是在做 UI 展现的时候需要开发者自己去优化验证过程。
 
 ### 注册验证
@@ -118,14 +197,89 @@ LeanCloud 短信服务支持的应用场景有以下三种：
   引导用户正确的输入，建议在调用 SDK 接口之前，验证一下手机号的格式。
 
 2. **调用 AVUser 的注册接口，传入手机号以及密码。**  
-  {% block avuser_signup_send_sms %}{% endblock %}
+```objc
+AVUser *user = [AVUser user];
+user.username = @"hjiang";
+user.password =  @"f32@ds*@&dsa";
+user.email = @"hang@leancloud.rocks";
+user.mobilePhoneNumber = @"18612340000";
+NSError *error = nil;
+[user signUp:&error];
+```
+```java
+AVUser user = new AVUser();
+user.setUsername("hjiang");
+user.setPassword("f32@ds*@&dsa");
+user.setEmail("hang@leancloud.rocks");
+// 其他属性可以像其他AVObject对象一样使用put方法添加
+user.put("mobilePhoneNumber", "186-1234-0000");
+user.signUpInBackground(new SignUpCallback() {
+    public void done(AVException e) {
+        if (e == null) {
+            // successfully
+        } else {
+            // failed
+        }
+    }
+});
+```
+```javascript
+var user = new AV.User();
+user.set("username", "hjiang");
+user.set("password", "123456");
+user.setMobilePhoneNumber('186xxxxxxxx');
+user.signUp(null, ……)
+```
+```cs
+var user = new AVUser();
+user.Username = "hjiang";
+user.Password = "123456ZXCV";
+user.MobilePhoneNumber = "186xxxxxxxx";
+user.SignUpAsync().ContinueWith(t =>
+{
+    // 注册成功之后云端会自动发送验证短信
+});
+```
+
 3. **云端发送手机验证码，并且返回注册成功**。但是此时用户的 `mobilePhoneVerified` 依然是 `false`，客户端需要引导用户去输入验证码。   
   
 4. **用户再一次输入验证码**  
   最好验证一下是否为纯数字。
   
-5. **调用验证接口，检查用户输入的纯数字验证码是否合法。**  
-  {% block avuser_signup_sms_verify %}{% endblock %}
+5. **调用验证接口，检查用户输入的纯数字验证码是否合法。**
+```objc
+[AVUser verifyMobilePhone:@"123456" withBlock:^(BOOL succeeded, NSError *error) {
+    //验证结果
+}];
+```
+```java
+AVUser.verifyMobilePhoneInBackground("123456", new AVMobilePhoneVerifyCallback() {
+    @Override
+    public void done(AVException e) {
+        if(e == null){
+            // 验证成功
+        } else {
+            Log.d("SMS", "Verified failed!");
+        }
+    }
+});
+```
+```javascript
+AV.User.verifyMobilePhone('6位数字验证码').then(function(){
+//验证成功
+}, function(err){
+//验证失败
+});
+```
+```cs
+AVUser.VerifyMobilePhoneAsync("6位数字验证码", "186xxxxxxxx").ContinueWith(t =>
+    {
+        if (t.Result)
+        {
+            // 验证成功
+        }
+    });
+```
 
 以上是一个通用的带有手机号验证的注册过程。开发者可以根据需求增加或减少步骤，但是推荐开发者在使用该功能时，首先明确是否需要勾选「验证注册用户手机号码」。因为一旦勾选，只要调用了 AVUser 相关的注册账号，并传入手机号，云端就会自动发送短信验证码。
 
@@ -134,10 +288,77 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 另外，假如注册的时候并没有强制用户验证手机号，而是在用户使用某一个功能的时候，要求用户验证手机号，也可以调用接口进行「延迟验证」，验证之后 `mobilePhoneVerified` 就会被置为 `true`。
 
 1. **请求发送验证码**    
-  {% block avuser_request_sms_code %}{% endblock %}
-2. **调用验证接口，验证用户输入的纯数字的验证码。**  
-  {% block avuser_verify_sms_code %}{% endblock %}
-
+```objc
+[AVUser requestMobilePhoneVerify:@"18612345678" withBlock:^(BOOL succeeded, NSError *error) {
+if(succeeded){
+    //调用成功
+}
+}];
+```
+```java
+AVUser.requestMobilePhoneVerifyInBackground("13800000000", new RequestMobileCodeCallback() {
+    @Override
+    public void done(AVException e) {
+        if(e == null){
+            // 调用成功
+        } else {
+            Log.d("SMS", "Send failed!");
+        }
+    }
+});
+```
+```javascript
+AV.User.requestMobilePhoneVerify('186xxxxxxxx').then(function(){
+    //调用成功
+}, function(err){
+    //调用失败
+});
+```
+```cs
+AVUser.RequestMobilePhoneVerifyAsync("186xxxxxxxx").ContinueWith(t =>
+{
+    if(t.Result)
+    {
+        // 调用成功
+    }
+});
+```
+2. **调用验证接口，验证用户输入的纯数字的验证码。** 
+```objc
+[AVUser verifyMobilePhone:@"123456" withBlock:^(BOOL succeeded, NSError *error) {
+    if(succeeded){
+        //验证成功
+    }
+}];
+```
+```java
+AVUser.verifyMobilePhoneInBackground("654321", new AVMobilePhoneVerifyCallback() {
+    @Override
+    public void done(AVException e) {
+        if (e == null) {
+            // 验证成功
+        } else {
+            Log.d("SMS", "Verified failed!");
+        }
+    }
+});
+```
+```javascript
+AV.User.verifyMobilePhone('6位数字验证码').then(function(){
+    //验证成功
+}, function(err){
+    //验证失败
+});
+```
+```cs
+AVUser.VerifyMobilePhoneAsync("6位数字验证码").ContinueWith(t =>
+    {
+        if (t.Result)
+        {
+            // 验证成功
+        }
+    });
+```
 #### 未收到注册验证短信
 
 一般来说，用户收到的注册验证短信内容为：
@@ -164,8 +385,6 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 {{ docs.alert("自 2016 年 6 月起，营销类短信不允许由个人用户发送。所有营销类短信必须提供有效的公司或者企业名称，缺失名称将导致营销类短信无法发送。伪造或使用虚假名称将会被追究法律责任。") }}
 
-第一次提交营销模版，其使用的营销签名需要上报至运营商进行备案，审核过程将需要 2~5 个工作日。当营销签名完成了备案，此后再提交营销模版，审核将在工作日 4 小时内完成。
-
 ## 自定义短信内容
 
 通过短信模板，我们可以自定义短信的内容。因为短信模板是由开发者自己定义的，因此为了确保平台的安全以及稳定，我们的短信模板由**专人进行审核**，只有**通过审核**之后，在接口里的调用才会成功发送。
@@ -175,13 +394,17 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 ### 创建模板
 
-要创建短信模板，先进入控制台，选择一个应用，再选择 [消息 > 短信 > 设置](http://leancloud.cn/messaging.html?appid={{appid}}#/message/sms/conf)。选择需要的模板类型：
+创建模板的截图如下：
+
+![sms_template](images/sms-template.png)
+
+选择模板的类型，目前支持以下三种类型：
 
 - 通知类型
 - 验证码类型
 - 营销类型
 
-如果模板类型选择了**通知类**或者**验证类**，但短信内容涉及到营销内容则无法通过审核。要发送营销类短信请阅读 [营销类](#营销类)。
+要创建短信模板，先进入控制台，选择一个应用，再选择 [消息 > 短信 > 设置](http://leancloud.cn/messaging.html?appid={{appid}}#/message/sms/conf)。**模板类型如果选择了通知类或者验证类，但短信内容如果涉及营销内容则无法通过审核。**要发送营销类短信请阅读 [营销类](#营销类)。
 
 ### 使用模板
 
@@ -196,10 +419,58 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 尊敬的的用户, 您的订单号：{{ docs.mustache("order_id") }} 正在派送，请保持手机畅通，我们的快递员随时可能与您联系，感谢您的订阅。 
 {% endcall %}
 
-并且模板名称为 `Order_Notice`，并且为这个模板关联了一个签名叫做「天天商城」，当模板通过审批后就可以调用如下代码发送这条通知类的短信：
+并且模板名称为 `Order_Notice`，并且为已经拥有了一个审核通过的签名叫做「天天商城」，签名的名称叫做 `sign_BuyBuyBuy` ，当模板通过审批后就可以调用如下代码发送这条通知类的短信：
 
-{% block send_sms_by_template %}{% endblock %}
-
+```objc
+NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+[dict setObject:@"7623432424540" forKey:@"order_id"];
+[AVOSCloud requestSmsCodeWithPhoneNumber:@"18612345678" templateName:@"Order_Notice" variables:dict callback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        //操作成功
+    } else {
+        NSLog(@"%@", error);
+    }
+}];
+```
+```java
+Map<String, Object> parameters = new HashMap<String, Object>();
+parameters.put("order_id", "7623432424540");
+AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(),
+        "Order_Notice",
+        parameters,
+        new RequestMobileCodeCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null) {
+                    Toast.makeText(getBaseContext(), getString(R.string.msg_notice_sent), Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("Home.SendNotice", e.getMessage());
+                }
+            }
+        });
+```
+```javascript
+AV.Cloud.requestSmsCode({
+mobilePhoneNumber: '186xxxxxxxx',
+template: 'Order_Notice',
+sign:'sign_BuyBuyBuy'
+order_id: '7623432424540'}).then(function(){
+      //调用成功
+    }, function(err){
+      //调用失败
+});
+```
+```cs
+var env = new Dictionary<string,object>()
+{
+    {"order_id","7623432424540"}
+};
+AVCloud.RequestSMSCodeAsync("186xxxxxxxx","Order_Notice",env,"sign_BuyBuyBuy").ContinueWith(t =>
+{
+    var result = t.Result;
+    // result 为 True 则表示调用成功
+});
+```
 用户收到的内容如下：
 
 {% call docs.bubbleWrap() -%}
@@ -214,10 +485,51 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 服装专区，新款上市，奥斯卡红毯同款全面上架，详情可以访问天天商城唯一官方网址：www.buybuybuy.com。 
 {% endcall %}
 
-并且模板名称为 `New_Series`，同时也为这个模板关联了一个签名叫做「天天商城」，当模板通过审批后就可以调用如下代码发送这条营销类的短信：
+并且模板名称为 `New_Series`，并且为已经拥有了一个审核通过的签名叫做「天天商城」，签名的名称叫做 `sign_BuyBuyBuy`，当模板通过审批后就可以调用如下代码发送这条营销类的短信：
 
-{% block send_marketing_by_template %}{% endblock %}
-
+```objc
+NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+[AVOSCloud requestSmsCodeWithPhoneNumber:@"18612345678" templateName:@"New_Series" variables:nil callback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        //操作成功
+    } else {
+        NSLog(@"%@", error);
+    }
+}];
+```
+```java
+AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(),
+        "Notice_Welcome",
+        null,
+        new RequestMobileCodeCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null) {
+                    Toast.makeText(getBaseContext(), getString(R.string.msg_notice_sent), Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("Home.SendNotice", e.getMessage());
+                }
+            }
+        });
+```
+```javascript
+AV.Cloud.requestSmsCode({
+    mobilePhoneNumber: '186xxxxxxxx',
+    template: 'New_Series',
+    sign:'sign_BuyBuyBuy'
+}).then(function(){
+    //调用成功
+}, function(err){
+    //调用失败
+});
+```
+```cs
+AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy").ContinueWith(t =>
+{
+    var result = t.Result;
+    // result 为 True 则表示调用成功
+});
+```
 用户收到的内容如下：
 
 {% call docs.bubbleWrap() -%}
@@ -238,6 +550,138 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 - `name`：应用名称
 - `code`：验证码（通知类和营销类不会包含）
 - `ttl`：过期时间（默认为 10 分钟）
+
+## 图形验证码 captcha
+
+首先请阅读相关的 REST API 文档 [图形验证码 captcha](rest_sms_api.html#图形验证码_captcha)。
+
+开发者需要在控制台 -> 应用选项 -> 开启图形验证码的功能。
+
+{{ docs.note("如果开启这个选项之后，所有主动调用发送短信的接口都会强制进行图形验证码验证，否则会直接返回调用错误）。") }}
+
+开启之后，调用发送短信的接口流程就需要作出调整。具体时序图如下：
+
+![sms_captcha_workflow](images/sms_captcha_workflow.svg)
+
+对应上面的时序图需要调用的 SDK 接口如下:
+
+### 获取图形验证码
+
+```objc
+AVCaptchaRequestOptions *options = [[AVCaptchaRequestOptions alloc] init];
+
+options.TTL = 60;
+options.size = 4;
+options.width = 100;
+options.height = 50;
+
+[AVCaptcha requestCaptchaWithOptions:options
+                            callback:^(AVCaptchaDigest * _Nullable captchaDigest, NSError * _Nullable error) {
+                                /* URL string of captcha image. */
+                                NSString *url = captchaDigest.URLString;
+                            }];
+```
+```java
+// 待补充
+```
+```javascript
+AV.Cloud.requestCaptcha({
+  size:4// 验证码位数，默认是 4 位，支持 3-6 位
+  width:100// 图片的宽度，必要参数
+  height:50 // 图片的高度，必要参数
+  ttl:60// 验证码有效期，默认为是 60 秒，可以设置为 10-180 秒
+}).then(result =>{
+  var captchaToken = result.captchaToken;// 用来对应后面的验证接口，服务端用这个参数来匹配具体是哪一个图形验证码
+  var url = result.url;// 图片的 url，客户端用来展现
+});
+```
+```cs
+// size:4 - 验证码位数，默认是 4 位，支持 3-6 位
+// width:100 - 图片的宽度，必要参数
+// height:50 -  图片的高度，必要参数
+// ttl:60 - 验证码有效期，默认为是 60 秒，可以设置为 10-180 秒
+AVCloud.RequestCaptchaAsync(size:4, width:85, height:30, ttl:60).ContinueWith(t =>{
+  var captchaData = t.Result;
+  var url = captchaData.Url;// 图片的 url，客户端用来展现
+  var captchaToken = captchaData.captchaToken;// 用来对应后面的验证接口，服务端用这个参数来匹配具体是哪一个图形验证码
+});
+```
+### 校验图形验证码
+获取图形验证码之后，将图形验证码的图像显示在客户端，以下用 HTML 做演示，iOS 和 Android 或者其他平台可以调用基础的图像控件展示这张图片:
+
+```html
+<img src="在这里填写获取到的 captchaData 的 url"/>
+```
+然后正确引导用户输入图形验证码的内容，等到用户输入完成之后，继续调用下一步的接口校验用户输入的是否合法：
+
+```objc
+[AVCaptcha verifyCaptchaCode:<#用户识别的符号#>
+            forCaptchaDigest:<#之前请求的 AVCaptchaDigest 对象#>
+                    callback:^(NSString * _Nullable validationToken, NSError * _Nullable error) {
+                        /* validationToken 可用短信认证 */
+                    }];
+```
+```java
+// 待补充
+```
+```javascript
+AV.Cloud.verifyCaptcha('这里填写用户输入的图形验证码，例如 AM8N','这里填写上一步返回的 captchaToken').then(result =>
+{
+    var validate_token = result;
+});
+```
+```cs
+AVCloud.VerifyCaptchaAsync("这里填写用户输入的图形验证码，例如 AM8N",'这里填写上一步返回的 captchaToken').CotinuteWith(t =>{
+    var validate_token = result;
+});
+```
+
+### 使用 validate_token 发送短信
+如果校验成功，拿到返回的 validate_token，继续调用发送短信的接口：
+```objc
+AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
+
+options.validationToken = <#validationToken#>;
+
+[AVSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx"
+                                 options:options
+                                callback:^(BOOL succeeded, NSError * _Nullable error) {
+                                    if (succeeded) {
+                                        /* 请求成功 */
+                                    } else {
+                                        /* 请求失败 */
+                                    }
+                                }];
+```
+```java
+// 待补充
+```
+```javascript
+// mobilePhoneNumber ：手机号
+// template ：模板名称
+// sign ：签名 
+AV.Cloud.requestSmsCode({
+    mobilePhoneNumber: '186xxxxxxxx',
+    template: 'New_Series',
+    sign:'sign_BuyBuyBuy'
+}，{
+    validateToken:'上一步返回的 validate_token'
+}).then(function(){
+    //调用成功
+}, function(err){
+    //调用失败
+});
+```
+```cs
+// 186xxxxxxxx ：手机号
+// New_Series ：模板名称
+// sign_BuyBuyBuy ：签名 
+AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy","上一步返回的 validate_token").ContinueWith(t =>
+{
+    var result = t.Result;
+    // result 为 True 则表示调用成功
+});
+```
 
 ## 模板规范
 
@@ -293,7 +737,7 @@ XX房东您好，租客{{ docs.mustache("guest_name") }}（手机号码：{{ doc
 
 【正确范例】
 
-{{ docs.bubble("X牌新款春装已经上市，明星夫妻同款你值得拥有！详情请咨询当地X牌门市店，或者直接登录 www.xxxx.com 查询门市店，或者拨打 010-00000000，凭短信可享 9 折优惠。回复TD退订") }}
+{{ docs.bubble("X牌新款春装已经上市，明星夫妻同款你值得拥有！详情请咨询当地X牌门市店，或者直接登录 www.xxxx.com 查询门市店，或者拨打 010-00000000，凭短信可享 9 折优惠。") }}
 
 #### 应用推广类
 
@@ -308,7 +752,7 @@ XX房东您好，租客{{ docs.mustache("guest_name") }}（手机号码：{{ doc
 
 ## 安全问题
 我们强烈要求开发者在用户界面上针对短信发送做操作限制，例如手机号的验证功能应该是客户端在 1 分钟之内只允许发送一次，尽管我们的服务端做了必要的安全措施来保证开发者的权益，但是不排除有被恶意攻击的可能性。
-因此我们强烈要求开发者一定要阅读如下链接里的内容：[短信轰炸](rest_sms_api.html#短信轰炸)
+因此我们强烈要求开发者一定要阅读如下链接里的内容：[短信轰炸](rest_sms_api.html#短信轰炸) 和 前文所提及的[图形验证码 captcha](#图形验证码_captcha)
 
 ## 常见问题
 

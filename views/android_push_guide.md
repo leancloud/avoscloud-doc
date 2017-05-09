@@ -551,6 +551,16 @@ dependencies {
 因为小米公司不允许第三方服务以任何形式接入、整合小米推送，所以我们目前还不能支持小米系统，不过我们正与小米公司积极沟通解决，希望可以尽快开放这一服务。
 
 
+### 取消混合推送注册
+
+对于已经注册了混合推送的用户，如果想取消混合推送的注册而改走 LeanCloud 自有的 WebSocket 的话，可以调用如下函数：
+
+```java
+AVMixpushManager.unRegisterMixPush();
+```
+
+此函数为异步函数，如果取消注册失败的话会有类似「unRegisterMixPush error」的日志输出。
+
 ### 错误排查建议
 
 - 只要注册时有条件不符合，SDK 会在日志中输出导致注册失败的原因，例如「register error, mainifest is incomplete」代表 manifest 未正确填写。如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。

@@ -908,6 +908,10 @@ clang: error: linker command failed with exit code 1 (use -v to see invocation)
 
 ![link-libs](https://dn-lhzo7z96.qbox.me/1493266411053)
 
+#### Android 
+经过测试在 Android ，该插件所打包的 jar 包内部的 websocket lib 不支持 wss 加密链接，因此我们经过与该插件作者的沟通，我们重新打包了一个支持 wss 加密链接的 jar 包，下载地址是：
+[websocketunity.jar](https://dn-lhzo7z96.qbox.me/1494239779983)，下载之后替换目标目录 `~/Assets/WebSocketUnity/Plugins/Android/websocketunity.jar` 即可。
+
 ## 消息
 
 ### 自定义消息类型

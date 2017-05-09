@@ -463,7 +463,7 @@ curl -X POST \
         "captcha_code": "0000",
         "captcha_token": "R2cxkqSz"
       }'
-  https://{{host}}/1.1/requestCaptcha
+  https://{{host}}/1.1/verifyCaptcha
 
 ```
 
