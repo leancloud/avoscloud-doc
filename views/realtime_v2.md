@@ -88,6 +88,8 @@ LeanCloud 实时通信服务的特性主要有：
 系统每创建一个对话，就会在云端的 `_Conversation` 表中增加一条记录，可以进入 [控制台 > **存储** > **数据**](/data.html?appid={{appid}}#/) 来查看该数据。
 {% endif %}
 
+{{ im.conversationRecordsLifespan("") }}
+
 `_Conversation` 表中字段名与对话的各个属性的对应关系为：
 
 表字段|属性名|类型|约束|说明
