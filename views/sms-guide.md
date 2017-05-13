@@ -413,7 +413,7 @@ AVUser.VerifyMobilePhoneAsync("6位数字验证码").ContinueWith(t =>
 ### 使用模板
 
 #### 验证码类型
-验证码类型有两种，一种针对 _User 表中 `mobilePhoneNumber` 字段的验证，另一种是业务场景中敏感操作的验证，这两种都在上文中有介绍：[验证类](sms_guide-objc.html#验证类)
+验证码类型有两种，一种针对 _User 表中 `mobilePhoneNumber` 字段的验证，另一种是业务场景中敏感操作的验证，这两种都在上文中有介绍：[验证类](sms-guide.html#验证类)
 
 #### 通知类型
 

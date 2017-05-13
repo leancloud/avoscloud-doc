@@ -394,7 +394,7 @@
 ## 600
 
 * 信息 - `Invalid SMS signature.`
-* 含义 - 无效的短信签名。具体要求请参考 [短信签名规范](sms_guide-android.html#短信签名)。
+* 含义 - 无效的短信签名。具体要求请参考 [短信签名规范](sms-guide.html#短信签名)。
 
 
 ## 601
