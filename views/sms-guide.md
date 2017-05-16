@@ -103,11 +103,9 @@ LeanCloud 短信服务支持的应用场景有以下三种：
   注意，在这一步之前，我们假设当前用户已经设置过了手机号，所以推荐这类应用在注册环节，尽量要求用户以手机号作为用户名，否则到了支付界面，还需要用户在首次购买时输入一次手机号。
 ```objc
 AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
-
 options.TTL = 10;
 options.applicationName = @"应用名称";
 options.operation = @"某种操作";
-
 [AVSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx"
                                  options:options
                                 callback:^(BOOL succeeded, NSError * _Nullable error) {
@@ -601,7 +599,17 @@ options.height = 50;
                             }];
 ```
 ```java
-// 待补充
+AVCaptchaOption option = new AVCaptchaOption();
+option.setWidth(85);
+option.setHeight(30);
+AVCaptcha.requestCaptchaInBackground(option, new AVCallback<AVCaptchaDigest>() {
+  @Override
+  protected void internalDone0(AVCaptchaDigest captchaDigest, AVException exception) {
+    if (null == exception) {
+      // 请求成功，可以通过 captchaDigest.getUrl() 获取图片
+      }
+    }
+});
 ```
 ```javascript
 AV.Captcha.request({
@@ -633,7 +641,14 @@ AVCloud.RequestCaptchaAsync(width:85, height:30).ContinueWith(t =>{
                     }];
 ```
 ```java
-// 待补充
+AVCaptcha.verifyCaptchaCodeInBackground(code, captchaDigest, new AVCallback<String>() {
+  @Override
+  protected void internalDone0(String validateToken, AVException exception) {
+    if (null == exception) {
+      // 请求成功，validateToken 所请求的到的返回值
+    }
+  }
+});
 ```
 ```javascript
 // captcha 是上一步得到的验证码实例对象
@@ -649,7 +664,6 @@ AVCloud.VerifyCaptchaAsync("这里填写用户输入的图形验证码，例如 
 如果校验成功，拿到返回的 validate_token，继续调用发送短信的接口：
 ```objc
 AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
-
 options.templateName = @"New_Series";
 options.signatureName = @"sign_BuyBuyBuy";
 options.validationToken = <#validationToken#>;
