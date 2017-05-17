@@ -780,24 +780,11 @@ jerry.open(new AVIMClientCallback() {
 AVIMClient.setOfflineMessagePush(true);
 ```
 
-然后实现 AVIMConversationEventHandler 的代理方法 `onOfflineMessagesUnread` 来从服务端取回未读消息：
+然后实现 AVIMConversationEventHandler 的代理方法 `onUnreadMessagesCountUpdated` 来得到未读消息的数量变更的通知：
 
 ```
-onOfflineMessagesUnread(AVIMClient client, AVIMConversation conversation, int unreadCount) {
-  //如果有多个 conversation 有未读消息，此函数会执行多次
-  if (unreadCount > 0) {
-    // 可以根据 readCount 更新 UI
-    
-    // 也可以拉取对应的未读消息
-    conversation.queryMessages(unreadCount, new AVIMMessagesQueryCallback() {
-      @Override
-      public void done(List<AVIMMessage> list, AVIMException e) {
-        if (e == null) {
-          // 获得对应的未读消息
-        }
-      }
-    });
-  }
+onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
+    // conversation.getUnreadMessagesCount() 即该 conversation 的未读消息数量
 }
 ```
 `AVIMConversationEventHandler` 的实现和定义在[自身主动加入](#自身主动加入)里面有详细的代码和介绍。
