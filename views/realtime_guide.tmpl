@@ -290,29 +290,15 @@ Tom 想建立一个群，把自己好朋友都拉进这个群，然后给他们�
 ```
 {% endblock %}
 
-{% block typedMessage_received %}{% endblock %}
+#### 发送流程
 
-### 消息的发送
-{% block api_send_message_method_intro %}{% endblock %}
-
-{% block messagePolicy_sent %}{% endblock %}
-
-#### 多媒体消息发送
-
-目前 SDK 内置的多媒体消息类如下：
-
-* 图像 `AVIMImageMessage`
-* 音频 `AVIMAudioMessage`
-* 视频 `AVIMVideoMessage`
-* 文件 `AVIMFileMessage`
-
-所有多媒体消息类型的发送流程如下：
+对于图像、音频、视频和文件这四种类型的消息，SDK 均采取如下的发送流程：
 
 如果文件是从**客户端 API 读取的数据流 (Stream)**，步骤为：
 
 1. 从本地构造 AVFile
 1. 调用 AVFile 的上传方法将文件上传到云端，并获取文件元信息（MetaData）
-1. 把 AVFile 的 objectId、URL ，以及文件的元信息封装在消息体内
+1. 把 AVFile 的 objectId、URL、文件元信息都封装在消息体内
 1. 调用接口发送消息
 
 如果文件是**外部链接的 URL**，则：
@@ -320,17 +306,13 @@ Tom 想建立一个群，把自己好朋友都拉进这个群，然后给他们�
 1. 直接将 URL 封装在消息体内，不获取元信息，不包含 objectId
 1. 调用接口发送消息
 
-#### 启用离线消息通知
+{% block messagePolicy_sent_method %}{% endblock %}
 
-不管是单聊还是群聊，当用户 A 发出消息后，如果目标对话的部分用户当前不在线，LeanCloud 云端可以提供离线推送的方式来提醒用户。
+{% block messagePolicy_sent %}{% endblock %}
 
-{% block offlineMessage_android %}{% endblock %}
+#### 接收流程
 
-{%  if segment_code == 'objc' or segment_code == 'dotnet' %}这一功能默认是关闭的，可以通过多种方式的设置来触发它，操作方法请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。{% endif %}
-
-{% block offlineMessage %}{% endblock %}
-
-### 消息的接收
+{% block typedMessage_received %}{% endblock %}
 
 {% block messagePolicy_received_intro %}
 消息的接收策略在不同平台有不同的实现。
@@ -338,17 +320,119 @@ Tom 想建立一个群，把自己好朋友都拉进这个群，然后给他们�
 
 {% block messagePolicy_received %}{% endblock %}
 
+### 消息发送选项
+
+{{message_option_name}} 用于在发送消息时定义消息的一些特性。包含以下特性：
+
+#### 消息等级
+
+为了保证消息的时效性，当聊天室消息过多导致客户端连接堵塞时，服务器端会选择性地丢弃部分低等级的消息。目前支持的消息等级有：
+
+消息等级 | 描述
+---------|-----
+`{{message_priority_high_varname}}`    | 高等级，针对时效性要求较高的消息，比如直播聊天室中的礼物，打赏等。
+`{{message_priority_normal_varname}}`  | 正常等级，比如普通非重复性的文本消息。
+`{{message_priority_low_varname}}`     | 低等级，针对时效性要求较低的消息，比如直播聊天室中的弹幕。
+
+消息等级在发送接口的参数中设置。以下代码演示了如何发送一个高等级的消息：
+
+{% block message_option_priority %}{% endblock %}
+
+<div class="callout callout-info">此功能仅针对<u>聊天室消息</u>有效。普通对话的消息不需要设置等级，即使设置了也会被系统忽略，因为普通对话的消息不会被丢弃。</div>
+
+#### 暂态消息
+
+暂态消息不会被自动保存（以后在历史消息中无法找到它），也不支持延迟接收，离线用户更不会收到推送通知，所以适合用来做控制协议。譬如聊天过程中「某某正在输入...」这样的状态信息，就适合通过暂态消息来发送；或者当群聊的名称修改以后，也可以用暂态消息来通知该群的成员「群名称被某某修改为...」。
+
+{% block transientMessage_sent %}
+```
+- 初始化 ClientId = Tom
+- Tom 登录到系统
+- 进入与 Jerry 的对话 id = 551260efe4b01608686c3e0f
+- 在 Tom 输入的同时，向 Jerry 发送提示："Tom 正在输入……"
+```
+{% endblock %}
+
+而对话中的其他成员在聊天界面中需要有以下代码做出响应：
+
+{% block transientMessage_received %}
+```
+- 初始化 ClientId = Jerry
+- Jerry 登录到系统
+- 进入与 Tom 的对话 id = 551260efe4b01608686c3e0f
+- 此时收到提示："Tom 正在输入……"
+```
+{% endblock %}
+
+#### 消息回执
+
+在对方收到消息以及对方阅读了消息之后，云端可以向发送方分别发送一个回执通知。
+
+要使用消息回执功能，需要在发送消息时标记「需要回执」选项：
+
+{% block message_sent_ack_switch %}{% endblock %}
+
+{{ docs.note("只有在发送时设置了「需要回执」的标记，云端才会发送回执，默认不发送回执。") }}
+
+##### 送达回执
+
+当对方收到消息之后，云端会向发送方发出一个回执通知，表明消息已经送达，但这并**不代表用户已读**。送达回执**仅支持单聊**。
+
+{% block message_sent_ack %}{% endblock %}
+
+##### 已读回执
+
+对方阅读了消息之后，云端会向发送方发出一个回执通知，表明消息已被阅读。已读回执目前**仅支持单聊**。
+
+例如 Tom 和 Jerry 聊天，Tom 想知道 Jerry 是否阅读了自己发去的消息：
+
+{% block message_read_ack %}{% endblock %}
+
+#### 自定义离线推送内容
+在使用 SDK 提供的 API 之前，请先阅读 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。
+
+正如 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知) 小节里面介绍的，发送消息时，可以指定该消息对应的离线推送内容。如果消息接收方不在线，我们会推送您指定的内容。以下代码演示了如何自定义离线推送内容：
+
+{% block message_push_data %}{% endblock %}
+
+这种方式被称为「附件方式」，这里有一点非常重要：如果您在 [云引擎实时通信离线消息推送 Hook](leanengine_cloudfunction_guide-node.html#_receiversOffline)里面定义了云函数来修改离线消息的内容，云端会优先使用 Hook 函数返回的结果作为最后推送的内容
+
+除此以外，还有其他方法来自定义离线推送内容，请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。
+
+### 未读消息
+
 {% if segment_code != "dotnet" %}
-#### 未拉取的离线消息
+未读消息有两种处理方式：未读消息数量通知与离线消息通知（默认）。
 
-未拉取的离线消息指的是客户端尚未主动拉取到本地的消息。
+#### 未读消息数更新通知
 
-SDK 默认的接收机制是：当客户端上线时，离线消息会自动通过长连接发送至客户端。如果开启了「未读消息」，消息接收机制变为：当客户端上线时，会收到其参与过的会话的离线消息数量，云端不再主动将离线消息通知发送至客户端，转而由客户端负责主动拉取。
+未读消息数更新通知的机制为：当客户端上线时，会收到其参与过的对话的离线消息数量，云端不会主动将离线消息通知发送至客户端，而是由客户端负责主动拉取。
 
-{% block message_unread %}{% endblock %}
+SDK 会在 Conversation 上维护 `unreadMessagesCount` 字段，这个字段在变化时 IMClient 会派发一个「未读消息数量更新」的事件。这个字段会在下面这些情况下发生变化：
 
-注意：客户端<u>在线上时</u>收到的消息默认为**已读**，不存在未读的情况。因此开发者不需要将这样的消息标记为已读。
+- 收到在线消息
+- 用户将对话标记为已读
+- 开发者应当监听「未读消息数量更新」 事件，在对话列表界面上更新这些对话的未读消息数量。
+
+{% block message_unread_message_count %}{% endblock %}
+
+{{ docs.note("客户端<u>在线上时</u>收到的消息默认为**已读**，不存在未读的情况。因此开发者不需要将这样的消息标记为已读。") }}
+
+清除对话未读消息数的唯一方式是调用 Conversation#read 方法将对话标记为已读，一般来说开发者至少需要在下面两种情况下将对话标记为已读：
+
+- 在对话列表点击某对话进入到对话页面时
+- 用户正在某个对话页面聊天，并在这个对话中收到了消息时
 {% endif %}
+
+#### 离线消息通知
+
+离线消息通知是 SDK 默认的未读消息处理方式。不管是单聊还是群聊，当用户 A 发出消息后，如果目标对话的部分用户当前不在线，LeanCloud 云端可以提供离线推送的方式将消息提醒发送至客户端。
+
+{% block offlineMessage_android %}{% endblock %}
+
+{%  if segment_code == 'objc' or segment_code == 'dotnet' %}这一功能默认是关闭的，可以通过多种方式的设置来触发它，操作方法请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。{% endif %}
+
+{% block offlineMessage %}{% endblock %}
 
 ### 消息类详解
 {% block message_Relation_intro %}{% endblock %}
@@ -398,70 +482,6 @@ SDK 默认的接收机制是：当客户端上线时，离线消息会自动通�
 >譬如有一条图像消息，除了文本之外，还需要附带地理位置信息，为此开发者需要创建一个新的消息类型吗？从上面的例子可以看出，其实完全没有必要。这种情况只要使用消息类中预留的 {{attributes}} 属性就可以保存额外的地理位置信息了。
 >
 >只有在我们的消息类型完全无法满足需求的时候，才需要扩展自己的消息类型。譬如一个新闻类应用，它允许用户将某条新闻转发给好友，在展示上需要新闻的标题、摘要、图片等信息（类似于微博中的 linkcard）的话，这时候就可以扩展一个新的 NewsMessage 类。
-
-### 消息发送选项
-
-{{message_option_name}} 用于在发送消息时定义消息的一些特性。包含以下特性：
-
-#### 消息等级
-
-为了保证消息的时效性，当聊天室消息过多导致客户端连接堵塞时，服务器端会选择性地丢弃部分低等级的消息。目前支持的消息等级有：
-
-消息等级 | 描述
----------|-----
-`{{message_priority_high_varname}}`    | 高等级，针对时效性要求较高的消息，比如直播聊天室中的礼物，打赏等。
-`{{message_priority_normal_varname}}`  | 正常等级，比如普通非重复性的文本消息。
-`{{message_priority_low_varname}}`     | 低等级，针对时效性要求较低的消息，比如直播聊天室中的弹幕。
-
-消息等级在发送接口的参数中设置。以下代码演示了如何发送一个高等级的消息：
-
-{% block message_option_priority %}{% endblock %}
-
-<div class="callout callout-info">此功能仅针对<u>聊天室消息</u>有效。普通对话的消息不需要设置等级，即使设置了也会被系统忽略，因为普通对话的消息不会被丢弃。</div>
-
-#### 暂态消息
-
-暂态消息不会被自动保存（以后在历史消息中无法找到它），也不支持延迟接收，离线用户更不会收到推送通知，所以适合用来做控制协议。譬如聊天过程中「某某正在输入...」这样的状态信息，就适合通过暂态消息来发送；或者当群聊的名称修改以后，也可以用暂态消息来通知该群的成员「群名称被某某修改为...」。
-
-{% block transientMessage_sent %}
-```
-- 初始化 ClientId = Tom
-- Tom 登录到系统
-- 进入与 Jerry 的对话 id = 551260efe4b01608686c3e0f
-- 在 Tom 输入的同时，向 Jerry 发送提示："Tom 正在输入……"
-```
-{% endblock %}
-
-而对话中的其他成员在聊天界面中需要有以下代码做出响应：
-
-{% block transientMessage_received %}
-```
-- 初始化 ClientId = Jerry
-- Jerry 登录到系统
-- 进入与 Tom 的对话 id = 551260efe4b01608686c3e0f
-- 此时收到提示："Tom 正在输入……"
-```
-{% endblock %}
-
-#### 消息送达回执
-
-是指消息被对方收到之后，云端会发送一个回执通知给发送方，表明消息已经送达。
-需要注意的是：
-
-> 只有在发送时设置了「等待回执」标记，云端才会发送回执，默认不发送回执。该回执并不代表用户已读。
-
-{% block message_sent_ack %}{% endblock %}
-
-#### 自定义离线推送内容
-在使用 SDK 提供的 API 之前，请先阅读 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。
-
-正如 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知) 小节里面介绍的，发送消息时，可以指定该消息对应的离线推送内容。如果消息接收方不在线，我们会推送您指定的内容。以下代码演示了如何自定义离线推送内容：
-
-{% block message_push_data %}{% endblock %}
-
-这种方式被称为「附件方式」，这里有一点非常重要：如果您在 [云引擎实时通信离线消息推送 Hook](leanengine_cloudfunction_guide-node.html#_receiversOffline)里面定义了云函数来修改离线消息的内容，云端会优先使用 Hook 函数返回的结果作为最后推送的内容
-
-除此以外，还有其他方法来自定义离线推送内容，请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。
 
 ## 对话
 
@@ -647,14 +667,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 ### 对话的查询
 
-#### 对话的有效期
-
-一个对话（包括普通、暂态、系统对话）如果一年内没有通过 SDK 或者 REST API 发送过新的消息，或者它在 `_Conversation` 表中的任意字段没有被更新过，即被视为**不活跃对话**，云端会自动将其删除。（查询对话的消息记录并不会更新 `_Conversation` 表，所以只查询不发送消息的对话仍会被视为不活跃对话。）
-
-不活跃的对话被删除后，当客户端再次通过 SDK 或 REST API 对其进行查询或发送消息时，会遇到 
-`4401 INVALID_MESSAGING_TARGET` 错误，表示该对话已经不存在了。同时，与该对话相关的消息历史也无法获取。
-
-反之，活跃的对话会一直保存在云端。
+{{ im.conversationRecordsLifespan() }}
 
 <!-- #### 基础查询 -->
 
@@ -723,7 +736,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 条件查询又分为：比较查询、正则匹配查询、包含查询，以下会做分类演示。
 {% endblock %}
 
-#### 比较查询
+##### 比较查询
 
 比较查询在一般的理解上都包含以下几种：
 
@@ -767,7 +780,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 ```
 {% endblock %}
 
-#### 正则匹配查询
+##### 正则匹配查询
 
 {% block conversation_query_regexIntro %}{% endblock %}
 
@@ -782,7 +795,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 ```
 {% endblock %}
 
-#### 包含查询
+##### 包含查询
 
 包含查询是指方法名字包含 `Contains` 单词的方法，例如查询关键字包含「教育」的对话：
 
@@ -807,9 +820,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 ```
 {% endblock %}
 
-{% block conversation_query_exists %}{% endblock %}
-
-#### 组合查询
+##### 组合查询
 
 组合查询就是把诸多查询条件合并成一个查询，再交给 SDK 去云端进行查询。
 
@@ -840,6 +851,36 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 {% endblock %}
 
 只要查询构建得合理，开发者完全不需要担心组合查询的性能。
+
+##### 空值查询
+
+空值查询是指查询相关列是否为空值的方法，例如要查询 lm 列为空值的对话：
+
+{% block conversation_query_doesnot_exist %}{% endblock %}
+
+如果要查询 lm 列不为空的对话，则替换为如下：
+
+{% block conversation_query_exists %}{% endblock %}
+
+#### 结果排序
+
+对话支持对查询结果进行排序：
+
+{% block conversation_query_sorting %}{% endblock %}
+
+#### 精简模式
+
+普通对话最多可以容纳 500 个成员，在有些业务逻辑不需要对话的成员列表的情况下，可以使用「精简模式」进行查询，这样返回结果中不会包含成员列表（`members` 字段为空数组），有助于提升应用的性能同时减少流量消耗。
+
+{% block conversation_query_compact_mode %}{% endblock %}
+
+#### 最后一条消息
+
+对于一个聊天应用，一个典型的需求是在对话的列表界面显示最后一条消息，默认情况下，针对对话的查询结果是不带最后一条消息的，需要单独打开相关选项：
+
+{% block conversation_query_with_last_message %}{% endblock %}
+
+需要注意的是，这个选项真正的意义是「刷新对话的最后一条消息」，这意味着由于 SDK 缓存机制的存在，将这个选项设置为 `false` 查询得到的对话也还是有可能会存在最后一条消息的。
 
 {% block conversation_query_cache %}
 #### 缓存查询

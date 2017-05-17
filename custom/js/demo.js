@@ -142,22 +142,6 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         type: 'web',
         qcloudShow: true
       }],
-      'unity': [{
-        name: 'FlappyBird',
-        desc: '支持 Unity 平台的 FlappyBird 小游戏，演示了 LeanCloud 数据存储 SDK 的大多数功能。',
-        downPath: '',
-        mdPath: 'https://github.com/leancloud/unity-sdk-demos',
-        type: 'unity',
-        qcloudShow: true
-      }],
-      'winphone': [{
-        name: 'Tutorial',
-        desc: 'Windows Phone 平台的示例程序，演示了 LeanCloud 数据存储 SDK 的大多数功能。',
-        downPath: '',
-        mdPath: 'https://github.com/leancloud/windows-phone-sdk-demos',
-        type: 'winphone',
-        qcloudShow: true
-      }],
       'php': [{
         name: '云引擎 Todo',
         desc: '使用了 Slim PHP 框架搭建的 Todo 程序。',

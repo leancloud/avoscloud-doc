@@ -228,7 +228,7 @@ public void GuanYULogIn()
     });
 }
 
-private void Guanyu_OnMessageReceived(object sender, AVIMMesageEventArgs e)
+private void Guanyu_OnMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     if (e.Message is AVIMTextMessage)
     {
@@ -282,7 +282,7 @@ public void GuanYULogIn()
     });
 }
 
-private void Guanyu_OnMessageReceived(object sender, AVIMMesageEventArgs e)
+private void Guanyu_OnMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     // 如果是文本消息
     if (e.Message is AVIMTextMessage)
@@ -324,7 +324,7 @@ public void ZhangFeiLogIn()
     });
 }
 
-private void Zhangfei_OnOfflineMessageReceived(object sender, AVIMMesageEventArgs e)
+private void Zhangfei_OnOfflineMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     if (e.Message is AVIMTextMessage)
     {
@@ -992,7 +992,7 @@ currentConveration.SendMessageAsync(emojiMessage);
 接收方代码如下：
 
 ```cs
-private void OnMessageReceived(object sender, AVIMMesageEventArgs e)
+private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     if (e.Message is Emoji)
     {
@@ -1167,7 +1167,7 @@ private Task SendBinaryMessageAsync()
 接收方通过订阅 `AVIMClient.OnMessageReceived` 事件来监听消息的接收:
 
 ```cs
-private void AVIMClient_OnMessageReceived(object sender, AVIMMesageEventArgs e)
+private void AVIMClient_OnMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     if (e.Message is BinaryMessage)
     {
@@ -1396,6 +1396,44 @@ id|playerId|channelId
 
 开发者可以在自己的数据库中用 Player-Channel 这张关系表来管理玩家和频道之间的关系。
 
+
+## 异常处理
+在所有 SDK 内部的异步方法中(返回值为`Task`类型的接口)，异常都不会直接抛出而是会在 `Task.Exception` 里面获取，参考如下处理方式。
+
+假设场景是因为意外情况短断线，但是用户恰巧在断线的时候点击发送消息，那么 SDK 会抛出一个异常
+
+```cs
+conversation.SendMessageAsync(new AVIMTextMessage("兄弟们，睡什么睡，起来嗨！")).ContinueWith(s =>
+{
+    if (s.Exception != null)
+    {
+        // 通过获取异常集合来判断该项操作所可能导致了多种异常
+        var inners = s.Exception.InnerExceptions;
+
+        if (inners != null)
+        {
+            Debug.Log("inners");
+            foreach (var e in inners)
+            {
+                // 这里一定会有一个异常消息为：未能连接到服务器，无法发送消息。
+                Debug.Log(e.Message);
+            }
+        }
+    }
+});
+```
+
+更为直接的方式是直接判断 `Task.IsFaulted` 就可以知道 `Task` 是否在执行的时候存在错误:
+
+```cs
+conversation.SendMessageAsync(new AVIMTextMessage("兄弟们，睡什么睡，起来嗨！")).ContinueWith(s =>
+{
+    if (s.IsFaulted)
+    {
+        Debug.Log("发送失败");
+    }
+});
+```
 
 ## 常见问题
 

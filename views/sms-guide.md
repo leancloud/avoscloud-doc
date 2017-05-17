@@ -102,15 +102,17 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 2. **调用接口发送验证短信**  
   注意，在这一步之前，我们假设当前用户已经设置过了手机号，所以推荐这类应用在注册环节，尽量要求用户以手机号作为用户名，否则到了支付界面，还需要用户在首次购买时输入一次手机号。
 ```objc
-[AVOSCloud requestSmsCodeWithPhoneNumber:@"13613613613"
-                                appName:@"应用名称"
-                                operation:@"某种操作"
-                                timeToLive:10
-                                callback:^(BOOL succeeded, NSError *error) {
+AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
+options.TTL = 10;
+options.applicationName = @"应用名称";
+options.operation = @"某种操作";
+[AVSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx"
+                                 options:options
+                                callback:^(BOOL succeeded, NSError * _Nullable error) {
                                     if (succeeded) {
-                                        // 调用成功
-                                        //短信格式类似于：
-                                        //您正在{应用名称}中进行{某种操作}，您的验证码是:{123456}，请输入完整验证，有效期为:{10}分钟
+                                        /* 请求成功 */
+                                    } else {
+                                        /* 请求失败 */
                                     }
                                 }];
 ```
@@ -409,7 +411,7 @@ AVUser.VerifyMobilePhoneAsync("6位数字验证码").ContinueWith(t =>
 ### 使用模板
 
 #### 验证码类型
-验证码类型有两种，一种针对 _User 表中 `mobilePhoneNumber` 字段的验证，另一种是业务场景中敏感操作的验证，这两种都在上文中有介绍：[验证类](sms_guide-objc.html#验证类)
+验证码类型有两种，一种针对 _User 表中 `mobilePhoneNumber` 字段的验证，另一种是业务场景中敏感操作的验证，这两种都在上文中有介绍：[验证类](sms-guide.html#验证类)
 
 #### 通知类型
 
@@ -422,15 +424,21 @@ AVUser.VerifyMobilePhoneAsync("6位数字验证码").ContinueWith(t =>
 并且模板名称为 `Order_Notice`，并且为已经拥有了一个审核通过的签名叫做「天天商城」，签名的名称叫做 `sign_BuyBuyBuy` ，当模板通过审批后就可以调用如下代码发送这条通知类的短信：
 
 ```objc
-NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-[dict setObject:@"7623432424540" forKey:@"order_id"];
-[AVOSCloud requestSmsCodeWithPhoneNumber:@"18612345678" templateName:@"Order_Notice" variables:dict callback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        //操作成功
-    } else {
-        NSLog(@"%@", error);
-    }
-}];
+AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
+
+options.templateName = @"Order_Notice";
+options.signatureName = @"sign_BuyBuyBuy";
+options.templateVariables = @{ @"order_id": @"7623432424540" };
+
+[AVSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx"
+                                 options:options
+                                callback:^(BOOL succeeded, NSError * _Nullable error) {
+                                    if (succeeded) {
+                                        /* 请求成功 */
+                                    } else {
+                                        /* 请求失败 */
+                                    }
+                                }];
 ```
 ```java
 Map<String, Object> parameters = new HashMap<String, Object>();
@@ -488,14 +496,20 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","Order_Notice",env,"sign_BuyBuyBuy").C
 并且模板名称为 `New_Series`，并且为已经拥有了一个审核通过的签名叫做「天天商城」，签名的名称叫做 `sign_BuyBuyBuy`，当模板通过审批后就可以调用如下代码发送这条营销类的短信：
 
 ```objc
-NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-[AVOSCloud requestSmsCodeWithPhoneNumber:@"18612345678" templateName:@"New_Series" variables:nil callback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        //操作成功
-    } else {
-        NSLog(@"%@", error);
-    }
-}];
+AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
+
+options.templateName = @"New_Series";
+options.signatureName = @"sign_BuyBuyBuy";
+
+[AVSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx"
+                                 options:options
+                                callback:^(BOOL succeeded, NSError *error) {
+                                    if (succeeded) {
+                                        /* 请求成功 */
+                                    } else {
+                                        /* 请求失败 */
+                                    }
+                                }];
 ```
 ```java
 AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(),
@@ -555,7 +569,12 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy").Co
 
 首先请阅读相关的 REST API 文档 [图形验证码 captcha](rest_sms_api.html#图形验证码_captcha)。
 
-开发者需要在控制台 -> 应用选项 -> 开启图形验证码的功能。
+开发者需要在控制台 -> 安全中心 -> 图形验证码服务，如下图： 
+![sms_captchat_settings_toggle](https://dn-lhzo7z96.qbox.me/1494322777210)
+
+假设开发者需要强制所有的短信接口都必须通过图形验证码验证才能发送，则需要在控制台 -> 应用选项 -> 强制短信验证服务使用图形验证码，如下图： 
+
+![sms_captchat_settings_force](https://dn-lhzo7z96.qbox.me/1494322875125)
 
 {{ docs.note("如果开启这个选项之后，所有主动调用发送短信的接口都会强制进行图形验证码验证，否则会直接返回调用错误）。") }}
 
@@ -570,8 +589,6 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy").Co
 ```objc
 AVCaptchaRequestOptions *options = [[AVCaptchaRequestOptions alloc] init];
 
-options.TTL = 60;
-options.size = 4;
 options.width = 100;
 options.height = 50;
 
@@ -582,25 +599,30 @@ options.height = 50;
                             }];
 ```
 ```java
-// 待补充
+AVCaptchaOption option = new AVCaptchaOption();
+option.setWidth(85);
+option.setHeight(30);
+AVCaptcha.requestCaptchaInBackground(option, new AVCallback<AVCaptchaDigest>() {
+  @Override
+  protected void internalDone0(AVCaptchaDigest captchaDigest, AVException exception) {
+    if (null == exception) {
+      // 请求成功，可以通过 captchaDigest.getUrl() 获取图片
+      }
+    }
+});
 ```
 ```javascript
-AV.Cloud.requestCaptcha({
-  size:4// 验证码位数，默认是 4 位，支持 3-6 位
-  width:100// 图片的宽度，必要参数
-  height:50 // 图片的高度，必要参数
-  ttl:60// 验证码有效期，默认为是 60 秒，可以设置为 10-180 秒
-}).then(result =>{
-  var captchaToken = result.captchaToken;// 用来对应后面的验证接口，服务端用这个参数来匹配具体是哪一个图形验证码
-  var url = result.url;// 图片的 url，客户端用来展现
+AV.Captcha.request({
+  width:100, // 图片的宽度
+  height:50, // 图片的高度
+}).then(function(captcha) {
+  console.log(captcha.url); // 图片的 url，客户端用来展现
 });
 ```
 ```cs
-// size:4 - 验证码位数，默认是 4 位，支持 3-6 位
 // width:100 - 图片的宽度，必要参数
 // height:50 -  图片的高度，必要参数
-// ttl:60 - 验证码有效期，默认为是 60 秒，可以设置为 10-180 秒
-AVCloud.RequestCaptchaAsync(size:4, width:85, height:30, ttl:60).ContinueWith(t =>{
+AVCloud.RequestCaptchaAsync(width:85, height:30).ContinueWith(t =>{
   var captchaData = t.Result;
   var url = captchaData.Url;// 图片的 url，客户端用来展现
   var captchaToken = captchaData.captchaToken;// 用来对应后面的验证接口，服务端用这个参数来匹配具体是哪一个图形验证码
@@ -609,9 +631,6 @@ AVCloud.RequestCaptchaAsync(size:4, width:85, height:30, ttl:60).ContinueWith(t 
 ### 校验图形验证码
 获取图形验证码之后，将图形验证码的图像显示在客户端，以下用 HTML 做演示，iOS 和 Android 或者其他平台可以调用基础的图像控件展示这张图片:
 
-```html
-<img src="在这里填写获取到的 captchaData 的 url"/>
-```
 然后正确引导用户输入图形验证码的内容，等到用户输入完成之后，继续调用下一步的接口校验用户输入的是否合法：
 
 ```objc
@@ -622,13 +641,18 @@ AVCloud.RequestCaptchaAsync(size:4, width:85, height:30, ttl:60).ContinueWith(t 
                     }];
 ```
 ```java
-// 待补充
+AVCaptcha.verifyCaptchaCodeInBackground(code, captchaDigest, new AVCallback<String>() {
+  @Override
+  protected void internalDone0(String validateToken, AVException exception) {
+    if (null == exception) {
+      // 请求成功，validateToken 所请求的到的返回值
+    }
+  }
+});
 ```
 ```javascript
-AV.Cloud.verifyCaptcha('这里填写用户输入的图形验证码，例如 AM8N','这里填写上一步返回的 captchaToken').then(result =>
-{
-    var validate_token = result;
-});
+// captcha 是上一步得到的验证码实例对象
+captcha.verify('这里填写用户输入的图形验证码，例如 AM8N').then(function(validateToken) {});
 ```
 ```cs
 AVCloud.VerifyCaptchaAsync("这里填写用户输入的图形验证码，例如 AM8N",'这里填写上一步返回的 captchaToken').CotinuteWith(t =>{
@@ -640,7 +664,8 @@ AVCloud.VerifyCaptchaAsync("这里填写用户输入的图形验证码，例如 
 如果校验成功，拿到返回的 validate_token，继续调用发送短信的接口：
 ```objc
 AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
-
+options.templateName = @"New_Series";
+options.signatureName = @"sign_BuyBuyBuy";
 options.validationToken = <#validationToken#>;
 
 [AVSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx"
@@ -681,6 +706,27 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy","�
     var result = t.Result;
     // result 为 True 则表示调用成功
 });
+```
+
+下面给出 js + html 实现图形验证码的精简版实例代码：
+```html
+//在浏览器中，可以直接使用 captcha.bind 方法将验证码与 DOM 元素绑定：
+<input type="text" id="captcha-code"/>
+<img id="captcha-image"/>
+<button id="verify">下一步</button>
+
+<script>
+AV.Captcha.request().then(function(captcha) {
+  captcha.bind({
+    textInput: 'captcha-code', // the id for textInput
+    image: 'captcha-image',
+    verifyButton: 'verify',
+  }, {
+    success: function(validateCode) { /* 验证成功，下一步 */ },
+    error: function(error) {  /* 向用户展示 error.message */ },
+  });
+});
+</script>
 ```
 
 ## 模板规范
