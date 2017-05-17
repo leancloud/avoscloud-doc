@@ -9,17 +9,64 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 * **操作验证**：例如银行金融类应用，用户在对账户资金进行敏感操作（例如转账、消费等）时，需要通过验证码来验证是否为用户本人操作。
 * **通知公告**：例如淘宝某卖家在发货之后会用短信的方式将快递单、订单号、发货时间等发给买家，以达到良好的购买体验。
 
-开发者在设置短信内容的时候，文字表述上应该做到规范、正确、简洁。我国相关法律**严令禁止**发送内容涉及以下情况的短信：
 
-* **政治敏感**
-* **极端言论**
-* **淫秽色情**
-* **传销诈骗**
-* **封建迷信**
-* **造谣诽谤**
-* **我国现行法律、行政法规及政策所禁止的内容**
+## 功能预览
+执行如下代码，就可以方便地向用户发送短信：
 
-因此 LeanCloud 需要审核短信内容，并且保留对发送人追究相关法律责任的权力。
+```objc
+AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
+options.templateName = @"Register_Notice";// 控制台预设的模板名称
+options.signatureName = @"LeanCloud"; // 控制台预设的短信签名
+[AVSMS requestShortMessageForPhoneNumber:@"18612345678"
+                                options:options
+                                callback:^(BOOL succeeded, NSError * _Nullable error) {
+                                    if (succeeded) {
+                                        /* 请求成功 */
+                                    } else {
+                                        /* 请求失败 */
+                                    }
+                                }];
+```
+```java
+Map<String, Object> parameters = new HashMap<String, Object>();
+parameters.put("sign", "LeanCloud");
+AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(),
+        "Register_Notice",
+        parameters,
+        new RequestMobileCodeCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null) {
+                    Toast.makeText(getBaseContext(), getString(R.string.msg_notice_sent), Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("Home.SendNotice", e.getMessage());
+                }
+            }
+        });
+```
+```javascript
+AV.Cloud.requestSmsCode({
+mobilePhoneNumber: '18612345678',
+template: 'Register_Notice',
+sign:'LeanCloud'}).then(function(){
+      //调用成功
+    }, function(err){
+      //调用失败
+});
+```
+```cs
+AVCloud.RequestSMSCodeAsync("18612345678","Register_Notice",null,"LeanCloud").ContinueWith(t =>
+{
+    var result = t.Result;
+    // result 为 True 则表示调用成功
+});
+```
+用户收到的内容如下：
+
+{% call docs.bubbleWrap() -%}
+【LeanCloud】感谢您注册 LeanCloud，领先的 BaaS 提供商，为移动开发提供强有力的后端支持。
+{% endcall %}
+
 
 ## 短信服务配置
 
@@ -50,37 +97,6 @@ LeanCloud 短信服务支持的应用场景有以下三种：
 
 了解以上配置项有助于开发者针对业务需求，在功能选择上做出调整。下面，我们根据不同的需求逐一介绍短信服务的功能。
 
-
-### 短信服务覆盖的国家和地区
-目前 LeanCloud 的短信服务覆盖以下国家和地区：
-
-大区| 国家和地区 |
---- | --- |---
-中国|中国大陆、台湾省、香港行政区、澳门行政区
-北美|美国、加拿大
-南美|巴西
-欧洲|英国、法国、德国、意大利、乌克兰、俄罗斯、西班牙
-东亚|韩国、日本
-东南亚|印度、马来西亚、新加坡、泰国、越南、印度尼西亚
-大洋洲|澳大利亚、新西兰
-
-{{ sms.worldwideSms() }}
-
-### 短信计费
-
-如果一个短信模板字数超过 70 个字（包括签名的字数），那么该短信在发送时会被运营商<u>按多条来收取费用</u>，但接收者收到的仍是<u>一条完整的短信</u>。
-
-- 小于或等于 70 个字，按一条计费。
-- 大于 70 个字，按每 67 字一条计费。
-
-只有「调用失败」不收费，「投递失败」也要收费。每条短信的收费标准请参考 [官网价格方案](/pricing)。
-
-### 短信购买
-
-短信发送采取实时扣费。如果当前账户没有足够的余额，短信将无法发送。{% if node != 'qcloud' %}充值请进入 [开发者账户 > 财务 > 财务概况](/bill.html#/bill/general)，点击 **余额充值**。
-
-同时我们建议设定好 [余额告警](/settings.html#/setting/alert)，以便在第一时间收到短信或邮件获知余额不足。
-{% endif %}
 
 ## 验证类
 
@@ -800,6 +816,51 @@ XX房东您好，租客{{ docs.mustache("guest_name") }}（手机号码：{{ doc
 我们强烈要求开发者在用户界面上针对短信发送做操作限制，例如手机号的验证功能应该是客户端在 1 分钟之内只允许发送一次，尽管我们的服务端做了必要的安全措施来保证开发者的权益，但是不排除有被恶意攻击的可能性。
 因此我们强烈要求开发者一定要阅读如下链接里的内容：[短信轰炸](rest_sms_api.html#短信轰炸) 和 前文所提及的[图形验证码 captcha](#图形验证码_captcha)
 
+## 政策法规
+开发者在设置短信内容的时候，文字表述上应该做到规范、正确、简洁。我国相关法律**严令禁止**发送内容涉及以下情况的短信：
+
+* **政治敏感**
+* **极端言论**
+* **淫秽色情**
+* **传销诈骗**
+* **封建迷信**
+* **造谣诽谤**
+* **我国现行法律、行政法规及政策所禁止的内容**
+
+因此 LeanCloud 需要审核短信内容，并且保留对发送人追究相关法律责任的权力。
+
 ## 常见问题
 
 详情请参照 [短信收发常见问题一览](rest_sms_api.html#常见问题_FAQ)。
+
+
+### 短信服务覆盖的国家和地区
+目前 LeanCloud 的短信服务覆盖以下国家和地区：
+
+大区| 国家和地区 |
+--- | --- |---
+中国|中国大陆、台湾省、香港行政区、澳门行政区
+北美|美国、加拿大
+南美|巴西
+欧洲|英国、法国、德国、意大利、乌克兰、俄罗斯、西班牙
+东亚|韩国、日本
+东南亚|印度、马来西亚、新加坡、泰国、越南、印度尼西亚
+大洋洲|澳大利亚、新西兰
+
+{{ sms.worldwideSms() }}
+
+### 短信计费
+
+如果一个短信模板字数超过 70 个字（包括签名的字数），那么该短信在发送时会被运营商<u>按多条来收取费用</u>，但接收者收到的仍是<u>一条完整的短信</u>。
+
+- 小于或等于 70 个字，按一条计费。
+- 大于 70 个字，按每 67 字一条计费。
+
+只有「调用失败」不收费，「投递失败」也要收费。每条短信的收费标准请参考 [官网价格方案](/pricing)。
+
+### 短信购买
+
+短信发送采取实时扣费。如果当前账户没有足够的余额，短信将无法发送。{% if node != 'qcloud' %}充值请进入 [开发者账户 > 财务 > 财务概况](/bill.html#/bill/general)，点击 **余额充值**。
+
+同时我们建议设定好 [余额告警](/settings.html#/setting/alert)，以便在第一时间收到短信或邮件获知余额不足。
+{% endif %}
