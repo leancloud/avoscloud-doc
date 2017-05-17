@@ -1,6 +1,21 @@
 {% from 'views/_helper.njk' import 
   alert  
 %}
+
+{% macro checkbox(checked=false) -%}
+{% set backgroundColor = 'white' %}
+{% set borderColor = '#aaa' %}
+{%- if checked -%}
+  {% set backgroundColor = '#3090e4' %}
+  {% set borderColor = '#3090e4' %}
+{%- endif -%}
+<span class="checkbox" style="padding:1px 3px; background-color: {{ backgroundColor }}; color:white; display: inline; border:1px solid {{ borderColor }}; margin-right: 8px; border-radius: 2px; font-size: 12px;">&check;</span>
+{%- endmacro %}
+
+{% macro sectionTitle(slot='text',tag='div') -%}
+<{{tag}} class="section-title"><span style="font-size:16px;">{{slot}}</span></{{tag}}>
+{%- endmacro %}
+
 {% macro ops(prefix='', heading='') %}
 {% if heading != '' %}
   {{heading}}

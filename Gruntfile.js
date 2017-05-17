@@ -411,6 +411,14 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
     "less:dist", "postcss", "copy:asset","docmeta"
   ]);
 
+  // leave out ensureSDKVersion in case of internet disconnection
+  // also not generating docmeta for faster rendering
+  grunt.registerTask("dev",[
+    "clean", "nunjucks", "copy:md", "markdown", "assemble",
+    "less:dist", "postcss", "copy:asset",
+    "less:server","configureProxies", "connect:livereload", "watch"
+  ]);
+
   grunt.registerTask("serve", ["localBuild", "less:server","configureProxies", "connect:livereload", "watch"]);
 
   grunt.registerTask('server', function (target) {
