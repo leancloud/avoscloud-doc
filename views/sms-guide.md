@@ -28,21 +28,19 @@ options.signatureName = @"LeanCloud"; // 控制台预设的短信签名
                                 }];
 ```
 ```java
-Map<String, Object> parameters = new HashMap<String, Object>();
-parameters.put("sign", "LeanCloud");
-AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(),
-        "Register_Notice",
-        parameters,
-        new RequestMobileCodeCallback() {
-            @Override
-            public void done(AVException e) {
-                if (e == null) {
-                    Toast.makeText(getBaseContext(), getString(R.string.msg_notice_sent), Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e("Home.SendNotice", e.getMessage());
-                }
-            }
-        });
+AVSMSOption option = new AVSMSOption();
+option.setTemplateName("Register_Notice");
+option.setSignatureName("LeanCloud");
+AVSMS.requestSMSCodeInBackground("18612345678", option, new RequestMobileCodeCallback() {
+  @Override
+  public void done(AVException e) {
+    if (null == e) {
+      /* 请求成功 */
+    } else {
+      /* 请求失败 */
+    }
+  }
+});
 ```
 ```javascript
 AV.Cloud.requestSmsCode({
@@ -133,15 +131,19 @@ options.operation = @"某种操作";
                                 }];
 ```
 ```java
-AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(), "应用名称", "某种操作", 10, new RequestMobileCodeCallback() {
-    @Override
-    public void done(AVException e) {
-        if (e == null) {
-            mSMSCode.requestFocus();
-        } else {
-            Log.e("Home.OperationVerify", e.getMessage());
-        }
+AVSMSOption option = new AVSMSOption();
+option.setTtl(10);
+option.setApplicationName("应用名称");
+option.setOperation("某种操作");
+AVSMS.requestSMSCodeInBackground("186xxxxxxxx", option, new RequestMobileCodeCallback() {
+  @Override
+  public void done(AVException e) {
+    if (null == e) {
+      /* 请求成功 */
+    } else {
+      /* 请求失败 */
     }
+  }
 });
 ```
 ```javascript
@@ -179,16 +181,16 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","应用名称","某种操作",10).Cont
 }];
 ```
 ```java
-    AVOSCloud.verifyCodeInBackground("777777", "13888888888", new AVMobilePhoneVerifyCallback() {
-        @Override
-        public void done(AVException e) {
-            if (e == null) {
-                Toast.makeText(getBaseContext(), getString(R.string.msg_operation_valid), Toast.LENGTH_SHORT).show();
-            } else {
-                Log.e("Home.DoOperationVerify", e.getMessage());
-            }
-        }
-    });
+AVSMS.verifySMSCodeInBackground("123456", "186xxxxxxxx", new AVMobilePhoneVerifyCallback() {
+  @Override
+  public void done(AVException e) {
+    if (null == e) {
+      /* 请求成功 */
+    } else {
+      /* 请求失败 */
+    }
+  }
+});
 ```
 ```javascript
   AV.Cloud.verifySmsCode('6位数字验证码', '11 位手机号码').then(function(){
@@ -457,21 +459,22 @@ options.templateVariables = @{ @"order_id": @"7623432424540" };
                                 }];
 ```
 ```java
+AVSMSOption option = new AVSMSOption();
+option.setTemplateName("Order_Notice");
+option.setSignatureName("sign_BuyBuyBuy");
 Map<String, Object> parameters = new HashMap<String, Object>();
 parameters.put("order_id", "7623432424540");
-AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(),
-        "Order_Notice",
-        parameters,
-        new RequestMobileCodeCallback() {
-            @Override
-            public void done(AVException e) {
-                if (e == null) {
-                    Toast.makeText(getBaseContext(), getString(R.string.msg_notice_sent), Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e("Home.SendNotice", e.getMessage());
-                }
-            }
-        });
+option.setEnvMap(parameters);
+AVSMS.requestSMSCodeInBackground("186xxxxxxxx", option, new RequestMobileCodeCallback() {
+  @Override
+  public void done(AVException e) {
+    if (null == e) {
+      /* 请求成功 */
+    } else {
+      /* 请求失败 */
+    }
+  }
+});
 ```
 ```javascript
 AV.Cloud.requestSmsCode({
@@ -528,19 +531,19 @@ options.signatureName = @"sign_BuyBuyBuy";
                                 }];
 ```
 ```java
-AVOSCloud.requestSMSCodeInBackground(AVUser.getCurrentUser().getMobilePhoneNumber(),
-        "Notice_Welcome",
-        null,
-        new RequestMobileCodeCallback() {
-            @Override
-            public void done(AVException e) {
-                if (e == null) {
-                    Toast.makeText(getBaseContext(), getString(R.string.msg_notice_sent), Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e("Home.SendNotice", e.getMessage());
-                }
-            }
-        });
+AVSMSOption option = new AVSMSOption();
+option.setTemplateName("New_Series");
+option.setSignatureName("sign_BuyBuyBuy");
+AVSMS.requestSMSCodeInBackground("186xxxxxxxx", option, new RequestMobileCodeCallback() {
+  @Override
+  public void done(AVException e) {
+    if (null == e) {
+      /* 请求成功 */
+    } else {
+      /* 请求失败 */
+    }
+  }
+});
 ```
 ```javascript
 AV.Cloud.requestSmsCode({
@@ -695,7 +698,20 @@ options.validationToken = <#validationToken#>;
                                 }];
 ```
 ```java
-// 待补充
+AVSMSOption option = new AVSMSOption();
+option.setTemplateName("New_Series");
+option.setSignatureName("sign_BuyBuyBuy");
+option.setValidationToken("validateToken");
+AVSMS.requestSMSCodeInBackground("186xxxxxxxx", option, new RequestMobileCodeCallback() {
+  @Override
+  public void done(AVException e) {
+    if (null == e) {
+      /* 请求成功 */
+    } else {
+      /* 请求失败 */
+    }
+  }
+});
 ```
 ```javascript
 // mobilePhoneNumber ：手机号
