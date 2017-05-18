@@ -1,17 +1,38 @@
 {% import "views/_helper.njk" as docs %}
 {% import "views/_sms.njk" as sms %}
+{% import "views/_parts.html" as include %}
 
-# 短信服务使用指南
+# 短信 SMS 服务使用指南
 
-LeanCloud 短信服务支持的应用场景有以下三种：
+短信服务适用的场景很多：
 
-* **用户验证**：例如微信、陌陌等在登录时需要向用户发送一条包含了验证码的短信，再引导用户输入进行安全认证，以及修改密码等数据安全相关的操作。
-* **操作验证**：例如银行金融类应用，用户在对账户资金进行敏感操作（例如转账、消费等）时，需要通过验证码来验证是否为用户本人操作。
-* **通知公告**：例如淘宝某卖家在发货之后会用短信的方式将快递单、订单号、发货时间等发给买家，以达到良好的购买体验。
+- 用户验证：在处理用户登录、修改密码等操作时，需要向用户的手机发送一条包含验证码的短信，以确保账户安全。
+- 操作验证：在银行金融类应用中，当用户对账户资金进行转账、消费等敏感操作时，需要通过验证码来确认是否为用户本人操作。
+- 通知与营销推广：电商在发货后将快递单号、订单号、发货时间等信息会通过短信发给买家，以达到良好的购物体验；或是定期将新产品及促销信息发送给消费者。
 
+根据电信运营商的规范，短信按照用途被分为三类：
 
-## 功能预览
-执行如下代码，就可以方便地向用户发送短信：
+**1. 验证类**
+
+{% call docs.bubbleWrap() -%}
+【短信签名】您请求重设应用“应用名称”的密码，请输入验证码 123456 验证，验证码仅在 10 分钟内有效。
+{%- endcall %}
+
+**2. 通知类**
+
+{% call docs.bubbleWrap() -%}
+【购物网】您尾号为34323的订单号已经通过宅急送（快递单号12343432）安排递送，请您开箱验货确认无误后签收，物流查询拨打400-0000-xxx。
+{%- endcall %}
+
+**3. 营销类**
+
+{% call docs.bubbleWrap() -%}
+【当当】春风十里，好书陪你！30万种畅销书5折封顶！<a href="#">http://t.cn/Iekds</a> 回TD退订
+{%- endcall %}
+
+{{ docs.alert("不同类型的短信遵循不同的 [内容规范](#模板规范)，不符合规定的短信将无法发送。") }}
+
+开发者在 LeanCloud 应用控制台开启与短信相关的服务后（参见 [短信服务配置](#短信服务配置)），即可通过 SDK 向用户发送短信：
 
 ```objc
 AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
@@ -44,12 +65,13 @@ AVSMS.requestSMSCodeInBackground("18612345678", option, new RequestMobileCodeCal
 ```
 ```javascript
 AV.Cloud.requestSmsCode({
-mobilePhoneNumber: '18612345678',
-template: 'Register_Notice',
-sign:'LeanCloud'}).then(function(){
-      //调用成功
-    }, function(err){
-      //调用失败
+  mobilePhoneNumber: '18612345678',
+  template: 'Register_Notice',
+  sign:'LeanCloud'
+}).then(function(){
+        //调用成功
+}, function(err){
+  //调用失败
 });
 ```
 ```cs
@@ -59,42 +81,73 @@ AVCloud.RequestSMSCodeAsync("18612345678","Register_Notice",null,"LeanCloud").Co
     // result 为 True 则表示调用成功
 });
 ```
-用户收到的内容如下：
+
+用户收到的短信内容如下：
 
 {% call docs.bubbleWrap() -%}
 【LeanCloud】感谢您注册 LeanCloud，领先的 BaaS 提供商，为移动开发提供强有力的后端支持。
 {% endcall %}
 
+- 短信的内容来自名为 `Register_Notice` 的 [模板](#短信模板)，需要在控制台提前创建并通过审核。
+- `LeanCloud` 为 [短信签名](#短信签名)，是必需添加的，也需要在控制台提前创建并通过审核才可使用。
 
 ## 短信服务配置
 
-从应用级别来控制能否发送短信，进入 {% if node=='qcloud' %}**控制台** > **设置** > **安全中心**{% else %}[控制台 > 设置 > **安全中心**](/app.html?appid={{appid}}#/security){% endif %}，打开 **短信发送** 开关。
+要从应用级别来控制能否发送短信，进入 {% if node=='qcloud' %}**控制台** > **设置** > **安全中心**{% else %}[控制台 > 设置 > 安全中心](/app.html?appid={{appid}}#/security){% endif %}，打开 **短信发送** 开关。
 
-然后点击 {% if node=='qcloud' %}**应用选项**{% else %}[应用选项](/app.html?appid={{appid}}#/permission){% endif %}，查看与短信相关选项。当开启 **安全中心** > **短信发送** 服务之后，以下打勾的选项会被默认开启：
+然后进入 {% if node=='qcloud' %}**控制台** > **设置** > **应用选项**{% else %}[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission){% endif %}，查看与短信相关选项。当在安全中心开启了「短信发送」服务，以下打勾的选项会被默认开启：
 
+{{ include.sectionTitle("用户账户") }}
 
-- 【&check;】用户账号 > **用户注册时，向注册手机号码发送验证短信**<br/>
-  开启：调用 AVUser 注册相关的接口时，如果传入了手机号，系统则会自动发送验证短信，然后开发者需要手动调用一下验证接口，这样 `_User` 表中的 `mobilePhoneVerified` 值才会被置为 `true`。<br/>
-  关闭：调用 AVUser 注册相关的接口不会发送短信。
+{{ include.checkbox(true) }}**用户注册时，向注册手机号码发送验证短信**
+- 开启：调用 AVUser 注册相关的接口时，如果传入了手机号，系统则会自动发送验证短信，然后开发者需要手动调用一下验证接口，这样 `_User` 表中的 `mobilePhoneVerified` 值才会被置为 `true`。
+- 关闭：调用 AVUser 注册相关的接口不会发送短信。
 
-- 用户账号 > **未验证手机号码的用户，禁止登录**<br/>
-  开启：未验证手机号的 `AVUser` 不能使用「手机号 + 密码」以及「手机号 + 短信验证码」的方式登录，但是<u>用户名搭配密码的登录方式不会失败</u>。<br/>
-  关闭：不会对登录接口造成任何影响。
+{{ include.checkbox() }}**未验证手机号码的用户，禁止登录**
+- 开启：未验证手机号的 `AVUser` 不能使用「手机号 + 密码」以及「手机号 + 短信验证码」的方式登录，但是<u>用户名搭配密码的登录方式不会失败</u>。
+- 关闭：不会对登录接口造成任何影响。
 
-- 用户账号 > **未验证手机号码的用户，允许以短信重置密码**<br/> 
-  开启：允许尚未验证过手机号的 `AVUser` 通过短信验证码实现重置密码的功能。<br/> 
-  关闭：`AVUser` 必须在使用短信重置密码之前，先行验证手机号，也就是 `mobilePhoneVerified` 字段必须是 `true` 的前提下，才能使用短信重置密码。
+{{ include.checkbox() }}**未验证手机号码的用户，允许以短信重置密码** 
+- 开启：允许尚未验证过手机号的 `AVUser` 通过短信验证码实现重置密码的功能。
+- 关闭：`AVUser` 必须在使用短信重置密码之前，先行验证手机号，也就是 `mobilePhoneVerified` 字段必须是 `true` 的前提下，才能使用短信重置密码。
 
-- 用户账号 > **已验证手机号码的用户，允许以短信验证码登录**<br/>
-  开启：`AVUser` 可以使用手机号搭配短信验证码的方式登录。<br/>  
-  关闭：`AVUser` 不能直接使用。
+{{ include.checkbox() }}**已验证手机号码的用户，允许以短信验证码登录**
+- 开启：`AVUser` 可以使用手机号搭配短信验证码的方式登录。
+- 关闭：`AVUser` 不能直接使用。
 
-- 【&check;】其他 > **启用通用的短信验证码服务（开放 requestSmsCode 和 verifySmsCode 接口）**<br/> 
-  开启：开发者可以使用短信进行验证功能的开发，比如，敏感的操作认证、异地登录、付款验证等业务相关的需求。<br/>
-  关闭：请求验证发送短信以及验证短信验证码都会被服务端拒绝，但是请注意，跟用户相关的验证与该选项无关。
+{{ include.sectionTitle("短信服务") }}
 
-了解以上配置项有助于开发者针对业务需求，在功能选择上做出调整。下面，我们根据不同的需求逐一介绍短信服务的功能。
+{{ include.checkbox() }}**开启国际短信服务**
+- 开启：可以向中国大陆以外的手机号发送短信，详见 [覆盖国家和地区](#短信服务覆盖区域)。
+- 关闭：无法向中国大陆 +86 之外的手机号发送短信。
 
+{{ include.sectionTitle("其他") }}
+
+{{ include.checkbox(true) }}**启用通用的短信验证码服务（开放 `requestSmsCode` 和 `verifySmsCode` 接口）**
+- 开启：开发者可以使用短信进行验证功能的开发，比如，敏感的操作认证、异地登录、付款验证等业务相关的需求。
+- 关闭：请求验证发送短信以及验证短信验证码都会被服务端拒绝，但是请注意，跟用户相关的验证与该选项无关。
+    
+了解以上配置项有助于开发者针对业务需求，在功能选择上做出调整。
+
+## 国际短信
+
+向国外用户发送短信，只需要在手机号码前加上正确的国际区号即可，如美国和加拿大为 `+1`，当然前提是已在 [应用设置](/dashboard/app.html?appid={{appid}}#/permission) 中选中了 **开启国际短信服务**。中国区号为 `+86`，但可以省略，无区号的手机号码会默认使用中国区号。
+
+### 短信服务覆盖区域
+
+目前 LeanCloud 的短信服务覆盖以下国家和地区：
+
+大区| 国家和地区 |
+--- | --- |---
+中国|中国大陆、台湾省、香港行政区、澳门行政区
+北美|美国、加拿大
+南美|巴西
+欧洲|英国、法国、德国、意大利、乌克兰、俄罗斯、西班牙
+东亚|韩国、日本
+东南亚|印度、马来西亚、新加坡、泰国、越南、印度尼西亚
+大洋洲|澳大利亚、新西兰
+
+{{ sms.worldwideSms() }}
 
 ## 验证类
 
@@ -379,13 +432,14 @@ AVUser.VerifyMobilePhoneAsync("6位数字验证码").ContinueWith(t =>
         }
     });
 ```
+
 #### 未收到注册验证短信
 
 一般来说，用户收到的注册验证短信内容为：
 
-{{ docs.bubble("【AppName】欢迎使用 AppName 服务，您的验证码是 123456，请输入完成验证。") }}
+{{ docs.bubble("【Signature】欢迎使用“应用名称”服务，您的验证码是 123456，请输入完成验证。") }}
 
-其中【AppName】为短信签名，必须遵循 [短信签名规范](#短信签名) 中的长度及其他要求，否则会被短信供应商拒绝发送。
+其中【Signature】为短信签名，必须遵循 [短信签名规范](#短信签名) 中的长度及其他要求，否则会被短信供应商拒绝发送。
 
 ## 通知类
 
@@ -405,38 +459,31 @@ AVUser.VerifyMobilePhoneAsync("6位数字验证码").ContinueWith(t =>
 
 {{ docs.alert("自 2016 年 6 月起，营销类短信不允许由个人用户发送。所有营销类短信必须提供有效的公司或者企业名称，缺失名称将导致营销类短信无法发送。伪造或使用虚假名称将会被追究法律责任。") }}
 
-## 自定义短信内容
+第一次提交营销模版，其使用的营销签名需要上报至运营商进行备案，审核过程将需要 2~5 个工作日。当营销签名完成了备案，此后再提交营销模版，审核将在工作日 4 小时内完成。
 
-通过短信模板，我们可以自定义短信的内容。因为短信模板是由开发者自己定义的，因此为了确保平台的安全以及稳定，我们的短信模板由**专人进行审核**，只有**通过审核**之后，在接口里的调用才会成功发送。
+## 短信模板
+
+开发者可以使用短信模板来自定义短信的内容。为了确保短信内容的合法性及投递成功率，短信模板需要经过 **人工审核** 通过后，开发者才能在接口中调用该模板。
 
 <!-- ### 短信签名 -->
 {{ sms.signature("### 短信签名") }}
 
 ### 创建模板
 
-创建模板的截图如下：
-
-![sms_template](images/sms-template.png)
-
-选择模板的类型，目前支持以下三种类型：
+要创建短信模板，先进入控制台，选择一个应用，再选择 [消息 > 短信 > 设置](http://leancloud.cn/messaging.html?appid={{appid}}#/message/sms/conf)。选择需要的模板类型：
 
 - 通知类型
 - 验证码类型
 - 营销类型
 
-要创建短信模板，先进入控制台，选择一个应用，再选择 [消息 > 短信 > 设置](http://leancloud.cn/messaging.html?appid={{appid}}#/message/sms/conf)。**模板类型如果选择了通知类或者验证类，但短信内容如果涉及营销内容则无法通过审核。**要发送营销类短信请阅读 [营销类](#营销类)。
+如果模板类型选择了**通知类**或者**验证类**，但短信内容涉及到营销内容，则无法通过审核。要发送营销类短信请阅读 [营销类](#营销类)。
 
 ### 使用模板
 
-#### 验证码类型
-验证码类型有两种，一种针对 _User 表中 `mobilePhoneNumber` 字段的验证，另一种是业务场景中敏感操作的验证，这两种都在上文中有介绍：[验证类](sms-guide.html#验证类)
-
-#### 通知类型
-
-假设提交的短信模板的类型为「通知类」内容如下，
+假设提交的短信模板的类型为「通知类」内容如下：
 
 {% call docs.bubbleWrap() -%}
-尊敬的的用户, 您的订单号：{{ docs.mustache("order_id") }} 正在派送，请保持手机畅通，我们的快递员随时可能与您联系，感谢您的订阅。 
+尊敬的的用户，您的订单号：{{ docs.mustache("order_id") }} 正在派送，请保持手机畅通，我们的快递员随时可能与您联系，感谢您的订阅。 
 {% endcall %}
 
 并且模板名称为 `Order_Notice`，并且为已经拥有了一个审核通过的签名叫做「天天商城」，签名的名称叫做 `sign_BuyBuyBuy` ，当模板通过审批后就可以调用如下代码发送这条通知类的短信：
@@ -501,80 +548,16 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","Order_Notice",env,"sign_BuyBuyBuy").C
 用户收到的内容如下：
 
 {% call docs.bubbleWrap() -%}
-【天天商城】尊敬的天天商城的用户, 您的订单号：7623432424540 正在派送，请保持手机畅通，我们的快递员随时可能与您联系，感谢您的订阅。
+【天天商城】尊敬的用户，您的订单号：7623432424540 正在派送，请保持手机畅通，我们的快递员随时可能与您联系，感谢您的订阅。
 {% endcall %}
 
-#### 营销类型
-
-假设提交短信的模板类型为 「营销类」内容如下：
-
-{% call docs.bubbleWrap() -%}
-服装专区，新款上市，奥斯卡红毯同款全面上架，详情可以访问天天商城唯一官方网址：www.buybuybuy.com。 
-{% endcall %}
-
-并且模板名称为 `New_Series`，并且为已经拥有了一个审核通过的签名叫做「天天商城」，签名的名称叫做 `sign_BuyBuyBuy`，当模板通过审批后就可以调用如下代码发送这条营销类的短信：
-
-```objc
-AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
-
-options.templateName = @"New_Series";
-options.signatureName = @"sign_BuyBuyBuy";
-
-[AVSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx"
-                                 options:options
-                                callback:^(BOOL succeeded, NSError *error) {
-                                    if (succeeded) {
-                                        /* 请求成功 */
-                                    } else {
-                                        /* 请求失败 */
-                                    }
-                                }];
-```
-```java
-AVSMSOption option = new AVSMSOption();
-option.setTemplateName("New_Series");
-option.setSignatureName("sign_BuyBuyBuy");
-AVSMS.requestSMSCodeInBackground("186xxxxxxxx", option, new RequestMobileCodeCallback() {
-  @Override
-  public void done(AVException e) {
-    if (null == e) {
-      /* 请求成功 */
-    } else {
-      /* 请求失败 */
-    }
-  }
-});
-```
-```javascript
-AV.Cloud.requestSmsCode({
-    mobilePhoneNumber: '186xxxxxxxx',
-    template: 'New_Series',
-    sign:'sign_BuyBuyBuy'
-}).then(function(){
-    //调用成功
-}, function(err){
-    //调用失败
-});
-```
-```cs
-AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy").ContinueWith(t =>
-{
-    var result = t.Result;
-    // result 为 True 则表示调用成功
-});
-```
-用户收到的内容如下：
-
-{% call docs.bubbleWrap() -%}
-【天天商城】服装专区，新款上市，奥斯卡红毯同款全面上架，详情可以访问天天商城唯一官方网址：www.buybuybuy.com。
-{% endcall %}
 ### 模板变量
 
-模板可以使用<u>自定义变量</u>，如上例中的 {{ docs.mustache("order_id") }}，在调用模板时以参数形式传入。模板语法遵循 [Handlebars](http://handlebarsjs.com) 规范。
+模板可以使用<u>自定义变量</u>，在调用模板时以参数形式传入。模板语法遵循 [Handlebars](http://handlebarsjs.com) 规范。
 
 {{ docs.alert("自定义变量的值不允许包含实心括号 `【】` 。") }}
 
-模板还可以使用<u>系统预留变量</u>，在发送短信发送时，它们会被自动填充：
+在模板中还可以使用<u>系统预留变量</u>，在短信发送时，它们会被自动填充，开发者**无法**对其重新赋值：
 
 {% call docs.bubbleWrap() -%}
 欢迎注册{{ docs.mustache("name") }}应用！请使用验证码{{ docs.mustache("code") }}来完成注册。该验证码将在{{ docs.mustache("ttl") }}分钟后失效，请尽快使用。
@@ -584,24 +567,194 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy").Co
 - `code`：验证码（通知类和营销类不会包含）
 - `ttl`：过期时间（默认为 10 分钟）
 
-## 图形验证码 captcha
 
-首先请阅读相关的 REST API 文档 [图形验证码 captcha](rest_sms_api.html#图形验证码_captcha)。
+### 内容规范
 
-开发者需要在控制台 -> 安全中心 -> 图形验证码服务，如下图： 
-![sms_captchat_settings_toggle](https://dn-lhzo7z96.qbox.me/1494322777210)
+开发者在设置短信内容的时候，文字表述上应该做到规范、正确、简洁。我国相关法律**严令禁止**发送内容涉及以下情况的短信：
 
-假设开发者需要强制所有的短信接口都必须通过图形验证码验证才能发送，则需要在控制台 -> 应用选项 -> 强制短信验证服务使用图形验证码，如下图： 
+* **政治敏感**
+* **极端言论**
+* **淫秽色情**
+* **传销诈骗**
+* **封建迷信**
+* **造谣诽谤**
+* **我国现行法律、行政法规及政策所禁止的内容**
 
-![sms_captchat_settings_force](https://dn-lhzo7z96.qbox.me/1494322875125)
+因此 LeanCloud 需要审核短信内容，并且保留对发送人追究相关法律责任的权力。
 
-{{ docs.note("如果开启这个选项之后，所有主动调用发送短信的接口都会强制进行图形验证码验证，否则会直接返回调用错误）。") }}
+鉴于开发者的应用场景各异，我们整理了以下范例来说明如何撰写规范的短信内容。需要再次强调，一切跟营销推广相关的短信模板，请在创建模板时务必选择**营销类**，否则将无法通过审核。
 
-开启之后，调用发送短信的接口流程就需要作出调整。具体时序图如下：
+【正确范例】
 
-![sms_captcha_workflow](images/sms_captcha_workflow.svg)
+{% call docs.bubbleWrap() -%}
+XX房东您好，租客{{ docs.mustache("guest_name") }}（手机号码：{{ docs.mustache("guest_phone") }}）于{{ docs.mustache("payment_create_time") }}向您支付了房租。租金为{{ docs.mustache("rent_price") }}元，房屋地址在{{ docs.mustache("rent_addr") }}。请关注微信公众号：XX租房。XX租房APP下载地址：http://example.com/download.html
+{% endcall %}
 
-对应上面的时序图需要调用的 SDK 接口如下:
+#### 链接
+
+短信中的 URL 不允许**全部**设置为变量，这样是为了确保安全，防止病毒以及不良信息的传播。错误范例如下：
+
+{% call docs.bubbleWrap() -%}
+尊敬的会员您好，您的订单（订单号{{ docs.mustache("orderId") }}）已确认支付。5周年庆新品降价！大牌奢品上演底价争霸，低至2折！BV低至888元！阿玛尼低至199元！都彭长款钱包仅售499元！杜嘉班纳休闲鞋仅售1399元！周年庆家居专场千元封顶现已开启！{{ docs.mustache("download_link") }} 客服电话400-881-6609 回复TD退订
+{% endcall %}
+
+{{ docs.alert("以上通知内容包含了象 <u>打折</u>、<u>降价</u>、<u>仅售</u> 这类营销推广的敏感词语，容易导致审批无法通过，因此请谨慎使用或改用 [营销类短信](#营销类)。") }}
+
+但是 URL 中可以包含变量，比如：
+
+{% call docs.bubbleWrap() -%}
+亲，您的宝贝已上路，快递信息可以通过以下链接查询：http://www.sf-express.com/cn/#search/{{ docs.mustache("bill_number") }} 
+{% endcall %}
+
+#### 通知类模板
+
+【正确范例】
+
+{% call docs.bubbleWrap() -%}
+恭喜您获得关注广州体彩微信送“排列三”的活动彩票，您的号码是第{{ docs.mustache("phase") }}期的：{{ docs.mustache("num") }}。开奖时间为{{ docs.mustache("date") }}，请关注公众号—开奖信息查询中奖状态。
+{% endcall %}
+
+〖错误范例〗
+
+{% call docs.bubbleWrap() -%}
+您好，本条短信来自“XX旅游”~恭喜幸运的您，在本次“北海道机票”抽奖活动中，获得二等奖——定制星巴克杯! 请您关注我们的微信公众号（XX旅游：xx_app)，回复“中奖名单”即可查看详细中奖名单及领取须知！后续还会有更多活动惊喜，期待您的参与~官方网站：xxsite.cn
+{% endcall %}
+
+错误点在于不可以在 [通知类](#通知类) 模板中发送带有抽奖中奖信息等营销信息的内容。解决方案是**在创建模板的时候选择 [营销类短信](#营销类)**。
+
+另外，有一些行业相关的敏感词语是不允许发送的，错误范例如下：
+
+{{ docs.bubble("业主还在苦苦等待你的反馈，你认领的房源已超过1小时没有填写核实结果，请尽快登录XX客户端，在“业主--待处理”列表中进行填写。【XX网】") }}
+
+{{ docs.alert("无论是通知类还是营销类短信，凡包含<u>房源</u>、<u>借贷</u>这类敏感词都被禁止发送。") }}
+
+#### 营销类模板
+
+【正确范例 · 销售类】
+
+{{ docs.bubble("X牌新款春装已经上市，明星夫妻同款你值得拥有！详情请咨询当地X牌门市店，或者直接登录 www.xxxx.com 查询门市店，或者拨打 010-00000000，凭短信可享 9 折优惠。") }}
+
+【正确范例 · 推广类】
+
+{{ docs.bubble("还在找寻同桌的 TA 吗？还在烦恼过年回家联系不上老同学吗？iOS 用户在 App Store 搜索：找同学，下载最新版的找同学，让同学聚会重温往日时光！") }}
+
+注意：应用的下载链接必须是明文，不可设置为参数。
+
+{% block sms_demo %}{% endblock %}
+
+## 短信安全
+
+短信在提供便利性和实用性的同时，也会受到攻击而被滥用，产生经济损失，甚至影响到品牌形象。「短信轰炸」就是最常见的一种攻击手段——恶意攻击者使用软件来自动收集一些不需要认证就能发送短信验证码的网站，利用这些网站的漏洞，攻击者能以程序化方式批量地向手机号重复发送短信，这样造成的后果就是：
+
+- 对于网站来说，它会不断收到发送短信验证码的请求，运营者会承担更多的短信费用；
+- 对手机号码的使用者来说，他会在短时间内频繁收到包含验证码的无关短信。
+
+因此开发者需要重视对此类攻击的防范。目前，图形验证码（又称 captcha）是防范短信轰炸最有力的手段。比如，我们在一些网站注册的时候，经常需要填写以下图片的信息：
+
+<img src="images/captcha.png" width="400" height="50">
+
+网站只有在用户进行「免费获取验证码」 操作前，要求用户先输入图形验证码来确认操作真实有效，服务器端再请求 LeanCloud 云端发送动态短信到用户手机上，这样才可以有效防范恶意攻击者。下图显示出使用图形验证码的正确和错误做法：
+
+![image](images/captcha_comparison.png)
+
+所以，在短信验证码发送前，一定先让用户填写图形验证码，确认后再发送短信验证码。
+
+一个实际有效的验证码还必须满足：
+
+- **生成过程安全**：图形验证码必须在服务器端生成并校验；
+- **使用过程安全**：单次有效，且以用户的验证请求为准；
+- **验证码自身安全**：不易被识别工具识别，能有效防止暴力破解。
+
+我们强烈要求开发者要了解短信轰炸的危害并使用 [图形验证码](#图形验证码) 加以防范，另外也要在用户界面上针对短信发送做操作限制，例如手机号的验证功能应该是客户端在 1 分钟之内只允许发送一次等等。
+
+## 图形验证码
+
+要使用图形验证码，开发者需要进入 [控制台 > 安全中心](/dashboard/app.html?appid={{appid}}#/security)，打开 **图形验证码服务**。 
+
+如果希望强制所有的短信接口都必须通过图形验证码验证才能发送，则进入 [控制台 > 应用选项 > 短信服务](/dashboard/app.html?appid={{appid}}#/permission)， 选中 **强制短信验证服务使用图形验证码**。这样以来，所有主动调用发送短信的接口都会强制进行图形验证码验证，否则会直接返回调用错误。
+
+调用发送短信的接口流程变为：
+
+![sms_captcha_workflow](images/captcha-workflow.png)
+
+- 用户在浏览器中打开产品的注册／登录页面，同时也会请求显示 LeanCloud 图形验证码。
+- 用户按照要求填写各项信息，并点击发送短信验证码的按钮，进行图形验证码的验证。
+- LeanCloud 图形验证码成功之后，发送短信验证码到目标手机号。
+- 用户提交表单，产品后台将用户表单的短信验证码相关数据发送到 LeanCloud 后台进行二次校验。
+- LeanCloud 后台返回校验通过／失败的结果，用户完成注册／登录流程。
+
+### Demo
+
+我们以 JavaScript + HTML 实现如下一个很小的功能页面，演示图形验证码接入的流程。
+
+<img src="https://blog.leancloud.cn/wp-content/uploads/2017/05/6ddb8c7a4767af7f1f911ca0fe801d2c-625x165.png" alt="" width="625" height="165" class="alignnone size-medium wp-image-5844" />
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+  <!-- 引入 LeanCloud 图形验证码相关的 JavaScript -->
+  <script src="//cdn1.lncld.net/static/js/2.3.2/av-min.js"></script>
+</head>
+<body>
+  <span>手机号：</span>
+  <input type="text" id="phone"/>
+  <br/>
+  <span>校验码：</span>
+  <input type="text" id="captcha-code"/>
+  <img id="captcha-image"/>
+  <br/>
+  <button id="verify">发送验证码</button>
+</body>
+<script>
+  var appId = '{{appid}}';  // 你的应用 appid
+  var appKey = '{{appkey}}'; // 你的应用 appkey
+  AV.init({ appId: appId, appKey: appKey });
+
+  // AV.Captcha.request() 默认生成一个 85x30px 的 AV.Captcha 实例
+  AV.Captcha.request().then(function(captcha) {
+    //在浏览器中，可以直接使用 captcha.bind 方法将验证码与 DOM 元素绑定：
+    captcha.bind({
+      textInput:    'captcha-code',  // the id for textInput
+      image:        'captcha-image', // the id for image element
+      verifyButton: 'verify',        // the id for verify button
+    }, {
+      success: function(validateCode) { 
+        var phoneNumber = document.getElementById('phone').value;
+        console.log('验证成功，下一步 send sms to phone:' + phoneNumber)
+        AV.Cloud.requestSmsCode({
+          mobilePhoneNumber: phoneNumber,
+          name: '应用名称',
+          validate_token: validateCode,
+          op: '某种操作',
+          ttl: 10
+          }).then(function(){
+            //发送成功
+            console.log('发送成功')
+          }, function(err){
+            //发送失败
+            console.log('发送失败。' + err.message)
+        });
+      },
+      error: function(error) {
+        console.error(error.message)
+      },
+    });
+  });
+</script>
+</html>
+```
+
+`captcha.bind()` 方法可以将 captcha 实例与界面元素绑定起来，它支持如下参数：
+
+| 参数名          | 参数类型                     | 说明                       |
+| ------------ | ------------------------ | ------------------------ |
+| textInput    | <span style="white-space:nowrap;">string &#124; HTMLInputElement</span> | 图形验证码的输入框控件，或者是该控件的 id   |
+| image        | <span style="white-space:nowrap;">string &#124; HTMLImageElement</span> | 图形验证码对应的图像控件，或者是图像控件的 id |
+| <span style="white-space:nowrap;">verifyButton</span> | string &#124; HTMLElement      | 验证图形验证码的按钮控件，或者是该按钮的 id  |
 
 ### 获取图形验证码
 
@@ -639,18 +792,18 @@ AV.Captcha.request({
 });
 ```
 ```cs
-// width:100 - 图片的宽度，必要参数
-// height:50 -  图片的高度，必要参数
 AVCloud.RequestCaptchaAsync(width:85, height:30).ContinueWith(t =>{
   var captchaData = t.Result;
   var url = captchaData.Url;// 图片的 url，客户端用来展现
   var captchaToken = captchaData.captchaToken;// 用来对应后面的验证接口，服务端用这个参数来匹配具体是哪一个图形验证码
 });
 ```
-### 校验图形验证码
-获取图形验证码之后，将图形验证码的图像显示在客户端，以下用 HTML 做演示，iOS 和 Android 或者其他平台可以调用基础的图像控件展示这张图片:
 
-然后正确引导用户输入图形验证码的内容，等到用户输入完成之后，继续调用下一步的接口校验用户输入的是否合法：
+{{ sms.paramsRequestCaptcha() }}
+
+### 校验图形验证码
+
+获取图形验证码之后，将图形验证码的图像显示在客户端（iOS 和 Android 或者其他平台可以调用基础的图像控件展示该图片），等到用户输入完成之后，继续调用下一步的接口校验用户输入的是否合法。
 
 ```objc
 [AVCaptcha verifyCaptchaCode:<#用户识别的符号#>
@@ -680,7 +833,9 @@ AVCloud.VerifyCaptchaAsync("这里填写用户输入的图形验证码，例如 
 ```
 
 ### 使用 validate_token 发送短信
-如果校验成功，拿到返回的 validate_token，继续调用发送短信的接口：
+
+如果校验成功，拿到返回的 `validate_token`，继续调用发送短信的接口：
+
 ```objc
 AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
 options.templateName = @"New_Series";
@@ -740,130 +895,10 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy","�
 });
 ```
 
-下面给出 js + html 实现图形验证码的精简版实例代码：
-```html
-//在浏览器中，可以直接使用 captcha.bind 方法将验证码与 DOM 元素绑定：
-<input type="text" id="captcha-code"/>
-<img id="captcha-image"/>
-<button id="verify">下一步</button>
-
-<script>
-AV.Captcha.request().then(function(captcha) {
-  captcha.bind({
-    textInput: 'captcha-code', // the id for textInput
-    image: 'captcha-image',
-    verifyButton: 'verify',
-  }, {
-    success: function(validateCode) { /* 验证成功，下一步 */ },
-    error: function(error) {  /* 向用户展示 error.message */ },
-  });
-});
-</script>
-```
-
-## 模板规范
-
-鉴于开发者的应用场景各异，我们整理了以下范例来说明如何撰写规范的短信模板。需要再次强调，一切跟营销推广相关的短信模板，请在创建模板时务必选择**营销类**，否则将无法通过审核。
-
-【正确范例】
-
-{% call docs.bubbleWrap() -%}
-XX房东您好，租客{{ docs.mustache("guest_name") }}（手机号码：{{ docs.mustache("guest_phone") }}）于{{ docs.mustache("payment_create_time") }}向您支付了房租。租金为{{ docs.mustache("rent_price") }}元，房屋地址在{{ docs.mustache("rent_addr") }}。请关注微信公众号：XX租房。XX租房APP下载地址：http://example.com/download.html
-{% endcall %}
-
-### 链接
-
-短信中的 URL 不允许**全部**设置为变量，这样是为了确保安全，防止病毒以及不良信息的传播。错误范例如下：
-
-{% call docs.bubbleWrap() -%}
-尊敬的会员您好，您的订单（订单号{{ docs.mustache("orderId") }}）已确认支付。5周年庆新品降价！大牌奢品上演底价争霸，低至2折！BV低至888元！阿玛尼低至199元！都彭长款钱包仅售499元！杜嘉班纳休闲鞋仅售1399元！周年庆家居专场千元封顶现已开启！{{ docs.mustache("download_link") }} 客服电话400-881-6609 回复TD退订
-{% endcall %}
-
-{{ docs.alert("以上通知内容包含了象 <u>打折</u>、<u>降价</u>、<u>仅售</u> 这类营销推广的敏感词语，容易导致审批无法通过，因此请谨慎使用或改用 [营销类短信](#营销类)。") }}
-
-但是 URL 中可以包含变量，比如：
-
-{% call docs.bubbleWrap() -%}
-亲，您的宝贝已上路，快递信息可以通过以下链接查询：http://www.sf-express.com/cn/#search/{{ docs.mustache("bill_number") }} 
-{% endcall %}
-
-### 通知类模板
-
-【正确范例】
-
-{% call docs.bubbleWrap() -%}
-恭喜您获得关注广州体彩微信送“排列三”的活动彩票，您的号码是第{{ docs.mustache("phase") }}期的：{{ docs.mustache("num") }}。开奖时间为{{ docs.mustache("date") }}，请关注公众号—开奖信息查询中奖状态。
-{% endcall %}
-
-〖错误范例〗
-
-{% call docs.bubbleWrap() -%}
-您好，本条短信来自“XX旅游”~恭喜幸运的您，在本次“北海道机票”抽奖活动中，获得二等奖——定制星巴克杯! 请您关注我们的微信公众号（XX旅游：xx_app)，回复“中奖名单”即可查看详细中奖名单及领取须知！后续还会有更多活动惊喜，期待您的参与~官方网站：xxsite.cn
-{% endcall %}
-
-错误点在于不可以在 [通知类](#通知类) 模板中发送带有抽奖中奖信息等营销信息的内容。解决方案是**在创建模板的时候选择 [营销类短信](#营销类)**。
-
-另外，有一些行业相关的敏感词语是不允许发送的，错误范例如下：
-
-{{ docs.bubble("业主还在苦苦等待你的反馈，你认领的房源已超过1小时没有填写核实结果，请尽快登录XX客户端，在“业主--待处理”列表中进行填写。【XX网】") }}
-
-{{ docs.alert("无论是通知类还是营销类短信，凡包含<u>房源</u>、<u>借贷</u>这类敏感词都被禁止发送。") }}
-
-### 营销类模板
-
-#### 销售类
-
-【正确范例】
-
-{{ docs.bubble("X牌新款春装已经上市，明星夫妻同款你值得拥有！详情请咨询当地X牌门市店，或者直接登录 www.xxxx.com 查询门市店，或者拨打 010-00000000，凭短信可享 9 折优惠。") }}
-
-#### 应用推广类
-
-【正确范例】
-
-{{ docs.bubble("还在找寻同桌的 TA 吗？还在烦恼过年回家联系不上老同学吗？iOS 用户在 App Store 搜索：找同学，下载最新版的找同学，让同学聚会重温往日时光！") }}
-
-注意：应用的下载链接必须是明文，不可设置为参数。
-
-{% block sms_demo %}{% endblock %}
-
-
-## 安全问题
-我们强烈要求开发者在用户界面上针对短信发送做操作限制，例如手机号的验证功能应该是客户端在 1 分钟之内只允许发送一次，尽管我们的服务端做了必要的安全措施来保证开发者的权益，但是不排除有被恶意攻击的可能性。
-因此我们强烈要求开发者一定要阅读如下链接里的内容：[短信轰炸](rest_sms_api.html#短信轰炸) 和 前文所提及的[图形验证码 captcha](#图形验证码_captcha)
-
-## 政策法规
-开发者在设置短信内容的时候，文字表述上应该做到规范、正确、简洁。我国相关法律**严令禁止**发送内容涉及以下情况的短信：
-
-* **政治敏感**
-* **极端言论**
-* **淫秽色情**
-* **传销诈骗**
-* **封建迷信**
-* **造谣诽谤**
-* **我国现行法律、行政法规及政策所禁止的内容**
-
-因此 LeanCloud 需要审核短信内容，并且保留对发送人追究相关法律责任的权力。
-
 ## 常见问题
 
 详情请参照 [短信收发常见问题一览](rest_sms_api.html#常见问题_FAQ)。
 
-
-### 短信服务覆盖的国家和地区
-目前 LeanCloud 的短信服务覆盖以下国家和地区：
-
-大区| 国家和地区 |
---- | --- |---
-中国|中国大陆、台湾省、香港行政区、澳门行政区
-北美|美国、加拿大
-南美|巴西
-欧洲|英国、法国、德国、意大利、乌克兰、俄罗斯、西班牙
-东亚|韩国、日本
-东南亚|印度、马来西亚、新加坡、泰国、越南、印度尼西亚
-大洋洲|澳大利亚、新西兰
-
-{{ sms.worldwideSms() }}
 
 ### 短信计费
 

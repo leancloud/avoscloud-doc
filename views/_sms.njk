@@ -2,30 +2,16 @@
      alert
 %}
 
-{% macro paramsRequestCaptcha() %}
-参数|约束|默认值|说明|
----|---|---|---
-`size`|必选|4|验证码的字符长度，范围 3~6。
-`width`|必选|85|宽度（像素 px），会根据 size 自动调整，范围在 60~200。
-`height`|必选|30|高度（像素 px），范围在 30~100。
-`ttl`|必选|60|验证码有效期（秒），范围在 10~180。
+{% macro paramsRequestCaptcha(showExtra=false) %}
+| 参数名    | 参数类型   | 默认   | 说明                              |
+| ------ | ------ | ---- | ------------------------------- |
+| width  | number | 85   | 图形验证码展示区域的宽度，单位：像素，有效值范围：60-200 |
+| height | number | 30   | 图形验证码展示区域的高度，单位：像素，有效值范围：30-100 |
+{% if showExtra -%}
+| size | number | 4    | 验证码的字符长度，有效值范围：3-6（需要使用 masterKey） |
+| ttl  | number | 60   | 验证码有效期，单位：秒，有效值范围：10-180（需要使用 masterKey） |
+{%- endif %}
 {% endmacro %}
-
-{% macro paramsRequestCaptcha() %}
-参数|约束|默认值|说明|
----|---|---|---
-`size`|必选|4|验证码的字符长度，范围 3~6。
-`width`|必选|85|宽度（像素 px），会根据 size 自动调整，范围在 60~200。
-`height`|必选|30|高度（像素 px），范围在 30~100。
-`ttl`|必选|60|验证码有效期（秒），范围在 10~180。
-
-
-|参数名称|说明|
-|:----|:--|
-|captcha_token|供 `verifyCaptcha` 校验使用|
-|captcha_url|图形验证码的图片地址|
-{% endmacro %}
-
 
 {% macro fixedVerificationCode(headingLevel="###") -%}
 {{headingLevel}} 测试用的手机号和固定验证码
@@ -53,7 +39,7 @@
  - 不能有任何非文字字符，也不可以是变量。
  - 不允许全部为英文字符或全部为数字
  - 不需要带上实心方头括号【】
- - 一个应用最多可以拥有 3 个签名（包含审核未通过的签名）。
+ - 一个应用最多可以拥有 50 个签名（包含审核未通过的签名）。
 {%- endmacro %}
 
 {% macro successfulResponse() -%}
@@ -65,5 +51,5 @@
 {% endmacro -%}
 
 {% macro worldwideSms() -%}
-要了解短信可送达的所有国家或地区以及费率，请阅读《[博客·国际短信介绍](https://blog.leancloud.cn/4818/)》。
+要了解短信可送达的所有国家或地区以及费率，请阅读《[博客 · 国际短信介绍](https://blog.leancloud.cn/4818/)》。
 {% endmacro -%}
