@@ -99,7 +99,8 @@ AVCloud.RequestSMSCodeAsync("18612345678","Register_Notice",null,"LeanCloud").Co
 
 ### 在安全中心开启短信服务
 要使用短信服务，首先你需要在控制台创建一个应用，然后进入 {% if node=='qcloud' %}**控制台** > **设置** > **安全中心**{% else %}[控制台 > 设置 > 安全中心](/app.html?appid={{appid}}#/security){% endif %}，确保 **短信服务** 开关是打开的：
-![sms_switch](/images/sms_switch_setting.png)
+
+![sms_switch](images/sms_switch_setting.png)
 
 ### 在应用选项中完成短信配置
 然后进入 {% if node=='qcloud' %}**控制台** > **设置** > **应用选项**{% else %}[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission){% endif %}，查看与短信相关选项：
@@ -111,15 +112,15 @@ AVCloud.RequestSMSCodeAsync("18612345678","Register_Notice",null,"LeanCloud").Co
 请确保该选项处于勾选状态。
 
 ### 设置默认签名
-短信发送的时候需要有签名运营商才会放行，如前面示例的「购物网」「当当」即为短信签名，在开始发送短信之前，你需要进入[控制台 > 消息 > 短信 > 设置](/messaging.html?appid={{appid}}#/message/sms/conf)，设置默认的短信签名（第一个签名即为「默认签名」）：
+短信发送的时候需要有签名运营商才会放行，如前面示例中的「购物网」、「当当」即为短信签名。在开始发送短信之前，你需要进入[控制台 > 消息 > 短信 > 设置](/messaging.html?appid={{appid}}#/message/sms/conf)，设置默认的短信签名（第一个签名即为「默认签名」）：
 
-![sms_switch](/images/sms_create_signature.png)
+![sms_switch](images/sms_create_signature.png)
 
 创建签名只需要输入内部名称和签名字符串即可，如下图所示：
 
-![sms_switch](/images/sms_signature_edit.png)
+![sms_switch](images/sms_signature_edit.png)
 
-等签名审核完成之后，你就可以调用 LeanCloud API 发送自己的短信了。我们看到最开始的示例代码里面还有「短信模板」，但是因为模板并不是必须的，所以留待[后面详述](#短信模板)。
+等签名审核完成之后，你就可以调用 LeanCloud API 发送自己的短信了。我们看到最开始的示例代码里面还有「短信模板」，但是因为模板并不是必须的，所以留待 [后面详述](#短信模板)。
 
 
 ## 验证类短信
@@ -481,17 +482,14 @@ XX房东您好，租客{{ docs.mustache("guest_name") }}（手机号码：{{ doc
 
 #### 配置参数说明
 
-AV.Captcha.request() 在生成 AV.Captcha 实例的时候，可以指定如下参数：
+`AV.Captcha.request()` 在生成 AV.Captcha 实例的时候，可以指定如下参数：
 
-| 参数名    | 参数类型   | 默认   | 说明                              |
-| ------ | ------ | ---- | ------------------------------- |
-| width  | number | 85   | 图形验证码展示区域的宽度，单位：像素，有效值范围：60-200 |
-| height | number | 30   | 图形验证码展示区域的高度，单位：像素，有效值范围：30-100 |
+{{ sms.paramsRequestCaptcha() }}
 
 例如可以这样初始化一个展示高度为 30px、宽度为 80px 的 captcha 实例：
 <code>AV.Captcha.request({width: 80, height: 30})</code>
 
-captcha.bind() 方法可以将 captcha 实例与界面元素绑定起来，它支持如下参数：
+`captcha.bind()` 方法可以将 captcha 实例与界面元素绑定起来，它支持如下参数：
 
 | 参数名          | 参数类型                     | 说明                       |
 | ------------ | ------------------------ | ------------------------ |
@@ -605,8 +603,6 @@ AVCloud.RequestCaptchaAsync(width:85, height:30).ContinueWith(t =>{
   var captchaToken = captchaData.captchaToken;// 用来对应后面的验证接口，服务端用这个参数来匹配具体是哪一个图形验证码
 });
 ```
-
-{{ sms.paramsRequestCaptcha() }}
 
 #### 校验图形验证码
 
@@ -730,7 +726,7 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy","�
 - 关闭：无法向中国大陆 +86 之外的手机号发送短信。
 
 ## 与 LeanCloud 账户系统集成
-LeanCloud 提供了内建的 [账户系统]({% block builtin_account_url %}{% endblock %}来帮助开发者快速完成用户系统的注册、登录、重置密码等功能，同时，为了方便使用，我们也集成了账户系统手机号码相关的短信功能，譬如账户注册时自动验证手机号、手机号码登录和重置密码等等。
+LeanCloud 提供了内建的 [账户系统](leanstorage_guide-js.html#用户) 来帮助开发者快速完成用户系统的注册、登录、重置密码等功能，同时为了方便使用，我们也集成了账户系统手机号码相关的短信功能，譬如账户注册时自动验证手机号、手机号码登录和重置密码等等。
 
 我们可以在[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission)，查看「用户账户」的相关选项：
 
