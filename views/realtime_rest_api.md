@@ -197,6 +197,7 @@ curl -X DELETE \
 convid | 必填 | 对话 id
 msgid | 必填 | 消息 id
 timestamp | 必填 | 消息时间戳
+from | 必填 | 发消息用户 Client ID
 
 ## 强制修改聊天记录
 
