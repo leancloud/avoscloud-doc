@@ -1,3 +1,4 @@
+{% from "views/_data.njk" import libVersion as version %}
 # Android 消息推送开发指南
 
 请先阅读 [消息推送概览](push_guide.html) 了解相关概念。
@@ -289,7 +290,7 @@ intent.putExtra(AVConstants.PUSH_INTENT_KEY, 1);
 
 ```
 dependencies {
-    compile ('cn.leancloud.android:avoscloud-mixpush:v3.+@aar')
+    compile ('cn.leancloud.android:avoscloud-mixpush:{{ version.leancloud }}@aar')
 }
 ```
 
@@ -402,7 +403,7 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用小
 
 ```
 dependencies {
-    compile ('cn.leancloud.android:avoscloud-mixpush:v3.+@aar')
+    compile ('cn.leancloud.android:avoscloud-mixpush:{{ version.leancloud }}@aar')
 }
 ```
 
@@ -493,7 +494,7 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华
 
 ```
 dependencies {
-    compile ('cn.leancloud.android:avoscloud-mixpush:v3.+@aar')
+    compile ('cn.leancloud.android:avoscloud-mixpush:{{ version.leancloud }}@aar')
     compile ('com.meizu.flyme.internet:push-internal-publish:3.3.170123@aar')
 }
 ```
@@ -584,7 +585,7 @@ GCM 需要系统为 Android 2.2 及以上并且安装有 Google Play 商店的�
 
 ```xml
 dependencies {
-    compile ('cn.leancloud.android:avoscloud-gcm:v3.+@aar')
+    compile ('cn.leancloud.android:avoscloud-gcm:{{ version.leancloud }}@aar')
 }
 ```
 

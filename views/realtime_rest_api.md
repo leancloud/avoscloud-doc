@@ -220,7 +220,7 @@ curl -X PUT \
 
 ## 未收取消息数
 
-您可以从服务器端通过 REST API 调用获取实时通信中，某个 Client ID 的未收取的消息数。
+获取实时通信中某个 Client ID 的未收取的消息数：
 
 ```sh
 curl -X GET \
@@ -235,7 +235,7 @@ curl -X GET \
 {"count": 4}
 ```
 
-也可以获取某个 Client ID 下，特定会话内的未收取消息数。
+也可以提供特定对话的 Conversation ID，来获取某个 Client ID 下特定对话内的未收取消息数：
 
 ```sh
 curl -X GET \

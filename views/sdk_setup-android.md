@@ -2,8 +2,8 @@
 {% set platform_name = "Android" %}
 {% set maven_uri = "http://mvn.leancloud.cn/nexus/content/repositories/public" %}
 {% import "views/_helper.njk" as docs %}
+{% from "views/_data.njk" import libVersion as version %}
 {% block libs_tool_automatic %}
-{% set android_sdk_version = "v4.1.0" %}
 
 #### Gradle
 
@@ -71,25 +71,25 @@ dependencies {
     compile ('com.android.support:support-v4:21.0.3')
 
     // LeanCloud 基础包
-    compile ('cn.leancloud.android:avoscloud-sdk:{{android_sdk_version}}')
+    compile ('cn.leancloud.android:avoscloud-sdk:{{ version.leancloud }}')
 
     // 推送与实时聊天需要的包
-    compile ('cn.leancloud.android:avoscloud-push:{{android_sdk_version}}@aar'){transitive = true}
+    compile ('cn.leancloud.android:avoscloud-push:{{ version.leancloud }}@aar'){transitive = true}
 
     // LeanCloud 统计包
-    compile ('cn.leancloud.android:avoscloud-statistics:{{android_sdk_version}}')
+    compile ('cn.leancloud.android:avoscloud-statistics:{{ version.leancloud }}')
 
     // LeanCloud 用户反馈包
-    compile ('cn.leancloud.android:avoscloud-feedback:{{android_sdk_version}}@aar')
+    compile ('cn.leancloud.android:avoscloud-feedback:{{ version.leancloud }}@aar')
 
     // avoscloud-sns：LeanCloud 第三方登录包
-    compile ('cn.leancloud.android:avoscloud-sns:{{android_sdk_version}}@aar')
+    compile ('cn.leancloud.android:avoscloud-sns:{{ version.leancloud }}@aar')
     compile ('cn.leancloud.android:qq-sdk:1.6.1-leancloud')
     // 目前新浪微博官方只提供 jar 包的集成方式
     // 请手动下载新浪微博 SDK 的 jar 包，将其放在 libs 目录下进行集成
 
     // LeanCloud 应用内搜索包
-    compile ('cn.leancloud.android:avoscloud-search:{{android_sdk_version}}@aar')
+    compile ('cn.leancloud.android:avoscloud-search:{{ version.leancloud }}@aar')
 }
 ```
 
@@ -104,17 +104,17 @@ Eclipse 用户首先 [下载 SDK](sdk_down.html)，然后按照 [手动安装步
 下载文件成功解压缩后会得到如下文件：
 
 ```
-├── avoscloud-feedback-{{android_sdk_version}}.zip     // LeanCloud 用户反馈模块
-├── avoscloud-push-{{android_sdk_version}}.jar         // LeanCloud 推送模块和实时聊天模块
-├── avoscloud-sdk-{{android_sdk_version}}.jar          // LeanCloud 基本存储模块
-├── avoscloud-search-{{android_sdk_version}}.zip       // LeanCloud 应用内搜索模块
-├── avoscloud-sns-{{android_sdk_version}}.zip          // LeanCloud SNS 模块
-├── avoscloud-statistics-{{android_sdk_version}}.jar   // LeanCloud 统计模块
-├── fastjson-1.2.30.jar                         // LeanCloud 基本存储模块
+├── avoscloud-feedback-{{ version.leancloud }}.zip     // LeanCloud 用户反馈模块
+├── avoscloud-push-{{ version.leancloud }}.jar         // LeanCloud 推送模块和实时聊天模块
+├── avoscloud-sdk-{{ version.leancloud }}.jar          // LeanCloud 基本存储模块
+├── avoscloud-search-{{ version.leancloud }}.zip       // LeanCloud 应用内搜索模块
+├── avoscloud-sns-{{ version.leancloud }}.zip          // LeanCloud SNS 模块
+├── avoscloud-statistics-{{ version.leancloud }}.jar   // LeanCloud 统计模块
+├── fastjson-{{ version.fastjson }}.jar                         // LeanCloud 基本存储模块
 ├── Java-WebSocket-1.3.2-leancloud.jar          // LeanCloud 推送模块和实时聊天模块
 ├── protobuf-java-2.6.1.jar                     // LeanCloud 推送模块和实时聊天模块
-├── okhttp-3.8.0.jar                            // LeanCloud 基本存储模块
-├── okio-1.13.0.jar                             // LeanCloud 基本存储模块
+├── okhttp-{{ version.okhttp }}.jar                            // LeanCloud 基本存储模块
+├── okio-{{ version.okio }}.jar                             // LeanCloud 基本存储模块
 ├── qq.sdk.1.6.1.jar                            // LeanCloud SNS 模块
 └── weibo.sdk.android.sso.3.0.1-leancloud.jar   // LeanCloud SNS 模块
 ```
@@ -123,22 +123,22 @@ Eclipse 用户首先 [下载 SDK](sdk_down.html)，然后按照 [手动安装步
 
 ##### LeanCloud 基本存储模块
 
-* `avoscloud-{{android_sdk_version}}.jar`
-* `okhttp-3.8.0.jar`
-* `okio-1.13.0.jar`
-* `fastjson-1.2.30.jar`
+* `avoscloud-{{ version.leancloud }}.jar`
+* `okhttp-{{ version.okhttp }}.jar`
+* `okio-{{ version.okio }}.jar`
+* `fastjson-{{ version.fastjson }}.jar`
 
 ##### LeanCloud 推送模块和实时聊天模块
 
 * LeanCloud 基础存储模块
-* `avospush-{{android_sdk_version}}.jar`
+* `avospush-{{ version.leancloud }}.jar`
 * `Java-WebSocket-1.3.2-leancloud.jar`
 * `protobuf-java-2.6.1.jar`
 
 ##### LeanCloud 统计模块
 
 * LeanCloud 基础存储模块
-* `avosstatistics-{{android_sdk_version}}.jar`
+* `avosstatistics-{{ version.leancloud }}.jar`
 
 ##### LeanCloud SNS 模块
 
