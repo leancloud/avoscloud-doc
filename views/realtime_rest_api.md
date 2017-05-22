@@ -235,6 +235,21 @@ curl -X GET \
 {"count": 4}
 ```
 
+也可以获取某个 Client ID 下，特定会话内的未收取消息数。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  https://{{host}}/1.1/rtm/messages/unread/CLIENT_ID/CONVERSATION_ID
+```
+
+返回：
+
+```json
+{"count": 3}
+```
+
 ## 通过 REST API 发消息
 
 我们目前提供 REST API 允许向一个已有对话发送消息。
