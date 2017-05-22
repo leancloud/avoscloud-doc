@@ -225,10 +225,11 @@ public class MyLeanCloudApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        // 启用北美节点, 需要在 initialize 之前调用
+        AVOSCloud.useAVCloudUS();
+
         // 初始化参数依次为 this, AppId, AppKey
         AVOSCloud.initialize(this,"{{appid}}","{{appkey}}");
-        // 启用北美节点
-        AVOSCloud.useAVCloudUS();
     }
 }
 ```
