@@ -2055,6 +2055,7 @@ void queryActiveConversationsBetween() {
 
 
 {% block conversation_query_sorting %}
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 
 tom.open(new AVIMClientCallback() {
@@ -2080,55 +2081,60 @@ tom.open(new AVIMClientCallback() {
     }
   }
 });
+```
 {% endblock %}
 
 
 {% block conversation_query_compact_mode %}
+```java
 public void queryConversationCompact() {
-    AVIMClient tom = AVIMClient.getInstance("Tom");
-    tom.open(new AVIMClientCallback() {
-      @Override
-      public void done(AVIMClient client, AVIMException e) {
-        if (e == null) {
-          //登录成功
-          AVIMConversationsQuery query = client.getConversationsQuery();
-          query.setCompact(true);
-          query.findInBackground(new AVIMConversationQueryCallback() {
-            @Override
-            public void done(List<AVIMConversation> convs, AVIMException e) {
-              if (e == null) {
-                //获取符合查询条件的 Conversation 列表
-              }
+  AVIMClient tom = AVIMClient.getInstance("Tom");
+  tom.open(new AVIMClientCallback() {
+    @Override
+    public void done(AVIMClient client, AVIMException e) {
+      if (e == null) {
+        //登录成功
+        AVIMConversationsQuery query = client.getConversationsQuery();
+        query.setCompact(true);
+        query.findInBackground(new AVIMConversationQueryCallback() {
+          @Override
+          public void done(List<AVIMConversation> convs, AVIMException e) {
+            if (e == null) {
+              //获取符合查询条件的 Conversation 列表
             }
-          });
-        }
+          }
+        });
       }
-    });
-  }
+    }
+  });
+}
+```
 {% endblock %}
 
 {% block conversation_query_with_last_message %}
-  public void queryConversationWithLastMessage() {
-    AVIMClient tom = AVIMClient.getInstance("Tom");
-    tom.open(new AVIMClientCallback() {
-      @Override
-      public void done(AVIMClient client, AVIMException e) {
-        if (e == null) {
-          //登录成功
-          AVIMConversationsQuery query = client.getConversationsQuery();
-          query.setWithLastMessagesRefreshed(true);
-          query.findInBackground(new AVIMConversationQueryCallback() {
-            @Override
-            public void done(List<AVIMConversation> convs, AVIMException e) {
-              if (e == null) {
-                //获取符合查询条件的 Conversation 列表
-              }
+```java
+public void queryConversationWithLastMessage() {
+  AVIMClient tom = AVIMClient.getInstance("Tom");
+  tom.open(new AVIMClientCallback() {
+    @Override
+    public void done(AVIMClient client, AVIMException e) {
+      if (e == null) {
+        //登录成功
+        AVIMConversationsQuery query = client.getConversationsQuery();
+        query.setWithLastMessagesRefreshed(true);
+        query.findInBackground(new AVIMConversationQueryCallback() {
+          @Override
+          public void done(List<AVIMConversation> convs, AVIMException e) {
+            if (e == null) {
+              //获取符合查询条件的 Conversation 列表
             }
-          });
-        }
+          }
+        });
       }
-    });
-  }
+    }
+  });
+}
+```
 {% endblock %}
 
 
