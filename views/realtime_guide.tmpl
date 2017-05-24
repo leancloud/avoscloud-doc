@@ -887,7 +887,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 通常，将查询结果缓存到磁盘上是一种行之有效的方法，这样就算设备离线，应用刚刚打开，网络请求尚未完成时，数据也能显示出来。或者为了节省用户流量，在应用打开的第一次查询走网络，之后的查询可优先走本地缓存。
 
-值得注意的是，默认的策略是先走本地缓存的再走网络的，缓存时间是一小时。AVIMConversationQuery 中有如下方法：
+值得注意的是，默认的策略是先走本地缓存的再走网络的，缓存时间是一小时。{% if segment_code == 'android' %}AVIMConversationsQuery{% else %}AVIMConversationQuery{% endif %} 中有如下方法：
 
 {% block code_set_query_policy %}{% endblock %}
 
@@ -940,7 +940,7 @@ Black 发现对话名字不够酷，他想修改成「聪明的喵星人」 ，�
 
 ### 查找聊天室
 
-开发者需要注意的是，通过 {% block create_query_instance_method %}{% endblock %} 这样得到的 `AVIMConversationQuery` 实例默认是查询全部对话的，也就是说，如果想查询指定的聊天室，需要额外再调用 {% block chatroom_query_method2 %}{% endblock %} 方法来限定更多的查询条件：
+开发者需要注意的是，通过 {% block create_query_instance_method %}{% endblock %} 这样得到的 {% if segment_code == 'android' %}`AVIMConversationsQuery`{% else %}`AVIMConversationQuery`{% endif %} 实例默认是查询全部对话的，也就是说，如果想查询指定的聊天室，需要额外再调用 {% block chatroom_query_method2 %}{% endblock %} 方法来限定更多的查询条件：
 
 比如查询主题包含「奔跑吧，兄弟」的聊天室：
 
