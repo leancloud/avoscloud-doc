@@ -1250,6 +1250,27 @@ client.getQuery()
   .lessThan('lm', new Date('2017-02-01 00:00:00'))
 ```
 
+##### 空值查询
+
+空值查询是指查询相关列是否为空值的方法，例如要查询 lm 列为空值的对话：
+
+```javascript
+client.getQuery()
+  .doesNotExist('lm')
+  .find()
+  .then(function(conversations){
+
+  })
+```
+
+如果要查询 lm 列不为空的对话，则替换为如下：
+
+```javascript
+client.getQuery()
+  .exists('lm')
+```
+
+
 #### 查询结果选项
 
 ##### 排序
