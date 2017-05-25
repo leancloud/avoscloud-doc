@@ -1516,6 +1516,10 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_attributes_modify %}{% endblock %}
 
+{% block android_conversation_query_tip %}
+由于历史原因, AVIMConversationQuery 只能检索 _Conversation 表中 attr 列中的属性，而不能完整检索 _Conversation 表的其他自定义属性，所以在 v4.1.1 版本之后被废弃。v4.1.1 后请使用 AVIMConversationsQuery 来完成相关查询。AVIMConversationsQuery 时在查询属性时不会再自动添加 attr 前缀，如果开发者需要查询 _Conversation 表中 attr 列中具体属性时，请自行添加 attr 前缀。
+{% endblock %}
+
 {% block conversation_getSingle %}
 
 ```
@@ -1612,15 +1616,6 @@ conversationQuery.whereEqualTo("attr.topic", "DOTA2");
 // 查询等级大于 5 的对话
 conversationQuery.whereGreaterThan("attr.level", 5);
 ```
-
-在 Andorid SDK 中，如果在针对自定义查询的时候，不主动加上 `attr` 的前缀，SDK 会自动添加，比如上述的代码中查询话题为 DOTA2 的对话如下书写效果一致：
-
-```
-conversationQuery.whereEqualTo("topic", "DOTA2");
-```
-
-{{ docs.alert("因为 Android 会自动添加 attr 前缀进行查询构建，所以在设置自定义属性的时候，**禁止**使用 `name`、`lm`、`c`、`tr`、`m`、`objectId` 等已被默认属性占用的 key 值。") }}
-
 {% endblock %}
 
 {% block conversation_query_content %}
