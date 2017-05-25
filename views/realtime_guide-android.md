@@ -1517,7 +1517,7 @@ tom.open(new AVIMClientCallback(){
 {% block conversation_attributes_modify %}{% endblock %}
 
 {% block android_conversation_query_tip %}
-由于历史原因, AVIMConversationQuery 只能检索 _Conversation 表中 attr 列中的属性，而不能完整检索 _Conversation 表的其他自定义属性，所以在 v4.1.1 版本之后被废弃。v4.1.1 后请使用 AVIMConversationsQuery 来完成相关查询。AVIMConversationsQuery 时在查询属性时不会再自动添加 attr 前缀，如果开发者需要查询 _Conversation 表中 attr 列中具体属性时，请自行添加 attr 前缀。
+由于历史原因，AVIMConversationQuery 只能检索 _Conversation 表中 attr 列中的属性，而不能完整检索 _Conversation 表的其他自定义属性，所以在 v4.1.1 版本之后被废弃。v4.1.1 后请使用 AVIMConversation**s**Query 来完成相关查询。AVIMConversationsQuery 在查询属性时不会再自动添加 attr 前缀，如果开发者需要查询 _Conversation 表中 attr 列中具体属性，请自行添加 attr 前缀。
 {% endblock %}
 
 {% block conversation_getSingle %}
