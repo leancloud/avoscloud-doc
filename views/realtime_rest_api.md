@@ -110,7 +110,7 @@ reversed | 可选 | 以默认排序相反的方向返回结果。布尔值，默
 peerid | 可选 | 查看者 id（签名参数）
 nonce | 可选 | 签名随机字符串（签名参数）
 signature_ts | 可选 | 签名时间戳（签名参数）
-signature | 可选 | 签名时间戳（签名参数）
+signature | 可选 | 签名（签名参数）
 
 
 为了保证获取聊天记录的安全性，可以开启签名认证（{% if node=='qcloud' %}控制台 > 设置 > **应用选项** > **聊天、推送** > **聊天记录查询，启用签名认证**{% else %}[控制台 > 设置 > **应用选项** > **聊天、推送** > **聊天记录查询，启用签名认证**](/app.html?appid={{appid}}#/permission){% endif %}）。了解更详细的签名规则请参考 [聊天签名方法](realtime_v2.html#开启对话签名)。签名参数仅在开启应用选项后有效，如果没有开启选项，就不需要传签名参数。
@@ -197,6 +197,7 @@ curl -X DELETE \
 convid | 必填 | 对话 id
 msgid | 必填 | 消息 id
 timestamp | 必填 | 消息时间戳
+from | 必填 | 发消息用户 Client ID
 
 ## 强制修改聊天记录
 
@@ -219,7 +220,7 @@ curl -X PUT \
 
 ## 未收取消息数
 
-您可以从服务器端通过 REST API 调用获取实时通信中，某个 Client ID 的未收取的消息数。
+获取实时通信中某个 Client ID 的未收取的消息数：
 
 ```sh
 curl -X GET \
@@ -232,6 +233,21 @@ curl -X GET \
 
 ```json
 {"count": 4}
+```
+
+也可以提供特定对话的 Conversation ID，来获取某个 Client ID 下特定对话内的未收取消息数：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  https://{{host}}/1.1/rtm/messages/unread/CLIENT_ID/CONVERSATION_ID
+```
+
+返回：
+
+```json
+{"count": 3}
 ```
 
 ## 通过 REST API 发消息

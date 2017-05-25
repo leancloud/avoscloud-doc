@@ -52,3 +52,11 @@ LeanCloud 云端使用的并非关系型数据库，无法做到真正的联表�
 - 进行多次查询，每次在子查询上添加 {{ skip }} 来遍历所有记录（注意 skip 的值较大时可能会引发性能问题，因此不是很推荐）。
 {%- endmacro %}
 
+{% set libVersion = {
+    leancloud:  "v4.1.0",
+    fastjson:   "1.2.30",
+    okhttp:     "3.8.0",
+    okio:       "1.13.0"
+} %}
+
+

@@ -1,4 +1,5 @@
 {% import "views/_helper.njk" as docs %}
+{% set backtick = "注意：别名或以下划线开头的表名都需要放在反引号内，如 <code>as &#96;total&#96;</code>、<code>&#96;_User&#96;.name</code>。" %}
 # 离线数据分析指南
 
 针对大规模数据的分析任务一般都比较耗时。LeanCloud 为开发者提供了部分兼容 SQL 语法的离线数据分析功能。所谓「离线分析」，是指运行分析程序的机器和服务 API 请求的机器是分开的，这样可以尽量减少线上集群的压力，也就是说，使用离线分析并不会影响或牺牲线上正式数据的访问性能。
@@ -10,8 +11,6 @@
 {% call docs.noteWrap() -%}
 离线数据分析功能（ {% if node=='qcloud' %}**控制台** > **存储** > **离线数据分析**{% else %}[控制台 > 存储 > 离线数据分析](/dataquery.html?appid={{appid}}#/){% endif %}）**仅向商用版和企业版应用开放**，开发版应用无法使用；如果商用版和企业版应用无法正常使用该功能，请通过 [工单系统](https://leanticket.cn/t/leancloud) 或 [用户论坛](https://forum.leancloud.cn) 联系我们。
 {%- endcall %}
-
-
 
 ## 限制
 
@@ -56,6 +55,8 @@ SELECT columnA, count(columnB) as `count` FROM table GROUP BY columnA
 SELECT columnA, count(*) as `count` FROM table GROUP BY columnA
 SELECT columnA, columnB FROM table GROUP BY columnA, columnB
 ```
+
+{{ backtick | safe }}
 
 ### 运算符
 
@@ -165,24 +166,26 @@ SELECT col FROM ( SELECT a + b AS col from t1) t2
 
 ### 数据分析举例
 
-* 简单的 SELECT 查询
+{{ docs.note(backtick) }}
 
+简单的 SELECT 查询：
+      
 ```sql
 select * from Post
 
-select count(*) from _User
+select count(*) from `_User`
 ```
 
-* 复杂的 SELECT 查询
-
+复杂的 SELECT 查询：
+  
 ```sql
 select * from Post where createdAt > '2014-12-10'
 
-select avg(age) from _User
+select avg(age) from `_User`
 
-select Post.objectId from Post left join _User where _User.name=Post.pubUser limit 10
+select Post.objectId from Post left join `_User` where `_User`.name=Post.pubUser limit 10
 
-select * from _User where name in (select name form OtherUser)
+select * from `_User` where name in (select name form OtherUser)
 
 select sum(upvotes) from Post
 

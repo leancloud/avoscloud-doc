@@ -317,18 +317,12 @@ layout: index.swig
                 <li><a href="rest_api.html#Push_通知">消息推送 REST API</a></li>
                 <li><a href="rest_api.html#统计数据_API">移动统计 REST API</a></li>
                 {% if node != 'qcloud' and node != 'us' %}
-                <li><a href="rest_sms_api.html">短信验证 REST API</a></li>
-                <li> <span>短信服务使用指南</span>
-                  <ul class="list-unstyled tags">
-                    <li><a href="sms-guide.html">Android</a></li>
-                    <li><a href="sms-guide.html">Objective-C</a></li>
-                    <li><a href="sms-guide.html">JavaScript</a></li>
-                  </ul>
-                </li>
+                <li><a href="rest_sms_api.html">短信 SMS REST API</a></li>
+                {% include 'templates/include/_sms.html' %}
                 {% endif %}
                 <li><a href="status_system.html#REST_API">应用内社交 REST API</a></li>
                 <li><a href="app_search_guide.html#搜索_API">应用内搜索 REST API</a></li>
-                <li><a href="oauth2_provider.html">LeanCloud 开放平台接入 OAuth2</a></li>
+                <!--<li><a href="oauth2_provider.html">LeanCloud 开放平台接入 OAuth2</a></li>-->
               </ul>
             </div>
             <div class="section-content col-xs-12 col-sm-6 col-md-6">
