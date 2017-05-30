@@ -21,7 +21,7 @@
     "email": false
   },
   "devDependencies": {
-    "assemble": "~0.4.33",
+    "assemble": "~0.16.0",
     "assemble-swig": "~0.1.0",
     "autoprefixer": "^6.3.4",
     "axios": "^0.15.3",
