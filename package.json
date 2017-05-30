@@ -57,7 +57,7 @@
     "moment": "^2.10.6",
     "nunjucks": "^2.4.1",
     "serve-static": "^1.10.0",
-    "should": "^9.0.2",
+    "should": "^10.0.0",
     "time-grunt": "^1.2.2",
     "underscore": "^1.8.3"
   },
