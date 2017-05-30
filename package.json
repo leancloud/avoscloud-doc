@@ -43,7 +43,7 @@
     "grunt-contrib-cssmin": "~1.0.0",
     "grunt-contrib-less": "^1.1.0",
     "grunt-contrib-livereload": "~0.1.2",
-    "grunt-contrib-uglify": "^1.0.0",
+    "grunt-contrib-uglify": "^2.0.0",
     "grunt-contrib-watch": "~1.0.0",
     "grunt-conventional-changelog": "^6.0.0",
     "grunt-dom-munger": "^3.4.0",
