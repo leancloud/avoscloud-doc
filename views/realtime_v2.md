@@ -88,6 +88,8 @@ LeanCloud 实时通信服务的特性主要有：
 系统每创建一个对话，就会在云端的 `_Conversation` 表中增加一条记录，可以进入 [控制台 > **存储** > **数据**](/data.html?appid={{appid}}#/) 来查看该数据。
 {% endif %}
 
+{{ im.conversationRecordsLifespan("") }}
+
 `_Conversation` 表中字段名与对话的各个属性的对应关系为：
 
 表字段|属性名|类型|约束|说明
@@ -370,7 +372,7 @@ appid:clientid:convid:sorted_member_ids:timestamp:nonce:action
 
 * appid、clientid、sorted_member_ids、timestamp 和 nonce  的含义同上。对创建群的情况，这里 sorted_member_ids 是空字符串。
 * convid - 此次行为关联的对话 id。
-* action - 此次行为的动作，分为 **add** （加群和邀请）与 **remove** （踢出群）两种，但出于兼容考虑，签名时分别使用常量 **invite** 和 **kick** 来进行表示。
+* action - 此次行为的动作，**invite** 表示加群和邀请，**kick** 表示踢出群。
 
 {{ im.signature("### 测试签名") }}
 

@@ -358,10 +358,9 @@ AV.Cloud.onIMMessageReceived((request) => {
 	// 	timestamp: 1472200796764
 	// };
 
-	let content = JSON.parse(request.params.content);
-	let text = content._lctext;
-	console.log('text', text);
-	let processedContent = text.replace('XX中介', '**');
+	let content = request.params.content;
+	console.log('content', content);
+	let processedContent = content.replace('XX中介', '**');
 	// 必须含有以下语句给服务端一个正确的返回，否则会引起异常
   return {
     content: processedContent

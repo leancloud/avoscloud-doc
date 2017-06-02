@@ -69,9 +69,13 @@
   {%- endif %}
 {%- endmacro %}
 
-{% macro bubbleWrap() -%}
+{% macro bubbleWrap(fullWidth=false) -%}
   {# short message: <samp ng-non-bindable class="bubble"></samp> #}
-  {{ htmlTag("samp", {"ng-non-bindable": null,class: "bubble"}, caller()) }}
+  {% set styles = null %}
+  {% if fullWidth %}
+    {% set styles = "width: 99%;" %}
+  {% endif %}
+  {{ htmlTag("samp", {"ng-non-bindable": null,class: "bubble", style: styles }, caller()) }}
 {%- endmacro %}
 
 {% macro bubble(content) -%}

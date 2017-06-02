@@ -581,9 +581,7 @@ conversation.sendMessage(locationMessage, new AVIMConversationCallback() {
 {% endblock %}
 
 {% block typedMessage_received %}
-### 接收富媒体消息
-
-实时通信 SDK 内部封装了对富媒体消息的支持，所有富媒体消息都是从 AVIMTypedMessage 派生出来的。发送的时候可以直接调用 `conversation.sendMessage()` 函数。在接收端，我们也专门增加了一类回调接口 AVIMTypedMessageHandler，其定义为：
+所有富媒体消息都是从 AVIMTypedMessage 派生出来的。发送的时候可以直接调用 `conversation.sendMessage()` 函数。在接收端，我们也专门增加了一类回调接口 `AVIMTypedMessageHandler`，其定义为：
 
 ```
 public class AVIMTypedMessageHandler<T extends AVIMTypedMessage> extends MessageHandler<T> {
@@ -771,35 +769,22 @@ jerry.open(new AVIMClientCallback() {
 ```
 {% endblock %}
 
-{% block offlineMessage_android %}>**Android 聊天服务是和后台的推送服务共享连接的，所以只要有网络就永远在线，不需要专门做推送。**消息达到后，你可以根据用户的设置来判断是否需要弹出通知。网络断开时，我们为每个对话保存 20 条离线消息。{% endblock %}
+{% block offlineMessage_android %}
+**Android 聊天服务是和后台的推送服务共享连接的，所以只要有网络就永远在线，不需要专门做推送。**消息达到后，你可以根据用户的设置来判断是否需要弹出通知。网络断开时，我们为每个对话保存 20 条离线消息。
+{% endblock %}
 
-{% block messagePolicy_received_intro %}{% endblock %}
-
-{% block message_unread %}
+{% block message_unread_message_count %}
 要开启未读消息，需要在 AVOSCloud 初始化语句后面加上：
 
 ```
 AVIMClient.setOfflineMessagePush(true);
 ```
 
-然后实现 AVIMConversationEventHandler 的代理方法 `onOfflineMessagesUnread` 来从服务端取回未读消息：
+然后实现 AVIMConversationEventHandler 的代理方法 `onUnreadMessagesCountUpdated` 来得到未读消息的数量变更的通知：
 
 ```
-onOfflineMessagesUnread(AVIMClient client, AVIMConversation conversation, int unreadCount) {
-  //如果有多个 conversation 有未读消息，此函数会执行多次
-  if (unreadCount > 0) {
-    // 可以根据 readCount 更新 UI
-    
-    // 也可以拉取对应的未读消息
-    conversation.queryMessages(unreadCount, new AVIMMessagesQueryCallback() {
-      @Override
-      public void done(List<AVIMMessage> list, AVIMException e) {
-        if (e == null) {
-          // 获得对应的未读消息
-        }
-      }
-    });
-  }
+onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
+    // conversation.getUnreadMessagesCount() 即该 conversation 的未读消息数量
 }
 ```
 `AVIMConversationEventHandler` 的实现和定义在[自身主动加入](#自身主动加入)里面有详细的代码和介绍。
@@ -939,8 +924,8 @@ public class AVIMTextMessage extends AVIMTypedMessage {
 ```
 {% endblock %}
 
-{% block api_send_message_method_intro %}
-#### 消息发送接口
+{% block messagePolicy_sent_method %}
+##### 消息发送接口
 在 Android SDK 中，发送消息的方法是：`AVIMConversation.sendMessage`，它最核心的一个重载声明如下：
 
 ```
@@ -964,10 +949,9 @@ public void sendMessage(AVIMMessage message, AVIMConversationCallback callback)
 ```
 
 其实本质上，调用 `sendMessage(message, callback)` 就等价于调用 `sendMessage(message, null, callback)`
-
 {% endblock %}
 
-{% block messagePolicy_sent_method %} `AVIMClient.OnMessageReceived` {% endblock %}
+{% block messagePolicy_received_intro %}{% endblock %}
 
 {% block messagePolicy_received_method %}{% endblock %}
 
@@ -1050,8 +1034,14 @@ AVIMClient tom = AVIMClient.getInstance("Tom");
 ```
 {% endblock %}
 
-{% block message_sent_ack %}
+{% block message_sent_ack_switch %}
+```java
+AVIMMessageOption messageOption = new AVIMMessageOption();
+messageOption.setReceipt(true);
+```
+{% endblock %}
 
+{% block message_sent_ack %}
 ```
 AVIMMessageHandler handler = new AVIMMessageHandler(){
 
@@ -1081,6 +1071,10 @@ conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
       }
     });
 ```
+{% endblock %}
+
+{% block message_read_ack %}
+
 {% endblock %}
 
 {% block conversation_init %}
@@ -1363,7 +1357,7 @@ tom.open(new AVIMClientCallback(){
 	public void done(AVIMClient client,AVIMException e){
 	  if(e==null){
 	  //登录成功
-	  AVIMConversationQuery query = client.getQuery();
+	  AVIMConversationsQuery query = client.getConversationsQuery();
 	  query.setLimit(1);
 	  query.findInBackground(new AVIMConversationQueryCallback(){
        @Override
@@ -1400,7 +1394,14 @@ tom.open(new AVIMClientCallback(){
 | `attributes`         | `attr`           | 自定义属性                    |
 | `isTransient`        | `tr`             | 是否为聊天室（暂态对话）             |
 | `lastMessageAt`      | `lm`             | 该对话最后一条消息，也可以理解为最后一次活跃时间 |
-
+| `lastMessage`         | N/A              | 最后一条消息，可能会空               |
+| `muted`               | N/A              | 当前用户是否静音该对话               |
+| `unreadMessagesCount` | N/A              | 未读消息数                     |
+| `lastDeliveredAt`     | N/A              | （仅限单聊）最后一条已送达对方的消息时间 |
+| `lastReadAt`          | N/A              | （仅限单聊）最后一条对方已读的消息时间 |
+| `createdAt`           | `createdAt`      | 创建时间                      |
+| `updatedAt`           | `updatedAt`      | 最后更新时间                    |
+| `system`              | `sys`            | 是否为系统对话                   |
 {% endblock %}
 
 {% block conversation_name %}
@@ -1515,6 +1516,10 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_attributes_modify %}{% endblock %}
 
+{% block android_conversation_query_tip %}
+由于历史原因，AVIMConversationQuery 只能检索 _Conversation 表中 attr 列中的属性，而不能完整检索 _Conversation 表的其他自定义属性，所以在 v4.1.1 版本之后被废弃。v4.1.1 后请使用 AVIMConversation**s**Query 来完成相关查询。AVIMConversationsQuery 在查询属性时不会再自动添加 attr 前缀，如果开发者需要查询 _Conversation 表中 attr 列中具体属性，请自行添加 attr 前缀。
+{% endblock %}
+
 {% block conversation_getSingle %}
 
 ```
@@ -1525,7 +1530,7 @@ tom.open(new AVIMClientCallback(){
 	public void done(AVIMClient client,AVIMException e){
 	  if(e==null){
 	  //登录成功
-	  AVIMConversationQuery query = client.getQuery();
+	  AVIMConversationsQuery query = client.getConversationsQuery();
 	  query.whereEqualTo("objectId","551260efe4b01608686c3e0f");
 	  query.findInBackground(new AVIMConversationQueryCallback(){
 	    @Override
@@ -1553,7 +1558,7 @@ tom.open(new AVIMClientCallback(){
 	public void done(AVIMClient client,AVIMException e){
 	  if(e==null){
 	  //登录成功
-	  AVIMConversationQuery query = client.getQuery();
+	  AVIMConversationsQuery query = client.getConversationsQuery();
 	  query.findInBackground(new AVIMConversationQueryCallback(){
 	    @Override
 	    public void done(List<AVIMConversation> convs,AVIMException e){
@@ -1572,7 +1577,7 @@ tom.open(new AVIMClientCallback(){
 {% block conversation_query_limit %}
 
 ```
-AVIMConversationQuery query = client.getQuery();
+AVIMConversationsQuery query = client.getConversationsQuery();
 query.limit(20);
 query.findInBackground(new AVIMConversationQueryCallback(){
 	@Override
@@ -1611,16 +1616,6 @@ conversationQuery.whereEqualTo("attr.topic", "DOTA2");
 // 查询等级大于 5 的对话
 conversationQuery.whereGreaterThan("attr.level", 5);
 ```
-
-在 Andorid SDK 中，如果在针对自定义查询的时候，不主动加上 `attr` 的前缀，SDK 会自动添加，比如上述的代码中查询话题为 DOTA2 的对话如下书写效果一致：
-
-```
-conversationQuery.whereEqualTo("topic", "DOTA2");
-```
-特别注意：
-
-> 因为 Android 会自动添加 attr 前缀进行查询构建，所以在设置自定义属性的时候，**禁止**使用以下：`name`,`lm`,`c`,`tr`,`m`,`objectId`等已被默认属性占用的 key 值。
-
 {% endblock %}
 
 {% block conversation_query_content %}
@@ -1736,7 +1731,7 @@ tom.open(new AVIMClientCallback(){
 	public void done(AVIMClient client,AVIMException e){
 	  if(e==null){
 	  //登录成功
-	  AVIMConversationQuery query = client.getQuery();
+	  AVIMConversationsQuery query = client.getConversationsQuery();
 	  query.whereEqualTo("attr.topic","movie");
 	  query.findInBackground(new AVIMConversationQueryCallback(){
 	    @Override
@@ -1764,7 +1759,7 @@ tom.open(new AVIMClientCallback(){
 	public void done(AVIMClient client,AVIMException e){
 	  if(e==null){
 	  //登录成功
-	  AVIMConversationQuery query = client.getQuery();
+	  AVIMConversationsQuery query = client.getConversationsQuery();
 	  query.whereNotEqualTo("attr.type","private");
 	  query.setLimit(50);//limit 设为 50 ,默认为 10 个
 	  
@@ -1794,7 +1789,7 @@ tom.open(new AVIMClientCallback(){
 	public void done(AVIMClient client,AVIMException e){
 	  if(e==null){
 	  //登录成功
-	  AVIMConversationQuery query = client.getQuery();
+	  AVIMConversationsQuery query = client.getConversationsQuery();
 	  query.whereGreaterThan("attr.age",18);
 	  
 	  query.findInBackground(new AVIMConversationQueryCallback(){
@@ -1814,7 +1809,7 @@ tom.open(new AVIMClientCallback(){
 {% endblock %}
 
 {% block conversation_query_regexIntro %}
-匹配查询是指在 `AVIMConversationQuery` 的查询条件中使用正则表达式来匹配数据。
+匹配查询是指在 `AVIMConversationsQuery` 的查询条件中使用正则表达式来匹配数据。
 {% endblock %}
 
 {% block conversation_query_regex %}
@@ -1827,7 +1822,7 @@ tom.open(new AVIMClientCallback(){
 	public void done(AVIMClient client,AVIMException e){
 	  if(e==null){
 	  //登录成功
-	  AVIMConversationQuery query = client.getQuery();
+	  AVIMConversationsQuery query = client.getConversationsQuery();
 	  query.whereMatches("attr.language","[\\u4e00-\\u9fa5]"); //attr.language 是中文字符 
 	  
 	  query.findInBackground(new AVIMConversationQueryCallback(){
@@ -1856,7 +1851,7 @@ tom.open(new AVIMClientCallback(){
 	public void done(AVIMClient client,AVIMException e){
 	  if(e==null){
 	  //登录成功
-	  AVIMConversationQuery query = client.getQuery();
+	  AVIMConversationsQuery query = client.getConversationsQuery();
 	  
 	  //查询attr.keywords 包含 「教育」的Conversation
 	  query.whereContains("attr.keywords","教育"); 
@@ -1887,7 +1882,7 @@ tom.open(new AVIMClientCallback(){
 	public void done(AVIMClient client,AVIMException e){
 	  if(e==null){
 	  //登录成功
-	  AVIMConversationQuery query = client.getQuery();
+	  AVIMConversationsQuery query = client.getConversationsQuery();
 	  
 	  //查询对话成员有 Bob 和 Jerry的Conversation
 	  query.withMembers(Arrays.as("Bob","Jerry"));
@@ -1908,12 +1903,7 @@ tom.open(new AVIMClientCallback(){
 ```
 {% endblock %}
 
-
-{% block conversation_query_exists %}
-#### 空值查询
-
-空值查询是指查询相关列是否为空值的方法，例如要查询 lm 列为空值的对话：
-
+{% block conversation_query_doesnot_exist %}
 ```
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
@@ -1922,7 +1912,7 @@ tom.open(new AVIMClientCallback(){
   public void done(AVIMClient client,AVIMException e){
     if(e==null){
     //登录成功
-    AVIMConversationQuery query = client.getQuery();
+    AVIMConversationsQuery query = client.getConversationsQuery();
     
     //查询 lm 列为空的 Conversation 列表
     query.whereDoesNotExist("lm");
@@ -1942,12 +1932,11 @@ tom.open(new AVIMClientCallback(){
 });
 
 ```
+{% endblock %}
 
-如果要查询 lm 列不为空的对话，则替换为如下：
-
+{% block conversation_query_exists %}
 ```
 query.whereExists("lm");
-
 ```
 {% endblock %}
 
@@ -1962,7 +1951,7 @@ tom.open(new AVIMClientCallback(){
 	public void done(AVIMClient client,AVIMException e){
 	  if(e==null){
 	  //登录成功
-	  AVIMConversationQuery query = client.getQuery();
+	  AVIMConversationsQuery query = client.getConversationsQuery();
 	  
 	  //查询 attr.keywords 包含 「教育」并且 attr.age 小于 18 的对话
 	  query.whereContains("attr.keywords", "教育");
@@ -1991,13 +1980,13 @@ void queryAllCovnersationsIncludeSystem() {
     client.open(new AVIMClientCallback() {
       @Override
       public void done(AVIMClient client, AVIMException e) {
-        AVIMConversationQuery memberQuery = client.getQuery();
+        AVIMConversationsQuery memberQuery = client.getConversationsQuery();
         memberQuery.whereContainsAll("m", Arrays.asList("Tom"));
 
-        AVIMConversationQuery sysQuery = client.getQuery();
+        AVIMConversationsQuery sysQuery = client.getConversationsQuery();
         sysQuery.whereEqualTo("sys", true);
 
-        AVIMConversationQuery.or(Arrays.asList(memberQuery, sysQuery)).findInBackground(new AVIMConversationQueryCallback() {
+        AVIMConversationsQuery.or(Arrays.asList(memberQuery, sysQuery)).findInBackground(new AVIMConversationQueryCallback() {
           @Override
           public void done(List<AVIMConversation> conversations, AVIMException e) {
             // conversations 返回的即是所有包含 Tom 的 conversation 以及系统回话
@@ -2016,7 +2005,7 @@ void queryActiveConversationsBetween() {
     client.open(new AVIMClientCallback() {
       @Override
       public void done(AVIMClient client, AVIMException e) {
-        AVIMConversationQuery query = client.getQuery();
+        AVIMConversationsQuery query = client.getConversationsQuery();
         query.whereGreaterThan("lm", getDateWithDateString("2017-01-01"));
         query.whereLessThan("lm", getDateWithDateString("2017-02-01"));
         query.findInBackground(new AVIMConversationQueryCallback() {
@@ -2045,6 +2034,91 @@ void queryActiveConversationsBetween() {
 - 执行查询，获取符合条件的对话的数量
 ```
 {% endblock %}
+
+
+{% block conversation_query_sorting %}
+```java
+AVIMClient tom = AVIMClient.getInstance("Tom");
+
+tom.open(new AVIMClientCallback() {
+  @Override
+  public void done(AVIMClient client, AVIMException e) {
+    if (e == null) {
+      // 登录成功
+      AVIMConversationsQuery query = client.getConversationsQuery();
+
+      // 按对话的创建时间降序
+      query.orderByDescending("createdAt");
+
+      query.findInBackground(new AVIMConversationQueryCallback() {
+        @Override
+        public void done(List<AVIMConversation> convs, AVIMException e) {
+          if (e == null) {
+            if(convs != null && !convs.isEmpty()) {
+              // 获取符合查询条件的 conversation 列表
+            }
+          }
+        }
+      });
+    }
+  }
+});
+```
+{% endblock %}
+
+
+{% block conversation_query_compact_mode %}
+```java
+public void queryConversationCompact() {
+  AVIMClient tom = AVIMClient.getInstance("Tom");
+  tom.open(new AVIMClientCallback() {
+    @Override
+    public void done(AVIMClient client, AVIMException e) {
+      if (e == null) {
+        //登录成功
+        AVIMConversationsQuery query = client.getConversationsQuery();
+        query.setCompact(true);
+        query.findInBackground(new AVIMConversationQueryCallback() {
+          @Override
+          public void done(List<AVIMConversation> convs, AVIMException e) {
+            if (e == null) {
+              //获取符合查询条件的 Conversation 列表
+            }
+          }
+        });
+      }
+    }
+  });
+}
+```
+{% endblock %}
+
+{% block conversation_query_with_last_message %}
+```java
+public void queryConversationWithLastMessage() {
+  AVIMClient tom = AVIMClient.getInstance("Tom");
+  tom.open(new AVIMClientCallback() {
+    @Override
+    public void done(AVIMClient client, AVIMException e) {
+      if (e == null) {
+        //登录成功
+        AVIMConversationsQuery query = client.getConversationsQuery();
+        query.setWithLastMessagesRefreshed(true);
+        query.findInBackground(new AVIMConversationQueryCallback() {
+          @Override
+          public void done(List<AVIMConversation> convs, AVIMException e) {
+            if (e == null) {
+              //获取符合查询条件的 Conversation 列表
+            }
+          }
+        });
+      }
+    }
+  });
+}
+```
+{% endblock %}
+
 
 {% block chatroom_intro %}
 和建立普通对话类似，建立一个聊天室只是在 `AVIMClient.createConversation(conversationMembers, name, attributes, isTransient, callback)` 中传入 `isTransient=true`。
@@ -2088,7 +2162,7 @@ private void TomQueryWithLimit() {
     public void done(AVIMClient client, AVIMException e) {
       if (e == null) {
         //登录成功
-        AVIMConversationQuery query = tom.getQuery();
+        AVIMConversationsQuery query = tom.getConversationsQuery();
         query.setLimit(1);
         //获取第一个对话
         query.findInBackground(new AVIMConversationQueryCallback() {
@@ -2118,11 +2192,11 @@ private void TomQueryWithLimit() {
 ```
 {% endblock %}
 
-{% block chatroom_query_method %} `AVIMConversationQuery.findInBackground` {% endblock %}
+{% block chatroom_query_method %} `AVIMConversationsQuery.findInBackground` {% endblock %}
 
 {% block chatroom_query_method2 %}以 `where` 开头的{% endblock %}
 
-{% block create_query_instance_method %}`AVIMClient.getQuery()`{% endblock %}
+{% block create_query_instance_method %}`AVIMClient.getConversationsQuery()`{% endblock %}
 
 {% block chatroom_query_single %}
 
@@ -2135,7 +2209,7 @@ private void TomQueryWithLimit() {
       if (e == null) {
         //登录成功
         //查询 attr.topic 为 "奔跑吧，兄弟" 的暂存聊天室
-        AVIMConversationQuery query = client.getQuery();
+        AVIMConversationsQuery query = client.getConversationsQuery();
         query.whereEqualTo("attr.topic", "奔跑吧，兄弟");
         query.whereEqualTo("tr", true);
         //获取第一个对话
@@ -2403,7 +2477,7 @@ AVIMClient.setAutoOpen(false);
 {% block code_set_query_policy %}
 
 ```java
-  // 设置 AVIMConversationQuery的查询策略
+  // 设置 AVIMConversationsQuery 的查询策略
   public void setQueryPolicy(AVQuery.CachePolicy policy);
 ```
 {% endblock %}
@@ -2412,7 +2486,7 @@ AVIMClient.setAutoOpen(false);
 有时你希望先走网络查询，发生网络错误的时候，再从本地查询，可以这样：
 
 ```java
-    AVIMConversationQuery query = client.getQuery();
+    AVIMConversationsQuery query = client.getConversationsQuery();
     query.setQueryPolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
     query.findInBackground(new AVIMConversationQueryCallback() {
       @Override

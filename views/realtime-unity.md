@@ -228,7 +228,7 @@ public void GuanYULogIn()
     });
 }
 
-private void Guanyu_OnMessageReceived(object sender, AVIMMesageEventArgs e)
+private void Guanyu_OnMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     if (e.Message is AVIMTextMessage)
     {
@@ -282,7 +282,7 @@ public void GuanYULogIn()
     });
 }
 
-private void Guanyu_OnMessageReceived(object sender, AVIMMesageEventArgs e)
+private void Guanyu_OnMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     // 如果是文本消息
     if (e.Message is AVIMTextMessage)
@@ -324,7 +324,7 @@ public void ZhangFeiLogIn()
     });
 }
 
-private void Zhangfei_OnOfflineMessageReceived(object sender, AVIMMesageEventArgs e)
+private void Zhangfei_OnOfflineMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     if (e.Message is AVIMTextMessage)
     {
@@ -567,18 +567,17 @@ avRealtime.CreateClient("123456789", tag: "Mobile", deviceId: "201113D4-D329-497
 
 #### 监听单点登录被踢下线
 
-通过订阅 `AVIMClient.OnSessionClosed` 可以监听云端关闭连接的原因：
+通过订阅 `AVIMRealtime.OnSessionClosed` 可以监听云端关闭连接的原因：
 
 ```cs
 public void SessionConflicted()
 {
     AVIMClient liubei = null;
+    AVIMRealtime.OnSessionClosed += Liubei_OnSessionClosed;
     avRealtime.CreateClient("1001", tag: "Unity", deviceId: "iOS-Device-Id").ContinueWith(t =>
     {
+        // 登录成功
         liubei = t.Result;
-    }).ContinueWith(s =>
-    {
-        liubei.OnSessionClosed += Liubei_OnSessionClosed;
     });
 }
 
@@ -908,6 +907,39 @@ clang: error: linker command failed with exit code 1 (use -v to see invocation)
 
 ![link-libs](https://dn-lhzo7z96.qbox.me/1493266411053)
 
+#### Android 
+经过测试在 Android ，该插件所打包的 jar 包内部的 websocket lib 不支持 wss 加密链接，因此我们经过与该插件作者的沟通，我们重新打包了一个支持 wss 加密链接的 jar 包，下载地址是：
+[websocketunity.jar](https://dn-lhzo7z96.qbox.me/1494239779983)，下载之后替换目标目录 `~/Assets/WebSocketUnity/Plugins/Android/websocketunity.jar` 即可。
+
+##### Android 发布到手机上出现崩溃 
+如果使用 Android monitor 日志抓取工具，抓取到了如下错误：
+
+```
+JNI ERROR (app bug): accessed stale local reference 0x200001 (index 0 in a table of size 0)
+```
+
+请更新一下插件目录下的 `~/Assets/WebSocketUnity/Platforms/WebSocketUnityAndroid.cs` 文件中 `WebSocketUnityAndroid` 类的构造函数：
+
+```cs
+    public WebSocketUnityAndroid(string url, string gameObjectName)
+    {
+
+        if (0 == AndroidJNI.AttachCurrentThread())
+        {
+            Debug.LogError("AttachCurrentThread success");
+            object[] parameters = new object[2];
+            parameters[0] = url;
+            parameters[1] = gameObjectName;
+
+            mWebSocket = new AndroidJavaObject("com.jonathanpavlou.WebSocketUnity", parameters);
+        }
+        else
+        {
+            Debug.LogError("AttachCurrentThread faliue");
+        }
+    }
+```
+
 ## 消息
 
 ### 自定义消息类型
@@ -962,6 +994,7 @@ websocket<={"uid":"_6jfc+4KT7KtkEgw8lJnAA","t":1490929028400,"i":-65533,"cmd":"a
 /// 自定义表情消息
 /// </summary>
 [AVIMMessageClassName("Emoji")]
+[AVIMTypedMessageTypeIntAttribute(2)]// 加了这个标记之后，2 会被自动添加为 `_lctype` 的类型值
 public class Emoji: AVIMTypedMessage
 {
     [AVIMMessageFieldName("Ecode")]
@@ -988,7 +1021,7 @@ currentConveration.SendMessageAsync(emojiMessage);
 接收方代码如下：
 
 ```cs
-private void OnMessageReceived(object sender, AVIMMesageEventArgs e)
+private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     if (e.Message is Emoji)
     {
@@ -1005,7 +1038,7 @@ private void OnMessageReceived(object sender, AVIMMesageEventArgs e)
 可以打开日志查看：
 
 ```cs
-websocket=>{"msg":"{\"GCode\":\"#e001\"}","cid":"58d4c2472e9af6631e10092f","r":true,"i":-65532,"cmd":"direct","appId":"021h1hbtd5shlz38pegnpkmq9d3qf8os1vt0nef4f2lxjru8","peerId":"1002"}
+websocket=>{"msg":"{\"ECode\":\"#e001\",\"_letype\":2}","cid":"58d4c2472e9af6631e10092f","r":true,"i":-65532,"cmd":"direct","appId":"021h1hbtd5shlz38pegnpkmq9d3qf8os1vt0nef4f2lxjru8","peerId":"1002"}
 ```
 
 #### AVIMTypedMessage 详解
@@ -1014,6 +1047,11 @@ websocket=>{"msg":"{\"GCode\":\"#e001\"}","cid":"58d4c2472e9af6631e10092f","r":t
 
 ```json
 {\"_lctext\":\"text content\",\"_lctype\":-1}
+```
+而加了 `AVIMTypedMessageTypeIntAttribute` 标记之后会自动的被 SDK 识别为 `_lctype` 发送到对话中，例如上面的 `Emoji` 消息：
+
+```json
+{\"ECode\":\"#e001\",\"_letype\":2}
 ```
 
 因此 `AVIMTypedMessage` 的子类都会对 msg 字段进行 JSON 序列化和反序列化。
@@ -1163,7 +1201,7 @@ private Task SendBinaryMessageAsync()
 接收方通过订阅 `AVIMClient.OnMessageReceived` 事件来监听消息的接收:
 
 ```cs
-private void AVIMClient_OnMessageReceived(object sender, AVIMMesageEventArgs e)
+private void AVIMClient_OnMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     if (e.Message is BinaryMessage)
     {
@@ -1392,6 +1430,44 @@ id|playerId|channelId
 
 开发者可以在自己的数据库中用 Player-Channel 这张关系表来管理玩家和频道之间的关系。
 
+
+## 异常处理
+在所有 SDK 内部的异步方法中(返回值为`Task`类型的接口)，异常都不会直接抛出而是会在 `Task.Exception` 里面获取，参考如下处理方式。
+
+假设场景是因为意外情况短断线，但是用户恰巧在断线的时候点击发送消息，那么 SDK 会抛出一个异常
+
+```cs
+conversation.SendMessageAsync(new AVIMTextMessage("兄弟们，睡什么睡，起来嗨！")).ContinueWith(s =>
+{
+    if (s.Exception != null)
+    {
+        // 通过获取异常集合来判断该项操作所可能导致了多种异常
+        var inners = s.Exception.InnerExceptions;
+
+        if (inners != null)
+        {
+            Debug.Log("inners");
+            foreach (var e in inners)
+            {
+                // 这里一定会有一个异常消息为：未能连接到服务器，无法发送消息。
+                Debug.Log(e.Message);
+            }
+        }
+    }
+});
+```
+
+更为直接的方式是直接判断 `Task.IsFaulted` 就可以知道 `Task` 是否在执行的时候存在错误:
+
+```cs
+conversation.SendMessageAsync(new AVIMTextMessage("兄弟们，睡什么睡，起来嗨！")).ContinueWith(s =>
+{
+    if (s.IsFaulted)
+    {
+        Debug.Log("发送失败");
+    }
+});
+```
 
 ## 常见问题
 

@@ -561,7 +561,7 @@ new AV.Realtime({
 });
 ```
 
-加载了插件之后，多人 Conversation 会增加 `lastReadTimestamps` 属性，该属性是 **对话成员 ID** - **最后已读消息时间** 的键值对。在首次查询该会话的消息记录后，`lastReadTimestamps` 将会得到初始值，之后在会话中的其他成员将会话标记为已读时，SDK 会将 `lastReadTimestamps` 更新到最新值并在 conversation 上派发 `lastreadtimestampsupdate` 事件：
+加载了插件之后，多人 Conversation 会增加 `lastReadTimestamps` 属性，该属性是 **对话成员 ID** - **最后已读消息时间** 的键值对。在首次查询该对话的消息记录后，`lastReadTimestamps` 将会得到初始值，之后在对话中的其他成员将对话标记为已读时，SDK 会将 `lastReadTimestamps` 更新到最新值并在 conversation 上派发 `lastreadtimestampsupdate` 事件：
 
 ```javascript
 // 以 Tom 身份登录
@@ -613,34 +613,34 @@ realtime.createIMClient('Tom').then(function (host) {
 
 #### 未读消息数更新通知
 
-未读消息数量通知是默认的未读消息处理方式：当客户端上线时，会收到其参与过的会话的未读消息数量的通知，然后由客户端负责主动拉取未读的消息。
+未读消息数量通知是默认的未读消息处理方式：当客户端上线时，会收到其参与过的对话的未读消息数量的通知，然后由客户端负责主动拉取未读的消息。
 
 SDK 会在 `Conversation` 上维护 `unreadMessagesCount` 字段，这个字段在变化时 `IMClient` 会派发 `unreadmessagescountupdate` 事件。这个字段会在下面这些情况下发生变化：
 
-- 登录时，服务端通知会话的未读消息数
+- 登录时，服务端通知对话的未读消息数
 - 收到在线消息
-- 用户将会话标记为已读
+- 用户将对话标记为已读
 
-开发者应当监听 `unreadmessagescountupdate` 事件，在会话列表界面上更新这些会话的未读消息数量。
+开发者应当监听 `unreadmessagescountupdate` 事件，在对话列表界面上更新这些对话的未读消息数量。
 
-清除会话未读消息数的唯一方式是调用 `Conversation#read` 方法将会话标记为已读，一般来说开发者至少需要在下面两种情况下将会话标记为已读：
+清除对话未读消息数的唯一方式是调用 `Conversation#read` 方法将对话标记为已读，一般来说开发者至少需要在下面两种情况下将对话标记为已读：
 
-- 在会话列表点击某会话进入到会话页面时
-- 用户正在某个会话页面聊天，并在这个会话中收到了消息时
+- 在对话列表点击某对话进入到对话页面时
+- 用户正在某个对话页面聊天，并在这个对话中收到了消息时
 
 ```javascript
-// 进入到会话页面时标记其为已读
+// 进入到对话页面时标记其为已读
 conversation.read().then(function(conversation) {
   console.log('对话已标记为已读');
 }).catch(console.error.bind(console));
 
-// 当前聊天的会话收到了消息立即标记为已读
+// 当前聊天的对话收到了消息立即标记为已读
 currentConversation.on('message', function() {
   currentConversation.read().catch(console.error.bind(console));
 })
 ```
 
-当用户标记某个会话为已读时，该用户其他在线的客户端也会得到通知，SDK 会自动将该会话的未读消息数更新为 0。
+当用户标记某个对话为已读时，该用户其他在线的客户端也会得到通知，SDK 会自动将该对话的未读消息数更新为 0。
 
 #### 离线消息通知
 
@@ -1075,6 +1075,8 @@ tom.createConversation({
 
 ### 对话的查询
 
+{{ im.conversationRecordsLifespan() }}
+
 <!-- #### 基础查询 -->
 
 #### 根据 id 查询
@@ -1247,7 +1249,6 @@ client.getQuery()
   .greaterThanOrEqualTo('lm', new Date('2017-01-01 00:00:00'))
   .lessThan('lm', new Date('2017-02-01 00:00:00'))
 ```
-
 
 #### 查询结果选项
 
@@ -1521,7 +1522,7 @@ var signatureFactory = function(clientId) {
  * @param {String} conversationId
  * @param {String} clientId 当前用户 ID
  * @param {String[]} targetIds 此次操作的目标用户 IDs
- * @param {String} action  此次行为的动作，可能的值为 create（创建会话）、add（加群和邀请）和 remove（踢出群）之一
+ * @param {String} action  此次行为的动作，可能的值为 create（创建对话）、add（加群和邀请）和 remove（踢出群）之一
  * @return {Object} signatureResult
  * @return {String} signatureResult.signature
  * @return {Number} signatureResult.timestamp
@@ -1660,7 +1661,7 @@ var ConfirmOnQuitPlugin = {
   onConversationCreate: function onConversationCreate(conversation) {
     var originalQuit = conversation.quit;
     conversation.quit = function() {
-      var confirmed = window.confirm('退出会话？退出后将无法收到消息。');
+      var confirmed = window.confirm('退出对话？退出后将无法收到消息。');
       if (confirmed) {
         return originalQuit.apply(this, arguments);
       } else {

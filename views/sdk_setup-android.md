@@ -2,6 +2,7 @@
 {% set platform_name = "Android" %}
 {% set maven_uri = "http://mvn.leancloud.cn/nexus/content/repositories/public" %}
 {% import "views/_helper.njk" as docs %}
+{% from "views/_data.njk" import libVersion as version %}
 {% block libs_tool_automatic %}
 
 #### Gradle
@@ -70,25 +71,25 @@ dependencies {
     compile ('com.android.support:support-v4:21.0.3')
 
     // LeanCloud 基础包
-    compile ('cn.leancloud.android:avoscloud-sdk:v3.+')
+    compile ('cn.leancloud.android:avoscloud-sdk:{{ version.leancloud }}')
 
     // 推送与实时聊天需要的包
-    compile ('cn.leancloud.android:avoscloud-push:v3.+@aar'){transitive = true}
+    compile ('cn.leancloud.android:avoscloud-push:{{ version.leancloud }}@aar'){transitive = true}
 
     // LeanCloud 统计包
-    compile ('cn.leancloud.android:avoscloud-statistics:v3.+')
+    compile ('cn.leancloud.android:avoscloud-statistics:{{ version.leancloud }}')
 
     // LeanCloud 用户反馈包
-    compile ('cn.leancloud.android:avoscloud-feedback:v3.+@aar')
+    compile ('cn.leancloud.android:avoscloud-feedback:{{ version.leancloud }}@aar')
 
     // avoscloud-sns：LeanCloud 第三方登录包
-    compile ('cn.leancloud.android:avoscloud-sns:v3.+@aar')
+    compile ('cn.leancloud.android:avoscloud-sns:{{ version.leancloud }}@aar')
     compile ('cn.leancloud.android:qq-sdk:1.6.1-leancloud')
     // 目前新浪微博官方只提供 jar 包的集成方式
     // 请手动下载新浪微博 SDK 的 jar 包，将其放在 libs 目录下进行集成
 
     // LeanCloud 应用内搜索包
-    compile ('cn.leancloud.android:avoscloud-search:v3.+@aar')
+    compile ('cn.leancloud.android:avoscloud-search:{{ version.leancloud }}@aar')
 }
 ```
 
@@ -103,17 +104,17 @@ Eclipse 用户首先 [下载 SDK](sdk_down.html)，然后按照 [手动安装步
 下载文件成功解压缩后会得到如下文件：
 
 ```
-├── avoscloud-feedback-<版本号>.zip     // LeanCloud 用户反馈模块
-├── avoscloud-push-<版本号>.jar         // LeanCloud 推送模块和实时聊天模块
-├── avoscloud-sdk-<版本号>.jar          // LeanCloud 基本存储模块
-├── avoscloud-search-<版本号>.zip       // LeanCloud 应用内搜索模块
-├── avoscloud-sns-<版本号>.zip          // LeanCloud SNS 模块
-├── avoscloud-statistics-<版本号>.jar   // LeanCloud 统计模块
-├── fastjson.jar                                // LeanCloud 基本存储模块
+├── avoscloud-feedback-{{ version.leancloud }}.zip     // LeanCloud 用户反馈模块
+├── avoscloud-push-{{ version.leancloud }}.jar         // LeanCloud 推送模块和实时聊天模块
+├── avoscloud-sdk-{{ version.leancloud }}.jar          // LeanCloud 基本存储模块
+├── avoscloud-search-{{ version.leancloud }}.zip       // LeanCloud 应用内搜索模块
+├── avoscloud-sns-{{ version.leancloud }}.zip          // LeanCloud SNS 模块
+├── avoscloud-statistics-{{ version.leancloud }}.jar   // LeanCloud 统计模块
+├── fastjson-{{ version.fastjson }}.jar                         // LeanCloud 基本存储模块
 ├── Java-WebSocket-1.3.2-leancloud.jar          // LeanCloud 推送模块和实时聊天模块
 ├── protobuf-java-2.6.1.jar                     // LeanCloud 推送模块和实时聊天模块
-├── okhttp-2.6.0-leancloud.jar                  // LeanCloud 基本存储模块
-├── okio-1.6.0-leancloud.jar                    // LeanCloud 基本存储模块
+├── okhttp-{{ version.okhttp }}.jar                            // LeanCloud 基本存储模块
+├── okio-{{ version.okio }}.jar                             // LeanCloud 基本存储模块
 ├── qq.sdk.1.6.1.jar                            // LeanCloud SNS 模块
 └── weibo.sdk.android.sso.3.0.1-leancloud.jar   // LeanCloud SNS 模块
 ```
@@ -122,22 +123,22 @@ Eclipse 用户首先 [下载 SDK](sdk_down.html)，然后按照 [手动安装步
 
 ##### LeanCloud 基本存储模块
 
-* `avoscloud-<版本号>.jar`
-* `okhttp-2.6.0-leancloud.jar`
-* `okio-1.6.0-leancloud.jar`
-* `fastjson.jar` (请一定要使用我们提供的 jar，针对原版有 bug 修正。)
+* `avoscloud-{{ version.leancloud }}.jar`
+* `okhttp-{{ version.okhttp }}.jar`
+* `okio-{{ version.okio }}.jar`
+* `fastjson-{{ version.fastjson }}.jar`
 
 ##### LeanCloud 推送模块和实时聊天模块
 
 * LeanCloud 基础存储模块
-* `avospush-<版本号>.jar`
+* `avospush-{{ version.leancloud }}.jar`
 * `Java-WebSocket-1.3.2-leancloud.jar`
 * `protobuf-java-2.6.1.jar`
 
 ##### LeanCloud 统计模块
 
 * LeanCloud 基础存储模块
-* `avosstatistics-<版本号>.jar`
+* `avosstatistics-{{ version.leancloud }}.jar`
 
 ##### LeanCloud SNS 模块
 
@@ -145,7 +146,7 @@ Eclipse 用户首先 [下载 SDK](sdk_down.html)，然后按照 [手动安装步
 * `weibo.sdk.android.sso.jar`
 * `qq.sdk.1.6.1.jar`
 
-我们提供的下载包里包含了必须的依赖库，请务必使用我们提供的 jar 包，才能保证 SDK 的正常运行。特别是 fastjson 必须使用我们提供的版本，否则无法运行。
+我们提供的下载包里包含了必须的依赖库，自己下载官方库也可以，不过请确保版本一致。
 
 **注意：如果需要使用美国站点，并且 SDK 版本是 3.3 及以上，则不需要引入 SSL 证书。其他低版本的用户，需要下载 [SSL 证书](https://download.leancloud.cn/sdk/android/current/avoscloud_us_ssl.bks)，将其拷贝到项目的 `res/raw/` 之下。**
 
@@ -224,10 +225,11 @@ public class MyLeanCloudApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        // 启用北美节点, 需要在 initialize 之前调用
+        AVOSCloud.useAVCloudUS();
+
         // 初始化参数依次为 this, AppId, AppKey
         AVOSCloud.initialize(this,"{{appid}}","{{appkey}}");
-        // 启用北美节点
-        AVOSCloud.useAVCloudUS();
     }
 }
 ```

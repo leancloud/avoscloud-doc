@@ -1,19 +1,79 @@
 # 云引擎常见问题和解答
 
+## 云引擎都支持哪些语言
+
+目前支持 Node.js、Python、Java 和 PHP 运行环境，未来可能还会引入其他语言。
+
+## 云引擎的二级域名多久生效
+
+我们设置的 TTL 是 5 分钟，但各级 DNS 服务都有可能对其进行缓存，实际生效会有一定延迟。
+
+## 云引擎二级域名可以启用 HTTPS 吗
+
+对于 `.leanapp.cn` 的二级域名我们默认支持 HTTPS，如需配置自动跳转到 HTTPS，请看 [《重定向到 HTTPS》](leanengine_webhosting_guide-node.html#重定向到_HTTPS)。自定义的域名如需配置 HTTPS 需要在进行域名绑定时上传 HTTPS 证书。
+
+## 为什么在控制台通过在线定义函数或项目定义函数中的 Class Hook 没有被运行？
+
+首先确认一下 Hook 被调用的时机是否与你的理解一致：
+
+* `beforeSave`：对象保存或创建之前
+* `afterSave`：对象保存或创建之后
+* `beforeUpdate`：对象更新之前
+* `afterUpdate`：对象更新之后
+* `beforeDelete`：对象删除之前
+* `afterDelete`：对象删除之后
+* `onVerified`：用户通过邮箱或手机验证后
+* `onLogin`：用户在进行登录操作时
+
+还需注意在本地进行云引擎调试时，运行的会是线上预备环境的 Hook，如果没有预备环境则不会运行。
+
+然后检查 Hook 函数是否被执行过：
+
+{% if node=='qcloud' %}
+可以先在 Hook 函数的入口打印一行日志，然后进行操作，再到 `云引擎日志` 中检查该行日志是否被打印出来，如果没有看到日志原因可能包括：
+{% else %}
+可以先在 Hook 函数的入口打印一行日志，然后进行操作，再到 [云引擎日志](/cloud.html?appid={{appid}}#/log) 中检查该行日志是否被打印出来，如果没有看到日志原因可能包括：
+{% endif %}
+
+* 代码没有被部署到正确的应用
+* 代码没有被部署到生产环境（或没有部署成功）
+* Hook 的类名不正确
+
+如果日志已打出，则继续检查函数是否成功，检查控制台上是否有错误信息被打印出。如果是 before 类 Hook，需要保证 Hook 函数在 15 秒内结束，否则会被系统认为超时。
+
+相关文档：
+
+* [云引擎指南：Hook 函数](leanengine_cloudfunction_guide-node.html#Hook_函数)
+
+## 命令行工具在本地调试时提示 `Error: listen EADDRINUSE :::3000`，无法访问应用
+
+`listen EADDRINUSE :::3000` 表示你的程序默认使用的 3000 端口被其他应用占用了，可以按照下面的方法找到并关闭占用 3000 端口的程序：
+
+* [Mac 使用 `lsof` 和 `kill`](http://stackoverflow.com/questions/3855127/find-and-kill-process-locking-port-3000-on-mac)
+* [Linux 使用 `fuser`](http://stackoverflow.com/questions/11583562/how-to-kill-a-process-running-on-particular-port-in-linux)
+* [Windows 使用 `netstat` 和 `taskkill`](http://stackoverflow.com/questions/6204003/kill-a-process-by-looking-up-the-port-being-used-by-it-from-a-bat)
+
+也可以修改命令行工具默认使用的 3000 端口：
+```
+lean -p 3002
+```
+
+## 云函数如何获取 Header、如何响应 GET 方法？
+
+不建议在 Header 中传递信息，云函数可以说是 LeanCloud 所提供的一种 RPC 的封装，这种封装的目的是隐藏掉底层使用 HTTP 协议的细节，所以建议将所有的参数都放在 Body 中、只使用 POST 方法请求。
+
+如果希望能够充分利用 HTTP 提供的语义化特征，可以考虑使用云引擎的「[网站托管](leanengine_webhosting_guide-node.html#Web_框架)」功能，自行来处理 HTTP 请求。
+
 ## 如何判断当前是预备环境还是生产环境？
 
 请参考 [网站托管开发指南 · 预备环境和生产环境](leanengine_webhosting_guide-node.html#预备环境和生产环境) / [Python · 运行环境区分](leanengine_webhosting_guide-python.html#预备环境和生产环境)。
 
 ## 怎么添加第三方模块
 
-云引擎 2.0 开始支持添加第三方模块（请参考 [云引擎指南 - 升级到 2.0](leanengine_guide-cloudcode.html#云引擎_2_0_版)），只需要像普通的 Node.js 项目那样，在项目根目录创建文件 `package.json`，下面是一个范例：
+只需要像普通的 Node.js 项目那样，在项目根目录的 `package.json` 中添加依赖即可：
 
 ```
 {
-  "name": "cloud-engine-test",
-  "description": "Cloud Engine test project.",
-  "version": "0.0.1",
-  "private": true,
   "dependencies": {
     "async": "0.9.0",
     "moment": "2.9.0"
@@ -21,21 +81,9 @@
 }
 ```
 
-`dependencies` 内的内容表明了该项目依赖的三方模块（比如示例中的 `async` 和 `moment`）。
+`dependencies` 内的内容表明了该项目依赖的三方模块（比如示例中的 `async` 和 `moment`）。关于 `package.json` 的更多信息见 [网站托管开发指南 · package.json](leanengine_webhosting_guide-node.html#package_json)。
 
-然后在项目根目录执行：
-
-```
-npm install
-```
-
-即可下载相关三方包到 `node_modules` 目录。
-
-然后即可在代码中引入三方包：
-
-```
-var async = require('async');
-```
+然后即可在代码中使用第三方包（`var async = require('async')`），如需在本地调试还需运行 `npm install` 来安装这些包。
 
 **注意**：命令行工具部署时是不会上传 `node_modules` 目录，因为云引擎服务器会根据 `package.json` 的内容自动下载三方包。所以也建议将 `node_modules` 目录添加到 `.gitignore` 中，使其不加入版本控制。
 
@@ -62,7 +110,7 @@ var async = require('async');
 
 「定于函数」的产生是为了方便大家初次体验云引擎，或者只是需要一些简单 hook 方法的应用使用。我们的实现方式就是把定义的函数拼接起来，生成一个云引擎项目然后部署。
 
-所以可以认为「定义函数」和 「git 部署」最终是一样的，都是一个完整的项目。
+所以可以认为「定义函数」和 「Git 部署」最终是一样的，都是一个完整的项目。
 
 是一个单独功能，可以不用使用基础包，git 等工具快速的生成和编辑云引擎。
 
@@ -79,6 +127,8 @@ var async = require('async');
 5. 部署后请留意云引擎控制台上是否有错误产生。
 
 ## 为什么查询 include 没有生效？
+
+> 将 JavaScript SDK 和 Node SDK 升级到 3.0 以上版本可以彻底解决该问题。  
 
 以 JavaScript 云引擎为例子，很多时候，经常会定义一个云函数，在里面使用 `AV.Query` 查询一张表，并 include 其中一个 pointer 类型的字段，然后返回给客户端:
 
