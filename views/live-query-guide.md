@@ -150,6 +150,13 @@ self.doingLiveQuery.delegate = self;
 }
 ```
 ```java
+AVLiveQuery doingLiveQuery = AVLiveQuery.initWithQuery(doingQuery);
+doingLiveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+  @Override
+  public void done(AVLiveQuery.EventType eventType, AVObject avObject, List<String> updateKeyList) {
+    // 事件回调，有更新后会调用此回调函数
+  }
+});
 doingLiveQuery.subscribeInBackground(new AVLiveQuerySubscribeCallback() {
   @Override
   public void done(AVException e) {
