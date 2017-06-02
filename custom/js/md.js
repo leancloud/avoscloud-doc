@@ -228,7 +228,9 @@ var codeBlockTabber = (function() {
       'lang-ts':'TypeScript',
       'lang-es7': 'ECMAScript7',
       'lang-html': 'HTML',
-      'lang-cs': 'C#'
+      'lang-cs': 'C#',
+      'lang-curl': 'curl',
+      'lang-unity': 'Unity'
     };
 
     // Multilingual init
