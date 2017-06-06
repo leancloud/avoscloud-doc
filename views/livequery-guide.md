@@ -144,6 +144,9 @@ LiveQuery 的核心用法就是定义了一个查询，然后订阅符合这个�
 没有 LiveQuery 之前，我们需要让客户端定时拉取或者提醒用户主动刷新来更新界面，而用了 LiveQuery 之后，通过其提供的订阅方式就可以依赖服务端发起的数据同步来刷新界面，这样既减少了界面上的提示，也降低了设置定时器的麻烦。
 
 ```objc
+/* 导入 LiveQuery 模块 */
+#import <AVOSCloudLiveQuery/AVOSCloudLiveQuery.h>
+
 self.doingLiveQuery = [[AVLiveQuery alloc] initWithQuery:doingQuery];
 self.doingLiveQuery.delegate = self;
 [self.doingLiveQuery subscribeWithCallback:^(BOOL succeeded, NSError * _Nonnull error) {
