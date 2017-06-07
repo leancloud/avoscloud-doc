@@ -2733,6 +2733,7 @@ curl -X GET \
   <tr><td>platform</td><td>应用平台：iOS、Android，可选，默认是全部。</td></tr>
   <tr><td>appversion</td><td>选择应用版本，可选，默认是全部。一次取多个版本数据半角逗号（,）分隔，如：1.0,2.0,2.5</td></tr>
   <tr><td>channel</td><td>选择发布渠道，可选，默认是全部。一次取多个渠道数据请用半角逗号（,）分隔，如：Xiaomi,Meizu</td></tr>
+  <tr><td>conv_id</td><td>选择对话 ID，可选，只在查询实时通信某个对话相关的统计信息时使用</td></tr>
 </table>
 
 metrics 参数可选项解释：
@@ -2774,6 +2775,10 @@ metrics 参数可选项解释：
   <tr><td>event_user</td><td>自定义事件用户数，请求参数需增加 event 参数。</td></tr>
   <tr><td>event_duration</td><td>自定义事件时长，请求参数需增加 event 参数。</td></tr>
   <tr><td>event_label_count</td><td>自定义事件标签分布，请求参数需增加 event， event_label 参数。</td></tr>
+  <tr><td>rtm_tr_sender</td><td>单日某暂态对话内有发出过消息的独立用户数，请求参数需增加 conv_id 参数。</td></tr>
+  <tr><td>rtm_tr_msg_down</td><td>单日某暂态对话下行消息总数，请求参数需增加 conv_id 参数。</td></tr>
+  <tr><td>rtm_tr_msg_up</td><td>单日某暂态对话的上行消息总数，请求参数需增加 conv_id 参数。</td></tr>
+  <tr><td>rtm_tr_conv_m</td><td>单日加入某暂态对话的独立用户数，请求参数需增加 conv_id 参数。</td></tr>
 </table>
 
 返回的json数据
