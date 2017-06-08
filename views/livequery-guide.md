@@ -574,7 +574,6 @@ livequery.OnLiveQueryReceived += (sender, e) =>
 ### 针对用户的特殊事件 - login
 LiveQuery 针对 `_User` 表做了一个特殊的功能，可以使用 LiveQuery 订阅用户的登录行为，例如你有一个社交应用，并使用了内置的 `_User` 表来管理用户，那么就可以使用 LiveQuery 来实时订阅其他用户的登录行为，常见的使用场景有：
 
-- AVUser 的单点登录实现
 - 订阅附近 5 公里的用户登录
 - 实现好友登录的弹窗通知
 
