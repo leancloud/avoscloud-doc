@@ -8,7 +8,12 @@ LiveQuery 的使用场景有：
 
 下面是在使用了 LiveQuery 的网页应用和手机应用中分别操作，数据保持同步的效果：
 
-![webm](images/live-query-preview.gif)
+{# 2017-06-09 因为 docs 没为 CDN 加速，视频尺寸大，所以特别对待，放在七牛上。 #}
+<div style="border:2px solid #ccc;">
+  <video src="https://dn-lhzo7z96.qbox.me/1496988080458" controls autoplay muted preload="auto" width="100%" height="100%" >
+HTML5 Video is required for this demo. 您的浏览器不支持播放 HTML5 视频。
+  </video>
+</div>
 
 ## 启用 LiveQuery
 
@@ -601,11 +606,11 @@ userLiveQuery.OnLiveQueryReceived += (sender, e) =>
     }
 };
 ```
-
-## LiveQuery 服务的时序图
+{# 2017-06-09 时序图涉及存储和 IM 的关系，会加大用户的理解难度，先取消。#}
+{# ## LiveQuery 服务的时序图
 
 ![livequery-seq](images/livequery-seq.svg)
-
+#}
 
 ## 常见问题
 
