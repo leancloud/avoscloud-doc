@@ -1,3 +1,4 @@
+{% import "views/_helper.njk" as docs %}
 # 实时数据同步 LiveQuery 开发指南
 
 LiveQuery 的使用场景有：
@@ -9,11 +10,21 @@ LiveQuery 的使用场景有：
 下面是在使用了 LiveQuery 的网页应用和手机应用中分别操作，数据保持同步的效果：
 
 {# 2017-06-09 因为 docs 没为 CDN 加速，视频尺寸大，所以特别对待，放在七牛上。 #}
-<div style="border:2px solid #ccc;">
+<div style="border:2px solid #ccc; margin-bottom:1em;">
   <video src="https://dn-lhzo7z96.qbox.me/1496988080458" controls autoplay muted preload="auto" width="100%" height="100%" >
 HTML5 Video is required for this demo. 您的浏览器不支持播放 HTML5 视频。
   </video>
 </div>
+
+使用我们的「LeanTodo」微信小程序和网页应用，可以实际体验以上视频所演示的效果，步骤如下：
+
+1. 微信扫码，添加小程序「LeanTodo」；<br/>
+  <img src="images/leantodo-weapp-qr.png" width="150" height="150"> 
+1. 进入小程序，点击首页左下角 **设置** > **账户设置**，输入便于记忆的用户名和密码；
+1. 使用浏览器访问 <https://leancloud.github.io/leantodo-vue/>，输入刚刚在小程序中更新好的账户信息，点击 **Login**；
+1. 随意添加更改数据，查看两端的同步状态。
+
+{{ docs.note("注意按以上顺序操作。在网页应用中使用 Signup 注册的账户无法与小程序创建的账户相关联，所以如果颠倒以上操作顺序，则无法观测到数据同步效果。 ") }}
 
 ## 启用 LiveQuery
 
