@@ -17,7 +17,7 @@ npm-debug.log
 # ------------
 md/*.md
 md/start/*.md
-
+md/kb/*.md
 views/test.md
 
 .vscode/
