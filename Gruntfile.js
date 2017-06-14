@@ -128,7 +128,7 @@ module.exports = function(grunt) {
       md: {
         src: ['dist/*.html','!dist/md/*.html'],
         dest: 'dist/'
-      },
+      },/*
       kb: {
         options: {
           layoutdir: 'templates/layouts/',
@@ -136,7 +136,7 @@ module.exports = function(grunt) {
         },
         src: ['dist/kb/*.html'],
         dest: 'dist/'
-      },
+      },*/
       html: {
         src: ['templates/pages/*'],
         dest: 'dist/'
@@ -156,14 +156,14 @@ module.exports = function(grunt) {
           src: '*.md',
           dest: 'dist/start',
           ext: '.html'
-        },
+        },/*
         {
           expand: true,
           cwd: "dist/md/kb",
           src: '*.md',
           dest: 'dist/kb',
           ext: '.html'
-        }],
+        }],*/
         options: {
           template: 'templates/md.jst'
         }
