@@ -163,7 +163,7 @@ module.exports = function(grunt) {
           src: '*.md',
           dest: 'dist/kb',
           ext: '.html'
-        }],*/
+        }*/],
         options: {
           template: 'templates/md.jst'
         }
