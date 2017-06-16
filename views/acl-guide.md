@@ -1,14 +1,34 @@
 {% import "views/_helper.njk" as docs %}
-# ACL 权限管理指南
+# ACL 权限管理开发指南
 
-## 什么是 ACL？
+ACL 是 Access Control List 的缩写，称为访问控制列表，包含了对一个对象或一条记录可进行何种操作的权限定义。例如一个文件对象的 ACL 为 `Alice: read,write; Bob: read`，这代表 Alice 对该文件既能读又能写，而 Bob 只能读取。
 
-ACL 是 Access Control List 的缩写，详见:[ACL Wiki](https://en.wikipedia.org/wiki/Access_control_list)。
+LeanCloud 云端使用的 ACL 机制是将每个操作授权给特定的 User 用户或者 Role 角色，只允许这些用户或角色对一个对象执行这些操作。例如如下 ACL 定义：
 
+```json
+{
+  "*":{
+    "read":true,
+    "write":false
+  },
+  "role:admin":{
+    "read":true,
+    "write":true
+  },
+  "58113fbda0bb9f0061ddc869":{
+    "read":true,
+    "write":true
+  }
+}
+```
 
-数据安全在应用开发的任何阶段都应该被重视。因此本文档我们详细介绍了在选择 LeanCloud 作为后端服务之后，如何使用 LeanCloud 提供的安全功能模块为开发者的应用以及数据提供安全保障。
+- 所有人可读，但不能写（`*` 代表所有人）。
+- 角色为 admin 的用户及子角色，可读可写。
+- ID 为 58113fbda0bb9f0061ddc869 的用户，可读可写。 
 
-如果你不熟悉权限管理以及 ACL 的概念，请先阅读 [权限管理以及 ACL 入门指南](acl-start.html)。
+LeanCloud 使用内建数据表 `_User` 来维护 [用户/账户系统](leanstorage_guide-js.html#用户)，和内建数据表 `_Role` 来维护 [角色](leanstorage_guide-js.html#角色)。角色既可以包含用户，也可以包含其他角色，也就是说角色有层次关系，将权限授予一个角色代表该角色所包含的其他角色也会得到相应的权限。
+
+LeanCloud 云端对客户端发过来的每一个请求都要进行了用户身份鉴别和 ACL 访问授权的严格检查。因此，使用 ACL 可以灵活且最大程度地保护应用数据，提升访问安全。详细背景及原因请参考 [ACL 与数据安全](acl-start.html)。
 
 下面使用一个极简的论坛的场景来举例：用户只能修改或者删除自己发的帖子，其他用户则只能查看。
 
