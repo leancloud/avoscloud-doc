@@ -32,7 +32,7 @@ $ npm install leancloud-realtime --save --registry=https://registry.npm.taobao.o
 
 #### Github 仓库地址
 
-可以直接通过 Github 仓库使用，也可以通过 Github 给我们提出您的建议
+可以直接通过 Github 仓库使用，也可以通过 Github 给我们提出建议：
 
 - ** 存储服务 leancloud-storage ** Github 仓库地址：[https://github.com/leancloud/javascript-sdk](https://github.com/leancloud/javascript-sdk)
 - ** 实时通讯 leancloud-realtime ** Github 仓库地址：[https://github.com/leancloud/js-realtime-sdk](https://github.com/leancloud/js-realtime-sdk)
@@ -65,6 +65,7 @@ $ npm install leancloud-realtime --save --registry=https://registry.npm.taobao.o
 ```javascript
 var APP_ID = '{{appid}}';
 var APP_KEY = '{{appkey}}';
+
 AV.init({
   appId: APP_ID,
   appKey: APP_KEY
@@ -75,7 +76,16 @@ const appId = '{{appid}}';
 const appKey = '{{appkey}}';
 AV.init({ appId, appKey });
 ```
+```nodejs
+var APP_ID = '{{appid}}';
+var APP_KEY = '{{appkey}}';
+var AV = require('leancloud-storage');
 
+AV.init({
+  appId: APP_ID,
+  appKey: APP_KEY
+});
+```
 {% endblock %}
 
 {% block sdk_switching_node %}

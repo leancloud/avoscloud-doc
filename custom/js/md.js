@@ -230,7 +230,8 @@ var codeBlockTabber = (function() {
       'lang-html': 'HTML',
       'lang-cs': 'C#',
       'lang-curl': 'curl',
-      'lang-unity': 'Unity'
+      'lang-unity': 'Unity',
+      'lang-nodejs': 'Node.js'
     };
 
     // Multilingual init
