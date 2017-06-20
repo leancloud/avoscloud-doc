@@ -25,7 +25,7 @@
         <a class="btn btn-default " ng-click="setCurrentType('all')" ng-class="{'active':currentSDKType == 'all'}" href="#/all">
           所有平台
         </a>
-        <a class="btn btn-default " ng-repeat="k in keys(plats)"  ng-click="setCurrentType(k)" ng-class="{'active':currentSDKType == k}" href="#/{{k}}">
+        <a class="btn btn-default " ng-repeat="k in keys(plats) | filter: hasChildren"  ng-click="setCurrentType(k)" ng-class="{'active':currentSDKType == k}" href="#/{{k}}">
           {{plats[k]}}
         </a>
       </div>
