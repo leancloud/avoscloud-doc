@@ -754,12 +754,11 @@ realtime.register(OperationMessage);
 >
 > 只有在我们的消息类型完全无法满足需求的时候，才需要扩展自己的消息类型。譬如「今日头条」里面允许用户发送某条新闻给好友，在展示上需要新闻的标题、摘要、图片等信息（类似于微博中的 linkcard）的话，这时候就可以扩展一个新的 NewsMessage 类。
 
+{{ im.messagesLifespan() }}
+
 ## 对话
 
-以上章节基本演示了实时通信 SDK 的核心概念「对话」，即 `Conversation`。我们将单聊和群聊（包括聊天室）的消息发送和接收都依托于 `Conversation` 这个统一的概念进行操作，所以开发者需要强化理解的一个概念就是：
->SDK 层面不区分单聊和群聊。
-
-
+以上章节基本演示了实时通信 SDK 的核心概念「对话」，即 `Conversation`。我们将单聊和群聊（包括聊天室）的消息发送和接收都依托于 `Conversation` 这个统一的概念进行操作，所以开发者需要强化理解的一个概念就是：**SDK 层面不区分单聊和群聊。**
 
 对话的管理包括「成员管理」和「属性管理」两个方面。
 
@@ -1075,7 +1074,7 @@ tom.createConversation({
 
 ### 对话的查询
 
-{{ im.conversationRecordsLifespan() }}
+{{ im.conversationsLifespan() }}
 
 <!-- #### 基础查询 -->
 
