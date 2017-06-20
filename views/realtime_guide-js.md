@@ -754,7 +754,7 @@ realtime.register(OperationMessage);
 >
 > 只有在我们的消息类型完全无法满足需求的时候，才需要扩展自己的消息类型。譬如「今日头条」里面允许用户发送某条新闻给好友，在展示上需要新闻的标题、摘要、图片等信息（类似于微博中的 linkcard）的话，这时候就可以扩展一个新的 NewsMessage 类。
 
-{{ im.messagesLifespan() }}
+{{ im.messagesLifespan("### 消息的有效期") }}
 
 ## 对话
 
