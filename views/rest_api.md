@@ -1309,7 +1309,7 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-<a name="regex-options"></a>我们使用以下数据来演示使用 `$options` 来匹配 **title** 字段值：
+<a name="regex-options"></a>我们使用以下数据来演示如何使用 `$options` 匹配 **title** 字段值：
 
 ```
 { "_id" : 100, "title" : "Single line description." },
