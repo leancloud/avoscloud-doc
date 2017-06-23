@@ -13,7 +13,8 @@ angular.module('app').controller('WeappDomainsCtrl', [
           var currentApp = $rootScope.pageState.currentApp;
           console.log($rootScope.pageState.currentApp);
           if (currentApp) {
-            if (currentApp.app_id.indexOf('-gzGzoHsz') !== -1) {
+            // Magic: 通过 push_group 判断是否是 ucloud 节点
+            if (currentApp.push_group === 'g0') {
               var suffix = currentApp.app_id.slice(0, 8).toLowerCase();
               $scope.extraRequestDomains = [
                 suffix + '.api.lncld.net',

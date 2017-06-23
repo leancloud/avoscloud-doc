@@ -1142,7 +1142,7 @@ curl -X GET \
 | `$lte`        | 小于等于                     |
 | `$gt`         | 大于                       |
 | `$gte`        | 大于等于                     |
-| `$regex`      | 正则表达式 `$options` 指定全局修饰符 |
+| `$regex`      | 正则表达式。`$options` 指定 [全局修饰符](#regex-options) |
 | `$in`         | 包含任意一个数组值                |
 | `$nin`        | 不包含任意一个数组值               |
 | `$all`        | 包括所有的数组值                 |
@@ -1159,18 +1159,6 @@ curl -X GET \
   -H "Content-Type: application/json" \
   -G \
   --data-urlencode 'where={"createdAt":{"$gte":{"__type":"Date","iso":"2015-06-29T00:00:00.000Z"},"$lt":{"__type":"Date","iso":"2015-06-30T00:00:00.000Z"}}}' \
-  https://{{host}}/1.1/classes/Post
-```
-
-获取标题以大写「WTO」开头的微博：
-
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: application/json" \
-  -G \
-  --data-urlencode 'where={"title":{"$regex":"^WTO.*","$options":"i"}}' \
   https://{{host}}/1.1/classes/Post
 ```
 
@@ -1307,7 +1295,41 @@ curl -X GET \
 
 所有以上这些参数都可以和其他的组合进行使用。
 
-### 对数组的查询
+### 正则查询
+
+获取标题以大写「WTO」开头的微博：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -G \
+  --data-urlencode 'where={"title":{"$regex":"^WTO.*","$options":"i"}}' \
+  https://{{host}}/1.1/classes/Post
+```
+
+<a name="regex-options"></a>我们使用以下数据来演示如何使用 `$options` 匹配 **title** 字段值：
+
+```
+{ "_id" : 100, "title" : "Single line description." },
+{ "_id" : 101, "title" : "First line\nSecond line" },
+{ "_id" : 102, "title" : "Many spaces before     line" },
+{ "_id" : 103, "title" : "Multiple\nline description" },
+{ "_id" : 103, "title" : "abc123" }
+```
+
+参数 | 说明 | 示例
+---|---|---|
+`i` | **忽略大小写** | `{"$regex":"single", "$options":"i"}` 将匹配<br/><br/><pre><code>{ "_id" : 100, "title" : "Single line description." }</code></pre>
+`m` | **多行匹配**<br/>比如文本中包含了换行符 `\n` | `{"$regex":"^S", "$options":"m"}`（以大写字母 S 开头）将匹配 <br/><br/><pre><code>{ "_id" : 100, "title" : "Single line description." },<br/>{ "_id" : 101, "title" : "First line\nSecond line" }</code></pre>
+`x` | **忽略空白字符**<br/>包括空格、tab、`\n`、`#` 注释等，<br/>但对 vertical tab（ASCII 码为 11）无效。 | `{"$regex":"abc #category code\n123 #item number", "$options":"x"}`（# 后面为注释）将匹配 <br/><br/><pre><code>{ "_id" : 103, "title" : "abc123" }</code></pre>
+`s` | **允许 `.` 匹配任意字符和换行** | `{"$regex":"m.*line", "$options":"si"}` 将匹配 <br/><br/><pre><code>{ "_id" : 102, "title" : "Many spaces before     line" },<br/>{ "_id" : 103, "title" : "Multiple\nline description" }</code></pre>
+
+以上参数可以组合使用，如 `"$options":"sixm"`。
+
+
+### 数组查询
 
 如果 key 的值是数组类型，查找 key 值中有 2 的对象：
 
@@ -1473,7 +1495,13 @@ curl -X GET \
 
 任何在查询上的其他约束都会对返回的对象生效，所以你可以用 `$or` 对其他的查询添加约束。
 
-注意我们不会在组合查询的子查询中支持非过滤型的约束（例如 limit、skip、order、include）。
+`$and` 操作符用于查询**符合全部条件**的对象，它的值为一个 JSON 数组。例如查找存在 price 字段且 price != 199 的对象：
+
+```
+--data-urlencode 'where={"$and":[{"price": {"$ne":199}},{"price":{"$exists":true}}]}' \ 
+```
+
+{{ docs.alert("在组合查询的子查询中不支持使用 limit、skip、order、include 等非过滤型的约束。") }}
 
 ### 使用 CQL 查询
 

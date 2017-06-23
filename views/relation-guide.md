@@ -331,7 +331,7 @@ RDBMS 中通过 Pers_ID 域来连接 PERSON 表和 CAR 表，以此支持应用�
 ```js
     // 假设东莞作为 City 对象存储的时候它的 objectId 是 568e743c00b09aa22162b11f，这个  objectId 可以在控制台查看
     var DongGuan = AV.Object.createWithoutData('City', '568e743c00b09aa22162b11f');
-    DongGuan.fetch({ include: ['dependent'] }, null).then(function (city) {
+    DongGuan.fetch({ include: ['dependent'] }).then(function (city) {
         var province = city.get('dependent');
         console.log(province.get('name'));
     });

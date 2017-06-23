@@ -13,6 +13,10 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
       return obj? Object.keys(obj) : [];
     }
 
+    $scope.hasChildren = function(plat){
+      return $scope.demos[plat]? $scope.demos[plat].length : 0;
+    }
+
     $scope.plats = {
       'ios': 'iOS',
       'android': 'Android',

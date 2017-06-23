@@ -88,7 +88,7 @@ LeanCloud 实时通信服务的特性主要有：
 系统每创建一个对话，就会在云端的 `_Conversation` 表中增加一条记录，可以进入 [控制台 > **存储** > **数据**](/data.html?appid={{appid}}#/) 来查看该数据。
 {% endif %}
 
-{{ im.conversationRecordsLifespan("") }}
+{{ im.conversationsLifespan("") }}
 
 `_Conversation` 表中字段名与对话的各个属性的对应关系为：
 
@@ -194,6 +194,8 @@ SDK 和 REST API 通过「拉」的方式获取任意时间点前的消息。目
 开发者可以通过 SDK 或 [REST API](./realtime_rest_api.html#通过_REST_API_发消息) 发送消息。
 SDK 通常用于最终用户发送消息，而 REST API 是开发者从云端发送消息的接口。当从 REST API
 发送消息时，开发者可以指定消息的发送者、对话 ID，对于系统对话还可以指定消息的接收者。
+
+{{ im.messagesLifespan("") }}
 
 #### 富媒体消息
 

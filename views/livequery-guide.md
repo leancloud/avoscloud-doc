@@ -294,10 +294,12 @@ await testObj.SaveAsync();
 }
 ```
 ```java
-public void done(AVLiveQuery.EventType eventType, AVObject avObject, List<String> updateKeyList) {
-  // AVLiveQueryEventHandler 的回调会被执行，此时 eventType 为 EventType.CREATE
-  // 可以在这里添加更新 UI 的代码
-}
+liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+  @Override
+  public void onObjectCreated(AVObject avObject) {
+    // avObject 即为新添加的数据
+  }
+});
 ```
 ```js
 doingQuery.subscribe().then(function(liveQuery) {
@@ -361,9 +363,12 @@ await oneDoing.SaveAsync();
 }
 ```
 ```java
-public void done(AVLiveQuery.EventType eventType, AVObject avObject, List<String> updateKeyList) {
-  // AVLiveQueryEventHandler 的回调会被执行，此时 eventType 为 EventType.UPDATE
-}
+liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+  @Override
+  public void onObjectUpdated(AVObject avObject, List<String> updateKeyList) {
+      // avObject 即为被修改的 AVObject，updateKeyList 为被修改的 key 值
+  }
+});
 ```
 ```js
 liveQuery.on('update', function(updatedDoingItem, updatedKeys) {
@@ -433,9 +438,12 @@ await anotherDone.SaveAsync();
 }
 ```
 ```java
-public void done(AVLiveQuery.EventType eventType, AVObject avObject, List<String> updateKeyList) {
-  //AVLiveQueryEventHandler 的回调会被执行，此时 eventType 为 EventType.ENTER
-}
+liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+  @Override
+  public void onObjectEnter(AVObject avObject, List<String> updateKeyList) {
+    // avObject 即为被修改的 AVObject，updateKeyList 为被修改的 key 值
+  }
+});
 ```
 ```js
 liveQuery.on('update', function(updatedDoingItem, updatedKeys) {
@@ -503,9 +511,12 @@ await willDone.SaveAsync();
 }
 ```
 ```java
-public void done(AVLiveQuery.EventType eventType, AVObject avObject, List<String> updateKeyList) {
-  //AVLiveQueryEventHandler 的回调会被执行，此时 eventType 为 EventType.LEAVE
-}
+liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+  @Override
+  public void onObjectLeave(AVObject avObject, List<String> updateKeyList) {
+    // avObject 即为被修改的 AVObject，updateKeyList 为被修改的 key 值
+  }
+});
 ```
 ```js
 liveQuery.on('leave', function(leftDoingItem, updatedKeys) {
@@ -566,9 +577,12 @@ LiveQuery 会得到一条数据同步：
 }
 ```
 ```java
-public void done(AVLiveQuery.EventType eventType, AVObject avObject, List<String> updateKeyList) {
-  //AVLiveQueryEventHandler 的回调会被执行，此时 eventType 为 EventType.DELETE
-}
+liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+  @Override
+  public void onObjectDeleted(String objectId) {
+    // objectId 即为被删除的 AVObject 的 id
+  }
+});
 ```
 ```js
 liveQuery.on('delete', function(deletedDoingItem, updatedKeys) {
@@ -602,9 +616,12 @@ LiveQuery 针对 `_User` 表做了一个特殊的功能，可以使用 LiveQuery
 }
 ```
 ```java
-public void done(AVLiveQuery.EventType eventType, AVObject avObject, List<String> updateKeyList) {
-  //AVLiveQueryEventHandler 的回调会被执行，此时 eventType 为 EventType.LOGIN
-}
+liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+  @Override
+  public void onUserLogin(AVUser user) {
+      // user 即为相关的 AVUser
+  }
+});
 ```
 ```js
 ```

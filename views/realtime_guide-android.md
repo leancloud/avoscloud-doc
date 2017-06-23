@@ -2453,7 +2453,7 @@ client.open(openOption, new AVIMClientCallback() {
   @Override
   public void done(AVIMClient client, AVIMException e) {
   }
-);
+});
 ```
 
 如果 `openOption` 设置为 `null`，或者使用 `client.open(AVIMClientCallback callback)` 方法进行登录，默认的登录类型为非强制登录。
