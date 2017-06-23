@@ -11,12 +11,13 @@
 * 应用在多平台客户端（Android、iOS、Windows Phone、浏览器等）中很多逻辑都是一样的，希望将这部分逻辑抽取出来只维护一份。
 * 有些逻辑希望能够较灵活的调整（比如某些个性化列表的排序规则），但又不希望频繁的更新和发布移动客户端。
 * 有些逻辑需要的数据量很大，或者运算成本高（比如某些统计汇总需求），不希望在移动客户端进行运算，因为这样会消耗大量的网络流量和手机运算能力。
-* 当应用执行特定操作时，由云端系统自动触发一段逻辑（称为 [Hook 函数](#Hook_函数)），比如：用户注册后对该用户增加一些信息记录用于统计；或某业务数据发生变化后希望做一些别的业务操作。这些代码不适合放在移动客户端（比如因为上面提到的几个原因）。
+* 当应用执行特定操作时，由云端系统自动触发一段逻辑（称为 [Hook 函数](#Hook_函数)），例如用户注册后对该用户增加一些信息记录用于统计；或某业务数据发生变化后希望做一些别的业务操作。
+* 客户端提供能够越过 ACL 或表权限的限制，对数据进行操作。
 * 需要定时任务，比如每天凌晨清理垃圾注册账号等。
 
-这时，你可以使用云引擎的云函数。云函数是一段部署在服务端的代码，编写 JavaScript 或者 Python 代码，并部署到我们的平台上，可以很好的完成上述需求。
+这时，你可以使用云引擎的云函数，云函数是一段部署在服务端的代码，编写 JavaScript、Python、PHP 或 Java 代码，并部署到我们的平台上，可以很好的完成上述需求。
 
-如果还不知道如何创建云引擎项目，本地调试并部署到云端，请阅读 [云引擎快速入门](leanengine_quickstart.html)。
+如果还不知道如何创建云引擎项目、本地调试并部署到云端，请阅读 [云引擎快速入门](leanengine_quickstart.html)。
 
 ## 多语言支持
 
@@ -119,9 +120,9 @@ cloudfunc.run('averageStars', movie='夏洛特烦恼')
 ### 通过 REST API 调用云函数
 [REST API 调用云函数](rest_api.html#云函数-1) 是 LeanCloud 云端提供的统一的访问云函数的接口，所有的客户端 SDK 也都是封装了这个接口从而实现对云函数的调用。
 
-关于调试工具，我们推荐的工具有：[Postman](http://www.getpostman.com/) 以及 [Paw](https://luckymarmot.com/paw) ，它们可以帮助开发者更方便地调试 Web API。
+我们推荐使用 [Postman](http://www.getpostman.com/) 来调试 REST API，我们的社区中有一篇 [使用 Postman 调试 REST API 教程](https://forum.leancloud.cn/t/postman-rest-api/8638)。
 
-假设没有以上工具，也可以使用命令行进行调试：
+除了 GUI 工具，你也可以使用命令行进行调试：
 
 ```sh
 curl -X POST -H "Content-Type: application/json; charset=utf-8" \
@@ -183,7 +184,7 @@ var paramsJson = {
 AV.Cloud.rpc('averageStars', paramsJson).then(function(object) {
   // 成功，如果云函数返回的是一个 AV.Object，回调参数中的 object 也会是一个 AV.Object
 }, function(error) {
-  // 失败        
+  // 失败
 });
 ```
 ```python

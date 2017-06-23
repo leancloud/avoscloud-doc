@@ -75,7 +75,7 @@ AV.Cloud.run('averageStars', {
 云引擎中默认会直接进行一次本地的函数调用，而不会像客户端一样发起一个 HTTP 请求。如果你希望发起 HTTP 请求来调用云函数，可以传入一个 `remote: true` 的选项。当你在云引擎之外运行 Node SDK 时这个选项非常有用：
 
 ```js
-AV.Cloud.run('averageStars', {remote: true}).then(function(data) {
+AV.Cloud.run('averageStars', {movie: '夏洛特烦恼'}, {remote: true}).then(function(data) {
   // 成功
 }, function(error) {
   // 失败
@@ -90,7 +90,7 @@ AV.Cloud.run('averageStars', {remote: true}).then(function(data) {
 云函数超时时间为 15 秒，如果超过阈值，{{leanengine_middleware}} 将强制响应：
 
 * 客户端收到 HTTP status code 为 503 响应，body 为 `The request timed out on the server.`。
-* 服务端会出现类似这样的日志：`LeanEngine function timeout, url=/1.1/functions/<cloudFunc>, timeout=15000`。
+* 服务端会出现类似这样的日志：`LeanEngine: /1.1/functions/<cloudFunc>: function timeout (15000ms)`。
 
 另外还需要注意：虽然 {{leanengine_middleware}} 已经响应，但此时云函数可能仍在执行，但执行完毕后的响应是无意义的（不会发给客户端，会在日志中打印一个 `Can't set headers after they are sent` 的异常）。
 
@@ -100,7 +100,7 @@ AV.Cloud.run('averageStars', {remote: true}).then(function(data) {
 
 - 在存储服务中创建一个队列表，包含 `status` 列；
 - 接到任务后，向队列表保存一条记录，status 值设置为「处理中」，然后将请求结束掉，将队列对象的 id 发给客户端（旧版本的 SDK 使用 `response.success(id)`）：
-  
+
   ```javascript
   return new Promise( (resolve, reject) => {
     resolve(id);
