@@ -137,7 +137,7 @@ https://{{host}}/1.1/go/com.avoscloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18
 
 ![image](images/todo_render.png)
 
-### 第二步：使 App 支持外部调用
+### 第二步：使 App 支持外部调用（可选，仅 DeepLink 需要）
 
 在设置了和启用了 Class 应用内搜索之后，你需要让你的应用响应搜索结果的 URL 调用。
 
@@ -306,7 +306,7 @@ searchQuery.setSortBuilder(builder);
 
 更多方法请参考 API 文档。
 
-##### 高级指定指南
+##### 高级定制指南
 
 由于每个应用的数据、UI展现要求都有很大的差别，所以单一的搜索组件界面仅仅能够满足较为简单的要求，所以我们将数据接口开放出来以便你能够方便的定制属于你自己的应用内搜索结果页面。
 
@@ -521,6 +521,45 @@ curl -X GET \
 ```
 
 直到返回结果为空。
+
+### 自定义分词
+
+默认情况下， String 类型的字段都将自动分词，我们使用的分词组件是 [mmseg](https://github.com/medcl/elasticsearch-analysis-mmseg)，词库来自搜狗。但是很多用户由于行业或者专业的特殊性，一般都有自定义词库的需求，我们在『组件 -> 应用内搜索』菜单提供了自定义词库上传功能（仅限应用创建者可以上传），词库文件要求是 UTF-8 编码，每个词单独一行，文件大小不能超过 64K，例如：
+
+```
+面向对象编程
+函数式编程
+高阶函数
+响应式设计
+```
+
+保存为 words.txt，上传即可。
+
+上传后，3 分钟后分词将生效，可以通过 `analyze`  API 来测试， `analyze` 要求使用 master key：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  "https://{{host}}/1.1/search/analyze?clazz=GameScore&text=反应式设计"
+```
+
+参数包括 `clazz` 和 `text`， `text` 就是测试的文本段，返回：
+
+```json
+{
+  "tokens" [
+             { "token":"反应式设计",
+               "start_offset":0,
+               "end_offset":5,
+               "type":"word",
+               "position":0 }
+           ]
+}
+```
+
+自定义词库生效后，**仅对新添加或者更新的文档才有效，如果需要对原有的文档也生效的话，需要在 class 的应用内搜索菜单点击『强制重建索引』按钮，重建原有索引**。
+
 
 ### q 查询语法举例
 
