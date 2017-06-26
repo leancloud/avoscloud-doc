@@ -1,50 +1,28 @@
 <!--# 做个餐厅管理系统没用 LeanStorage，这位程序员被老板开除了-->
 
-# 存储服务案例分析 - 餐厅管理系统设计
+# LeanCloud 存储服务教程 - 餐厅座位预订系统
 
-## 这篇教程讲什么？
-- 详解如何设计一个餐厅-座位-预订管理系统在 LeanCloud 如何快速的开发
-- 在没有 mongodb 相关知识储备的情况下如何使用 LeanCloud SDK 提供的接口使用 LeanCloud 存储服务
-- 在表设计的时候如何合理的使用 Relation，Poninter 和自建中间表
+本教程教你如何使用 LeanCloud SDK 快速开发一个餐厅座位预订管理系统，理解在设计数据表时该如何合理使用 Pointer 和自建中间表。
 
-## 读完这篇教程之后能学到什么？
-如下内容对个人情况不同可能有所偏差，但是大致如此。
-
-假设每一项技能以 10 星计算，10 星可以称为该技能的业界顶尖水平
-
-- mongodb 使用水平提升：1 星
-- 逻辑建模能力提升：2 星
-- 编程水平提升：2 星
-- LeanCloud 知识储备增加：4 星
-
-
-## 项目背景介绍
-本文缘起一个用户在社区的讨论：
-
-我想设计一个表结构，能实现如下需求：
+本文缘起一位用户贴在 [社区论坛](http://forum.leancloud.cn) 中的需求，他希望设计一个表结构，能实现如下需求：
 
 - 展现餐厅列表
 - 每个餐厅需要管理餐厅内部的座位
 - 每个座位在每天的某一个时段可能会被预定，我需要管理这些预定
 - 给老板展现每一个餐厅某一个时段的预订率
-- 给老板展现某一个餐厅的某一个座位的翻桌率（这个位置可能靠窗户也可能座位本身的设计很受欢迎）
+- 给老板展现某一个餐厅的某一个座位的翻桌率（这个位置可能靠窗户，也可能座位本身的设计很受欢迎）
 
+我们发现其中很多设计的思路针对其他系统也很适用，所以特别提炼出一些精华分享给 LeanCloud 开发者，希望减少大家「掉坑」情况的发生。我们将按照上述需要的顺序，逐步讲解如何来完成表结构的设计。
 
-一开始我们只是讨论，后来我们跟这个客户也多次沟通最后在不断的探讨下我们发现其中很多设计的思路针对其他系统是适用的，因此我们特别提炼出一些精华分享给所有 LeanCloud 开发者，希望减少大家「掉坑」情况的发生，首先我们来针对上述需求一个一个拆解，逐步实现这个系统里面的表结构设计。
+## 餐厅表 `Restaurant`
 
+首先建立一个只有基本字段 `id` 和 `name` 的餐厅表 **Restaurant**，后文会根据需求补充或者修改字段，代码如下：
 
-## 展现餐厅列表(Restaurant)
-
-首先我们简化餐厅的字段，我们先保存一下基本字段（后文会根据需求补充或者修改字段）：
-
-id|name(餐厅名称:string)
+id|name<span class="text-muted text-thin">（餐厅名称:String）</span>
 --|--
 r1|和平饭店
 r2|北京饭店
 r3|希尔顿大酒店
-
-
-然后调用 SDK 的代码创建它们:
 
 ```js
 'use strict';
@@ -72,9 +50,9 @@ newRestaurant(restaurantData).then(result => {
 });
 ```
 
-## 座位(Seat)
+## 座位表 `Seat`
 
-id|under(归属餐厅:Pointer)|capacity(座位容量:number)
+id|under<span class="text-muted text-thin">（归属餐厅:Pointer）</span>|capacity<span class="text-muted text-thin">（座位容量:Number）</span>
 --|--|--
 s1|r1|2
 s2|r1|3
@@ -119,9 +97,9 @@ newRestaurant(restaurantData).then(restaurant => {
 });
 ```
 
-## 预订表(Bookings)
+## 预订表 `Booking`
 
-seat(座位:)|from(预订起始时间:Date)|to(预订结束时间:Date)
+seat<span class="text-muted text-thin">（座位:Pointer）</span>|from<span class="text-muted text-thin">（预订起始时间:Date）</span>|to<span class="text-muted text-thin">（预订结束时间:Date）</span>
 --|--|--
 s1|2017-02-01 18:00|2017-02-01 19:00
 s1|2017-02-02 15:00|2017-02-02 16:00
@@ -140,9 +118,9 @@ exports.newBooking = function newBooking(bookingtData) {
     let seat = bookingtData.seat;
     if(typeof seat === 'undefined') throw new Error('订座位的时候一定要指定座位...');
     let from = bookingtData.from;
-    if(typeof from === 'undefined') throw new Error('订座位的时候一定要指定指定预订起始时间'); 
+    if(typeof from === 'undefined') throw new Error('订座位的时候一定要指定预订起始时间'); 
     let to = bookingtData.to;
-    if(typeof to === 'undefined') throw new Error('订座位的时候一定要指定指定结束就餐的时间');
+    if(typeof to === 'undefined') throw new Error('订座位的时候一定要指定就餐结束的时间');
 
     let booking = new AV.Object('Booking');
     booking.set('seat',seat);
@@ -153,16 +131,9 @@ exports.newBooking = function newBooking(bookingtData) {
 }
 ```
 
-## 查询某一个餐厅的某一个时段的预订情况
+## 座位预订查询
 
-首先我们针对上述的需求拆解查询条件：
-
-1. 查询某一个餐厅里面里面所有的座位
-2. 查询一些座位在某一个时段的预订情况
-
-拆解之后，我们来用代码逐步实现。
-
-### 查询某一个餐厅里面里面所有的座位
+### 查询某一餐厅的所有座位
 
 假设数据库存在如下数据：
 
@@ -219,20 +190,20 @@ exports.queryBookingInBatch = function queryBookingInBatch(seats, from, to) {
     return query.find();
 }
 //调用代码
-    let seats = ['5901d4590ce463006153ba5f','5901d4598d6d810058ba4eba'];
-    // SDK 针对 UTC 时间做了时区转化，因此查询的时候还是需要传入 UTC 时间
-    let from = new Date("2017-04-25T02:00:00Z");
-    let to = new Date("2017-04-25T14:00:00Z");
-    queryBookingInBatch(seats, from, to).then(result => {
-        console.log(result);
-    }).catch(error => {
-        console.error(error);
-    });
+let seats = ['5901d4590ce463006153ba5f','5901d4598d6d810058ba4eba'];
+// SDK 针对 UTC 时间做了时区转化，因此查询的时候还是需要传入 UTC 时间
+let from = new Date("2017-04-25T02:00:00Z");
+let to = new Date("2017-04-25T14:00:00Z");
+queryBookingInBatch(seats, from, to).then(result => {
+    console.log(result);
+}).catch(error => {
+    console.error(error);
+});
 ```
 
-### 查询某一家餐厅的某一个时段的预定情况
+### 查询一个餐厅在某一时段的预定情况
 
-结合前面两个查询我们可以实现一个分为两步的查询
+结合前面两个查询我们可以实现一个分为两步的查询：
 
 - 先查询出餐厅的座位
 - 然后查询这些作为的预定情况
@@ -253,11 +224,9 @@ querySeats(restaurant).then(seats => {
 });
 ```
 
-## 其他查询需求
-
 ### 查询一个座位在某一个时段的预订情况
 
-我们挑选一个座位: s1，它隶属于和平饭店(r1)，查询 `Booking`表，获取在 2017-04-25 这一天上午 10 点到晚上 22 点之间营业时间的预定情况:
+我们挑选一个座位 s1，它隶属于和平饭店（r1），查询 `Booking` 表，获取在 2017-04-25 这一天上午 10 点到晚上 22 点之间的预定情况：
 
 ```js
 exports.queryBooking = function queryBooking(seat,from,to) {
@@ -281,10 +250,7 @@ queryBooking(seat, from, to).then(result => {
     console.log(result);
 }).catch(error => {
     console.error(error);
-});;
+});
 ```
-
-
-
 
 

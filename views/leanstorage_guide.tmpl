@@ -6,6 +6,7 @@
 {% set link_to_blog_password_reset = '关于自定义邮件模板和验证链接，请参考《[自定义应用内用户重设密码和邮箱验证页面](https://blog.leancloud.cn/607/)》。' %}
 {% set app_permission_link = "[控制台 > 应用设置 > 应用选项](/app.html?appid={{appid}}#/permission)" %}
 {% set query_result_limit = "每次查询默认最多返回 100 条符合条件的结果，要更改这一数值，请参考 [限定结果返回数量](#限定返回数量)。" %}
+{% set tutorial_restaurant = '[《教程 · 开发餐厅座位预订系统》](app-sample-restaurant.html)'%}
 
 # 数据存储开发指南 &middot; {{platform_name}}
 
@@ -277,7 +278,7 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 
 对象可以与其他对象相联系。如前面所述，我们可以把一个 `{{baseObjectName}}` 的实例 A，当成另一个 `{{baseObjectName}}` 实例 B 的属性值保存起来。这可以解决数据之间一对一或者一对多的关系映射，就像关系型数据库中的主外键关系一样。
 
-例如，一个 TodoFolder 包含多个 Todo ，可以用如下代码实现：
+例如，一个 TodoFolder 包含多个 Todo，可以用如下代码实现：
 
 {% block code_relation_todoFolder_one_to_many_todo %}{% endblock %}
 
@@ -1007,3 +1008,7 @@ CQL 是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功
 {% block js_push_guide %}{% endblock %}
 
 {% block use_js_in_webview %}{% endblock %}
+
+## 相关文档
+
+- {{ tutorial_restaurant }}
