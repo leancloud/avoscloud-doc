@@ -62,14 +62,17 @@
 2. 点击 **Certificates, Identifiers & Profiles**
 
   ![enter Certificates, Identifiers & Profiles](images/ios_cert_v2/enter_certificates_identifiers_profiles.png)
-3. 选择在 **Certificates** 栏下的 **All**
+3. 选择在 **Keys** 栏下的 **All**
 4. 点击下图中红色边框内的加号按钮
 
-  ![Create SSL certificate](images/ios_cert_v2/create_ssl_certificate.png)
-5. 勾选 **Production** 栏下的 **Apple Push Notification Authentication Key (Sandbox & Production)**，点击下一步。
+  ![Create Auth Keys](images/ios_cert_v2/create_auth_keys.png)
+5. 根据您的需要自行填写 **Key Description** 并勾选 **APNs** 后点击最下面的 Continue 按钮。
   
-  ![Select push certificate](images/ios_cert_v2/enter_create_token_auth_key.png)
-6. 点击 Download 将生成好的 Auth Key 下载到本地，并记录 Key ID 备用。
+  ![Create New Key](images/ios_cert_v2/create_new_key.png)
+6. 点击 Confirm 按钮继续下一步。
+
+  ![Confirm Key](images/ios_cert_v2/confirm_new_key.png)
+7. 点击 Download 将生成好的 Auth Key 下载到本地，并记录 Key ID 备用。
  
   ![Download Key ID](images/ios_cert_v2/download_key_id.png)
 
