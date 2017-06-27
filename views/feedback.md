@@ -158,6 +158,36 @@ agent.getDefaultThread().sync(SyncCallback);
 
 这里的 SyncCallback 是一个异步回调，其中的方法会在同步请求成功以后被调用。
 
+#### Android 7.0 以上版本的兼容
+
+因为反馈模块中有图片展示的功能，此功能依赖于系统的图片查看页面，而 7.0 及以上的系统做了修改，如果想在应用间共享数据，需要支持 FileProvider。具体详见 [7.0 Behavior Changes](https://developer.android.com/about/versions/nougat/android-7.0-changes.html#sharing-files) 。关于 FileProvider 可以参见 [FileProvider](https://developer.android.com/reference/android/support/v4/content/FileProvider.html)。如果要使用反馈模块，需要做如下修改：
+
+1. 在 AndroidManifest.xml 添加 provider 声明：
+```java
+<application ...>
+  <provider
+      android:name="android.support.v4.content.FileProvider"
+      android:authorities="<package-name>.fileprovider"
+      android:exported="false"
+      android:grantUriPermissions="true">
+      <meta-data
+          android:name="android.support.FILE_PROVIDER_PATHS"
+          android:resource="@xml/lc_fileprovider_path" />
+  </provider>
+</application>
+```
+注意: <package-name> 需要修改为自己 app 的 package name。
+
+2. 在 res 文件夹下，新建文件夹 xml（与 drawable、layout 等并列），在 xml 文件夹中新建文件 lc_fileprovider_path.xml。并修改其中内容为：
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path name="cache_path" path=""/>
+    <external-cache-path name="external-cache-path" path=""/>
+    <files-path name="files_path" path=""/>
+    <external-files-path name="external-files-path" path=""/>
+</paths>
+```
 
 ### 高级定制指南
 
