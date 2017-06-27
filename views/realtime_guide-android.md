@@ -1074,7 +1074,48 @@ conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
 {% endblock %}
 
 {% block message_read_ack %}
+1. 首先，Tom 和 Jerry 都要开启「未读消息」，即在 SDK 初始化语句后面加上：
+    
+  ```java
+  AVIMClient.setUnreadNotificationEnabled(true);
+  ```
 
+2. Tom 向 Jerry 发送一条消息，要标记好「需要回执」：
+    
+  ```java
+  AVIMClient tom = AVIMClient.getInstance("Tom");
+  AVIMConversation conv = client.getConversation("551260efe4b01608686c3e0f");
+  
+  AVIMTextMessage textMessage = new AVIMTextMessage();
+  textMessage.setText("Hello, Jerry!");
+
+  AVIMMessageOption option = new AVIMMessageOption();
+  option.setReceipt(true); /* 将消息设置为需要回执。 */
+
+  conv.sendMessage(textMessage, option, new AVIMConversationCallback() {
+    @Override
+    public void done(AVIMException e) {
+      if (e == null) {
+        /* 发送成功 */
+      }
+    }
+  });
+  ```
+
+3. Jerry 收到 Tom 发的消息后，SDK 可以通过调用 read 方法把「对话中最近的消息」标记为已读：  
+
+  ```java
+  conv.read();
+  ```
+
+4. 然后实现 AVIMConversationEventHandler 的代理方法 onLastReadAtUpdated。当 Jerry 读完消息后，Tom 将收到一个已读回执，此事件会通过 onLastReadAtUpdated 回调给开发者：
+
+  ```java
+  onLastReadAtUpdated(AVIMClient client, AVIMConversation conversation) {
+    /* Jerry 阅读了你的消息。可以通过调用 conversation.getLastReadAt() 来获得对方已经读取到的时间点
+  }
+  ```
+  `AVIMConversationEventHandler` 的实现和定义在[自身主动加入](#自身主动加入)里面有详细的代码和介绍。
 {% endblock %}
 
 {% block conversation_init %}
