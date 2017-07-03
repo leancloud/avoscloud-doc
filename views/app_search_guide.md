@@ -524,7 +524,7 @@ curl -X GET \
 
 默认情况下， String 类型的字段都将被自动执行分词处理，我们使用的分词组件是 [mmseg](https://github.com/medcl/elasticsearch-analysis-mmseg)，词库来自搜狗。但是很多用户由于行业或者专业的特殊性，一般都有自定义词库的需求，因此我们提供了自定义词库的功能。应用创建者可以通过 [LeanCloud 控制台 > 组件 > 应用内搜索 > 自定义词库](/dashboard/devcomponent.html?appid={{appid}}#/component/custom_param) 上传词库文件。
 
-词库文件要求为 UTF-8 编码，每个词单独一行，文件大小不能超过 64K，例如：
+词库文件要求为 UTF-8 编码，每个词单独一行，文件大小不能超过 512 K，例如：
 
 ```
 面向对象编程
