@@ -32,10 +32,11 @@ Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
 // 启用美国节点
 // Client::useRegion("US");
 // 启用中国节点（默认启用）
+Client::useRegion("CN");
 {% else %}
-// 启用中国节点（默认启用）目前仅支持 E1。 
+// 启用中国节点（默认启用）目前仅支持 E1。
+Client::useRegion("E1"); 
 {% endif %}
-Client::useRegion("E1");
 ```
 {% endblock %}
 
