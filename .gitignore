@@ -21,3 +21,5 @@ md/kb/*.md
 views/test.md
 
 .vscode/
+
+yarn.lock

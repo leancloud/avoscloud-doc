@@ -2575,7 +2575,7 @@ imConversation.updateMessage(oldMessage, textMessage, new AVIMMessageUpdatedCall
   @Override
   public void done(AVIMMessage avimMessage, AVException e) {
     if (null == e) {
-      // 消息修改成功，avimMessage 及为被修改后的最新的消息
+      // 消息修改成功，avimMessage 即为被修改后的最新的消息
     }
   }
 });
@@ -2597,7 +2597,7 @@ void onMessageUpdated(AVIMClient client, AVIMConversation conversation, AVIMMess
 
 ```java
 AVIMTextMessage message = new AVIMTextMessage();
-message.setText("我是一条 will 消息，当发送者意外下线的时候，我会被下发给对话里面的其他成员");
+message.setText("我是一条遗愿消息，当发送者意外下线的时候，我会被下发给对话里面的其他成员");
 
 AVIMMessageOption option = new AVIMMessageOption();
 option.setWill(true);
