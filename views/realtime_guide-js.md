@@ -787,7 +787,12 @@ conversation.send(message, { will: true }).then(function() {
 撤回一条已发送的消息：
 
 ```javascript
-// 待补充
+conversation.recall(oldMessage).then(function(recalledMessage) {
+  // 修改成功
+  // recalledMessage is an AV.RecalledMessage
+}).catch(function(error) {
+  // 异常处理
+});
 ```
 
 而对话的其他成员在消息被撤回后会收到一个通知：
@@ -804,7 +809,12 @@ conversation.on('messagerecall', function(recalledMessage) {
 修改一条已经发送的消息：
 
 ```javascript
-// 待补充
+var newMessage = new TextMessage('new message');
+conversation.update(oldMessage, newMessage).then(function() {
+  // 修改成功
+}).catch(function(error) {
+  // 异常处理
+});
 ```
 
 而对话的其他成员在消息被修改之后会收到一个通知：
