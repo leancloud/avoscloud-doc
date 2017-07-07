@@ -754,6 +754,70 @@ realtime.register(OperationMessage);
 >
 > 只有在我们的消息类型完全无法满足需求的时候，才需要扩展自己的消息类型。譬如「今日头条」里面允许用户发送某条新闻给好友，在展示上需要新闻的标题、摘要、图片等信息（类似于微博中的 linkcard）的话，这时候就可以扩展一个新的 NewsMessage 类。
 
+### 遗愿消息
+
+遗愿消息是在一个用户突然掉线之后，系统自动通知对话的其他成员关于该成员已掉线的消息。好似在掉线后要给对话中的其他成员一个妥善的交待，所以被戏称为「遗愿」消息，如下图中的「Tom 已掉线，无法收到消息」。
+
+<img src="images/lastwill-message.png" width="400" class="responsive">
+
+要发送遗愿消息，用户需要设定好消息内容（可能包含了一些业务逻辑相关的内容）发给云端，云端并不会将其马上发送给对话的成员，而是缓存下来，一旦检测到该用户掉线，云端立即将这条遗愿消息发送出去。开发者可以利用它来构建自己的断线通知的逻辑。
+
+```javascript
+var message = new TextMessage('我掉线了');
+conversation.send(message, { will: true }).then(function() {
+  // 发送成功，当前 client 掉线的时候，这条消息会被下发给对话里面的其他成员
+}).catch(function(error) {
+  // 异常处理
+});
+```
+
+客户端发送完毕之后就完全不用再关心这条消息了，云端会自动在发送方掉线后通知其他成员。
+
+遗愿消息有**如下限制**：
+
+- 同一时刻只对一个对话生效
+- 当 client 主动 close 时，遗愿消息不会下发，系统会认为这是计划性下线。
+
+接收到遗愿消息的客户端需要根据自己的消息内容来做 UI 的展现。
+
+### 消息的撤回与修改
+
+#### 消息的撤回
+
+撤回一条已发送的消息：
+
+```javascript
+// 待补充
+```
+
+而对话的其他成员在消息被撤回后会收到一个通知：
+
+```javascript
+conversation.on('messagerecall', function(recalledMessage) {
+  // recalledMessage 为已撤回的消息
+  // 在视图层可以通过消息的 id 找到原来的消息并用 recalledMessage 替换
+});
+```
+
+#### 消息的修改
+
+修改一条已经发送的消息：
+
+```javascript
+// 待补充
+```
+
+而对话的其他成员在消息被修改之后会收到一个通知：
+
+```javascript
+conversation.on('messageupdate', function(newMessage) {
+  // newMessage 为修改后的的消息
+  // 在视图层可以通过消息的 id 找到原来的消息并用 newMessage 替换
+});
+```
+
+注意：修改和撤回会更新或删除在本地缓存和云端的对应的聊天记录。
+
 {{ im.messagesLifespan("### 消息的有效期") }}
 
 ## 对话
