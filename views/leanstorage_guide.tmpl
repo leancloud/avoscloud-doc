@@ -933,6 +933,26 @@ CQL 是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功
 
 {% endblock %}
 
+{% block text_authenticate_via_sessiontoken %}
+##### 使用 SessionToken 登录
+
+在没有用户名密码的情况下，客户端可以使用 SessionToken 来登录。常见的使用场景有：
+
+- App 某个页面内的 WebView 登录
+- 在服务端登录后，返回 SessionToken 给客户端，客户端根据返回的 SessionToken 登录。
+
+{% block code_authenticate_via_sessiontoken %}
+```javascript
+// 1. getSessionToken()
+// 2. become(sessionToken)
+// 3. 在成功的回调中更新 currentUser 的信息 become(sessionToken)
+```
+{% endblock %}
+
+{{ docs.alert("请避免在外部浏览器使用 URL 来传递 SessionToken，以防范信息泄露风险。") }}
+{# 参见 [云引擎 · SDK 调用云函数](leanengine_cloudfunction_guide-node.html#) #}
+{% endblock %}
+
 
 #### 账户锁定
 

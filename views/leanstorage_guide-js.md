@@ -1620,6 +1620,14 @@ JS SDK 支持在各种 WebView 中使用（包括 PhoneGap/Cordova、微信 WebV
 4. 为了防止通过 JavaScript 反射调用 Java 代码访问 Android 文件系统的安全漏洞，在 Android 4.2 以后的系统中间，WebView 中间只能访问通过 [@JavascriptInterface](http://developer.android.com/reference/android/webkit/JavascriptInterface.html) 标记过的方法。如果你的目标用户覆盖 4.2 以上的机型，请注意加上这个标记，以避免出现 **Uncaught TypeError**。
 {% endblock %}
 
+{% block code_authenticate_via_sessiontoken %}
+```javascript
+// 客户端取得当前用户的 sessionToken 传给 WebView 
+AV.User.become(sessionToken)
 
+// 从服务端（云引擎 Node.js 为例）取回当前用户的 sessionToken
+// var sessionToken = request.currentUser._sessionToken;
+```
+{% endblock %}
 
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
