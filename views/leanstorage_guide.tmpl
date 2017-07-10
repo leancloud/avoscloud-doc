@@ -893,20 +893,22 @@ CQL 是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功
 #### 单点登录 
 
 如果想实现在当前设备 A 上登录后，强制令之前在其他设备上的登录失效，可以按照以下方案来实现：
-{# 等待 iOS 和 Android 增加 refreshSessionToken 方法 #}
-{# **方案一**：
+
+**方案一**：
 
 1. 设备 A 登录成功后，调用 AVUser 的 `refreshSessionToken` 方法，更新服务端的 sessionToken。
 1. 设备 B 中的应用启动时，调用 AVUser 的 `isAuthenticated` 方法。由于上一步的操作，此时设备 B 中的 sessionToken 是过期的，因此该方法会返回 false，然后据此来调用 `logout` 方法退出登录。
 1. 集成 [LiveQuery 用户登录事件][livequery-event-login]，当设备 B 收到当前用户的登录事件时，调用 AVUser 的 `logout` 方法退出登录。
-#}
 
-{# **方案二**：#}
+
+**方案二**：
+
 1. 建立一个设备表，记录用户登录信息和当前设备的信息。
 1. 设备 A 登录成功后，更新设备表，将当前设备标记为当前用户登录的最新设备。
 1. 设备 B 中的应用启动时，检查设备表，发现最新设备不是当前设备，调用 AVUser 的 `logout` 方法退出登录。
 1. 集成 [LiveQuery 用户登录事件][livequery-event-login]，当设备 B 收到当前用户的登录事件时，调用 AVUser 的 `logout` 方法退出当前登录。
-{# 较之方案一，方案二要多维护一张设备表，步骤稍繁琐，适用于不具备 `refreshSessionToken` 方法的 SDK。#}
+
+{{ docs.note("较之方案一，方案二要多维护一张设备表，步骤稍繁琐，适用于不具备 `refreshSessionToken` 方法的 SDK。") }}
 
 #### 当前用户
 
@@ -938,7 +940,8 @@ CQL 是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功
 
 在没有用户名密码的情况下，客户端可以使用 SessionToken 来登录。常见的使用场景有：
 
-- App 某个页面内的 WebView 登录
+- 应用内根据以前缓存的 SessionToken 登录
+- 应用内的某个页面使用 WebView 方式来登录 LeanCloud 
 - 在服务端登录后，返回 SessionToken 给客户端，客户端根据返回的 SessionToken 登录。
 
 {% block code_authenticate_via_sessiontoken %}

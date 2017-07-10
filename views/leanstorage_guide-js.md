@@ -1621,12 +1621,14 @@ JS SDK 支持在各种 WebView 中使用（包括 PhoneGap/Cordova、微信 WebV
 {% endblock %}
 
 {% block code_authenticate_via_sessiontoken %}
-```javascript
-// 客户端取得当前用户的 sessionToken 传给 WebView 
-AV.User.become(sessionToken)
+登录后可以调用 `user.getSessionToken()` 方法得到当前登录用户的 sessionToken。
 
-// 从服务端（云引擎 Node.js 为例）取回当前用户的 sessionToken
-// var sessionToken = request.currentUser._sessionToken;
+使用 sessionToken 登录：
+
+```javascript
+AV.User.become(sessionToken).then(function(user) {
+  // currentUser 已更新
+})
 ```
 {% endblock %}
 

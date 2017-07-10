@@ -1599,7 +1599,6 @@ MyUser cloudUser = AVUser.logIn(username, password,
 
 {% block code_authenticate_via_sessiontoken %}
 ```java
-// 从客户端取得当前用户的 sessionToken 传给 WebView 
 String  sessionToken = AVUser.getCurrentUser().getSessionToken();
 AVUser.becomeWithSessionTokenInBackground(sessionToken, new LogInCallback<AVUser>() {
             @Override
@@ -1607,8 +1606,6 @@ AVUser.becomeWithSessionTokenInBackground(sessionToken, new LogInCallback<AVUser
                 // user.getCurrentUser()
             }
 });
-// 或从服务端（云引擎 Node.js 为例）取回当前用户的 sessionToken
-// var sessionToken = request.currentUser._sessionToken;
 ```
 {% endblock %}
 

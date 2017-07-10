@@ -1586,21 +1586,16 @@ student.name = @"小明";
 
 {% block code_authenticate_via_sessiontoken %}
 ```objc
-// 从客户端取得当前用户的 sessionToken 传给 WebView 
-// AVUser *currentUser = [AVUser currentUser];
-// NSString *sessionToken = currentUser.sessionToken;
+AVUser *currentUser = [AVUser currentUser];
+NSString *sessionToken = currentUser.sessionToken;
 
-NSString *sessionToken = <#SessionTokenYouGetFromOtherPlace#>;
 [AVUser becomeWithSessionTokenInBackground:sessionToken
                                      block:^(AVUser * _Nullable user, NSError * _Nullable error) {
                                          if (!error) {
-                                            // SDK 内部会更新 currentUser 的信息
+                                            /* 通过 session token 登录成功 */
                                              NSLog(@"User did login with session token.");
                                          }
                                      }];
-
-// 或从服务端（云引擎 Node.js 为例）取回当前用户的 sessionToken
-// var sessionToken = request.currentUser._sessionToken;
 ```
 {% endblock %}
 
