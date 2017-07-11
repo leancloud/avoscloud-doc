@@ -153,6 +153,10 @@ $ lean switch
 将已有项目关联到 LeanCloud 应用上。
 
 
+## 切换分组
+
+如果应用启用了云引擎多分组功能，同样可以使用 `$ lean switch` 命令切换当前目录关联的分组。
+
 ## 本地运行
 
 如果想将一份代码简单地部署到服务器而不在本地运行和调试，可以暂时跳过此章节。
@@ -325,6 +329,18 @@ $ lean logs -f
 
 新的云引擎日志产生后，都会被自动填充到屏幕下方。
 
+如果想查询某一段时间的日志，可以指定 `--from` 和 `--to` 参数：
+
+```
+$ lean logs --from=2017-07-01 --to=2017-07-07
+```
+
+另外可以配合重定向功能，将一段时间内的 JSON 格式日志导出到文件，再配合本地工具进行查看：
+
+```
+$ lean logs --from=2017-07-01 --to=2017-07-07 --format=json > leanengine.logs
+```
+
 ## 多应用管理
 
 一个项目的代码可以同时部署到多个 LeanCloud 应用上。
@@ -335,7 +351,7 @@ $ lean logs -f
 
 ```sh
 $ lean info
-当前登录用户: asaka (lan@leancloud.rocks)
+当前登录用户: lan (lan@leancloud.rocks)
 当前目录关联应用：AwesomeApp (xxxxxx)
 ```
 
