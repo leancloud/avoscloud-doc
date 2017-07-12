@@ -416,8 +416,6 @@ SDK 会在 Conversation 上维护 `unreadMessagesCount` 字段，这个字段在
 
 {% block message_unread_message_count %}{% endblock %}
 
-{{ docs.note("客户端<u>在线上时</u>收到的消息默认为**已读**，不存在未读的情况。因此开发者不需要将这样的消息标记为已读。") }}
-
 清除对话未读消息数的唯一方式是调用 Conversation#read 方法将对话标记为已读，一般来说开发者至少需要在下面两种情况下将对话标记为已读：
 
 - 在对话列表点击某对话进入到对话页面时
