@@ -53,7 +53,7 @@ USAGE:
    lean [global options] command [command options] [arguments...]
 
 VERSION:
-   0.7.0
+   0.10.0
 
 COMMANDS:
      login     登录 LeanCloud 账户
@@ -65,6 +65,7 @@ COMMANDS:
      publish   部署当前预备环境的代码至生产环境
      upload    上传文件到当前应用 File 表
      logs      查看 LeanEngine 产生的日志
+     debug     不运行项目，直接启动云函数调试服务
      env       输出运行当前云引擎应用所需要的环境变量
      cache     LeanCache 管理相关功能
      cql       进入 CQL 交互查询
@@ -198,6 +199,16 @@ $ lean up
 除了使用命令行工具来启动项目之外，还可以**原生地**启动项目，比如直接使用 `node server.js` 或者 `python wsgi.py`。这样能够将云引擎开发流程更好地集成到开发者管用的工作流程中，也可以直接和 IDE 集成。但是直接使用命令行工具创建的云引擎项目，默认会依赖一些环境变量，因此需要提前设置好这些环境变量。
 
 使用命令 `lean env` 可以显示出这些环境变量，手动在当前终端中设置好之后，就可以不依赖命令行工具来启动项目了。另外使用兼容 `sh` shell 的用户，还可以直接使用 `eval $(lean env)`，自动设置好所有的环境变量。
+
+启动时还可以给启动命令增加自定义参数，在 `lean up` 命令后增加两个横线 `--`，所有在横线后的参数会被传递到实际执行的命令中。比如启动 node 项目时，想增加 `--inspect` 参数给 node 进程，来启动 node 自带的远程调试功能，只要用 `lean up -- --inspect` 来启动项目即可。
+
+另外还可以使用 `--cmd` 来指定启动命令，这样即可使用任意自定义命令来执行项目：`lean up --cmd=my-custom-command`。
+
+有些情况下，我们需要让 IDE 来运行项目，或者需要调试在虚拟机／远程机器上的项目的云函数，这时可以单独运行云函数调试功能，而不在本地运行项目本身：
+
+```sh
+$ lean debug --remote=http://remote-url-or-ip-address:remote-port --app-id=xxxxx
+```
 
 更多关于云引擎开发的内容，请参考 [云引擎服务总览](leanengine_overview.html)。
 
