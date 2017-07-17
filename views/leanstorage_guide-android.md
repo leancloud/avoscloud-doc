@@ -1568,18 +1568,21 @@ AVUser 作为 AVObject 的子类，同样允许子类化，你可以定义自己
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 
+@AVClassName("MyUser")
 public class MyUser extends AVUser {
-    public void setNickName(String name) {
-  this.put("nickName", name);
-    }
+  public void setNickName(String name) {
+    this.put("nickName", name);
+  }
 
-    public String getNickName() {
-  return this.getString("nickName");
-    }
+  public String getNickName() {
+    return this.getString("nickName");
+  }
 }
 ```
-
-不需要添加 @AVClassname 注解，所有 AVUser 的子类的类名都是内建的 `_User`。同样也不需要注册 MyUser。
+为了防止 AVUser 子类在序列化与反序列化时丢失数据，需要在调用 AVOSCloud.initialize() 之前注册该子类：
+```java
+AVUser.registerSubclass(subUser.class);
+```
 
 当用户子类化 AVUser 后，如果希望以后查询 AVUser 所得到的对象会自动转化为用户子类化的对象，则需要在调用 AVOSCloud.initialize() 之前添加：
 
@@ -1587,11 +1590,11 @@ public class MyUser extends AVUser {
 AVUser.alwaysUseSubUserClass(subUser.class);
 ```
 
+
 注册跟普通的 AVUser 对象没有什么不同，但是登录如果希望返回自定义的子类，必须这样：
 
 ```java
-MyUser cloudUser = AVUser.logIn(username, password,
-        MyUser.class);
+MyUser cloudUser = AVUser.logIn(username, password, MyUser.class);
 ```
 
 <div class="callout callout-info">由于 fastjson 内部的 bug，请在定义 AVUser 时<u>不要定义</u>跟 AVRelation 相关的 `get` 方法。如果一定要定义的话，请通过在 Class 上添加 `@JSONType(ignores = {"属性名"})` 的方式，将其注释为非序列化字段。</div>
