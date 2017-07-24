@@ -283,8 +283,6 @@ AV.Cloud.beforeSave('Review', function(request) {
 
 ## 在线编写云函数
 
-{{ docs.note("因为在线编辑云函数的灵活性受限，如不能自由选择 Node 版本和 SDK 版本，不能自由添加依赖，无法通过文件来组织代码等等，因此我们**不推荐新用户使用在线编辑功能**，而是建议根据 [示例项目](https://github.com/leancloud/node-js-getting-started) 创建本地项目，使用 [命令行工具](leanengine_cli.html) 部署到云端。在线编辑功能的 Node.js 版本会一直停留在 0.12，Node SDK 版本会一直停留在 0.x。") }}
-
 很多人使用 {{productName}} 是为了在服务端提供一些个性化的方法供各终端调用，而不希望关心诸如代码托管、npm 依赖管理等问题。为此我们提供了在线维护云函数的功能。
 
 使用此功能需要注意：
@@ -294,13 +292,40 @@ AV.Cloud.beforeSave('Review', function(request) {
 
 在 {% if node=='qcloud' %}**控制台** > **存储** > **云引擎** > **部署** > **在线编辑**{% else %}[控制台 > 存储 > 云引擎 > 部署 > 在线编辑](/cloud.html?appid={{appid}}#/deploy/online){% endif %} 标签页，可以：
 
-
 * **创建函数**：指定函数类型，函数名称，函数体的具体代码，注释等信息，然后「保存」即可创建一个云函数。
 * **部署**：选择要部署的环境，点击「部署」即可看到部署过程和结果。
 * **预览**：会将所有函数汇总并生成一个完整的代码段，可以确认代码，或者将其保存为 `cloud.js` 覆盖项目模板的同名文件，即可快速的转换为使用项目部署。
 * **维护云函数**：可以编辑已有云函数，查看保存历史，以及删除云函数。
 
-**提示**：云函数编辑之后需要重新部署才能生效。
+**提示**：云函数编辑之后需要点击部署才能生效。
+
+### 在线编写的 SDK 版本
+
+目前在线编辑仅支持 Node.js，提供了 4 种 SDK 版本可选：
+
+在线编辑版本|Node SDK|JS SDK|Node.js|备注|可用依赖
+---|---|---|---|---|---
+v0|0.x|0.x|0.12|已不推荐使用|moment, request, underscore
+v1|1.x|1.x|4||async, bluebird, co, ejs, handlebars, joi, lodash, marked, moment, q, request, superagent, underscore
+v2|2.x|2.x|6|需要使用 Promise 写法|async, bluebird, crypto, debug, ejs, jade, lodash, moment, nodemailer, qiniu, redis, request, request-promise, superagent, underscore, uuid, wechat-api, xml2js
+v3|3.x|3.x|8|需要使用 Promise 写法|async, bluebird, crypto, debug, ejs, jade, lodash, moment, nodemailer, qiniu, redis, request, request-promise, superagent, underscore, uuid, wechat-api, xml2js
+
+从 `v0` 升级到 `v1`：
+
+- JS SDK 升级到了 [1.0](https://github.com/leancloud/javascript-sdk/releases/tag/v1.0.0)
+- 需要从 `request.currentUser` 获取用户，而不是 `AV.User.current`
+- 在调用 `AV.Cloud.run` 时需要手动传递 user 对象
+
+从 `v1` 升级到 `v2`：
+
+- JS SDK 升级到 [2.0](https://github.com/leancloud/javascript-sdk/releases/tag/v2.0.0)（必须使用 Promise，不再支持 callback 风格）
+- 删除了 `AV.Cloud.httpRequest`
+- 在云函数中 **必须** 返回 Promise 作为云函数的值，抛出 AV.Cloud.Error 来表示错误。
+
+从 `v2` 升级到 `v3`：
+
+- JS SDK 升级到了 [3.0](https://github.com/leancloud/javascript-sdk/releases/tag/v3.0.0)（AV.Object#toJSON 的行为变化等）
+
 {% endblock %}
 
 {% block timerExample %}
