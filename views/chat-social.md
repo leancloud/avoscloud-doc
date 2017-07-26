@@ -102,6 +102,4 @@ friendQuery.find().then(friendList =>{
 
 ### 黑名单实现
 
-在 LeanCloud 中的采取的鉴权方式是签名的方式来鉴权的简单的描述就是
-
-- 
+#### 用 Block 表来实现
