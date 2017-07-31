@@ -1,6 +1,6 @@
 {% import "views/_im.md" as imPartial %}
 
-# 聊天应用开发指南
+# 实时通信开发指南 · .NET
 
 ## 简介
 
@@ -23,6 +23,19 @@ LeanCloud 实时通信服务的目标是在开发者没有任何服务端开发�
 - [JavaScript SDK 安装指南 - 实时通信模块](sdk_setup-js.html)
 - [C# SDK 安装指南 - 实时通信模块](sdk_setup-dotnet.html#_NET_Framework)
 - [Unity SDK 安装指南 - 实时通信模块](sdk_setup-dotnet.html#Mono_for_Unity)
+
+### 初始化实时通信服务
+
+```cs
+// 初始化当前平台的 WebSocket 类库
+Websockets.Net.WebsocketConnection.Link();
+AVRealtime realtime = new AVRealtime(appId, appKey);
+```
+
+### 打开调试日志
+```cs
+AVRealtime.WebSocketLog(Console.WriteLine);
+```
 
 ## 场景分类
 
@@ -226,28 +239,15 @@ A|B|C
 ---|---|---
 N/A|OnMembersLeft|OnMembersLeft
 
-### 事件通知的用法
-
-#### 社交
-
-- 两个人的对话，加入了第三个人，三个人都会得到通知，这样就可以在界面上展示出提示「您好，xx 已经加入了对话，您和他还不是好友关系，请谨慎行事，防止上当受骗 」
-- 群聊时，某一个人忽然退出，所有人都会得到通知，这样就可以在界面上展示出提示「xx 已经退出群聊」
-
-#### 协同办公聊天工具
-- 某一位用户加入了某一个频道，例如大老板加入了聊天频道，群员可以得到通知，在客户端做展现的时候，可以获取到大老板的个人信息，客户端可以针对用户角色的不同展现不同的 UI 动画效果。
-
-#### 直播聊天室
-因为直播聊天的经典场景是一个暂态对话，暂态对话本身是不会针对人员变动进行事件通知的。
-
-
 ## 消息
 
-### 自定义消息类型
-自定义消息类型请根据需求点击链接查看详细的实现步骤：
+{{ imPartial.customMessage() }}
 
-{{ imPartial.plateformCustomMessageLinks() }}
+{{ imPartial.willMessage() }}
 
-<!--{{ imPartial.willMessage() }}-->
+{{ imPartial.signature() }}
+
+{{ imPartial.exception() }}
 
 
 

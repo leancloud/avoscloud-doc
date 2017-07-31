@@ -1,0 +1,3 @@
+{% macro cloudFuncLimitationOnNonPrimaryGroup() -%}
+调用非主要组上的云函数不会触发 hook 函数，同时，非主要组也不支持通过 SDK 来调用云函数。
+{%- endmacro %}

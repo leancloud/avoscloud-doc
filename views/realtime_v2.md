@@ -313,7 +313,12 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 
 ## 权限和认证
 
-使用签名可以保证聊天通道的安全，这一功能默认是关闭的，可以在 {% if node=='qcloud' %}控制台 > **设置** > **应用选项**{% else %}[控制台 > **设置** > **应用选项**](/app.html?appid={{appid}}#/permission){% endif %} 中勾选 **聊天服务，启用签名认证** 来强制启用签名。启用后，所有的用户登录、新建或加入对话、邀请/踢出对话成员等操作都需要包含签名，这样就可以对聊天过程进行全面控制。
+使用签名可以保证聊天通道的安全，这一功能默认是关闭的，可以在 {% if node=='qcloud' %}控制台 > **设置** > **应用选项**{% else %}[控制台 > **设置** > **应用选项**](/app.html?appid={{appid}}#/permission){% endif %} 中进行开启，有两个选项供选择：
+- **聊天服务，启用登录认证**，用于控制所有的用户登录
+- **聊天服务，启用对话认证**，用于控制新建或加入对话、邀请/踢出对话成员等操作
+
+开发者可根据实际需要进行选择。一般来说，**登录认证** 能够满足大部分安全需求，而且我们也强烈建议开发者开启登录认证。
+对于使用 AVUser 的应用，可使用 REST API [获取_Client_登录签名](realtime_rest_api.html#%E8%8E%B7%E5%8F%96_Client_%E7%99%BB%E5%BD%95%E7%AD%BE%E5%90%8D) 进行登录认证。
 
 ![image](images/leanmessage_signature2.png)
 

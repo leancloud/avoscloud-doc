@@ -7,7 +7,7 @@
     "test": "grunt test --no-comments",
     "postinstall": "grunt build --no-comments",
     "start": "static dist -p $PORT -a 0.0.0.0",
-    "preview":"grunt serve"
+    "preview": "grunt serve"
   },
   "repository": {
     "type": "git",
@@ -54,8 +54,11 @@
     "grunt-usemin": "~3.1.1",
     "jit-grunt": "^0.10.0",
     "leancloud-storage": "^2.1.4",
+    "mocha": "^3.4.2",
     "moment": "^2.10.6",
     "nunjucks": "^2.4.1",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
     "serve-static": "^1.10.0",
     "should": "^9.0.2",
     "time-grunt": "^1.2.2",

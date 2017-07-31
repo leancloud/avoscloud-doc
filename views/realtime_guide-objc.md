@@ -1984,3 +1984,92 @@ option.force = YES;
 大部分原因是这种情况造成的：成员 A 和成员 B 同在一个对话中。A 调用了 `openWithCallback` 登录实时通信，在没有调用 `closeWithCallback` 退出登录的情况下，B 使用同一个设备也调用了 `openWithCallback` 登录了实时通信。此时应用退出到后台，其他同在这个对话中的成员向这个对话发送了消息，服务器会给不在线的 A 和 B 发送消息推送，这个设备就会收到两条消息推送。解决方案是确保 B 登录时 A 已经调用 `closeWithCallback` 成功地退出了登录。
 {% endblock %}
 
+
+{% block code_recall_message %}
+
+```objc
+AVIMMessage *oldMessage = <#MessageYouWantToUpdate#>;
+
+[self.conversaiton recallMessage:oldMessage
+                   callback:^(BOOL succeeded, NSError * _Nullable error, AVIMRecalledMessage * _Nullable recalledMessage) {
+                        if (succeeded) {
+                            NSLog(@"Message has been recalled.");
+                        }
+}];
+```
+{% endblock %}
+
+{% block code_on_message_recall %}
+```objc
+/* 设置对话的 delegate */
+[conversation addDelegate:self];
+
+/* 实现 delegate 方法，以处理消息修改和撤回的事件 */
+- (void)conversation:(AVIMConversation *)conversation messageHasBeenUpdated:(AVIMMessage *)message {
+    /* A message has been updated or recalled. */
+
+    switch (message.mediaType) {
+    case kAVIMMessageMediaTypeRecalled:
+        NSLog(@"message 是一条撤回消息");
+        break;
+    default:
+        NSLog(@"message 是一条更新消息");
+        break;
+    }
+}
+```
+{% endblock %}
+
+{% block code_modify_message %}
+```objc
+AVIMMessage *oldMessage = <#MessageYouWantToUpdate#>;
+AVIMMessage *newMessage = [AVIMTextMessage messageWithText:@"Just a new message" attributes:nil];
+
+[self.conversaiton updateMessage:oldMessage
+                    toNewMessage:newMessage
+                        callback:^(BOOL succeeded, NSError * _Nullable error) {
+                            if (succeeded) {
+                                NSLog(@"Message has been updated.");
+                            }
+}];
+```
+{% endblock %}
+
+{% block code_on_message_modified %}
+```objc
+/* 设置对话的 delegate */
+[conversation addDelegate:self];
+
+/* 实现 delegate 方法，以处理消息修改和撤回的事件 */
+- (void)conversation:(AVIMConversation *)conversation messageHasBeenUpdated:(AVIMMessage *)message {
+    /* A message has been updated or recalled. */
+
+    switch (message.mediaType) {
+    case kAVIMMessageMediaTypeRecalled:
+        NSLog(@"message 是一条撤回消息");
+        break;
+    default:
+        NSLog(@"message 是一条更新消息");
+        break;
+    }
+}
+```
+{% endblock %}
+
+
+{% block code_send_will_message %}
+
+```objc
+AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
+option.will = YES;
+
+AVIMMessage *willMessage = [AVIMTextMessage messageWithText:@"I'm offline." attributes:nil];
+
+[conversaiton sendMessage:willMessage option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
+    if (succeeded) {
+        NSLog(@"Will message has been sent.");
+    }
+}];
+```
+
+{% endblock %}

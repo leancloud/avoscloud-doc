@@ -111,8 +111,6 @@ SDK 将以上逻辑封装成了简单的方法，以上代码等价于：
 ---|---
 badge|应用图标旁边的红色数字，修改 AVInstallation 的这个值将修改应用的 badge。修改应该保存到服务器，以便为以后做 badge 增量式的推送做准备。
 channels|当前设备所订阅的频道数组
-appName|应用名称（只读）
-appVersion|应用版本（只读）
 deviceProfile|设备对应的后台自定义证书名称，用于多证书推送
 
 同样，SDK 提供了相应的方法，用于在保存 installation 前构造它。例如，如果希望自定义 deviceProfile 字段，可以这样实现：
@@ -595,8 +593,6 @@ iOS10 以上会调用下面的两个方法：
         [currentInstallation saveEventually];
         application.applicationIconBadgeNumber=0;
     }
-    [application cancelAllLocalNotifications];
-    //...
 }
 ```
 

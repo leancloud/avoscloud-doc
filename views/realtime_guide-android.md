@@ -16,7 +16,7 @@
 {% block oneOnOneChat_sent %}
 {{ docs.alert("启用实时通信一定要正确配置 `AndroidManifest.xml`，请仔细阅读 [Android SDK 初始化配置](sdk_setup-android.html#初始化)。") }}
 
-```
+```java
   public void sendMessageToJerryFromTom() {
     // Tom 用自己的名字作为clientId，获取AVIMClient对象实例
     AVIMClient tom = AVIMClient.getInstance("Tom");
@@ -59,7 +59,7 @@
 
 {% block oneOnOneChat_received %}
 
-```
+```java
 public class MyApplication extends Application{
  public static class CustomMessageHandler extends AVIMMessageHandler{
    //接收到消息后的处理逻辑 
@@ -121,7 +121,7 @@ public void jerryReceiveMsgFromTom(){
 {% endblock %}
 
 {% block groupChat_sent %}
-```
+```java
   public void sendMessageToJerryFromTom() {
     // Tom 用自己的名字作为clientId，获取AVIMClient对象实例
     AVIMClient tom = AVIMClient.getInstance("Tom");
@@ -160,7 +160,7 @@ public void jerryReceiveMsgFromTom(){
 {% endblock %}
 
 {% block groupChat_received %}
-```
+```java
 public class MyApplication extends Application {
   public void onCreate() {
     ...
@@ -214,7 +214,7 @@ public void loginAsBob() {
 
 {% block imageMessage_local_sent %}
 
-```
+```java
 public void sendImage(String filePath) {
   AVIMClient tom = AVIMClient.getInstance("Tom");
 
@@ -255,7 +255,7 @@ public void sendImage(String filePath) {
 {% endblock %}
 
 {% block imageMessage_url_sent %}
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback() {
       @Override
@@ -292,7 +292,7 @@ tom.open(new AVIMClientCallback() {
 
 {% block imageMessage_received %}
 
-```
+```java
 //注册消息处理逻辑
 AVIMMessageManager.registerMessageHandler(AVIMImageMessage.class,
         new AVIMTypedMessageHandler<AVIMImageMessage>() {
@@ -335,7 +335,7 @@ AVIMMessageManager.registerMessageHandler(AVIMImageMessage.class,
 {% endblock %}
 
 {% block audioMessage_local_sent %}
-```
+```java
  AVIMClient tom = AVIMClient.getInstance("Tom");
     tom.open(new AVIMClientCallback() {
       @Override
@@ -369,7 +369,7 @@ AVIMMessageManager.registerMessageHandler(AVIMImageMessage.class,
 {% endblock %}
 
 {% block audioMessage_url_sent %}
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
     tom.open(new AVIMClientCallback() {
       @Override
@@ -402,7 +402,7 @@ AVIMClient tom = AVIMClient.getInstance("Tom");
 {% endblock %}
 
 {% block audioMessage_received_intro %}
-```
+```java
 AVIMMessageManager.registerMessageHandler(AVIMAudioMessage.class,
         new AVIMTypedMessageHandler<AVIMAudioMessage>() {
 
@@ -438,7 +438,7 @@ AVIMMessageManager.registerMessageHandler(AVIMAudioMessage.class,
 {% endblock %}
 
 {% block videoMessage_local_sent %}
-```
+```java
   AVIMClient tom = AVIMClient.getInstance("Tom");
   tom.open(new AVIMClientCallback() {
     @Override
@@ -471,7 +471,7 @@ AVIMMessageManager.registerMessageHandler(AVIMAudioMessage.class,
 {% endblock %}
 
 {% block videoMessage_url_sent %}
-```
+```java
  AVIMClient tom = AVIMClient.getInstance("Tom");
     tom.open(new AVIMClientCallback() {
       @Override
@@ -509,7 +509,7 @@ AVIMMessageManager.registerMessageHandler(AVIMAudioMessage.class,
 {% endblock %}
 
 {% block fileMessage_sent %}
-```
+```java
 
     AVIMClient tom = AVIMClient.getInstance("Tom");
     tom.open(new AVIMClientCallback() {
@@ -549,14 +549,14 @@ AVIMMessageManager.registerMessageHandler(AVIMAudioMessage.class,
 {% endblock %}
 
 {% block locationMessage_new %}
-```
+```java
       AVIMLocationMessage m = new AVIMLocationMessage();
       m.setLocation(new AVGeoPoint(45.0,34.0));
 ```
 {% endblock %}
 
 {% block locationMessage_sent %}
-```
+```java
 final AVIMLocationMessage locationMessage=new AVIMLocationMessage();
 // 开发者更可以通过具体的设备的 API 去获取设备的地理位置，此处仅设置了 2 个经纬度常量仅做演示
 locationMessage.setLocation(new AVGeoPoint(138.12454,52.56461));
@@ -583,7 +583,7 @@ conversation.sendMessage(locationMessage, new AVIMConversationCallback() {
 {% block typedMessage_received %}
 所有富媒体消息都是从 AVIMTypedMessage 派生出来的。发送的时候可以直接调用 `conversation.sendMessage()` 函数。在接收端，我们也专门增加了一类回调接口 `AVIMTypedMessageHandler`，其定义为：
 
-```
+```java
 public class AVIMTypedMessageHandler<T extends AVIMTypedMessage> extends MessageHandler<T> {
 
   @Override
@@ -598,7 +598,7 @@ public class AVIMTypedMessageHandler<T extends AVIMTypedMessage> extends Message
 
 接收端对于富媒体消息的通知处理的示例代码如下：
 
-```
+```java
 class MsgHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
 
   @Override
@@ -657,7 +657,7 @@ SDK 内部在接收消息时的处理逻辑是这样的：
 
 {% block transientMessage_sent %}
 
-```
+```java
 //自定义的消息类型，用于发送和接收所有的用户操作消息
 - AVIMOperationMessage.java
  
@@ -713,7 +713,7 @@ tom.open(new AVIMClientCallback() {
 
 {% block transientMessage_received %}
 
-```
+```java
 //自定义的消息类型，用于发送和接收所有的用户操作消息
 - AVIMOperationMessage.java
  
@@ -776,13 +776,13 @@ jerry.open(new AVIMClientCallback() {
 {% block message_unread_message_count %}
 要开启未读消息，需要在 AVOSCloud 初始化语句后面加上：
 
-```
-AVIMClient.setOfflineMessagePush(true);
+```java
+AVIMClient.setUnreadNotificationEnabled(true);
 ```
 
 然后实现 AVIMConversationEventHandler 的代理方法 `onUnreadMessagesCountUpdated` 来得到未读消息的数量变更的通知：
 
-```
+```java
 onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
     // conversation.getUnreadMessagesCount() 即该 conversation 的未读消息数量
 }
@@ -829,7 +829,7 @@ onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
 
 {% block customAttributesMessage_sent %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback() {
     @Override
@@ -857,7 +857,7 @@ tom.open(new AVIMClientCallback() {
 
 {% block customAttributesMessage_received %}
 
-```
+```java
 AVIMMessageManager.registerMessageHandler(AVIMImageMessage.class,
     new AVIMTypedMessageHandler<AVIMImageMessage>() {
         @Override
@@ -890,7 +890,7 @@ friend.open(new AVIMClientCallback() {
 
 AVIMTextMessage 的源码如下，可供参考：
 
-```
+```java
 @AVIMMessageType(type = AVIMMessageType.TEXT_MESSAGE_TYPE)
 public class AVIMTextMessage extends AVIMTypedMessage {
   // 空的构造方法，不可遗漏
@@ -928,7 +928,7 @@ public class AVIMTextMessage extends AVIMTypedMessage {
 ##### 消息发送接口
 在 Android SDK 中，发送消息的方法是：`AVIMConversation.sendMessage`，它最核心的一个重载声明如下：
 
-```
+```java
 /**
  *
  * @param message 发送的消息实体，可以是任何 AVIMMessage 子类
@@ -939,7 +939,7 @@ public void sendMessage(final AVIMMessage message, final AVIMMessageOption optio
 ```
 关于 AVIMMessageOption 可参见[消息发送选项](#消息发送选项)，为了满足通用需求，SDK 还提供了一个更为常用的重载声明：
 
-```
+```java
 /**
  *
  * @param message 发送的消息实体，可以是任何 AVIMMessage 子类
@@ -964,7 +964,7 @@ public void sendMessage(AVIMMessage message, AVIMConversationCallback callback)
 {% set message_priority_low_varname     = 'MessagePriority.Low' %}
 
 {% block message_option_priority %}
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
     tom.open(new AVIMClientCallback() {
       @Override
@@ -1042,7 +1042,7 @@ messageOption.setReceipt(true);
 {% endblock %}
 
 {% block message_sent_ack %}
-```
+```java
 AVIMMessageHandler handler = new AVIMMessageHandler(){
 
     public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
@@ -1119,7 +1119,7 @@ conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
 {% endblock %}
 
 {% block conversation_init %}
-```
+```java
 AVIMClient jerry = AVIMClient.getInstance("Jerry");
 jerry.open(new AVIMClientCallback() {
     @Override
@@ -1145,7 +1145,7 @@ jerry.open(new AVIMClientCallback() {
 ### 创建对话
 创建对话的接口在 `AVIMClient` 中共有 4 个方法重写，下面我们以参数最详尽的这个重写来说明其中每个参数的意义。
 
-```
+```java
   /**
    * 创建或查询一个已有 conversation
    *
@@ -1199,7 +1199,7 @@ jerry.open(new AVIMClientCallback() {
 
 {% block conversation_join %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1224,10 +1224,9 @@ tom.open(new AVIMClientCallback(){
 {% endblock %}
 
 {% block conversation_membersChanged_callBack %}
-该群的其他成员（比如 Bob）登录之后，调用 `AVIMMessageManager.setConversationEventHandler` 设置一下回调的代理，会收到该操作的事件回调：
+该群的其他成员（比如 Bob）登录之后，在 Application 里设置过的 AVIMMessageManager.setConversationEventHandler 代理，会收到该操作的事件回调：
 
-```
-AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
+```java
 AVIMClient bob = AVIMClient.getInstance("Bob");
 bob.open(new AVIMClientCallback(){
 
@@ -1273,7 +1272,7 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
 
 {% block conversation_invite %}
 
-```
+```java
  AVIMClient jerry = AVIMClient.getInstance("Jerry");
     jerry.open(new AVIMClientCallback() {
 
@@ -1314,7 +1313,7 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
 
 {% block conversation_left %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1347,7 +1346,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_kick %}
 
-```
+```java
 AVIMClient william = AVIMClient.getInstance("William");
 william.open(new AVIMClientCallback(){
 
@@ -1390,7 +1389,7 @@ william.open(new AVIMClientCallback(){
 
 {% block conversation_countMember %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1447,7 +1446,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_name %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1529,7 +1528,7 @@ tom.open(new AVIMClientCallback(){
 {% block conversation_property_name %}`AVIMConversation.creator`{% endblock %}
 
 {% block conversation_attributes_new %}
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1563,7 +1562,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_getSingle %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1591,7 +1590,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_getList %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1617,7 +1616,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_query_limit %}
 
-```
+```java
 AVIMConversationsQuery query = client.getConversationsQuery();
 query.limit(20);
 query.findInBackground(new AVIMConversationQueryCallback(){
@@ -1634,7 +1633,7 @@ query.findInBackground(new AVIMConversationQueryCallback(){
 
 {% block pattern_conservation_query_default_property %}
 
-```
+```java
 // 查询对话名称为「LeanCloud 粉丝群」的对话
 conversationQuery.whereEqualTo("name", "LeanCloud 粉丝群");
 
@@ -1651,7 +1650,7 @@ conversationQuery.whereGreaterThan("lm", yesterday);
 
 {% block pattern_conservation_query_custom_property %}
 
-```
+```java
 // 查询话题为 DOTA2 对话
 conversationQuery.whereEqualTo("attr.topic", "DOTA2");
 // 查询等级大于 5 的对话
@@ -1665,7 +1664,7 @@ conversationQuery.whereGreaterThan("attr.level", 5);
 
 {% block conversation_messageHistoryByLimit %}
 
-```
+```java
   AVIMClient tom = AVIMClient.getInstance("Tom");
   tom.open(new AVIMClientCallback() {
 
@@ -1692,7 +1691,7 @@ conversationQuery.whereGreaterThan("attr.level", 5);
 
 {% block conversation_messageHistoryBeforeId %}
 
-```
+```java
 
   AVIMClient tom = AVIMClient.getInstance("Tom");
   tom.open(new AVIMClientCallback(){
@@ -1733,7 +1732,7 @@ conversationQuery.whereGreaterThan("attr.level", 5);
 {% endblock %}
 
 {% block conversation_messageHistory_pager %}
-```
+```java
   final int pageSize = 10;
   conversation.queryMessages(pageSize, new AVIMMessagesQueryCallback() {
     @Override
@@ -1764,7 +1763,7 @@ AVIMClient.setMessageQueryCacheEnable(false);
 
 {% block conversation_query_equalTo %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1792,7 +1791,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_query_notEqualTo %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1822,7 +1821,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_query_greaterThan %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1855,7 +1854,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_query_regex %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1884,7 +1883,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_query_contains %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1915,7 +1914,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block conversation_query_findJoinedMemebers %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1945,7 +1944,7 @@ tom.open(new AVIMClientCallback(){
 {% endblock %}
 
 {% block conversation_query_doesnot_exist %}
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -1976,7 +1975,7 @@ tom.open(new AVIMClientCallback(){
 {% endblock %}
 
 {% block conversation_query_exists %}
-```
+```java
 query.whereExists("lm");
 ```
 {% endblock %}
@@ -1984,7 +1983,7 @@ query.whereExists("lm");
 
 {% block conversation_query_combination %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -2167,7 +2166,7 @@ public void queryConversationWithLastMessage() {
 
 {% block chatroom_new %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
 
@@ -2194,7 +2193,7 @@ tom.open(new AVIMClientCallback(){
 
 {% block chatroom_count %}
 
-```
+```java
 private void TomQueryWithLimit() {
   AVIMClient tom = AVIMClient.getInstance("Tom");
   tom.open(new AVIMClientCallback() {
@@ -2241,7 +2240,7 @@ private void TomQueryWithLimit() {
 
 {% block chatroom_query_single %}
 
-```
+```java
   AVIMClient tom = AVIMClient.getInstance("Tom");
   tom.open(new AVIMClientCallback() {
 
@@ -2293,7 +2292,7 @@ private void TomQueryWithLimit() {
 
 {% block logout %}
 
-```
+```java
 AVIMClient tom = AVIMClient.getInstance("Tom");
 tom.open(new AVIMClientCallback(){
   
@@ -2349,7 +2348,7 @@ tom.open(new AVIMClientCallback(){
 
 你需要做的就是按照前文所述的签名算法实现签名，其中 `Signature` 声明如下：
 
-```
+```java
 public class Signature {
   public List<String> getSignedPeerIds();
   public void setSignedPeerIds(List<String> signedPeerIds);
@@ -2374,7 +2373,7 @@ public class Signature {
 
 下面的代码展示了基于 LeanCloud 云引擎进行签名时，客户端的实现片段，你可以参考它来完成自己的逻辑实现：
 
-```
+```java
 public class KeepAliveSignatureFactory implements SignatureFactory {
  @Override
  public Signature createSignature(String peerId, List<String> watchIds) {
@@ -2541,3 +2540,74 @@ AVIMClient.setAutoOpen(false);
 {% block link_avquery_chache %}[存储指南 - AVQuery 缓存查询](leanstorage_guide-android.html#缓存查询) 一节。
 {% endblock %}
 
+{% block code_recall_message %}
+
+```java
+conversation.recallMessage(message, new AVIMMessageRecalledCallback() {
+  @Override
+  public void done(AVIMRecalledMessage recalledMessage, AVException e) {
+    if (null == e) {
+      // 消息撤回成功，可以更新 UI
+    }
+  }
+});
+```
+{% endblock %}
+
+{% block code_on_message_recall %}
+
+```java
+void onMessageRecalled(AVIMClient client, AVIMConversation conversation, AVIMMessage message) {
+  // message 即为被撤回的消息
+}
+```
+
+`AVIMConversationEventHandler` 的实现和定义在[自身主动加入](#自身主动加入)里面有详细的代码和介绍。
+{% endblock %}
+
+{% block code_modify_message %}
+
+```java
+AVIMTextMessage textMessage = new AVIMTextMessage();
+textMessage.setContent("修改后的消息");
+imConversation.updateMessage(oldMessage, textMessage, new AVIMMessageUpdatedCallback() {
+  @Override
+  public void done(AVIMMessage avimMessage, AVException e) {
+    if (null == e) {
+      // 消息修改成功，avimMessage 即为被修改后的最新的消息
+    }
+  }
+});
+```
+{% endblock %}
+
+{% block code_on_message_modified %}
+
+```java
+void onMessageUpdated(AVIMClient client, AVIMConversation conversation, AVIMMessage message) {
+  // message 即为被修改的消息
+}
+```
+{% endblock %}
+
+
+
+{% block code_send_will_message %}
+
+```java
+AVIMTextMessage message = new AVIMTextMessage();
+message.setText("我是一条遗愿消息，当发送者意外下线的时候，我会被下发给对话里面的其他成员");
+
+AVIMMessageOption option = new AVIMMessageOption();
+option.setWill(true);
+conversation.sendMessage(message, option, new AVIMConversationCallback() {
+  @Override
+  public void done(AVIMException e) {
+    if (e == null) {
+      // 发送成功
+    }
+  }
+});
+```
+
+{% endblock %}

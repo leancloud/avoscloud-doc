@@ -143,6 +143,10 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 对于 query 则是按照请求数来计费，与结果的大小无关。`query.count` 算 1 次 API 请求。collection fetch 也是按照请求次数来计费。
 
+### 如何获取 API 的访问日志
+
+进入 [控制台 > 存储 > API 统计 > API 访问日志](/dashboard/apistat.html?appid={{appid}}#/accesslog)，开启日志服务，稍后刷新页面，就可以看到从开启到当前时间产生的日志了。查看
+
 ### 可以在线测试 API 吗
 
 请访问 [API 在线测试工具](/dashboard/apionline/index.html)。
@@ -421,15 +425,7 @@ LeanCloud 美国节点提供 [GCM 支持](android_push_guide.html#GCM_推送)，
 
 ### 文件存储有 CDN 加速吗？
 
-国内节点本身就提供 CDN 加速访问。
-{% if node != 'qcloud' %}
-美国节点没有现成的 CDN 加速，需要用户自行配置。下面以 CloudFront 加速服务为例，简述一下配置过程。
-
-1. 阅读官方指南 [Getting Started with CloudFront](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html)。
-2. 创建一个 AWS 账户，以使用 CloudFront 服务和付费。
-3. S3 的公共访问权限（read permission）已经配置好，指南中有关 S3 配置的部分（[Step 2: Upload your content to Amazon S3 and grant object permissions](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/GettingStarted.html#GettingStartedUploadContent)）可以跳过。
-4. CloudFront 配置时的 **Origin Domain Name** 请从 `AVFile` 的 URL 中获取，其他均可保持默认。
-{% endif %}
+{{ data.cdn() }}
 
 ### 文件存储有大小限制吗？
 

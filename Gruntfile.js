@@ -338,7 +338,7 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
       //   ext: '.html'
       //   name: 'realtime_guide-js'
       let content = grunt.file.read(filePath);
-      let $ = cheerio.load(content);
+      let $ = cheerio.load(content, { decodeEntities: false });
       const version = crypto.createHash('md5').update($.html(), 'utf8').digest('hex');
  
       // 首页：内容分类导航 scrollspy
@@ -452,143 +452,33 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
 
   grunt.registerMultiTask('comment','add version info',function(){
     grunt.task.requires('assemble');
-    var cheerio = require('cheerio');
-    var crypto = require('crypto');
-    var _ = require('underscore');
     var Promise = require('bluebird');
-    var AV = require('leancloud-storage');
-    AV.init({appId: "749rqx18p5866h0ajv0etnq4kbadodokp9t0apusq98oedbb", appKey: "axxq0621v6pxkya9qm74lspo00ef2gq204m5egn7askjcbib"});
+    var comment = require('./comment');
     var docEnv = process.env.DOC_ENV || 'default';
-    grunt.log.writeln('Doc ENV: ', docEnv);
-
-    var Doc = AV.Object.extend('Doc');
-    var Snippet = AV.Object.extend('Snippet');
-    var commentDoms = ['p','pre'];
+    grunt.log.writeln('Doc site: ', docEnv);
     var done = this.async();
-
-    function initDocVersion(filepath, allSnippetsVersion){
-      var file = filepath;
-      var content = grunt.file.read(filepath);
-      var $ = cheerio.load(content);
-      var snippets = [];
-      commentDoms.forEach(function(dom) {
-        $('#content ' + dom).each(function() {
-          if($(this).text().trim().length > 0) {
-            var version = crypto.createHash('md5').update($(this).text()).digest('hex');
-            snippets.push(version);
-          }
-        });
-      });
-      var docVersion = crypto.createHash('md5').update(snippets.join(',')).digest('hex');
-      $('html').first().attr('version', docVersion);
-      //以 docversion 为唯一标识，当文档内容发生变化，docversion 相应变化，
-      var query = new AV.Query(Doc);
-      query.equalTo('version', docVersion);
-      return query.first().then(function(doc) {
-        if (doc) {
-          // 如果 doc 已经存在，则直接返回
-          return doc;
-        }
-        doc = new Doc();
-        doc.set('version', docVersion);
-        doc.set('snippets', snippets);
-        //文件名，以及段落 snippet 信息更新
-        doc.set('file', file.split('/').pop());
-        grunt.log.writeln('save new Doc: %s', file);
-        return doc.save();
-      }).then(function(doc) {
-        // 在文档中添加 version 标记
-        commentDoms.forEach(function(dom) {
-          $('#content ' + dom).each(function() {
-            if($(this).text().trim().length > 0) {
-              var version = crypto.createHash('md5').update($(this).text()).digest('hex');
-              $(this).attr('id', version);
-              $(this).attr('version', version);
-            }
-          });
-        });
-        grunt.file.write(filepath, $.html());
-
-        // 保存 snippet version 和 content 的关联
-        return Promise.each(commentDoms, function(dom) {
-          var promises = [];
-          $('#content ' + dom).each(function(i, elem) {
-            promises.push(Promise.resolve(elem))
-          })
-          return Promise.map(promises, function(elem) {
-            var version = crypto.createHash('md5').update($(elem).text()).digest('hex');
-            if(_.contains(allSnippetsVersion, version)) {
-              return;
-            }
-            if($(elem).text().trim().length === 0) {
-              return;
-            }
-            grunt.log.writeln('save new Snippet: %s', $(elem).text().substr(0, 20) + '...');
-            return new Snippet().save({
-              snippetVersion: version,
-              content: $(elem).text(),
-              file: filepath.split('/').pop()
-            });
-          }, {concurrency: 3});
-        }).then(function() {
-          return doc;
-        });
-      });
-    }
-
     var self = this;
-    Promise.resolve()
-    .then(function() {
-      if (process.env.DOC_COMMENT_TOKEN) {
-        // 只有特定用户才能向文档评论服务写入数据
-        return AV.User.become(process.env.DOC_COMMENT_TOKEN);
-      }
-    }).then(function() {
-      // 查询所有已存在的 snippet version，
-      // 用来判断哪些是新的 snippet，然后将其 version 和 content 添加到数据库
-      var snippetsVersion = [];
-      var getSnippetsVersion = function(createdAt) {
-        return new AV.Query('Snippet')
-        .select('snippetVersion')
-        .greaterThan('createdAt', createdAt)
-        .limit(1000)
-        .ascending('createdAt')
-        .find()
-        .then(function(result) {
-          if(result.length === 0) {
-            return [];
-          }
-          _.each(result, function(snippet) {
-            snippetsVersion.push(snippet.get('snippetVersion'));
-          });
-          return getSnippetsVersion(_.last(result).get('createdAt'));
-        });
-      };
-      getSnippetsVersion(new Date(0)).then(function() {
-        grunt.log.writeln('current snippets count:', snippetsVersion.length);
-        return Promise.map(self.filesSrc, function(filepath) {
-          return initDocVersion(filepath, snippetsVersion);
-        }, {concurrency: 1})
-      }).then(function(docs) {
-        return new AV.Object('Release').save({
-          env: docEnv,
-        }).then(function(release) {
-          return AV.Object.saveAll(docs.map(function(doc) {
-            return new AV.Object('Release_Doc')
-            .set('release', release)
-            .set('doc', doc)
-          }))
+
+    comment.release(docEnv)
+    .then(function(release) {
+      return Promise.map(self.filesSrc, function(filepath) {
+        grunt.log.writeln(filepath);
+        var fileName = filepath.slice(filepath.lastIndexOf('/') + 1);
+        var content = grunt.file.read(filepath);
+        return comment.addCommentIdToDoc(fileName, content, release)
+        .then((newContent) => {
+          grunt.file.write(filepath, newContent);
         })
-      }).then(function() {
-        //保证所有文档都处理完再进行任务完成回调
-        grunt.log.writeln('version build allcompleted');
-        done();
-      });
-    }).catch(function(err){
+        .catch(function(err) {
+          grunt.log.error('err: %s', err.message, filepath);
+        })
+      }, {concurrency: 4})
+    })
+    .then(done)
+    .catch(function(err) {
       grunt.log.error('err: %s', err.stack || err.message || err);
       done();
-    });
+    })
   });
-
 
 };

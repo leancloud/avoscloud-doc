@@ -1584,4 +1584,20 @@ student.name = @"小明";
 ```
 {% endblock %}
 
+{% block code_authenticate_via_sessiontoken %}
+```objc
+AVUser *currentUser = [AVUser currentUser];
+NSString *sessionToken = currentUser.sessionToken;
+
+[AVUser becomeWithSessionTokenInBackground:sessionToken
+                                     block:^(AVUser * _Nullable user, NSError * _Nullable error) {
+                                         if (!error) {
+                                            /* 通过 session token 登录成功 */
+                                             NSLog(@"User did login with session token.");
+                                         }
+                                     }];
+```
+{% endblock %}
+
+
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

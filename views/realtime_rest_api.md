@@ -434,8 +434,101 @@ curl -X DELETE \
 client_id | 必填 | 字符串 | 退订者的 client id
 conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
 
+### 查询是否订阅过某个系统对话
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'conv_id=...' \
+  --data-urlencode 'client_id=...' \
+  https://{{host}}/1.1/rtm/conversation/subscribed
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+client_id | 必填 | 字符串 | 用户的 client id
+conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
+
+如果订阅过目标系统对话则会返回订阅信息：
+
+```
+[{"timestamp":1491467945277,"subscriber":"XXX","conv_id":"85939ed1e4b0c4d3e69e8b28"}]
+```
+
+其中 `timestamp` 表示用户订阅系统对话的时间，`subscriber` 是订阅用户的 client id。
+
+如果没有订阅过目标系统对话，则会返回空数组：
+
+```
+[]
+```
+
+### 获取已订阅系统对话
+
+因为目标用户订阅的系统对话可能会很多，一次请求无法全部获取，所以对于订阅了大量系统对话的用户，需要多次调用本接口来逐步获取到所有订阅的系统对话。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'client_id=...' \
+  --data-urlencode 'conv_id=...' \
+  --data-urlencode 'timestamp=...' \
+  --data-urlencode 'limit=...' \
+  https://{{host}}/1.1/rtm/conversation/subscription
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+client_id | 必填 | 字符串 | 目标查询用户的 client id
+conv_id | 可选 | 字符串 | 查询起始对话 id，不填则从订阅列表起始位置开始遍历。查询结果不会再包含本对话。
+timestamp | 可选 | 数字 | 查询起始对话被订阅时间。虽然是可选字段但当提供 conv_id 时本字段必填，值必须为订阅 conv_id 参数所指定系统对话的时间
+limit | 可选 | 数字 | 返回条数限制，默认是 50 条
+
+返回目标用户订阅系统对话的列表：
+
+```
+[{"timestamp":1482994126561,"subscriber":"XXX","conv_id":"convId1"},
+ {"timestamp":1491467945277,"subscriber":"XXX","conv_id":"convId2"}, ...]
+```
+
+其中 `timestamp` 表示用户订阅系统对话的时间，`subscriber` 是订阅用户的 client id。如果一次没有获取完，需要从结果列表中取最后一个系统对话的 id 和订阅该对话的时间，分别作为 conv_id 和 timestamp 参数再次调用本接口以获取下一批订阅的系统对话。
+
+### 获取系统对话的所有订阅者
+
+因为目标系统对话的订阅者可能会很多，一次请求无法全部获取，所以对于拥有大量订阅者的系统对话，需要多次调用本接口来逐步获取到所有的订阅者。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'conv_id=...' \
+  --data-urlencode 'client_id=...' \
+  --data-urlencode 'limit=...' \
+  https://{{host}}/1.1/rtm/conversation/subscribers
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
+client_id | 可选 | 字符串 | 查询起始订阅者 client id，不填则从订阅者列表起始位置开始遍历。查询结果不会再包含当前指定的订阅者 client id。
+limit | 可选 | 数字 | 返回条数限制，默认是 50 条
+
+返回目标系统对话的订阅者列表：
+
+```
+[{"timestamp":1491467841116,"subscriber":"client id 1","conv_id":"55b871"},
+ {"timestamp":1491467852768,"subscriber":"client id 2","conv_id":"55b871"}, ...]
+```
+
+其中 `timestamp` 表示用户订阅系统对话的时间，`subscriber` 是订阅用户的 client id。如果一次没有获取完，需要从结果列表中取最后一个订阅者的 client id，作为 client_id 参数再次调用本接口以获取下一批订阅者列表。
 
 ## 富媒体消息格式说明
+
 富媒体消息的参数格式相对于普通文本来说，仅仅是将 message 参数换成了一个 JSON **字符串**。
 
 <div class="callout callout-info">由于 LeanCloud 实时通信中所有的消息都是文本，所以这里发送 JSON 结构时**需要首先序列化成字符串**。</div>
@@ -759,4 +852,47 @@ reason | 下线的原因，字符串，不超过 20 个字符
 
 ```json
 {}
+```
+
+## 获取 Client 登录签名
+
+本接口可以让使用了 [AV.User](rest_api.html#用户-1) 的应用方便快捷地实现登录认证。登录认证默认关闭，可以进入 [控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission)，在「聊天、推送」模块，勾选 **聊天服务，启用登录认证** 进行开启。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '{"session_token": "AV.User 的 sessionToken"' \
+  https://{{host}}/1.1/rtm/sign
+```
+参数 | 说明
+--- | ---
+session_token | AV.User 的 sessionToken
+
+返回：
+```json
+{"nonce": "", "timestamp": "", "client_id": "", "signature": ""}
+```
+
+返回的参数，可以参考「[用户登录签名](realtime_v2.html#%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E7%9A%84%E7%AD%BE%E5%90%8D)」与「实现签名工厂（[JavaScript](realtime_guide-js.html#%E5%AE%9E%E7%8E%B0%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%8E%82)、[Android](realtime_guide-android.html#%E5%AE%9E%E7%8E%B0%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%8E%82)、[Objective-C](realtime_guide-objc.html#%E5%AE%9E%E7%8E%B0%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%8E%82)、[.Net](realtime_guide-dotnet.html#%E5%AE%9E%E7%8E%B0%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%8E%82)）」进行后续的登录。
+
+为了方便用户进行细粒度控制，实现自定义功能（如黑名单），本接口提供了一个 hook `_rtmClientSign`，在验证 sessionToken 后去调用，传入的参数为 AV.User 构成的 JSON 对象：
+```json
+{
+    "email": "",
+    "sessionToken": "",
+    "updatedAt": "",  // 格式：2017-07-11T07:58:10.149Z
+    "phone": "",
+    "objectId": "",
+    "username": "",
+    "createdAt": "",  // 格式：2017-07-11T07:58:10.149Z
+    "emailVerified": true/false,
+    "mobilePhoneVerified": true/false
+}
+```
+可以返回两类结果：
+```json
+{"result": true} // 允许签名
+{"result": false, "error": "error message"}  // 拒绝签名
 ```

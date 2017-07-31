@@ -148,6 +148,8 @@ $ grunt server
 
 {% if numUsers < 5 %}...{% endif %}
 {% if i != "String" %}...{% endif %}
+// boolean 的否定要用 not 而不是 !
+{% if not isNew %}...{% endif %}
 {% if users and showUsers %}...{% endif %}
 {% if i == 0 and not hideFirst %}...{% endif %}
 {% if (x < 5 or y < 5) and foo %}...{% endif %}
