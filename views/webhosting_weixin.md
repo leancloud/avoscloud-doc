@@ -112,9 +112,9 @@ app.use('/wechat', require('./routes/wechatBot'));
 lean deploy
 ```
 
-如果使用的是云引擎免费版，`deploy` 将会将项目直接发布到 `wechatTest.leanapp.cn`。
+如果使用的是云引擎生产环境使用的是体验实例，`deploy` 将会将项目直接发布到 `wechatTest.leanapp.cn`。
 
-如果是云引擎专业版，`deploy` 会将其发布到 <code>**stg-**wechatTest.leanapp.cn</code>；要发布到 `wechatTest.leanapp.cn`，还需要执行：
+如果是云引擎生产环境使用的是标准实例，`deploy` 会将其发布到 <code>**stg-**wechatTest.leanapp.cn</code>；要发布到 `wechatTest.leanapp.cn`，还需要执行：
 
 ```bash
 lean publish

@@ -111,7 +111,7 @@ lean -p 3002
 
 ## 调用云引擎方法如何收费？
 
-云引擎中如果有 LeanCloud 的存储等 API 调用，按 [API 收费策略](faq.html#API_调用次数的计算) 收费。另外如果使用的是云引擎专业版，该服务也会产生使用费，具体请参考 [云引擎运行方案](leanengine_plan.html#价格)。
+云引擎中如果有 LeanCloud 的存储等 API 调用，按 [API 收费策略](faq.html#API_调用次数的计算) 收费。另外如果使用的是云引擎 [标准实例](leanengine_plan.html#标准实例) 也会产生使用费，具体请参考 [云引擎运行方案](leanengine_plan.html#价格)。
 
 ## 「定义函数」和「Git 部署」可以混用吗？
 
@@ -130,7 +130,7 @@ lean -p 3002
 1. 按照 [命令行工具使用指南](leanengine_cli.html) 安装命令行工具，使用 `lean init` 初始化项目，模板选择 `node-js-getting-started`（我们的 Node.js 示例项目）。
 2. 在 [应用控制台 > 云引擎 > 部署 > 在线编辑](https://leancloud.cn/cloud.html?appid={{appid}}#/deploy/online) 中点击 **预览**，将全部函数的代码拷贝到新建项目中的 `cloud.js`（替换掉原有内容）。
 3. 检查 `cloud.js` 的代码，将 `AV.User.current()` 改为 `request.currentUser` 以便从 Node SDK 的 0.x 版本升级到 1.x，有关这个升级的更多信息见 [升级到云引擎 Node.js SDK 1.0](leanengine-node-sdk-upgrade-1.html)。
-4. 运行 `lean up`，在 <http://localhost:3001> 的调试界面中测试云函数和 Hook，然后运行 `lean deploy` 部署代码到云引擎（专业版用户还需要执行 `lean publish`）。
+4. 运行 `lean up`，在 <http://localhost:3001> 的调试界面中测试云函数和 Hook，然后运行 `lean deploy` 部署代码到云引擎（使用标准实例的用户还需要执行 `lean publish`）。
 5. 部署后请留意云引擎控制台上是否有错误产生。
 
 ## 为什么查询 include 没有生效？
