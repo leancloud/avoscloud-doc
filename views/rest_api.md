@@ -1218,11 +1218,23 @@ curl -X GET \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -G \
-  --data-urlencode 'where={"author":{"$select":{"query":{"className":"_Followee","where":{"user":{
-  "__type": "Pointer",
-  "className": "_User",
-  "objectId": "55a39634e4b0ed48f0c1845c"
-}}, "key":"followee"}}}}' \
+  --data-urlencode 'where={
+    "author": {
+      "$select": {
+        "query": { 
+          "className":"_Followee",
+           "where": {
+             "user":{
+               "__type": "Pointer",
+               "className": "_User",
+               "objectId": "55a39634e4b0ed48f0c1845c" 
+             }
+           }
+        }, 
+        "key":"followee" 
+      }
+    }
+  }' \
   https://{{host}}/1.1/classes/Post
 ```
 

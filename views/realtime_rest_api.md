@@ -861,7 +861,7 @@ reason | 下线的原因，字符串，不超过 20 个字符
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
+  -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
   -d '{"session_token": "AV.User 的 sessionToken"' \
   https://{{host}}/1.1/rtm/sign

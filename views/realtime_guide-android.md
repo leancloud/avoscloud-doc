@@ -777,7 +777,7 @@ jerry.open(new AVIMClientCallback() {
 要开启未读消息，需要在 AVOSCloud 初始化语句后面加上：
 
 ```java
-AVIMClient.setOfflineMessagePush(true);
+AVIMClient.setUnreadNotificationEnabled(true);
 ```
 
 然后实现 AVIMConversationEventHandler 的代理方法 `onUnreadMessagesCountUpdated` 来得到未读消息的数量变更的通知：
