@@ -445,6 +445,10 @@ CQL > select objectId, mime_type from _File where mime_type != null limit 3;
 ]
 ```
 
+## LeanCache 管理
+
+LeanCache 用户可以使用命令行工具来连接线上的 LeanCache 实例，对数据进行增删改查。
+
 ## 其他命令
 
 使用 `search` 命令可以方便地查询文档和资料：
