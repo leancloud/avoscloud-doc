@@ -28,9 +28,23 @@ Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 �
 
 从 {{release}} 下载预编译好的二进制文件 `lean_linux_amd64`，重命名为 `lean` 并放到 已经在 PATH 环境变量中声明的任意目录中即可。
 
+#### Arch Linux
+
+Arch Linux 用户，可以考虑使用此 AUR 进行安装： https://aur.archlinux.org/packages/lean-cli-git/ 。
+
 ### 通过源码安装
 
 请参考项目源码 [README](https://github.com/leancloud/lean-cli)。
+
+### 升级
+
+如果命令行工具是通过 Homebrew 安装的，那么升级它需要运行：
+
+```sh
+brew upgrade
+```
+
+使用其他方式进行安装的，则可以直接按照安装文档描述，下载最新的文件，重新执行一遍安装流程，即可把旧版本的命令行工具覆盖，升级到最新版。
 
 ## 使用
 
