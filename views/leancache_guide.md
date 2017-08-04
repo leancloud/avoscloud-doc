@@ -1,3 +1,4 @@
+{% import "views/_leanengine.njk" as leanengine %}
 # LeanCache 使用指南
 
 <div style="max-width:200px;margin: 0 0 20px 0;"><img src="images/redislogo.svg" class="img-responsive" alt=""></div>
@@ -72,26 +73,9 @@ LeanCache 不提供外网直接访问。如果需要进行简单的数据操作�
 
 ### 在命令行工具中使用
 
-关于命令行工具的安装以及详细介绍参考[这里](leanengine_cli.html)。
+关于命令行工具的安装以及详细介绍参考 [这里](leanengine_cli.html)。
 
-在一个已经关联过 LeanCache 实例的云引擎项目中，使用 `$ lean cache` 命令，即可连上对应的 LeanCache 实例。另外需要注意的是，每个 LeanCache 实例，默认会分成 16 个 db，方便管理。没有特殊设置的话，默认使用的都是 db0。
-
-连接成功之后，可以直接执行命令来对数据进行操作，比如查看某个 key 的值：
-
-```
-LeanCache (db 0) > GET foo
-"bar"
-```
-
-LeanCache 基于 Redis，所以大部分 Redis 命令都可以使用。关于 Redis 的命令，请参考官方文档：https://redis.io/commands 。
-
-可以通过下列命令查询当前应用有哪些 LeanCache 实例：
-
-``` shell
-$ lean cache list
-```
-
-**注意**：命令行工具操作 LeanCache 时，是通过 HTTPS 请求来进行通讯的，因此类似 `pub/sub`、`blpop` 等需要长连接的命令不能直接使用。但是线上没有这个限制，可以直接使用。
+{{ leanengine.leancacheWithCli() }}
 
 ### 在云引擎中使用（Node.js 环境）
 

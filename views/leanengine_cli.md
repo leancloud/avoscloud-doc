@@ -1,3 +1,4 @@
+{% import "views/_leanengine.njk" as leanengine %}
 {% set release = "[Github releases 页面](https://releases.leanapp.cn/#/leancloud/lean-cli/releases)" %}
 {% set login = "lean login" %}
 
@@ -462,6 +463,8 @@ CQL > select objectId, mime_type from _File where mime_type != null limit 3;
 ## LeanCache 管理
 
 LeanCache 用户可以使用命令行工具来连接线上的 LeanCache 实例，对数据进行增删改查。
+
+{{ leanengine.leancacheWithCli() }}
 
 ## 其他命令
 
