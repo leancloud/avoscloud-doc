@@ -151,6 +151,27 @@ $redis = new Predis\Client(getenv("REDIS_URL_<实例名称>"));
 $redis->ping();
 ```
 
+### 在云引擎中使用（Java 环境）
+
+在 `pom.xml` 中添加 redis client 的依赖。
+
+```xml
+<dependency>
+    <groupId>redis.clients</groupId>
+    <artifactId>jedis</artifactId>
+    <version>2.9.0</version>
+</dependency>
+```
+
+从环境变量中获取链接字符串，然后再创建 redis client 实例即可。
+
+```
+String redisUrl = System.getenv("REDIS_URL_<实例名称>");
+Jedis jedis = new Jedis(redisUrl);
+jedis.set("foo", "bar");
+String value = jedis.get("foo");
+```
+
 ### 在本地调试依赖 LeanCache 的应用
 
 目前不支持直接连接线上的 LeanCache 进行调试，所以需要先在本地安装好 Redis。
