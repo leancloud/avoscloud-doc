@@ -213,6 +213,8 @@ cloudfunc.rpc('averageStars', movie='夏洛特烦恼')
 
 {% block cloudFuncTimeout %}{% endblock %}
 
+{% block cloudFuncRegister %}{% endblock %}
+
 ## Hook 函数
 
 Hook 函数本质上是云函数，但它有固定的名称，定义之后会**由系统**在特定事件或操作（如数据保存前、保存后，数据更新前、更新后等等）发生时**自动触发**，而不是由开发者来控制其触发时机。
