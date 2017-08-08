@@ -451,19 +451,7 @@ curl -X GET \
 client_id | 必填 | 字符串 | 用户的 client id
 conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
 
-如果订阅过目标系统对话则会返回订阅信息：
-
-```
-[{"timestamp":1491467945277,"subscriber":"XXX","conv_id":"85939ed1e4b0c4d3e69e8b28"}]
-```
-
-其中 `timestamp` 表示用户订阅系统对话的时间，`subscriber` 是订阅用户的 client id。
-
-如果没有订阅过目标系统对话，则会返回空数组：
-
-```
-[]
-```
+如果订阅过该系统对话返回`true`，否则返回`false`。
 
 ### 获取已订阅系统对话
 
