@@ -296,7 +296,7 @@ engine.register(post_engine)
 engine.register(commit_engine)
 ```
 
-其效果等同于在`cloud.py`中注册 `commit_func` 和 `post_func` 两个云函数。
+其效果等同于在 `cloud.py` 中注册 `commit_func` 和 `post_func` 两个云函数。
 
 在使用 `engine.register` 函数过程中，请务必不要注册相同的函数名称。
 
