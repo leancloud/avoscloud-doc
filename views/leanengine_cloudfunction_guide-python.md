@@ -258,25 +258,25 @@ def before_review_save(review):
 在实际使用中有这样一种场景：我们将关于 `Post` 类的云函数和关于 `Commit` 类的云函数分离成两个文件，方便管理。
 
 ```Python
-# post.py
+# Post.py
 import leancloud
 
-PostEngine = leancloud.Engine()
+post_engine = leancloud.Engine()
 
-@PostEngine.define
-def PostFunc():
+@post_engine.define
+def post_func():
     pass
 		
 ```
 
 ```Python
-# commit.py
+# Commit.py
 import leancloud
 
-CommitEngine = leancloud.Engine()
+commit_engine = leancloud.Engine()
 
-@CommitEngine.define
-def CommitFunc():
+@commit_engine.define
+def commit_func():
     pass
 		
 ```
@@ -286,17 +286,17 @@ def CommitFunc():
 ```Python
 # cloud.py
 import leancloud
-from post import PostEngine
-from commit import CommitEngine
+from Post import post_engine
+from Commit import commit_engine
 
 engine = leancloud.Engine()
 
 # 将 CommitEngine 和 PostEngine 的云函数同步到 engine 中
-engine.register(PostEngine)
-engine.register(CommitEngine)
+engine.register(post_engine)
+engine.register(commit_engine)
 ```
 
-其效果等同于在`cloud.py`中注册 `CommitFunc` 和 `PostFunc` 两个云函数。
+其效果等同于在`cloud.py`中注册 `commit_func` 和 `post_func` 两个云函数。
 
 在使用 `engine.register` 函数过程中，请务必不要注册相同的函数名称。
 
