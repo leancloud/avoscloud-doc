@@ -253,6 +253,28 @@ AV.Object.register(Todo);
     console.error(error);
   });
 ```
+
+如果需要一次性获取返回对象的所有属性（比如进行数据绑定）而非显式地调用 `get(属性名)`，可以利用 AV.Object 实例的 `toJSON()` 方法（需要 leancloud-storage@^3.0.0 以上版本）来得到一个 plain object。
+
+```js
+  var query = new AV.Query('Todo');
+  query.get('558e20cbe4b060308e3eb36c').then(function (todo) {
+    console.log(todo.toJSON())
+    // ==== console 中的结果 ====
+
+    // content: "每周工程师会议，周一下午2点"
+    // createdAt: "2017-03-08T11:25:07.804Z"
+    // location: "会议室"
+    // objectId: "558e20cbe4b060308e3eb36c"
+    // priority: 1
+    // title: "工程师周会"
+    // updatedAt: "2017-03-08T11:25:07.804Z"
+
+  }, function (error) {
+    // 异常处理
+    console.error(error);
+  });
+```
 {% endblock %}
 
 {% block code_object_fetch %}
