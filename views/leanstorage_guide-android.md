@@ -1612,4 +1612,12 @@ AVUser.becomeWithSessionTokenInBackground(sessionToken, new LogInCallback<AVUser
 ```
 {% endblock %}
 
-{# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
+{% block faq %}
+## 常见问题
+
+### 错误 already has one request sending
+
+日志中出现了 `com.avos.avoscloud.AVException: already has one request sending` 的错误信息，这说明存在对同一个 AVObject 实例对象同时进行了 2 次异步的 save 操作。为防止数据错乱，LeanCloud SDK 对于这种同一数据的并发写入做了限制，所以抛出了这个异常。
+
+需要检查代码，通过打印 log 和断点的方式来定位究竟是由哪一行 save 所引发的。  
+{% endblock %}
