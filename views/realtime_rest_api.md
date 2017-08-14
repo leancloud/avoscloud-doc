@@ -216,7 +216,31 @@ curl -X PUT \
 
 {{ im.conversationProperties() }}
 
-<div class="callout callout-info">此处仅能修改**服务器端**的消息记录，并不能修改**客户端缓存**的消息记录。</div>
+<div class="callout callout-info">本接口仅能修改**服务器端**的消息记录，并不能修改**客户端缓存**的消息记录。如果您使用的是支持修改与撤回消息功能的 SDK 建议使用<a href="#修改与撤回消息">修改与撤回消息接口</a>来修改消息</div>
+
+## 修改与撤回消息
+
+从 Objective-C SDK v6.0.0、Android SDK v4.4.0、JavaScript SDK v3.5.0 开始，我们支持了新的修改与撤回消息功能。修改或撤回消息后，即使已经收到并已缓存在客户端的消息也会被修改或撤回。对于老版本的 SDK，仅能修改或撤回服务器端的消息记录，并不能修改或撤回客户端已缓存的消息记录。
+
+本接口需要 Master Key 授权。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '{"from_peer":"some sender","conv_id":"5667070f60b2298fdddb6837","timestamp":1449661888571,"msg_id":"4XC_IHK+Ry6CXzIPq_nc7Q","message":"{\"_lctype\":-1,\"_lctext\":\"这是一个修改后的纯文本消息\"}", "recall":true}' \
+  https://{{host}}/1.1/rtm/patch/message
+```
+
+参数 | 约束 | 说明
+--- | --- | --- 
+conv_id | 必填 | 对话 id  
+msg_id | 必填 | 消息 id  
+timestamp | 必填 | 消息时间戳（毫秒）
+from_peer | 必填 | 发消息用户 Client ID
+message | 必填 | 修改后的消息体 
+recall | 可选 | 布尔类型，代表是否撤回消息
 
 ## 未收取消息数
 
