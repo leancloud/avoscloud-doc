@@ -547,8 +547,6 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% block code_query_greaterThanOrEqualTo %}{% endblock %}
 
-比较查询**只适用于可比较大小的数据类型**，如整型、浮点等。
-
 #### 多个查询条件
 
 当多个查询条件并存时，它们之间默认为 AND 关系，即查询只返回满足了全部条件的结果。建立 OR 关系则需要使用 [组合查询](#组合查询)。
@@ -1083,6 +1081,8 @@ CQL 是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功
 {% block js_push_guide %}{% endblock %}
 
 {% block use_js_in_webview %}{% endblock %}
+
+{% block faq %}{% endblock %}
 
 ## 相关文档
 
