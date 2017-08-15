@@ -105,6 +105,14 @@ AVInstallation.getCurrentInstallation().saveInBackground();
 </receiver>
 ```
 
+### 推送唤醒
+
+如果希望支持应用间的推送唤醒机制，即在同一设备上有两个使用了 LeanCloud 推送的应用，应用 A 被杀掉后，当应用 B 被唤醒时可以同时唤醒应用 A 的推送，可以这样配置：
+
+```xml
+<service android:name="com.avos.avoscloud.PushService" android:exported="true"/>
+```
+
 ### 推送给所有的设备
 
 ```java
