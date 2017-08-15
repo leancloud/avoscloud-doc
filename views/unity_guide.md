@@ -1140,8 +1140,8 @@ AVFile默认会存储文件大小和文件上传者objectId作为元信息。同
  file.MetaData.Add("height", 100);
 ```
 
-#### 推荐的下载方式
-因为多平台适配会造成困扰，因此 nity SDK 不提供直接下载文件的方式。
+#### 文件下载
+因为多平台适配会造成困扰，因此 Unity SDK 不提供直接下载文件的方式。
 
 对 Unity 有经验的开发者，我们推荐用  Unity 自带的 WWW 类或者 UnityWebRequest 类解决文件下载的问题，如下：
 
