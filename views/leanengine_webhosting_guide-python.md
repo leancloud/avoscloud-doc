@@ -46,8 +46,8 @@ lean up
 
 ```
 # 井号至行尾为注释
-leancloud-sdk
-Flask>=0.10.1  # 可以指定版本号／范围
+leancloud>=2.0.0,<3.0.0
+Flask>=0.10.1,<1.0.0                               # 可以指定版本号／范围
 git+https://github.com/foo/bar.git@master#egg=bar  # 可以使用 Git/SVN 等版本管理工具的远程地址
 ```
 
@@ -89,7 +89,7 @@ pip install -r requirements.txt
 
 ### 安装
 
-将 `leancloud-sdk` 添加到 `requirements.txt` 中，部署到线上即可自动安装此依赖。在本地运行和调试项目的时候，可以在项目目录下使用如下命令进行依赖安装：
+将 `leancloud` 添加到 `requirements.txt` 中，部署到线上即可自动安装此依赖。在本地运行和调试项目的时候，可以在项目目录下使用如下命令进行依赖安装：
 
 ```sh
 pip install -r requirements.txt
@@ -269,10 +269,10 @@ def upload():
 首先添加相关依赖到云引擎应用的 `requirements.txt` 中：
 
 ``` python
-Flask>=0.10.1
-leancloud-sdk>=1.0.9
+Flask>=0.10.1,<1.0.0
+leancloud>=2.0.0,<3.0.0
 ...
-redis
+redis>=2.10.5,<3.0.0
 ```
 
 然后可以使用下列代码获取 Redis 连接：
