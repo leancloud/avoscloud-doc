@@ -194,9 +194,15 @@ Java 云引擎只支持 1.8 运行环境和 war 包运行
 import com.avos.avoscloud.internal.impl.JavaRequestSignImplementation;
 import cn.leancloud.LeanEngine;
 
+// 从 LEANCLOUD_APP_ID 这个环境变量中获取应用 app id 的值
 String appId = System.getenv("LEANCLOUD_APP_ID");
+
+// 从 LEANCLOUD_APP_KEY 这个环境变量中获取应用 app key 的值                
 String appKey = System.getenv("LEANCLOUD_APP_KEY");
-String appMasterKey = System.getenv("LEANCLOUD_APP_MASTER_KEY");
+
+// 从 LEANCLOUD_APP_MASTER_KEY 这个环境变量中获取应用 master key 的值        
+String appMasterKey = System.getenv("LEANCLOUD_APP_MASTER_KEY");   
+
 LeanEngine.initialize(appId, appKey, appMasterKey);
 
 // 如果不希望使用 masterKey 权限，可以将下面一行删除
