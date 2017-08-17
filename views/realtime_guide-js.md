@@ -613,7 +613,7 @@ realtime.createIMClient('Tom').then(function (host) {
 
 #### 未读消息数更新通知
 
-未读消息数量通知是默认的未读消息处理方式：当客户端上线时，会收到其参与过的对话的未读消息数量的通知，然后由客户端负责主动拉取未读的消息。
+未读消息数量通知是默认的未读消息处理方式：当客户端上线时，会收到其参与过的对话的未读消息数量的通知，然后由客户端负责主动拉取未读的消息，拉取方式可参考「[聊天记录](#聊天记录)」部分。
 
 SDK 会在 `Conversation` 上维护 `unreadMessagesCount` 字段，这个字段在变化时 `IMClient` 会派发 `unreadmessagescountupdate` 事件。这个字段会在下面这些情况下发生变化：
 
