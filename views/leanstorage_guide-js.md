@@ -1680,4 +1680,18 @@ query.find().then(list => {
 ```
 {% endblock %}
 
+{% block code_pointer_include_todoFolder %}
+
+```js
+var todo = AV.Object.createWithoutData('Todo', '5735aae7c4c9710060fbe8b0');
+todo.fetch({
+  include:['todoFolder']
+  }).then(todoObj =>{
+    let todoFolder = todoObj.get('todoFolder');
+    console.log(todoFolder.get('name'));
+});
+```
+
+{% endblock %}
+
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

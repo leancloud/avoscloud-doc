@@ -291,7 +291,13 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% block code_pointer_comment_one_to_many_todoFolder %}{% endblock %}
 
-相关内容可参考 [关联数据查询](relation-guide.html#Pointers_查询)。
+##### 获取 Pointer 对象
+
+当 Todo 拥有一个字段叫做 TodoFolder 的 Pointer 类型的属性，在获取 Todo 的对象的同时，想一并把被关联的 TodoFolder 也拉取到本地：
+
+{% block code_pointer_include_todoFolder %}{% endblock %}
+
+更多内容可参考 [关联数据查询](relation-guide.html#Pointers_查询)。
 
 #### 地理位置
 地理位置是一个特殊的数据类型，{{productName}} 封装了 `{{geoPointObjectName}}` 来实现存储以及相关的查询。
