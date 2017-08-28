@@ -1,4 +1,5 @@
 {% from "views/_data.njk" import libVersion as version %}
+{% import "views/_helper.njk" as docs %}
 # Android 消息推送开发指南
 
 请先阅读 [消息推送概览](push_guide.html) 了解相关概念。
@@ -576,8 +577,10 @@ AVMixpushManager.unRegisterMixPush();
 
 {% endif %}
 
-{% if node == 'us' %}
-### GCM 推送
+
+### GCM 推送（仅美国节点）
+
+{{ docs.alert("GCM 推送仅支持部署在 LeanCloud 美国节点上的应用使用。") }}
 
 GCM（Google Cloud Messaging）是 Google 提供的一项将推送通知消息发送到手机的服务。接入时后台不需要任何设置，GCM 相关的 token 由 LeanCloud SDK 来申请。
 
@@ -630,7 +633,7 @@ dependencies {
   </intent-filter>
 </receiver>
 ```
-{% if node != 'qcloud' %}
+
 接下来设置 GCM 开关。在 `AVOSCloud.initialize` 初始化时设置开关 `AVOSCloud.setGcmOpen(true)`。
 
 注意，LeanCloud 云端只有在以下三个条件都满足的情况下，才会默认走 GCM 通道。
@@ -638,9 +641,8 @@ dependencies {
 - LeanCloud 美国节点
 - 调用 `AVOSCloud.setGcmOpen(true)`
 - manifest 正确填写
-  {% endif %}
-  如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
-  {% endif %}
+
+如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
 
 
 [xiaomi]: http://dev.xiaomi.com/index
