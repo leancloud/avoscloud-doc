@@ -1626,4 +1626,17 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 ```
 {% endblock %}
 
+{% block code_pointer_include_todoFolder %}
+
+```objc
+AVObject *todo = [AVObject objectWithClassName:@"Todo" objectId:@"5735aae7c4c9710060fbe8b0"];
+[todo fetchInBackgroundWithKeys:@[@"todoFolder"] block:^(AVObject * _Nullable todoObject, NSError * _Nullable error) {
+    
+    AVObject *todoFolder = [todoObject objectForKey:@"todoFolder"];
+    NSLog(@"%@", todoFolder);
+    
+}];
+```
+{% endblock %}
+
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

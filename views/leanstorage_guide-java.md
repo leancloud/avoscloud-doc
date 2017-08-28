@@ -1336,3 +1336,17 @@ query.findInBackground(new FindCallback<AVObject>() {
 });
 ```
 {% endblock %}
+
+{% block code_pointer_include_todoFolder %}
+
+```java
+final AVObject todo = AVObject.createWithoutData("Todo", "5735aae7c4c9710060fbe8b0");
+todo.fetchInBackground("todoFolder", new GetCallback<AVObject>() {
+    @Override
+    public void done(AVObject avObject, AVException e) {
+        AVObject todoFolder = avObject.getAVObject("todoFolder");
+        System.out.print(todoFolder.get("name"));
+    }
+});
+```
+{% endblock %}
