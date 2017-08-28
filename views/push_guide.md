@@ -223,20 +223,18 @@ curl -X POST \
 
 #### 消息内容 Data
 
-对于 iOS 设备，data 内属性可以是：
+对于 iOS 设备，消息内容参数 data 内属性可以是：
 
 ```
 {
-  "data": {
-   "alert":             "消息内容",
-   "category":          "通知类型",
-   "thread-id":         "通知分类名称",
-   "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
-   "sound":             "声音文件名，前提在应用里存在",
-   "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
-   "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用,
-   "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
-  }
+  "alert":             "消息内容",
+  "category":          "通知类型",
+  "thread-id":         "通知分类名称",
+  "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
+  "sound":             "声音文件名，前提在应用里存在",
+  "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
+  "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用,
+  "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
 }
 ```
 
@@ -244,18 +242,16 @@ curl -X POST \
 
 ```
 {
-  "data":{
-    "alert": {
-      "title":               "标题",
-      "title-loc-key":       "",
-      "sub-title":           "附标题",
-      "sub-title-loc-key":   "",
-      "body":                "消息内容",
-      "action-loc-key":      "",
-      "loc-key":             "",
-      "loc-args":            [""],
-      "launch-image":        ""
-     }
+  "alert": {
+    "title":               "标题",
+    "title-loc-key":       "",
+    "sub-title":           "附标题",
+    "sub-title-loc-key":   "",
+    "body":                "消息内容",
+    "action-loc-key":      "",
+    "loc-key":             "",
+    "loc-args":            [""],
+    "launch-image":        ""
    }
 }
 ```
@@ -266,41 +262,37 @@ data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://de
 
 ```
 {
-  "data":{
-    "aps": {
-      "alert": {
-        "title":               "标题",
-        "title-loc-key":       "",
-        "sub-title":           "附标题",
-        "sub-title-loc-key":   "",
-        "body":                "消息内容",
-        "action-loc-key":      "",
-        "loc-key":             "",
-        "loc-args":            [""],
-        "launch-image":        ""
-      }
-      "category":          "通知类型",
-      "thread-id":         "通知分类名称",
-      "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
-      "sound":             "声音文件名，前提在应用里存在",
-      "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
-      "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用,
-    }
-    "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
-  }
+  "aps": {
+     "alert": {
+       "title":               "标题",
+       "title-loc-key":       "",
+       "sub-title":           "附标题",
+       "sub-title-loc-key":   "",
+       "body":                "消息内容",
+       "action-loc-key":      "",
+       "loc-key":             "",
+       "loc-args":            [""],
+       "launch-image":        ""
+     }
+     "category":          "通知类型",
+     "thread-id":         "通知分类名称",
+     "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
+     "sound":             "声音文件名，前提在应用里存在",
+     "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
+     "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用,
+   }
+   "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
 }
 ```
 
-如果是 Android 设备，默认的消息栏通知 `data` 支持下列属性：
+如果是 Android 设备，默认的消息栏通知消息内容参数支持下列属性：
 
 ```
 {
-  "data":{
-    "alert":      "消息内容",
-    "title":      "显示在通知栏的标题",
-    "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
-    "silent":     true/false // 用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
-  }
+  "alert":      "消息内容",
+  "title":      "显示在通知栏的标题",
+  "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
+  "silent":     true/false // 用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
 }
 ```
 
@@ -308,13 +300,11 @@ data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://de
 
 ```
 {
-  "data":{
-    "alert":      "消息内容",
-    "title":      "显示在通知栏的标题",
-    "action":     "com.your_company.push",
-    "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
-    "silent":     true/false // 用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
-  }
+  "alert":      "消息内容",
+  "title":      "显示在通知栏的标题",
+  "action":     "com.your_company.push",
+  "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
+  "silent":     true/false // 用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
 }
 ```
 
@@ -322,39 +312,35 @@ Windows Phone 设备类似，也支持 `title` 和 `alert`，同时支持 `wp-pa
 
 ```
 {
-  "data":{
-    "alert":      "消息内容",
-    "title":      "显示在通知栏的标题",
-    "wp-param":   "/chat.xaml?NavigatedFrom=Toast Notification"
-  }
+  "alert":      "消息内容",
+  "title":      "显示在通知栏的标题",
+  "wp-param":   "/chat.xaml?NavigatedFrom=Toast Notification"
 }
 ```
 
-但是如果想一次 push 调用**推送不同的数据给不同类型的设备**，`data` 属性同时支持设定设备特定消息，例如：
+但是如果想一次 push 调用**推送不同的数据给不同类型的设备**，消息内容参数同时支持设定设备特定消息，例如：
 
 ```
 {
-  "data":{
-    "ios": {
-      "alert":             "消息内容",
-      "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以设置为 "Increment" 这个字符串（大小写敏感）,
-      "sound":             "声音文件名，前提在应用里存在",
-      "content-available": "如果你在使用 Newsstand, 设置为 1 来开始一次后台下载",
-      "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
-    },
-    "android": {
-      "alert":             "消息内容",
-      "title":             "显示在通知栏的标题",
-      "action":            "com.your_company.push",
-      "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
-      "silent":            true/false // 用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
-    },
-    "wp":{
-      "alert":             "消息内容",
-      "title":             "显示在通知栏的标题",
-      "wp-param":          "/chat.xaml?NavigatedFrom=Toast Notification"
-    }
-  }
+  "ios": {
+    "alert":             "消息内容",
+     "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以设置为 "Increment" 这个字符串（大小写敏感）,
+     "sound":             "声音文件名，前提在应用里存在",
+     "content-available": "如果你在使用 Newsstand, 设置为 1 来开始一次后台下载",
+     "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
+   },
+   "android": {
+     "alert":             "消息内容",
+     "title":             "显示在通知栏的标题",
+     "action":            "com.your_company.push",
+     "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
+     "silent":            true/false // 用于控制是否关闭推送通知栏提醒，默认为 false，即不关闭通知栏提醒
+   },
+   "wp":{
+     "alert":             "消息内容",
+     "title":             "显示在通知栏的标题",
+     "wp-param":          "/chat.xaml?NavigatedFrom=Toast Notification"
+   }
 }
 ```
 

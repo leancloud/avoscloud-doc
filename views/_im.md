@@ -1,4 +1,20 @@
 {% import "views/_helper.njk" as docs %}
+{% macro usingNamespces() %}
+```cs
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
+using System.Linq.Expressions;
+
+using LeanCloud;
+using LeanCloud.Realtime;
+using LeanCloud.Storage.Internal;
+using LeanCloud.Core.Internal;
+```
+{% endmacro %}
+
 {% macro customMessage() %}
 
 ### 自定义消息类型

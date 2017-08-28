@@ -1,3 +1,5 @@
+{% import "views/_storage.md" as storagePartial %}
+
 #  数据存储开发指南 &middot; Unity
 
 如果还没有安装 LeanCloud Unity SDK，请阅读 [SDK 下载](./sdk_down.html) 来获得该 SDK。我们的 SDK 兼容 Unity 5 及更高版本，支持使用 Unity 开发的 iOS、Android、Windows Phone 8、Windows Store、Windows Desktop，以及网页游戏。
@@ -141,6 +143,8 @@ gameScore.SaveAsync().ContinueWith(t =>//第一次调用 SaveAsync 是为了增�
 ### 计数器
 ### 数组
 -->
+
+{{ storagePartial.avobjectSubclass() }}
 
 ### 删除对象
 

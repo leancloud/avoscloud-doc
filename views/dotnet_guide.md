@@ -1,3 +1,5 @@
+{% import "views/_storage.md" as storagePartial %}
+
 # 数据存储开发指南 &middot; .NET
 
 ## 简介
@@ -132,6 +134,9 @@ myObject.Remove("age");
 // 将删除操作发往服务器生效。
 await myObject.SaveAsync();
 ```
+
+{{ storagePartial.avobjectSubclass() }}
+
 ### 关系
 软件程序就是抽象现实中的对象之间的关系在计算机世界里面的解释和展现。有对象必然就会有对象之间的关系，在 LeanCloud 中也给出了传统关系型的解决方案，并且简化了代码，使得代码简洁易维护。
 假设这样一种场景，做一款时髦的相亲社交软件，男孩会在自己的资料里面标明自己喜欢的女生类型，于是有如下代码：

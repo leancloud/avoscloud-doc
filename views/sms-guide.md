@@ -203,19 +203,19 @@ AVSMS.verifySMSCodeInBackground("123456", "186xxxxxxxx", new AVMobilePhoneVerify
   @Override
   public void done(AVException e) {
     if (null == e) {
-      /* 请求成功 */
+      /* 验证成功 */
     } else {
-      /* 请求失败 */
+      /* 验证失败 */
     }
   }
 });
 ```
 ```javascript
-  AV.Cloud.verifySmsCode('123456', '186xxxxxxxx').then(function(){
-        //验证成功
-  }, function(err){
-        //验证失败
-  });
+AV.Cloud.verifySmsCode('123456', '186xxxxxxxx').then(function(){
+    //验证成功
+}, function(err){
+    //验证失败
+});
 ```
 ```cs
 AVCloud.VerifySmsCodeAsync("123456","186xxxxxxxx").ContinueWith(t =>{
@@ -226,6 +226,92 @@ AVCloud.VerifySmsCodeAsync("123456","186xxxxxxxx").ContinueWith(t =>{
 });
 ```
 针对上述的需求，可以把场景换成异地登录验证、修改个人敏感信息验证等一些常见的场景，步骤是类似的，调用的接口也是一样的，仅仅是在做 UI 展现的时候需要开发者自己去优化验证过程。
+
+### 语音短信验证码
+
+文本短信验证码在到达率上有一定的风险，尽管经过我们长期得到的用户反馈，到达率已接近 100%，但是有些应用的时效性和安全性要求极高，所以我们也推出了语音短信验证码的服务，调用的方式如下：
+
+```objc
+AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
+options.type = AVShortMessageTypeVoice;
+[AVSMS requestShortMessageForPhoneNumber:@"188xxxxxxxx"
+        options:options
+        callback:^(BOOL succeeded, NSError * _Nullable error) {
+            if (succeeded) {
+                NSLog(@"A voice short message has been sent.");
+        }
+}];
+```
+```java
+AVSMSOption option = new AVSMSOption();
+option.setSmsType(AVSMSOption.AVSMS_TYPE.VOICE_SMS);
+AVSMS.requestSMSCodeInBackground("188xxxxxxxx", option, new RequestMobileCodeCallback() {
+    @Override
+    public void done(AVException e) {
+        if (null == e) {
+          // 发送成功
+        } else {
+          // 发送失败
+        }
+    }
+});
+```
+```js
+AV.Cloud. requestSmsCode({
+  mobilePhoneNumber: 'xxxxxxxxx',
+  smsType: 'voice'
+}).then(function() {
+  // 发送成功
+}).catch(function(error) {
+  // 处理异常
+});
+```
+```cs
+AVCloud.RequestVoiceCodeAsync ("18688888888").ContinueWith(t =>{
+    // 发送成功
+});
+```
+
+发送成功之后，用户的手机就会收到一段语音通话，它会播报 6 位数的验证码，然后开发者需要再次调用：
+
+
+```objc
+[AVOSCloud verifySmsCode:@"123456" mobilePhoneNumber:@"186xxxxxxxx" callback:^(BOOL succeeded, NSError *error) {
+    if(succeeded){
+        //验证成功
+    }
+}];
+```
+```java
+AVSMS.verifySMSCodeInBackground("123456", "186xxxxxxxx", new AVMobilePhoneVerifyCallback() {
+  @Override
+  public void done(AVException e) {
+    if (null == e) {
+      /* 验证成功 */
+    } else {
+      /* 验证失败 */
+    }
+  }
+});
+```
+```js
+AV.Cloud.verifySmsCode('123456', '186xxxxxxxx').then(function(){
+    //验证成功
+}, function(err){
+    //验证失败
+});
+```
+```cs
+AVCloud.VerifySmsCodeAsync("123456","186xxxxxxxx").ContinueWith(t =>{
+    if(t.Result) 
+    {
+        // 验证成功
+    }
+});
+```
+
+再次验证用户输入的验证码是否正确。
+
 
 ## 营销／通知类短信
 
