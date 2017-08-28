@@ -627,6 +627,11 @@ mute | 可选 | 修改后的关闭对话提醒设置，如果不提供则保持�
 
 参考 [实时通信 REST API](realtime_rest_api.html)。
 
+## 对话与消息管理 SDK
+
+Python 与 JavaScript 的数据存储 SDK，基于 REST API 封装了一组对话及消息管理的接口，方便在服务端或者云引擎中进行对话管理、发送消息。具体文档参考：[实时通讯服务端管理开发指南](realtime_manage_guide-python.html)。
+
+
 ## 系统对话
 
 系统对话可以用于实现机器人自动回复、公众号、服务账号等功能。在我们的 [官方聊天 Demo](http://leancloud.github.io/leanmessage-demo/) 中就有一个使用系统对话 hook 实现的机器人 MathBot，它能计算用户发送来的数学表达式并返回结果，[其服务端源码](https://github.com/leancloud/leanmessage-demo/tree/master/server) 可以从 GitHub 上获取。
