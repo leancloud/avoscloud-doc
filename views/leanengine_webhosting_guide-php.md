@@ -72,7 +72,7 @@ $app->get('/__engine/1/ping', function($req, $res) {
     // PSR-7 response is immutable
     $response = $res->withHeader("Content-Type", "application/json");
     $response->getBody()->write(json_encode(array(
-        "runtime" => "php-5.5",
+        "runtime" => "php-" . phpversion(),
         "version" => "custom"
     )));
     return $response;
@@ -279,7 +279,16 @@ $app->add(new SlimEngine());
 
 
 {% block custom_runtime %}
-PHP 云引擎目前只提供了 5.5 版本。
+云引擎默认提供 PHP 5.6 的运行环境，如需指定 PHP 版本，请在 `composer.json` 中添加：
+
+```json
+"require": {
+  "php": "7.0"
+}
+```
+
+目前云引擎支持 `5.6`、`7.0`、`7.1` 这几个版本，后续如果有新版本发布，也会添加支持。
+
 {% endblock %}
 
 {% block get_env %}
