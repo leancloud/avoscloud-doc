@@ -15,6 +15,7 @@ Java 运行环境对内存的使用较多，所以建议：
 * 以 [示例项目](https://github.com/leancloud/java-war-getting-started.git) 起步的应用，建议使用 512MB 或以上规格的实例。
 * 使用 [Spring Boot](https://projects.spring.io/spring-boot/) 的应用，建议使用 1GB 或以上规格的实例。
 * 本地启动并模拟完成主要业务流程操作，待应用充分初始化后，根据 Java 进程内存占用量选择相应的实例规格，需要注意保留一定的余量用以应对请求高峰。
+* Java 应用可能在启动初期因为内存使用增长较快，导致 JVM 堆内存申请非常多，从而超出实例规格限制。可以考虑增加 JVM 堆内存最大使用限制来避免该问题：假设使用 2GB 内存规格的实例运行，则可以在云引擎的设置页面增加「自定义环境变量」，名称为 `JAVA_OPTS`，值为 `-Xmx1500m`，这样会限制 JVM 堆最大为 1.5 GB，剩下 500 MB 是给持久代或堆外内存或者其他一些杂项使用。**注意：`-Xmx` 参数如果设置得过小可能会导致大量 CPU 消耗在无休止的 GC 任务上**。
 
 <div class="callout callout-danger">如果云引擎 [实例规格](leanengine_plan.html#选择实例规格) **选择不当**，可能造成应用启动时因为内存溢出（OOM）导致部署失败，或运行期内存溢出导致应用频繁重启。</div>
 {% endblock %}
@@ -193,9 +194,15 @@ Java 云引擎只支持 1.8 运行环境和 war 包运行
 import com.avos.avoscloud.internal.impl.JavaRequestSignImplementation;
 import cn.leancloud.LeanEngine;
 
+// 从 LEANCLOUD_APP_ID 这个环境变量中获取应用 app id 的值
 String appId = System.getenv("LEANCLOUD_APP_ID");
+
+// 从 LEANCLOUD_APP_KEY 这个环境变量中获取应用 app key 的值                
 String appKey = System.getenv("LEANCLOUD_APP_KEY");
-String appMasterKey = System.getenv("LEANCLOUD_APP_MASTER_KEY");
+
+// 从 LEANCLOUD_APP_MASTER_KEY 这个环境变量中获取应用 master key 的值        
+String appMasterKey = System.getenv("LEANCLOUD_APP_MASTER_KEY");   
+
 LeanEngine.initialize(appId, appKey, appMasterKey);
 
 // 如果不希望使用 masterKey 权限，可以将下面一行删除

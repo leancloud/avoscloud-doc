@@ -32,9 +32,20 @@
 定义云函数 / Hook 函数都需要一个 leancloud.Engine 实例，你需要在项目中自己初始化此实例。
 
 ```python
+# cloud.py
 import leancloud
 
-engine = leancloud.Engine(your_wsgi_func)
+engine = leancloud.Engine()
+```
+
+```python
+# wsgi.py
+import leancloud
+from app import app
+from cloud import engine
+
+app = engine.wrap(app)
+
 ```
 
 更多关于 **WSGI 函数** 的内容，请参考 [WSGI 接口](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000) 或者 [PEP333](https://www.python.org/dev/peps/pep-0333/)。
@@ -239,6 +250,56 @@ def before_review_save(review):
         message='自定义错误信息'
       )
 ```
+{% endblock %}
+
+{% block cloudFuncRegister %}
+### 分离云函数
+
+在实际使用中有这样一种场景：我们将关于 `Post` 类的云函数和关于 `Commit` 类的云函数分离成两个文件，方便管理。
+
+```Python
+# Post.py
+import leancloud
+
+post_engine = leancloud.Engine()
+
+@post_engine.define
+def post_func():
+    pass
+		
+```
+
+```Python
+# Commit.py
+import leancloud
+
+commit_engine = leancloud.Engine()
+
+@commit_engine.define
+def commit_func():
+    pass
+		
+```
+
+然后，我们就可以统一在 `cloud.py` 下对两个文件进行合并管理。
+
+```Python
+# cloud.py
+import leancloud
+from Post import post_engine
+from Commit import commit_engine
+
+engine = leancloud.Engine()
+
+# 将 CommitEngine 和 PostEngine 的云函数同步到 engine 中
+engine.register(post_engine)
+engine.register(commit_engine)
+```
+
+其效果等同于在 `cloud.py` 中注册 `commit_func` 和 `post_func` 两个云函数。
+
+在使用 `engine.register` 函数过程中，请务必不要注册相同的函数名称。
+
 {% endblock %}
 
 {% block hookDeadLoop %}

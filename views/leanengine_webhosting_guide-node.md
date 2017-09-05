@@ -35,8 +35,8 @@ Node.js 的 `package.json` 中可以指定 [很多选项](https://docs.npmjs.com
 其中云引擎会尊重的选项包括：
 
 * `scripts.start` 启动项目时使用的命令；默认为 `node server.js`，如果你希望为 node 附加启动选项（如 `--es_staging`）或使用其他的文件作为入口点，可以修改该选项。
-* `scripts.prepublish` 会在项目部署最后运行一次；可以将构建命令（如 `gulp build`）写在这里。
-* `engines.node` 指定所需的 Node.js 版本；出于兼容性考虑默认版本仍为比较旧的 `0.12`，**因此建议大家自行指定一个更高的版本，建议使用 `4.x` 版本进行开发**，你也可以设置为 `*` 表示总是使用最新版本的 Node.js。
+* `scripts.prepublish` 会在项目构建结束时运行一次；可以将构建命令（如 `gulp build`）写在这里。
+* `engines.node` 指定所需的 Node.js 版本；出于兼容性考虑默认版本仍为比较旧的 `0.12`，**因此建议大家自行指定一个更高的版本，建议使用 `6.x` 版本进行开发**，你也可以设置为 `*` 表示总是使用最新版本的 Node.js。
 * `dependencies` 项目所依赖的包；云引擎会在部署时用 `npm install --production` 为你安装这里列出的所有依赖。
 * `devDependencies` 项目开发时所依赖的包；云引擎目前 **不会** 安装这里的依赖。
 
@@ -337,8 +337,9 @@ request({
 {% block code_get_client_ip_address %}
 ```js
 app.get('/', function(req, res) {
-  console.log(req.headers['x-real-ip']);
-  res.send(req.headers['x-real-ip']);
+  var ipAddress = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log(ipAddress);
+  res.send(ipAddress);
 });
 ```
 {% endblock %}

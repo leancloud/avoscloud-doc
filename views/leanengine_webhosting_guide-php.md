@@ -126,9 +126,9 @@ composer require leancloud/leancloud-sdk
 use \LeanCloud\Client;
 
 Client::initialize(
-    getenv("LC_APP_ID"),
-    getenv("LC_APP_KEY"),
-    getenv("LC_APP_MASTER_KEY")
+    getenv("LC_APP_ID"),          // 从 LC_APP_ID 这个环境变量中获取应用 app id 的值
+    getenv("LC_APP_KEY"),         // 从 LC_APP_KEY 这个环境变量中获取应用 app key 的值
+    getenv("LC_APP_MASTER_KEY")   // 从 LC_APP_MASTER_KEY 这个环境变量中获取应用 master key 的值
 );
 
 // 如果不希望使用 masterKey 权限，可以将下面一行删除

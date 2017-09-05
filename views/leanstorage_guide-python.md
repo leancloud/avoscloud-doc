@@ -1384,6 +1384,50 @@ class MyUser(leancloud.User):
 
 {% endblock %}
 
+{% block js_push_guide %}
+## Push 通知
+
+通过 Python SDK 也可以向移动设备推送消息。
+
+一个简单例子推送给所有订阅了 `public` 频道的设备：
+
+```python
+import leancloud
+
+data = {
+    'alert': 'public message',
+}
+leancloud.push.send(data, channels=['public])
+```
+
+这就向订阅了 `public` 频道的设备发送了一条内容为 `public message` 的消息。
+
+如果希望按照某个 `_Installation` 表的查询条件来推送，例如推送给某个 `installationId` 的 Android 设备，可以传入一个 `leancloud.Query` 对象作为 `where` 条件：
+
+```python
+import leancloud
+
+query = leancloud.Instalation.query.equal_to('installationId', installationId)
+data = {
+    'alert': 'public message',
+}
+leancloud.push.send(data, where=query)
+```
+
+此外，如果你觉得 leancloud.Query 太繁琐，也可以写一句 [CQL](./cql_guide.html) 来搞定：
+
+```python
+import leancloud
+
+data = {
+    'alert': 'public message',
+}
+leancloud.push.send(data, cql='select * from _Installation where installationId="设备id"')
+```
+
+`leancloud.push` 的更多使用信息参考 API 文档 [leancloud.push](http://leancloud.readthedocs.io/zh_CN/latest/#module-leancloud.push)。更多推送的查询条件和格式，请查阅 [消息推送指南](./push_guide.html)。
+{% endblock %}
+
 {# 2016-06-07 以下三部分都不适用于 Python，所以清空内容。 #}
 {% block text_work_in_background %}{% endblock %}
 {% block text_data_protocol %}{% endblock %}

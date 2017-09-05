@@ -1,3 +1,11 @@
+{% from 'views/_helper.njk' import
+  alert
+%}
+
+{% macro relationDeprecated() -%}
+{{ alert("Relation 类型已被弃用。请使用 [中间表](relation-guide.html#使用中间表实现多对多关系_推荐_) 来完成对关联数据的查询、排序等复杂操作。") }}
+{%- endmacro %}
+
 {% macro preservedWords(delimeter="、") -%}
   {% set preservedWordList = [
       "className",
@@ -53,7 +61,7 @@ LeanCloud 云端使用的并非关系型数据库，无法做到真正的联表�
 {%- endmacro %}
 
 {% set libVersion = {
-    leancloud:  "v4.4.3",
+    leancloud:  "v4.4.4",
     fastjson:   "1.2.30",
     okhttp:     "3.8.0",
     okio:       "1.13.0"

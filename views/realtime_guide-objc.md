@@ -1518,6 +1518,8 @@ NSDate *yesterday = [today dateByAddingTimeInterval: -86400.0];
 {% endblock %}
 
 {% block conversation_query_doesnot_exist %}
+
+```objc
 self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
 
 [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
@@ -1528,9 +1530,11 @@ self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
         NSLog(@"找到 %ld 个对话！", [conversations count]);
     }];
 }];
+```
 {% endblock %}
 
 {% block conversation_query_exists %}
+```objc
 AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
 
 [client openWithCallback:^(BOOL succeeded, NSError *error) {
@@ -1541,9 +1545,11 @@ AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
         NSLog(@"找到 %ld 个对话！", [conversations count]);
     }];
 }];
+```
 {% endblock %}
 
 {% block conversation_query_sorting %}
+```objc
 AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
 
 [client openWithCallback:^(BOOL succeeded, NSError *error) {
@@ -1554,10 +1560,12 @@ AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
         NSLog(@"找到 %ld 个对话！", [conversations count]);
     }];
 }];
+```
 {% endblock %}
 
 
 {% block conversation_query_compact_mode %}
+```objc
 AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
 
 [client openWithCallback:^(BOOL succeeded, NSError *error) {
@@ -1568,9 +1576,12 @@ AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
         NSLog(@"找到 %ld 个对话！", [conversations count]);
     }];
 }];
+```
 {% endblock %}
 
 {% block conversation_query_with_last_message %}
+
+```objc
 AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
 
 [client openWithCallback:^(BOOL succeeded, NSError *error) {
@@ -1581,6 +1592,7 @@ AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
         NSLog(@"找到 %ld 个对话！", [conversations count]);
     }];
 }];
+```
 {% endblock %}
 
 {% block chatroom_intro %}

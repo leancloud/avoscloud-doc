@@ -19,7 +19,7 @@
 {% block project_start %}
 在本地运行 LeanEngine Python 应用，首先需要这几个依赖：
 
-- **Python**：目前云引擎线上支持 2.7 / 3.5 两个 Python 版本，最好确保本地安装的 Python 版本与线上使用的相同。
+- **python**：请确保本地安装的 Python 版本与线上使用的相同，以免不同版本之间的兼容性导致问题。推荐使用 [pyenv](https://github.com/pyenv/pyenv) 来管理本地 Python 版本。
 - **pip**：用来安装第三方依赖。
 - **virtualenv**：可选，建议使用 virtualenv 或者类似的工具来创建一个独立的 Python 环境，以免项目使用到的依赖与系统／其他项目的版本产生冲突。
 
@@ -46,8 +46,8 @@ lean up
 
 ```
 # 井号至行尾为注释
-leancloud-sdk
-Flask>=0.10.1  # 可以指定版本号／范围
+leancloud>=2.0.0,<3.0.0
+Flask>=0.10.1,<1.0.0                               # 可以指定版本号／范围
 git+https://github.com/foo/bar.git@master#egg=bar  # 可以使用 Git/SVN 等版本管理工具的远程地址
 ```
 
@@ -83,17 +83,28 @@ pip install -r requirements.txt
 - [Django](https://github.com/leancloud/django-getting-started)
 {% endblock %}
 
+### 锁定第三方依赖版本
+
+Python 云引擎每次在重新构建时，都会去执行 `pip install -r requirements.txt`，因此如果没有明确指定第三方依赖的版本的话，可能会导致完全相同的代码因第三方依赖的改动而产生不一致的行为。
+
+为了避免这种情况的发生，建议在 `requirements.txt` 中明确指定全部第三方依赖的版本。使用 `pip freeze` 命令，可以查看当前 `pip` 安装的第三方模块的版本。如果使用 `virtualenv` 来进行开发，并且当前 `virtualenv` 只包含当前项目的依赖的话，可以考虑将 `pip freeze` 的所有内容都写到 `requirements.txt` 中。
 
 {% block use_leanstorage %}
 在云引擎中你可以使用 LeanCloud 提供的 [数据存储](storage_overview.html) 作为应用的后端数据库，以及使用其他 LeanCloud 提供的功能。 LeanCloud Python SDK 可以让你更加方便地使用这些功能。
 
 ### 安装
 
-将 `leancloud-sdk` 添加到 `requirements.txt` 中，部署到线上即可自动安装此依赖。在本地运行和调试项目的时候，可以在项目目录下使用如下命令进行依赖安装：
+将 `leancloud` 添加到 `requirements.txt` 中，部署到线上即可自动安装此依赖。在本地运行和调试项目的时候，可以在项目目录下使用如下命令进行依赖安装：
 
 ```sh
 pip install -r requirements.txt
 ```
+
+### 升级到 leancloud SDK 2.x
+
+LeanCloud Python SDK 目前最新版本已经升级到了 2.0.0，与之前的 1.x 版本相比有了一些不兼容的改动，主要是移除了一些已经废弃的方法，详情参考 [SDK 发布页面](https://github.com/leancloud/python-sdk/releases/tag/v2.0.0)。
+
+不过目前云引擎上有一部分使用者，没有在 requirements.txt 中指定依赖的 Python SDK 版本，因此我们暂时没有将 2.x 分支的代码发布到 pypi 的 [leancloud-sdk](https://pypi.python.org/pypi/leancloud-sdk/) 这个包下，防止对这部分使用者正在运行的代码造成影响。因此目前如果需要使用 2.x 版本的 SDK 的话，请使用 [leancloud](https://pypi.python.org/pypi/leancloud/) 这个包名。
 
 ### 初始化
 
@@ -104,9 +115,9 @@ import os
 
 import leancloud
 
-APP_ID = os.environ['LEANCLOUD_APP_ID']
-APP_KEY = os.environ['LEANCLOUD_APP_KEY']
-MASTER_KEY = os.environ['LEANCLOUD_APP_MASTER_KEY']
+APP_ID = os.environ['LEANCLOUD_APP_ID']                # 从 LEANCLOUD_APP_ID 这个环境变量中获取应用 app id 的值
+APP_KEY = os.environ['LEANCLOUD_APP_KEY']              # 从 LEANCLOUD_APP_KEY 这个环境变量中获取应用 app key 的值
+MASTER_KEY = os.environ['LEANCLOUD_APP_MASTER_KEY']    # 从 LEANCLOUD_APP_MASTER_KEY 这个环境变量中获取应用 master key 的值
 
 leancloud.init(APP_ID, app_key=APP_KEY, master_key=MASTER_KEY)
 # 如果需要使用 master key 权限访问 LeanCLoud 服务，请将这里设置为 True
@@ -153,6 +164,8 @@ application = leancloud.engine.CookieSessionMiddleware(engine, secret=YOUR_APP_S
 * **name**: 在 cookie 中保存的 session token 的 key 的名称，默认为 "leancloud:session"。
 * **excluded_paths**: 指定哪些 URL path 不处理 session token，比如在处理静态文件的 URL path 上不进行处理，防止无谓的性能浪费。接受参数类型 `list`。
 * **fetch_user**: 处理请求时是否要从存储服务获取用户数据，如果为 False 的话，`leancloud.User.get_current()` 获取到的用户数据上除了 `session_token` 之外没有任何其他数据，需要自己调用 `fetch()` 来获取。为 `True` 的话，会自动在用户对象上调用 `fetch()`，这样将会产生一次数据存储的 API 调用。默认为 False。
+* **expires**: 设置 cookie 的失效日期（参考 [Werkzeug Document](http://werkzeug.pocoo.org/docs/0.12/http/#werkzeug.http.dump_cookie)）。
+* **max_age**: 设置 cookie 在多少秒后失效（参考 [Werkzeug Document](http://werkzeug.pocoo.org/docs/0.12/http/#werkzeug.http.dump_cookie)）。
 
 {% endblock %}
 
@@ -267,10 +280,10 @@ def upload():
 首先添加相关依赖到云引擎应用的 `requirements.txt` 中：
 
 ``` python
-Flask>=0.10.1
-leancloud-sdk>=1.0.9
+Flask>=0.10.1,<1.0.0
+leancloud>=2.0.0,<3.0.0
 ...
-redis
+redis>=2.10.5,<3.0.0
 ```
 
 然后可以使用下列代码获取 Redis 连接：

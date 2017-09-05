@@ -1310,3 +1310,43 @@ AVPush.sendMessageInBackground("这是发给指定 installation id 的消息",  
 <div class="callout callout-info">CQL 与 AVQuery 同时只能设置一个，并且 `setPushTarget` 类函数（`setPushToAndroid` / `setPushToIOS` / `setPushToWindowsPhone`）只能与 AVQuery 一起使用。在设置 CQL 时，只能在 CQL 语句中设定目标机器的类型。</div>
 
 {% endblock %}
+
+{% block file_as_avater %}
+
+```java
+AVFile file = new AVFile("Satomi_Ishihara.gif", "http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif", new HashMap<String, Object>());
+AVObject todo = new AVObject("Todo");
+todo.put("girl", file);
+todo.put("topic", "明星");
+todo.saveInBackground();
+```
+{% endblock %}
+
+{% block query_file_as_avater %}
+
+```java
+AVQuery<AVObject> query = new AVQuery<>("Todo");
+query.whereEqualTo("topic", "明星");
+query.include("girl");
+query.findInBackground(new FindCallback<AVObject>() {
+    @Override
+    public void done(List<AVObject> list, AVException e) {
+        list.get(0).getAVFile("girl").getUrl();
+    }
+});
+```
+{% endblock %}
+
+{% block code_pointer_include_todoFolder %}
+
+```java
+final AVObject todo = AVObject.createWithoutData("Todo", "5735aae7c4c9710060fbe8b0");
+todo.fetchInBackground("todoFolder", new GetCallback<AVObject>() {
+    @Override
+    public void done(AVObject avObject, AVException e) {
+        AVObject todoFolder = avObject.getAVObject("todoFolder");
+        System.out.print(todoFolder.get("name"));
+    }
+});
+```
+{% endblock %}

@@ -253,6 +253,28 @@ AV.Object.register(Todo);
     console.error(error);
   });
 ```
+
+如果需要一次性获取返回对象的所有属性（比如进行数据绑定）而非显式地调用 `get(属性名)`，可以利用 AV.Object 实例的 `toJSON()` 方法（需要 leancloud-storage@^3.0.0 以上版本）来得到一个 plain object。
+
+```js
+  var query = new AV.Query('Todo');
+  query.get('558e20cbe4b060308e3eb36c').then(function (todo) {
+    console.log(todo.toJSON())
+    // ==== console 中的结果 ====
+
+    // content: "每周工程师会议，周一下午2点"
+    // createdAt: "2017-03-08T11:25:07.804Z"
+    // location: "会议室"
+    // objectId: "558e20cbe4b060308e3eb36c"
+    // priority: 1
+    // title: "工程师周会"
+    // updatedAt: "2017-03-08T11:25:07.804Z"
+
+  }).catch(error) {
+    // 异常处理
+    console.error(error);
+  });
+```
 {% endblock %}
 
 {% block code_object_fetch %}
@@ -1630,6 +1652,46 @@ AV.User.become(sessionToken).then(function(user) {
   // currentUser 已更新
 })
 ```
+{% endblock %}
+
+{% block file_as_avater %}
+
+```js
+var file = AV.File.withURL('Satomi_Ishihara.gif', 'http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif');
+var todo = new AV.Object('Todo');
+todo.set('girl',file);
+todo.set('topic','明星');
+todo.save();
+```
+{% endblock %}
+
+{% block query_file_as_avater %}
+
+```js
+var query = new AV.Query('Todo');
+query.equalTo('topic','明星');
+query.include('girl');
+query.find().then(list => {
+  list.map(todo => {
+    var file = todo.get('girl');
+    console.log('file.url', file.url());
+  });
+});
+```
+{% endblock %}
+
+{% block code_pointer_include_todoFolder %}
+
+```js
+var todo = AV.Object.createWithoutData('Todo', '5735aae7c4c9710060fbe8b0');
+todo.fetch({
+  include:['todoFolder']
+  }).then(todoObj =>{
+    let todoFolder = todoObj.get('todoFolder');
+    console.log(todoFolder.get('name'));
+});
+```
+
 {% endblock %}
 
 {# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}

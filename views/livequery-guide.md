@@ -57,14 +57,12 @@ HTML5 Video is required for this demo. 您的浏览器不支持播放 HTML5 视�
 AVOSCloud.initialize(this,"{{appid}}","{{appkey}}");
 ```
 ```js
-//如果使用 CommonJS 方式，需要 var AV = require('leancloud-storage/live-query');
+// 如果在支持 CommonJS 环境中（如 Node.js，Webpack）使用：
+// var AV = require('leancloud-storage/live-query');
 
-//如果在浏览器中使用 script 标签的方式，需要引入 av-live-query-min.js：
-
-// 使用 CDN：
-<script src="//cdn1.lncld.net/static/js/3.0.0-beta.3/av-live-query-min.js"/>
-// 使用 npm：
-<script src="./node_modules/leancloud-storage/dist/av-live-query-min.js"/>
+// 如果在浏览器中使用 script 标签的方式，需要引入 av-live-query-min.js：
+// 推荐使用 CDN：
+<script src="//cdn1.lncld.net/static/js/{{jssdkversion}}/av-live-query-min.js"></script>
 ```
 ```cs
 // LiveQuery 需要依赖实时通信模块，接入该模块的方法请参考安装指南： 

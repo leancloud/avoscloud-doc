@@ -38,8 +38,6 @@ AV.Cloud.define('averageStars', function(request) {
       sum += results[i].get('stars');
     }
     return sum / results.length;
-  }).catch(function(error) {
-    throw new AV.Cloud.Error('查询失败');
   });
 });
 ```
@@ -54,9 +52,11 @@ AV.Cloud.define('averageStars', function(request) {
 * `sessionToken?: string`：客户端发来的 sessionToken（`X-LC-Session` 头）。
 * `meta: object`：有关客户端的更多信息，目前只有一个 `remoteAddress` 属性表示客户端的 IP。
 
-{{ docs.alert("在 2.0 之前的早期版本中，云函数接受 `request` 和 `response` 两个参数，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的云函数上。
+如果云函数返回了一个 Promise，那么云函数会使用 Promise 成功结束后的结果作为成功响应；如果 Promise 中发生了错误，云函数会使用这个错误作为错误响应，对于使用 `AV.Cloud.Error` 构造的异常对象，我们认为是客户端错误，不会在标准输出打印消息，对于其他异常则会在标准输出打印调用栈，以便排查错误。
 
-之前版本的文档见《[Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)》。") }}
+我们推荐大家使用链式的 Promise 写法来完成业务逻辑，这样会极大地方便异步任务的处理和异常处理，**请注意一定要将 Promise 串联起来并在云函数中 return** 以保证上述逻辑正确工作，推荐阅读 [JavaScript Promise 迷你书](http://liubin.org/promises-book/) 来深入地了解 Promise。
+
+{{ docs.alert("在 2.0 之前的早期版本中，云函数接受 `request` 和 `response` 两个参数，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的云函数上。之前版本的文档见《[Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)》。") }}
 
 {% endblock %}
 
@@ -127,9 +127,7 @@ AV.Cloud.beforeSave('Review', function(request) {
 });
 ```
 
-{{ docs.alert("在 2.0 之前的早期版本中，before 类 Hook 接受 `request` 和 `response` 两个参数，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的云函数上。
-
-之前版本的文档见《[Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)》。") }}
+{{ docs.alert("在 2.0 之前的早期版本中，before 类 Hook 接受 `request` 和 `response` 两个参数，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的云函数上。之前版本的文档见《[Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)》。") }}
 
 {% endblock %}
 
@@ -138,9 +136,9 @@ AV.Cloud.beforeSave('Review', function(request) {
 ```javascript
 AV.Cloud.afterSave('Comment', function(request) {
   var query = new AV.Query('Post');
-  query.get(request.object.get('post').id).then(function(post) {
+  return query.get(request.object.get('post').id).then(function(post) {
     post.increment('comments');
-    post.save();
+    return post.save();
   });
 });
 ```
@@ -152,11 +150,13 @@ AV.Cloud.afterSave('Comment', function(request) {
 AV.Cloud.afterSave('_User', function(request) {
   console.log(request.object);
   request.object.set('from','LeanCloud');
-  request.object.save().then(function(user)  {
+  return request.object.save().then(function(user)  {
     console.log('ok!');
   });
 });
 ```
+
+虽然对于 after 类的 Hook 我们并不关心返回值，但我们仍建议你返回一个 Promise，这样如果发生了非预期的错误，会自动在标准输出中打印异常信息和调用栈。
 {% endblock %}
 
 {% block beforeUpdateExample %}
@@ -213,10 +213,10 @@ AV.Cloud.afterDelete('Album', function(request) {
   var query = new AV.Query('Photo');
   var album = AV.Object.createWithoutData('Album', request.object.id);
   query.equalTo('album', album);
-  query.find().then(function(posts) {
+  return query.find().then(function(posts) {
     //查询本相册的照片，遍历删除
-    AV.Object.destroyAll(posts);
-  }).then(function(error) {
+    return AV.Object.destroyAll(posts);
+  }).catch(function(error) {
     console.error('Error finding related comments ' + error.code + ': ' + error.message);
   });
 });
@@ -250,7 +250,7 @@ AV.Cloud.onLogin(function(request) {
 
 AV.Cloud.Error 的第二个参数中可以用 `status` 指定 HTTP 响应代码（默认为 400），还可以用 `code` 指定响应正文中的错误代码（默认为 1）：
 
-```
+```javascript
 AV.Cloud.define('errorCode', function(request) {
   return AV.User.logIn('NoThisUser', 'lalala');
 });
@@ -259,7 +259,7 @@ AV.Cloud.define('errorCode', function(request) {
 
 {% block errorCodeExample2 %}
 
-```
+```javascript
 AV.Cloud.define('customErrorCode', function(request) {
   throw new AV.Cloud.Error('自定义错误信息', {code: 123});
 });
@@ -268,7 +268,7 @@ AV.Cloud.define('customErrorCode', function(request) {
 
 {% block errorCodeExampleForHooks %}
 
-```
+```javascript
 AV.Cloud.beforeSave('Review', function(request) {
   // 使用 JSON.stringify() 将 object 变为字符串
   throw new AV.Cloud.Error(JSON.stringify({
@@ -316,7 +316,7 @@ AV.Cloud.define('log_timer', function(request){
 
 ```javascript
 AV.Cloud.define('push_timer', function(request){
-  AV.Push.send({
+  return AV.Push.send({
     channels: ['Public'],
     data: {
       alert: 'Public message'
@@ -427,13 +427,10 @@ AV.Cloud.onIMMessageSent((request) => {
 
 ```js
 AV.Cloud.onIMConversationStart((request) => {
-	console.log('_conversationStart start');
 	let params = request.params;
 	console.log('params', params);
-	console.log('_conversationStart end');
 
 	// 在云引擎中打印的日志如下：
-	//_conversationStart start
 	// params {
 	// 	initBy: 'Tom',
 	// 	members: ['Tom', 'Jerry'],
@@ -442,7 +439,6 @@ AV.Cloud.onIMConversationStart((request) => {
 	// 	},
 	// 	__sign: '1472703266397,b57285517a95028f8b7c34c68f419847a049ef26'
 	// }
-	//_conversationStart end
 });
 ```
 {% endblock %}
@@ -539,32 +535,29 @@ AV.Cloud.onIMConversationUpdate((request) => {
 这样，对象的保存或删除动作就不会再次触发相关的 Hook 函数。
 
 ```javascript
-AV.Cloud.afterUpdate('Post', function(request) {
-  // 直接修改并保存对象不会再次触发 afterUpdate Hook 函数
-  request.object.set('foo', 'bar');
-  request.object.save().then(function(obj) {
-    // 你的业务逻辑
-  }).catch(console.error);
+// 直接修改并保存对象不会再次触发 afterUpdate Hook 函数
+request.object.set('foo', 'bar');
+request.object.save().then(function(obj) {
+  // 你的业务逻辑
+});
 
-  // 如果有 fetch 操作，则需要在新获得的对象上调用相关的 disable 方法
-  // 来确保不会再次触发 Hook 函数
-  request.object.fetch().then(function(obj) {
-    obj.disableAfterHook();
-    obj.set('foo', 'bar');
-    return obj.save();
-  }).then(function(obj) {
-    // 你的业务逻辑
-  }).catch(console.error);
-
-  // 如果是其他方式构建对象，则需要在新构建的对象上调用相关的 disable 方法
-  // 来确保不会再次触发 Hook 函数
-  var obj = AV.Object.createWithoutData('Post', request.object.id);
+// 如果有 fetch 操作，则需要在新获得的对象上调用相关的 disable 方法
+// 来确保不会再次触发 Hook 函数
+request.object.fetch().then(function(obj) {
   obj.disableAfterHook();
   obj.set('foo', 'bar');
-  obj.save().then(function(obj) {
-    // 你的业务逻辑
-  }).catch(console.error);
+  return obj.save();
+}).then(function(obj) {
+  // 你的业务逻辑
+});
+
+// 如果是其他方式构建对象，则需要在新构建的对象上调用相关的 disable 方法
+// 来确保不会再次触发 Hook 函数
+var obj = AV.Object.createWithoutData('Post', request.object.id);
+obj.disableAfterHook();
+obj.set('foo', 'bar');
+obj.save().then(function(obj) {
+  // 你的业务逻辑
 });
 ```
-
 {% endblock %}

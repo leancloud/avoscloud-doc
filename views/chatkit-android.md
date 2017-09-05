@@ -2,6 +2,8 @@
 {% import "views/_helper.njk" as docs %}
 # ChatKit 使用指南 &middot; Android
 
+> 如果需要了解 iOS 版本请点击: [ChatKit 使用指南 &middot; iOS](chatkit-ios.html)
+
 [ChatKit](https://github.com/leancloud/LeanCloudChatKit-Android) 是由 LeanCloud 官方推出的、基于 LeanCloud 实时通信 SDK「LeanMessage」开发并封装了简单 UI 的聊天套件。它可以帮助开发者快速掌握 LeanMessage 的技术细节，轻松扩展和实现常用的聊天功能。
 
 ChatKit 是一个免费且开源的项目组件，提供完全自由的授权协议，开发者可以对其进行任意的自定义和二次封装。ChatKit 的底层依然基于 LeanCloud 为各平台推出的 SDK，其最大特点是把聊天常用的一些功能配合 UI 一起提供给开发者。
@@ -70,7 +72,7 @@ allprojects {
 
 ```
 dependencies {
-    compile ('cn.leancloud.android:chatkit:1.0.0')
+    compile ('cn.leancloud.android:chatkit:1.0.6')
 }
 ```
 

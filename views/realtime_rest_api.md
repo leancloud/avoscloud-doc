@@ -103,13 +103,13 @@ curl -X GET \
 参数 | 约束 | 说明
 --- | --- | ---
 convid | **必填** | 对话 id
-max_ts | 可选 | 查询起始的时间戳，返回小于这个时间(不包含)的记录。默认是当前时间。
+max_ts | 可选 | 查询起始的时间戳，返回小于这个时间(不包含)的记录。默认是当前时间，单位是毫秒。
 msgid | 可选 | 起始的消息 id，**使用时必须加上对应消息的时间戳 max_ts 参数，一起作为查询的起点**。
 limit | 可选 | 返回条数限制，可选，默认 100 条，最大 1000 条。
 reversed | 可选 | 以默认排序相反的方向返回结果。布尔值，默认为 false
 peerid | 可选 | 查看者 id（签名参数）
 nonce | 可选 | 签名随机字符串（签名参数）
-signature_ts | 可选 | 签名时间戳（签名参数）
+signature_ts | 可选 | 签名时间戳（签名参数），单位是秒。
 signature | 可选 | 签名（签名参数）
 
 
@@ -153,7 +153,7 @@ appid:peerid:convid:nonce:signature_ts
 参数 | 约束 | 说明
 --- | --- | ---
 from | **必填** | 发送人 id
-max_ts | 可选 | 查询起始的时间戳，返回小于这个时间（不包含）的记录。默认是当前时间。
+max_ts | 可选 | 查询起始的时间戳，返回小于这个时间（不包含）的记录。默认是当前时间，单位是毫秒。
 msgid | 可选 | 起始的消息 id，与 max_ts 一起作为查询的起点。
 limit | 可选 | 返回条数限制，默认 100 条，最大 1000 条。
 
@@ -163,7 +163,7 @@ limit | 可选 | 返回条数限制，默认 100 条，最大 1000 条。
 
 参数 | 约束 | 说明
 --- | --- | ---
-max_ts | 可选 | 查询起始的时间戳，返回小于这个时间（不包含）的记录。默认是当前时间。
+max_ts | 可选 | 查询起始的时间戳，返回小于这个时间（不包含）的记录。默认是当前时间，单位是毫秒。
 msgid | 可选 | 起始的消息 id，**使用时必须加上对应消息的时间戳 max_ts 参数，一起作为查询的起点**。
 limit | 可选 | 返回条数限制，默认 100 条，最大 1000 条。
 
@@ -196,7 +196,7 @@ curl -X DELETE \
 --- | --- | ---
 convid | 必填 | 对话 id
 msgid | 必填 | 消息 id
-timestamp | 必填 | 消息时间戳
+timestamp | 必填 | 消息时间戳（毫秒）
 from | 必填 | 发消息用户 Client ID
 
 ## 强制修改聊天记录
@@ -216,7 +216,31 @@ curl -X PUT \
 
 {{ im.conversationProperties() }}
 
-<div class="callout callout-info">此处仅能修改**服务器端**的消息记录，并不能修改**客户端缓存**的消息记录。</div>
+<div class="callout callout-info">本接口仅能修改**服务器端**的消息记录，并不能修改**客户端缓存**的消息记录。如果希望修改，请参考 <a href="#修改与撤回消息">修改与撤回消息接口</a> 的说明。</div>
+
+## 修改与撤回消息
+
+从 Objective-C SDK v6.0.0、Android SDK v4.4.0、JavaScript SDK v3.5.0 开始，我们支持了新的修改与撤回消息功能。修改或撤回消息后，即使已经收到并已缓存在客户端的消息也会被修改或撤回。对于老版本的 SDK，仅能修改或撤回服务器端的消息记录，并不能修改或撤回客户端已缓存的消息记录。
+
+本接口需要 Master Key 授权。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '{"from_peer":"some sender","conv_id":"5667070f60b2298fdddb6837","timestamp":1449661888571,"msg_id":"4XC_IHK+Ry6CXzIPq_nc7Q","message":"{\"_lctype\":-1,\"_lctext\":\"这是一个修改后的纯文本消息\"}", "recall":true}' \
+  https://{{host}}/1.1/rtm/patch/message
+```
+
+参数 | 约束 | 说明
+--- | --- | --- 
+conv_id | 必填 | 对话 id  
+msg_id | 必填 | 消息 id  
+timestamp | 必填 | 消息时间戳（毫秒）
+from_peer | 必填 | 发消息用户 Client ID
+message | 必填 | 修改后的消息体 
+recall | 可选 | 布尔类型，代表是否撤回消息
 
 ## 未收取消息数
 
@@ -451,19 +475,7 @@ curl -X GET \
 client_id | 必填 | 字符串 | 用户的 client id
 conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
 
-如果订阅过目标系统对话则会返回订阅信息：
-
-```
-[{"timestamp":1491467945277,"subscriber":"XXX","conv_id":"85939ed1e4b0c4d3e69e8b28"}]
-```
-
-其中 `timestamp` 表示用户订阅系统对话的时间，`subscriber` 是订阅用户的 client id。
-
-如果没有订阅过目标系统对话，则会返回空数组：
-
-```
-[]
-```
+如果订阅过该系统对话返回`true`，否则返回`false`。
 
 ### 获取已订阅系统对话
 
@@ -485,7 +497,7 @@ curl -X GET \
 ---|---|---|---
 client_id | 必填 | 字符串 | 目标查询用户的 client id
 conv_id | 可选 | 字符串 | 查询起始对话 id，不填则从订阅列表起始位置开始遍历。查询结果不会再包含本对话。
-timestamp | 可选 | 数字 | 查询起始对话被订阅时间。虽然是可选字段但当提供 conv_id 时本字段必填，值必须为订阅 conv_id 参数所指定系统对话的时间
+timestamp | 可选 | 数字 | 查询起始对话被订阅时间。虽然是可选字段但当提供 conv_id 时本字段必填，值必须为订阅 conv_id 参数所指定系统对话的时间，单位是毫秒。
 limit | 可选 | 数字 | 返回条数限制，默认是 50 条
 
 返回目标用户订阅系统对话的列表：

@@ -24,11 +24,6 @@ LeanCloud Unity SDK 在很多重要的功能点上都采用了微软提供的[�
 ### WebSocket 协议
 LeanCloud 实时消息是基于 WebSocket 和私有通讯协议实现的一套聊天系统，因此开发者最好提前了解一下 WebSocket 协议的相关内容。推荐没有接触过的开发者可以阅读《[WebSocket 是什么原理？为什么可以实现持久连接？- Ovear 的回答](http://zhihu.com/question/20215561/answer/40316953)》。
 
-### Unity 可用的 WebSocket 库
-目前 SDK 内置的 WebSocket 库是一个来自于开源社区的版本 [sta/websocket-sharp](https://github.com/sta/websocket-sharp)，它有个致命的缺陷——不支持 iOS 9.0 以上的版本，因此我们推荐开发者可以考虑购买一个付费的版本：[WebSocket for desktop, web and mobile](https://www.assetstore.unity3d.com/cn/#!/content/27658)。
-
-如果开发者有自己实现 WebSocket 客户端的能力也可以自己实现，并且 SDK 支持在初始化的时候指定 WebSocket 客户端。详情可以阅读自定义配置中的 [自定义 WebSocket 客户端](#自定义_SDK)。
-
 ## 安装 SDK
 
 ### 下载和导入

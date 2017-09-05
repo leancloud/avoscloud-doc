@@ -136,7 +136,8 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \
-  "https://{{host}}/1.1/verifySmsCode/6位数字验证码?mobilePhoneNumber=186xxxxxxxx"
+  -d '{"mobilePhoneNumber":"+86186xxxxxxxx"}' \
+  "https://{{host}}/1.1/verifySmsCode/6位数字验证码"
 ```
 
 其中 `verifySmsCode` 后面是手机收到的 6 位数字验证码。`mobilePhoneNumber` 是收到短信的手机号码。
@@ -379,7 +380,7 @@ curl -X PUT \
 
 ## 图形验证码 captcha
 
-图形验证码是防范 [短信轰炸](sms-guide.html#短信安全) 最有效的手段。LeanCloud 提供的图形验证码含有两个接口：
+图形验证码是防范 [短信轰炸](sms-guide.html#短信轰炸与图形验证码) 最有效的手段。LeanCloud 提供的图形验证码含有两个接口：
 
 |URL|HTTP|功能|
 | :----------------------------------- | :--- | ----------------- |

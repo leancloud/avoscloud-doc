@@ -758,6 +758,7 @@ curl -X PUT \
   https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
 
+{# --- issue #2227 remove relation ---
 #### 关系
 
 LeanCloud 提供特殊的原子操作来添加和删除一个关系 Relation。比如用户喜欢了这条微博（添加关系）：
@@ -781,6 +782,7 @@ curl -X PUT \
   -d '{"likes":{"__op":"RemoveRelation","objects":[{"__type":"Pointer","className":"_User","objectId":"51fa3f64e4b05df1766cfb90"}]}}' \
   https://{{host}}/1.1/classes/Post/558e20cbe4b060308e3eb36c
 ```
+--- issue #2227 remove relation --- #}
 
 #### 按条件更新对象
 
@@ -1064,7 +1066,9 @@ curl -X GET \
 
 指向用户对象的 Pointer 的 className 为 `_User`，前面加一个下划线表示开发者不能定义的类名，而且所指的类是 LeanCloud 平台内置的。
 
-**Relation** 类型被用在多对多的类型上，移动端使用 AVRelation 作为值，它有一个 className 字段表示目标对象的类名.
+**Relation** 类型被用在多对多的类型上，移动端使用 AVRelation 作为值，它有一个 className 字段表示目标对象的类名。
+
+{{ data.relationDeprecated() }}
 
 ```json
 {
@@ -1402,7 +1406,11 @@ curl -X GET \
   https://{{host}}/1.1/classes/Comment
 ```
 
-如果你想获取作为其父对象的关系成员的对象，你可以使用 `$relatedTo` 操作符。例如对于微博这种社交类应用来讲，每一条微博都可以被不同的用户点赞，我们可以设计 Post 类下面有一个 key 是 Relation 类型，叫做 `likes`，存储了喜欢这个 Post 的所有 User。你可以通过下面的方式找到喜欢某条 Post 的所有用户（**请注意，新创建应用的 `_User` 表的查询权限默认是关闭的，你可以通过 class 权限设置打开，请参考 [数据与安全 - Class 级别的权限](data_security.html#Class_级别的_ACL)。**）：
+如果你想获取作为其父对象的关系成员的对象，你可以使用 `$relatedTo` 操作符。例如对于微博这种社交类应用来讲，每一条微博都可以被不同的用户点赞，我们可以设计 Post 类下面有一个 key 是 Relation 类型，叫做 `likes`，存储了喜欢这个 Post 的所有 User。
+
+{{ data.relationDeprecated() }}
+
+你可以通过下面的方式找到喜欢某条 Post 的所有用户（**请注意，新创建应用的 `_User` 表的查询权限默认是关闭的，你可以通过 class 权限设置打开，请参考 [数据与安全 - Class 级别的权限](data_security.html#Class_级别的_ACL)。**）：
 
 ```sh
 curl -X GET \

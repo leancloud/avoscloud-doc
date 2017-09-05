@@ -1,3 +1,5 @@
+{% import "views/_storage.md" as storagePartial %}
+
 #  数据存储开发指南 &middot; Unity
 
 如果还没有安装 LeanCloud Unity SDK，请阅读 [SDK 下载](./sdk_down.html) 来获得该 SDK。我们的 SDK 兼容 Unity 5 及更高版本，支持使用 Unity 开发的 iOS、Android、Windows Phone 8、Windows Store、Windows Desktop，以及网页游戏。
@@ -141,6 +143,8 @@ gameScore.SaveAsync().ContinueWith(t =>//第一次调用 SaveAsync 是为了增�
 ### 计数器
 ### 数组
 -->
+
+{{ storagePartial.avobjectSubclass() }}
 
 ### 删除对象
 
@@ -1140,26 +1144,10 @@ AVFile默认会存储文件大小和文件上传者objectId作为元信息。同
  file.MetaData.Add("height", 100);
 ```
 
-### 下载文件
+#### 文件下载
+因为多平台适配会造成困扰，因此 Unity SDK 不提供直接下载文件的方式。
 
-下载文件其实跟获取单个普通对象一样，首先必须知道这个文件的`objectdId`，或者你可以通过条件查询先获取这个`objectdId`，然后调用` AVFile.GetFileWithObjectIdAsync`方法首先实例化文件对象，然后就可以下载：
-
-```javascript
-if (GUI.Button(new Rect(50, 50, 200, 50), "Download file"))
-{
-   AVFile.GetFileWithObjectIdAsync("538ed669e4b0e335f6102809").ContinueWith(t =>
-   {
-       var file = t.Result;
-       file.DownloadAsync().ContinueWith(s =>
-       {
-           var dataByte = file.DataByte;//获取文件流的byte数组，之后可以做保存，发送等操作。
-       });
-   });
-}
-```
-
-#### 更推荐的下载方式
-对 Unity 有经验的开发者，我们更推荐用  Unity 自带的 WWW 类解决文件下载的问题，如下：
+对 Unity 有经验的开发者，我们推荐用  Unity 自带的 WWW 类或者 UnityWebRequest 类解决文件下载的问题，如下：
 
 ```javascript
 var req = new WWW(file.Url.AbsoluteUri);

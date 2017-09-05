@@ -1,3 +1,4 @@
+{% import "views/_leanengine.njk" as leanengine %}
 {% set release = "[Github releases 页面](https://releases.leanapp.cn/#/leancloud/lean-cli/releases)" %}
 {% set login = "lean login" %}
 
@@ -28,9 +29,23 @@ Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 �
 
 从 {{release}} 下载预编译好的二进制文件 `lean_linux_amd64`，重命名为 `lean` 并放到 已经在 PATH 环境变量中声明的任意目录中即可。
 
+#### Arch Linux
+
+Arch Linux 用户，可以考虑使用此 AUR 进行安装： https://aur.archlinux.org/packages/lean-cli-git/ 。
+
 ### 通过源码安装
 
 请参考项目源码 [README](https://github.com/leancloud/lean-cli)。
+
+### 升级
+
+如果命令行工具是通过 Homebrew 安装的，那么升级它需要运行：
+
+```sh
+brew upgrade
+```
+
+使用其他方式进行安装的，则可以直接按照安装文档描述，下载最新的文件，重新执行一遍安装流程，即可把旧版本的命令行工具覆盖，升级到最新版。
 
 ## 使用
 
@@ -222,7 +237,7 @@ $ lean debug --remote=http://remote-url-or-ip-address:remote-port --app-id=xxxxx
 $ lean deploy
 ```
 
-对于使用了<u>免费版</u>云引擎的应用，这个命令会将本地源码部署到线上的生产环境，无条件覆盖之前的代码（无论是从本地仓库部署、Git 部署还是在线定义）；而对于使用了<u>专业版</u>云引擎的应用，这个命令会先部署到**预备环境**，后续需要使用 `lean publish` 来完成向生产环境的部署。
+对于生产环境是<u>体验实例</u>的云引擎的应用，这个命令会将本地源码部署到线上的生产环境，无条件覆盖之前的代码（无论是从本地仓库部署、Git 部署还是在线定义）；而对于生产环境是<u>标准实例</u>的云引擎的应用，这个命令会先部署到**预备环境**，后续需要使用 `lean publish` 来完成向生产环境的部署。
 
 部署过程会实时打印进度：
 
@@ -281,7 +296,7 @@ $ lean deploy -g
 
 ## 发布到生产环境
 
-以下步骤仅适用于 [专业版云引擎](leanengine_plan.html#专业版) 用户。
+以下步骤仅适用于生产环境是 [标准实例](leanengine_plan.html#标准实例) 的用户。
 
 如果预备环境如果测试没有问题，此时需要将预备环境的云引擎代码切换到生产环境，可以在 [应用控制台 > 云引擎 > 部署](cloud.html?appid={{appid}}#/deploy) 中发布，也可以直接运行 `publish` 命令：
 
@@ -445,6 +460,12 @@ CQL > select objectId, mime_type from _File where mime_type != null limit 3;
 ]
 ```
 
+## LeanCache 管理
+
+LeanCache 用户可以使用命令行工具来连接线上的 LeanCache 实例，对数据进行增删改查。
+
+{{ leanengine.leancacheWithCli() }}
+
 ## 其他命令
 
 使用 `search` 命令可以方便地查询文档和资料：
@@ -465,7 +486,7 @@ $ lean search 云引擎 命令行
 
 有时我们需要对某个应用进行特定并且频繁的操作，比如查看应用 `_User` 表的记录总数，这样可以使用命令行工具的自定义命令来实现。
 
-只要在当前系统的 `PATH` 环境变量中存在一个以 `lean-` 开头的可执行文件，比如 `lean-usercount`，那么执行 `$ lean usercount`，命令行工具就会自动调用这个可执行文件。与直接执行 `$ lean-usercount` 不同的是，这个命令可以获取与应用相关的环境变量，方便访问对应的数据。
+只要在当前系统的 `PATH` 环境变量下，或者在项目目录 `.leancloud/bin` 下存在一个以 `lean-` 开头的可执行文件，比如 `lean-usercount`，那么执行 `$ lean usercount`，命令行工具就会自动调用这个可执行文件。与直接执行 `$ lean-usercount` 不同的是，这个命令可以获取与应用相关的环境变量，方便访问对应的数据。
 
 相关的环境变量有：
 

@@ -1,4 +1,7 @@
-{% set git_link = "https://github.com/leancloud/LeanCloudLiveKit-iOS" %}# LiveKit 使用指南 &middot; Objective-C
+{% set git_link = "https://github.com/leancloud/LeanCloudLiveKit-iOS" %}
+# LiveKit 使用指南 &middot; Objective-C
+
+> 如果需要了解 Android 版本请点击: [LiveKit 使用指南 &middot; Android](livekit-android.html)
 
 [LiveKit]({{git_link}}) 是由 LeanCloud 官方推出的一个专门开发视频直播的 UI 组件，包含了直播、文字聊天、弹幕、送礼物等界面。其主要特点有：
 

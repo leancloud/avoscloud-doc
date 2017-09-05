@@ -291,7 +291,13 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% block code_pointer_comment_one_to_many_todoFolder %}{% endblock %}
 
-相关内容可参考 [关联数据查询](#{{relationObjectName}}_查询)。
+##### 获取 Pointer 对象
+
+当 Todo 拥有一个字段叫做 TodoFolder 的 Pointer 类型的属性，在获取 Todo 的对象的同时，想一并把被关联的 TodoFolder 也拉取到本地：
+
+{% block code_pointer_include_todoFolder %}{% endblock %}
+
+更多内容可参考 [关联数据查询](relation-guide.html#Pointers_查询)。
 
 #### 地理位置
 地理位置是一个特殊的数据类型，{{productName}} 封装了 `{{geoPointObjectName}}` 来实现存储以及相关的查询。
@@ -432,6 +438,9 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 {% block code_file_image_thumbnail %}{% endblock %}
 
 <div class="callout callout-info">图片最大不超过 **20 MB** 才可以获取缩略图。</div>
+
+<div class="callout callout-danger">图片缩略图只支持华北节点的应用，华东和北美节点不支持。</div>
+
 {% endif %}
 ### 文件元数据
 
@@ -458,6 +467,19 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 {{ data.cdn(true) }}
 
 {% endblock %}
+
+### 常见的文件使用场景
+
+#### 文件被其他对象关联
+
+解决方案：将 AVFile 当做 `Pointer` 类型关联 AVObject 对象的一个字段:
+
+{% block file_as_avater %}{% endblock %}
+
+查询的时候需要额外的 include 一下:
+
+{% block query_file_as_avater %}{% endblock %}
+
 ## 查询
 `{{baseQueryClassName}}` 是构建针对 `{{baseObjectName}}` 查询的基础类。{{query_result_limit}}
 
@@ -533,8 +555,6 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 查询优先级大于等于 2 的 Todo：
 
 {% block code_query_greaterThanOrEqualTo %}{% endblock %}
-
-比较查询**只适用于可比较大小的数据类型**，如整型、浮点等。
 
 #### 多个查询条件
 
@@ -624,6 +644,21 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 正如在 [Pointer](#Pointer) 中保存 Comment 的 targetTodoFolder 属性一样，假如查询到了一些 Comment 对象，想要一并查询出每一条 Comment 对应的 TodoFolder 对象的时候，可以加上 include 关键字查询条件。同理，假如 TodoFolder 表里还有 pointer 型字段 targetAVUser 时，再加上一个递进的查询条件，形如 include(b.c)，即可一并查询出每一条 TodoFolder 对应的 AVUser 对象。代码如下：
 
 {% block code_query_comment_include_todoFolder %}{% endblock %}
+
+此外需要格外注意的是，假设对象有一个 Array 类型的字段 `todoArray` 内部是 Pointer 类型：
+```
+[pointer1, pointer2, pointer3]
+```
+可以用 include 方法获取数组中的 pointer 数据，例如：
+```
+// object-c on iOS
+[query includeKey:@"todoArray"];
+// java
+query.include("todoArray");
+// js
+query.include('todoArray');
+```
+但是 Array 类型的 include 操作只支持到第一层，不支持 `include(b.c)` 这种递进关联查询。
 
 #### 内嵌查询
 
@@ -1055,6 +1090,8 @@ CQL 是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功
 {% block js_push_guide %}{% endblock %}
 
 {% block use_js_in_webview %}{% endblock %}
+
+{% block faq %}{% endblock %}
 
 ## 相关文档
 
