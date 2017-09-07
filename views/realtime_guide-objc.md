@@ -493,9 +493,7 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
 1. 首先，Tom 和 Jerry 都要开启「未读消息」，即在 SDK 初始化语句后面加上：
     
     ```objc
-    [AVIMClient setUserOptions:@{
-        AVIMUserOptionUseUnread: @(YES)
-    }];
+    [AVIMClient setUnreadNotificationEnabled:YES];
     ```
 2. Tom 向 Jerry 发送一条消息，要标记好「需要回执」：
     
@@ -534,9 +532,7 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
 要开启未读消息，需要在 AVOSCloud 初始化语句后面加上：
 
 ```objc
-[AVIMClient setUserOptions:@{
-    AVIMUserOptionUseUnread: @(YES)
-}];
+[AVIMClient setUnreadNotificationEnabled:YES];
 ```
 
 然后使用代理方法 `conversation:didUpdateForKey:` 来观察对话的 `unreadMessagesCount` 属性：

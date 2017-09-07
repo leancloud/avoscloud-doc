@@ -22,7 +22,7 @@
 
 * [SDK 安装指南](start.html)
 <li><a href="unity_guide.html">Unity3D 数据存储指南</a></li>
-<li><a href="unity_statistics.html">Unity3D 统计 SDK 指南</a></li>
+<li><a href="analytics-guide.html">Unity3D 统计 SDK 指南</a></li>
 <li><a href="dotnet_guide.html">.NET 数据存储指南</a></li>
 <li><a href="realtime_guide-dotnet.html">Windows Phone 8.0 实时通信指南</a></li>
 <li><a href="/api-docs/wp/Help/index.html">.NET SDK API</a>
@@ -75,7 +75,7 @@
 <ul>
 <li><a href="ios_statistics.html">iOS 统计 SDK 开发指南</a></li>
 <li><a href="android_statistics.html">Android 统计 SDK 开发指南</a></li>
-<li><a href="unity_statistics.html">Unity3D 统计 SDK 指南</a></li>
+<li><a href="analytics-guide.html">Unity3D 统计 SDK 指南</a></li>
 </ul>
 
 ## 你要实现推送功能？
