@@ -591,13 +591,11 @@ realtime.createIMClient('Tom').then(function (host) {
     console.log(conversation.id);
     return conversation.send(new AV.TextMessage('耗子，今晚有比赛，我约了 Kate，咱们仨一起去酒吧看比赛啊？！'), {
         pushData: {
-            "data": {
-                "alert": "您有一条未读的消息",
-                "category": "消息",
-                "badge": 1,
-                "sound": "声音文件名，前提在应用里存在",
-                "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
-            }
+            "alert": "您有一条未读的消息",
+            "category": "消息",
+            "badge": 1,
+            "sound": "声音文件名，前提在应用里存在",
+            "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
         }
     });
 }).then(function (message) {
