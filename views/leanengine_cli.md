@@ -387,17 +387,18 @@ Mean Duration Time   9ms          21ms         7ms
 
 相关状态的描述如下：
 
-状态 | 描述
----- | ------------
-`Date` | 日期
-`API Requests` | API 请求次数
-`Max Concurrent` | 最大工作线程数
-`Mean Concurrent` | 平均工作线程数
-`Exceed Time` | 超限请求数
-`Max QPS` | 最大 QPS
-`Mean Duration Time` | 平均响应时间
-`80% Duration Time` | 80% 响应时间
-`95% Duration Time` | 95% 响应时间
+<table>
+	<tr><th width="35%">状态</th><th>描述</th></tr>
+	<tr><td>`Date`</td><td>日期</td></tr>
+	<tr><td>`API Requests`</td><td>API 请求次数</td></tr>
+	<tr><td>`Max Concurrent`</td><td>最大工作线程数</td></tr>
+	<tr><td>`Mean Concurrent`</td><td>平均工作线程数</td></tr>
+	<tr><td>`Exceed Time`</td><td>超限请求数</td></tr>
+	<tr><td>`Max QPS`</td><td>最大 QPS</td></tr>
+	<tr><td>`Mean Duration Time`</td><td>平均响应时间</td></tr>
+	<tr><td>`80% Duration Time`</td><td>80% 响应时间</td></tr>
+	<tr><td>`95% Duration Time`</td><td>95% 响应时间</td></tr>
+</table>
 
 `metrics` 接收参数与 `logs` 类似，具体介绍如下：
 
