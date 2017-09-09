@@ -367,6 +367,54 @@ $ lean logs --from=2017-07-01 --to=2017-07-07
 $ lean logs --from=2017-07-01 --to=2017-07-07 --format=json > leanengine.logs
 ```
 
+## 查看 LeanStorage 状态报告
+
+使用 `metrics` 命令可以查看 LeanStorage 的状态报告：
+
+```sh
+$ lean metrics --from 2017-09-07
+[INFO] 正在获取 xxxx 储存报告
+Date                 2017-09-07   2017-09-08   2017-09-09
+API Requests         49           35           14
+Max Concurrent       2            2            2
+Mean Concurrent      1            1            1
+Exceed Time          0            0            0
+Max QPS              5            5            5
+Mean Duration Time   9ms          21ms         7ms
+80% Duration Time    15ms         22ms         9ms
+95% Duration Time    26ms         110ms        25ms
+```
+
+相关状态的描述如下：
+
+状态 | 描述
+---- | ------------
+`Date` | 日期
+`API Requests` | API 请求次数
+`Max Concurrent` | 最大工作线程数
+`Mean Concurrent` | 平均工作线程数
+`Exceed Time` | 超限请求数
+`Max QPS` | 最大 QPS
+`Mean Duration Time` | 平均响应时间
+`80% Duration Time` | 80% 响应时间
+`95% Duration Time` | 95% 响应时间
+
+`metrics` 接收参数与 `logs` 类似，具体介绍如下：
+
+```sh
+$ lean metric -h
+NAME:
+   lean-macos-x64 metric - 获取当前项目云存储的性能总览
+
+USAGE:
+   lean-macos-x64 metric [command options] [--from fromTime --to toTime --format default|json]
+
+OPTIONS:
+   --from value    开始时间，格式为 YYYY-MM-DD，例如 1926-08-17
+   --to value      结束时间，格式为 YYYY-MM-DD，例如 1926-08-17
+   --format value  输出格式，默认为 default，可选 json
+```
+
 ## 多应用管理
 
 一个项目的代码可以同时部署到多个 LeanCloud 应用上。
