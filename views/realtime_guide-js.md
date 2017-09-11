@@ -1689,7 +1689,7 @@ realtime.createIMClient('Tom', {
 
 
 ```javascript
-realtime.createIMClient('Tom', null, 'Web').then(function(tom) {
+realtime.createIMClient('Tom', undefined, 'Web').then(function(tom) {
   console.log('Tom 登录');
 });
 ```
