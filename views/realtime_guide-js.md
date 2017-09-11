@@ -621,6 +621,14 @@ SDK 会在 `Conversation` 上维护 `unreadMessagesCount` 字段，这个字段�
 
 开发者应当监听 `unreadmessagescountupdate` 事件，在对话列表界面上更新这些对话的未读消息数量。
 
+```javascript
+client.on('unreadmessagescountupdate', function(conversations) {
+  for(let conv of conversations) {
+    console.log(conv.id, conv.name, conv.unreadMessagesCount);
+  }
+});
+```
+
 清除对话未读消息数的唯一方式是调用 `Conversation#read` 方法将对话标记为已读，一般来说开发者至少需要在下面两种情况下将对话标记为已读：
 
 - 在对话列表点击某对话进入到对话页面时
