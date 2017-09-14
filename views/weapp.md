@@ -220,7 +220,7 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
   ```javascript
   const realtime = new Realtime({
     appId: '{{appid}}',
-    noBinary: true,
+    appKey: '{{appKey}}',
   });
   ```
 
