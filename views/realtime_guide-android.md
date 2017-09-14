@@ -2611,3 +2611,29 @@ conversation.sendMessage(message, option, new AVIMConversationCallback() {
 ```
 
 {% endblock %}
+
+{% block open_long_connection_with_AVUser %}
+```java
+AVUser user = AVUser.logIn(username, password);
+AVIMClient client = AVIMClient.getInstance(user);
+client.open(new AVIMClientCallback() {
+  @Override
+  public void done(final AVIMClient avimClient, AVIMException e) {
+    // 进行下一步处理
+  }
+});
+```
+{% endblock %}
+
+{% block open_long_connection_with_clientId %}
+```java
+// Tom 用自己的名字作为 clientId，获取 AVIMClient 对象实例
+AVIMClient tom = AVIMClient.getInstance("Tom");
+// 与服务器连接
+tom.open(new AVIMClientCallback() {
+  @Override
+  public void done(AVIMClient client, AVIMException e) {
+  }
+});
+```
+{% endblock %}

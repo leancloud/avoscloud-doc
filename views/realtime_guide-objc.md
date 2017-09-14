@@ -2081,3 +2081,24 @@ AVIMMessage *willMessage = [AVIMTextMessage messageWithText:@"I'm offline." attr
 ```
 
 {% endblock %}
+
+{% block open_long_connection_with_AVUser %}
+```objc
+AVUser *user = [AVUser logInWithUsername:username password:password error:NULL];
+AVIMClient *client = [[AVIMClient alloc] initWithUser:user];
+[client openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
+    // 进行下一步处理
+}];
+```
+{% endblock %}
+
+{% block open_long_connection_with_clientId %}
+```objc
+// Tom 创建了一个 client，用自己的名字作为 clientId
+self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+
+// Tom 打开 client
+[self.client openWithCallback:^(BOOL succeeded, NSError *error) {
+}];
+```
+{% endblock %}
