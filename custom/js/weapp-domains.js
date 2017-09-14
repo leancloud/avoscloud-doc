@@ -18,9 +18,10 @@ angular.module('app').controller('WeappDomainsCtrl', [
               var suffix = currentApp.app_id.slice(0, 8).toLowerCase();
               $scope.extraRequestDomains = [
                 suffix + '.api.lncld.net',
-                suffix + '.engine.lncld.net'
+                suffix + '.engine.lncld.net',
+                suffix + '.rtm.lncld.net'
               ];
-              $scope.requestDomainsLength = 5;
+              $scope.requestDomainsLength = 6;
             } else {
               $scope.extraRequestDomains = [];
               $scope.requestDomainsLength = 3;
