@@ -10,6 +10,7 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$com
         $scope.masterkey = "{{masterkey}}";
         $scope.sign_masterkey = "{{sign_masterkey}}";
         $scope.sign_appkey = "{{sign_appkey}}";
+        $scope.v2Domain = 'api.leancloud.cn';
         $rootScope.pageState = {};
         var sdkversion = 'unknown';
         if(typeof $sdk_versions != 'undefined'){
@@ -31,7 +32,8 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$com
                             $scope.appkey = $scope.pageState.currentApp.app_key;
                             $scope.masterkey = $scope.pageState.currentApp.master_key;
                             $scope.sign_masterkey = $filter('signify')($scope.pageState.currentApp.master_key, 'master');
-                            $scope.sign_appkey = $filter('signify')($scope.pageState.currentApp.app_key); 
+                            $scope.sign_appkey = $filter('signify')($scope.pageState.currentApp.app_key);
+                            $scope.v2Domain = $scope.appid.slice(0, 8).toLowerCase() + '.lncld.net';
                         }
                     });
                     $scope.apps = data;

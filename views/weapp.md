@@ -214,17 +214,17 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
 要使用 LeanCloud 的聊天、实时消息功能，需要使用 LeanCloud 实时通讯 SDK。
 
 ### 安装与初始化
-2. 下载 [`realtime.weapp.min.js`](https://unpkg.com/leancloud-realtime@^3.3.0/dist/realtime.weapp.min.js)（[镜像](https://raw.githubusercontent.com/leancloud/js-realtime-sdk/dist/dist/realtime.weapp.min.js)），移动到 `libs` 目录。
+2. 下载 [`realtime.weapp.min.js`](https://unpkg.com/leancloud-realtime@^4.0.0-alpha/dist/realtime.weapp.min.js)（[镜像](https://raw.githubusercontent.com/leancloud/js-realtime-sdk/dist/dist/realtime.weapp.min.js)），移动到 `libs` 目录。
 3. 在 `app.js` 中使用 `const Realtime = require('./libs/realtime.weapp.min.js').Realtime;` 获得 `Realtime` 的引用。在其他文件中使用时请将路径替换成对应的相对路径。
 4. 在 `app.js` 中初始化应用：
   ```javascript
   const realtime = new Realtime({
     appId: '{{appid}}',
-    noBinary: true,
+    appKey: '{{appKey}}',
   });
   ```
 
-需要特别注意的是，由于小程序限制了同时只能有一个 WebSocket 连接，因此推荐的用法是初始化 Realtime 一次，然后在所有需要的时候都使用这个 realtime 实例。
+需要特别注意的是，由于小程序限制了同时只能有一个 WebSocket 连接，因此推荐的用法是初始化 Realtime 一次，挂载到全局的 App 实例上，然后在所有需要的时候都使用这个 realtime 实例。
 
 实时通讯 SDK 的详细用法请参考 [实时通信开发指南](realtime_guide-js.html)。
 
@@ -251,7 +251,7 @@ SDK 所有的云引擎相关的 API 都能正常使用，详细的用法请参�
   // 初始化实时通讯 SDK
   const realtime = new Realtime({
     appId: '{{appid}}',
-    noBinary: true,
+    appKey: '{{appkey}}',
     plugins: [TypedMessagesPlugin], // 注册富媒体消息插件
   });
   ```

@@ -18,7 +18,7 @@ module.exports = function(grunt) {
 
   var hostMap = {
     'us': 'us-api.leancloud.cn',
-    'cn': 'api.leancloud.cn',
+    'cn': "{{v2Domain}}",
     'qcloud': 'tab.leancloud.cn'
   }
   console.log('current theme --- '+grunt.option('theme'))
@@ -264,7 +264,7 @@ module.exports = function(grunt) {
             masterkey: '{{masterkey}}',
             sign_masterkey: "{{sign_masterkey}}",
             sign_appkey: '{{sign_appkey}}',
-            host: hostMap[grunt.option('theme')] || 'api.leancloud.cn'
+            host: hostMap[grunt.option('theme')] || hostMap['cn']
           }
         }
       }
