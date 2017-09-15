@@ -1,5 +1,9 @@
 {% from "views/_data.njk" import libVersion as version %}
 {% import "views/_helper.njk" as docs %}
+{% import "views/_parts.html" as include %}
+
+{{ include.setService('push') }}
+
 # Android 消息推送开发指南
 
 请先阅读 [消息推送概览](push_guide.html) 了解相关概念。

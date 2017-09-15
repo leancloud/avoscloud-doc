@@ -1,6 +1,10 @@
 
 {% import "views/_helper.njk" as docs %}
 {% import "views/_leanengine.njk" as leanengine %}
+{% import "views/_parts.html" as include %}
+
+{{ include.setService('engine') }}
+
 # 云引擎 REST API 使用指南
 
 LeanCloud 云端提供的统一的访问云函数的接口，所有的客户端 SDK 也都是封装了这个接口从而实现对云函数的调用。

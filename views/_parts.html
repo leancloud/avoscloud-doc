@@ -2,6 +2,16 @@
   alert  
 %}
 
+{% macro setService(service=api) %}
+
+<script type="text/javascript">
+angular.module("app").run(['$rootScope', function($rootScope) {
+  $rootScope.service = '{{service}}';
+}]);
+</script>
+
+{% endmacro %}
+
 {% macro checkbox(checked=false) -%}
 {% set backgroundColor = 'white' %}
 {% set borderColor = '#aaa' %}

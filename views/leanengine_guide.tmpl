@@ -1,3 +1,7 @@
+{% import "views/_parts.html" as include %}
+
+{{ include.setService('engine') }}
+
 {% set appid = '{{appid}}' %}
 {% set appkey = '{{appkey}}' %}
 {% set masterkey = '{{masterkey}}' %}

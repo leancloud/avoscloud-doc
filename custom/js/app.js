@@ -33,7 +33,7 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$com
                             $scope.masterkey = $scope.pageState.currentApp.master_key;
                             $scope.sign_masterkey = $filter('signify')($scope.pageState.currentApp.master_key, 'master');
                             $scope.sign_appkey = $filter('signify')($scope.pageState.currentApp.app_key);
-                            $scope.v2Domain = $scope.appid.slice(0, 8).toLowerCase() + '.lncld.net';
+                            $scope.v2Domain = $scope.appid.slice(0, 8).toLowerCase() + '.' + ($scope.service || 'api') + '.lncld.net';
                         }
                     });
                     $scope.apps = data;

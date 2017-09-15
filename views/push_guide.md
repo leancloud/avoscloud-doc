@@ -1,5 +1,8 @@
 {% set deviceprofile_format = "`deviceProfile` 的值必须以字母开头，由大小写字母、数字和下划线组成的字符串，或为空值。" %}
 {% import "views/_parts.html" as include %}
+
+{{ include.setService('push') }}
+
 # 消息推送服务总览
 
 消息推送，使得开发者可以即时地向其应用程序的用户推送通知或者消息，与用户保持互动，从而有效地提高留存率，提升用户体验。平台提供整合了 Android 推送、iOS 推送、Windows Phone 推送和 Web 网页推送的统一推送服务。
