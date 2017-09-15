@@ -2082,23 +2082,31 @@ AVIMMessage *willMessage = [AVIMTextMessage messageWithText:@"I'm offline." attr
 
 {% endblock %}
 
-{% block open_long_connection_with_AVUser %}
+{% block open_long_connection_with_clientId %}
+
 ```objc
-AVUser *user = [AVUser logInWithUsername:username password:password error:NULL];
-AVIMClient *client = [[AVIMClient alloc] initWithUser:user];
-[client openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
-    // 进行下一步处理
-}];
+- (void)tomSendMessageToJerry {
+    // Tom 创建了一个 client，用自己的名字作为 clientId
+    self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+
+    // Tom 打开 client，与云端进行连接
+    [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
+    }];
+}
 ```
 {% endblock %}
 
-{% block open_long_connection_with_clientId %}
-```objc
-// Tom 创建了一个 client，用自己的名字作为 clientId
-self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
+{% block open_long_connection_with_AVUser %}
 
-// Tom 打开 client
-[self.client openWithCallback:^(BOOL succeeded, NSError *error) {
+```objc
+// 以 AVUser 的用户名和密码登录到 LeanCloud 云端
+[AVUser logInWithUsernameInBackground:username password:password block:^(AVUser * _Nullable user, NSError * _Nullable error) {
+    // 以 AVUser 实例创建了一个 client
+    AVIMClient *client = [[AVIMClient alloc] initWithUser:user];
+    // 打开 client，与云端进行连接
+    [client openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
+        // Do something you like.
+    }];
 }];
 ```
 {% endblock %}

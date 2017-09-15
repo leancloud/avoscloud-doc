@@ -67,7 +67,7 @@ var realtime = new Realtime({
 });
 ```
 
-在微信小程序中使用时需要在初始化时指定 noBinary 参数为 true：
+在微信小程序中使用时需要在初始化时指定 **noBinary** 参数为 `true`：
 ```javascript
 const realtime = new Realtime({
   appId: '{{appid}}',
@@ -259,9 +259,11 @@ realtime.createIMClient('William').then(function(william) {
 
 {% block open_long_connection_with_clientId %}
 ```javascript
-// 创建了一个 client，用 'Tom' 这个字串作为 clientId
+// Tom 用自己的名字作为 clientId，获取 Client 对象实例
 realtime.createIMClient('Tom').then(function(tom) {
-}).catch(console.error.bind(console));
+  // 打印 client 实例
+  console.log(tom);
+}).catch(console.error);
 ```
 {% endblock %}
 
@@ -273,6 +275,7 @@ realtime.createIMClient('Tom').then(function(tom) {
 
 {% block open_long_connection_with_AVUser %}
 ```javascript
+// 以 AVUser 的用户名和密码登录实时通信服务
 AV.User.logIn('username', 'password').then(function(user) {
   return realtime.createIMClient(user);
 }).catch(console.error.bind(console));

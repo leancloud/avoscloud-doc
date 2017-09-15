@@ -2612,28 +2612,44 @@ conversation.sendMessage(message, option, new AVIMConversationCallback() {
 
 {% endblock %}
 
-{% block open_long_connection_with_AVUser %}
+{% block open_long_connection_with_clientId %}
+
 ```java
-AVUser user = AVUser.logIn(username, password);
-AVIMClient client = AVIMClient.getInstance(user);
-client.open(new AVIMClientCallback() {
-  @Override
-  public void done(final AVIMClient avimClient, AVIMException e) {
-    // 进行下一步处理
+  public void sendMessageToJerryFromTom() {
+    // Tom 用自己的名字作为clientId，获取AVIMClient对象实例
+    AVIMClient tom = AVIMClient.getInstance("Tom");
+    // 与服务器连接
+    tom.open(new AVIMClientCallback() {
+      @Override
+      public void done(AVIMClient client, AVIMException e) {
+        if (e == null) {
+
+        }
+      }
+    });
   }
-});
 ```
 {% endblock %}
 
-{% block open_long_connection_with_clientId %}
+{% block open_long_connection_with_AVUser %}
+
 ```java
-// Tom 用自己的名字作为 clientId，获取 AVIMClient 对象实例
-AVIMClient tom = AVIMClient.getInstance("Tom");
-// 与服务器连接
-tom.open(new AVIMClientCallback() {
-  @Override
-  public void done(AVIMClient client, AVIMException e) {
-  }
+// 以 AVUser 的用户名和密码登录到 LeanCloud 存储服务
+AVUser.logInInBackground("username", "password", new LogInCallback<AVUser>() {
+    @Override
+    public void done(AVUser user, AVException e) {
+        if (null != e) {
+          return;
+        }
+        // 与服务器连接
+        AVIMClient client = AVIMClient.getInstance(user);
+        client.open(new AVIMClientCallback() {
+          @Override
+          public void done(final AVIMClient avimClient, AVIMException e) {
+            // do something as you need.
+          }
+       });
+    }
 });
 ```
 {% endblock %}
