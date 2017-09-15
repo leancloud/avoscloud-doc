@@ -251,35 +251,39 @@ realtime.createIMClient('William').then(function(william) {
 
 实时通信 SDK 在内部会为每一个 clientId 创建唯一的 `Client` 实例，也就是说多次使用相同的 clientId 创建出来的实例还是同一个。因此，如果要支持同一个客户端内多账号登录，只要使用不同的 clientId 来创建多个实例即可。我们的 SDK 也支持多账户同时登录。
 
+
 ## 登录
 
 ### 使用唯一字符串 ID 登录
 
-登录到 LeanCloud 实时通信服务代码在 [之前](#单聊) 已经演示过，核心的代码如下:
+登录到 LeanCloud 实时通信服务代码在之前已经演示过，核心的代码如下:
 
-{% block open_long_connection_with_clientId %}
-```javascript
-// 创建了一个 client，用 'Tom' 这个字串作为 clientId
+```js
+// Tom 用自己的名字作为 clientId，获取 Client 对象实例
 realtime.createIMClient('Tom').then(function(tom) {
-}).catch(console.error.bind(console));
+  // 打印 client 实例
+  console.log(tom);
+}).catch(console.error);
 ```
-{% endblock %}
 
-以上代码使用了一个字符串 `clientId` 来标识一个用户，我们更推荐下面这种使用 `_User` 对象来登录的方式。
+以上代码假设的是当前应用没有使用内置的 _User 表，而用一个字符串 `clientId` 来标识一个用户，而我们更推荐下面这种使用 _User 对象来登录的方式。
 
-### 使用 `_User` 对象登录
+### 使用 _User 对象登录
 
-通过使用 `_User` 表，开发者能直接利用云端内置的用户鉴权系统而省掉登录签名操作，更方便地将存储和实时通信这两个模块结合起来使用。示例代码如下：
+现在实时通信已经支持了存储服务当中的 _User 对象的登录，示例代码如下：
 
-{% block open_long_connection_with_AVUser %}
-```javascript
+```js
+// 以 AVUser 的用户名和密码登录实时通信服务
 AV.User.logIn('username', 'password').then(function(user) {
   return realtime.createIMClient(user);
 }).catch(console.error.bind(console));
 ```
-{% endblock %}
 
-使用以上任意一种方式登录到实时通信系统之后，其他功能的用法就没有任何区别了。
+使用以上任意一种方式登录到实时通信系统之后，其他功能的用法就没有任何区别了，
+
+> 更简单更直接地使用内置的用户鉴权系统，方便用户直接组合存储和实时通信的两个模块。
+
+
 
 ## 消息
 
