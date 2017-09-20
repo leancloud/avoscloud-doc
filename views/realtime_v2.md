@@ -627,7 +627,7 @@ mute | 可选 | 修改后的关闭对话提醒设置，如果不提供则保持�
 
 ## 对话与消息管理 SDK
 
-Python 与 JavaScript 的数据存储 SDK，基于 REST API 封装了一组对话及消息管理的接口，方便在服务端或者云引擎中进行对话管理、发送消息。具体文档参考：[实时通讯服务端管理开发指南](realtime_manage_guide-python.html)。
+Python 与 JavaScript 的数据存储 SDK，基于 REST API 封装了一组对话及消息管理的接口，方便在服务端或者云引擎中进行对话管理、发送消息。具体文档参考：[实时通讯服务端管理开发指南](im-servermgmt-guide-python.html)。
 
 
 ## 系统对话
