@@ -190,6 +190,13 @@ public class CustomUserProvider implements LCChatProfileProvider {
 }
 ```
 
+当用户昵称和头像需要更新时，需要覆盖旧的 `LCChatKitUser` 对象并更新本地缓存：
+
+```java
+    LCChatKitUser user = new LCChatKitUser("唯一 userId 不可变", "要变更的昵称", "要变更的 avatarURL");
+    LCIMProfileCache.getInstance().cacheUser(user);
+```
+
 **四、打开实时通讯，并且跳转到聊天页面**
 
 我们支持通过两种方式来打开聊天界面：
