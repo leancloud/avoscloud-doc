@@ -660,6 +660,17 @@ query.include('todoArray');
 ```
 但是 Array 类型的 include 操作只支持到第一层，不支持 `include(b.c)` 这种递进关联查询。
 
+同样的 `select` 也具备使用 dot符号(.) 进行级联操作的功能：
+
+```
+// object-c on iOS
+[query selectKeys:@"targetTodoFolder.targetAVUser.username"];
+// java
+query.selectKeys(Arrays.asList("targetTodoFolder.targetAVUser.username"));
+// js
+query.select(['targetTodoFolder.targetAVUser.username']);
+```
+
 #### 内嵌查询
 
 查询点赞超过 20 次的 TodoFolder 的 Comment 评论（注意查询针对的是 [Comment](#Comment_待办事项分组的评论_)），使用内嵌查询接口就可以通过一次查询来达到目的。
