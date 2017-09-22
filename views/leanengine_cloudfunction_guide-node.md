@@ -297,11 +297,11 @@ AV.Cloud.beforeSave('Review', function(request) {
 * **预览**：会将所有函数汇总并生成一个完整的代码段，可以确认代码，或者将其保存为 `cloud.js` 覆盖项目模板的同名文件，即可快速的转换为使用项目部署。
 * **维护云函数**：可以编辑已有云函数，查看保存历史，以及删除云函数。
 
-**提示**：云函数编辑之后需要点击部署才能生效。
+{{ docs.alert("云函数编辑之后需要点击 **部署** 才能生效。") }}
 
 ### 在线编写的 SDK 版本
 
-目前在线编辑仅支持 Node.js，提供了 4 种 SDK 版本可选：
+目前在线编辑仅支持 Node.js，提供了 4 种 SDK 版本：
 
 在线编辑版本|Node SDK|JS SDK|Node.js|备注|可用依赖
 ---|---|---|---|---|---
@@ -310,19 +310,19 @@ v1|1.x|1.x|4||async, bluebird, co, ejs, handlebars, joi, lodash, marked, moment,
 v2|2.x|2.x|6|需要使用 Promise 写法|async, bluebird, crypto, debug, ejs, jade, lodash, moment, nodemailer, qiniu, redis, request, request-promise, superagent, underscore, uuid, wechat-api, xml2js
 v3|3.x|3.x|8|需要使用 Promise 写法|async, bluebird, crypto, debug, ejs, jade, lodash, moment, nodemailer, qiniu, redis, request, request-promise, superagent, underscore, uuid, wechat-api, xml2js
 
-从 `v0` 升级到 `v1`：
+**从 v0 升级到 v1：**
 
 - JS SDK 升级到了 [1.0](https://github.com/leancloud/javascript-sdk/releases/tag/v1.0.0)
 - 需要从 `request.currentUser` 获取用户，而不是 `AV.User.current`
 - 在调用 `AV.Cloud.run` 时需要手动传递 user 对象
 
-从 `v1` 升级到 `v2`：
+**从 v1 升级到 v2：**
 
 - JS SDK 升级到 [2.0](https://github.com/leancloud/javascript-sdk/releases/tag/v2.0.0)（必须使用 Promise，不再支持 callback 风格）
 - 删除了 `AV.Cloud.httpRequest`
 - 在云函数中 **必须** 返回 Promise 作为云函数的值，抛出 AV.Cloud.Error 来表示错误。
 
-从 `v2` 升级到 `v3`：
+**从 v2 升级到 v3：**
 
 - JS SDK 升级到了 [3.0](https://github.com/leancloud/javascript-sdk/releases/tag/v3.0.0)（AV.Object#toJSON 的行为变化等）
 

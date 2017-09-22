@@ -660,10 +660,10 @@ query.include('todoArray');
 ```
 但是 Array 类型的 include 操作只支持到第一层，不支持 `include(b.c)` 这种递进关联查询。
 
-同样的 `select` 也具备使用 dot符号(.) 进行级联操作的功能：
+`select` 也具备使用 dot 符号 `.` 来进行级联操作：
 
 ```
-// object-c on iOS
+// objective-c on iOS
 [query selectKeys:@"targetTodoFolder.targetAVUser.username"];
 // java
 query.selectKeys(Arrays.asList("targetTodoFolder.targetAVUser.username"));
