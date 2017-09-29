@@ -569,7 +569,7 @@ client.on('message', function messageEventHandler(message, conversation) {
 ```javascript
 var message = new AV.TextMessage('very important message');
 conversation.send(message, {
-  reciept: true,
+  receipt: true,
 });
 ```
 
@@ -596,52 +596,6 @@ conversation.on('lastdeliveredatupdate', function() {
 conversation.on('lastreadatupdate', function() {
   console.log(conversation.lastReadAt);
   // 在 UI 中将早于 lastReadAt 的消息都标记为「已读」
-});
-```
-
-对于群聊，我们通过 [leancloud-realtime-plugin-groupchat-receipts](https://www.npmjs.com/package/leancloud-realtime-plugin-groupchat-receipts) 插件的方式提供已读回执的支持。
-
-首先通过 npm 安装插件：
-
-```bash
-npm install leancloud-realtime-plugin-groupchat-receipts --save
-```
-
-在浏览器中加载：
-
-```html
-<script src="./node_modules/leancloud-realtime-plugin-groupchat-receipts/dist/groupchat-receipts.js"></script>
-```
-
-```javascript
-new AV.Realtime({
-  appId: '{{appId}}',
-  plugins: [AV.GroupchatReceiptsPlugin],
-});
-```
-
-或在 CommonJS 运行环境中加载：
-
-```javascript
-var GroupchatReceiptsPlugin = require('leancloud-realtime-plugin-groupchat-receipts').GroupchatReceiptsPlugin;
-
-new AV.Realtime({
-  appId: '{{appId}}',
-  plugins: [GroupchatReceiptsPlugin],
-});
-```
-
-加载了插件之后，多人 Conversation 会增加 `lastReadTimestamps` 属性，该属性是 **对话成员 ID** - **最后已读消息时间** 的键值对。在首次查询该对话的消息记录后，`lastReadTimestamps` 将会得到初始值，之后在对话中的其他成员将对话标记为已读时，SDK 会将 `lastReadTimestamps` 更新到最新值并在 conversation 上派发 `lastreadtimestampsupdate` 事件：
-
-```javascript
-// 以 Tom 身份登录
-conversation.on('lastreadtimestampsupdate', function() {
-  console.log(conversation.lastReadTimestamps);
-  // {
-  //   Jerry: Mon Apr 10 2017 15:19:00 GMT+0800 (CST)
-  //   Bob: Mon Apr 11 2017 19:00:00 GMT+0800 (CST)
-  // }
-  // 根据最新的已读标记时间戳更新 UI
 });
 ```
 
