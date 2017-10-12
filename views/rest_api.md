@@ -2308,6 +2308,8 @@ curl -X PUT \
 
 ### 上传文件
 
+{{ docs.alert("北美和华东节点不支持通过 REST API 上传文件，请使用 SDK 提供的文件相关接口上传文件。") }}
+
 上传文件到  LeanCloud  通过 POST 请求，注意必须指定文件的 content-type，例如上传一个文本文件 hello.txt 包含一行字符串：
 
 ```sh
@@ -2343,8 +2345,6 @@ curl -X POST \
   --data-binary '@test.png'  \
   https://{{host}}/1.1/files/test.png
 ```
-
-> 注意：北美和华东节点不支持通过 REST API 上传文件，请使用 SDK 提供的文件相关接口上传文件。
 
 ### 关联文件到对象
 
