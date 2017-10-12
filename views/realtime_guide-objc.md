@@ -2165,3 +2165,25 @@ message.mentionAll = YES;
 }
 ```
 {% endblock %}
+
+{% block code_send_binary_data_message %}
+
+```objc
+NSData *data = [NSData data];
+AVIMBinaryMessage *message = [[AVIMBinaryMessage alloc] initWithData:data];
+
+[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
+    /* A binary message did send. */
+}];
+```
+{% endblock %}
+
+{% block code_received_binary_data_message %}
+
+```objc
+- (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
+    // get if current client id mentiond by this message
+    BOOL mentioned = message.mentioned;
+}
+```
+{% endblock %}
