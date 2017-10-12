@@ -2344,6 +2344,8 @@ curl -X POST \
   https://{{host}}/1.1/files/test.png
 ```
 
+> 注意：北美和华东节点不支持通过 REST API 上传文件，请使用 SDK 提供的文件相关接口上传文件。
+
 ### 关联文件到对象
 
 一个文件上传后，你可以关联该文件到某个 AVObject 对象上：
