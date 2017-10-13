@@ -475,15 +475,13 @@ SDK 会在 Conversation 上维护 `unreadMessagesCount` 字段，这个字段在
 - 用户正在某个对话页面聊天，并在这个对话中收到了消息时
 {% endif %}
 
-#### 离线消息通知
+#### 离线消息推送通知
 
-离线消息通知是 SDK 默认的未读消息处理方式。不管是单聊还是群聊，当用户 A 发出消息后，如果目标对话的部分用户当前不在线，LeanCloud 云端可以提供离线推送的方式将消息提醒发送至客户端。
+离线消息推送通知是 SDK 默认的未读消息处理方式。不管是单聊还是群聊，当用户 A 发出消息后，如果目标对话的部分用户当前不在线，LeanCloud 云端可以提供离线推送的方式将消息提醒发送至客户端。{% block offlineMessage %}{% endblock %}
 
-{% block offlineMessage_android %}{% endblock %}
-
-{%  if segment_code == 'objc' or segment_code == 'dotnet' %}这一功能默认是关闭的，可以通过多种方式的设置来触发它，操作方法请参考 [实时通信概览 &middot; 离线推送通知](realtime_v2.html#离线推送通知)。{% endif %}
-
-{% block offlineMessage %}{% endblock %}
+{%  if segment_code !== 'android' %}
+我们也提供多种自定义推送通知的方式，操作方法请参考 [实时通信概览 · 离线推送通知](realtime_v2.html#离线推送通知)。
+{% endif %}
 
 ### 消息类详解
 {% block message_Relation_intro %}{% endblock %}
