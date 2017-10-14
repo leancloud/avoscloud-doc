@@ -53,6 +53,8 @@ PM> Install-Package LeanCloud
 `LeanCloud.Core.dll`|核心库，里面包含了 AVObject 和 AVUser 等所有内置类型的定义和序列化相关操作的功能|是
 `LeanCloud.Storage.dll`|存储库，里面包含本地缓存以及 HTTP 请求发送的实现|是
 `LeanCloud.Realtime.dll`|实时通讯库，里面包含了实时通讯协议的实现以及相关接口|否
+`LeanCloud.LiveQuery.dll`|LiveQuery 库，里面包含实时数据同步的实现和相关接口|否
+`LeanCloud.Analytics.dll`|数据统计库，里面包含了实现数据统计分析的实现和相关接口|否
 
 如果你的项目不需要使用实时通讯，就可以删除对 `LeanCloud.Realtime.dll` 的依赖，或者在引入的时候在 nuget 里面执行如下指令，则 IDE 只会加载核心和存储模块，并不会导入实时通讯模块：
 
@@ -65,6 +67,19 @@ PM> Install-Package LeanCloud.Storage
 ```sh
 PM> Install-Package LeanCloud.Realtime
 ```
+
+但是如果想使用实时数据同步功能（LiveQuery）则必须依赖实时通讯模块，当然执行如下 nuget 命令行会自动安装安装所有必要的依赖：
+
+```sh
+Install-Package LeanCloud.LiveQuery
+```
+
+安装数据统计分析库需要执行如下命令行：
+
+```sh
+Install-Package LeanCloud.Analytics
+```
+
 
 ## 配置 SDK
 
