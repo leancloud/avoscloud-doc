@@ -68,7 +68,7 @@ PM> Install-Package LeanCloud.Storage
 PM> Install-Package LeanCloud.Realtime
 ```
 
-但是如果想使用实时数据同步功能（LiveQuery）则必须依赖实时通讯模块，当然执行如下 nuget 命令行会自动安装安装所有必要的依赖：
+如果希望使用实时数据同步功能（[LiveQuery](livequery-guide.html)），请执行如下 nuget 命令行来自动安装所有必要的依赖（例如实时通讯模块）：
 
 ```sh
 Install-Package LeanCloud.LiveQuery
