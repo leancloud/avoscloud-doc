@@ -142,7 +142,7 @@ LeanCloud 的用户系统现已支持一键使用微信用户身份登录。要�
 1. 登录 [微信公众平台](https://mp.weixin.qq.com)，在 **设置** > **开发设置** 中获得 AppID 与 AppSecret。
 2. 前往 LeanCloud 控制台 > **组件** > **社交**，保存「微信小程序」的 AppID 与 AppSecret。
 
-现在，你可以在应用中使用 `AV.User.loginWithWeapp()` 方法来使用当前用户身份登录了。
+这样你就可以在应用中使用 `AV.User.loginWithWeapp()` 方法来使用当前用户身份登录了。
 
 ```javascript
 AV.User.loginWithWeapp().then(user => {
@@ -170,7 +170,21 @@ wx.getUserInfo({
 });
 ```
 
-使用一键登录方式登录时，LeanCloud 会将该用户的小程序 openid 保存在对应的 `user.authData.lc_weapp` 属性中，你可以在控制台的 _User 表中看到。该字段在客户端不可见，你可以使用 masterKey 在云引擎中获取该用户的 openid 进行支付、推送等操作。详情请参考 [支付](#支付)。
+使用一键登录方式登录时，LeanCloud 会将该用户的小程序 openid 保存在对应的 `user.authData.lc_weapp` 属性中，你可以在控制台的 `_User` 表中看到。该字段在客户端不可见，你可以使用 masterKey 在云引擎中获取该用户的 openid 进行支付、推送等操作。详情请参考 [支付](#支付)。
+
+#### 使用 unionId 登录
+
+authData 使用如下格式，注意字段名 `openid` 和 `uid` 一定要书写正确：
+
+  ```javascript
+AV.User.signUpOrlogInWithAuthData({
+  'openid' : openid,
+  'uid' : unionId,
+  ...其他可选属性
+}, 'lc_weapp_union');
+  ```
+
+为了获得更好的查询性能，建议为 `authData.lc_weapp_union.uid` 加上唯一索引。进入 **控制台** > **存储** > 选择 `_User` 表 > **其他** > **索引**，勾选 **authData** 然后在出现的输入框中键入 `authData.lc_weapp_union.uid`，点击 **创建**。
 
 #### 启用其他登录方式
 由于 `AV.User.loginWithWeapp()` 只能在小程序中使用，所以使用该 API 创建的用户无法直接在小程序之外的平台上登录。如果需要使用 LeanCloud 用户系统提供的其他登录方式，如用手机号验证码登录、邮箱密码登录等，在小程序一键登录后设置对应的用户属性即可：
