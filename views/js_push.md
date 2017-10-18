@@ -6,18 +6,11 @@
 
 你可以基于 Push SDK 做很多有趣的 Web 应用。比如，年会上面做个简单的弹幕应用，一些客户端发，弹幕墙接收。
 
-{% if node=='qcloud' %}
-当然，你可以做一个比较简单的消息通知功能。推送消息的方式也是很灵活的，可以在客户端通过对应 SDK 的接口发送，也可以在 `控制台 /<span class="text-muted">（选择应用）</span>/ 消息 / 推送 / 在线发送` 中手动发送推送消息到各个客户端。
-{% else %}
-当然，你可以做一个比较简单的消息通知功能。推送消息的方式也是很灵活的，可以在客户端通过对应 SDK 的接口发送，也可以在 [控制台 /<span class="text-muted">（选择应用）</span>/ 消息 / 推送 / 在线发送](/messaging.html?appid={{appid}}#/message/push/create) 中手动发送推送消息到各个客户端。
-{% endif %}
+当然，你可以做一个比较简单的消息通知功能。推送消息的方式也是很灵活的，可以在客户端通过对应 SDK 的接口发送，也可以在 [控制台 >（选择应用）> 消息 > 推送 > 在线发送](/messaging.html?appid={{appid}}#/message/push/create) 中手动发送推送消息到各个客户端。
 
 <div class="callout callout-info">如果前端使用的是 JavaScript SDK，请务必配置 <strong>Web 安全域名</strong>，来防止其他人盗用你的服务器资源。
-{% if node=='qcloud' %}
-配置方式：进入 `控制台 /<span class="text-muted">（选择应用）</span>/ 设置 / 安全中心`，找到 **Web 安全域名**。</div>
-{% else %}
-配置方式：进入 [控制台 /<span class="text-muted">（选择应用）</span>/ 设置 / 安全中心](/app.html?appid={{appid}}#/security)，找到 **Web 安全域名**。</div>
-{% endif %}
+
+配置方式：进入 [控制台 >（选择应用）> 设置 > 安全中心](/app.html?appid={{appid}}#/security)，找到 **Web 安全域名**。</div>
 
 详细内容请查看 [数据和安全 &middot; Web 安全域名](data_security.html#Web_应用安全设置)。
 
@@ -33,17 +26,17 @@ bower install leancloud-push --save
 
 ## Github 仓库地址
 
-可以直接通过 Github 仓库使用，也可以通过 Github 给我们提出您的建议
+可以直接通过 Github 仓库使用，也可以通过 Github 给我们提出你的建议
 
 Github 仓库地址：[https://github.com/leancloud/js-push-sdk](https://github.com/leancloud/js-push-sdk)
 
-Release 地址: [https://github.com/leancloud/js-push-sdk/releases](https://github.com/leancloud/js-push-sdk/releases)
+Release 地址：[https://github.com/leancloud/js-push-sdk/releases](https://github.com/leancloud/js-push-sdk/releases)
 
 ## Demo 及示例代码
 
-如果您觉得一点点阅读文档较慢，可以直接看我们的 [Demo 代码](https://github.com/leancloud/js-push-sdk/tree/master/demo)，并且下载自己运行一下试试看。
+如果你觉得一点点阅读文档较慢，可以直接看我们的 [Demo 代码](https://github.com/leancloud/js-push-sdk/tree/master/demo)，并且下载自己运行一下试试看。
 
-注意：Demo 需要使用一个 Web 服务器打开（如 http://localhost ），不能仅通过文件的方式打开（不要直接双击打开，URL 为 File:/// 协议的方式），否则会被服务器拒绝。
+注意：Demo 需要使用一个 Web 服务器打开（如 `http://localhost`），不能仅通过文件的方式打开（不要直接双击打开，URL 为 `File:///` 协议的方式），否则会被服务器拒绝。
 
 ```javascript
 // 最简的示例代码，请换成自己的 appId 和 appKey
@@ -92,20 +85,14 @@ LeanCloud JavaScript 相关 SDK 都会使用「AV」作为命名空间。
 
 ### AV.push(options)
 
-描述：配置一个 Push 服务，生成一个 PushObject，提供后续调用的方法。
+配置一个 Push 服务，生成一个 PushObject，提供后续调用的方法。
 
-参数：
+参数 options 的类型为 Object，必选，包含如下设置：
 
-* options {Object} （必须） 配置 Push 服务的参数。其中包括：
-
-    * appId {String} （必须）应用的 AppId，在 **控制台 / 设置 / 基本信息** 中可以查看；
-
-    * appKey {String}（必须）应用的 AppKey；
-
-返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
-
-例子：
-
+参数|类型|约束|描述
+---|---|---|---
+appId|String|必须|应用的 AppId，在 **控制台** > 选择应用 > **设置** > **应用 Key** 中查看
+appKey|String|必须|应用的 AppKey
 
 ```javascript
 var pushObject = AV.push({
@@ -120,30 +107,25 @@ var pushObject = AV.push({
     channels:['aaa']
 });
 ```
+返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
 
 ### AV.push.version
 
-描述：获取当前 SDK 的版本信息
-
-返回：{String} 返回当前版本
-
-例子：
+获取当前 SDK 的版本信息
 
 ```javascript
 console.log(AV.push.version);   // 2.0.0
 ```
 
+返回：{String} 返回当前版本
+
 ### pushObject.open(callback)
 
-描述：开启接收服务端推送消息。如果只是需要发送数据到服务器，则不需要使用该方法，只需要使用 send 方法；
+开启接收服务端推送消息。如果只是需要发送数据到服务器，则不需要使用该方法，只需要使用 send 方法；
 
-参数：
-
-* callback {Function}（可选）与服务器建立连接（WebSocket）之后，会触发的回调函数
-
-返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
-
-例子：
+参数|类型|约束|描述
+---|---|---|---
+callback|Function|可选|与服务器建立连接（WebSocket）之后，会触发的回调函数。
 
 ```javascript
 pushObject.open(function() {
@@ -151,18 +133,16 @@ pushObject.open(function() {
 });
 ```
 
-### pushObject.send(jsonObject)
-
-描述：向服务器发送要推送的消息
-
-参数：
-
-* jsonObject {Object} 要发送的数据，JSON 格式，但是发送数据的字段名，不能是配置选项中的名字。
-不能是 channels、 where、 expiration_time、 expiration_interval、 push_time
-
 返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
 
-例子：
+### pushObject.send(jsonObject)
+
+向服务器发送要推送的消息
+
+参数|类型|约束|描述
+---|---|---|---
+jsonObject|Object|必须|要发送的数据，JSON 格式，但是发送数据的字段名，不能是配置选项中的名字。
+不能是 channels、where、expiration_time、expiration_interval、push_time。
 
 ```javascript
 pushObject.send({
@@ -170,31 +150,23 @@ pushObject.send({
 });
 ```
 
-### pushObject.send(options)
-
-描述：向服务器发送要推送的消息
-
-参数：
-
-* options {Object} 相关配置参数，其中包括：
-
-    * data {Object} 要发送的数据，JSON 格式；
-
-    * channels {Array}（可选）Push 的频道。默认不传，会发到所有频道；
-
-    * where {String}（可选） 一个查询 _Installation 表的查询条件 JSON 对象
-
-    * expiration_time {Date}（可选） 消息过期的绝对日期时间
-
-    * expiration_interval {Number}（可选） 消息过期的相对时间
-
-    * push_time {Date}（可选） 定期推送时间
-
-    * prod {String} (可选) 如果想推送到 iOS 设备，可以通过该参数指定使用测试环境还是生产环境证书，dev 表示开发证书，prod 表示生产证书，默认生产证书
-
 返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
 
-例子：
+### pushObject.send(options)
+
+向服务器发送要推送的消息
+
+参数 options 类型为 Object，可包含如下设置：
+
+参数|类型|约束|描述
+---|---|---|---
+data|Object|必须|要发送的数据，JSON 格式
+channels|Array|可选|Push 的频道。默认不传，会发到所有频道
+where|String|可选|一个查询 _Installation 表的查询条件 JSON 对象
+expiration_time|Date|可选|消息过期的绝对日期时间
+expiration_interval|Number|可选|秒，消息过期的相对时间
+push_time|Date|可选|定期推送时间
+prod|String|可选|如果想推送到 iOS 设备，可以通过该参数指定使用测试环境还是生产环境证书。dev 表示开发证书，prod 表示生产证书，默认生产证书。
 
 ```javascript
 pushObject.send({
@@ -204,17 +176,15 @@ pushObject.send({
 });
 ```
 
-### pushObject.subscribe(channels, callback)
-
-描述：增加订阅的频道
-
-参数：
-
-* channels {Array} 订阅的 channel 名字的数组，**每个 channel 名称只能包含 26 个英文字母和数字。**
-
 返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
 
-例子：
+### pushObject.subscribe(channels, callback)
+
+增加订阅的频道
+
+参数|类型|约束|描述
+---|---|---|---
+channels|Array|必须|订阅的 channel 名字的数组，**每个 channel 名称只能包含 26 个英文字母和数字。**
 
 ```javascript
 pushObject.subscribe(['testChannel'], function() {
@@ -228,17 +198,15 @@ pushObject.send({
 });
 ```
 
-### pushObject.unsubscribe(channels, callback)
-
-描述：退订已经订阅的频道
-
-参数：
-
-* channels {Array} 订阅的 channel 名字的数组，**每个 channel 名称只能包含 26 个英文字母和数字。**
-
 返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
 
-例子：
+### pushObject.unsubscribe(channels, callback)
+
+退订已经订阅的频道
+
+参数|类型|约束|描述
+---|---|---|---
+channels|Array|必须|订阅的 channel 名字的数组，**每个 channel 名称只能包含 26 个英文字母和数字。**
 
 ```javascript
 pushObject.unsubscribe('testChannel', function() {
@@ -252,19 +220,16 @@ pushObject.send({
 });
 ```
 
-### pushObject.on(eventName, callback)
-
-描述：监听当前 pushObject 内的事件，基于私有事件中心
-
-参数：
-
-* eventName {String} （必须）监听的事件名称
-
-* callback 事件的回调函数，当事件被派发时触发
-
 返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
 
-例子：
+### pushObject.on(eventName, callback)
+
+监听当前 pushObject 内的事件，基于私有事件中心
+
+参数|类型|约束|描述
+---|---|---|---
+eventName|String|必须|监听的事件名称
+callback|Function|必须|事件的回调函数，当事件被派发时触发。
 
 ```javascript
 pushObject.on('message', function(data) {
@@ -272,19 +237,16 @@ pushObject.on('message', function(data) {
 });
 ```
 
-### pushObject.once(eventName, callback)
-
-描述：监听当前 pushObject 内的事件，基于私有事件中心，回调只会被触发一次
-
-参数：
-
-* eventName {String} （必须）监听的事件名称
-
-* callback 事件的回调函数，当事件被派发时触发
-
 返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
 
-例子：
+### pushObject.once(eventName, callback)
+
+监听当前 pushObject 内的事件，基于私有事件中心，回调只会被触发一次
+
+参数|类型|约束|描述
+---|---|---|---
+eventName|String|必须|监听的事件名称
+callback|Function|必须|事件的回调函数，当事件被派发时触发。
 
 ```javascript
 pushObject.once('open', function(data) {
@@ -292,51 +254,48 @@ pushObject.once('open', function(data) {
 });
 ```
 
-### pushObject.emit(eventName, data)
-
-描述：派发一个事件到 pushObject 内的私有事件中心
-
-参数：
-
-* eventName {String} （必须）监听的事件名称
-
-* data {Object} （可选）传递的参数，可以在监听的回调中通过第一个参数获取
-
 返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
 
-例子：
+### pushObject.emit(eventName, data)
+
+派发一个事件到 pushObject 内的私有事件中心
+
+参数|类型|约束|描述
+---|---|---|---
+eventName|String|必须|监听的事件名称
+data|Object|可选|传递的参数，可以在监听的回调中通过第一个参数获取。
 
 ```javascript
 pushObject.emit('customEvent', {test: 123});
 ```
 
-### pushObject.close()
-
-描述：停止获取服务端推送消息，并且断开与服务器的连接
-
 返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
 
-例子：
+### pushObject.close()
+
+停止获取服务端推送消息，并且断开与服务器的连接。
 
 ```javascript
 pushObject.close();
 ```
 
+返回：{Object} 返回 pushObject，可以做后续 Push 服务的方法，支持链式。
+
 ### 事件
 
-SDK 会默认派发一些事件，这些事件仅会在 pushObject 内部被派发，您可以通过监听这些事件来完成您的操作。这些事件近在您需要接收服务端 Push 的消息时有用，如果只是推送数据给服务器，不需要使用。以下是默认事件的说明：
+SDK 会默认派发一些事件，这些事件仅会在 pushObject 内部被派发，你可以通过监听这些事件来完成你的操作。这些事件近在你需要接收服务端 Push 的消息时有用，如果只是推送数据给服务器，不需要使用。以下是默认事件的说明：
 
 ### open
-描述：与服务器建立好连接之后就会被派发，包括当服务断开重新被连接上时也会被触发
+与服务器建立好连接之后就会被派发，包括当服务断开重新被连接上时也会被触发。
 
 ### close
-描述：与服务器连接断开就会被派发，包括网络中断
+与服务器连接断开就会被派发，包括网络中断。
 
 ### message
-描述：收到服务器推送消息时会被派发，监听此事件来接收推送消息
+收到服务器推送消息时会被派发，监听此事件来接收推送消息。
 
 ### reuse
-描述：网络不稳定或者其他非主动与服务器断开的情况，自动重连时会派发此事件，当服务重新连接会再次派发 open 事件
+网络不稳定或者其他非主动与服务器断开的情况，自动重连时会派发此事件，当服务重新连接会再次派发 open 事件。
 
 ### error
-描述：所有的错误处理，都会派发出一个 error 事件
+所有的错误处理，都会派发出一个 error 事件。
