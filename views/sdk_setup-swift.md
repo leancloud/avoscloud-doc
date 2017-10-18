@@ -35,7 +35,8 @@ https://ruby.taobao.org
 use_frameworks! # LeanCloud Swift SDK can only be integrated as framework.
 
 target '你的项目名称' do
-	pod 'LeanCloud'
+    # 显式指定版本号，如 '~> 11.0.0'
+	pod 'LeanCloud', '~> 替换为所使用的 SDK 版本号'
 end
 ```
 
