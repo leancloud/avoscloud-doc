@@ -2394,7 +2394,7 @@ curl -X DELETE \
 | badge          | 数字，表示最新的 iOS 的安装已知的 application badge。   |
 | channels       | 数组，可选，表示这个安装对象的订阅频道列表设备订阅的频道。**每个 channel 名称只能包含 26 个英文字母和数字。** |
 | deviceToken    | 由 Apple 生成的字符串标志，在 deviceType 为 iOS 上的设备是必须的，而且自对象生成开始就不能改动，对于一个 app 来说也是不可重复的。 |
-| deviceType     | 必须被设置为"ios"、"android"、"wp"、"web"中的一种，而且自这个对象生成以后就不能变化。 |
+| deviceType     | 必须被设置为 "ios"、"android"、"wp"、"web"中的一种，而且自这个对象生成以后就不能变化。 |
 | installationId | 由 LeanCloud 生成的字符串标志，而且如果 deviceType 是 android 的话是一个必选字段，如果是 iOS 的话则可选。它只要对象被生成了就不能发生改变，而且对一个 app 来说是不可重复的。 |
 | timeZone       | 字符串，表示安装的这个设备的系统时区。                      |
 
@@ -2662,7 +2662,7 @@ curl -X GET \
 {% if node != 'qcloud' %}
 ## 用户反馈组件 API
 
-如果使用我们的用户反馈组件，可以通过下列 API 来提交一条新的用户反馈：
+提交一条新的用户反馈：
 
 ```sh
 curl -X POST \
@@ -2677,7 +2677,52 @@ curl -X POST \
   https://{{host}}/1.1/feedback
 ```
 
-提交后的用户反馈在可以在组件菜单的用户反馈里看到。
+提交后的用户反馈在可以在 [控制台 >（选择应用）> 组件 > 用户反馈](/dashboard/devcomponent.html?appid={{appid}}#/component/feedback) 里看到。
+
+获取所有的反馈：
+
+```
+curl -X GET \
+-H "X-LC-Id:{{appID}}" \
+-H "X-LC-Key:{{appKey}}" \
+-H "Content-Type: application/json" \
+https://{{host}}/1.1/feedback
+```
+
+获取一条反馈里面的信息：
+
+```
+curl -X GET \
+-H "X-LC-Id:{{appID}}" \
+-H "X-LC-Key:{{appKey}}" \
+-H "Content-Type: application/json" \
+https://{{host}}/1.1/feedback/<:fb_id>/threads
+```
+
+将 `<:fb_id>` 替换为 feedback 的 objectId。 
+
+客服为一条已经存在的反馈增加一条回复：
+
+```
+curl -X POST \
+-H "X-LC-Id:{{appID}}" \
+-H "X-LC-Key:{{appKey}}"\
+ -H "Content-Type: application/json" \
+-d '{"type":"dev","content":"感谢您的反馈！我们正在修复您所述的问题，修复后再通知您。", "attachment":"{{url}}"}' \ 
+https://{{host}}/1.1/feedback/<:fb_id>/threads
+```
+
+用户为一条已经存在的反馈增加一条回复：
+
+```
+curl -X POST \
+-H "X-LC-Id:{{appID}}" \
+-H "X-LC-Key:{{appKey}}"\
+ -H "Content-Type: application/json" \
+-d '{"type":"user","content":"我刚才又试了下，现在没问题了！耶~", "attachment":"{{url}}"}' \ 
+https://{{host}}/1.1/feedback/:fb_id/threads
+```
+
 {% endif %}
 
 {% if node!='qcloud' %}
@@ -2974,7 +3019,7 @@ https://{{host}}/1.1/stats/open/collect
 
 | 字段                | 约束   | 含义                                       |
 | ----------------- | ---- | ---------------------------------------- |
-| id                | 必选   | 用户的唯一 id（系统将根据这个 id 来区分新增用户，活跃用户，累计用户等用户相关数据） |
+| id                | 必选   | 用户的唯一 id，这是由  SDK 从系统中获取的设备 ID（系统将根据这个 id 来区分新增用户、活跃用户、累计用户等用户相关数据） |
 | platform          | 可选   | 应用的平台（例如 iOS、Android 等）                  |
 | app_version       | 可选   | 应用的版本                                    |
 | app_channel       | 可选   | 应用的发布渠道                                  |
