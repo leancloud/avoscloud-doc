@@ -23,7 +23,7 @@
     <div style="display:flex;flex-wrap:wrap;margin-left:-20px">
       <div class="dl-cell">
         <div class="desc">
-          <h2><i class="icon icon-github"></i> Objective-C（开放源码）</h2>
+          <h2><i class="icon icon-github"></i> Objective-C</h2>
           <p>
             分为 iOS、macOS、watchOS 和 tvOS SDK， <a href="https://releases.leanapp.cn/#/leancloud/objc-sdk/releases">查看所有</a>
           </p>
@@ -37,7 +37,7 @@
       </div>
       <div class="dl-cell">
         <div class="desc">
-          <h2><i class="icon icon-github"></i> JavaScript SDK（开放源码）</h2>
+          <h2><i class="icon icon-github"></i> JavaScript SDK</h2>
           <p>
             根据功能需求选择对应的 SDK
           </p>
@@ -50,47 +50,20 @@
   </ul>
 </div>
 <div class="dl-cell">
-  <h2>Android SDK <small>v{{sdkversion.android}}</small></h2>
   <div class="desc">
-    <div  ng-repeat="m in download.android.required" class="download-option">
-      <label class="checkbox" ng-hide="true">
-        <input type="checkbox" name="android" ng-model="downselect.android[m.name]"> {{m.name}}
-      </label>
-    </div>
-    <div class="download-option-wrap">
-      <div class="checkbox  download-option">
-        <label class="bspopover" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-html="true" data-title="详情" data-content="<p><strong>基础模块包含：</strong></p><ul><li>存储</li></ul><p></p><p><strong>依赖：</strong></p><ul><li>JSON 解析库</li><li>HTTP MimeType 解析库</li><li>HTTP 调用库</li></ul>">
-        <input type="checkbox" name="android" disabled checked>
-        <span class="control-indicator"></span> 基础模块
-      </label>
-    </div>
-    <div ng-repeat="m in download.android.optional" class="download-option">
-      <div class="checkbox ">
-        <label>
-          <input type="checkbox" name="android" ng-model="downselect.android[m.name]">
-          <span class="control-indicator"></span> {{m.name}}
-        </label>
-      </div>
-    </div>
-  </div>
+    <h2><i class="icon icon-github"></i> Android SDK</h2>
 </div>
 <ul class="list-inline">
   <li>
-    <a class="btn btn-sm btn-primary dl-cell-btn" ng-click="download('android')">
-      下载 <span>- {{getDownSize('android')}}</span>
-    </a>
-  </li>
-  <li>
-    <a href="https://download.leancloud.cn/sdk/android_feed.xml" class="changelog-rss bstooltip" title="Android SDK RSS"><i class="icon icon-rss"></i></a>
-    <a href="#sdk-changelog" data-toggle="modal" data-target="#modal-android-changelog">更新历史</a>
+    <a href="https://releases.leanapp.cn/#/leancloud/android-sdk-all/releases" class="btn btn-sm btn-primary">Android SDK</a>
   </li>
   <li class="muted">·</li>
   <li>
-    <a href="http://releases.leanapp.cn/#/leancloud/LeanCloudChatKit-Android/releases">ChatKit</a>
+    <a class="btn btn-link" href="http://releases.leanapp.cn/#/leancloud/LeanCloudChatKit-Android/releases">ChatKit</a>
   </li>
   <li class="muted">·</li>
   <li>
-    <a href="https://github.com/leancloud/leancloud-demos#android">Demo</a>
+    <a class="btn btn-link" href="https://github.com/leancloud/leancloud-demos#android">Demo</a>
   </li>
 </ul>
 </div>
@@ -106,7 +79,7 @@
   </ul>
 </div>
 <div class="dl-cell">
-<h2> .NET（新版）</h2>
+<h2><i class="icon icon-github"></i> .NET（新版）</h2>
 <div class="desc">
     <p>
       自 2016 年 12 月起，.NET SDK 将统一代码并且按照模块被拆分为 Core、Storage、Analytics、Push 等不同的文件。
