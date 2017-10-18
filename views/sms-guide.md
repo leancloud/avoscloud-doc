@@ -4,6 +4,8 @@
 
 # 短信 SMS 服务使用指南
 
+{{ sms.usSMSNotReady() }}
+
 短信服务适用的场景很多：
 
 - 用户验证：在处理用户登录、修改密码等操作时，需要向用户的手机发送一条包含验证码的短信，以确保账户安全。
@@ -97,8 +99,10 @@ AVCloud.RequestSMSCodeAsync("18612345678","Register_Notice",null,"LeanCloud").Co
 
 ## 开通短信服务
 
+{{ sms.usSMSNotReady() }}
+
 ### 在安全中心开启短信服务
-要使用短信服务，首先你需要在控制台创建一个应用，然后进入 {% if node=='qcloud' %}**控制台** > **设置** > **安全中心**{% else %}[控制台 > 设置 > 安全中心](/app.html?appid={{appid}}#/security){% endif %}，确保 **短信服务** 开关是打开的：
+要使用短信服务，首先需要在控制台创建一个应用，然后进入 {% if node=='qcloud' %}**控制台** > **设置** > **安全中心**{% else %}[控制台 > 设置 > 安全中心](/app.html?appid={{appid}}#/security){% endif %}，确保 **短信服务** 开关是打开的：
 
 ![sms_switch](images/sms_switch_setting.png)
 
@@ -313,7 +317,7 @@ AVCloud.VerifySmsCodeAsync("123456","186xxxxxxxx").ContinueWith(t =>{
 再次验证用户输入的验证码是否正确。
 
 
-## 营销／通知类短信
+## 营销、通知类短信
 
 ### 通知短信
 
@@ -785,6 +789,8 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy","�
 ```
 
 ## 国际短信
+
+{{ sms.usSMSNotReady() }}
 
 向国外用户发送短信，只需要在手机号码前加上正确的国际区号即可，如美国和加拿大为 `+1`，当然前提是已在 [应用设置](/dashboard/app.html?appid={{appid}}#/permission) 中选中了 **开启国际短信服务**。中国区号为 `+86`，但可以省略，无区号的手机号码会默认使用中国区号。
 
