@@ -2696,10 +2696,10 @@ curl -X GET \
 -H "X-LC-Id:{{appID}}" \
 -H "X-LC-Key:{{appKey}}" \
 -H "Content-Type: application/json" \
-https://{{host}}/1.1/feedback/<:fb_id>/threads
+https://{{host}}/1.1/feedback/<:feedback_objectId>/threads
 ```
 
-将 `<:fb_id>` 替换为 feedback 的 objectId。 
+将 `<:feedback_objectId>` 替换为 feedback 的 objectId（可以从上述的「获取所有的反馈」这个查询中得到 objectId）。 
 
 客服为一条已经存在的反馈增加一条回复：
 
@@ -2709,7 +2709,7 @@ curl -X POST \
 -H "X-LC-Key:{{appKey}}"\
  -H "Content-Type: application/json" \
 -d '{"type":"dev","content":"感谢您的反馈！我们正在修复您所述的问题，修复后再通知您。", "attachment":"{{url}}"}' \ 
-https://{{host}}/1.1/feedback/<:fb_id>/threads
+https://{{host}}/1.1/feedback/<:feedback_objectId>/threads
 ```
 
 用户为一条已经存在的反馈增加一条回复：
@@ -2720,7 +2720,7 @@ curl -X POST \
 -H "X-LC-Key:{{appKey}}"\
  -H "Content-Type: application/json" \
 -d '{"type":"user","content":"我刚才又试了下，现在没问题了！耶~", "attachment":"{{url}}"}' \ 
-https://{{host}}/1.1/feedback/:fb_id/threads
+https://{{host}}/1.1/feedback/<:feedback_objectId>/threads
 ```
 
 {% endif %}
