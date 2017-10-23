@@ -6,6 +6,9 @@
 
 {% include 'templates/include/head.html' %}
 <style>
+.algolia-autocomplete {
+  min-width: 50%;
+}
 * {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, "PingFang SC", "Microsoft Yahei", "WenQuanYi Micro Hei", ui-icon, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
