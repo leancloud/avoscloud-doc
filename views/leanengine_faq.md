@@ -8,9 +8,10 @@
 
 我们设置的 TTL 是 5 分钟，但各级 DNS 服务都有可能对其进行缓存，实际生效会有一定延迟。
 
-## 云引擎二级域名可以启用 HTTPS 吗
+## 云引擎支持 HTTPS 吗
 
-对于 `.leanapp.cn` 的二级域名我们默认支持 HTTPS，如需配置自动跳转到 HTTPS，请看 [《重定向到 HTTPS》](leanengine_webhosting_guide-node.html#重定向到_HTTPS)。自定义的域名如需配置 HTTPS 需要在进行域名绑定时上传 HTTPS 证书。
+- 对于 `.leanapp.cn` 的二级域名我们默认支持 HTTPS，如需配置自动跳转，请看 [重定向到 HTTPS](leanengine_webhosting_guide-node.html#重定向到_HTTPS)。
+- 自定义的域名需要在进行 [域名绑定](leanengine_webhosting_guide-node.html#备案和自定义域名) 时上传 HTTPS 证书。
 
 ## 为什么在控制台通过在线定义函数或项目定义函数中的 Class Hook 没有被运行？
 
@@ -41,15 +42,15 @@
 
 如果日志已打出，则继续检查函数是否成功，检查控制台上是否有错误信息被打印出。如果是 before 类 Hook，需要保证 Hook 函数在 15 秒内结束，否则会被系统认为超时。
 
-相关文档：
+> after 类 Hook 超时时间为 3 秒，如果你的体验实例已经休眠，很可能因为启动时间过长无法收到 after 类 Hook，建议升级到云引擎的标准实例避免休眠。
 
-* [云引擎指南：Hook 函数](leanengine_cloudfunction_guide-node.html#Hook_函数)
+相关文档：[云引擎指南：Hook 函数](leanengine_cloudfunction_guide-node.html#Hook_函数)
 
 ## 命令行工具在本地调试时提示 `Error: listen EADDRINUSE :::3000`，无法访问应用
 
 `listen EADDRINUSE :::3000` 表示你的程序默认使用的 3000 端口被其他应用占用了，可以按照下面的方法找到并关闭占用 3000 端口的程序：
 
-* [Mac 使用 `lsof` 和 `kill`](http://stackoverflow.com/questions/3855127/find-and-kill-process-locking-port-3000-on-mac)
+* [macOS 使用 `lsof` 和 `kill`](http://stackoverflow.com/questions/3855127/find-and-kill-process-locking-port-3000-on-mac)
 * [Linux 使用 `fuser`](http://stackoverflow.com/questions/11583562/how-to-kill-a-process-running-on-particular-port-in-linux)
 * [Windows 使用 `netstat` 和 `taskkill`](http://stackoverflow.com/questions/6204003/kill-a-process-by-looking-up-the-port-being-used-by-it-from-a-bat)
 
@@ -95,6 +96,8 @@ lean -p 3002
 **注意**：命令行工具部署时是不会上传 `node_modules` 目录，因为云引擎服务器会根据 `package.json` 的内容自动下载三方包。所以也建议将 `node_modules` 目录添加到 `.gitignore` 中，使其不加入版本控制。
 
 ## Maximum call stack size exceeded 如何解决？
+
+> 将 JavaScript SDK 和 Node SDK 升级到 1.2.2 以上版本可以彻底解决该问题。  
 
 如果你的应用时不时出现 `Maximum call stack size exceeded` 异常，可能是因为在 hook 中调用了 `AV.Object.extend`。有两种方法可以避免这种异常：
 
@@ -249,3 +252,19 @@ Exceeded Limit
 
 * 对于前两种情况，建议使用 [自定义域名](leanengine_webhosting_guide-node.html#备案和自定义域名) 绑定到云引擎，这样限制会扩大到每个 IP 允许 300 个连接。
 * 如果是最后一种情况，建议优化云引擎的业务降低响应时间，或者绑定 [自定义域名](leanengine_webhosting_guide-node.html#备案和自定义域名)。
+
+## `npm ERR! peer dep missing` 错误
+
+部署时出现类似错误：
+
+```
+npm ERR! peer dep missing: graphql@^0.10.0 || ^0.11.0, required by express-graphql@0.6.11
+```
+
+说明有一部分 peer dependency 没有安装成功，因为线上只会安装 dependencies 部分的依赖，所以请确保 dependencies 部分依赖所需要的所有依赖也都列在了 dependencies 部分（而不是 devDependencies）。
+
+你可以在本地删除 node_modules，然后用 `npm install --production` 重新安装依赖来重现这个问题。
+
+## 在线上无法读取到项目中的文件
+
+建议先检查文件大小写是否正确，线上的文件系统是区分大小写的，而 Windows 和 macOS 通常不区分大小写。
