@@ -11,7 +11,6 @@
 ```ruby
 pod 'AVOSCloud'               # 数据存储、短信、云引擎调用等基础服务模块
 pod 'AVOSCloudIM'             # 实时通信模块
-pod 'AVOSCloudCrashReporting' # 错误报告模块
 ```
 
 {% call docs.noteWrap() %}
@@ -37,12 +36,6 @@ git clone "https://github.com/leancloud/objc-sdk.git" leancloud-objc-sdk
 cd leancloud-objc-sdk
 
 git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
-```
-
-如果需要使用 CrashReporting 错误报告模块，再进行 clone submodule：
-
-```sh
-git submodule update --init
 ```
 
 ### 集成 SDK
