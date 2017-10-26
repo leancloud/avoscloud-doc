@@ -42,6 +42,14 @@ Node.js 的 `package.json` 中可以指定 [很多选项](https://docs.npmjs.com
 * `devDependencies` 项目开发时所依赖的包；云引擎目前 **不会** 安装这里的依赖。
 
 建议你参考我们的 [项目模板](https://github.com/leancloud/node-js-getting-started/blob/master/package.json) 来编写自己的 `package.json`。
+
+我们也对 `package-lock.json` 和 `yarn.lock` 提供了支持：
+
+- 如果你的应用目录中含有 `package-lock.json`，那么会根据 lock 中的描述进行安装（需要 Node.js 8.0 以上）。
+- 如果你的应用目录中含有 `yarn.lock`，那么会使用 `yarn install` 代替 `npm install` 来安装依赖（需要 Node.js 4.8 以上）。
+
+<div class="callout callout-info">注意 `package-lock.json` 和 `yarn.lock` 中包含了下载依赖的 URL，因此如果你生成 lock 文件时使用了 npmjs.org 的源，那么在中国节点的部署可能会变慢；反之如果生成时使用了 cnpmjs.org 的源，那么在美国节点的部署可能会变慢。如果不希望使用 `package-lock.json` 和 `yarn.lock`，请将它们加入 `.gitignore`（Git 部署时）或 `.leanengineignore`（命令行工具部署时）。</div>
+
 {% endblock %}
 
 {% block project_start %}
