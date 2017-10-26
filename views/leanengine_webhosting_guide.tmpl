@@ -168,6 +168,24 @@ git push -u origin master
 
 ## 线上环境
 
+### 系统依赖
+
+`.leanengine.yaml` 的 systemDependencies 部分中可以指定系统依赖，类似：
+
+```yaml
+systemDependencies:
+  - imagemagick
+```
+
+目前支持的选项包括：
+
+- `ffmpeg` 一个音视频处理工具库
+- `imagemagick` 一个图片处理工具库
+- `fonts-wqy` 文泉驿点阵宋体、文泉驿微米黑，通常和 phantomjs 配饰显示中文
+- `phantomjs` 一个无 UI 的 WebKit 浏览器
+
+注意添加系统依赖将会拖慢部署速度，因此请不要添加未用到的依赖。
+
 ### 环境变量
 
 云引擎平台默认提供下列环境变量供应用使用：
