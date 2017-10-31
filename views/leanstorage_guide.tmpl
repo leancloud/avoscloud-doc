@@ -945,15 +945,15 @@ CQL 是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功
 **方案一**：
 
 1. 设备 A 登录成功后，调用 AVUser 的 `refreshSessionToken` 方法，更新服务端的 sessionToken。
-1. 设备 B 中的应用启动时，调用 AVUser 的 `isAuthenticated` 方法。由于上一步的操作，此时设备 B 中的 sessionToken 是过期的，因此该方法会返回 false，然后据此来调用 `logout` 方法退出登录。
-1. 集成 [LiveQuery 用户登录事件][livequery-event-login]，当设备 B 收到当前用户的登录事件时，调用 AVUser 的 `logout` 方法退出登录。
+2. 设备 B 中的应用启动时，调用 AVUser 的 `isAuthenticated` 方法。由于上一步的操作，此时设备 B 中的 sessionToken 是过期的，因此该方法会返回 false，然后据此来调用 `logout` 方法退出登录。
+3. 设备 B 中的应用假设正在使用的过程中，A 设备登录了，B 可能会因为发送请求而接收到错误码为 `403(Forbidden to read/write by class permissions)` 的响应，那么基本可以判断出当前用户的 sessionToken 过期了，此时也应将用户导航到登录页面重新登录。
 
 
 **方案二**：
 #}
 1. 建立一个设备表，记录用户登录信息和当前设备的信息。
-1. 设备 A 登录成功后，更新设备表，将当前设备标记为当前用户登录的最新设备。
-1. 设备 B 中的应用启动时，检查设备表，发现最新设备不是当前设备，调用 AVUser 的 `logout` 方法退出登录。
+2. 设备 A 登录成功后，更新设备表，将当前设备标记为当前用户登录的最新设备。
+3. 设备 B 中的应用启动时，检查设备表，发现最新设备不是当前设备，调用 AVUser 的 `logout` 方法退出登录。
 
 {# 2017-09-21 hide step 4
 1. 集成 [LiveQuery 用户登录事件][livequery-event-login]，当设备 B 收到当前用户的登录事件时，检查最新设备不是当前设备，调用 AVUser 的 logout 方法退出当前登录。
