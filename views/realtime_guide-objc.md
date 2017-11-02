@@ -2165,3 +2165,17 @@ message.mentionAll = YES;
 }
 ```
 {% endblock %}
+
+{% block message_send_failed_save_to_cache %}
+
+```objc
+[AVIMConversation addMessageToCache:message];
+```
+{% endblock %}
+
+{% block message_send_failed_remove_from_cache %}
+
+```objc
+[AVIMConversation removeMessageFromCache:message];
+```
+{% endblock %}
