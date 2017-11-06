@@ -468,6 +468,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% endblock %}
 
+{% if segment_code !== 'swift' %}
 ### 常见的文件使用场景
 
 #### 文件被其他对象关联
@@ -479,6 +480,7 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 查询的时候需要额外的 include 一下:
 
 {% block query_file_as_avater %}{% endblock %}
+{% endif %}
 
 ## 查询
 `{{baseQueryClassName}}` 是构建针对 `{{baseObjectName}}` 查询的基础类。{{query_result_limit}}
