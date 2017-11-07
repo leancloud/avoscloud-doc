@@ -17,7 +17,7 @@ title: 小程序域名白名单配置
     <div class="row" ng-if="user.username">
 
       <div class="step-content col-sm-4" ng-show="apps">
-        <select class="form-control" ng-model="pageState.currentApp"  ng-options="app.app_name  for app in apps">
+        <select class="form-control custom-select btn btn-default" ng-model="pageState.currentApp"  ng-options="app.app_name  for app in apps">
         </select>
       </div>
 
@@ -40,11 +40,12 @@ title: 小程序域名白名单配置
 
   <div class="step">
     <h3>3. 增加以下域名</h3>
-    <div class="row" ng-if="user.username && apps">
+    <!-- <div class="row" ng-if="user.username && apps"> -->
+    <div class="row">
       <div class="step-content col-sm-12">
         <table>
           <tr>
-            <th rowspan="{{ requestDomainsLength }}" width="40%">request 域名</th>
+            <th rowspan="{{ requestDomainsLength }}" width="40%"><strong>request 域名</strong><small class="help-block text-warning">所列出的域名都要添加，缺一不可。</small></th>
             <td>
               {% if node === 'qcloud' %}
               e1-api.leancloud.cn
@@ -73,7 +74,7 @@ title: 小程序域名白名单配置
             <td>{{domain}}</td>
           </tr>
           <tr>
-            <th>uploadFile 域名</th>
+            <th><strong>uploadFile 域名</strong></th>
             <td>
               {% if node === 'qcloud' %}
               web.file.myqcloud.com
@@ -85,7 +86,7 @@ title: 小程序域名白名单配置
             </td>
           </tr>
           <tr>
-            <th>downloadFile 域名<br/><span style="font-weight: 300; color:#999;">仅在使用 <code>wx.downloadFile</code> <br/>时需要配置</span></th>
+            <th><strong>downloadFile 域名</strong><small class="help-block">仅在使用 <code>wx.downloadFile</code> 时需要配置</small></th>
             <td ng-bind="domains.download"></td>
           </tr>
           {% if node === 'us' %}
@@ -101,7 +102,7 @@ title: 小程序域名白名单配置
           {% for i in arr %}
             <tr>
               {% if i === 1 %}
-                <th rowspan="20">socket 域名<br/><span style="font-weight: 300; color:#999;">仅在使用实时通讯功能<br/>时需要配置</span></th>
+                <th rowspan="20"><strong>socket 域名</strong><small class="help-block" style="margin-bottom:0;">仅在使用实时通讯功能时需要配置</small><small class="help-block text-warning">所列出的域名都要添加，缺一不可。</small></th>
               {% endif %}
               <td><%= area %><%= i %>.leancloud.cn</td>
             </tr>
