@@ -8,29 +8,11 @@ title: 小程序域名白名单配置
   <!-- .doc-home-title -->
   <div class="login" ng-if="!user.username">
     <a ng-href="/login.html#/signin" class="btn  btn-primary ng-scope">登录</a>
-    <p  class="help-block" style="">查看域名白名单配置，需要先登录。</p>
+    <p class="help-block">查看域名白名单配置，需要先登录。</p>
   </div>
-
+  
   <div class="step">
-    <h3>1. 选择 LeanCloud 应用</h3>
-
-    <div class="row" ng-if="user.username">
-
-      <div class="step-content col-sm-4" ng-show="apps">
-        <select class="form-control custom-select btn btn-default" ng-model="pageState.currentApp"  ng-options="app.app_name  for app in apps">
-        </select>
-      </div>
-
-      <div class="step-content col-sm-12" ng-hide="apps">
-        <form ng-hide="apps.all" class="form-inline">
-          <a ng-href="/applist.html#/newapp" class="btn  btn-primary create-app ng-scope" translate="ACTION_CREATE_APP">创建应用</a>
-          <p class="help-block" style="">您目前还没有创建任何应用，需要先创建应用</p>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div class="step">
-    <h3>2. 登录微信公众平台</h3>
+    <h3>1. 登录微信公众平台</h3>
     <div class="row" ng-if="user.username && apps">
       <div class="step-content col-sm-12">
         <p>登录 <a href="https://mp.weixin.qq.com" target="_blank">微信公众平台</a>，前往 <strong>设置</strong> &gt; <strong>开发设置</strong> &gt; <strong>服务器配置</strong> &gt; <strong>「修改」</strong>链接。</p>
@@ -39,13 +21,27 @@ title: 小程序域名白名单配置
   </div>
 
   <div class="step">
-    <h3>3. 增加以下域名</h3>
-    <!-- <div class="row" ng-if="user.username && apps"> -->
-    <div class="row">
+    <h3>2. 选择 LeanCloud 应用，增加 <span ng-if="user.username && apps">必要的域名。</span><span ng-else>以下域名：</span></h3>
+    <div class="row" ng-if="user.username">
+      <div class="step-content col-sm-4" ng-show="apps">
+        <select class="form-control custom-select btn btn-default" ng-model="pageState.currentApp"  ng-options="app.app_name  for app in apps">
+        </select>
+      </div>
+      <div class="step-content col-sm-8" ng-show="apps">
+        <small class="text-warning">不同的应用，对应不同的域名。</small>
+      </div>
+      <div class="step-content col-sm-12" ng-hide="apps">
+        <form ng-hide="apps.all" class="form-inline">
+          <a ng-href="/applist.html#/newapp" class="btn  btn-primary create-app ng-scope" translate="ACTION_CREATE_APP">创建应用</a>
+          <p class="help-block" style="">您目前还没有创建任何应用，需要先创建应用后，才能看到应用所对应的域名列表。</p>
+        </form>
+      </div>
+    </div>
+    <div class="row" ng-if="user.username && apps">
       <div class="step-content col-sm-12">
         <table>
           <tr>
-            <th rowspan="{{ requestDomainsLength }}" width="40%"><strong>request 域名</strong><small class="help-block text-warning">所列出的域名都要添加，缺一不可。</small></th>
+            <th rowspan="{{ requestDomainsLength }}" width="40%"><strong>request 域名</strong><small class="help-block text-warning mb-0">所列出的域名都要添加，缺一不可。</small></th>
             <td>
               {% if node === 'qcloud' %}
               e1-api.leancloud.cn
@@ -86,7 +82,7 @@ title: 小程序域名白名单配置
             </td>
           </tr>
           <tr>
-            <th><strong>downloadFile 域名</strong><small class="help-block">仅在使用 <code>wx.downloadFile</code> 时需要配置</small></th>
+            <th><strong>downloadFile 域名</strong><small class="help-block mb-0">仅在使用 <code>wx.downloadFile</code> 时需要配置</small></th>
             <td ng-bind="domains.download"></td>
           </tr>
           {% if node === 'us' %}
@@ -102,7 +98,7 @@ title: 小程序域名白名单配置
           {% for i in arr %}
             <tr>
               {% if i === 1 %}
-                <th rowspan="20"><strong>socket 域名</strong><small class="help-block" style="margin-bottom:0;">仅在使用实时通讯功能时需要配置</small><small class="help-block text-warning">所列出的域名都要添加，缺一不可。</small></th>
+                <th rowspan="20"><strong>socket 域名</strong><small class="help-block mb-0">仅在使用实时通讯功能时需要配置</small><small class="help-block text-warning mb-0">所列出的域名都要添加，缺一不可。</small></th>
               {% endif %}
               <td><%= area %><%= i %>.leancloud.cn</td>
             </tr>
