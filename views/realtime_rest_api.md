@@ -458,6 +458,23 @@ curl -X DELETE \
 client_id | 必填 | 字符串 | 退订者的 client id
 conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
 
+### 查询系统对话订阅用户数量
+
+查询订阅过指定的系统对话的用户数量。
+
+```sh
+curl -X DELETE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'conv_id=...' \
+  https://{{host}}/1.1/rtm/conversation/subscribers/count
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
+
 ### 查询是否订阅过某个系统对话
 
 ```sh
@@ -490,15 +507,17 @@ curl -X GET \
   --data-urlencode 'conv_id=...' \
   --data-urlencode 'timestamp=...' \
   --data-urlencode 'limit=...' \
+  --data-urlencode 'direction=...' \
   https://{{host}}/1.1/rtm/conversation/subscription
 ```
 
 参数 | 约束 | 类型 | 说明
 ---|---|---|---
 client_id | 必填 | 字符串 | 目标查询用户的 client id
-conv_id | 可选 | 字符串 | 查询起始对话 id，不填则从订阅列表起始位置开始遍历。查询结果不会再包含本对话。
-timestamp | 可选 | 数字 | 查询起始对话被订阅时间。虽然是可选字段但当提供 conv_id 时本字段必填，值必须为订阅 conv_id 参数所指定系统对话的时间，单位是毫秒。
+conv_id | 可选 | 字符串 | 查询起始对话 id，不填则从订阅列表起始位置开始遍历。查询结果不会再包含本对话
+timestamp | 可选 | 数字 | 查询起始对话被订阅时间。虽然是可选字段但当提供 conv_id 时本字段必填，值必须为订阅 conv_id 参数所指定系统对话的时间，单位是毫秒
 limit | 可选 | 数字 | 返回条数限制，默认是 50 条
+direction | 可选 | 字符串 | 查询结果按时间排序方式，可以是 old 表示降序或 new 表示升序，默认是 new。即值为 old 则最近订阅的对话先返回，值为 new 则最早订阅的对话先返回
 
 返回目标用户订阅系统对话的列表：
 
