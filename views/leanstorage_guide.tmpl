@@ -468,18 +468,19 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% endblock %}
 
-{% if segment_code !== 'swift' %}
+{# 2017-11-09 the following block doesn't apply to swift, php, python #}
+{% if segment_code === 'objc' or segment_code === 'java' or segment_code === 'js' or segment_code === 'android' %}
 ### 常见的文件使用场景
 
 #### 文件被其他对象关联
 
 解决方案：将 AVFile 当做 `Pointer` 类型关联 AVObject 对象的一个字段:
 
-{% block file_as_avater %}{% endblock %}
+{% block file_as_avatar %}{% endblock %}
 
 查询的时候需要额外的 include 一下:
 
-{% block query_file_as_avater %}{% endblock %}
+{% block query_file_as_avatar %}{% endblock %}
 {% endif %}
 
 ## 查询

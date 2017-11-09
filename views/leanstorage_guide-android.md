@@ -1621,3 +1621,29 @@ AVUser.becomeWithSessionTokenInBackground(sessionToken, new LogInCallback<AVUser
 
 需要检查代码，通过打印 log 和断点的方式来定位究竟是由哪一行 save 所引发的。  
 {% endblock %}
+
+{% block file_as_avatar %}
+
+```java
+AVFile file = new AVFile("Satomi_Ishihara.gif", "http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif", new HashMap<String, Object>());
+AVObject todo = new AVObject("Todo");
+todo.put("girl", file);
+todo.put("topic", "明星");
+todo.saveInBackground();
+```
+{% endblock %}
+
+{% block query_file_as_avatar %}
+
+```java
+AVQuery<AVObject> query = new AVQuery<>("Todo");
+query.whereEqualTo("topic", "明星");
+query.include("girl");
+query.findInBackground(new FindCallback<AVObject>() {
+    @Override
+    public void done(List<AVObject> list, AVException e) {
+        list.get(0).getAVFile("girl").getUrl();
+    }
+});
+```
+{% endblock %}

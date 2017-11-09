@@ -1654,7 +1654,7 @@ AV.User.become(sessionToken).then(function(user) {
 ```
 {% endblock %}
 
-{% block file_as_avater %}
+{% block file_as_avatar %}
 
 ```js
 var file = AV.File.withURL('Satomi_Ishihara.gif', 'http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif');
@@ -1665,7 +1665,7 @@ todo.save();
 ```
 {% endblock %}
 
-{% block query_file_as_avater %}
+{% block query_file_as_avatar %}
 
 ```js
 var query = new AV.Query('Todo');
