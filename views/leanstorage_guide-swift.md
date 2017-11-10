@@ -1556,6 +1556,16 @@ student.set("age", value: 19)
 
 {% block code_pointer_include_todoFolder %}
 ```swift
+let query = LCQuery(className: "Todo")
 
+query.whereKey("objectId", .equalTo("5735aae7c4c9710060fbe8b0"))
+query.whereKey("todoFolder", .included)
+
+if
+    let todo = query.getFirst().object,
+    let todoFolder = todo["todoFolder"] as? LCObject
+{
+    // Todo folder did fetch.
+}
 ```
 {% endblock %}
