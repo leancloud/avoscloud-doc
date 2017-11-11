@@ -315,7 +315,7 @@ module.exports = function(grunt) {
     });
   });
 
-grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置首页内容分类导航', function() {
+grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置首页内容分类导航、中文 ID 变为数字', function() {
     grunt.task.requires('assemble');
     const cheerio = require('cheerio');
     const path = require('path');
@@ -328,9 +328,58 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
     const sourceDir = 'views/';
     const files = this.filesSrc;
 
+    String.prototype.hashCode = function () {
+      var hash = 0, i, chr, len;
+      if (this.length == 0) return hash;
+      for (i = 0, len = this.length; i < len; i++) {
+          chr = this.charCodeAt(i);
+          hash = ((hash << 5) - hash) + chr;
+          hash |= 0; // Convert to 32bit integer
+      }
+      return hash;
+    }
+
+    if (!String.prototype.padStart) {
+      String.prototype.padStart = function padStart(targetLength,padString) {
+          targetLength = targetLength>>0; //floor if number or convert non-number to 0;
+          padString = String(padString || ' ');
+          if (this.length > targetLength) {
+              return String(this)
+          }
+          else {
+              targetLength = targetLength-this.length;
+              if (targetLength > padString.length) {
+                  padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
+              }
+              return padString.slice(0,targetLength) + String(this)
+          }
+      }
+    }
+    
+    const formatAnchor = function (str) {
+      // replace underscore with dash too
+      return String(str).replace(/[^a-zA-Z0-9\u4e00-\u9fa5]{1,}/g, '-').toLowerCase()
+    }
+
+    const legacyFormatId = function(str){
+      if(/^[0-9]/.test(str)){
+        str = '_'+str;
+      }
+      return str.replace(/ /g,'_').replace(/[^a-zA-Z_0-9\u4e00-\u9fa5]/g,'_');
+    }
+
+    const formatId = function (str) {
+      return "hash" + formatAnchor(str).hashCode()
+    }
+
+    let counter = {
+      href: 0,
+      id: 0
+    }
+
     files.forEach(function(filePath) {
       let changes = [];
-      let file = path.parse(filePath); 
+      let file = path.parse(filePath);
       // filePath: "dist/realtime_guide-js.html"
       //   root: ''
       //   dir: 'dist'
@@ -340,6 +389,89 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
       let content = grunt.file.read(filePath);
       let $ = cheerio.load(content, { decodeEntities: false });
       const version = crypto.createHash('md5').update($.html(), 'utf8').digest('hex');
+
+      grunt.log.writeln('--------'.padStart(10) + ' ' + filePath['grey'].bold)
+      // replace all in-page IDs with their numeric representations
+      $('h1,h2,h3,h4,h5,.doc-content a[href*="#"]:not([href="#"]):not([href*="#/"]):not([href*="&#"])').each(function(index, el){
+        // --- href variants ---
+        // href="rest_api.html#Push_通知"
+        // href="#消息推送"
+        // href="#Access_denied_by_api_domain_white_list"
+        // href="#demo"
+        // href="./rest_api.html#角色-1"
+        // href="realtime_guide-objc.html#duplicate_message_notification" (SKIPPED, custom anchor)
+        // href="/dashboard/cloud.html?appid=#/log" (SKIPPED, dashboard)
+        // href="#tab-docs" data-target="#tab-docs" (SKIPPED, UI functional)
+        // href="#tab-docs" escape-hash (SKIPPED, explicitly escape hashing mechanism)
+        // href="#" (SKIPPED)
+        // href="/android_statistics.html#%E4%BD%BF%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BA%8B%E4%BB%B6" (SKIPPED, to be fixed)
+        // href="&#x6d;&#x61;&#105;" (SKIPPED)
+        // href="https://stackoverflow.com/questions/8388470#hello" (SKIPPED, foreign link)
+        // href="https://blog.leancloud.cn/1723/" (SKIPPED, foreign link)
+        // href="https://github.com/leancloud/docs#贡献" (SKIPPED, foreign link)
+
+        let $el = $(el)
+        let isA = $el.is('a')
+        let attrName = isA ? 'href' : 'id'
+        let attrValue = isA ? $el.attr(attrName) : $el.text()
+        let color = isA ? 'cyan' : 'black'
+        let newValue = attrValue
+        let temp = null
+        let suffix = ''
+        
+        
+        if ( $el.data('target') === undefined
+          && $el.attr('escape-hash') === undefined) {
+
+          if ( isA ) {
+            newValue = attrValue
+              // remove http(s)://leancloud.cn/docs/ if any
+              // https://us.leancloud.cn/docs/a.html#中文 => a.html#中文
+              .replace(/(http(s)*:\/\/)*(us\.)*(leancloud\.cn\/docs\/)(([^#\s])*#.+$)/i, '$5')
+            
+            // href="./rest_api.html#角色-1" suffix: -1
+            temp = newValue.match(/(.+)(\-[0-9]$)/)
+            
+            if (temp) {
+              // remove suffix before hashing
+              newValue = temp[1]
+              suffix = temp[2]
+              color = 'red'
+            }
+
+            temp = newValue.split('#')
+            // file.html# (SKIPPED)
+            if ( /*temp.length > 1
+              && temp[temp.length-1] !== '' 
+              && */newValue !== ''
+              && !newValue.match('^hash(\-)*[0-9]+$')
+              && !newValue.match(/^(http|https|ftp):/i)
+              || newValue.substring(0,6) === '/docs/') 
+            {
+              newValue = temp[0] + '#' + 
+                formatId(
+                  // chars after #
+                  temp[1]
+                ) + suffix
+              counter.href++
+            }
+            
+            // skip external links or those already converted to hash code
+            
+          } else {
+            newValue = formatId(
+              legacyFormatId(newValue)
+            )
+            counter.id++
+          }
+          
+          if (attrValue !== newValue) {
+            grunt.log.writeln(($el.prop('tagName') + '.' + attrName +':').padStart(10) + attrValue[color].bold)
+            grunt.log.writeln('=>'.padStart(10)  + newValue)
+            $el.attr( attrName, newValue)
+          }
+        }
+      });
  
       // 首页：内容分类导航 scrollspy
       if ( file.base.toLowerCase() === 'index.html' ){
@@ -406,6 +538,8 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
       grunt.log.writeln(filePath + ' (' + changes.join(',') + ')');
 
     });
+
+    grunt.log.writeln(('TOTAL:').padStart(10) + 'hrefs:' + counter.href + ', ids:' + counter.id)
   });
 
   grunt.registerTask("build", "Main build", function() {
@@ -430,8 +564,12 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
   // also not generating docmeta for faster rendering
   grunt.registerTask("dev",[
     "clean", "nunjucks", "copy:md", "markdown", "assemble",
-    "less:dist", "postcss", "copy:asset",
+    "less:dist", "postcss", "copy:asset","docmeta",
     "less:server","configureProxies", "connect:livereload", "watch"
+  ]);
+
+  grunt.registerTask("meta",[
+    "clean", "nunjucks", "copy:md", "markdown", "assemble", "copy:asset","docmeta"
   ]);
 
   grunt.registerTask("serve", ["localBuild", "less:server","configureProxies", "connect:livereload", "watch"]);

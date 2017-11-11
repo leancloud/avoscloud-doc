@@ -1114,7 +1114,7 @@ public ISignatureFactoryV2 SignatureFactory { get; set; }
 
 演示实例的步骤：
 
-* 首先您需要下载最新版本的[云引擎实例](https://github.com/leancloud/realtime-messaging-signature-cloudcode)到本地，然后部署到您的应用中，详细请参考[命令行工具使用指南](leanengine_cli.html#)
+* 首先您需要下载最新版本的[云引擎实例](https://github.com/leancloud/realtime-messaging-signature-cloudcode)到本地，然后部署到您的应用中，详细请参考[命令行工具使用指南](leanengine_cli.html)。
 
 * 其次，在 Visaul Studio 中，新建一个类叫做 `SampleSignatureFactory` ，把下面这段代码拷贝到其中：
 
