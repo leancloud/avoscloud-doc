@@ -308,7 +308,7 @@ module.exports = function(grunt) {
   grunt.registerTask('ensureSDKVersion', function() {
     var done = this.async();
     if (grunt.config.get('JSSDKVersion')) return done();
-    axios.get('http://registry.npm.taobao.org/leancloud-storage/latest').then(function(response){
+    axios.get('https://registry.yarnpkg.com/leancloud-storage/latest').then(function(response){
       grunt.log.oklns(response.data.version);
       grunt.config.set('JSSDKVersion', response.data.version);
       done();
