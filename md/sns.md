@@ -264,15 +264,21 @@ if (vc) {
 
 使用 LeanCloud Android SNS 模块，开发者仅用少量代码便可实现社交平台用户登录的功能。
 
-### 导入 SDK
+### 导入 SDK 和代码初始化
 
-首先下载 Android SNS SDK。进入 [Android SDK 下载页面](sdk_down.html)，勾选 **社交模块**，点击下载。将下载文件中的 jar 包添加到你项目的 libs 目录。如果不知道如何安装 SDK，请查看 [快速入门](/start.html)。
+先查看 Android 的 [快速入门](/start.html)，完成代码初始化、Manifest 配置等相关完整操作后，集成 `avoscloud-sns` 的第三方 SDK 包。
 
-### WebView 授权
+### 开发平台与控制台配置
 
-首先需要在 [应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns) 中间配置相应平台的 **AppKey** 与 **AppSecret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的「App 管理中心」，比如新浪开放平台。
+在 [应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns) 中间配置相应平台的 **App ID** 或者 **App Key** 与 **App Secret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。
 
-之后需要在 AndroidManifest.xml 中间添加相应的 Activity：
+你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的后台配置里。微博开放平台在「应用信息」->「高级信息」->「OAuth2.0 授权设置」里的「授权回调页」。
+
+测试阶段，在微博开放平台在「应用信息」->「测试信息」里添加微博账号，在腾讯开放平台的「QQ 登录」->「应用调试者」里添加 QQ 账号即可。在对应平台的应用提交对方平台审核后，才可以获取到公开的第三方登录能力。
+
+### WebView 授权方式（仅新浪微博可用）
+
+首先，需要在 AndroidManifest.xml 中间添加相应的 Activity：
 
 ```
         <activity
@@ -280,87 +286,90 @@ if (vc) {
         </activity>
 ```
 
-然后将 SDK 下载包中 avoscloud-sns/res/layout/**avoscloud_sns_web_activity.xml** 拷贝到你的项目中去。
+其次，将 SDK 下载包中 avoscloud-sns/res/layout/**avoscloud_sns_web_activity.xml** 拷贝到你的项目中去。
 
-接下来，在需要授权的地方，你就可以通过 WebView 进行相应的授权操作：
+最后，在你的 Activity 页面里，新增 4 步相关的代码配置：
 
 ```java
 public class AuthActivity extends Activity{
+  // 1、定义一个 ThirdPartyType 变量
+  private SNSType ThirdPartyType;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+
+    ...
     
-   @Override 
-   public void onCreate(Bundle savedInstanceState){
-     SNS.setupPlatform(SNSType.AVOSCloudSNSSinaWeibo, "https://leancloud.cn/1.1/sns/goto/xxx");
-     SNS.loginWithCallback(this, SNSType.AVOSCloudSNSSinaWeibo, new SNSCallback() {
-       @Override
-       public void done(SNSBase base, SNSException e) {
-         if (e==null) {
-           SNS.loginWithAuthData(base.userInfo(), new LogInCallback<AVUser>() {
-             @Override
-             public void done(final AVUser user, AVException e) {
-             }
-           });
-         }
-       }
-     });
-   }
+    // 2、微博授权按钮的点击事件
+    findViewById(R.id.weibo_login_main).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+
+        try {
+          ThirdPartyType = SNSType.AVOSCloudSNSSinaWeibo;
+          // 第二个参数为 登录 URL
+          SNS.setupPlatform(SNSType.AVOSCloudSNSSinaWeibo, "https://leancloud.cn/1.1/sns/goto/xxxxxxx");
+          SNS.loginWithCallback(MainActivity.this, SNSType.AVOSCloudSNSSinaWeibo, new SNSCallback() {
+            @Override
+            public void done(SNSBase base, SNSException e) {
+              if (e == null) {
+                SNS.loginWithAuthData(base.userInfo(), new LogInCallback<AVUser>() {
+                  @Override
+                  public void done(final AVUser user, AVException e) {
+                    if (e == null) {
+                      // 4、关联成功，已在 _User 表新增一条用户数据
+                    } else {
+                      e.printStackTrace();
+                    }
+                  }
+                });
+              } else {
+                e.printStackTrace();
+              }
+            }
+          });
+        } catch (AVException e) {
+          e.printStackTrace();
+        }
+
+      }
+    });
+    
+    ...
+    
+  }
 
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
      super.onActivityResult(requestCode, resultCode, data);
-     SNS.onActivityResult(requestCode, resultCode, data, type);
+     // 3、在页面 onActivityResult 回调里填写一下代码和 ThirdPartyType
+     if (resultCode == RESULT_OK) {
+     SNS.onActivityResult(requestCode, resultCode, data, ThirdPartyType);
+     }
    }
 }
 
 ```
 
 这样就完成了新浪微博从授权到创建用户（登录）的一整套流程。
-**注：由于微信的 Web 授权页面为扫描二维玛，现阶段仅仅支持新浪微博和 QQ 授权。**
 
-### SSO 登录
+### SSO 授权方式
+利用 SSO，用户可以使用单点登录功能，避免反复输入用户名和密码等。
 
-利用 SSO，用户可以使用单点登录功能，避免反复输入用户名和密码等，实现代码如下：
+首先请确保你的 AndroidManifest.xml 有如下权限：
 
-``` java
-// 导入 SNS 组件
-import com.avos.sns.*;
-
-// 使用新浪微博 SNS 登录，在你的 Activity 中
-public class MyActivity extends Activity {
-
-  // onCreate 中初始化，并且登录
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-        …
-    // callback 函数
-    final SNSCallback myCallback = new SNSCallback() {
-      @Override
-      public void done(SNSBase object, SNSException e) {
-        if (e == null) {
-          showText("login ok " + type );
-        }
-      }
-    };
-
-    // 关联
-    SNS.setupPlatform(this, SNSType.AVOSCloudSNSSinaWeibo, "YOUR_SINA_WEIBO_APP_ID", "", "YOUR_SINAWEIBO_CALLBACK_URL");
-    SNS.loginWithCallback(this, SNSType.AVOSCloudSNSSinaWeibo, myCallback);
-  }
-
-  // 当登录完成后，请调用 SNS.onActivityResult(requestCode, resultCode, data, type);
-  // 这样你的回调用将会被调用到
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    SNS.onActivityResult(requestCode, resultCode, data, type);
-  }
-}
+```xml
+</application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+</manifest>
 ```
 
-你也可以将上述代码中的 `SNSType.AVOSCloudSNSSinaWeibo` 更换为 `SNSType.AVOSCloudSNSQQ` 便可以使用 QQ 的 SSO 登录功能。
-
-【QQ SNS】在腾讯 SNS 授权中，由于 QQ SDK 官方对于 WebView 授权的限制，导致在 WebView 中无法完成正常的授权过程，所以 QQ SNS 只支持 SSO 登录授权。我们也会持续跟进 QQ SDK 的更新进展，同时也为对你造成的不便感到抱歉。
-
-【QQ SSO】当使用 QQ SSO 登录时，请注意确保 AndroidManifest.xml 文件包含如下内容：
+#### QQ SSO
+当使用 QQ SSO 登录时，请注意确保 AndroidManifest.xml 文件还包含如下内容：
 
 ```xml
 <activity android:name="com.tencent.tauth.AuthActivity"
@@ -370,11 +379,13 @@ public class MyActivity extends Activity {
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="填写 QQ App ID"/>
     </intent-filter>
 </activity>
 ```
 
-【微博 SSO】当使用微博 SSO 登录时，请注意确保你的 AndroidManifest.xml 文件中包含如下内容，否则在**没有**安装微博客户端的设备上会出现问题。
+#### 微博 SSO
+当使用微博 SSO 登录时，请注意确保你的 AndroidManifest.xml 文件中包含如下内容，否则在**没有**安装微博客户端的设备上会出现问题。
 
 ```xml
 <activity
@@ -386,18 +397,63 @@ public class MyActivity extends Activity {
 </activity>
 ```
 
-并下载 [libs 目录](https://github.com/sinaweibosdk/weibo_android_sdk/tree/master/libs) 下的三个 .so 文件，导入到自己项目中。
+并下载 [libs 目录](https://github.com/sinaweibosdk/weibo_android_sdk/tree/master/so) 所需要架构的 .so 文件，导入到自己项目中。
 
-对于其他的 SSO 请确保你有如下权限：
+最终实现代码如下，以腾讯平台为例：
 
-```xml
-</application>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-</manifest>
+``` java
+public class MyActivity extends Activity {
+  // 1、定义一个 ThirdPartyType 变量
+  private SNSType ThirdPartyType;
+  // 2、定义一个 callback，用来接收授权后的数据
+  final SNSCallback myCallback = new SNSCallback() {
+    @Override
+    public void done(SNSBase object, SNSException e) {
+      if (e == null) {
+        SNS.loginWithAuthData(object.userInfo(), new LogInCallback<AVUser>() {
+          @Override
+          public void done(AVUser avUser, AVException e) {
+            // 5、关联成功，已在 _User 表新增一条用户数据
+          }
+        });
+      } else {
+        e.printStackTrace();
+      }
+    }
+  };
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+
+    // 3、QQ 授权按钮的点击事件
+    findViewById(R.id.weibo_login_qq).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        try {
+          ThirdPartyType = SNSType.AVOSCloudSNSQQ;
+          SNS.setupPlatform(MainActivity.this, SNSType.AVOSCloudSNSQQ, "QQ App ID", "QQ App Key", "你们官网网址");
+          SNS.loginWithCallback(MainActivity.this, SNSType.AVOSCloudSNSQQ, myCallback);
+        } catch (AVException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+  	// 4、在页面 activity 回调里填写 ThirdPartyType
+    if (resultCode == RESULT_OK) {
+      SNS.onActivityResult(requestCode, resultCode, data, ThirdPartyType);
+    }
+  }
+}
 ```
+
+如果要调用新浪微博的 SSO，只要：
+
+1. 将上述代码中的 `SNSType.AVOSCloudSNSQQ` 更换为 `SNSType.AVOSCloudSNSSinaWeibo`
+2. 更改 `SNS.setupPlatform(MainActivity.this, SNSType.AVOSCloudSNSQQ, "QQ App ID", "QQ App Key", "你们官网网址");` 为 `SNS.setupPlatform(MainActivity.this, SNSType.AVOSCloudSNSSinaWeibo, "微博 App Key", "微博 App Secret", "LeanCloud 控制台里的回调 URL");` 
 
 ### 绑定 LeanCloud User
 
