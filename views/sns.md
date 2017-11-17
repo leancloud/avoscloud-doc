@@ -22,7 +22,7 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 你也可以在开源项目上编译该组件加入到项目中，在根目录下执行 `./build-framework.sh` 即可。或者直接拖动源代码到项目中，源代码在 Classes 目录。
 
-### <a name="iOS-SNS-SSO登录"></a>SSO 授权
+### <a name="iOS-SNS-SSO登录">SSO 授权</a>
 
 利用 SSO，可以使用户不用输入用户名密码等复杂操作，一键登录。目前 LeanCloudSocial 支持如下平台：
 
@@ -126,7 +126,7 @@ AppId 对应腾讯开放平台应用的 AppId。
 
 ```
 
-打开新浪微博客户端进行登录（此时并没有绑定用户系统，绑定 LeanCloud 的用户系统参考文档中的 [绑定 AVUser ](#iOS-SNS-AVUser)小节）：
+打开新浪微博客户端进行登录（此时并没有绑定用户系统，绑定 LeanCloud 的用户系统参考文档中的 [绑定 AVUser](#iOS-SNS-AVUser) 小节）：
 
 ```objc
 //如果用 QQ 登录将 AVOSCloudSNSSinaWeibo 替换为 AVOSCloudSNSQQ。
@@ -145,7 +145,7 @@ AppId 对应腾讯开放平台应用的 AppId。
 ```
 在相关应用已安装的情况下，调用 `+ (void)[AVOSCloudSNS loginWithCallback:toPlatform:]` 接口的效果是直接跳转到该应用进行 SSO 授权；如果该应用没有安装，则跳转至网页授权。我们提供了 `+ (BOOL)[AVOSCloudSNS isAppInstalledForType:]` 来让你检测相应的应用有没有安装，没有安装的话可以提示用户或者隐藏按钮。
 
-### <a name="iOS-SNS-AVUser"></a> 绑定 AVUser
+### <a name="iOS-SNS-AVUser">绑定 AVUser</a> 
 
 先导入头文件:
 
@@ -227,7 +227,7 @@ AppId 对应腾讯开放平台应用的 AppId。
 
 ### WebView 授权
 
-WebView 授权登录需要用户输入账号、密码，体验较差，我们更推荐使用[ SSO 授权 ](#iOS-SNS-SSO登录)方式登录。
+WebView 授权登录需要用户输入账号、密码，体验较差，我们更推荐使用 [SSO 授权](#iOS-SNS-SSO登录) 方式登录。
 
 在 [应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns) 配置相应平台的 **应用 ID** 和 **应用 Secret Key** 。点击保存，自动生成 **回调 URL** 和 **登录 URL**。
 
@@ -242,25 +242,24 @@ WebView 授权登录需要用户输入账号、密码，体验较差，我们更
         } else {
             // 登录成功
         }
-    }];
+}];
 ```
 #### 手动显示登录界面
 如果需要实现自定义显示方式，例如自定义导航栏样式等可以使用方法 `loginManuallyWithCallback:`，例如：
 
 ```objc
 __block UIViewController *vc=nil;
-    vc= [AVOSCloudSNS loginManuallyWithURL:[NSURL URLWithString:@"https://leancloud.cn/1.1/sns/goto/rye5y8v6egttht70"]  callback:^(id object, NSError *error) {
-        if (vc) {
-            //关闭 UIViewController
-            //ARC 模式中要将 vc 置空
-            vc=nil;
-        }
-    }];
-    
+vc= [AVOSCloudSNS loginManuallyWithURL:[NSURL URLWithString:@"https://leancloud.cn/1.1/sns/goto/rye5y8v6egttht70"]  callback:^(id object, NSError *error) {
     if (vc) {
-        //显示UIViewController
-        [self presentViewController:vc animated: YES completion:nil];
+        //关闭 UIViewController
+        //ARC 模式中要将 vc 置空
+        vc=nil;
     }
+}];
+if (vc) {
+    //显示UIViewController
+    [self presentViewController:vc animated: YES completion:nil];
+}
 
 ```
 
