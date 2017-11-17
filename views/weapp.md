@@ -176,7 +176,7 @@ wx.getUserInfo({
 
 微信开放平台使用 [unionid](https://mp.weixin.qq.com/debug/wxadoc/dev/api/uinionID.html) 来区分用户的唯一性，也就是说同一个微信开放平台帐号下的移动应用、网站应用和公众帐号（包括小程序），用户的 unionid 都是同一个，而 openid 会是多个。
 
-开发者可以通过 `AV.User.signUpOrlogInWithAuthData()` 来使用 unionid 完成登录授权，要注意参数 authData 的格式，`openid` 和 `uid` 一定要书写正确：
+开发者需要自行获得用户的 unionid，然后调用 `AV.User.signUpOrlogInWithAuthData()` 投入 unionid 完成登录授权（而不应该再使用 `AV.User.loginWithWeapp()`）。另外要注意参数 authData 的格式，`openid` 和 `uid` 一定要书写正确：
 
   ```javascript
 AV.User.signUpOrlogInWithAuthData({
@@ -186,7 +186,7 @@ AV.User.signUpOrlogInWithAuthData({
 }, 'lc_weapp_union');
   ```
 
-为了获得更好的查询性能，建议为 `authData.lc_weapp_union.uid` 加上唯一索引。进入 **控制台** > **存储** > 选择 `_User` 表 > **其他** > **索引**，勾选 **authData** 然后在出现的输入框中键入 `authData.lc_weapp_union.uid`，点击 **创建**。
+为确保同一个 uid 只存在一条记录，建议为 `authData.lc_weapp_union.uid` 加上唯一索引。进入 **控制台** > **存储** > 选择 `_User` 表 > **其他** > **索引**，勾选 **authData** 然后在出现的输入框中键入 `authData.lc_weapp_union.uid`，点击 **创建**。
 
 #### 启用其他登录方式
 由于 `AV.User.loginWithWeapp()` 只能在小程序中使用，所以使用该 API 创建的用户无法直接在小程序之外的平台上登录。如果需要使用 LeanCloud 用户系统提供的其他登录方式，如用手机号验证码登录、邮箱密码登录等，在小程序一键登录后设置对应的用户属性即可：
