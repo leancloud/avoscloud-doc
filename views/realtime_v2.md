@@ -7,16 +7,15 @@
 
 * iOS 聊天应用：
   * [ChatKit，自带 UI 的聊天工具包](chatkit-ios.html)
-  * [LeanMessageDemo iOS 版](https://github.com/leancloud/LeanMessage-Demo)
 
 * Android 聊天应用：
   * [ChatKit，自带 UI 的聊天工具包](chatkit-android.html)
-  * [LeanMessageDemo Android 版](https://github.com/leancloud/LeanMessage-Demo)
   * [LeanChat Android 版](https://github.com/leancloud/leanchat-android)
 
 * JavaScript 聊天应用
+  * [LeanMessageDemo 网页版](https://github.com/leancloud/leanmessage-demo)
   * [Simple Chatroom](https://leancloud.github.io/js-realtime-sdk/demo/simple-chatroom/)（[源码](https://github.com/leancloud/js-realtime-sdk/tree/next/demo/simple-chatroom)）
-  * [LeanMessageDemo Web 版](https://github.com/leancloud/LeanMessage-Demo)
+
 
 关于这些项目的更多介绍、截图预览，可见 [LeanCloud Demos](https://github.com/leancloud/leancloud-demos) 。
 

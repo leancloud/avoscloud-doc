@@ -5,8 +5,7 @@
 
 {% block demo %}
 * [ChatKit-OC](https://github.com/leancloud/ChatKit-OC)（推荐）
-* [LeanMessage](https://github.com/leancloud/LeanMessage-Demo)
-  {% endblock %}
+{% endblock %}
 
 {% block setup_init %}
 请参考详细的 [{{sdk_name}} 安装指南](sdk_setup-objc.html)。
