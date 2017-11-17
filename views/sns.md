@@ -22,7 +22,8 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 你也可以在开源项目上编译该组件加入到项目中，在根目录下执行 `./build-framework.sh` 即可。或者直接拖动源代码到项目中，源代码在 Classes 目录。
 
-### <a name="iOS-SNS-SSO登录">SSO 授权</a>
+### SSO 授权
+iOS-SNS-SSO登录
 
 利用 SSO，可以使用户不用输入用户名密码等复杂操作，一键登录。目前 LeanCloudSocial 支持如下平台：
 
@@ -33,21 +34,21 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 #### 配置平台账号
 
-在 [应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns) 配置相应平台的 **应用 ID** 和 **应用 Secret Key** 。点击保存，自动生成 **回调 URL** 和 **登录 URL**。
+在 [应用控制台 > 组件 > 社交](/dashboard/devcomponent.html?appid={{appid}}#/component/sns) 配置相应平台的 **应用 ID** 和 **应用 Secret Key** 。点击保存，自动生成 **回调 URL** 和 **登录 URL**。
 
-微博开放平台需要单独配置 **回调 URL**。 在微博开放平台 ->「应用信息」->「高级信息」->「OAuth2.0 授权设置」里的「授权回调页」中绑定生成的 **回调 URL**。
+微博开放平台需要单独配置 **回调 URL**。 在微博开放平台的 **应用信息** > **高级信息** > **OAuth2.0 授权设置** 里的「授权回调页」中绑定生成的 **回调 URL**。
 
-测试阶段，在微博开放平台在「应用信息」->「测试信息」里添加微博账号，在腾讯开放平台的「QQ 登录」->「应用调试者」里添加 QQ 账号即可。在应用通过审核后，可以获取公开的第三方登录能力。
+测试阶段，在微博开放平台的 **应用信息** > **测试信息** 添加微博账号，在腾讯开放平台的 **QQ 登录** > **应用调试者** 里添加 QQ 账号即可。在应用通过审核后，可以获取公开的第三方登录能力。
 
 #### 配置 URL Schemes
 
 添加下列 URL Schemes:
 
-- 微博的 URL Schemes：`sinaweibosso.AppKey`（注意中间有个点儿）
-- QQ 的 URL Schemes：`tencentAppId`
+- 微博的 URL Schemes：`sinaweibosso.<AppKey>`（注意中间有个点儿）
+- QQ 的 URL Schemes：`tencent<AppId>`
 
-AppKey 对应微博开放平台应用的 AppKey。
-AppId 对应腾讯开放平台应用的 AppId。
+将 `<AppKey>` 替换为微博开放平台应用的 AppKey，如 `sinaweibosso.5827301343`。
+将 `<AppId>` 替换为腾讯开放平台应用的 AppId。
 
 ![Url Shceme](images/sns_guide_url_scheme.png)
 
@@ -93,14 +94,14 @@ AppId 对应腾讯开放平台应用的 AppId。
 
 #### 调用接口
 
-在 application:didFinishLaunchingWithOptions: 方法中配置账号：
+在 `application:didFinishLaunchingWithOptions:` 方法中配置账号：
 
 ```objc
-//注册 LeanCloud 
+// 注册 LeanCloud 
 [AVOSCloud setApplicationId:@"<LeanCloud-AppId>" clientKey:@"<LeanCloud-AppKey>"];
-//绑定微博
+// 绑定微博
 [AVOSCloudSNS setupPlatform:AVOSCloudSNSSinaWeibo withAppKey:@"<Weibo-AppKey>" andAppSecret:@"<Weibo-AppSecret>" andRedirectURI:@""];
-//绑定 QQ
+// 绑定 QQ
 [AVOSCloudSNS setupPlatform:AVOSCloudSNSQQ withAppKey:@"<QQ-AppId>" andAppSecret:@"<QQ-AppKey>" andRedirectURI:@""];
 
 ```
@@ -126,10 +127,10 @@ AppId 对应腾讯开放平台应用的 AppId。
 
 ```
 
-打开新浪微博客户端进行登录（此时并没有绑定用户系统，绑定 LeanCloud 的用户系统参考文档中的 [绑定 AVUser](#iOS-SNS-AVUser) 小节）：
+打开新浪微博客户端进行登录（此时并没有绑定用户系统，绑定 LeanCloud 的用户系统参考文档中的 [绑定 AVUser](#绑定-AVUser) 小节）：
 
 ```objc
-//如果用 QQ 登录将 AVOSCloudSNSSinaWeibo 替换为 AVOSCloudSNSQQ。
+// 如果用 QQ 登录将 AVOSCloudSNSSinaWeibo 替换为 AVOSCloudSNSQQ。
   
 [AVOSCloudSNS loginWithCallback:^(id object, NSError *error) {
    if (error) {
@@ -145,7 +146,7 @@ AppId 对应腾讯开放平台应用的 AppId。
 ```
 在相关应用已安装的情况下，调用 `+ (void)[AVOSCloudSNS loginWithCallback:toPlatform:]` 接口的效果是直接跳转到该应用进行 SSO 授权；如果该应用没有安装，则跳转至网页授权。我们提供了 `+ (BOOL)[AVOSCloudSNS isAppInstalledForType:]` 来让你检测相应的应用有没有安装，没有安装的话可以提示用户或者隐藏按钮。
 
-### <a name="iOS-SNS-AVUser">绑定 AVUser</a> 
+### 绑定 AVUser 
 
 先导入头文件:
 
@@ -181,7 +182,7 @@ AppId 对应腾讯开放平台应用的 AppId。
 
 这样在该方法之后，可以紧接着调用 `-[AVUser loginWithAuthData:block]`（此时不需要加 platform 参数，因为 authData 中已包含了 platform 数据）来登录 LeanCloud 账号。这样实现起来非常方便，局限是目前**仅支持微博、QQ**登录。
 
-使用其他平台的 SDK（如 Facebook SDK）获取到的 authData 中，如果不包含 platform 键值对，就要在调用 `-[AVUser loginWithAuthData:platform:block]` 时加上 platform 这个参数，来登录 LeanCloud 账号。
+使用其他平台的 SDK（如 Facebook SDK）获取到的 authData 如果不包含 platform 键值对，就要在调用 `-[AVUser loginWithAuthData:platform:block]` 时加上 platform 这个参数来登录 LeanCloud 账号。
 
 从其他平台的 SDK 获取到的 authData 数据应符合如下规范：
 
@@ -227,15 +228,15 @@ AppId 对应腾讯开放平台应用的 AppId。
 
 ### WebView 授权
 
-WebView 授权登录需要用户输入账号、密码，体验较差，我们更推荐使用 [SSO 授权](#iOS-SNS-SSO登录) 方式登录。
+WebView 授权登录需要用户输入账号和密码，体验较差，我们更推荐使用 [SSO 授权](#SSO-授权) 方式登录。
 
-在 [应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns) 配置相应平台的 **应用 ID** 和 **应用 Secret Key** 。点击保存，自动生成 **回调 URL** 和 **登录 URL**。
+在 [应用控制台 > 组件 > 社交](/dashboard/devcomponent.html?appid={{appid}}#/component/sns) 配置相应平台的 **应用 ID** 和 **应用 Secret Key** 。点击保存，自动生成 **回调 URL** 和 **登录 URL**。
 
 #### 自动显示登录页面
 
 自动显示登录界面不需要自己定义控制器，传入控制台生成的登录的 URL 即可。
 
-```
+```objc
 [AVOSCloudSNS loginWithURL:url callback:^(id object, NSError *error) {
         if (error) {
             // 登录失败，可能为网络问题或 url 无效
