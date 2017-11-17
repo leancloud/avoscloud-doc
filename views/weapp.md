@@ -172,14 +172,16 @@ wx.getUserInfo({
 
 使用一键登录方式登录时，LeanCloud 会将该用户的小程序 openid 保存在对应的 `user.authData.lc_weapp` 属性中，你可以在控制台的 `_User` 表中看到。该字段在客户端不可见，你可以使用 masterKey 在云引擎中获取该用户的 openid 进行支付、推送等操作。详情请参考 [支付](#支付)。
 
-#### 使用 unionId 登录
+#### 使用 unionid 登录
 
-authData 使用如下格式，注意字段名 `openid` 和 `uid` 一定要书写正确：
+微信开放平台使用 [unionid](https://mp.weixin.qq.com/debug/wxadoc/dev/api/uinionID.html) 来区分用户的唯一性，也就是说同一个微信开放平台帐号下的移动应用、网站应用和公众帐号（包括小程序），用户的 unionid 都是同一个，而 openid 会是多个。
+
+开发者可以通过 `AV.User.signUpOrlogInWithAuthData()` 来使用 unionid 完成登录授权，要注意参数 authData 的格式，`openid` 和 `uid` 一定要书写正确：
 
   ```javascript
 AV.User.signUpOrlogInWithAuthData({
   'openid' : openid,
-  'uid' : unionId,
+  'uid' : unionid,
   ...其他可选属性
 }, 'lc_weapp_union');
   ```
