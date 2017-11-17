@@ -23,7 +23,6 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 你也可以在开源项目上编译该组件加入到项目中，在根目录下执行 `./build-framework.sh` 即可。或者直接拖动源代码到项目中，源代码在 Classes 目录。
 
 ### SSO 授权
-iOS-SNS-SSO登录
 
 利用 SSO，可以使用户不用输入用户名密码等复杂操作，一键登录。目前 LeanCloudSocial 支持如下平台：
 
