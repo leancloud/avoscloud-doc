@@ -8,7 +8,7 @@ AVOSCloudSNS 是一个非常轻量的模块, 可以用最少一行代码就可�
 
 ### 升级指南
 
-从 3.1.3 开始，我们已不再维护 AVOSCloudSNS.framework，而改为维护开源的 **LeanCloudSocial.framework**。升级也特别容易，将 `pod 'AVOSCloudSNS'` 改为 `pod 'LeanCloudSocial'`，然后全局替换一下 `<AVOSCloudSNS/` 为 `<LeanCloudSocial/` 即可。接口都没有更改。LeanCloudSocial 需要的基础库的版本是 3.1，如果你的主项目还在使用 3.1 以下的版本，推荐更新到最新的 3.1 以上的版本。
+从 3.1.3 开始，我们已不再维护 AVOSCloudSNS.framework，而改为维护开源的 **LeanCloudSocial.framework**。升级步骤很简单，只要将 `pod 'AVOSCloudSNS'` 改为 `pod 'LeanCloudSocial'`，然后全局替换一下 `<AVOSCloudSNS/` 为 `<LeanCloudSocial/` 即可，接口都没有更改。LeanCloudSocial 需要的基础库的版本是 3.1，如果你的主项目还在使用 3.1 以下的版本，推荐更新到最新的 3.1 以上的版本。
 
 ### 导入 SDK
 
@@ -22,13 +22,13 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 ### SSO
 
-利用 SSO，可以使用户不用输入用户名密码等复杂操作，一键登录。目前 LeanCloudSocial 支持如下平台：
+利用 SSO (Single Sign On)，用户可以使用单点登录功能，避免重新注册账户或反复输入用户名和密码的麻烦。目前 LeanCloudSocial 支持如下平台：
 
 - 新浪微博
 - 手机 QQ
 - 微信
 
-并且不需要使用各个平台官方的 SDK，保证你的应用体积的最小化。
+不需要使用各个平台官方的 SDK，保证你的应用体积的最小化。
 
 #### 调用接口
 
@@ -266,19 +266,19 @@ if (vc) {
 
 ### 导入 SDK 和代码初始化
 
-先查看 Android 的 [快速入门](/start.html)，完成代码初始化、Manifest 配置等相关完整操作后，集成 `avoscloud-sns` 的第三方 SDK 包。
+先查看 Android 的 [安装指南](sdk_setup-android.html)，在完成代码初始化、Manifest 配置等必要的操作之后，再集成 `avoscloud-sns` 的第三方 SDK 包。
 
 ### 开发平台与控制台配置
 
-在 [应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns) 中间配置相应平台的 **App ID** 或者 **App Key** 与 **App Secret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。
+在 [应用控制台 > 组件 > 社交](/dashboard/devcomponent.html?appid={{appid}}#/component/sns) 中间配置相应平台的 **App ID** 或者 **App Key** 与 **App Secret**。在成功保存以后，页面上能够得到相应的 **回调 URL** 和 **登录 URL**。
 
-你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的后台配置里。微博开放平台在「应用信息」->「高级信息」->「OAuth2.0 授权设置」里的「授权回调页」。
+你将在代码里用到 **登录 URL**，同时请将 **回调 URL** 填写到对应平台的后台配置里。微博开放平台在 **应用信息** > **高级信息** > **OAuth2.0 授权设置** 中的「授权回调页」。
 
-测试阶段，在微博开放平台在「应用信息」->「测试信息」里添加微博账号，在腾讯开放平台的「QQ 登录」->「应用调试者」里添加 QQ 账号即可。在对应平台的应用提交对方平台审核后，才可以获取到公开的第三方登录能力。
+测试阶段，在微博开放平台上的 **应用信息** > **测试信息** 中添加微博账号，在腾讯开放平台上的 **QQ 登录** > **应用调试者** 中添加 QQ 账号即可。只有当对应平台的应用通过审核之后，才可以获取到公开的第三方登录能力。
 
 ### WebView 授权方式（仅新浪微博可用）
 
-首先，需要在 AndroidManifest.xml 中间添加相应的 Activity：
+首先，需要在 AndroidManifest.xml 中添加相应的 Activity：
 
 ```
         <activity
@@ -286,9 +286,9 @@ if (vc) {
         </activity>
 ```
 
-其次，将 SDK 下载包中 avoscloud-sns/res/layout/**avoscloud_sns_web_activity.xml** 拷贝到你的项目中去。
+其次，将 SDK 下载包中的 avoscloud-sns/res/layout/**avoscloud_sns_web_activity.xml** 拷贝到你的项目中去。
 
-最后，在你的 Activity 页面里，新增 4 步相关的代码配置：
+最后，在你的 Activity 页面里新增 4 步相关的配置：
 
 ```java
 public class AuthActivity extends Activity{
@@ -355,7 +355,7 @@ public class AuthActivity extends Activity{
 这样就完成了新浪微博从授权到创建用户（登录）的一整套流程。
 
 ### SSO 授权方式
-利用 SSO，用户可以使用单点登录功能，避免反复输入用户名和密码等。
+利用 SSO (Single Sign On)，用户可以使用单点登录功能，避免重新注册账户或反复输入用户名和密码的麻烦。
 
 首先请确保你的 AndroidManifest.xml 有如下权限：
 
@@ -397,7 +397,7 @@ public class AuthActivity extends Activity{
 </activity>
 ```
 
-并下载 [libs 目录](https://github.com/sinaweibosdk/weibo_android_sdk/tree/master/so) 所需要架构的 .so 文件，导入到自己项目中。
+并下载 [libs 目录](https://github.com/sinaweibosdk/weibo_android_sdk/tree/master/so) 所需要架构的 .so 文件，导入到自己的项目中。
 
 最终实现代码如下，以腾讯平台为例：
 
