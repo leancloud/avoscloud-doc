@@ -5,6 +5,28 @@
 效果：<http://localhost:4000/test.html>
 
 以下是子文档内容：
+{% set items = [
+  { name: 'b', desc: 'b-b'},
+  { name: 'c', desc: 'c-c'},
+  { name: 'a', desc: 'a-a'}
+]  %}
+
+{% for item in items | sort(false, false, 'name') %}
+    {{ item.name }}, {{ item.desc}}
+{% endfor %}
+
+{% set a = {
+    
+    "b_b": "b-b",
+    "a_a": "a-a"
+}
+%}
+
+{% for key, value in a | dictsort(false) %}
+    {{ key }}, {{ value }}
+{% endfor %}
+
+<hr />
 
 {% block content %}{% endblock %}
 
