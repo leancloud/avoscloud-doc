@@ -85,8 +85,8 @@ dependencies {
     // avoscloud-sns：LeanCloud 第三方登录包
     compile ('cn.leancloud.android:avoscloud-sns:{{ version.leancloud }}@aar')
     compile ('cn.leancloud.android:qq-sdk:1.6.1-leancloud')
-    // 目前新浪微博官方只提供 jar 包的集成方式
-    // 请手动下载新浪微博 SDK 的 jar 包，将其放在 libs 目录下进行集成
+    // 新浪微博 SDK
+    compile('com.sina.weibo.sdk:core:4.1.4:openDefaultRelease@aar')
 
     // LeanCloud 应用内搜索包
     compile ('cn.leancloud.android:avoscloud-search:{{ version.leancloud }}@aar')

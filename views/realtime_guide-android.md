@@ -2726,3 +2726,18 @@ public void onMessage(AVIMAudioMessage msg, AVIMConversation conv, AVIMClient cl
 }
 ```
 {% endblock %}
+
+{% block message_send_failed_save_to_cache %}
+
+```java
+conversation.addToLocalCache(message);
+```
+{% endblock %}
+
+{% block message_send_failed_remove_from_cache %}
+
+```java
+conversation.removeFromLocalCache(message);
+```
+{% endblock %}
+

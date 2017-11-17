@@ -23,11 +23,12 @@ Node.js 的 `package.json` 中可以指定 [很多选项](https://docs.npmjs.com
         "start": "node server.js"
     },
     "engines": {
-        "node": "4.x"
+        "node": "6.x"
     },
     "dependencies": {
         "express": "4.12.3",
-        "leanengine": "1.2.2"
+        "leanengine": "^3.0.2",
+        "leancloud-storage": "^3.3.1"
     }
 }
 ```
@@ -41,6 +42,14 @@ Node.js 的 `package.json` 中可以指定 [很多选项](https://docs.npmjs.com
 * `devDependencies` 项目开发时所依赖的包；云引擎目前 **不会** 安装这里的依赖。
 
 建议你参考我们的 [项目模板](https://github.com/leancloud/node-js-getting-started/blob/master/package.json) 来编写自己的 `package.json`。
+
+我们也对 `package-lock.json` 和 `yarn.lock` 提供了支持：
+
+- 如果你的应用目录中含有 `package-lock.json`，那么会根据 lock 中的描述进行安装（需要 Node.js 8.0 以上）。
+- 如果你的应用目录中含有 `yarn.lock`，那么会使用 `yarn install` 代替 `npm install` 来安装依赖（需要 Node.js 4.8 以上）。
+
+<div class="callout callout-info">注意 `package-lock.json` 和 `yarn.lock` 中包含了下载依赖的 URL，因此如果你生成 lock 文件时使用了 npmjs.org 的源，那么在中国节点的部署可能会变慢；反之如果生成时使用了 cnpmjs.org 的源，那么在美国节点的部署可能会变慢。如果不希望使用 `package-lock.json` 和 `yarn.lock`，请将它们加入 `.gitignore`（Git 部署时）或 `.leanengineignore`（命令行工具部署时）。</div>
+
 {% endblock %}
 
 {% block project_start %}
@@ -192,11 +201,16 @@ app.use(timeout('15s'));
 {% endblock %}
 
 {% block use_leanstorage %}
-云引擎中的 Node SDK 是对 [JavaScript 存储 SDK](https://github.com/leancloud/javascript-sdk) 的拓展，增加了服务器端需要的云函数和 Hook 相关支持，在云引擎中你需要用 `leanengine` 这个包来操作 [LeanCloud 的存储服务](leanstorage_guide-js.html) 中的数据，你可以在你的项目根目录运行 `npm install leanengine@next --save` 来安装 Node SDK。
+云引擎中的 Node SDK（leanengine）提供了服务器端需要的云函数和 Hook 相关支持，同时需要 JavaScript SDK（leancloud-storage）作为 peerDependency 一同安装，在升级 Node SDK 也请记得升级 JavaScript SDK：
+
+```bash
+npm install --save leanengine leancloud-storage
+```
 
 Node SDK 的 [API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/master/API.md) 和 [更新日志](https://github.com/leancloud/leanengine-node-sdk/releases) 都在 GitHub 上。
 
 ```js
+// leanengine 和 leancloud-storage 导出的是相同的对象
 var AV = require('leanengine');
 
 AV.init({
@@ -431,8 +445,7 @@ app.use(AV.Cloud.HttpsRedirect({framework: 'koa'}));
 ```javascript
 var cluster = require('cluster');
 
-// 取决于你的实例的可用 CPU 数量
-var workers = 2;
+var workers = process.env.LEANCLOUD_AVAILABLE_CPUS || 1;
 
 if (cluster.isMaster) {
   for (var i = 0; i < workers; i++) {

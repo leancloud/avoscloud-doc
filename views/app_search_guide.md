@@ -23,21 +23,16 @@
 
 #### 设置应用内搜索选项
 
-为了能够使用户直接从搜索结果打开你的应用，开发者需要使你的应用支持外部调用，我们使用 AppURL 来指向一个可以在应用里展现的 Class 数据，格式如下：
+为了能够让用户直接在搜索结果中打开相关的应用，开发者需要让自己的应用支持外部调用。我们使用 AppURL 来指向一个可以在应用里展现的 Class 数据，格式如下：
 
 ```
-{URL Scheme}://{ URL Host}/{ Resource Path}
+{URL Scheme}://{ URL Host }/{ Resource Path }
 ```
-
-在组件菜单里，我们添加了一个新菜单「应用内搜索」：
-
-![image](images/deeplink_setting.png)
-
-其中最关键的是这几个属性：
+进入 [控制台 > 组件 > 应用内搜索 > 基础设置](/dashboard/devcomponent.html?appid={{appid}}#/component/appsearch)，注意一下几个关键的属性：
 
 - **应用名称**：你的应用名称（必须）
-- **应用 URL Scheme**：支持外部调用的 URL scheme，我们强制要求采用**域名反转**的方式，类似 Java 语言的 package 命名机制。假设你的应用的域名为 `myapp.company.com`，那么我们要求的 scheme 就是形如 `com.company.myapp` 的字符串。例如我们的 Todo Demo 设置的scheme为 `com.avoscloud.todo`。如果你没有域名，那么我们推荐你使用 `com.avoscloud.{appId的前8位}` 来作为 Scheme。我们会在保存的时候检测scheme是否冲突。
-- **应用 URL Host**：支持外部调用的 URL Host，可不设置，但是我们推荐默认值使用 `avoscloud`，防止跟其他 AppURL 提供商冲突。
+- **应用 URL Scheme**：支持外部调用的 URL scheme，我们强制要求采用**域名反转**的方式，类似 Java 语言的 package 命名机制。假设你的应用的域名为 `myapp.company.com`，那么我们要求的 scheme 就是形如 `com.company.myapp` 的字符串。例如我们的 Todo Demo 设置的 scheme 为 `com.leancloud.todo`。如果你没有域名，那么我们推荐你使用 `com.leancloud.{appId的前8位}` 来作为 Scheme。我们会在保存的时候检测 scheme 是否冲突。
+- **应用 URL Host**：支持外部调用的 URL Host，可不设置，但是我们推荐使用默认值 `leancloud`，防止跟其他 AppURL 提供商冲突。
 
 其他一些属性，都是用于设置你的应用的下载地址，例如：
 
@@ -58,7 +53,7 @@ https://{{host}}/1.1/go/{your uri scheme}/
 例如，我们的 todo 应用就是：
 
 ```
-https://{{host}}/1.1/go/com.avoscloud.todo
+https://{{host}}/1.1/go/com.leancloud.todo
 ```
 
 #### 为 Class 启用搜索
@@ -127,11 +122,11 @@ https://{{host}}/1.1/go/com.avoscloud.todo
 在 LeanCloud 索引完成数据后，你应当可以通过下列 URL 访问到一条数据，如果在安装了 Todo Demo 应用的移动设备上访问下面这个URL，应该会打开应用展现这条 Todo 的内容:
 
 ```
-https://{{host}}/1.1/go/com.avoscloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18
+https://{{host}}/1.1/go/com.leancloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18
 
 ```
 
-如果直接在 PC 浏览器打开 <https://{{host}}/1.1/go/com.avoscloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18?render=true>，看到的应该是数据渲染页面，如图：
+如果直接在 PC 浏览器打开 <https://{{host}}/1.1/go/com.leancloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18?render=true>，看到的应该是数据渲染页面，如图：
 
 ![image](images/todo_render.png)
 
@@ -145,20 +140,20 @@ https://{{host}}/1.1/go/com.avoscloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18
 
 ``` xml
 <activity android:name="com.avos.demo.CreateTodo" >
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW" />
-		<category android:name="android.intent.category.DEFAULT" />
-		<category android:name="android.intent.category.BROWSABLE" />
-		<!-- 处理以"com.avoscloud.todo://avoscloud/classes/Todo/"开头的 URI -->
-		<data android:scheme="com.avoscloud.todo" />
-		<data android:host="avoscloud" />
-		<data android:pathPrefix="/classes/Todo/" />
-	</intent-filter>
+  <intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <!-- 处理以"com.leancloud.todo://leancloud/classes/Todo/"开头的 URI -->
+    <data android:scheme="com.leancloud.todo" />
+    <data android:host="leancloud" />
+    <data android:pathPrefix="/classes/Todo/" />
+  </intent-filter>
 </activity>
 ```
 
-- `android:scheme`：设置为你为应用选择的 URL Scheme，这里是 `com.avoscloud.todo`
-- `android:host`：设置为你为应用选择的 URL Host，默认为 `avoscloud`。
+- `android:scheme`：设置为你为应用选择的 URL Scheme，这里是 `com.leancloud.todo`
+- `android:host`：设置为你为应用选择的 URL Host，默认为 `leancloud`。
 - `android:pathPrefix`：具体的资源路径前缀，搜索结果的URL具体路径都将展现为`/classes/{className}/{objectId}`，这里的 className 就是 `Todo`，因此路径前缀为 `classes/Todo/`。
 - `action`：必须设置为`android.intent.action.VIEW`，并且加入 `DEFAULT` 和 `BROWSABLE` 的 Category。
 
@@ -166,31 +161,31 @@ https://{{host}}/1.1/go/com.avoscloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18
 
 ``` java
    Intent intent = getIntent();
-	// 通过搜索结果打开
-	if (intent.getAction() == Intent.ACTION_VIEW) {
-	  // 如果是VIEW action，我们通过getData获取URI
-	  Uri uri = intent.getData();
-	  String path = uri.getPath();
-	  int index = path.lastIndexOf("/");
-	  if (index > 0) {
-		// 获取objectId
-		objectId = path.substring(index + 1);
-		Todo todo = new Todo();
-		todo.setObjectId(objectId);
-		// 通过Fetch获取content内容
-		todo.fetchInBackground(new GetCallback<AVObject>() {
-		  @Override
-		  public void done(AVObject todo, AVException arg1) {
-			if (todo != null) {
-			  String content = todo.getString("content");
-			  if (content != null) {
-				contentText.setText(content);
-			  }
-			}
-		  }
-		});
-	  }
-	}
+  // 通过搜索结果打开
+  if (intent.getAction() == Intent.ACTION_VIEW) {
+    // 如果是VIEW action，我们通过getData获取URI
+    Uri uri = intent.getData();
+    String path = uri.getPath();
+    int index = path.lastIndexOf("/");
+    if (index > 0) {
+    // 获取objectId
+    objectId = path.substring(index + 1);
+    Todo todo = new Todo();
+    todo.setObjectId(objectId);
+    // 通过Fetch获取content内容
+    todo.fetchInBackground(new GetCallback<AVObject>() {
+      @Override
+      public void done(AVObject todo, AVException arg1) {
+      if (todo != null) {
+        String content = todo.getString("content");
+        if (content != null) {
+        contentText.setText(content);
+        }
+      }
+      }
+    });
+    }
+  }
 ```
 
 我们通过 adb 的 am 命令来测试配置是否有效，如果能够正常地调用 `CreateTodo`页面，则证明配置正确：
@@ -203,7 +198,7 @@ adb shell am start -W -a "android.intent.action.VIEW" -d "yourUri" yourPackageNa
 
 ``` sh
 adb shell am start -W -a "android.intent.action.VIEW"  \
-  -d "com.avoscloud.todo://avoscloud/classes/Todo/5371f3a9e4b02f7aee2c9a18" \
+  -d "com.leancloud.todo://leancloud/classes/Todo/5371f3a9e4b02f7aee2c9a18" \
   com.avos.demo
 ```
 
@@ -222,7 +217,7 @@ adb shell am start -W -a "android.intent.action.VIEW"  \
 
 ``` objc
 /*
- * 与 Android 类似，这里的 url.path 应该是 "com.avoscloud.todo://avoscloud/classes/Todo/5371f3a9e4b02f7aee2c9a18"
+ * 与 Android 类似，这里的 url.path 应该是 "com.leancloud.todo://leancloud/classes/Todo/5371f3a9e4b02f7aee2c9a18"
  */
 (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     NSString *objectId = [url.path lastPathComponent];
@@ -248,7 +243,7 @@ adb shell am start -W -a "android.intent.action.VIEW"  \
 
 之后，你需要将 `res` 下的资源文件夹拷贝并且合并到你工程的 `res` 目录下，更改资源文件的内容并不影响 SDK 工作，但是请不要改动资源的文件名和文件内资源 ID。
 
-应用内搜索组件的资源文件都以 `avoscloud_search` 开头。
+应用内搜索组件的资源文件都以 `leancloud_search` 开头。
 
 ##### 添加代码，实现基础功能
 
@@ -259,11 +254,11 @@ adb shell am start -W -a "android.intent.action.VIEW"  \
 ``` xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<application...>
-	   <activity
-		  android:name="com.avos.avoscloud.search.SearchActivity">
-	   </activity>
-	</application>
+  <application...>
+     <activity
+      android:name="com.avos.leancloud.search.SearchActivity">
+     </activity>
+  </application>
 ```
 
 注：由于一些 UI 的原因，**应用内搜索的最低 API level 要求是 12**，如你需要更低的版本支持，请参照文档中的高级定制部分进行开发。
@@ -309,29 +304,29 @@ searchQuery.setSortBuilder(builder);
 由于每个应用的数据、UI展现要求都有很大的差别，所以单一的搜索组件界面仅仅能够满足较为简单的要求，所以我们将数据接口开放出来以便你能够方便的定制属于你自己的应用内搜索结果页面。
 
 ``` java
-	  AVSearchQuery search = new AVSearchQuery("test-query");
-	  search.setLimit(100);
-	  search.findInBackgroud(new FindCallback<AVObject>() {
+    AVSearchQuery search = new AVSearchQuery("test-query");
+    search.setLimit(100);
+    search.findInBackgroud(new FindCallback<AVObject>() {
 
-		@Override
-		public void done(List<AVObject> objects, AVException exception) {
-		  if (exception == null) {
-			 //你可以使用 objects来展现自己的UI
-			 for(AVObject o : objects){
-				//这里可以得到搜索结果和你的应用所对应的AppUrl
-				String appUrl = o.getString(AVConstants.AVSEARCH_APP_URL);
-				//这里可以得到搜索结果对应的语法高亮
-				Map<String,List<String>> resultHighLights = ((Map<String, List<String>>)) o.get(AVConstants.AVSEARCH_HIGHTLIGHT);
-			 }
-			} else {
-			 //Exception happened
-			}
-		  }
-		}
-	  });
+    @Override
+    public void done(List<AVObject> objects, AVException exception) {
+      if (exception == null) {
+       //你可以使用 objects来展现自己的UI
+       for(AVObject o : objects){
+        //这里可以得到搜索结果和你的应用所对应的AppUrl
+        String appUrl = o.getString(AVConstants.AVSEARCH_APP_URL);
+        //这里可以得到搜索结果对应的语法高亮
+        Map<String,List<String>> resultHighLights = ((Map<String, List<String>>)) o.get(AVConstants.AVSEARCH_HIGHTLIGHT);
+       }
+      } else {
+       //Exception happened
+      }
+      }
+    }
+    });
 ```
 
-你也可以参考 [我们的 `SearchActivity`](`https://github.com/leancloud/avoscloud-sdk/blob/master/android/avossearch/src/com/avos/avoscloud/search/SearchActivity.java) 来更好的指定你自己的搜索结果页面。
+你也可以参考 [我们的 `SearchActivity`](https://github.com/leancloud/leancloud-sdk/blob/master/android/avossearch/src/com/avos/avoscloud/search/SearchActivity.java) 来更好的指定你自己的搜索结果页面。
 
 ##### 分页查询
 
@@ -385,7 +380,7 @@ searchQuery.cachePolicy = kAVCachePolicyCacheElseNetwork;
 searchQuery.maxCacheAge = 60;
 searchQuery.fields = @[@"field1", @"field2"];
 [searchQuery findInBackground:^(NSArray *objects, NSError *error) {
-	for (AVObject *object in objects) {
+  for (AVObject *object in objects) {
         NSString *appUrl = [object objectForKey:@"_app_url"];
         NSString *deeplink = [object objectForKey:@"_deeplink"];
         NSString *hightlight = [object objectForKey:@"_highlight"];
@@ -468,8 +463,8 @@ curl -X GET \
 {
 results: [
   {
-    _app_url: "http://stg.pass.com//1/go/com.avoscloud/classes/GameScore/51e3a334e4b0b3eb44adbe1a",
-    _deeplink: "com.avoscloud.appSearchTest://avoscloud/classes/GameScore/51e3a334e4b0b3eb44adbe1a"
+    _app_url: "http://stg.pass.com//1/go/com.leancloud/classes/GameScore/51e3a334e4b0b3eb44adbe1a",
+    _deeplink: "com.leancloud.appSearchTest://leancloud/classes/GameScore/51e3a334e4b0b3eb44adbe1a"
     updatedAt: "2011-08-20T02:06:57.931Z",
     playerName: "Sean Plott",
     objectId: "51e3a334e4b0b3eb44adbe1a",

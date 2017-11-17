@@ -238,7 +238,9 @@ curl -X POST \
   "sound":             "声音文件名，前提在应用里存在",
   "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
   "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用,
-  "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
+  "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
+  "collapse-id":       "对应 APNs request header 的 apns-collapse-id 参数，用于多条推送合并展示，具体请点击下面 Apple 官方关于 Request Header 的文档链接进行查阅",
+  "apns-priority":     数字类型，只能是 10 或 5，对应 APNs request header 的 apns-priority 参数，用于控制是否以节电模式发推送，具体请点击下面 Apple 官方关于 Request Header 的文档链接进行查阅
 }
 ```
 
@@ -260,7 +262,7 @@ curl -X POST \
 }
 ```
 
-data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html)。
+data 和 alert 内属性的具体含义请参考 [Apple 官方关于 Payload Key 的文档](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html)，以及 [Apple 官方关于 Request Header 的文档](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html)。
 
 另外，我们也支持按照上述 Apple 官方文档的方式构造推送参数，如：
 
@@ -283,9 +285,11 @@ data 和 alert 内属性的具体含义请参考 [Apple 官方文档](https://de
      "badge":             数字类型，未读消息数目，应用图标边上的小红点数字，可以是数字，也可以是字符串 "Increment"（大小写敏感）,
      "sound":             "声音文件名，前提在应用里存在",
      "content-available": 数字类型，如果使用 Newsstand，设置为 1 来开始一次后台下载,
-     "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用,
+     "mutable-content":   数字类型，用于支持 UNNotificationServiceExtension 功能，设置为 1 时启用
    }
-   "custom-key":        "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
+   "custom-key":          "由用户添加的自定义属性，custom-key 仅是举例，可随意替换",
+   "collapse-id":         "对应 APNs request header 的 apns-collapse-id 参数，用于多条推送合并展示，具体请点击上面 Apple 官方关于 Request Header 的文档链接进行查阅",
+   "apns-priority":       数字类型，只能是 10 或 5，对应 APNs request header 的 apns-priority 参数，用于控制是否以节电模式发推送，具体请点击上面 Apple 官方关于 Request Header 的文档链接进行查阅
 }
 ```
 

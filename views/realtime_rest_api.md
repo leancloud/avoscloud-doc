@@ -1,4 +1,5 @@
 {% import "views/_im.njk" as im %}
+{% import "views/_helper.njk" as docs %}
 # 实时通信 REST API 使用指南
 
 ## 请求格式
@@ -98,20 +99,7 @@ curl -X GET \
   https://{{host}}/1.1/rtm/messages/history?convid=219946ef32e40c515d33ae6975a5c593
 ```
 
-### 获取某个对话的聊天记录
-
-参数 | 约束 | 说明
---- | --- | ---
-convid | **必填** | 对话 id
-max_ts | 可选 | 查询起始的时间戳，返回小于这个时间(不包含)的记录。默认是当前时间，单位是毫秒。
-msgid | 可选 | 起始的消息 id，**使用时必须加上对应消息的时间戳 max_ts 参数，一起作为查询的起点**。
-limit | 可选 | 返回条数限制，可选，默认 100 条，最大 1000 条。
-reversed | 可选 | 以默认排序相反的方向返回结果。布尔值，默认为 false
-peerid | 可选 | 查看者 id（签名参数）
-nonce | 可选 | 签名随机字符串（签名参数）
-signature_ts | 可选 | 签名时间戳（签名参数），单位是秒。
-signature | 可选 | 签名（签名参数）
-
+### 签名
 
 为了保证获取聊天记录的安全性，可以开启签名认证（{% if node=='qcloud' %}控制台 > 设置 > **应用选项** > **聊天、推送** > **聊天记录查询，启用签名认证**{% else %}[控制台 > 设置 > **应用选项** > **聊天、推送** > **聊天记录查询，启用签名认证**](/app.html?appid={{appid}}#/permission){% endif %}）。了解更详细的签名规则请参考 [聊天签名方法](realtime_v2.html#开启对话签名)。签名参数仅在开启应用选项后有效，如果没有开启选项，就不需要传签名参数。
 
@@ -120,6 +108,36 @@ signature | 可选 | 签名（签名参数）
 ```
 appid:peerid:convid:nonce:signature_ts
 ```
+
+### 获取某个对话的聊天记录
+
+参数 | 约束 | 说明
+--- | --- | ---
+convid | **必填** | 对话 id
+msgid | 可选 | 起始的消息 id，**使用时必须加上对应消息的时间戳 timestamp 参数，作为查询的起点**
+timestamp | 可选 | 查询起始的时间戳。默认是当前时间，单位是毫秒
+till_msgid | 可选 | 查询终止的消息 id。**使用时必须加上消息的时间戳 till_timestamp 参数，作为查询的终点**
+till_timestamp | 可选 | 查询终止的时间戳，默认为 0，单位是毫秒
+include_start | 可选 | 是否包含由 timestamp 与 msgid 确定的起始消息。布尔值，默认为 false
+include_stop | 可选 | 是否包含由 till_timestamp 与 till_msgid 确定的终止消息。布尔值，默认为 false
+reversed | 可选 | 以默认排序（默认按时间降序）相反的方向返回结果，这时 till_timestamp 默认为当前时间戳，timestamp 默认为 0。布尔值，默认为 false
+limit | 可选 | 返回条数限制，可选，默认 100 条，最大 1000 条
+peerid | 可选 | 查看者 id（签名参数）
+nonce | 可选 | 签名随机字符串（签名参数）
+signature_ts | 可选 | 签名时间戳（签名参数），单位是秒
+signature | 可选 | 签名（签名参数）
+max_ts | 可选 | {{ docs.alertInline("废弃") }}，使用 timestamp 表示查询起始时间戳
+
+本接口时间参数较多，这里举一示例供大家参考。比如某对话内有三条消息，id 分别为 id1、id2、id3，发消息的时间分别是 t1、t2、t3（t1 < t2 < t3），下面列举出不同参数组合的查询结果（空白表示使用默认值）：
+
+| timestamp| msgid| till_timestamp| till_msgid| include_start| include_stop| reversed| 结果 |
+| ---------|---------|---------|---------|---------|---------|---------|--------- |
+| t3| id3| t1| id1| | | | id2 |
+| t3| id3| t1| id1| true| | | id3 id2 |
+| t3| id3| t1| id1| | true| | id2 id1 |
+| t1| id1| t3| id3| | | true| id2 |
+| t1| id1| t3| id3| true| | true| id1 id2 |
+| t1| id1| t3| id3| | true| true| id2 id3 |
 
 返回数据格式，JSON 数组，默认按消息记录从新到旧排序，设置请求参数 `reversed` 后以相反的方向排序。
 **注意**：系统广播不会出现在消息记录 API 的结果中。
@@ -153,8 +171,8 @@ appid:peerid:convid:nonce:signature_ts
 参数 | 约束 | 说明
 --- | --- | ---
 from | **必填** | 发送人 id
-max_ts | 可选 | 查询起始的时间戳，返回小于这个时间（不包含）的记录。默认是当前时间，单位是毫秒。
-msgid | 可选 | 起始的消息 id，与 max_ts 一起作为查询的起点。
+timestamp | 可选 | 查询起始的时间戳，返回小于这个时间（不包含）的记录。默认是当前时间，单位是毫秒。
+msgid | 可选 | 起始的消息 id，与 timestamp 一起作为查询的起点。
 limit | 可选 | 返回条数限制，默认 100 条，最大 1000 条。
 
 ### 获取应用的所有聊天记录
@@ -163,8 +181,8 @@ limit | 可选 | 返回条数限制，默认 100 条，最大 1000 条。
 
 参数 | 约束 | 说明
 --- | --- | ---
-max_ts | 可选 | 查询起始的时间戳，返回小于这个时间（不包含）的记录。默认是当前时间，单位是毫秒。
-msgid | 可选 | 起始的消息 id，**使用时必须加上对应消息的时间戳 max_ts 参数，一起作为查询的起点**。
+timestamp | 可选 | 查询起始的时间戳，返回小于这个时间（不包含）的记录。默认是当前时间，单位是毫秒。
+msgid | 可选 | 起始的消息 id，**使用时必须加上对应消息的时间戳 timestamp 参数，一起作为查询的起点**。
 limit | 可选 | 返回条数限制，默认 100 条，最大 1000 条。
 
 ### 获取系统对话中某个特定用户与系统的消息记录
@@ -458,6 +476,23 @@ curl -X DELETE \
 client_id | 必填 | 字符串 | 退订者的 client id
 conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
 
+### 查询系统对话订阅用户数量
+
+查询订阅过指定的系统对话的用户数量。
+
+```sh
+curl -X DELETE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'conv_id=...' \
+  https://{{host}}/1.1/rtm/conversation/subscribers/count
+```
+
+参数 | 约束 | 类型 | 说明
+---|---|---|---
+conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
+
 ### 查询是否订阅过某个系统对话
 
 ```sh
@@ -490,15 +525,17 @@ curl -X GET \
   --data-urlencode 'conv_id=...' \
   --data-urlencode 'timestamp=...' \
   --data-urlencode 'limit=...' \
+  --data-urlencode 'direction=...' \
   https://{{host}}/1.1/rtm/conversation/subscription
 ```
 
 参数 | 约束 | 类型 | 说明
 ---|---|---|---
 client_id | 必填 | 字符串 | 目标查询用户的 client id
-conv_id | 可选 | 字符串 | 查询起始对话 id，不填则从订阅列表起始位置开始遍历。查询结果不会再包含本对话。
-timestamp | 可选 | 数字 | 查询起始对话被订阅时间。虽然是可选字段但当提供 conv_id 时本字段必填，值必须为订阅 conv_id 参数所指定系统对话的时间，单位是毫秒。
+conv_id | 可选 | 字符串 | 查询起始对话 id，不填则从订阅列表起始位置开始遍历。查询结果不会再包含本对话
+timestamp | 可选 | 数字 | 查询起始对话被订阅时间。虽然是可选字段但当提供 conv_id 时本字段必填，值必须为订阅 conv_id 参数所指定系统对话的时间，单位是毫秒
 limit | 可选 | 数字 | 返回条数限制，默认是 50 条
+direction | 可选 | 字符串 | 查询结果按时间排序方式，old 表示降序，new 表示升序，默认是 new。使用 old 则先返回最近订阅的对话，使用 new 则先返回最早订阅的对话
 
 返回目标用户订阅系统对话的列表：
 
@@ -887,7 +924,7 @@ session_token | AV.User 的 sessionToken
 {"nonce": "", "timestamp": "", "client_id": "", "signature": ""}
 ```
 
-返回的参数，可以参考「[用户登录签名](realtime_v2.html#%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E7%9A%84%E7%AD%BE%E5%90%8D)」与「实现签名工厂（[JavaScript](realtime_guide-js.html#%E5%AE%9E%E7%8E%B0%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%8E%82)、[Android](realtime_guide-android.html#%E5%AE%9E%E7%8E%B0%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%8E%82)、[Objective-C](realtime_guide-objc.html#%E5%AE%9E%E7%8E%B0%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%8E%82)、[.Net](realtime_guide-dotnet.html#%E5%AE%9E%E7%8E%B0%E7%AD%BE%E5%90%8D%E5%B7%A5%E5%8E%82)）」进行后续的登录。
+返回的参数，可以参考「[用户登录签名](realtime_v2.html#用户登录的签名)」与「实现签名工厂（[JavaScript](realtime_guide-js.html#实现签名工厂)、[Android](realtime_guide-android.html#实现签名工厂)、[Objective-C](realtime_guide-objc.html#实现签名工厂)、[.Net](realtime_guide-dotnet.html#实现签名工厂)）」进行后续的登录。
 
 为了方便用户进行细粒度控制，实现自定义功能（如黑名单），本接口提供了一个 hook `_rtmClientSign`，在验证 sessionToken 后去调用，传入的参数为 AV.User 构成的 JSON 对象：
 ```json

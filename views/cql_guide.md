@@ -193,7 +193,7 @@ select * from Player where name =(select name from GameScore where score>80)
 select * from Player where name !=(select name from GameScore where score<=80)
 ```
 
-**注意：子查询的语句也受上限 1000 条记录的限制。**
+**注意：子查询返回的记录数上限也是 1000 条。**
 
 {{ data.innerQueryLimitation(heading="#### 子查询的局限") }}
 

@@ -7,7 +7,6 @@
 <li><a href="realtime_guide-objc.html">iOS 实时通信指南</a></li>
 <li><a href="ios_statistics.html">iOS 统计 SDK 开发指南</a></li>
 <li><a href="ios_push_cert.html">iOS 推送证书设置指南</a></li>
-<li><a href="ios_crashreporting_guide.html">iOS 崩溃报告使用指南</a></li>
 <li><a href="/api-docs/iOS/index.html" target="_blank">iOS SDK API</a></li>
 
 ## 你是 Android 程序员？

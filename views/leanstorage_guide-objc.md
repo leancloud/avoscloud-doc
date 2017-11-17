@@ -1599,7 +1599,7 @@ NSString *sessionToken = currentUser.sessionToken;
 ```
 {% endblock %}
 
-{% block file_as_avater %}
+{% block file_as_avatar %}
 
 ```objc
 AVFile *file = [AVFile fileWithURL:@"http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"];
@@ -1612,7 +1612,7 @@ AVObject *todo = [AVObject objectWithClassName:@"Todo"];
 ```
 {% endblock %}
 
-{% block query_file_as_avater %}
+{% block query_file_as_avatar %}
 
 ```objc
 AVQuery *query = [AVQuery queryWithClassName:@"Todo"];

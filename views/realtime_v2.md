@@ -103,7 +103,7 @@ LeanCloud 实时通信服务的特性主要有：
 **sys**|system|Boolean|可选|是否是系统对话
 **unique**|unique|Boolean|可选|内部字段，标记根据成员原子创建的对话。<br/>（只能在 SDK 中使用。**REST API 不支持此参数**，传入 unique 无效)
 
-除了在各平台的 SDK 里面可以调用 API 创建对话外，我们也提供 [REST API](./realtime_rest_api.html#通过_REST_API_创建_更新_删除对话数据) 可以让大家预先建立对话：对话的信息存储在 _Conversation 表中，你可以直接通过 [数据存储相关的 REST API](./rest_api.html#%E5%AF%B9%E8%B1%A1-1) 对其进行操作。
+除了在各平台的 SDK 里面可以调用 API 创建对话外，我们也提供 [REST API](./realtime_rest_api.html#通过_REST_API_创建_更新_删除对话数据) 可以让大家预先建立对话：对话的信息存储在 _Conversation 表中，你可以直接通过 [数据存储相关的 REST API](./rest_api.html#对象-1) 对其进行操作。
 
 这里要特别讨论一下**单聊**、**群聊**、**聊天室**、**公众号**等使用场景。
 
@@ -216,7 +216,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 ```
 
 关于这部分消息的格式请参考
-[《实时通信 REST API - 富媒体消息格式说明》](realtime_rest_api.html#%E5%AF%8C%E5%AA%92%E4%BD%93%E6%B6%88%E6%81%AF%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E)了解。
+[《实时通信 REST API - 富媒体消息格式说明》](realtime_rest_api.html#富媒体消息格式说明)了解。
 
 #### 离线消息
 
@@ -316,7 +316,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 - **聊天服务，启用对话认证**，用于控制新建或加入对话、邀请/踢出对话成员等操作
 
 开发者可根据实际需要进行选择。一般来说，**登录认证** 能够满足大部分安全需求，而且我们也强烈建议开发者开启登录认证。
-对于使用 AVUser 的应用，可使用 REST API [获取_Client_登录签名](realtime_rest_api.html#%E8%8E%B7%E5%8F%96_Client_%E7%99%BB%E5%BD%95%E7%AD%BE%E5%90%8D) 进行登录认证。
+对于使用 AVUser 的应用，可使用 REST API [获取_Client_登录签名](realtime_rest_api.html#获取_Client_登录签名) 进行登录认证。
 
 ![image](images/leanmessage_signature2.png)
 
@@ -715,7 +715,7 @@ timestamp | 消息创建的时间
 * 目前单个普通对话的成员上限为 500 个，如果您通过数据存储 API 向 m 字段加入了超过 500 个 id，我们只会使用其中的前 500 个。
 * 请不要使用相同的 id 在大量设备上同时登录，如果系统检测到某个 id 同时在超过 5 个不同的 IP 上登录，会认为此 id 是重复使用的 id，之后此 id 当日的每次登录会按照 `id + IP` 的组合作为计费的独立用户。
 * 如果单个用户有超过 50 个的对话存在未接收的离线消息，那么当该用户登录时服务端只会**随机**下发 50 个对话的离线消息或未读消息数量。也就是说服务端不会再下发超出对话数量限制的那部分离线消息，也不会下发离线消息数量，离线消息不会丟失但需要从历史记录中拉取得到。
-* 系统广播消息一个应用一天最多发 5 条
+* 系统广播消息一个应用一天最多发 30 条
 
 {{ im.conversationsLifespan("### 对话的有效期") }}
 
@@ -742,7 +742,7 @@ LeanCloud 实时通信服务是完全独立的实时通信业务抽象，专注�
 
 ### 聊天记录的保存时间和条数
 
-我们暂时不限制用户应用中聊天记录的保存时间和条数。未来如有变化我们会提前通知用户，你也随时可以通过 [REST API](./realtime_rest_api.html#获取聊天记录) 将聊天记录同步到自己的服务器上。
+{{ im.messagesLifespan("") }}
 
 ### 聊天消息没有收到
 

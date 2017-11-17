@@ -168,6 +168,24 @@ git push -u origin master
 
 ## 线上环境
 
+### 系统依赖
+
+`.leanengine.yaml` 的 systemDependencies 部分中可以指定系统依赖，类似：
+
+```yaml
+systemDependencies:
+  - imagemagick
+```
+
+目前支持的选项包括：
+
+- `ffmpeg` 一个音视频处理工具库
+- `imagemagick` 一个图片处理工具库
+- `fonts-wqy` 文泉驿点阵宋体、文泉驿微米黑，通常和 phantomjs 配合来显示中文。
+- `phantomjs` 一个无 UI 的 WebKit 浏览器
+
+注意添加系统依赖将会拖慢部署速度，因此请不要添加未用到的依赖。
+
 ### 环境变量
 
 云引擎平台默认提供下列环境变量供应用使用：
@@ -179,7 +197,6 @@ git push -u origin master
 `LEANCLOUD_APP_MASTER_KEY`|当前应用的 Master Key
 `LEANCLOUD_APP_ENV`|当前的应用环境：<ul><li>开发环境没有该环境变量，或值为 `development`（一般指本地开发）</li><li>预备环境值为 `stage`</li><li>生产环境值为 `production`</li></ul>
 `LEANCLOUD_APP_PORT`|当前应用开放给外网的端口，只有监听此端口，用户才可以访问到你的服务。
-`LEANCLOUD_APP_INSTANCE`|云引擎实例名称，在多实例环境可以通过此变量标示自己。
 `LEANCLOUD_API_SERVER`|访问存储服务时使用的地址（类似于 `https://api.leancloud.cn`）。该值会因为所在数据中心等原因导致不一样，所以使用 REST API 请求存储服务或 LeanCloud 其他服务时请使用此环境变量的值。在云引擎中**不要**直接使用 `https://api.leancloud.cn`。
 `LEANCLOUD_AVAILABLE_CPUS`|云引擎实例可用 CPU 的数量，高规格实例（如：2CPU 1024MB 内存）时该值大于 1。应用可以根据该值启动对应数量的线程或者进程。在云引擎中**不要**直接使用操作系统 CPU 核数，否则可能启动过多的进程导致超出实例规格而异常退出。
 `LEANCLOUD_APP_GROUP`|云引擎实例所在的组。当使用云引擎 [组管理](leanengine_plan.html#组管理) 功能时，该值为组的名称。
@@ -221,7 +238,7 @@ git push -u origin master
 
 云引擎实现了一个缓存机制来加快构建的速度，所谓构建就是指你的应用在云引擎上安装依赖的过程，在每次构建时，如果 `package.json` 或其他用于定义依赖的文件没有发生修改，那么就直接使用上次安装的依赖，只将新的应用代码替换上去。
 
-如果你遇到了与依赖安装有关的问题，可以在控制台部署时勾选「下载最新依赖」，或通过命令行工具部署时添加 `--noCache` 选项；依赖缓存也会因为很多原因失效，因此也不保证每次构建都可以利用上缓存。
+如果你遇到了与依赖安装有关的问题，可以在控制台部署时勾选「下载最新依赖」，或通过命令行工具部署时添加 `--no-cache` 选项；依赖缓存也会因为很多原因失效，因此也不保证每次构建都可以利用上缓存。
 
 {% if node != 'qcloud' %}
 ## 备案和自定义域名

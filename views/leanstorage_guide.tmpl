@@ -123,15 +123,10 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 
 `{{baseObjectName}}` 对象在保存时可以设置选项来快捷完成关联操作，可用的选项属性有：
 
-选项 | 类型 | 说明
---- | --- | ---
-{{ docs.nowrap(saveOptions_fetchWhenSave) }} | Boolean | 对象成功保存后，自动返回本地**已改动属性**在云端的最新值。用途请参考 [更新计数器](#更新计数器)。
-`{{saveOptions_query}}` | {{baseQueryClassName}}  | 当 query 中的条件满足后对象才能成功保存，否则放弃保存，并返回错误码 305。<br/><br/>开发者原本可以通过 `{{baseQueryClassName}}` 和 `{{baseObjectName}}` 分两步来实现这样的逻辑，但如此一来无法保证操作的原子性从而导致并发问题。该选项可以用来判断多用户更新同一对象数据时可能引发的冲突。
-
-<a id="saveoption_query_example" name="saveoption_query_example"></a>【{{saveOptions_query}} 选项举例】用户的账务账户表 `Account` 有一个余额字段 `balance`，同时有多个请求要修改该字段值，为避免余额出现负值，只有满足 **balance >= 当前请求的数值** 这个条件才允许修改，否则提示「余额不足，操作失败！」。
-
-{% block code_saveoption_query_example %}{% endblock %}
-{% endblock %}
+选项 | 类型 | 适用操作 | 说明
+--- | --- | --- | ---
+{{ docs.nowrap(saveOptions_fetchWhenSave) }} | Boolean | create<br/>update |对象成功保存后，自动返回其在云端的最新值。create 操作返回该对象的所有属性，update 操作只返回被更新了的属性的最新值。用法请参考 [更新计数器](#更新计数器)。
+`{{saveOptions_query}}` | {{baseQueryClassName}}  | update | 当 query 中的条件满足后，对象才能被更新，否则系统会放弃更新，并返回错误码 305。<br/><br/>通过 query 指定的条件仅对已存在的对象生效，如果用于保存新对象，则不生效。<br/><br/>开发者原本可以通过 `{{baseQueryClassName}}` 和 `{{baseObjectName}}` 分两步来实现这样的逻辑，但如此一来无法保证操作的原子性从而导致并发问题。该选项可以用来判断多用户更新同一对象数据时可能引发的冲突。用法请参考 [按条件更新对象](#按条件更新对象)。
 
 ### 获取对象
 每个被成功保存在云端的对象会有一个唯一的 Id 标识 `{{objectIdName}}`，因此获取对象的最基本的方法就是根据 `{{objectIdName}}` 来查询：
@@ -197,6 +192,15 @@ INSERT INTO Todo (title, content) VALUES ('工程师周会', '每周工程师会
 {% block code_update_todo_content_with_objectId %}{% endblock %}
 
 更新操作是覆盖式的，云端会根据最后一次提交到服务器的有效请求来更新数据。更新是字段级别的操作，未更新的字段不会产生变动，这一点请不用担心。
+
+#### 按条件更新对象
+
+通过使用 [保存选项](#保存选项) `query` 可以按照指定条件去更新对象——当条件满足时，执行更新；条件不满足时，不执行更新。
+
+<a id="saveoption_query_example" name="saveoption_query_example"></a>例如：用户的账务账户表 `Account` 有一个余额字段 `balance`，同时有多个请求要修改该字段值，为避免余额出现负值，只有满足 **balance >= 当前请求的数值** 这个条件才允许修改，否则提示「余额不足，操作失败！」。
+
+{% block code_saveoption_query_example %}{% endblock %}
+{% endblock %}
 
 #### 使用 CQL 语法更新对象
 {{productName}} 提供了类似 SQL 语法中的 Update 方式更新一个对象，例如更新一个 TodoFolder 对象可以使用下面的代码：
@@ -468,17 +472,20 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 
 {% endblock %}
 
+{# 2017-11-09 the following block doesn't apply to swift, php, python #}
+{% if segment_code === 'objc' or segment_code === 'java' or segment_code === 'js' or segment_code === 'android' %}
 ### 常见的文件使用场景
 
 #### 文件被其他对象关联
 
 解决方案：将 AVFile 当做 `Pointer` 类型关联 AVObject 对象的一个字段:
 
-{% block file_as_avater %}{% endblock %}
+{% block file_as_avatar %}{% endblock %}
 
 查询的时候需要额外的 include 一下:
 
-{% block query_file_as_avater %}{% endblock %}
+{% block query_file_as_avatar %}{% endblock %}
+{% endif %}
 
 ## 查询
 `{{baseQueryClassName}}` 是构建针对 `{{baseObjectName}}` 查询的基础类。{{query_result_limit}}
@@ -945,15 +952,15 @@ CQL 是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功
 **方案一**：
 
 1. 设备 A 登录成功后，调用 AVUser 的 `refreshSessionToken` 方法，更新服务端的 sessionToken。
-1. 设备 B 中的应用启动时，调用 AVUser 的 `isAuthenticated` 方法。由于上一步的操作，此时设备 B 中的 sessionToken 是过期的，因此该方法会返回 false，然后据此来调用 `logout` 方法退出登录。
-1. 集成 [LiveQuery 用户登录事件][livequery-event-login]，当设备 B 收到当前用户的登录事件时，调用 AVUser 的 `logout` 方法退出登录。
+2. 设备 B 中的应用启动时，调用 AVUser 的 `isAuthenticated` 方法。由于上一步的操作，此时设备 B 中的 sessionToken 是过期的，因此该方法会返回 false，然后据此来调用 `logout` 方法退出登录。
+3. 设备 B 中的应用假设正在使用的过程中，A 设备登录了，B 可能会因为发送请求而接收到错误码为 `403(Forbidden to read/write by class permissions)` 的响应，那么基本可以判断出当前用户的 sessionToken 过期了，此时也应将用户导航到登录页面重新登录。
 
 
 **方案二**：
 #}
 1. 建立一个设备表，记录用户登录信息和当前设备的信息。
-1. 设备 A 登录成功后，更新设备表，将当前设备标记为当前用户登录的最新设备。
-1. 设备 B 中的应用启动时，检查设备表，发现最新设备不是当前设备，调用 AVUser 的 `logout` 方法退出登录。
+2. 设备 A 登录成功后，更新设备表，将当前设备标记为当前用户登录的最新设备。
+3. 设备 B 中的应用启动时，检查设备表，发现最新设备不是当前设备，调用 AVUser 的 `logout` 方法退出登录。
 
 {# 2017-09-21 hide step 4
 1. 集成 [LiveQuery 用户登录事件][livequery-event-login]，当设备 B 收到当前用户的登录事件时，检查最新设备不是当前设备，调用 AVUser 的 logout 方法退出当前登录。
