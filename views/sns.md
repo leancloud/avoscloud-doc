@@ -22,7 +22,7 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 你也可以在开源项目上编译该组件加入到项目中，在根目录下执行 `./build-framework.sh` 即可。或者直接拖动源代码到项目中，源代码在 Classes 目录。
 
-### SSO
+### <a name="iOS-SNS-SSO登录"></a>SSO 授权
 
 利用 SSO，可以使用户不用输入用户名密码等复杂操作，一键登录。目前 LeanCloudSocial 支持如下平台：
 
@@ -31,57 +31,25 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 并且不需要使用各个平台官方的 SDK，保证你的应用体积的最小化。
 
-#### 调用接口
+#### 配置平台账号
 
-你需要做的很简单，以新浪微博为例：
+在 [应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns) 配置相应平台的 **应用 ID** 和 **应用 Secret Key** 。点击保存，自动生成 **回调 URL** 和 **登录 URL**。
 
-```objc
-// 添加至 application:didFinishLaunchingWithOptions: 方法中，放在 [AVOSCloud setApplicationId:clientKey:] 之后
-[AVOSCloudSNS setupPlatform:AVOSCloudSNSSinaWeibo withAppKey:@"<WEIBO-APP-ID>" andAppSecret:@"<WEIBO-APP-KEY>" andRedirectURI:@""];
+微博开放平台需要单独配置 **回调 URL**。 在微博开放平台 ->「应用信息」->「高级信息」->「OAuth2.0 授权设置」里的「授权回调页」中绑定生成的 **回调 URL**。
 
-[AVOSCloudSNS loginWithCallback:^(id object, NSError *error) {
-   if (error) {
-   } else {
-        NSString *accessToken = object[@"access_token"];
-        NSString *username = object[@"username"];
-        NSString *avatar = object[@"avatar"];
-        NSDictionary *rawUser = object[@"raw-user"]; // 性别等第三方平台返回的用户信息
-        //...
-   }
-} toPlatform:AVOSCloudSNSSinaWeibo];
-
-```
-
-在 `AppDelegate` 里添加:
-
-```objc
--(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
-    return [AVOSCloudSNS handleOpenURL:url];
-}
-
-// When Build with IOS 9 SDK
-// For application on system below ios 9
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
-    return [AVOSCloudSNS handleOpenURL:url];
-}
-// For application on system equals or larger ios 9
-- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options
-{
-    return [AVOSCloudSNS handleOpenURL:url];
-}
-
-```
-
-这样，代码部分就完成了。
+测试阶段，在微博开放平台在「应用信息」->「测试信息」里添加微博账号，在腾讯开放平台的「QQ 登录」->「应用调试者」里添加 QQ 账号即可。在应用通过审核后，可以获取公开的第三方登录能力。
 
 #### 配置 URL Schemes
 
-下一步就是设置，为你的应用添加 URL Schemes：`sinaweibosso.appId`（注意中间有个点儿）：
+添加下列 URL Schemes:
+
+- 微博的 URL Schemes：`sinaweibosso.AppKey`（注意中间有个点儿）
+- QQ 的 URL Schemes：`tencentAppId`
+
+AppKey 对应微博开放平台应用的 AppKey。
+AppId 对应腾讯开放平台应用的 AppId。
 
 ![Url Shceme](images/sns_guide_url_scheme.png)
-
-设置 QQ 的 URL Schemes：`tencentappid`。
 
 #### iOS 9 适配
 
@@ -123,11 +91,61 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
     </dict>
 ```
 
-这时如果一切顺利，就应该可以正常打开新浪微博官方 iOS 客户端进行登录了。
+#### 调用接口
 
-在相关应用已安装的情况下，调用 `+ (void)[AVOSCloudSNS loginWithCallback:toPlatform:]` 接口的效果是直接跳转到该应用进行 SSO 授权；如果该应用没有安装，则跳转至网页授权。网页授权需要用户输入账号、密码，体验较差，所以我们提供了 `+ (BOOL)[AVOSCloudSNS isAppInstalledForType:]` 来让你检测相应的应用有没有安装，没有安装的话可以提示用户或者隐藏按钮。
+在 application:didFinishLaunchingWithOptions: 方法中配置账号：
 
-### 绑定 AVUser
+```objc
+//注册 LeanCloud 
+[AVOSCloud setApplicationId:@"<LeanCloud-AppId>" clientKey:@"<LeanCloud-AppKey>"];
+//绑定微博
+[AVOSCloudSNS setupPlatform:AVOSCloudSNSSinaWeibo withAppKey:@"<Weibo-AppKey>" andAppSecret:@"<Weibo-AppSecret>" andRedirectURI:@""];
+//绑定 QQ
+[AVOSCloudSNS setupPlatform:AVOSCloudSNSQQ withAppKey:@"<QQ-AppId>" andAppSecret:@"<QQ-AppKey>" andRedirectURI:@""];
+
+```
+
+在 `AppDelegate` 里添加:
+
+```objc
+-(BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+    return [AVOSCloudSNS handleOpenURL:url];
+}
+
+// When Build with IOS 9 SDK
+// For application on system below ios 9
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    return [AVOSCloudSNS handleOpenURL:url];
+}
+// For application on system equals or larger ios 9
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options
+{
+    return [AVOSCloudSNS handleOpenURL:url];
+}
+
+```
+
+打开新浪微博客户端进行登录（此时并没有绑定用户系统，绑定 LeanCloud 的用户系统参考文档中的 [绑定 AVUser ](#iOS-SNS-AVUser)小节）：
+
+```objc
+//如果用 QQ 登录将 AVOSCloudSNSSinaWeibo 替换为 AVOSCloudSNSQQ。
+  
+[AVOSCloudSNS loginWithCallback:^(id object, NSError *error) {
+   if (error) {
+   } else {
+        NSString *accessToken = object[@"access_token"];
+        NSString *username = object[@"username"];
+        NSString *avatar = object[@"avatar"];
+        NSDictionary *rawUser = object[@"raw-user"]; // 性别等第三方平台返回的用户信息
+        //...
+   }
+} toPlatform:AVOSCloudSNSSinaWeibo];
+
+```
+在相关应用已安装的情况下，调用 `+ (void)[AVOSCloudSNS loginWithCallback:toPlatform:]` 接口的效果是直接跳转到该应用进行 SSO 授权；如果该应用没有安装，则跳转至网页授权。我们提供了 `+ (BOOL)[AVOSCloudSNS isAppInstalledForType:]` 来让你检测相应的应用有没有安装，没有安装的话可以提示用户或者隐藏按钮。
+
+### <a name="iOS-SNS-AVUser"></a> 绑定 AVUser
 
 先导入头文件:
 
@@ -207,24 +225,43 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 {{ include.retrieveAuthData(node, "### 获取 authData") }}
 
-### 手动显示登录界面
+### WebView 授权
 
-上面的例子中都是自动显示登录界面，如果需要实现自定义显示方式，可以使用方法 `loginManuallyWithCallback:`，例如：
+WebView 授权登录需要用户输入账号、密码，体验较差，我们更推荐使用[ SSO 授权 ](#iOS-SNS-SSO登录)方式登录。
+
+在 [应用控制台 > 组件 > 社交](/devcomponent.html?appid={{appid}}#/component/sns) 配置相应平台的 **应用 ID** 和 **应用 Secret Key** 。点击保存，自动生成 **回调 URL** 和 **登录 URL**。
+
+#### 自动显示登录页面
+
+自动显示登录界面不需要自己定义控制器，传入控制台生成的登录的 URL 即可。
+
+```
+[AVOSCloudSNS loginWithURL:url callback:^(id object, NSError *error) {
+        if (error) {
+            // 登录失败，可能为网络问题或 url 无效
+        } else {
+            // 登录成功
+        }
+    }];
+```
+#### 手动显示登录界面
+如果需要实现自定义显示方式，例如自定义导航栏样式等可以使用方法 `loginManuallyWithCallback:`，例如：
 
 ```objc
 __block UIViewController *vc=nil;
-vc= [AVOSCloudSNS loginManuallyWithCallback:^(id object, NSError *error) {
+    vc= [AVOSCloudSNS loginManuallyWithURL:[NSURL URLWithString:@"https://leancloud.cn/1.1/sns/goto/rye5y8v6egttht70"]  callback:^(id object, NSError *error) {
+        if (vc) {
+            //关闭 UIViewController
+            //ARC 模式中要将 vc 置空
+            vc=nil;
+        }
+    }];
+    
     if (vc) {
-        //关闭 UIViewController
-
-        //ARC 模式中要将 vc 置空
-        vc=nil;
+        //显示UIViewController
+        [self presentViewController:vc animated: YES completion:nil];
     }
-}];
 
-if (vc) {
-    //显示UIViewController
-}
 ```
 
 请注意代码提到的 **ARC 模式中要将 vc 置空** 是为了打破 retain 环，否则 vc 将不会被释放而浪费内存!
