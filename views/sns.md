@@ -28,6 +28,7 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 - 新浪微博
 - 手机 QQ
+- 微信
 
 并且不需要使用各个平台官方的 SDK，保证你的应用体积的最小化。
 
@@ -45,9 +46,10 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 - 微博的 URL Schemes：`sinaweibosso.<AppKey>`（注意中间有个点儿）
 - QQ 的 URL Schemes：`tencent<AppId>`
+- 微信的 URL Schemes：`<AppId>`
 
 将 `<AppKey>` 替换为微博开放平台应用的 AppKey，如 `sinaweibosso.5827301343`。
-将 `<AppId>` 替换为腾讯开放平台应用的 AppId。
+将 `<AppId>` 替换为腾讯/微信开放平台应用的 AppId。
 
 ![Url Shceme](images/sns_guide_url_scheme.png)
 
@@ -99,11 +101,14 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 // 注册 LeanCloud 
 [AVOSCloud setApplicationId:@"<LeanCloud-AppId>" clientKey:@"<LeanCloud-AppKey>"];
 // 绑定微博
-[AVOSCloudSNS setupPlatform:AVOSCloudSNSSinaWeibo withAppKey:@"<Weibo-AppKey>" andAppSecret:@"<Weibo-AppSecret>" andRedirectURI:@""];
+[AVOSCloudSNS setupPlatform:AVOSCloudSNSSinaWeibo withAppKey:@"<Weibo-AppKey>" andAppSecret:@"<Weibo-AppSecret>" andRedirectURI:@"https://leancloud.cn/1.1/sns/callback/rye5y8v6egttht70"];
 // 绑定 QQ
-[AVOSCloudSNS setupPlatform:AVOSCloudSNSQQ withAppKey:@"<QQ-AppId>" andAppSecret:@"<QQ-AppKey>" andRedirectURI:@""];
+[AVOSCloudSNS setupPlatform:AVOSCloudSNSQQ withAppKey:@"<QQ-AppId>" andAppSecret:@"<QQ-AppKey>" andRedirectURI:nil];
+// 绑定微信
+[AVOSCloudSNS setupPlatform:AVOSCloudSNSWeiXin withAppKey:@"<WeiXin-AppId>" andAppSecret:@"<WeiXin-AppSecret>" andRedirectURI:nil];
 
 ```
+注意：redirect_uri 是在 [应用控制台 > 组件 > 社交](/dashboard/devcomponent.html?appid={{appid}}#/component/sns) 生成的**回调 URL**，QQ 和微信没有这个设置选项可以填 nil。新浪微博必填。
 
 在 `AppDelegate` 里添加:
 
@@ -143,7 +148,9 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 } toPlatform:AVOSCloudSNSSinaWeibo];
 
 ```
-在相关应用已安装的情况下，调用 `+ (void)[AVOSCloudSNS loginWithCallback:toPlatform:]` 接口的效果是直接跳转到该应用进行 SSO 授权；如果该应用没有安装，则跳转至网页授权。我们提供了 `+ (BOOL)[AVOSCloudSNS isAppInstalledForType:]` 来让你检测相应的应用有没有安装，没有安装的话可以提示用户或者隐藏按钮。
+在相关应用已安装的情况下，调用 `+ (void)[AVOSCloudSNS loginWithCallback:toPlatform:]` 接口的效果是直接跳转到该应用进行 SSO 授权；如果该应用没有安装，QQ 和微博将跳转至网页登录。微信没有安装时，会返回错误，暂不支持微信网页登录。
+
+我们提供了 `+ (BOOL)[AVOSCloudSNS isAppInstalledForType:]` 来让你检测相应的应用有没有安装，没有安装的话可以提示用户或者隐藏按钮。
 
 ### 绑定 AVUser 
 
@@ -179,7 +186,7 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 }
 ```
 
-这样在该方法之后，可以紧接着调用 `-[AVUser loginWithAuthData:block]`（此时不需要加 platform 参数，因为 authData 中已包含了 platform 数据）来登录 LeanCloud 账号。这样实现起来非常方便，局限是目前**仅支持微博、QQ**登录。
+这样在该方法之后，可以紧接着调用 `-[AVUser loginWithAuthData:block]`（此时不需要加 platform 参数，因为 authData 中已包含了 platform 数据）来登录 LeanCloud 账号。这样实现起来非常方便，局限是目前**仅支持微博、QQ、微信**登录。
 
 使用其他平台的 SDK（如 Facebook SDK）获取到的 authData 如果不包含 platform 键值对，就要在调用 `-[AVUser loginWithAuthData:platform:block]` 时加上 platform 这个参数来登录 LeanCloud 账号。
 
@@ -227,7 +234,10 @@ pod 'LeanCloudSocial'  # 静态库方式引入，依赖 AVOSCloud 库
 
 ### WebView 授权
 
-WebView 授权登录需要用户输入账号和密码，体验较差，我们更推荐使用 [SSO 授权](#SSO-授权) 方式登录。
+WebView 授权登录需要用户输入账号和密码，体验较差，我们更推荐使用 [SSO 授权](#SSO-授权) 方式登录。目前 WebView 授权支持如下平台：
+
+- 新浪微博
+- 手机 QQ
 
 在 [应用控制台 > 组件 > 社交](/dashboard/devcomponent.html?appid={{appid}}#/component/sns) 配置相应平台的 **应用 ID** 和 **应用 Secret Key** 。点击保存，自动生成 **回调 URL** 和 **登录 URL**。
 
