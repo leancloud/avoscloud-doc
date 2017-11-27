@@ -63,16 +63,8 @@ var TextMessage = require('leancloud-realtime').TextMessage;
 ```javascript
 var realtime = new Realtime({
   appId: '{{appid}}',
-  region: 'cn', //{% if node != 'qcloud' %}美国节点为 "us"{% else %}目前仅支持中国节点 cn{% endif %}
-});
-```
-
-在微信小程序中使用时需要在初始化时指定 **noBinary** 参数为 `true`：
-```javascript
-const realtime = new Realtime({
-  appId: '{{appid}}',
-  region: 'cn', // {% if node != 'qcloud' %}美国节点为 "us"{% else %}目前仅支持中国节点 cn{% endif %}
-  noBinary: true,
+  appKey: '{{appkey}}',
+  region: 'cn', // 美国节点为 "us"
 });
 ```
 
@@ -99,6 +91,7 @@ AV.init({
 var Realtime = AV.Realtime;
 var realtime = new Realtime({
   appId: '{{appid}}',
+  appKey: '{{appkey}}',
   plugins: [AV.TypedMessagesPlugin], // 注册富媒体消息插件
 });
 // 在浏览器中直接加载时，富媒体消息插件暴露的所有的成员都挂载在 AV 命名空间下
@@ -120,6 +113,7 @@ AV.init({
 // 初始化实时通讯 SDK
 var realtime = new Realtime({
   appId: '{{appid}}',
+  appKey: '{{appkey}}',
   plugins: [TypedMessagesPlugin], // 注册富媒体消息插件
 });
 var imageMessage = new ImageMessage(file);
