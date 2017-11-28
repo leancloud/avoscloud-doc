@@ -220,13 +220,6 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         type: 'node',
         qcloudShow: true
       },{
-        name: '在线聊天客服系统',
-        desc: '本项目使用 LeanCloud 云引擎、数据存储和聊天服务实现一个基本的客服系统。主要功能包括：根据客服工作状态和排队人数自动为用户指派客服、用户与客服在线聊天、客服设置工作状态决定是否接受新任务、用户为客服打分等。',
-        downPath: '',
-        mdPath: 'https://github.com/leancloud/realtime-service-demo',
-        type: 'node',
-        qcloudShow: true
-      },{
         name: '云引擎 Todo',
         desc: '该项目是 LeanCloud 云引擎示例项目，使用 Node.js 和 Express 实现。',
         downPath: '',

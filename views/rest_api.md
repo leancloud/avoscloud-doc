@@ -2778,63 +2778,13 @@ curl -X GET \
 
 具体支持的参数：
 
-<table>
-  <tr><th>参数名</th><th>含义</th></tr>
-  <tr><td>start</td><td>开始日期（yyyyMMdd）</td></tr>
-  <tr><td>end</td><td>结束日期（yyyyMMdd）</td></tr>
-  <tr><td>metrics</td><td>统计数据项</td></tr>
-  <tr><td>platform</td><td>应用平台：iOS、Android，可选，默认是全部。</td></tr>
-  <tr><td>appversion</td><td>选择应用版本，可选，默认是全部。一次取多个版本数据半角逗号（,）分隔，如：1.0,2.0,2.5</td></tr>
-  <tr><td>channel</td><td>选择发布渠道，可选，默认是全部。一次取多个渠道数据请用半角逗号（,）分隔，如：Xiaomi,Meizu</td></tr>
-  <tr><td>conv_id</td><td>选择对话 ID，可选，只在查询实时通信某个对话相关的统计信息时使用</td></tr>
-</table>
+{{ data.restAppMetricsParams() }}}
 
 metrics 参数可选项解释：
 
-<table>
-  <tr><th>参数值</th><th>含义</th></tr>
-  <tr><td>accumulate_user</td><td>累计用户数</td></tr>
-  <tr><td>new_user</td><td>新增用户数</td></tr>
-  <tr><td>active_user</td><td>活跃用户数</td></tr>
-  <tr><td>session</td><td>启动次数</td></tr>
-  <tr><td>new_user_hour</td><td>新增用户数（按小时查看）</td></tr>
-  <tr><td>active_user_hour</td><td>活跃用户数（按小时查看）</td></tr>
-  <tr><td>session_hour</td><td>启动次数（按小时查看）</td></tr>
-  <tr><td>wau</td><td>周活跃用户数</td></tr>
-  <tr><td>mau</td><td>月活跃用户数</td></tr>
-  <tr><td>avg_user_time</td><td>日平均用户使用时长</td></tr>
-  <tr><td>avg_session_time</td><td>日次均使用时长</td></tr>
-  <tr><td>avg_page_count</td><td>日均访问页面数</td></tr>
-  <tr><td>retention_n</td><td>n 天后的存留用户数（n 可取值：1-7、14、30 如 retention_1）</td></tr>
-  <tr><td>push_login</td><td>推送用户数</td></tr>
-  <tr><td>push_ack</td><td>推送到达数</td></tr>
-  <tr><td>push_session</td><td>聊天用户数</td></tr>
-  <tr><td>push_direct</td><td>聊天消息数</td></tr>
-  <tr><td>active_user_locations</td><td>活跃用户所在地</td></tr>
-  <tr><td>new_user_locations</td><td>新用户所在地</td></tr>
-  <tr><td>device_os</td><td>设备系统版本</td></tr>
-  <tr><td>device_model</td><td>设备型号</td></tr>
-  <tr><td>device_network_access</td><td>设备网络接入方式</td></tr>
-  <tr><td>device_network_carrier</td><td>设备网络运营商</td></tr>
-  <tr><td>device_resolution</td><td>设备分辨率</td></tr>
-  <tr><td>page_visit</td><td>页面访问量</td></tr>
-  <tr><td>page_duration</td><td>页面停留时间</td></tr>
-  <tr><td>active_user_freq_histo</td><td>活跃用户使用次数分布</td></tr>
-  <tr><td>new_user_freq_histo</td><td>新用户使用次数分布</td></tr>
-  <tr><td>active_user_time_histo</td><td>活跃用户使用时长分布</td></tr>
-  <tr><td>new_user_time_histo</td><td>新用户使用时长分布</td></tr>
-  <tr><td>session_time_histo</td><td>单次启动时长分布</td></tr>
-  <tr><td>event_count</td><td>自定义事件次数，请求参数需增加 event 参数。</td></tr>
-  <tr><td>event_user</td><td>自定义事件用户数，请求参数需增加 event 参数。</td></tr>
-  <tr><td>event_duration</td><td>自定义事件时长，请求参数需增加 event 参数。</td></tr>
-  <tr><td>event_label_count</td><td>自定义事件标签分布，请求参数需增加 event， event_label 参数。</td></tr>
-  <tr><td>rtm_tr_sender</td><td>单日某暂态对话内有发出过消息的独立用户数，请求参数需增加 conv_id 参数。</td></tr>
-  <tr><td>rtm_tr_msg_down</td><td>单日某暂态对话下行消息总数，请求参数需增加 conv_id 参数。</td></tr>
-  <tr><td>rtm_tr_msg_up</td><td>单日某暂态对话的上行消息总数，请求参数需增加 conv_id 参数。</td></tr>
-  <tr><td>rtm_tr_conv_m</td><td>单日加入某暂态对话的独立用户数，请求参数需增加 conv_id 参数。</td></tr>
-</table>
+{{ data.restAppMetricsParamMetrics() }}
 
-返回的json数据
+返回的 JSON 数据：
 
 ```json
 {
