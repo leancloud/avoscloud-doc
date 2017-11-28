@@ -6,8 +6,6 @@
 {{ docs.alert("注意：TAB 中暂时还未开放短信服务，下面的 API 请求无效。") }}
 {% endif %}
 
-{{ sms.usSMSNotReady() }}
-
 [REST API](rest_api.html) 可以让任何支持发送 HTTP 请求的设备与 LeanCloud 进行交互。使用我们的短信服务 REST API 可以完成很多事情，比如：
 
 * 给指定手机号码发送短信验证码
