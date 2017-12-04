@@ -239,15 +239,17 @@ angular.module('app').controller('StartCtrl', [
                       .children()
                     );
 
-                    prettyPrepare();
-                    prettyPrint();
-                    $("pre.prettyprint code").each(function(index, ele) {
-                      $(ele).after("<div class='doc-example-action'><button class='copybtn'><span class='icon icon-clipboard'></span></button></div>");
-                    });
-                    glueCopy();
                     $timeout(function(){
                         //$compile($('#start-main').contents())($scope);
                         $compile(dom.contents())($scope);
+                        setTimeout(() => {
+                            prettyPrepare();
+                            prettyPrint();
+                            $("pre.prettyprint code").each(function(index, ele) {
+                              $(ele).after("<div class='doc-example-action'><button class='copybtn'><span class='icon icon-clipboard'></span></button></div>");
+                            });
+                            glueCopy();
+                        }, 0);
                     },0);
                     dom.css("visibility", 'visible').prev().addClass('loaded');
                 });
