@@ -2809,51 +2809,7 @@ metrics 参数可选项解释：
 }
 ```
 
-获取某个应用的实时统计数据：
-
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
-  "https://{{host}}/1.1/stats/rtmetrics?platform=iOS&metrics=current_active"
-```
-
-具体支持的参数：
-
-<table>
-  <tr><th>参数名</th><th>含义</th></tr>
-  <tr><td>metrics</td><td>统计数据项</td></tr>
-  <tr><td>platform</td><td>应用平台：iOS、Android，可选，默认是全部。</td></tr>
-</table>
-
-metrics参数可选项解释：
-
-<table>
-  <tr><th>参数值</th><th>含义</th></tr>
-  <tr><td>current_active</td><td>活跃用户数</td></tr>
-  <tr><td>30min_active</td><td>近 30 分钟的活跃用户数</td></tr>
-  <tr><td>pages</td><td>用户停留页面</td></tr>
-  <tr><td>events</td><td>用户触发事件</td></tr>
-  <tr><td>locations</td><td>用户所在地</td></tr>
-</table>
-
-返回数据
-
-```json
-{data:97, metrics:"current_active"}
-
-{data:[1,3,5,..], metrics:"30min_active"}
-
-{data:[{name:"pageA", count:3}, {name:"pageB",count:2}, ...], metrics:"pages"}
-
-{data:[{name:"eventA", count:3}, {name:"eventB",count:2}, ...], metrics:"events"}
-
-{data:[{location:"上海", count:3}, {location:"江苏", count:2}, ...], metrics:"locations"}
-
-```
-
-
-批量获取：
+### 批量获取
 
 当需要批量获取统计数据时，可以将多个 metrics 值用半角逗号拼接传入，返回结果将是一个数组，结果值和参数值次序对应，例如：
 
@@ -2863,7 +2819,8 @@ curl -X GET \
   -H "X-LC-Key: {{masterkey}},master" \
   "https://{{host}}/1.1/stats/appmetrics?platform=iOS&start=20140301&end=20140315&metrics=new_user,retention_1"
 ```
-将返回
+
+将返回：
 
 ```json
 [
@@ -2901,7 +2858,9 @@ curl -X GET \
      "metrics":"retention_1"}]
 ```
 
-获取统计在线参数，可以获取发送策略，是否开启的设置情况，和自定义的在线配置参数。
+### 获取统计在线参数
+
+可以获取发送策略、是否开启的设置情况，和自定义的在线配置参数。
 
 ```sh
 curl -X GET \
