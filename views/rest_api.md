@@ -2945,15 +2945,18 @@ curl -i -X POST \
   "events": [
     {
       "event": "_page",
+      "ts": 1453014943466,
       "duration": 2000,
       "tag": "BookDetail"
     },
     {
       "event": "buy-item",
+      "ts": 1453014943466,
       "attributes": {"item-category": "book"}
     },
     {
       "event": "_session.close",
+      "ts": 1453014943466,
       "duration": 10000
     }
   ]
@@ -2995,9 +2998,10 @@ https://{{host}}/1.1/stats/open/collect
 | 字段         | 约束   | 含义                                       |
 | ---------- | ---- | ---------------------------------------- |
 | event      | 必选   | 事件名称                                     |
-| attributes | 可选   | 事件属性：包含一个 key-value 的字典。                 |
+| ts         | 必选   | 事件触发时间，单位为毫秒                        |
+| attributes | 可选   | 事件属性，包含一个 key-value 的字典。                 |
 | duration   | 可选   | 事件持续时长                                   |
-| tag        | 可选   | 事件属性的简写方式，等同于属性里面添加：`{event: tag}` 这个元素。 |
+| tag        | 可选   | 事件属性的简写方式，等同于属性里面添加 `{event: tag}` 这个元素。 |
 
 #### 预定义的事件
 
