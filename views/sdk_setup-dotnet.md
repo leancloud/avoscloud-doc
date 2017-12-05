@@ -101,9 +101,9 @@ var realtime = new AVRealtime("此处填写应用的 appId", "此处填写应用
 
 #### 私有部署
 
-针对私有部署的服务器地址是根据部署之后的域名而对应生成的，因此在初始化 SDK 的时候需要单独的进行服务器地址的配置。
+针对私有部署的服务器地址是根据部署之后的域名而对应生成的，因此在初始化 SDK 的时候需要单独配置服务器地址。
 
-在 `AVClient.Configuration` 中包含了如下的属性：
+`AVClient.Configuration` 包含了如下属性：
 
 属性名|含义|示例
 --|--|--
@@ -112,33 +112,31 @@ PushServer|推送服务的私有部署地址|https://abc-push.xyz.com
 StatsServer|统计服务的私有部署地址|https://abc-stats.xyz.com
 EngineServer|云引擎（云函数）私有部署地址|https://engine-stats.xyz.com
 
-而与实时通信相关的私有部署配置在 `AVRealtime.Configuration` 中则包含了如下属性：
+与实时通信相关的私有部署配置 `AVRealtime.Configuration` 包含了如下属性：
 
 属性名|含义|示例
 --|--|--
 RTMRouter|分配最终 WebSocket 地址的云端路由地址|https://abc-rtmrouter.xyz.com
-RealtimeServer|最终的 WebSocket 地址|wss://abc-wss.xyz.com
+RealtimeServer|最终的 WebSocket 地址|wss://abc-wss.xyz.com
 
 注意：当设置了 `RealtimeServer` 之后，它拥有最高优先级，SDK 不会再去请求 `RTMRouter` 来申请动态（负载均衡）的 WebSocket 地址。
 
 ##### 私有部署示例
 
-假设购买了数据存储和实时通信的私有部署，在私有部署的相关配置手册上我们会给出最终生产环境的地址:
+假设购买了数据存储和实时通信的私有部署，在私有部署的相关配置手册上我们会给出最终生产环境的地址，例如：
 
-例如：
+- 数据存储地址 (Api Server)：https://abc-api.xyz.com
+- 实时通信地址云端路由地址为 (RTM Router)：https://abc-rtmrouter.xyz.com
 
-- 数据存储地址(Api Server)：https://abc-api.xyz.com
-- 实时通信地址云端路由地址为(RTM Router)：https://abc-rtmrouter.xyz.com
-
-在 SDK 初始化的需要进行如下设置：
+在 SDK 初始化时需要进行如下设置：
 
 数据存储服务：
 ```cs
 AVClient.Initialize(new AVClient.Configuration
 {
-    ApplicationId = "you app id",
-    ApplicationKey = "you app key",
-    ApiServer = new Uri("https://abc-api.xyz.com")// 告知 SDK，所有的关于数据存储服务的请求都发往这个地址
+    ApplicationId = "你的 app id",
+    ApplicationKey = "你的 app key",
+    ApiServer = new Uri("https://abc-api.xyz.com") // 告知 SDK 所有的数据存储服务请求都发往这个地址
 });
 ```
 实时通信服务：
@@ -146,15 +144,13 @@ AVClient.Initialize(new AVClient.Configuration
 ```cs
 var realtime = new AVRealtime(new AVRealtime.Configuration
 {
-    ApplicationId = "you app id",
-    ApplicationKey = "you app key",
-    RTMRouter = new Uri("https://abc-rtmrouter.xyz.com")// 告知 SDK，去这个地址请求动态的 WebSocket 地址
+    ApplicationId = "你的 app id",
+    ApplicationKey = "你的 app key",
+    RTMRouter = new Uri("https://abc-rtmrouter.xyz.com") // 告知 SDK 去这个地址请求动态的 WebSocket 地址
 });
 ```
 
-也存在一种可能性，私有部署中根据用户需求只部署了一台 WebSocket 服务器用作实时通信服务器，
-
-假如配置手册上给出的内容如下：
+也存在一种可能性，私有部署中根据用户需求只部署了一台 WebSocket 服务器作为实时通信服务器。假如配置手册上给出的内容如下：
 
 - 数据存储地址(Api Server)：https://abc-api.xyz.com
 - 实时通信地址(RTM Router): wss://abc-wss.xyz.com
@@ -164,13 +160,11 @@ var realtime = new AVRealtime(new AVRealtime.Configuration
 ```cs
 var realtime = new AVRealtime(new AVRealtime.Configuration
 {
-    ApplicationId = "you app id",
-    ApplicationKey = "you app key",
-    RealtimeServer = new Uri("wss://abc-wss.xyz.com")// 告知 SDK，直接连这个地址的 WebSocket 服务，不用再去请求 RTMRouter 了
+    ApplicationId = "你的 app id",
+    ApplicationKey = "你的 app key",
+    RealtimeServer = new Uri("wss://abc-wss.xyz.com") // 告知 SDK 直接连这个地址的 WebSocket 服务，不用再去请求 RTMRouter 了
 });
 ```
-
-
 
 ### Unity
 
