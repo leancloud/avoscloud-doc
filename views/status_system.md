@@ -128,11 +128,9 @@ AV.Status.sendPrivateStatus(status,'52f9be45e4b035debf88b6e2').
 通过 `send` 方法还可以自定义 inboxType：
 
 ```javascript
-var query = ... //一个 AV.Query 对象，定义接收者。
 var status = new AV.Status(null, '我读了《clojure 编程乐趣》');
 //定义一个 book 收件箱
 status.inboxType = 'book';
-status.query = query;
 status.send().then(function(status){
   //发送成功
 });
