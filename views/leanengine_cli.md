@@ -106,9 +106,12 @@ lean version 0.3.0
 安装完命令行工具之后，首先第一步需要登录 LeanCloud 账户。
 
 ```sh
-# {% if node != 'qcloud' %}美国节点用户需要使用参数 `--region=US` 进行登录。{% else %}腾讯云 TAB 的用户需要使用参数 `--region=TAB` 进行登录。{% endif %}
+# 美国节点用户需要使用参数 --region=US 进行登录
+# 华东节点使用 --region=TAB
+# 不加 region 参数则默认为华北节点
 $ {{ login }} {% if node == 'us' %}--region=US{% endif %}{% if node == 'qcloud' %}--region=TAB{% endif %}
 ```
+
 然后按照提示输入 LeanCloud 用户名和密码完成登录。
 
 以 GitHub、微博或 QQ 这种第三方登录方式来注册 LeanCloud 账户的用户，如果未曾设置过账户密码，需要先使用 [忘记密码](/dashboard/login.html#/forgotpass) 功能重新设置一个密码，再进行登录。
