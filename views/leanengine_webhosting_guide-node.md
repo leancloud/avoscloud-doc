@@ -190,6 +190,8 @@ require('http').createServer(function(req, res) {
 }).listen(process.env.LEANCLOUD_APP_PORT);
 ```
 
+你需要将 Web 服务监听在 `0.0.0.0` 上（Node.js 和 express 的默认行为）而不是 `127.0.0.1`。
+
 ### 路由超时设置
 
 通过以上框架实现的自定义路由，默认超时为 15 秒，该值可以在 `app.js` 中进行调整：

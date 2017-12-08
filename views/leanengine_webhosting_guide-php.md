@@ -94,6 +94,8 @@ app.get('/1.1/_ops/functions/metadatas', function(req, res) {
 {{fullName}} 不依赖第三方框架，你可以使用你最熟悉的框架进行开发，或者
 不使用任何框架。但是请保证通过执行 `public/index.php` 能够启动你的项目。
 
+对于 PHP 项目，我们默认每 64M 内存分配一个 PHP-FPM Worker，如果希望自定义 Worker 数量，可以在云引擎设置页面的「自定义环境变量」中添加名为 PHP_WORKERS 的环境变量，值是一个数字。设置过低会导致收到新请求时无可用的 Worker；过高会导致内存不足、请求处理失败，建议谨慎调整。
+
 {% endblock %}
 
 {% block code_get_client_ip_address %}
