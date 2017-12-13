@@ -868,12 +868,6 @@ for (var j = 0; j < smsPrices.length; j++){
 
 <script type="text/javascript">
 $(document).ready(function() {
-    // console.log(smsPrices)
-    // $('.datatable thead th').each( function () {
-    //     var title = $(this).text();
-    //     $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-    // } );
-
     var smsPriceTable = $('.datatable').DataTable({
         data: smsPrices,
         // disable pagination
@@ -901,7 +895,6 @@ $(document).ready(function() {
                     return '<span class="text-muted" style="opacity: 0.5; padding-right: 4px;">&#65509;</span> ' + data.toFixed(2)
                 }
             }
-            // { targets: '_all', visible: false }
         ]
     });
     // style global filter
@@ -917,18 +910,6 @@ $(document).ready(function() {
             .css({
                 "flex-basis": '200px'
             });
-
-    // smsPriceTable.columns().every( function () {
-    //     var that = this;
- 
-    //     $( 'input', this.footer() ).on( 'keyup change', function () {
-    //         if ( that.search() !== this.value ) {
-    //             that
-    //                 .search( this.value )
-    //                 .draw();
-    //         }
-    //     } );
-    // } );
 } );
 </script>
 
