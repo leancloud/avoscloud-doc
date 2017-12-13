@@ -791,9 +791,146 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy","�
 {# 被 https://blog.leancloud.cn/4818/ 引用，修改标题时注意更新博客链接 #}
 ### 服务覆盖区域和价格
 
-以下金额以人民币计算，列表中未包含的国家或区域，请在论坛或工单中提问确认。
+以下金额为每条短信的价格，以人民币计费。列表中未包含的国家或区域，请在论坛或工单中提问确认。
 
-{{ sms.worldwideSmsPrice() }}
+<script src="/custom/js/lib/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+var smsPrices = [{"CountryNumber":1,"CountryOrRegion":"美国","CountryCode":"US","UnitPrice":0.07},
+{"CountryNumber":1,"CountryOrRegion":"加拿大","CountryCode":"CA","UnitPrice":0.07},
+{"CountryNumber":7,"CountryOrRegion":"哈萨克斯坦","CountryCode":"KZ","UnitPrice":0.58},
+{"CountryNumber":7,"CountryOrRegion":"俄罗斯","CountryCode":"RU","UnitPrice":0.28},
+{"CountryNumber":27,"CountryOrRegion":"南非","CountryCode":"ZA","UnitPrice":0.23},
+{"CountryNumber":30,"CountryOrRegion":"希腊","CountryCode":"GR","UnitPrice":0.5},
+{"CountryNumber":33,"CountryOrRegion":"法国","CountryCode":"FR","UnitPrice":0.64},
+{"CountryNumber":34,"CountryOrRegion":"西班牙","CountryCode":"ES","UnitPrice":0.75},
+{"CountryNumber":39,"CountryOrRegion":"意大利","CountryCode":"IT","UnitPrice":0.75},
+{"CountryNumber":40,"CountryOrRegion":"罗马尼亚","CountryCode":"RO","UnitPrice":0.62},
+{"CountryNumber":44,"CountryOrRegion":"英国","CountryCode":"GB","UnitPrice":0.35},
+{"CountryNumber":49,"CountryOrRegion":"德国","CountryCode":"DE","UnitPrice":0.72},
+{"CountryNumber":52,"CountryOrRegion":"墨西哥","CountryCode":"MX","UnitPrice":0.42},
+{"CountryNumber":54,"CountryOrRegion":"阿根廷","CountryCode":"AR","UnitPrice":0.59},
+{"CountryNumber":55,"CountryOrRegion":"巴西","CountryCode":"BR","UnitPrice":0.48},
+{"CountryNumber":57,"CountryOrRegion":"哥伦比亚","CountryCode":"CO","UnitPrice":0.55},
+{"CountryNumber":58,"CountryOrRegion":"委内瑞拉","CountryCode":"VE","UnitPrice":0.41},
+{"CountryNumber":60,"CountryOrRegion":"马来西亚","CountryCode":"MY","UnitPrice":0.34},
+{"CountryNumber":61,"CountryOrRegion":"澳大利亚","CountryCode":"AU","UnitPrice":0.48},
+{"CountryNumber":62,"CountryOrRegion":"印度尼西亚","CountryCode":"ID","UnitPrice":0.25},
+{"CountryNumber":63,"CountryOrRegion":"菲律宾","CountryCode":"PH","UnitPrice":0.37},
+{"CountryNumber":65,"CountryOrRegion":"新加坡","CountryCode":"SG","UnitPrice":0.42},
+{"CountryNumber":66,"CountryOrRegion":"泰国","CountryCode":"TH","UnitPrice":0.34},
+{"CountryNumber":81,"CountryOrRegion":"日本","CountryCode":"JP","UnitPrice":0.68},
+{"CountryNumber":82,"CountryOrRegion":"韩国","CountryCode":"KR","UnitPrice":0.4},
+{"CountryNumber":86,"CountryOrRegion":"中国","CountryCode":"CN","UnitPrice":0.05},
+{"CountryNumber":90,"CountryOrRegion":"土耳其","CountryCode":"TR","UnitPrice":0.25},
+{"CountryNumber":92,"CountryOrRegion":"巴基斯坦","CountryCode":"PK","UnitPrice":0.21},
+{"CountryNumber":91,"CountryOrRegion":"印度","CountryCode":"IN","UnitPrice":0.09},
+{"CountryNumber":95,"CountryOrRegion":"缅甸","CountryCode":"MM","UnitPrice":1.1},
+{"CountryNumber":351,"CountryOrRegion":"葡萄牙","CountryCode":"PT","UnitPrice":0.43},
+{"CountryNumber":852,"CountryOrRegion":"香港","CountryCode":"HK","UnitPrice":0.51},
+{"CountryNumber":853,"CountryOrRegion":"澳门","CountryCode":"MO","UnitPrice":0.27},
+{"CountryNumber":855,"CountryOrRegion":"柬埔寨","CountryCode":"KH","UnitPrice":0.43},
+{"CountryNumber":856,"CountryOrRegion":"老挝","CountryCode":"LA","UnitPrice":0.68},
+{"CountryNumber":886,"CountryOrRegion":"台湾","CountryCode":"TW","UnitPrice":0.46},
+{"CountryNumber":960,"CountryOrRegion":"马尔代夫","CountryCode":"MV","UnitPrice":0.11},
+{"CountryNumber":966,"CountryOrRegion":"沙特阿拉伯","CountryCode":"SA","UnitPrice":0.31},
+{"CountryNumber":971,"CountryOrRegion":"阿拉伯联合酋长国","CountryCode":"AE","UnitPrice":0.27},
+{"CountryNumber":977,"CountryOrRegion":"尼泊尔","CountryCode":"NP","UnitPrice":0.45},
+{"CountryNumber":998,"CountryOrRegion":"乌兹别克斯坦","CountryCode":"UZ","UnitPrice":0.73}];
+var nodes = [{ code: "cn", name: "华北节点"},{ code: "tab", name: "华东节点"  },{ code: "us", name: "美国节点"  }];
+
+for (var j = 0; j < smsPrices.length; j++){
+    smsPrices[j].nodes = {};
+    for (var i = 0; i < nodes.length; i++){
+        // console.log(nodes[i].code, smsPrices[j]['nodes']);
+        smsPrices[j]['nodes'][nodes[i]['code']] = smsPrices[j]['UnitPrice'];
+        if (nodes[i].code === 'us' && smsPrices[j].CountryCode === 'CN') {
+            smsPrices[j].nodes.us = 0.2
+        }
+    }
+}
+</script>
+
+<table class="datatable" cellspacing="0" cellpadding="0" width="100%" style="margin-top: 12px;">
+    <thead>
+        <tr>
+            <th>国号</th>
+            <th>国家或地区</th>
+            <th>国家代号</th>
+            <th>华北节点</th>
+            <th>华东节点</th>
+            <th>美国节点</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    // console.log(smsPrices)
+    // $('.datatable thead th').each( function () {
+    //     var title = $(this).text();
+    //     $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    // } );
+
+    var smsPriceTable = $('.datatable').DataTable({
+        data: smsPrices,
+        // disable pagination
+        paging: false,
+        info: false,
+        ordering: false,
+        language: {
+            zeroRecords: '没有找到匹配数据。',
+            search: '过滤：'
+        },
+        columns: [
+            { "data": "CountryNumber" },
+            { "data": "CountryOrRegion" },
+            { "data": "CountryCode" },
+            { "data": "nodes.cn" },
+            { "data": "nodes.tab" },
+            { "data": "nodes.us" }
+        ],
+        columnDefs: [
+            { 
+                targets: [3, 4, 5], 
+                className: 'text-right', 
+                render: function(data, type, row, meta){
+                    // &yen; &#165;
+                    return '<span class="text-muted" style="opacity: 0.5; padding-right: 4px;">&#65509;</span> ' + data.toFixed(2)
+                }
+            }
+            // { targets: '_all', visible: false }
+        ]
+    });
+    // style global filter
+    $('.dataTables_filter')
+        .find('label')
+            .css({
+                "display": "flex",
+                "white-space":  "nowrap",
+                "align-items":  "center"
+            })
+        .find('input')
+            .addClass('form-control input-sm')
+            .css({
+                "flex-basis": '200px'
+            });
+
+    // smsPriceTable.columns().every( function () {
+    //     var that = this;
+ 
+    //     $( 'input', this.footer() ).on( 'keyup change', function () {
+    //         if ( that.search() !== this.value ) {
+    //             that
+    //                 .search( this.value )
+    //                 .draw();
+    //         }
+    //     } );
+    // } );
+} );
+</script>
 
 ### 开通国际短信服务
 国际短信服务是需要额外开启的。你需要在[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission)，查看短信服务相关选项：
