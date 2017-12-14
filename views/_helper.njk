@@ -87,3 +87,12 @@
   {# remove line breaks, blanks, tab #}
   {{ s | replace(r/^(\s)+|(\1)+$/gim,"") | safe }} 
 {%- endmacro %}
+
+{% macro namedAnchor(content, anchor) -%}
+  {{ content | safe }}{{ htmlTag("a", {
+      'name': anchor,
+      'id': anchor,
+      'escape-hash': true
+     }, "") 
+  }}
+{%- endmacro %}

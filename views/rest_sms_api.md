@@ -460,7 +460,7 @@ curl -X POST \
   https://{{host}}/1.1/requestSmsCode
 ```
 
-## 常见问题 FAQ
+{{ docs.namedAnchor("## 常见问题 FAQ", "sms-faq") }}
 
 ### 短信有什么限制吗？
 
