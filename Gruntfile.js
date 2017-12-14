@@ -391,6 +391,7 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
       const version = crypto.createHash('md5').update($.html(), 'utf8').digest('hex');
 
       grunt.log.writeln('--------'.padStart(10) + ' ' + filePath['grey'].bold)
+      let headingCounts = {}
       // replace all in-page IDs with their numeric representations
       $('h1,h2,h3,h4,h5,:not(#toc) a[href*="#"]:not([href="#"]):not([href*="#/"]):not([href*="&#"])').each(function(index, el){
         // --- href variants ---
@@ -418,7 +419,6 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
         let newValue = attrValue
         let temp = null
         let suffix = ''
-        
         
         if ( $el.data('target') === undefined
           && $el.attr('escape-hash') === undefined) {
@@ -455,10 +455,17 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
                 ) + suffix
               counter.href++
             }
-            
             // skip external links or those already converted to hash code
-            
           } else {
+            // count heading repeats
+            headingCounts[newValue] = headingCounts[newValue]
+              ? headingCounts[newValue] + 1
+              : 1
+            
+            newValue = headingCounts[newValue] === 1
+              ? newValue
+              : newValue.concat('-', headingCounts[newValue] - 1)
+            
             newValue = formatId(
               legacyFormatId(newValue)
             )
