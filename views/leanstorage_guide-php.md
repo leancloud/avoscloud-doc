@@ -1146,4 +1146,8 @@ $query->find();
 {% block text_data_protocol %}{% endblock %}
 {% block save_eventually %}{% endblock %}
 
-{# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
+{% block code_user_isAuthenticated %}
+```php
+
+```
+{% endblock %}

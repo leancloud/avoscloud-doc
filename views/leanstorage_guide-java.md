@@ -1350,3 +1350,9 @@ todo.fetchInBackground("todoFolder", new GetCallback<AVObject>() {
 });
 ```
 {% endblock %}
+
+{% block code_user_isAuthenticated %}
+```java
+
+```
+{% endblock %}
