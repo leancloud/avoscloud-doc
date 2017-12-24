@@ -483,7 +483,7 @@ conv_id | 必填 | 字符串 | 对话 id，仅限于系统对话
 查询订阅过指定的系统对话的用户数量。
 
 ```sh
-curl -X DELETE \
+curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -G \

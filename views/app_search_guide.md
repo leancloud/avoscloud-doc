@@ -352,7 +352,7 @@ AVSearchQuery query = new AVSearchQuery("basic-query");//搜索包含basic-query
 
 ``` java
 query.setQuery("status:active");//搜索status字段包含active
-query.setQuery("title:(quick brown)");//搜索status包含quick或者brown
+query.setQuery("title:(quick brown)");//搜索title包含quick或者brown
 query.setQuery("age:>=10");//搜索年龄大于等于10的数据
 query.setQuery("age:(>=10 AND < 20)");//搜索年龄在[10,20)区间内的数据
 ```

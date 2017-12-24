@@ -354,7 +354,7 @@ lean deploy
 AV.Cloud.run('order').then((data) => {
   data.success = () => {
     // 支付成功
-  }
+  });
   data.fail = ({ errMsg }) => {
     // 错误处理
   });
