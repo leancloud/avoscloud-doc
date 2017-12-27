@@ -178,7 +178,7 @@ $(document).ready(function(){
     //console.log($this, source, pane, source.charAt(0) !== '#',$(pane).is(':empty'));
     if( source.charAt(0) !== '#' && $(pane).is(':empty') ) {  
       $.get(source, function(data) {
-          $(pane).html($(data).find('#course-list').html());
+          $(pane).html($(data).find('#backbone').html());
       });
       //console.log("filled");
     }
