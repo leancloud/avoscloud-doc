@@ -808,6 +808,8 @@ conversation.send(message, { will: true }).then(function() {
 
 #### 消息的撤回
 
+需要在 [控制台 > 消息 > 设置](/dashboard/messaging.html?appid={{appid}}#/message/realtime/conf) 中启用「聊天服务，对消息启用撤回功能」。
+
 撤回一条已发送的消息：
 
 ```javascript
@@ -829,6 +831,8 @@ conversation.on('messagerecall', function(recalledMessage) {
 ```
 
 #### 消息的修改
+
+需要在 [控制台 > 消息 > 设置](/dashboard/messaging.html?appid={{appid}}#/message/realtime/conf) 中启用「聊天服务，对消息启用编辑功能」。
 
 修改一条已经发送的消息：
 
