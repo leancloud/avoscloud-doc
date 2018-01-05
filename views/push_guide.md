@@ -202,7 +202,7 @@ prod| 可选 | **仅对 iOS 有效**。设置使用开发证书（**dev**）还�
 push_time| 可选 | 设置定时推送的时间
 req_id | 可选 | 自定义请求 id，最长 16 个字符且只能由英文字母和数字组成。5 分钟内带有相同 req_id 的不同推送请求我们认为是重复请求，只会发一次推送。用户可以在请求中带着唯一的 req_id 从而在接口出现超时等异常时将请求重发一次，以避免漏掉失败的推送请求。并且由于前后两次请求中 req_id 相同，我们会自动过滤重复的推送请求以保证每个目标终端用户最多只会收到一次推送消息。**重发过频或次数过多会影响正常的消息推送**，请注意控制。
 topic | 可选 | 使用 iOS Token Authentication 的鉴权方式后，如果 iOS SDK 版本低于 v4.2.0 或推送目标设备使用的 Topic 与 iOS Bundle ID 不同时，请主动提供该参数以便于系统能够按照该参数指定的 topic 来发推送消息。
-apns_team_id | 可选 | 由于 Apple 不支持在一次推送中向从属于不同 Team Id 的设备发推送。在使用 iOS Token Authentication 的鉴权方式后，如果您的应用配置了多个不同 Team Id 的 Private Key，请填写该参数，并通过 where 查询条件保证单次推送请求的目标设备均属于本参数指定的 Team Id，以保证推送正常进行。
+apns_team_id | 可选 | Apple 不支持在一次推送中向从属于不同 Team Id 的设备发推送。在使用 iOS Token Authentication 的鉴权方式后，如果应用配置了多个不同 Team Id 的 Private Key，请填写该参数，并通过 where 查询条件保证单次推送请求的目标设备均属于本参数指定的 Team Id，以保证推送正常进行。
 
 #### master key 校验
 
