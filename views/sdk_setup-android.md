@@ -3,6 +3,7 @@
 {% set maven_uri = "http://mvn.leancloud.cn/nexus/content/repositories/public" %}
 {% import "views/_helper.njk" as docs %}
 {% from "views/_data.njk" import libVersion as version %}
+{% from "views/_data.njk" import androidSDKCompileInstructionLink as compileInstructionLink %}
 {% block libs_tool_automatic %}
 
 #### Gradle
@@ -101,7 +102,7 @@ Eclipse 用户首先 [下载 SDK](sdk_down.html)，然后按照 [手动安装步
 {% endblock %}
 
 {% block import_sdk %}
-下载文件成功解压缩后会得到如下文件：
+对照以下包文件及其对应的功能模块，开发者可以自行 {{ compileInstructionLink("编译源代码") }} 来得到所需的包文件。
 
 ```
 ├── avoscloud-feedback-{{ version.leancloud }}.zip     // LeanCloud 用户反馈模块
@@ -118,8 +119,6 @@ Eclipse 用户首先 [下载 SDK](sdk_down.html)，然后按照 [手动安装步
 ├── qq.sdk.1.6.1.jar                            // LeanCloud SNS 模块
 └── weibo.sdk.android.sso.3.0.1-leancloud.jar   // LeanCloud SNS 模块
 ```
-
-根据上述包及其对应的功能模块，开发者可以根据需求自行导入对应的模块。
 
 ##### LeanCloud 基本存储模块
 
