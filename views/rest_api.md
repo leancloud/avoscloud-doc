@@ -1923,7 +1923,13 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
   }
 ```
 
-同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上 **允许缺失值** 选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。要保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上，就需要为 `_User` 表中的 `authData.第三方平台名称.uid` 建立唯一索引；另外当 `_User` 表的记录数量超过了 1 万条，用户也无法自行创建该索引。这两种操作都需要提交工单或联系 {{ include.supportEmail() }} 来创建。
+同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上 **允许缺失值** 选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。要保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上，就需要为 `_User` 表中的 `authData.第三方平台名称.uid` 建立唯一索引。
+
+{{ 
+  docs.note(
+    data.upgradeToCreateClassIndex()
+  ) 
+}}
 
 {{ include.retrieveAuthData(node, "#### 获取 authData") }}
 

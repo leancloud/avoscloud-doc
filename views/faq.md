@@ -203,7 +203,13 @@ REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对
 
 操作：进入 {% if node=='qcloud' %}**控制台 > 存储**{% else %}[控制台 > 存储](/data.html?appid={{appid}}#/_File){% endif %}，选定一张表之后，点击右侧的 **其他**下拉菜单，然后选择 **索引**，然后根据你的查询需要建立好索引。
 
-提示：数据表的默认四个字段 `objectId`、`ACL`、`createdAt`、`updatedAt` 是自带索引的，但是在勾选时，可以作为联合索引来使用。并且如果单表数据超过 1 万条以上，请将 App Id 和查询语句发送到 {{ include.supportEmail() }}，由我们来创建索引。
+提示：数据表的默认四个字段 `objectId`、`ACL`、`createdAt`、`updatedAt` 是自带索引的，但是在勾选时，可以作为联合索引来使用。
+
+{{ 
+  docs.note(
+    data.upgradeToCreateClassIndex()
+  ) 
+}}
 
 ### LeanCloud 查询支持 `Sum`、`Group By`、`Distinct` 这种函数吗？
 LeanCloud 数据存储的查询接口不支持这些函数，可以查询到客户端后，在客户端中自己写逻辑进行这些操作。

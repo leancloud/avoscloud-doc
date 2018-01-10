@@ -30,7 +30,6 @@
 * 在应用设置的 **邮件模板** 菜单，你可以编辑并保存发送给注册用户的邮箱验证邮件模板等。
 * 适当使用 [查询缓存](leanstorage_guide-objc.html#缓存查询) 功能，可以提升查询性能，并提供离线浏览。
 * 实现应用 DeepLink，参考 [应用内搜索和 DeepLink 开发指南](app_search_guide.html)。
-* 如果你想针对一个列建立唯一索引，不允许该列的数据出现重复，请提交 [技术支持工单](https://leanticket.cn/t/leancloud) 或者发邮件至 <support@leancloud.rocks>，说明应用、Class 和列名。
 * 想实现先验证手机号码再注册，可以用 `requestSMSCode`、`verifySMSCodeInBackground` 得到一个正确的手机号码再进行 `new AVUser()` 的注册。
 
 

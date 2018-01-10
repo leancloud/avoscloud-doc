@@ -1,3 +1,4 @@
+{% import "views/_data.njk" as data %}
 {% import "views/_helper.njk" as docs %}
 # 在微信小程序中使用 {% if node == 'qcloud' %}TAB{% else %}LeanCloud{% endif %}
 
@@ -187,6 +188,12 @@ AV.User.signUpOrlogInWithAuthData({
   ```
 
 为确保同一个 uid 只存在一条记录，建议为 `authData.lc_weapp_union.uid` 加上唯一索引。进入 **控制台** > **存储** > 选择 `_User` 表 > **其他** > **索引**，勾选 **authData** 然后在出现的输入框中键入 `authData.lc_weapp_union.uid`，点击 **创建**。
+
+{{ 
+  docs.note(
+    data.upgradeToCreateClassIndex()
+  ) 
+}}
 
 #### 启用其他登录方式
 由于 `AV.User.loginWithWeapp()` 只能在小程序中使用，所以使用该 API 创建的用户无法直接在小程序之外的平台上登录。如果需要使用 LeanCloud 用户系统提供的其他登录方式，如用手机号验证码登录、邮箱密码登录等，在小程序一键登录后设置对应的用户属性即可：
