@@ -1146,4 +1146,6 @@ $query->find();
 {% block text_data_protocol %}{% endblock %}
 {% block save_eventually %}{% endblock %}
 
-{# --End--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
+{# 2018-01-10 Not applicable to PHP: https://github.com/leancloud/docs/issues/2429#issuecomment-356483624  #}
+{% block text_user_isAuthenticated %}
+{% endblock %}

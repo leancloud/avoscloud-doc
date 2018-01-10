@@ -1647,3 +1647,14 @@ query.findInBackground(new FindCallback<AVObject>() {
 });
 ```
 {% endblock %}
+
+{% block code_user_isAuthenticated %}
+```java
+AVUser.getCurrentUser().isAuthenticated(new AVCallback<Boolean>() {
+    @Override
+    protected void internalDone0(Boolean aBoolean, AVException e) {
+
+    }
+});
+```
+{% endblock %}
