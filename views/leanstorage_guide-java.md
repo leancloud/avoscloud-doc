@@ -1351,8 +1351,6 @@ todo.fetchInBackground("todoFolder", new GetCallback<AVObject>() {
 ```
 {% endblock %}
 
-{% block code_user_isAuthenticated %}
-```java
-
-```
+{# 2018-01-10 Not applicable to Java: https://github.com/leancloud/docs/issues/2429#issuecomment-356483624  #}
+{% block text_user_isAuthenticated %}
 {% endblock %}
