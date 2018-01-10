@@ -207,7 +207,7 @@ REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对
 
 {{ 
   docs.note(
-    data.upgradeToCreateClassIndex()
+    data.limitationsOnCreatingClassIndex()
   ) 
 }}
 

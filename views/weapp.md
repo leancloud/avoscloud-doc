@@ -191,7 +191,7 @@ AV.User.signUpOrlogInWithAuthData({
 
 {{ 
   docs.note(
-    data.upgradeToCreateClassIndex()
+    data.limitationsOnCreatingClassIndex()
   ) 
 }}
 

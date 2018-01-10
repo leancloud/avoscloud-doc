@@ -1927,7 +1927,7 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
 
 {{ 
   docs.note(
-    data.upgradeToCreateClassIndex()
+    data.limitationsOnCreatingClassIndex()
   ) 
 }}
 
