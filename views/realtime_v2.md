@@ -100,7 +100,7 @@ LeanCloud 实时通信服务的特性主要有：
 **name**|name|String|可选|对话的名字，可为群组命名。
 **tr**|transient|Boolean|可选|是否为暂态对话
 **sys**|system|Boolean|可选|是否是系统对话
-**unique**|unique|Boolean|可选|内部字段，标记根据成员原子创建的对话。<br/>（只能在 SDK 中使用。**REST API 不支持此参数**，传入 unique 无效)
+**unique**|unique|Boolean|可选|内部字段，标记根据成员原子创建的对话。
 
 除了在各平台的 SDK 里面可以调用 API 创建对话外，我们也提供 [REST API](./realtime_rest_api.html#通过_REST_API_创建_更新_删除对话数据) 可以让大家预先建立对话：对话的信息存储在 _Conversation 表中，你可以直接通过 [数据存储相关的 REST API](./rest_api.html#对象-1) 对其进行操作。
 
@@ -125,7 +125,7 @@ LeanCloud 实时通信服务的特性主要有：
 如果开发者希望使用固定的对话，可以在创建对话时设置相应 SDK 上的 `unique` 选项，系统将查找对应成员相同且 `unique` 选项为 true 的对话，如果找到即返回已有的对话，如果没有则自动创建。
 （注意，这种方式查找的对话仅对已经使用 `unique` 选项的对话有效，并且创建对话时不会触发 `_Conversation` 表在云引擎上的 `beforeSave` 等 hook）
 
-通过 REST API 创建对话也能带着 `unique` 参数，但 REST API 总是会创建新对话，只是带着 `unique` 参数后会将该参数值设置为新对话中 `unique` 选项的值，不会查找并返回具有相同成员的对话。
+REST API 在创建对话时同样支持 `unique` 参数。
 
 对于应用中存在系统帐号的场景，我们建议您通过下文提到的[系统对话](#普通对话_Normal_Conversation_)来实现，以避免对单一帐号创建过多的对话影响您应用的性能。
 
@@ -374,6 +374,23 @@ appid:clientid:convid:sorted_member_ids:timestamp:nonce:action
 * convid - 此次行为关联的对话 id。
 * action - 此次行为的动作，**invite** 表示加群和邀请，**kick** 表示踢出群。
 
+### 黑名单的签名
+
+由于黑名单有两种情况，所以签名格式也有两种：
+
+1. client 对 conversation
+  ```
+  appid:clientid:convid::timestamp:nonce:action
+  ```
+  - action - 此次行为的动作，client-block-conversations 表示添加黑名单，client-unblock-conversations 表示取消黑名单
+  
+2. conversation 对 client
+  ```
+  appid:clientid:convid:sorted_member_ids:timestamp:nonce:action
+  ```
+  - action - 此次行为的动作，conversation-block-clients 表示添加黑名单，conversation-unblock-clients 表示取消黑名单
+  - sorted_member_ids 同上
+  
 {{ im.signature("### 测试签名") }}
 
 ## 云引擎 Hook
