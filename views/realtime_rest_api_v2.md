@@ -43,8 +43,7 @@ curl -X GET \
 ---|---|---
 skip | 可选 | 
 limit | 可选 | 与 skip 联合使用实现分页
-
-对话的其他属性也可以作为查询条件，可以参考 [数据存储 - 查询](rest_api.html#查询)。
+where | 可选 | 参考 [数据存储 - 查询](rest_api.html#查询)。
 
 返回
 ```
@@ -120,3 +119,17 @@ curl -X GET \
 conv_id | 必填 | 服务号 id
 limit | 可选 | 返回消息条数
 skip | 可选 | 跳过消息条数，用于翻页
+
+
+### 查询应用内所有历史消息
+
+该接口要求使用 master key。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  https://{{host}}/1.2/rtm/messages
+```
+
+参数与返回值可以参考 [单聊/群聊的查询历史消息](realtime_rest_api_v2.html#查询历史消息) 接口。

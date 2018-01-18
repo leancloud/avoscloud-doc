@@ -1,5 +1,6 @@
 {% macro chatroom() %}
 
+
 ## 聊天室
 
 ### 创建聊天室
@@ -12,7 +13,7 @@ curl -X POST \
   -d '{"name":"My First Chatroom"}' \
   https://{{host}}/1.2/rtm/chatrooms
 ```
-
+传入 `"unique": true` 参数可以保证聊天室的唯一性。
 返回
 ```
 {"objectId"=>"5a5d7432c3422b31ed845e75", "createdAt"=>"2018-01-16T03:40:32.814Z"}
@@ -31,8 +32,7 @@ curl -X GET \
 ---|---|---
 skip | 可选 | 
 limit | 可选 | 与 skip 联合使用实现分页
-
-聊天室的其他属性也可以作为查询条件，可以参考 [数据存储 - 查询](rest_api.html#查询)。
+where | 可选 | 参考 [数据存储 - 查询](rest_api.html#查询)。
 
 
 返回
@@ -132,6 +132,67 @@ priority | 可选 | 定义消息优先级，可选值为 high、normal、low，�
 
 默认情况下发送消息 API 使用异步的方式，调用后返回消息 id 和接收消息的服务器时间戳，例如 
 `{"msg-id":"qNkRkFWOeSqP65S9fDyHJw", "timestamp":1495431811151}`。
+
+
+### 查询历史消息
+
+该接口要求使用 master key。
+为了保证获取聊天记录的安全性，可以开启签名认证，具体可以参考总览里面的 [权限和认证](realtime_v2.md#权限和认证)。
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  https://{{host}}/1.2/rtm/chatrooms/{conv_id}/messages
+```
+
+参数 | 约束 | 说明
+--- | --- | ---
+msgid | 可选 | 起始的消息 id，**使用时必须加上对应消息的时间戳 timestamp 参数，作为查询的起点**
+timestamp | 可选 | 查询起始的时间戳。默认是当前时间，单位是毫秒
+till_msgid | 可选 | 查询终止的消息 id。**使用时必须加上消息的时间戳 till_timestamp 参数，作为查询的终点**
+till_timestamp | 可选 | 查询终止的时间戳，默认为 0，单位是毫秒
+include_start | 可选 | 是否包含由 timestamp 与 msgid 确定的起始消息。布尔值，默认为 false
+include_stop | 可选 | 是否包含由 till_timestamp 与 till_msgid 确定的终止消息。布尔值，默认为 false
+reversed | 可选 | 以默认排序（默认按时间降序）相反的方向返回结果，这时 till_timestamp 默认为当前时间戳，timestamp 默认为 0。布尔值，默认为 false
+limit | 可选 | 返回条数限制，可选，默认 100 条，最大 1000 条
+client_id | 可选 | 查看者 id（签名参数）
+nonce | 可选 | 签名随机字符串（签名参数）
+signature_ts | 可选 | 签名时间戳（签名参数），单位是秒
+signature | 可选 | 签名（签名参数）
+
+本接口时间参数较多，这里举一示例供大家参考。比如某对话内有三条消息，id 分别为 id1、id2、id3，发消息的时间分别是 t1、t2、t3（t1 < t2 < t3），下面列举出不同参数组合的查询结果（空白表示使用默认值）：
+
+| timestamp| msgid| till_timestamp| till_msgid| include_start| include_stop| reversed| 结果 |
+| ---------|---------|---------|---------|---------|---------|---------|--------- |
+| t3| id3| t1| id1| | | | id2 |
+| t3| id3| t1| id1| true| | | id3 id2 |
+| t3| id3| t1| id1| | true| | id2 id1 |
+| t1| id1| t3| id3| | | true| id2 |
+| t1| id1| t3| id3| true| | true| id1 id2 |
+| t1| id1| t3| id3| | true| true| id2 id3 |
+
+返回数据格式，JSON 数组，默认按消息记录从新到旧排序，设置请求参数 `reversed` 后以相反的方向排序。
+
+返回：
+
+```json
+[
+  {
+    "timestamp": 1408008498571,
+    "conv-id":   "219946ef32e40c515d33ae6975a5c593",
+    "data":      "今天天气不错！",
+    "from":      "u111872755_9d0461adf9c267ae263b3742c60fa",
+    "msg-id":    "vdkGm4dtRNmhQ5gqUTFBiA",
+    "is-conv":   true,
+    "is-room":   false,
+    "to":        "5541c02ce4b0f83f4d44414e",
+    "bin":       false,
+    "from-ip":   "202.117.15.217"
+  },
+  ...
+]
+```
 
 ### 修改消息
 

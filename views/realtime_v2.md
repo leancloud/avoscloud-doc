@@ -374,6 +374,16 @@ appid:clientid:convid:sorted_member_ids:timestamp:nonce:action
 * convid - 此次行为关联的对话 id。
 * action - 此次行为的动作，**invite** 表示加群和邀请，**kick** 表示踢出群。
 
+### 查询聊天记录的签名
+
+```
+appid:client_id:convid:nonce:signature_ts
+```
+* client_id 查看者 id（签名参数）
+* nonce  签名随机字符串（签名参数）
+* signature_ts 签名时间戳（签名参数），单位是秒
+* signature  签名（签名参数）
+
 ### 黑名单的签名
 
 由于黑名单有两种情况，所以签名格式也有两种：

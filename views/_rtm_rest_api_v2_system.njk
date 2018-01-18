@@ -32,8 +32,7 @@ curl -X GET \
 ---|---|---
 skip | 可选 | 
 limit | 可选 | 与 skip 联合使用实现分页
-
-服务号的其他属性也可以作为查询条件，可以参考 [数据存储 - 查询](rest_api.html#查询)。
+where | 可选 | 参考 [数据存储 - 查询](rest_api.html#查询)。
 
 
 返回
@@ -114,14 +113,15 @@ curl -X GET \
 参数 | 约束 | 说明
 ---|---|---
 limit | 可选 | 返回条数限制，默认是 50 条，最大 50 条。
-client_id | 可选 | TODO
+client_id | 可选 | 查询起始订阅者 client id，不填则从订阅者列表起始位置开始遍历。查询结果不会再包含当前指定的订阅者 client id。
 
 返回
 
 ```
 [{"timestamp":1491467841116,"subscriber":"client id 1","conv_id":"55b871"},
- {"timestamp":1491467852768,"subscriber":"client id 2","conv_id":"55b871"}, ...]
+ {"timestamp":1491467852768,"subscriber":"client id 2","conv_id":"55b872"}, ...]
 ```
+其中 timestamp 表示用户订阅系统对话的时间，subscriber 是订阅用户的 client id。如果一次没有获取完，需要从结果列表中取最后一个订阅者的 client id，作为 client_id 参数再次调用本接口以获取下一批订阅者列表。
 
 
 ### 查询订阅者数
@@ -194,58 +194,79 @@ push | 可选 | 附带的推送内容，如果设置，所有 iOS 和 Windows Ph
 {"msg-id":"qNkRkFWOeSqP65S9fDyHJw", "timestamp":1495431811151}
 ```
 
-### 撤回消息
+### 查询服务号发的订阅消息
 
 该接口要求使用 master key。
-从 Objective-C SDK v6.0.0、Android SDK v4.4.0、JavaScript SDK v3.5.0 开始，我们支持了新的修改与撤回消息功能。修改或撤回消息后，即使已经收到并已缓存在客户端的消息也会被修改或撤回。对于老版本的 SDK，仅能修改或撤回服务器端的消息记录，并不能修改或撤回客户端已缓存的消息记录。
-
+为了保证获取聊天记录的安全性，可以开启签名认证，具体可以参考总览里面的 [权限和认证](realtime_v2.md#权限和认证)。
 ```sh
-curl -X POST \
+curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
-  -d '{"from_client": "", "message": "", "timestamp": 123}' \
-  https://{{host}}/1.2/rtm/service-conversations/{conv_id}/messages/{message_id}/recall
+  https://{{host}}/1.2/rtm/service-conversations/{conv_id}/broadcasts
 ```
-
 
 参数 | 约束 | 说明
----|---|---
-from_client | 必填 | 消息的发件人 client ID
-mid | 必填 | 消息 ID
-timestamp | 必填 | 消息的时间戳
+--- | --- | ---
+msgid | 可选 | 起始的消息 id，**使用时必须加上对应消息的时间戳 timestamp 参数，作为查询的起点**
+timestamp | 可选 | 查询起始的时间戳。默认是当前时间，单位是毫秒
+till_msgid | 可选 | 查询终止的消息 id。**使用时必须加上消息的时间戳 till_timestamp 参数，作为查询的终点**
+till_timestamp | 可选 | 查询终止的时间戳，默认为 0，单位是毫秒
+include_start | 可选 | 是否包含由 timestamp 与 msgid 确定的起始消息。布尔值，默认为 false
+include_stop | 可选 | 是否包含由 till_timestamp 与 till_msgid 确定的终止消息。布尔值，默认为 false
+reversed | 可选 | 以默认排序（默认按时间降序）相反的方向返回结果，这时 till_timestamp 默认为当前时间戳，timestamp 默认为 0。布尔值，默认为 false
+limit | 可选 | 返回条数限制，可选，默认 100 条，最大 1000 条
+client_id | 可选 | 查看者 id（签名参数）
+nonce | 可选 | 签名随机字符串（签名参数）
+signature_ts | 可选 | 签名时间戳（签名参数），单位是秒
+signature | 可选 | 签名（签名参数）
 
+本接口时间参数较多，这里举一示例供大家参考。比如某对话内有三条消息，id 分别为 id1、id2、id3，发消息的时间分别是 t1、t2、t3（t1 < t2 < t3），下面列举出不同参数组合的查询结果（空白表示使用默认值）：
+
+| timestamp| msgid| till_timestamp| till_msgid| include_start| include_stop| reversed| 结果 |
+| ---------|---------|---------|---------|---------|---------|---------|--------- |
+| t3| id3| t1| id1| | | | id2 |
+| t3| id3| t1| id1| true| | | id3 id2 |
+| t3| id3| t1| id1| | true| | id2 id1 |
+| t1| id1| t3| id3| | | true| id2 |
+| t1| id1| t3| id3| true| | true| id1 id2 |
+| t1| id1| t3| id3| | true| true| id2 id3 |
+
+返回数据格式，JSON 数组，默认按消息记录从新到旧排序，设置请求参数 `reversed` 后以相反的方向排序。
 
 返回：
-```
-{"result": {}}
+
+```json
+[
+  {
+    "timestamp": 1408008498571,
+    "conv-id":   "219946ef32e40c515d33ae6975a5c593",
+    "data":      "今天天气不错！",
+    "from":      "u111872755_9d0461adf9c267ae263b3742c60fa",
+    "msg-id":    "vdkGm4dtRNmhQ5gqUTFBiA",
+    "is-conv":   true,
+    "is-room":   false,
+    "to":        "5541c02ce4b0f83f4d44414e",
+    "bin":       false,
+    "from-ip":   "202.117.15.217"
+  },
+  ...
+]
 ```
 
-### 删除消息
+### 查询某个订阅者与服务号的消息
 
 该接口要求使用 master key。
 ```sh
-curl -X DELETE \
+curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  -G \
-  --data-urlencode 'client_id=some-client-id' \
-  --data-urlencode 'timestamp=123' \
-  https://{{host}}/1.2/rtm/service-conversations/{conv_id}/messages/{message_id}
+  -H "Content-Type: application/json" \
+  https://{{host}}/1.2/rtm/service-conversations/{conv_id}/subscribers/{client_id}/messages
 ```
 
-> NOTE：该接口仅删除服务端的消息，对客户端无影响。
+参数、返回值与「查询服务号发的订阅消息」相同。
 
-参数 | 约束 | 说明
----|---|---
-from_client | 必填 | 消息的发件人 client ID
-timestamp | 必填 | 消息的时间戳
-
-
-返回：
-```
-{}
-```
 
 ### 增加临时性禁言用户
 
