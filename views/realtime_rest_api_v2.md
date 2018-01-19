@@ -22,14 +22,14 @@ Key|Value|含义|来源
 
 ## 相关概念
  
-`_Conversation` 表 包含一些内置的关键字段定义了对话的属性、成员等，所有对话均在此表中，可以在 [实时通信概览 - 对话](./realtime_v2.html#对话_Conversation_) 中了解。
+`_Conversation` 表 包含一些内置的关键字段定义了对话的属性、成员等，单聊/群聊、聊天室、服务号均在此表中，可以在 [实时通信概览 - 对话](./realtime_v2.html#对话_Conversation_) 中了解。
 
 {{ normal.normalConversation() }}
 {{ chatroom.chatroom() }}
 {{ system.serviceConversation() }}
 {{ client.rtmClient() }}
 
-## 所有对话
+## 查询所有对话
 
 本接口会返回所有的 单聊群聊/聊天室/服务号
 ```sh
@@ -86,7 +86,7 @@ Push 的格式与[推送 REST API 消息内容](push_guide.html#消息内容_Dat
 
 ## 删除广播消息
 
-调用此 API 将删除已发布的广播消息。
+调用此 API 将删除已发布的广播消息。本接口要求使用 master key。
 
 ```sh
 curl -X DELETE \
@@ -105,7 +105,7 @@ message_id | 必填 | 要删除的消息 id，字符串
 
 ## 查询广播消息
 
-调用此 API 可查询目前有效的广播消息。
+调用此 API 可查询目前有效的广播消息。本接口要求使用 master key。
 
 ```sh
 curl -X GET \
@@ -121,7 +121,7 @@ limit | 可选 | 返回消息条数
 skip | 可选 | 跳过消息条数，用于翻页
 
 
-### 查询应用内所有历史消息
+## 查询应用内所有历史消息
 
 该接口要求使用 master key。
 
