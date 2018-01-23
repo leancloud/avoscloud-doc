@@ -317,7 +317,11 @@ curl -X DELETE \
 {}
 ```
 
-### 增加永久性禁言用户
+### 对话权限
+
+该功能介绍可参考总览里面的 [对话权限](realtime_v2.html#对话权限)。
+
+#### 增加权限
 
 该接口要求使用 master key。
 每个聊天室最多允许添加 10,000 个永久性禁言用户。
@@ -326,8 +330,93 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \ 
+  -d '{"clientId": "client", "role": "role"}' \
+  https://{{host}}/1.2/rtm/chatrooms/{conv_id}/member-infos
+```
+
+参数 | 说明
+--- | ---
+client_id | 要禁言的 id，字符串
+role | 角色，可选值 Member、Manager、Owner
+
+返回
+```
+{"updatedAt"=>"2018-01-16T03:40:37.683Z", "objectId"=>"5a5d7433c3422b31ed845e76"}
+```
+
+#### 删除权限
+
+该接口要求使用 master key。
+```sh
+curl -X DELETE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  https://{{host}}/1.2/rtm/chatrooms/{conv_id}/member-infos/{info-id}
+```
+
+返回
+```
+{}
+```
+
+#### 更新权限
+
+该接口要求使用 master key。
+```sh
+curl -X PUT \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \ 
+  -d '{"clientId": "client", "role": "role"}' \
+  https://{{host}}/1.2/rtm/chatrooms/{conv_id}/member-infos/{info-id}
+```
+
+参数 | 说明
+--- | ---
+client_id | 要禁言的 id，字符串。可选
+role | 角色，可选值 Member、Manager、Owner。可选
+
+返回
+```
+{"updatedAt"=>"2018-01-16T03:40:37.683Z", "objectId"=>"5a5d7433c3422b31ed845e76"}
+```
+
+
+#### 查询权限
+
+该接口要求使用 master key。
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -G \
+  --data-urlencode 'skip=1' \
+  --data-urlencode 'limit=20' \
+  https://{{host}}/1.2/rtm/chatrooms/{conv_id}/member-infos
+```
+
+参数 | 说明
+--- | ---
+skip | 
+limit | 与 skip 联合使用实现分页
+
+返回
+```
+{"results": [{"clientId"=>"client1", "objectId"=>"5a5d7433c3422b31ed845e76", "role": "Manager"}]}
+```
+
+
+#### 增加永久性禁言用户
+
+该接口要求使用 master key。
+每个对话最多允许添加 500 个永久性禁言用户。
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \ 
   -d '{"client_ids": ["client1", "client2"]}' \
-  https://{{host}}/1.2/rtm/chatrooms/{chatroom_id}/permanent-silenceds
+  https://{{host}}/1.2/rtm/chatrooms/{conv_id}/permanent-silenceds
 ```
 
 参数 | 说明
@@ -340,7 +429,7 @@ client_ids | 要禁言的 Client ID 列表，数组
 {}
 ```
 
-### 移除永久性禁言用户
+#### 移除永久性禁言用户
 
 该接口要求使用 master key。
 ```sh
@@ -348,7 +437,7 @@ curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -d '{"client_ids": ["client1", "client2"]}' \
-  https://{{host}}/1.2/rtm/chatrooms/{chatroom_id}/permanent-silenceds
+  https://{{host}}/1.2/rtm/chatrooms/{conv_id}/permanent-silenceds
 ```
 
 返回
@@ -357,7 +446,7 @@ curl -X DELETE \
 {}
 ```
 
-### 查询永久性禁言列表
+#### 查询永久性禁言列表
 
 该接口要求使用 master key。
 ```sh
@@ -365,7 +454,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -d '{"client_ids": ["client1", "client2"]}' \
-  https://{{host}}/1.2/rtm/chatrooms/{chatroom_id}/permanent-silenceds
+  https://{{host}}/1.2/rtm/chatrooms/{conv_id}/permanent-silenceds
 ```
 
 参数 | 约束 | 说明
@@ -380,9 +469,15 @@ next | 可选 | 第一次查询时返回，后面的查询带着这个参数，�
 ```
 
 
-### 增加聊天室黑名单
+### 黑名单
 
-该接口要求使用 master key。
+该功能介绍可参考总览里面的 [黑名单](realtime_v2.html#黑名单)。
+
+
+#### 增加聊天室黑名单
+
+该接口要求使用 master key。该功能介绍可参考总览里面的 [黑名单](realtime_v2.html#黑名单)。
+
 加入黑名单的 client 不允许再加入该聊天室，如果之前在该聊天室中将被移除。每个聊天室最多允许添加 10,000 个黑名单。
 ```sh
 curl -X POST \
@@ -403,7 +498,7 @@ client_ids | 要拉黑的 Client ID 列表，数组
 {}
 ```
 
-### 移除聊天室黑名单
+#### 移除聊天室黑名单
 
 该接口要求使用 master key。
 ```sh
@@ -420,7 +515,7 @@ curl -X DELETE \
 {}
 ```
 
-### 查询聊天室黑名单
+#### 查询聊天室黑名单
 
 该接口要求使用 master key。
 ```sh

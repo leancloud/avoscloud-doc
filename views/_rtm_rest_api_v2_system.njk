@@ -212,114 +212,14 @@ curl -X GET \
 
 参数、返回值与「查询服务号发的订阅消息」相同。
 
+### 黑名单
 
-### 增加临时性禁言用户
+该功能介绍可参考总览里面的 [黑名单](realtime_v2.html#黑名单)。
 
-该接口要求使用 master key。
-```sh
-curl -X POST \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
-  -H "Content-Type: application/json" \ 
-  -d '{"conv_id": "some-conv-id", "ttl": 50}' \
-  https://{{host}}/1.2/rtm/service-conversations/{conv_id}/temporary-silenceds
-```
+#### 增加服务号黑名单
 
-参数 | 说明
---- | ---
-client_id | 要禁言的 id，字符串
-ttl | 禁言的时间，秒数，最长 24 小时
+该接口要求使用 master key。该功能介绍可参考总览里面的 [黑名单](realtime_v2.html#黑名单)。
 
-返回
-
-```
-{}
-```
-
-### 移除临时性禁言用户
-
-该接口要求使用 master key。
-```sh
-curl -X DELETE \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
-  -G \
-  --data-urlencode 'client_id=some-client-id' \
-  https://{{host}}/1.2/rtm/service-conversations/{conv_id}/temporary-silenceds
-```
-
-返回
-
-```
-{}
-```
-
-### 增加永久性禁言用户
-
-该接口要求使用 master key。
-每个服务号最多允许添加 10,000 个永久性禁言用户。
-```sh
-curl -X POST \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
-  -H "Content-Type: application/json" \ 
-  -d '{"client_ids": ["client1", "client2"]}' \
-  https://{{host}}/1.2/rtm/service-conversations/{conv_id}/permanent-silenceds
-```
-
-参数 | 说明
---- | ---
-client_ids | 要禁言的 Client ID 列表，数组
-
-返回
-
-```
-{}
-```
-
-### 移除永久性禁言用户
-
-该接口要求使用 master key。
-```sh
-curl -X DELETE \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
-  -d '{"client_ids": ["client1", "client2"]}' \
-  https://{{host}}/1.2/rtm/service-conversations/{conv_id}/permanent-silenceds
-```
-
-返回
-
-```
-{}
-```
-
-### 查询永久性禁言列表
-
-该接口要求使用 master key。
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
-  -d '{"client_ids": ["client1", "client2"]}' \
-  https://{{host}}/1.2/rtm/service-conversations/{conv_id}/permanent-silenceds
-```
-
-参数 | 约束 | 说明
----|---|---
-limit | 可选 | 与 next 联合使用实现分页，默认 10
-next | 可选 | 第一次查询时返回，后面的查询带着这个参数，实现分页查询
-
-返回
-
-```
-{"client_ids": ["client1", "client2"]}
-```
-
-
-### 增加服务号黑名单
-
-该接口要求使用 master key。
 加入黑名单的 client 不允许再加入该服务号，如果之前在该服务号中将被移除。每个服务号最多允许添加 10,000 个黑名单。
 ```sh
 curl -X POST \
@@ -340,7 +240,7 @@ client_ids | 要拉黑的 Client ID 列表，数组
 {}
 ```
 
-### 移除服务号黑名单
+#### 移除服务号黑名单
 
 该接口要求使用 master key。
 ```sh
@@ -357,7 +257,7 @@ curl -X DELETE \
 {}
 ```
 
-### 查询服务号黑名单
+#### 查询服务号黑名单
 
 该接口要求使用 master key。
 ```sh
