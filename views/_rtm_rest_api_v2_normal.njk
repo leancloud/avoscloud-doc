@@ -30,6 +30,10 @@ curl -X POST \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
+  -G \
+  --data-urlencode 'where={"name": "first conversation"}' \
+  --data-urlencode 'skip=1' \
+  --data-urlencode 'limit=20' \
   https://{{host}}/1.2/rtm/conversations
 ```
 

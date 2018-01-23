@@ -26,6 +26,10 @@ curl -X POST \
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
+  -G \
+  --data-urlencode 'where={"name": "chatroom"}' \
+  --data-urlencode 'skip=1' \
+  --data-urlencode 'limit=20' \
   https://{{host}}/1.2/rtm/chatrooms
 ```
 
@@ -100,7 +104,7 @@ curl -X GET \
 返回
 
 ```
-{"updatedAt"=>"2018-01-16T03:40:37.683Z", "objectId"=>"5a5d7433c3422b31ed845e76"}
+{"result": 3}
 ```
 
 
