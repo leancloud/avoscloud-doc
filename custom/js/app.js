@@ -10,7 +10,9 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$com
         $scope.masterkey = "{{masterkey}}";
         $scope.sign_masterkey = "{{sign_masterkey}}";
         $scope.sign_appkey = "{{sign_appkey}}";
-        $scope.v2Domain = '{{appid 前八位}}.' + ($scope.service || 'api') + '.lncld.net';
+        var service = $scope.service || 'api';
+        $scope.domainN1 = '{{appid 前八位}}.' + service + '.lncld.net';
+        $scope.domainE1 = '{{appid 前八位}}.' + service + '.lncldapi.com';
         $rootScope.pageState = {};
         var sdkversion = 'unknown';
         if(typeof $sdk_versions != 'undefined'){
@@ -33,7 +35,9 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout','$com
                             $scope.masterkey = $scope.pageState.currentApp.master_key;
                             $scope.sign_masterkey = $filter('signify')($scope.pageState.currentApp.master_key, 'master');
                             $scope.sign_appkey = $filter('signify')($scope.pageState.currentApp.app_key);
-                            $scope.v2Domain = $scope.appid.slice(0, 8).toLowerCase() + '.' + ($scope.service || 'api') + '.lncld.net';
+                            var prefix = $scope.appid.slice(0, 8).toLowerCase();
+                            $scope.domainN1 = prefix + '.' + service + '.lncld.net';
+                            $scope.domainE1 = prefix + '.' + service + '.lncldapi.com';
                         }
                     });
                     $scope.apps = data;
