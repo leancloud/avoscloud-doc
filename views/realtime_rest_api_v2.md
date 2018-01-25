@@ -22,7 +22,7 @@ Key|Value|含义|来源
 
 ## 相关概念
  
-`_Conversation` 表 包含一些内置的关键字段定义了对话的属性、成员等，单聊/群聊、聊天室、服务号均在此表中，可以在 [实时通信概览 - 对话](./realtime_v2.html#对话_Conversation_) 中了解。
+`_Conversation` 表 包含一些内置的关键字段定义了对话的属性、成员等，单聊/群聊、聊天室、服务号均在此表中，可以在 [实时通信概览 - 对话](./realtime_v2.html#对话（Conversation）) 中了解。
 
 {{ normal.normalConversation() }}
 {{ chatroom.chatroom() }}
