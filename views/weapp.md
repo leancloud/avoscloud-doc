@@ -207,7 +207,7 @@ AV.User.loginWithWeapp().then(user => {
 }).catch(console.error);
 ```
 
-{{ docs.note("验证手机号码功能要求在控制台的应用设置中启用「用户注册时，向注册手机号码发送验证短信」。") }}
+{{ docs.note("验证手机号码功能要求在 [控制台 > 存储 > 设置 > 用户账号](/dashboard/storage.html?appid={{appid}}#/storage/conf) 启用「用户注册时，向注册手机号码发送验证短信」。") }}
 
 #### 绑定现有用户
 如果你的应用已经在使用 LeanCloud 的用户系统，或者用户已经通过其他方式注册了你的应用（比如在 Web 端通过用户名密码注册），可以通过在小程序中调用 `AV.User#linkWithWeapp()` 来关联已有的账户：
@@ -371,7 +371,7 @@ AV.Cloud.run('order').then((data) => {
 ## FAQ
 
 ### 配置 download 合法域名时显示「该域名因违规被禁止设置。」
-目前 https://clouddn.com 已经被微信屏蔽，因此该域名下的文件无法通过 `wx.downloadFile` 下载到用户的设备上（只是通过 image 的 src 属性展示图片不受影响）。如果确实需要使用 `wx.downloadFile`，可以在 控制台 - **设置 - 应用选项** 中勾选 「启动 https 域名」，目前对应的域名还没有被屏蔽。
+目前 https://clouddn.com 已经被微信屏蔽，因此该域名下的文件无法通过 `wx.downloadFile` 下载到用户的设备上（只是通过 image 的 src 属性展示图片不受影响）。如果确实需要使用 `wx.downloadFile`，可以在 [控制台 > 存储 > 设置 > 文件](/dashboard/storage.html?appid={{appid}}#/storage/conf) 中勾选 **启动 https 域名**，目前对应的域名还没有被屏蔽。
 
 ### Access denied by api domain white list
 如果你的应用启用并配置了 [Web 安全域名](data_security.html#Web_应用安全设置)，你可能会 catch 到 `Access denied by api domain white list` 异常，请将提示的域名添加至应用的 Web 安全域名列表。

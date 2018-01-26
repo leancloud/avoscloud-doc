@@ -1,3 +1,4 @@
+{% set autoFollowFolloweeOptionLink = "如果在 [控制台 > 存储 > 设置 > 其他](/dashboard/storage.html?appid={{appid}}#/storage/conf) 勾选了 **应用内社交模块，关注用户时自动反向关注**" %}
 # 应用内社交模块
 应用内社交，又称「事件流」，在应用开发中出现的场景非常多，包括用户间关注（好友）、朋友圈（时间线）、状态、互动（点赞）、私信等常用功能。
 
@@ -250,11 +251,7 @@ NSString *userObjectId = @"XXXXXX";
 }];
 ```
 
-{% if node=='qcloud' %}
-如果在 `控制台 > **设置** > **应用选项** > **其他**` 勾选了 **应用内社交模块，关注用户时自动反向关注**，那么在当前用户关注某个人，那个人也会自动关注当前用户。
-{% else %}
-如果在 [控制台 > **设置** > **应用选项** > **其他**](/app.html?appid={{appid}}#/permission) 勾选了 **应用内社交模块，关注用户时自动反向关注**，那么在当前用户关注某个人，那个人也会自动关注当前用户。
-{% endif %}
+如果在 {{ autoFollowFolloweeOptionLink }}，那么在当前用户关注某个人，那个人也会自动关注当前用户。
 
 从 2.6.7 版本开始，我们允许在 follow 的时候同时传入一个 attribute 列表，用于设置关系的属性，这些属性都将在 `_Follower` 和 `_Followee` 表同时存在：
 
@@ -437,12 +434,7 @@ AVUser.getCurrentUser().unfollowInBackground("the user object id", new FollowCal
     });
 ```
 
-{% if node=='qcloud' %}
-如果在 `控制台 > **设置** > **应用选项** > **其他**` 勾选了 **应用内社交模块，关注用户时自动反向关注**，那么在当前用户关注某个人，那个人也会自动关注当前用户。
-{% else %}
-如果在 [控制台 > **设置** > **应用选项** > **其他**](/app.html?appid={{appid}}#/permission) 勾选了 **应用内社交模块，关注用户时自动反向关注**，那么在当前用户关注某个人，那个人也会自动关注当前用户。
-{% endif %}
-
+如果在 {{ autoFollowFolloweeOptionLink }}，那么在当前用户关注某个人，那个人也会自动关注当前用户。
 
 从 2.6.7 版本开始，我们允许在 follow 的时候同时传入一个 attribute 列表，用于设置关系的属性，这些属性都将在 `_Follower` 和 `_Followee` 表同时存在：
 
@@ -712,11 +704,7 @@ curl -X POST \
   https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
 ```
 
-{% if node=='qcloud' %}
-关注后，`_Follower` 和 `_Followee` 都会多出一条记录，如果在 `控制台 > **设置** > **应用选项** > **其他**` 中勾选了 **应用内社交模块，关注用户时自动反向关注**，会各多出两条记录。
-{% else %}
-关注后，`_Follower` 和 `_Followee` 都会多出一条记录，如果在 [控制台 > **设置** > **应用选项** > **其他**](/app.html?appid={{appid}}#/permission) 中勾选了 **应用内社交模块，关注用户时自动反向关注**，会各多出两条记录。
-{% endif %}
+关注后，`_Follower` 和 `_Followee` 都会多出一条记录，{{ autoFollowFolloweeOptionLink }}，会各多出两条记录。
 
 取消关注通过：
 

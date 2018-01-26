@@ -30,7 +30,7 @@ HTML5 Video is required for this demo. 您的浏览器不支持播放 HTML5 视�
 
 ## 启用 LiveQuery
 
-进入 [控制台 > 设置 > 应用选项 > 其他](/dashboard/app.html?appid={{appid}}#/permission)，勾选 「启用 LiveQuery」才可以在 SDK 中创建和使用，否则会报错。
+进入 [控制台 > 存储 > 设置 > 其他](/dashboard/storage.html?appid={{appid}}#/storage/conf)，勾选 「启用 LiveQuery」才可以在 SDK 中创建和使用，否则会报错。
 
 ```objc
 // LiveQuery 需要依赖实时通信模块，接入该模块的方法请参考安装指南：

@@ -66,7 +66,7 @@
 
 在一些场景下，你可能希望用户在验证手机号码后才能进行一些操作，例如充值。这些操作跟账户系统没有关系，可以通过我们提供的的短信验证 API 来实现。
 
-使用这些 API 需要在 [控制台 > 设置 > 应用选项 > 其他](/app.html?appid={{appid}}#/permission) 中开启 **启用通用的短信验证码服务（开放 `requestSmsCode` 和 `verifySmsCode` 接口）** 选项，并且有一个已审核通过的短信签名。
+使用这些 API 需要在 [控制台 > 消息 > 短信 > 设置 > 短信选项](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf) 中开启 **启用通用的短信验证码服务（开放 `requestSmsCode` 和 `verifySmsCode` 接口）** 选项，并且有一个已审核通过的短信签名。
 
 给某个手机号码发送验证短信：
 

@@ -98,7 +98,7 @@
 ## 119
 
 * 信息 - `That operation isn't allowed for clients.`
-* 含义 - 该操作无法从客户端发起。请检查该错误由哪个操作引起，然后进入 [应用控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission) 启用相应的选项。
+* 含义 - 该操作无法从客户端发起。请检查该错误由哪个操作引起，然后在应用控制台中找到对应的服务设置来启用相应的选项，例如 [控制台 > 存储 > 设置 > 用户账号](/dashboard/storage.html?appid={{appid}}#/storage/conf)、[控制台 > 消息 > 短信 > 设置 > 短信选项](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf) 等等。
 
 ## 120
 
@@ -338,7 +338,7 @@
 
 ## 403
 
-当 {% if node == 'qcloud' %}**控制台** > **应用** > **设置** > **应用选项**{% else %}[控制台 > 应用 > 设置 > 应用选项](/dashboard/app.html?appid={{appid}}#/permission){% endif %} 中的相关选项未打开，或是 Class 关闭了权限，或是 User 缺失了 session 信息等情况下，云端会统一地返回 403 错误码及不同的错误信息，代表当前请求因权限不够而被拒。例如：
+当应用在控制台中的相关服务选项未打开，如 Class 关闭了权限，或是 User 缺失了 session 信息等情况下，云端会统一地返回 403 错误码及不同的错误信息，代表当前请求因权限不够而被拒。例如：
 
 - 信息 - `Forbidden to read/write by class permissions`
 - 含义 - 操作被禁止，因为 Class 表没有打开「读」或者「写」的权限。进入 **控制台** > **存储**，点击相应的 Class，从右侧选择 **其他** 下拉菜单，进入 **权限管理** 来调整。

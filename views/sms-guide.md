@@ -98,18 +98,16 @@ AVCloud.RequestSMSCodeAsync("18612345678","Register_Notice",null,"LeanCloud").Co
 ## 开通短信服务
 
 ### 在安全中心开启短信服务
-要使用短信服务，首先需要在控制台创建一个应用，然后进入 {% if node=='qcloud' %}**控制台** > **设置** > **安全中心**{% else %}[控制台 > 设置 > 安全中心](/app.html?appid={{appid}}#/security){% endif %}，确保 **短信服务** 开关是打开的：
+要使用短信服务，首先需要在控制台创建一个应用，然后进入 [控制台 > 设置 > 安全中心](/app.html?appid={{appid}}#/security)，确保 **短信服务** 开关是打开的：
 
 ![sms_switch](images/sms_switch_setting.png)
 
-### 在应用选项中完成短信配置
-然后进入 {% if node=='qcloud' %}**控制台** > **设置** > **应用选项**{% else %}[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission){% endif %}，查看与短信相关选项：
+### 完成短信配置
+然后进入 [控制台 > 消息 > 短信 > 设置 > 短信选项](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf)，请确保以下选项处于勾选状态。
 
 {{ include.checkbox(true) }}**启用通用的短信验证码服务（开放 `requestSmsCode` 和 `verifySmsCode` 接口）**
 - 开启：开发者可以使用短信进行验证功能的开发，比如，敏感的操作认证、异地登录、付款验证等业务相关的需求。
 - 关闭：请求验证发送短信以及验证短信验证码都会被服务端拒绝，但是请注意，跟用户相关的验证与该选项无关。
-
-请确保该选项处于勾选状态。
 
 ### 设置默认签名
 短信发送的时候需要有签名运营商才会放行，如前面示例中的「购物网」、「当当」即为短信签名。在开始发送短信之前，你需要进入[控制台 > 消息 > 短信 > 设置](/messaging.html?appid={{appid}}#/message/sms/conf)，设置默认的短信签名（第一个签名即为「默认签名」）：
@@ -530,9 +528,9 @@ XX房东您好，租客{{ docs.mustache("guest_name") }}（手机号码：{{ doc
 
 ### 开通图形验证码服务
 
-要使用图形验证码，开发者需要进入 [控制台 > 安全中心](/dashboard/app.html?appid={{appid}}#/security)，打开 **图形验证码服务**。 
+要使用图形验证码，开发者需要进入 [控制台 > 设置 > 安全中心](/dashboard/app.html?appid={{appid}}#/security)，打开 **图形验证码服务**。 
 
-如果希望强制所有的短信接口都必须通过图形验证码验证才能发送，则进入 [控制台 > 应用选项 > 短信服务](/dashboard/app.html?appid={{appid}}#/permission)， 选中 **强制短信验证服务使用图形验证码**。注意：这样一来，所有主动调用发送短信的接口都会强制进行图形验证码验证，否则会直接返回调用错误。
+如果希望强制所有的短信接口都必须通过图形验证码验证才能发送，则进入 [控制台 > 消息 > 短信 > 设置 > 短信选项](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf)， 选中 **强制短信验证服务使用图形验证码**。注意：这样一来，所有主动调用发送短信的接口都会强制进行图形验证码验证，否则会直接返回调用错误。
 
 
 ### 前端接入示例
@@ -786,7 +784,7 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy","�
 
 ## 国际短信
 
-向国外用户发送短信，只需要在手机号码前加上正确的国际区号即可，如美国和加拿大为 `+1`，当然前提是已在 [应用设置](/dashboard/app.html?appid={{appid}}#/permission) 中选中了 **开启国际短信服务**。中国区号为 `+86`，但可以省略，无区号的手机号码会默认使用中国区号。
+向国外用户发送短信，只需要在手机号码前加上正确的国际区号即可，如美国和加拿大为 `+1`，当然前提是已在 [短信设置](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf) 中选中了 **开启国际短信服务**。中国区号为 `+86`，但可以省略，无区号的手机号码会默认使用中国区号。
 
 {# 被 https://blog.leancloud.cn/4818/ 引用，修改标题时注意更新博客链接 #}
 ### 服务覆盖区域和价格
@@ -914,7 +912,7 @@ $(document).ready(function() {
 </script>
 
 ### 开通国际短信服务
-国际短信服务是需要额外开启的。你需要在[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission)，查看短信服务相关选项：
+国际短信服务是需要额外开启的，你需要在 [控制台 > 消息 > 短信 > 设置 > 短信选项](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf) 进行选择。
 
 {{ include.checkbox() }}**开启国际短信服务**
 - 开启：可以向中国大陆以外的手机号发送短信，详见 [覆盖国家和地区](#短信服务覆盖区域)。
@@ -923,7 +921,7 @@ $(document).ready(function() {
 ## 与 LeanCloud 账户系统集成
 LeanCloud 提供了内建的 [账户系统](leanstorage_guide-js.html#用户) 来帮助开发者快速完成用户系统的注册、登录、重置密码等功能，同时为了方便使用，我们也集成了账户系统手机号码相关的短信功能，譬如账户注册时自动验证手机号、手机号码登录和重置密码等等。
 
-我们可以在[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission)，查看「用户账户」的相关选项：
+我们可以在 [控制台 > 存储 > 设置 > 用户账号](/dashboard/storage.html?appid={{appid}}#/storage/conf) 查看相关选项：
 
 {{ include.checkbox(true) }}**用户注册时，向注册手机号码发送验证短信**
 - 开启：调用 AVUser 注册相关的接口时，如果传入了手机号，系统则会自动发送验证短信，然后开发者需要手动调用一下验证接口，这样 `_User` 表中的 `mobilePhoneVerified` 值才会被置为 `true`。

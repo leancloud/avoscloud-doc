@@ -1253,7 +1253,7 @@ file.save({
 
 要接入其他平台，开发者需要完成以下步骤：
 
-- 进入 **控制台** > **应用设置** > **应用选项** 中取消 **第三方登录时，验证用户 AccessToken 合法性** 的勾选。这样开发者要自行验证 `access_token` 的合法性。
+- 进入 [控制台 > 存储 > 设置 > 用户账号](/dashboard/storage.html?appid={{appid}}#/storage/conf) 中取消 **第三方登录时，验证用户 AccessToken 合法性** 的勾选。这样开发者要自行验证 `access_token` 的合法性。
 - 确保 authData 包含 `uid`（即将上例代码中的 `openid` 换为 `uid`），否则 SDK 会返回「无效的第三方注册数据（authData）」的错误。
 
 以使用 Github 登录为例：

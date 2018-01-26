@@ -1562,11 +1562,8 @@ curl -X GET \
 
 注册一个新用户与创建一个新的普通对象之间的不同点在于 username 和 password 字段都是必需的。password 字段会以和其他的字段不一样的方式处理，它在储存时会被加密而且永远不会被返回给任何来自客户端的请求。
 
-{% if node=='qcloud' %}
-你可以让 LeanCloud 自动验证邮件地址，做法是进入 `控制台 > **设置** > **应用选项**`，勾选 **用户账号** 下的 **用户注册时，发送验证邮件**。
-{% else %}
-你可以让 LeanCloud 自动验证邮件地址，做法是进入 [控制台 > **设置** > **应用选项**](/app.html?appid={{appid}}#/permission)，勾选 **用户账号** 下的 **用户注册时，发送验证邮件**。
-{% endif %}
+你可以让 LeanCloud 自动验证邮件地址，做法是进入 [控制台 > 存储 > 设置 > 用户账号](/dashboard/storage.html?appid={{appid}}#/storage/conf)，勾选 **用户注册时，发送验证邮件**。
+
 这项设置启用了的话，所有填写了 email 的用户在注册时都会产生一个 email 验证地址，并发回到用户邮箱，用户打开邮箱点击了验证链接之后，用户表里 `emailVerified` 属性值会被设为 true。你可以在 `emailVerified` 字段上查看用户的 email 是否已经通过验证。
 
 为了注册一个新的用户，需要向 user 路径发送一个 POST 请求，你可以加入一个新的字段，例如，创建一个新的用户有一个电话号码:
@@ -1629,8 +1626,9 @@ https://{{host}}/1.1/login
 
 正常情况下，用户的 sessionToken 是固定不变的，但在以下情况下会发生改变：
 
-* 用户调用了忘记密码功能，重设了密码。
-* 用户在控制台的 [应用选项](/app.html?appid={{appid}}#/permission) 中勾选了 **密码修改后，强制客户端重新登录**，那么在修改密码后 sessionToken 也将强制更换。
+* 客户端调用了忘记密码功能，重设了密码。
+* 开发者在 [控制台 > 存储 > 设置 > 用户账号](/dashboard/storage.html?appid={{appid}}#/storage/conf)
+ 中勾选了 **密码修改后，强制客户端重新登录**，那么在修改密码后 sessionToken 也将强制更换。
 * 调用 [`refreshSessionToken`](#重置登录_sessionToken) 主动重置。
 
 在 sessionToken 变化后，已有的登录如果调用到用户相关权限受限的 API，将返回 403 权限错误。
@@ -2778,7 +2776,7 @@ curl -X GET \
 
 具体支持的参数：
 
-{{ data.restAppMetricsParams() }}}
+{{ data.restAppMetricsParams() }}
 
 metrics 参数可选项解释：
 
