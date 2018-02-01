@@ -1173,7 +1173,8 @@ Tom 自身主动退出对话之后，相关方收到通知的时序是这样的�
 [conversation setObject:@(YES) forKey:@"isStarred"];
 [conversation updateWithCallback:];
 // 获取自定义属性
-NSDictionary * dic = conversation.attributes;
+NSString *type = [conversation objectForKey:@"type"];
+BOOL isStarred = [[conversation objectForKey:@"isStarred"] boolValue];
 ```
 {% endblock %}
 
