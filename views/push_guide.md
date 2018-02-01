@@ -5,7 +5,7 @@
 
 # 消息推送服务总览
 
-消息推送，使得开发者可以即时地向其应用程序的用户推送通知或者消息，与用户保持互动，从而有效地提高留存率，提升用户体验。平台提供整合了 Android 推送、iOS 推送、Windows Phone 推送和 Web 网页推送的统一推送服务。
+消息推送，使得开发者可以即时地向其应用程序的用户推送通知或者消息，与用户保持互动，从而有效地提高留存率，提升用户体验。平台提供整合了 Android 推送、iOS 推送和 Windows Phone 推送的统一推送服务。
 
 除了 iOS、Android SDK 做推送服务之外，你还可以通过 [REST API](#使用_REST_API_推送消息) 来发送推送请求。
 
@@ -25,7 +25,7 @@ badge|iOS|呈现在应用图标右上角的红色圆形数字提示，例如待�
 channels| |设备订阅的频道
 deviceProfile||在应用有多个 iOS 推送证书或多个 Android 混合推送配置的场景下，deviceProfile 用于指定当前设备使用的证书名或配置名。其值需要与 [控制台 > 消息 > 设置](/messaging.html?appid={{appid}}#/message/push/conf) 内配置的证书名或配置名对应，否则将无法完成推送。使用方法请参考 [iOS 测试和生产证书区分](#iOS_测试和生产证书区分) 和 [Android 混合推送多配置区分](#Android_混合推送多配置区分)。<br/><br/>{{deviceprofile_format}}
 deviceToken|iOS|APNS 推送的唯一标识符
-deviceType| |设备类型，目前支持 "ios"、"android"、"wp"、"web"。
+deviceType| |设备类型，目前支持 "ios"、"android"、"wp"。
 ID|Windows Phone|仅对微软平台的设备（微软平板和手机）有效
 installationId|Android|LeanCloud SDK 为每个 Android 设备产生的唯一标识符
 subscriptionUri|Windows Phone|MPNS（微软推送服务）推送的通道
