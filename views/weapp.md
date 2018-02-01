@@ -383,5 +383,8 @@ AV.Cloud.run('order').then((data) => {
 ### Access denied by api domain white list
 如果你的应用启用并配置了 [Web 安全域名](data_security.html#Web_应用安全设置)，你可能会 catch 到 `Access denied by api domain white list` 异常，请将提示的域名添加至应用的 Web 安全域名列表。
 
+### 小程序真机上传数据时，控制台显示的「表名」被压缩为单个字母。
+例如新建一个名为「Todo」的表，上传数据成功后，在控制台却显示表的名称为「i」或者「u」这种单个字母。这是因为真机上代码会被压缩。解决办法是在创建 Class 后向 SDK 注册该 Class 的名字： `AV.Object.register(Todo, 'Todo');`。
+
 ## 反馈
 如果在微信小程序中使用 LeanCloud 时遇到问题，欢迎通过我们的 [论坛](https://forum.leancloud.cn/c/jing-xuan-faq/weapp) 进行反馈。
