@@ -1167,9 +1167,13 @@ Tom 自身主动退出对话之后，相关方收到通知的时序是这样的�
 接下来，Tom 将 type 修改为 public：
 
 ```objc
-[conversation setValue:@"public" forKey:@"type"];
-// 设置是星标对话
-[conversation setValue:@"isStarred" forKey:@(YES)];
+[conversation setObject:@"public" forKey:@"type"];
+[conversation updateWithCallback:];
+// 设置 boolean 属性值
+[conversation setObject:@(YES) forKey:@"isStarred"];
+[conversation updateWithCallback:];
+// 获取自定义属性
+NSDictionary * dic = conversation.attributes;
 ```
 {% endblock %}
 
