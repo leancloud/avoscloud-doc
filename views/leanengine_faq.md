@@ -6,14 +6,14 @@
 
 ## 云引擎的二级域名多久生效
 
-我们设置的 TTL 是 5 分钟，但各级 DNS 服务都有可能对其进行缓存，实际生效会有一定延迟。
+我们设置的 TTL 是 5 分钟，但各级 DNS 服务都有可能对其进行缓存，实际生效会有一定延迟，最长可能需要几个小时。
 
 ## 云引擎支持 HTTPS 吗
 
 - 对于 `.leanapp.cn` 的二级域名我们默认支持 HTTPS，如需配置自动跳转，请看 [重定向到 HTTPS](leanengine_webhosting_guide-node.html#重定向到_HTTPS)。
-- 自定义的域名需要在进行 [域名绑定](leanengine_webhosting_guide-node.html#备案和自定义域名) 时上传 HTTPS 证书。
+- 自定义的域名需要在进行 [域名绑定](leanengine_webhosting_guide-node.html#备案和自定义域名) 时上传证书才可以支持 HTTPS。
 
-## 为什么在控制台通过在线定义函数或项目定义函数中的 Class Hook 没有被运行？
+## 为什么 Class Hook 没有被运行？
 
 首先确认一下 Hook 被调用的时机是否与你的理解一致：
 
@@ -30,11 +30,7 @@
 
 然后检查 Hook 函数是否被执行过：
 
-{% if node=='qcloud' %}
-可以先在 Hook 函数的入口打印一行日志，然后进行操作，再到 `云引擎日志` 中检查该行日志是否被打印出来，如果没有看到日志原因可能包括：
-{% else %}
 可以先在 Hook 函数的入口打印一行日志，然后进行操作，再到 [云引擎日志](/cloud.html?appid={{appid}}#/log) 中检查该行日志是否被打印出来，如果没有看到日志原因可能包括：
-{% endif %}
 
 * 代码没有被部署到正确的应用
 * 代码没有被部署到生产环境（或没有部署成功）
@@ -74,7 +70,7 @@ lean -p 3002
 
 ## 如何判断当前是预备环境还是生产环境？
 
-请参考 [网站托管开发指南 · 预备环境和生产环境](leanengine_webhosting_guide-node.html#预备环境和生产环境) / [Python · 运行环境区分](leanengine_webhosting_guide-python.html#预备环境和生产环境)。
+请参考 [网站托管开发指南 · 预备环境和生产环境](leanengine_webhosting_guide-node.html#预备环境和生产环境) 。
 
 ## 怎么添加第三方模块
 
@@ -118,11 +114,9 @@ lean -p 3002
 
 增加参数 `--trace_gc`，这样每次 GC 会在本地的 Console 或在控制台的云引擎日志中输出。
 
-{% if node != 'qcloud' %}
 ## 如何进行域名备案和域名绑定？
 
 只有网站类的才需要备案，并且在主域名已备案的情况下，二级子域名不需要备案。如果主站需要托管在我们这边，且还没有备案过，请进入 **应用控制台 > 账号设置 >** [域名备案](/settings.html#/setting/domainrecord) 和 [域名绑定](/settings.html#/setting/domainbind)，按照步骤提示操作即可。
-{% endif %}
 
 ## 调用云引擎方法如何收费？
 
@@ -148,90 +142,41 @@ lean -p 3002
 4. 运行 `lean up`，在 <http://localhost:3001> 的调试界面中测试云函数和 Hook，然后运行 `lean deploy` 部署代码到云引擎（使用标准实例的用户还需要执行 `lean publish`）。
 5. 部署后请留意云引擎控制台上是否有错误产生。
 
-## 为什么查询 include 没有生效？
+## 为什么云函数中 include 的字段没有被完整地发给客户端？
 
 > 将 JavaScript SDK 和 Node SDK 升级到 3.0 以上版本可以彻底解决该问题。  
 
-以 JavaScript 云引擎为例子，很多时候，经常会定义一个云函数，在里面使用 `AV.Query` 查询一张表，并 include 其中一个 pointer 类型的字段，然后返回给客户端:
+云函数在响应时会调用到 `AV.Object#toJSON` 方法，将结果序列化为 JSON 对象返回给客户端。在早期版本中 `AV.Object#toJSON` 方法为了防止循环引用，当遇到属性是 Pointer 类型会返回 Pointer 元信息，不会将 include 的其他字段添加进去，我们在 [JavaScript SDK 3.0](https://github.com/leancloud/javascript-sdk/releases/tag/v3.0.0) 中对序列化相关的逻辑做了重新设计，**将 JavaScript SDK 和 Node SDK 升级到 3.0 以上版本便可以彻底解决该问题**。
 
-``` javascript
+如果暂时无法升级 SDK 版本，可以通过这样的方式绕过：
+
+```javascript
 AV.Cloud.define('querySomething', function(req, res) {
   var query = new AV.Query('Something');
-  //假设 user 是 Something 表的一个 Pointer 列。
+  // user 是 Something 表的一个 Pointer 字段
   query.include('user');
-  //……其他条件或者逻辑……
   query.find().then(function(results) {
-    //返回查询结果给客户端
-    res.success(results);
-  }).catch(function(err){
-    //返回错误给客户端
-  });
-});
-```
-
-你会看到返回的结果里， user 仍然是 pointer 类型，似乎 include 没有生效？
-
-``` json
-{
- result: [
-   {
-     ……Something 其他字段
-     "user": {
-       "className": "_User",
-       "__type": "Pointer",
-       "objectId": "abcdefg"
-     }
-   }
-   ……
- ]
-}
-```
-
-这其实是因为 `res.success(results)` 会调用到 `AV.Object#toJSON` 方法，将结果序列化为 JSON 对象返回给客户端。
-
-而 `AV.Object#toJSON` 方法为了防止循环引用，当遇到属性是 Pointer 类型会返回 pointer 元信息，不会将 include 的其他字段添加进去。
-
-因此，你需要主动将该字段进行 JSON 序列化，例如：
-
-``` javascript
- query.find().then(function(results) {
-    //主动序列化 json 列。
+    // 手动进行一次序列化
     results.forEach(function(result){
       result.set('user', result.get('user') ?  result.get('user').toJSON() : null);
     });
-    //再返回结果
+    // 再返回查询结果给客户端
     res.success(results);
-  }).catch(function(err){
-    //返回错误给客户端
-  });
+  }).catch(res.error);
+});
 ```
 
 ## Gitlab 部署常见问题
 
-很多用户自己使用 [Gitlab](http://gitlab.org/)搭建了自己的源码仓库，有朋友会遇到无法部署到 LeanCloud 的问题，即使设置了 Deploy Key，却仍然要求输入密码。
+很多用户自己使用 [Gitlab](http://gitlab.org/) 搭建了自己的源码仓库，有朋友会遇到无法部署到 LeanCloud 的问题，即使设置了 Deploy Key，却仍然要求输入密码。
 
 可能的原因和解决办法如下：
 
-* 确保你 gitlab 运行所在服务器的 /etc/shadow 文件里的 git（或者 gitlab）用户一行的 `!`修改为 `*`，原因参考 [Stackoverflow - SSH Key asks for password](http://stackoverflow.com/questions/15664561/ssh-key-asks-for-password)，并重启 SSH 服务：`sudo service ssh restart`。
-* 在拷贝 deploy key 时，确保没有多余的换行符号。
-* Gitlab 目前不支持有 comment 的 deploy key。早期 LeanCloud 用户生成的 deploy key 可能带 comment，这个 comment 是在 deploy key 的末尾 76 个字符长度的字符串，例如下面这个 deploy key：
+* 确保你 Gitlab 运行所在服务器的 /etc/shadow 文件里的 git（或者 gitlab）用户一行的 `!`修改为 `*`，原因参考 [Stackoverflow - SSH Key asks for password](http://stackoverflow.com/questions/15664561/ssh-key-asks-for-password)，并重启 SSH 服务：`sudo service ssh restart`。
+* 在拷贝 Deploy Key 时，确保没有多余的换行符号。
+* Gitlab 目前不支持有注释的 Deploy Key。早期 LeanCloud 用户生成的 Deploy Key 末尾可能带有注释（类似于 `App dxzag3zdjuxbbfufuy58x1mvjq93udpblx7qoq0g27z51cx3's cloud code deploy key`），需要删除掉这部分再保存到 Gitlab。
 
-```
-ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA5EZmrZZjbKb07yipeSkL+Hm+9mZAqyMfPu6BTAib+RVy57jAP/lZXuosyPwtLolTwdyCXjuaDw9zNwHdweHfqOX0TlTQQSDBwsHL+ead/p6zBjn7VBL0YytyYIQDXbLUM5d1f+wUYwB+Cav6nM9PPdBckT9Nc1slVQ9ITBAqKZhNegUYehVRqxa+CtH7XjN7w7/UZ3oYAvqx3t6si5TuZObWoH/poRYJJ+GxTZFBY+BXaREWmFLbGW4O1jGW9olIZJ5/l9GkTgl7BCUWJE7kLK5m7+DYnkBrOiqMsyj+ChAm+o3gJZWr++AFZj/pToS6Vdwg1SD0FFjUTHPaxkUlNw== App dxzag3zdjuxbbfufuy58x1mvjq93udpblx7qoq0g27z51cx3's cloud code deploy key
-```
-其中最后 76 个字符：
-
-```
-App dxzag3zdjuxbbfufuy58x1mvjq93udpblx7qoq0g27z51cx3's cloud code deploy key
-```
-
-就是 comment，删除这段字符串后的 deploy key（如果没有这个字样的comment无需删除）保存到 gitlab 即可正常使用：
-
-```
-ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA5EZmrZZjbKb07yipeSkL+Hm+9mZAqyMfPu6BTAib+RVy57jAP/lZXuosyPwtLolTwdyCXjuaDw9zNwHdweHfqOX0TlTQQSDBwsHL+ead/p6zBjn7VBL0YytyYIQDXbLUM5d1f+wUYwB+Cav6nM9PPdBckT9Nc1slVQ9ITBAqKZhNegUYehVRqxa+CtH7XjN7w7/UZ3oYAvqx3t6si5TuZObWoH/poRYJJ+GxTZFBY+BXaREWmFLbGW4O1jGW9olIZJ5/l9GkTgl7BCUWJE7kLK5m7+DYnkBrOiqMsyj+ChAm+o3gJZWr++AFZj/pToS6Vdwg1SD0FFjUTHPaxkUlNw==
-```
-
-## Exceeded Limit
+## Exceeded Limit 是什么意思？
 
 很多用户使用云引擎时会遇到 http 响应码为 `529` 的错误页面：
 
@@ -253,7 +198,7 @@ Exceeded Limit
 * 对于前两种情况，建议使用 [自定义域名](leanengine_webhosting_guide-node.html#备案和自定义域名) 绑定到云引擎，这样限制会扩大到每个 IP 允许 300 个连接。
 * 如果是最后一种情况，建议优化云引擎的业务降低响应时间，或者绑定 [自定义域名](leanengine_webhosting_guide-node.html#备案和自定义域名)。
 
-## `npm ERR! peer dep missing` 错误
+## `npm ERR! peer dep missing` 错误怎么办？
 
 部署时出现类似错误：
 
@@ -265,6 +210,40 @@ npm ERR! peer dep missing: graphql@^0.10.0 || ^0.11.0, required by express-graph
 
 你可以在本地删除 node_modules，然后用 `npm install --production` 重新安装依赖来重现这个问题。
 
-## 在线上无法读取到项目中的文件
+## 在线上无法读取到项目中的文件怎么办？
 
 建议先检查文件大小写是否正确，线上的文件系统是区分大小写的，而 Windows 和 macOS 通常不区分大小写。
+
+## 如何在本地调试 LeanCache？
+
+见 [LeanCache 使用指南：在本地调试依赖 LeanCache 的应用](leancache_guide.html#hash-935423087)
+
+## 部署时长时间卡在「正在下载和安装依赖」怎么办？
+
+这个步骤对应在云端调用各个语言的包管理器（`npm`、`pip`、`composer`、`maven`）安装依赖的过程，我们有一个 [依赖缓存](leanengine_webhosting_guide-node.html#hash642973118) 机制来加速这个安装过程，但缓存可能会因为很多原因失效（比如修改了依赖列表），在缓存失效时会比平时慢很多，请耐心等待。如果你在 `leanengine.yaml` 中指定了系统依赖也会在这个步骤中安装，因此请不要添加未用到的依赖。
+
+对于 Node.js 建议检查是否在 `package-lock.json` 或 `yarn.lock` 中指定了较慢的源（见 [网站托管开发指南 · Node.js](leanengine_webhosting_guide-node.html#hash-1923443185)）。
+
+## 云引擎的健康检查是什么？
+
+云引擎的管理系统会每隔几分钟检查所有实例的工作状态（通过 HTTP 检查，详见 [网站托管开发指南：健康监测](leanengine_webhosting_guide-node.html#hash637400844)），如果实例无法正确响应的话，管理系统会触发一次重新部署，并在控制台上打印类似下面的日志：
+
+> 健康检查失败：web1 检测到 Error connect ECONNREFUSED 10.19.30.220:51797
+
+如果一周内发生一两次属正常现象（有可能是我们的服务器出现偶发的故障，因为会立刻重新部署，对服务影响很小），如果频繁发生可能是你的程序资源不足，或存在其他问题（运行一段时间后不再响应 HTTP 请求），需结合具体情况来做分析。
+
+## 云引擎是否可以使用本地磁盘存储文件？
+
+云引擎每次部署都会产生一个新的容器，即使不部署系统偶尔也会进行一些自动调度，这意味着你不能将本地文件系统当作持久的存储。但如果是存储临时文件是没有问题的，`/home/leanengine` 和 `/tmp` 目录都是可供写入的。
+
+如果你写入的文件体积较大，建议在使用后自动删除他们，否则如果占用磁盘空间超过 1G，继续写入文件可能会收到类似 `Disk quota exceeded` 的错误。这种情况下你可以重新部署一下，这样就会清空文件，不再有这个错误了。
+
+## 如何使用云引擎批量更新数据？
+
+可参考我们的 [Demo: batch-update](https://github.com/leancloud/leanengine-nodejs-demos/blob/master/routes/batch-update.js)。
+
+## 如何下载云引擎的应用日志和访问日志
+
+云引擎的应用日志（程序的标准输出和标准错误输出）可以在 [应用控制台 > 云引擎 > 应用日志](/cloud.html?appid={{appid}}#/log) 查看；并且可以使用 [命令行工具](https://leancloud.cn/docs/leanengine_cli.html#hash822470872) 导出最长 7 天的日志。
+
+云引擎的访问日志（Access Log）可在 [应用控制台 > 云引擎 > 访问日志](/cloud.html?appid={{appid}}#/accesslog) 中导出，通过控制台下载经过打包的日志。
