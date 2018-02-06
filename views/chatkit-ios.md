@@ -404,6 +404,12 @@ ChatListViewController.h 需导入头文件 `#import <ChatKit/LCChatKit.h>`,示�
 }
 ```
 
+如果创建会话成功后，不想要跳转到聊天详情页，而是做一些其他操作，这种情况下需要手动将新创建的会话插入会话列表：
+
+```objc
+[[LCChatKit sharedInstance] insertRecentConversation:conversation];
+```
+
 ### 聊天详情界面
 
 聊天详情对应 LCCKConversationViewController。
