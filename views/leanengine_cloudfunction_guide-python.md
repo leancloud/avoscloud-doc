@@ -1,6 +1,8 @@
 {% extends "./leanengine_cloudfunction_guide.tmpl" %}
 
 {% set platformName = "Python" %}
+{% set runtimeName = "python" %}
+{% set gettingStartedName = "python-getting-started" %}
 {% set productName = "LeanEngine" %}
 {% set storageName = "LeanStorage" %}
 {% set leanengine_middleware = "[LeanCloud Python SDK](https://github.com/leancloud/python-sdk)" %}
@@ -266,7 +268,7 @@ post_engine = leancloud.Engine()
 @post_engine.define
 def post_func():
     pass
-		
+
 ```
 
 ```Python
@@ -278,7 +280,7 @@ commit_engine = leancloud.Engine()
 @commit_engine.define
 def commit_func():
     pass
-		
+
 ```
 
 然后，我们就可以统一在 `cloud.py` 下对两个文件进行合并管理。
@@ -314,8 +316,8 @@ engine.register(commit_engine)
 
 对于使用上述方式产生的对象，请根据需要自行调用以下 API：
 
-- `leancloud.Object.disable_before_hook()` 或 
-- `leancloud.Object.disable_after_hook()` 
+- `leancloud.Object.disable_before_hook()` 或
+- `leancloud.Object.disable_after_hook()`
 
 这样，对象的保存或删除动作就不会再次触发相关的 Hook 函数。
 
@@ -529,10 +531,9 @@ def _conversationUpdate(**params):
 ```
 {% endblock %}
 
-{% block masterKeyInit %}
+{% block useMasterKey %}
 ```python
-# 第一个参数为 App Id
-leancloud.init('{{appid}}', app_key='{{appKey}}', master_key='{{masterkey}}')
+// 通常位于 wsgi.py
 leancloud.use_master_key(True)
 ```
 {% endblock %}

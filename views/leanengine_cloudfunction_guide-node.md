@@ -1,6 +1,8 @@
 {% extends "./leanengine_cloudfunction_guide.tmpl" %}
 
 {% set platformName = "Node.js" %}
+{% set runtimeName = "node" %}
+{% set gettingStartedName = "node-js-getting-started" %}
 {% set productName = "LeanEngine" %}
 {% set storageName = "LeanStorage" %}
 {% set leanengine_middleware = "[LeanEngine Node.js SDK](https://github.com/leancloud/leanengine-node-sdk)" %}
@@ -351,19 +353,6 @@ AV.Cloud.define('push_timer', function(request){
 ```
 {% endblock %}
 
-{% block masterKeyInit %}
-
-```nodejs
-//参数依次为 AppId, AppKey, MasterKey
-AV.init({
-  appId: '{{appid}}',
-  appKey: '{{appkey}}',
-  masterkey: '{{masterkey}}'
-})
-AV.Cloud.useMasterKey();
-```
-{% endblock %}
-
 {% block code_hook_message_received %}
 
 ```nodejs
@@ -586,3 +575,31 @@ obj.save().then(function(obj) {
 });
 ```
 {% endblock %}
+
+
+{% block useMasterKey %}
+```javascript
+// 通常位于 server.js
+AV.Cloud.useMasterKey();
+```
+{% endblock %}
+
+{% set authOptionsGuide %}
+```javascript
+var post = new Post();
+post.save({
+  author: user
+}, {
+  // 或者使用 request.sessionToken（网站托管中需启用 `Cloud.CookieSession`）
+  sessionToken: user.getSessionToken()
+});
+```
+
+或者你也可单独对某一个操作使用 Master Key，跳过权限检查：
+
+```javascript
+post.destroy({useMasterKey: true});
+```
+
+当然你也可以在启用了超级权限的情况下使用 `useMasterKey: false` 来对单个操作关掉超级权限。
+{% endset %}

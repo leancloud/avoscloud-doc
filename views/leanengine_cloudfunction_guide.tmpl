@@ -19,6 +19,8 @@
 
 如果还不知道如何创建云引擎项目、本地调试并部署到云端，请阅读 [云引擎快速入门](leanengine_quickstart.html)。
 
+云函数是 LeanCloud 提供的一个相对受限的自定义服务器端逻辑的功能，和我们的 SDK 有比较深度的集成。我们将云函数设计为一个类似 RPC 的机制，在云函数中你只能关注参数和结果，而不能自定义超时时间、HTTP Method、URL，不能读取和设置 Header。如果希望更加自由地使用这些 HTTP 的语义化功能，或者希望使用第三方的框架提供标准的 RESTful API，请使用云引擎的 [网站托管功能](leanengine_webhosting_guide-{{runtimeName}}.html)。
+
 ## 多语言支持
 
 云引擎支持多种语言的运行环境，你可以选择自己熟悉的语言开发应用：
@@ -54,7 +56,7 @@ leancloud.use_production(False) # 调用预备环境
 
 ## 云函数
 
-示例项目中 {{ cloud_func_file }} 文件定义了一个很简单的 `hello` 云函数。现在让我们看一个较复杂的例子来展示云引擎的用途。在云端进行计算的一个重要理由是，你不需要将大量的数据发送到设备上做计算，而是将这些计算放到服务端，并返回结果这一点点信息就好。
+[示例项目](https://github.com/leancloud/{{gettingStartedName}}) 中 {{ cloud_func_file }} 文件定义了一个很简单的 `hello` 云函数。现在让我们看一个较复杂的例子来展示云引擎的用途。在云端进行计算的一个重要理由是，你不需要将大量的数据发送到设备上做计算，而是将这些计算放到服务端，并返回结果这一点点信息就好。
 
 例如，你写了一个应用，让用户对电影评分，一个评分对象大概是这样：
 
@@ -431,28 +433,21 @@ Cron 表达式的基本语法为：
 - <a name="short-circuited"></a>**{{ errorMessage_shortCircuited }}**<br/>
   某个定时器触发的云函数，因为太多次超时而停止触发。
 
-## 权限说明
+## Master Key 和超级权限
 
-云引擎可以有超级权限，使用 Master key 调用所有 API，因此会忽略 ACL 和 Class Permission 限制。你只需要使用下列代码来初始化 SDK（在线定义默认就有全局的超级权限）：
+因为云引擎运行在可信的服务器端环境中，所以你可以全局开启超级权限（Master Key），这样会跳过包括 ACL 和 Class 权限在内的检查，自由地操作所有云存储中的数据，也可以调用一些仅供 masterKey 使用的 API，开启 Master Key 的方法：
 
-{% block masterKeyInit %}{% endblock %}
+{% block useMasterKey %}{% endblock %}
 
-如果在你的服务端环境里也想做到超级权限，也可以使用该方法初始化。
+{% if authOptionsGuide %}
+如果没有添加这些代码，默认是没有超级权限的，这意味着在云引擎中你也不能修改被 ACL 保护的数据，你需要在进行操作时手动指定 sessionToken，让操作以这个用户的权限来执行：
 
-{% if platformName | lower == 'node.js' %}
-如果全局的超级权限已打开，但在某些场景或操作中，又需要遵循已有的 ACL 和 Class 权限设置，例如一个对象只允许创建人对其进行修改操作，那么可以在 API 调用时传入 `{ useMasterKey: false }` 参数来覆盖掉全局的超级权限，前提是这个 API 支持使用 [`AuthOptions` 选项](https://leancloud.github.io/javascript-sdk/docs/global.html#AuthOptions)。
+{{ authOptionsGuide }}
 
-```js
-var Post = AV.Object.extend('Post');
-var post = new Post();
-post.set('author', '作者');
-post.set('title', '标题');
-post.save(null, { useMasterKey: false }).then(function (post) {
-  // 成功保存
-}, function (error) {
-  // 异常处理
-});
-```
+那么究竟是否应该使用超级权限呢，我们的建议如下：
 
-同理，如果在云引擎中没有打开全局的超级权限，API 可以使用 `{ useMasterKey: true }` 临时通过超级权限进行操作。
+- 如果你的云引擎代码中特权操作比较多、操作不属于用户的全局数据比较多，那么建议全局开启 Master Key，并自行做好对于用户请求的权限检查。
+- 如果你的云引擎代码中的请求通常和单个用户自己的数据相关、需要遵守 ACL，那么建议不开启 Master Key，将用户请求的 sessionToken 传入数据修改的相关操作（如 `save`）。
 {% endif %}
+
+关于云引擎上的权限问题，还可以参考 [ACL 与数据安全](acl-start.html) 和 [在云引擎中使用 ACL](acl_guide_leanengine.html)。
