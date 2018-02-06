@@ -657,24 +657,28 @@ Pointer 只是个描述并没有具象的类与之对应，它与 `{{relationObj
 [pointer1, pointer2, pointer3]
 ```
 可以用 include 方法获取数组中的 pointer 数据，例如：
-```
-// object-c on iOS
+
+```objc
 [query includeKey:@"todoArray"];
-// java
+```
+```java
 query.include("todoArray");
-// js
+```
+```js
 query.include('todoArray');
 ```
+
 但是 Array 类型的 include 操作只支持到第一层，不支持 `include(b.c)` 这种递进关联查询。
 
 `select` 也具备使用 dot 符号 `.` 来进行级联操作：
 
-```
-// objective-c on iOS
+```objc
 [query selectKeys:@"targetTodoFolder.targetAVUser.username"];
-// java
+```
+```java
 query.selectKeys(Arrays.asList("targetTodoFolder.targetAVUser.username"));
-// js
+```
+```js
 query.select(['targetTodoFolder.targetAVUser.username']);
 ```
 
