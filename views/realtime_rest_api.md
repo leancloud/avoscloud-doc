@@ -262,6 +262,7 @@ timestamp | 必填 | 消息时间戳（毫秒）
 from_peer | 必填 | 发消息用户 Client ID
 message | 必填 | 修改后的消息体 
 recall | 可选 | 布尔类型，代表是否撤回消息
+to_peers | 长度最长为 20 个 client id | 当撤回的是系统对话单独发给用户的消息时，需要将撤回消息的目标用户 id 填写在这里
 
 ## 未收取消息数
 
