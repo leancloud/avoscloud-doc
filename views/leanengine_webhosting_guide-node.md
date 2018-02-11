@@ -23,7 +23,7 @@ Node.js 的 `package.json` 中可以指定 [很多选项](https://docs.npmjs.com
         "start": "node server.js"
     },
     "engines": {
-        "node": "6.x"
+        "node": "8.x"
     },
     "dependencies": {
         "express": "4.12.3",
@@ -37,7 +37,7 @@ Node.js 的 `package.json` 中可以指定 [很多选项](https://docs.npmjs.com
 
 * `scripts.start` 启动项目时使用的命令；默认为 `node server.js`，如果你希望为 node 附加启动选项（如 `--es_staging`）或使用其他的文件作为入口点，可以修改该选项。
 * `scripts.prepublish` 会在项目构建结束时运行一次；可以将构建命令（如 `gulp build`）写在这里。
-* `engines.node` 指定所需的 Node.js 版本；出于兼容性考虑默认版本仍为比较旧的 `0.12`，**因此建议大家自行指定一个更高的版本，建议使用 `6.x` 版本进行开发**，你也可以设置为 `*` 表示总是使用最新版本的 Node.js。
+* `engines.node` 指定所需的 Node.js 版本；出于兼容性考虑默认版本仍为比较旧的 `0.12`，**因此建议大家自行指定一个更高的版本，建议使用 `8.x` 版本进行开发**，你也可以设置为 `*` 表示总是使用最新版本的 Node.js。
 * `dependencies` 项目所依赖的包；云引擎会在部署时用 `npm install --production` 为你安装这里列出的所有依赖。如果某个依赖有 peerDependencies，请确保它们也被列在 `dependencies`（而不是 `devDependencies`）中。
 * `devDependencies` 项目开发时所依赖的包；云引擎目前 **不会** 安装这里的依赖。
 
@@ -75,7 +75,7 @@ lean up
 {% block supported_frameworks %}
 Node SDK 为 [express](http://expressjs.com/) 和 [koa](http://koajs.com/) 提供了集成支持，如果你使用这两个框架，只需通过下面的方式加载 Node SDK 提供的中间件即可。
 
-你可以在你的项目根目录运行 `npm install leanengine@next --save` 来安装 Node SDK。
+你可以在你的项目根目录运行 `npm install --save leanengine leancloud-storage` 来安装 Node SDK。
 
 ### Express
 
@@ -141,25 +141,6 @@ app.listen(process.env.LEANCLOUD_APP_PORT);
 你可以使用 koa 来渲染页面、提供自定义的 HTTP API：
 
 ```js
-app.use(function *(next) {
-  if (this.url === '/') {
-    // https://github.com/tj/co-views
-    yield coViews('views')('index', {title: 'Hello world'});
-  } else {
-    yield next;
-  }
-});
-
-app.use(function *(next) {
-  if (this.url === '/time') {
-    this.body = {
-      time: new Date()
-    };
-  } else {
-    yield next;
-  }
-});
-
 app.use(function *(next) {
   if (this.url === '/todos') {
     return new AV.Query('Todo').find().then(todos => {
@@ -258,7 +239,9 @@ if (NODE_ENV === 'development') {
 {% endblock %}
 
 {% block cookie_session %}
-云引擎提供了一个 `AV.Cloud.CookieSession` 中间件，用 Cookie 来维护用户（`AV.User`）的登录状态，要使用这个中间件可以在 `app.js` 中添加下列代码：
+
+### 在服务器端管理
+如果你的页面主要是由服务器端渲染（例如使用 ejs、pug），在前端不需要使用 JavaScript SDK 进行数据操作，那么建议你使用我们提供的一个 `CookieSession` 中间件，在 Cookie 中维护用户状态：
 
 ```nodejs
 app.use(AV.Cloud.CookieSession({ secret: 'my secret', maxAge: 3600000, fetchUser: true }));
@@ -269,6 +252,8 @@ Koa 需要添加一个 `framework: 'koa'` 的参数：
 ```nodejs
 app.use(AV.Cloud.CookieSession({ framework: 'koa', secret: 'my secret', maxAge: 3600000, fetchUser: true }));
 ```
+
+{{ docs.alert("使用 CookieSession 的同时需要添加 [CSRF Token](leanengine_webhosting_guide-node.html#hash-1132002928) 来防御 CSRF 攻击。") }}
 
 你需要传入一个 secret 用于签名 Cookie（必须提供），这个中间件会将 `AV.User` 的登录状态信息记录到 Cookie 中，用户下次访问时自动检查用户是否已经登录，如果已经登录，可以通过 `req.currentUser` 获取当前登录用户。
 
@@ -316,6 +301,44 @@ app.get('/logout', function(req, res) {
   req.currentUser.logOut();
   res.clearCurrentUser(); // 从 Cookie 中删除用户
   res.redirect('/profile');
+});
+```
+
+### 在浏览器端维护
+如果你的页面主要是由浏览器端渲染（例如使用 Vue、React、Angular），主要在前端使用 JavaScript SDK 进行数据操作，那么建议在前端使用 `AV.User.login` 登录，以前端的登录状态为准。
+
+当后端需要以当前用户的身份完成某些工作时，前端通过 `user.getSessionToken()` 获取 sessionToken，然后通过 HTTP Header 等方式将 sessionToken 发送给后端。
+
+例如在前端：
+
+```javascript
+AV.User.login(user, pass).then( user => {
+  return fetch('/profile', headers: {
+    'X-LC-Session': user.getSessionToken()
+  });
+});
+```
+
+同时在后端：
+
+```javascript
+app.get('/profile', function(req, res) {
+  // 根据 sessionToken 查询当前用户
+  AV.User.become(req.headers['x-lc-session']).then( user => {
+    res.send(user);
+  }).catch( err => {
+    res.send({error: err.message});
+  });
+});
+
+app.post('/todos', function(req, res) {
+  var todo = new Todo();
+  // 进行数据操作时指定 sessionToken
+  todo.save(req.body, {sessionToken: req.headers['x-lc-session']}).then( () => {
+    res.send(todo);
+  }).catch( err => {
+    res.send({error: err.message});
+  });
 });
 ```
 {% endblock %}
@@ -399,6 +422,10 @@ app.post('/upload', function(req, res){
 有时候你需要将一些自己需要的属性保存在 session 中，你可以增加通用的 `cookie-session` 组件，详情可以参考 [express.js &middot; cookie-session](https://github.com/expressjs/cookie-session)。该组件和 `AV.Cloud.CookieSession` 组件可以并存。
 
 <div class="callout callout-info">express 框架的 `express.session.MemoryStore` 在云引擎中是无法正常工作的，因为云引擎是多主机、多进程运行，因此内存型 session 是无法共享的，建议用 [express.js &middot; cookie-session 中间件](https://github.com/expressjs/cookie-session)。</div>
+{% endblock %}
+
+{% block csrf_token %}
+Express 中可以使用 [csurf](https://github.com/expressjs/csurf) 这个库来实现 CSRF Token。
 {% endblock %}
 
 {% block leancache %}
