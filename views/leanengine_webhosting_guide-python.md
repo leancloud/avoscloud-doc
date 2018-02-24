@@ -51,7 +51,7 @@ Flask>=0.10.1,<1.0.0                               # 可以指定版本号／范
 git+https://github.com/foo/bar.git@master#egg=bar  # 可以使用 Git/SVN 等版本管理工具的远程地址
 ```
 
-详细格式请参考 [pip 文档 &middot Requirements Files](https://pip.pypa.io/en/stable/user_guide/#requirements-files)。
+详细格式请参考 [pip 文档 &middot; Requirements Files](https://pip.pypa.io/en/stable/user_guide/#requirements-files)。
 
 应用部署到云引擎之后，会自动按照 `requirements.txt` 中的内容进行依赖安装。在本地运行和调试项目的时候，可以在项目目录下使用如下命令安装依赖：
 

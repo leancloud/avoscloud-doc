@@ -191,7 +191,7 @@ $ cd AwesomeApp
 - [Python](leanengine_webhosting_guide-python.html#本地运行和调试)
 - [Node.js](leanengine_webhosting_guide-node.html#本地运行和调试)
 - [PHP](leanengine_webhosting_guide-php.html#本地运行和调试)
-- [Java](leanengine_webhosting_guide-java.html#命令行工具)
+- [Java](leanengine_webhosting_guide-java.html#本地运行和调试)
 
 启动应用：
 

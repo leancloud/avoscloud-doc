@@ -98,7 +98,7 @@ lean -p 3002
 - 升级 leanengine 到 v1.2.2 或以上版本
 - 在 hook 外定义 Class（即定义在 `AV.Cloud.define` 方法之外），确保不会对一个 Class 执行多次 `AV.Object.extend`
 
-我们在 [JavaScript 指南 - AV.Object](./leanstorage_guide-js.html#AV_Object) 章节中也进行了描述。
+我们在 [JavaScript 指南 - 构建对象](./leanstorage_guide-js.html#构建对象) 章节中也进行了描述。
 
 ## 如何排查云引擎 Node.js 内存泄漏
 

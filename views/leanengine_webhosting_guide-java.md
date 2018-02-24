@@ -12,7 +12,7 @@
 {% block runtime_description %}
 Java 运行环境对内存的使用较多，所以建议：
 
-* 以 [示例项目](https://github.com/leancloud/java-war-getting-started.git) 起步的应用，建议使用 512MB 或以上规格的实例。
+* 以 [示例项目](https://github.com/leancloud/java-war-getting-started) 起步的应用，建议使用 512MB 或以上规格的实例。
 * 使用 [Spring Boot](https://projects.spring.io/spring-boot/) 的应用，建议使用 1GB 或以上规格的实例。
 * 本地启动并模拟完成主要业务流程操作，待应用充分初始化后，根据 Java 进程内存占用量选择相应的实例规格，需要注意保留一定的余量用以应对请求高峰。
 * Java 应用可能在启动初期因为内存使用增长较快，导致 JVM 堆内存申请非常多，从而超出实例规格限制。可以考虑增加 JVM 堆内存最大使用限制来避免该问题：假设使用 2GB 内存规格的实例运行，则可以在云引擎的设置页面增加「自定义环境变量」，名称为 `JAVA_OPTS`，值为 `-Xmx1500m`，这样会限制 JVM 堆最大为 1.5 GB，剩下 500 MB 是给持久代或堆外内存或者其他一些杂项使用。**注意：`-Xmx` 参数如果设置得过小可能会导致大量 CPU 消耗在无休止的 GC 任务上**。
@@ -170,7 +170,7 @@ Java 云引擎只支持 1.8 运行环境和 war 包运行
 
 {% block use_leanstorage %}
 
-云引擎使用 {{leanengine_middleware}} 来代替 [Java 存储 SDK](https://github.com/leancloud/JavaSDK) 。前者依赖了后者，并增加了云函数和 Hook 函数的支持，因此开发者可以直接使用 [LeanCloud 的存储服务](leanstorage_guide-java.html) 来存储自己的数据。
+云引擎使用 {{leanengine_middleware}} 来代替 [Java 存储 SDK](https://github.com/leancloud/java-sdk) 。前者依赖了后者，并增加了云函数和 Hook 函数的支持，因此开发者可以直接使用 [LeanCloud 的存储服务](leanstorage_guide-java.html) 来存储自己的数据。
 
 如果使用项目框架作为基础开发，{{leanengine_middleware}} 默认是配置好的，可以根据示例程序的方式直接使用。
 

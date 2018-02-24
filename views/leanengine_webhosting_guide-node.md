@@ -213,7 +213,7 @@ new AV.Query('Todo').find().then(function(todos) {
 });
 ```
 
-{{ docs.note("如果需要单独在某些操作中关闭全局的 masterKey 权限，请参考 [云函数·权限说明](leanengine_cloudfunction_guide-node.html#权限说明)。") }}
+{{ docs.note("如果需要单独在某些操作中关闭全局的 masterKey 权限，请参考 [云函数·权限说明](leanengine_cloudfunction_guide-node.html#Master_Key_和超级权限)。") }}
 
 Node SDK 的历史版本：
 
@@ -253,7 +253,7 @@ Koa 需要添加一个 `framework: 'koa'` 的参数：
 app.use(AV.Cloud.CookieSession({ framework: 'koa', secret: 'my secret', maxAge: 3600000, fetchUser: true }));
 ```
 
-{{ docs.alert("使用 CookieSession 的同时需要添加 [CSRF Token](leanengine_webhosting_guide-node.html#hash-1132002928) 来防御 CSRF 攻击。") }}
+{{ docs.alert("使用 CookieSession 的同时需要添加 [CSRF Token](leanengine_webhosting_guide-node.html#CSRF_Token) 来防御 CSRF 攻击。") }}
 
 你需要传入一个 secret 用于签名 Cookie（必须提供），这个中间件会将 `AV.User` 的登录状态信息记录到 Cookie 中，用户下次访问时自动检查用户是否已经登录，如果已经登录，可以通过 `req.currentUser` 获取当前登录用户。
 

@@ -387,7 +387,7 @@
 ## 529
 
 * 信息 - `Exceeded Limit`
-* 含义 -  当前 IP 超过并发限制。使用云引擎时遇到 http 响应码为 529 的错误页面，解决方案请参考 [Exceeded Limit](leanengine_faq.html#Exceeded_Limit)。
+* 含义 -  当前 IP 超过并发限制。使用云引擎时遇到 http 响应码为 529 的错误页面，解决方案请参考 [Exceeded Limit](leanengine_faq.html#Exceeded_Limit_是什么意思_)。
 
 {% if node != 'qcloud' and node != 'us' %}
 
