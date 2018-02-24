@@ -230,12 +230,6 @@ npm ERR! peer dep missing: graphql@^0.10.0 || ^0.11.0, required by express-graph
 
 如果一周内发生一两次属正常现象（有可能是我们的服务器出现偶发的故障，因为会立刻重新部署，对服务影响很小），如果频繁发生可能是你的程序资源不足，或存在其他问题（运行一段时间后不再响应 HTTP 请求），需结合具体情况来做分析。
 
-## 云引擎是否可以使用本地磁盘存储文件？
-
-云引擎每次部署都会产生一个新的容器，即使不部署系统偶尔也会进行一些自动调度，这意味着你不能将本地文件系统当作持久的存储。但如果是存储临时文件是没有问题的，`/home/leanengine` 和 `/tmp` 目录都是可供写入的。
-
-如果你写入的文件体积较大，建议在使用后自动删除他们，否则如果占用磁盘空间超过 1G，继续写入文件可能会收到类似 `Disk quota exceeded` 的错误。这种情况下你可以重新部署一下，这样就会清空文件，不再有这个错误了。
-
 ## 如何使用云引擎批量更新数据？
 
 可参考我们的 [Demo: batch-update](https://github.com/leancloud/leanengine-nodejs-demos/blob/master/routes/batch-update.js)。
