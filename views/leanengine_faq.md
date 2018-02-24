@@ -100,7 +100,7 @@ lean -p 3002
 
 我们在 [JavaScript 指南 - AV.Object](./leanstorage_guide-js.html#AV_Object) 章节中也进行了描述。
 
-## 云引擎 Node.js 内存泄漏排查
+## 如何排查云引擎 Node.js 内存泄漏
 
 如果对内存增长有疑问，可以在 `package.json` 中添加如下配置，开启 GC 日志来调试：
 
@@ -212,19 +212,15 @@ npm ERR! peer dep missing: graphql@^0.10.0 || ^0.11.0, required by express-graph
 
 建议先检查文件大小写是否正确，线上的文件系统是区分大小写的，而 Windows 和 macOS 通常不区分大小写。
 
-## 如何在本地调试 LeanCache？
-
-见 [LeanCache 使用指南：在本地调试依赖 LeanCache 的应用](leancache_guide.html#hash-935423087)
-
 ## 部署时长时间卡在「正在下载和安装依赖」怎么办？
 
-这个步骤对应在云端调用各个语言的包管理器（`npm`、`pip`、`composer`、`maven`）安装依赖的过程，我们有一个 [依赖缓存](leanengine_webhosting_guide-node.html#hash642973118) 机制来加速这个安装过程，但缓存可能会因为很多原因失效（比如修改了依赖列表），在缓存失效时会比平时慢很多，请耐心等待。如果你在 `leanengine.yaml` 中指定了系统依赖也会在这个步骤中安装，因此请不要添加未用到的依赖。
+这个步骤对应在云端调用各个语言的包管理器（`npm`、`pip`、`composer`、`maven`）安装依赖的过程，我们有一个 [依赖缓存](leanengine_webhosting_guide-node.html#依赖缓存) 机制来加速这个安装过程，但缓存可能会因为很多原因失效（比如修改了依赖列表），在缓存失效时会比平时慢很多，请耐心等待。如果你在 `leanengine.yaml` 中指定了系统依赖也会在这个步骤中安装，因此请不要添加未用到的依赖。
 
-对于 Node.js 建议检查是否在 `package-lock.json` 或 `yarn.lock` 中指定了较慢的源（见 [网站托管开发指南 · Node.js](leanengine_webhosting_guide-node.html#hash-1923443185)）。
+对于 Node.js 建议检查是否在 `package-lock.json` 或 `yarn.lock` 中指定了较慢的源（见 [网站托管开发指南 · Node.js](leanengine_webhosting_guide-node.html#package_json)）。
 
 ## 云引擎的健康检查是什么？
 
-云引擎的管理系统会每隔几分钟检查所有实例的工作状态（通过 HTTP 检查，详见 [网站托管开发指南：健康监测](leanengine_webhosting_guide-node.html#hash637400844)），如果实例无法正确响应的话，管理系统会触发一次重新部署，并在控制台上打印类似下面的日志：
+云引擎的管理系统会每隔几分钟检查所有实例的工作状态（通过 HTTP 检查，详见 [网站托管开发指南：健康监测](leanengine_webhosting_guide-node.html#健康监测)），如果实例无法正确响应的话，管理系统会触发一次重新部署，并在控制台上打印类似下面的日志：
 
 > 健康检查失败：web1 检测到 Error connect ECONNREFUSED 10.19.30.220:51797
 
@@ -236,6 +232,6 @@ npm ERR! peer dep missing: graphql@^0.10.0 || ^0.11.0, required by express-graph
 
 ## 如何下载云引擎的应用日志和访问日志
 
-云引擎的应用日志（程序的标准输出和标准错误输出）可以在 [应用控制台 > 云引擎 > 应用日志](/cloud.html?appid={{appid}}#/log) 查看；并且可以使用 [命令行工具](https://leancloud.cn/docs/leanengine_cli.html#hash822470872) 导出最长 7 天的日志。
+云引擎的应用日志（程序的标准输出和标准错误输出）可以在 [应用控制台 > 云引擎 > 应用日志](/cloud.html?appid={{appid}}#/log) 查看；并且可以使用 [命令行工具](leanengine_cli.html#查看日志) 导出最长 7 天的日志。
 
 云引擎的访问日志（Access Log）可在 [应用控制台 > 云引擎 > 访问日志](/cloud.html?appid={{appid}}#/accesslog) 中导出，通过控制台下载经过打包的日志。
