@@ -97,7 +97,7 @@ git clone --depth=1 https://github.com/leancloud/ChatKit-OC
 └── ChatKit-OC  # Demo演示
     ├── ChatKit-OC.xcodeproj
     └── Example
-        └── LCChatKitExample.h  #这是Demo演示的入口类，这个类中提供了很多胶水函数，可完成初步的集成
+        └── LCChatKitExample.h  
         └── LCChatKitExample.m
             ├── Model
             ├── Module
@@ -118,23 +118,15 @@ git clone --depth=1 https://github.com/leancloud/ChatKit-OC
  从上面可以看出，`ChatKit-OC` 项目包分为两个部分：
 
 * `ChatKit` 是库的核心库文件夹。
-* `ChatKit-OC` 为 Demo 演示部分，其中 `LCChatKitExample` 这个类提供了很多胶水函数，可完成初步的集成。
+* `ChatKit-OC` 为 Demo 演示部分。
 
+## 运行 Demo
+ 
+获取项目以后，在终端打开 ChatKit-OC 文件夹并执行 pod update 更新 Pod 文件。更新成功就可以打开 ChatKit-OC.xcworkspace 运行 Demo。
+ 
+## 使用方法
 
- ## 使用方法
-
-为了让这个库更易入手，避免引入过多公开的类和概念，我们采用了类似「组件化」的方式进行构建，即将你在使用 ChatKit 库时所需要用到的所有方法都放在了 `LCChatKit` 这一个类中。它是一个 Mediator，是整个库的入口，也是中枢。
-
- 使用 ChatKit 大体有几个步骤：
-
- 1. 在 `-[AppDelegate application:didFinishLaunchingWithOptions:]` 中调用 `-[LCChatKit setAppId:appKey:]` 来开启 LeanCloud 服务。
- 2. 调用 `-[LCChatKit sharedInstance]` 来初始化一个单例对象。
- 3. 调用 `-[[LCChatKit sharedInstance] openWithClientId:callback:]` 开启 LeanCloud 的 IM 服务 LeanMessage，开始聊天。
- 4. 调用 `-[[LCChatKit sharedInstance] closeWithCallback:]` 关闭 LeanCloud 的 IM 服务，结束聊天。
- 5. 实现 `-[[LCChatKit sharedInstance] setFetchProfilesBlock:]`，设置用户体系，里面要实现如何根据 userId 获取到一个 User 对象的逻辑。ChatKit 会在需要用到 User 信息时调用你设置的这个逻辑。 `LCCKUserSystemService.h` 文件中给出了例子，演示了如何集成 LeanCloud 原生的用户系统 `AVUser`。
- 6. 如果你实现了 `-[[LCChatKit sharedInstance] setGenerateSignatureBlock:]` 方法，那么 ChatKit 会自动为以下行为添加签名：`open`（开启聊天）、`start`（创建对话）、`kick`（踢人）、`invite`（邀请）。反之不会。
-
-下面按步骤进行详细的介绍。
+按照下面的流程，可以快速接入 ChatKit，体验实时通信服务。
 
 ### CocoaPods 导入
 
@@ -174,192 +166,298 @@ gem install cocoapods
 ```objc
 // 开启 LeanCloud 服务
 [LCChatKit setAppId:@"{{appid}}" appKey:@"{{appkey}}"];
+ 
+//添加输入框底部「拍摄/照片/位置」插件，用于发送图片与位置信息
+[LCCKInputViewPluginTakePhoto registerSubclass];
+[LCCKInputViewPluginPickImage registerSubclass];
+[LCCKInputViewPluginLocation registerSubclass];
+ 
+//新建 LoginViewController 用于设置用户系统与用户登录。
+ LoginViewController *loginVc = [[LoginViewController alloc]init];
+ self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+ self.window.rootViewController = [[UINavigationController alloc]initWithRootViewController:loginVc];
+ [self.window makeKeyAndVisible];
 ```
 
 AppId 和 appKey 可以在 [控制台 > 应用设置](/app.html?appid={{appid}}#/key) 中找到。
 
-### 胶水函数快速集成
+以 Source Code 方式打开 info.plist 文件，粘贴配置下列权限:
 
-ChatKit 提供了一个快速集成的演示类 `LCChatKitExample`，路径如下：
+```objc
+<key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+<key>NSAppleMusicUsageDescription</key>
+<string>App 需要您的同意,才能访问媒体资料库</string>
+<key>NSCameraUsageDescription</key>
+<string>App 需要您的同意,才能访问相机</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>App 需要您的同意,才能始终访问位置</string>
+<key>NSLocationUsageDescription</key>
+<string>App 需要您的同意,才能访问位置</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>App 需要您的同意,才能在使用期间访问位置</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>App 需要您的同意,才能访问麦克风</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>App 需要您的同意,才能访问相册</string>
 
-```Objective-C
- ├── ChatKit  ＃核心库文件夹
- └──  ChatKit-OC  # Demo演示
-    ├── ChatKit-OC.xcodeproj
-    └── Example
-        └── LCChatKitExample.h  # 这是 Demo 演示的入口类，这个类中提供了很多胶水函数，可完成初步的集成。
-        └── LCChatKitExample.m
 ```
 
-使用 `LCChatKitExample` 提供的函数即可完成从程序启动到登录再到登出的完整流程。
+### 用户系统
 
-- 在 `-[AppDelegate didFinishLaunchingWithOptions:]` 等函数中调用下面这几个基础的入口胶水函数，可完成初步的集成。
-- 胶水代码中包含了特地设置的 `#warning`，请仔细阅读这些 warning 的注释，根据实际情况调整代码，以符合你的需求。
+用 ChatKit 进行聊天只需要给 ChatKit 传一个 ClientId。但是聊天双方只能看到一个 ClientId 体验不好，所以需要配置用户系统展示头像、昵称等。配置用户系统需要以下几步：
 
-```Objective-C
-/*!
- *  入口胶水函数：初始化入口函数
- *
- *  程序完成启动，在 appdelegate 中的 `-[AppDelegate didFinishLaunchingWithOptions:]` 一开始的地方调用.
- */
-+ (void)invokeThisMethodInDidFinishLaunching;
+#### 1.创建 LCCKUser
 
-/*!
- * Invoke this method in `-[AppDelegate appDelegate:didRegisterForRemoteNotificationsWithDeviceToken:]`.
- */
-+ (void)invokeThisMethodInDidRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
+配置用户系统之前需要新建一个表示 User 的 Model 并遵循 LCCKUserDelegate 协议，下面的示例代码中对应的是 LCCKUser。
 
-/*!
- * invoke This Method In `-[AppDelegate application:didReceiveRemoteNotification:]`
- */
-+ (void)invokeThisMethodInApplication:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo ;
+LCCKUser.h 代码示例：
 
-/*!
- *  入口胶水函数：登入入口函数
- *
- *  用户即将退出登录时调用
- */
-+ (void)invokeThisMethodAfterLoginSuccessWithClientId:(NSString *)clientId success:(LCCKVoidBlock)success failed:(LCCKErrorBlock)failed;
-
-/*!
- *  入口胶水函数：登出入口函数
- *
- *  用户即将退出登录时调用
- */
-+ (void)invokeThisMethodBeforeLogoutSuccess:(LCCKVoidBlock)success failed:(LCCKErrorBlock)failed;
-+ (void)invokeThisMethodInApplicationWillResignActive:(UIApplication *)application;
-+ (void)invokeThisMethodInApplicationWillTerminate:(UIApplication *)application;
+```objc
+#import <ChatKit/LCChatKit.h>
+ 
+@interface LCCKUser : NSObject <LCCKUserDelegate>
+ 
+@end
 ```
 
-### 最近联系人界面
+LCCKUser.m 代码示例：
 
-主流的社交聊天软件，例如微信和 QQ 都会把最近联系人界面作为登录后的首页，可见其重要性。因此我们在 ChatKit 也提供了对话列表 `LCIMConversationListController` 页面，初始化方法非常简单：
-
-```Objective-C
-LCCKConversationListViewController *firstViewController = [[LCCKConversationListViewController alloc] init];
+```objc
+#import "LCCKUser.h"
+@interface LCCKUser ()
+@end
+@implementation LCCKUser
+@synthesize userId = _userId;
+@synthesize name = _name;
+@synthesize avatarURL = _avatarURL;
+@synthesize clientId = _clientId;
+ 
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name avatarURL:(NSURL *)avatarURL clientId:(NSString *)clientId {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _userId = userId;
+    _name = name;
+    _avatarURL = avatarURL;
+    _clientId = clientId;
+    return self;
+}
++ (instancetype)userWithUserId:(NSString *)userId name:(NSString *)name avatarURL:(NSURL *)avatarURL clientId:(NSString *)clientId{
+    LCCKUser *user = [[LCCKUser alloc] initWithUserId:userId name:name avatarURL:avatarURL clientId:clientId];
+    return user;
+}
+- (instancetype)initWithUserId:(NSString *)userId name:(NSString *)name avatarURL:(NSURL *)avatarURL {
+    return [self initWithUserId:userId name:name avatarURL:avatarURL clientId:userId];
+}
++ (instancetype)userWithUserId:(NSString *)userId name:(NSString *)name avatarURL:(NSURL *)avatarURL {
+    return [self userWithUserId:userId name:name avatarURL:avatarURL clientId:userId];
+}
+- (instancetype)initWithClientId:(NSString *)clientId {
+    return [self initWithUserId:nil name:nil avatarURL:nil clientId:clientId];
+}
++ (instancetype)userWithClientId:(NSString *)clientId {
+    return [self userWithUserId:nil name:nil avatarURL:nil clientId:clientId];
+}
+- (id)copyWithZone:(NSZone *)zone {
+    return [[LCCKUser alloc] initWithUserId:self.userId
+                                       name:self.name
+                                  avatarURL:self.avatarURL
+                                   clientId:self.clientId
+            ];
+}
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:self.userId forKey:@"userId"];
+    [aCoder encodeObject:self.name forKey:@"name"];
+    [aCoder encodeObject:self.avatarURL forKey:@"avatarURL"];
+    [aCoder encodeObject:self.clientId forKey:@"clientId"];
+}
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if(self = [super init]){
+        _userId = [aDecoder decodeObjectForKey:@"userId"];
+        _name = [aDecoder decodeObjectForKey:@"name"];
+        _avatarURL = [aDecoder decodeObjectForKey:@"avatarURL"];
+        _clientId = [aDecoder decodeObjectForKey:@"clientId"];
+    }
+    return self;
+}
+@end
 ```
 
-因为最近联系人的所有信息都由 ChatKit 内部维护，不需要传入额外数据，所以直接展示这个 ViewController 即可。最近联系人界面的数据，依赖于本地数据库。这些数据会在聊天过程中自动进行更新，你无需进行繁琐的数据库操作。
+#### 2.设置用户体系
 
-#### 由最近联系人进入聊天界面
+实现 `[[LCChatKit sharedInstance] setFetchProfilesBlock:]` 设置用户体系，里面要实现如何根据 userId 获取到一个 User 对象的逻辑。以 LeanCloud 原生的用户系统 AVUser 举例，按照如下方式构建 LCCKUser 对象。示例中「设置用户体系」与「注册登录」代码放在了 LoginViewController 中，用户可放到自己项目中适合的位置。
 
-按照上面的步骤，我们可以非常方便地打开最近联系人页面。但是我们会发现，点击其中的某个联系人／聊天群组，我们并不能直接进入聊天界面。要做到这一点，我们需要给 LCChatKit 设置上事件响应函数，示例代码如下：
+```objc
+// userIds 指的是 ClientId 的集合。示例代码中开启聊天服务使用 AVUser 的 ObjectId 作为 ClientId。
+ [[LCChatKit sharedInstance] setFetchProfilesBlock:^(NSArray<NSString *> *userIds, LCCKFetchProfilesCompletionHandler completionHandler) {
+    if (userIds.count == 0) {
+        return;
+    }
+    NSMutableArray *users = [NSMutableArray arrayWithCapacity:userIds.count];
+    for (NSString *clientId in userIds) {
+        //查询 _User 表需开启 find 权限
+        AVQuery *userQuery = [AVQuery queryWithClassName:@"_User"];
+        AVObject *user = [userQuery getObjectWithId:clientId];
+        if (user) {
+            //"avatar" 是 _User 表的头像字段
+            AVFile *file = [user objectForKey:@"avatar"];
+            LCCKUser *user_ = [LCCKUser userWithUserId:user.objectId name:[user objectForKey:@"username"] avatarURL:[NSURL URLWithString:file.url] clientId:clientId];
+            [users addObject:user_];
+        }else{
+            //注意：如果网络请求失败，请至少提供 ClientId！
+            LCCKUser *user_ = [LCCKUser userWithClientId:clientId];
+            [users addObject:user_];
+        }
+    }
+    !completionHandler ?: completionHandler([users copy], nil);
+}];
 
-```objective-c
-[[LCChatKit sharedInstance] setDidSelectConversationsListCellBlock:^(NSIndexPath *indexPath, AVIMConversation *conversation, LCCKConversationListViewController *controller) {
-    NSLog(@"conversation selected");
-    LCCKConversationViewController *conversationVC = [[LCCKConversationViewController alloc] initWithConversationId:conversation.conversationId];
-    [controller.navigationController pushViewController:conversationVC animated:YES];
+```
+#### 3.注册或登录
+
+用户注册
+
+```objc
+// AVUser 注册新用户
+AVUser *user = [AVUser user];// 新建 AVUser 对象实例
+user.username = @"张三";// 设置用户名
+user.password =  @"123";// 设置密码
+[user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+     if (succeeded) {
+        // 注册成功，给用户设置头像
+       AVFile *file = [AVFile fileWithURL:@"http://ac-jmbpc7y4.clouddn.com/3524339715676bb7703b.jpg"];
+       [user setObject:file forKey:@"avatar"];
+       [user saveInBackground];
+      }
 }];
 ```
+AVUser 注册后登录，调用 `[[LCChatKit sharedInstance] openWithClientId:]` 登录聊天服务，使用 User.objectId 作为 ClientId：
 
-对于联系人列表页面，我们在 LCChatKit 可以响应如下四种操作：
-
-```objective-c
-/*!
- *  选中某个对话后的回调 (比较常见的需求)
- *  @param conversation 被选中的对话
- */
-typedef void(^LCCKConversationsListDidSelectItemBlock)(NSIndexPath *indexPath, AVIMConversation *conversation, LCCKConversationListViewController *controller);
-/*!
- *  设置选中某个对话后的回调
- */
-- (void)setDidSelectConversationsListCellBlock:(LCCKConversationsListDidSelectItemBlock)didSelectItemBlock;
-
-/*!
- *  删除某个对话后的回调 (一般不需要做处理)
- *  @param conversation 被选中的对话
- */
-typedef void(^LCCKConversationsListDidDeleteItemBlock)(NSIndexPath *indexPath, AVIMConversation *conversation, LCCKConversationListViewController *controller);
-/*!
- *  设置删除某个对话后的回调
- */
-- (void)setDidDeleteConversationsListCellBlock:(LCCKConversationsListDidDeleteItemBlock)didDeleteItemBlock;
-
-/*!
- *  对话左滑菜单设置block (最近联系人页面有复杂的手势操作时，可以通过这里扩展实现)
- *  @return  需要显示的菜单数组
- *  @param conversation, 对话
- *  @param editActions, 默认的菜单数组，成员为 UITableViewRowAction 类型
- */
-typedef NSArray *(^LCCKConversationEditActionsBlock)(NSIndexPath *indexPath, NSArray<UITableViewRowAction *> *editActions, AVIMConversation *conversation, LCCKConversationListViewController *controller);
-/*!
- *  可以通过这个block设置对话列表中每个对话的左滑菜单，这个是同步调用的，需要尽快返回，否则会卡住UI
- */
-- (void)setConversationEditActionBlock:(LCCKConversationEditActionsBlock)conversationEditActionBlock;
-```
-
-
-
-### 聊天界面
-
-<div class="callout callout-info">ChatKit 中的对话是一个 `AVIMConversation` 对象， LeanMessage
-用它来管理对话成员，发送消息，不区分群聊、单聊。Demo 中采用了判断对话人数的方式来区分群聊、单聊。</div>
-
-聊天界面有两种初始化方式：
-
-```Objective-C
-// 用于单聊，默认会创建一个只包含两个成员的 unique 对话(如果已经存在则直接进入，不会重复创建)
-LCCKConversationViewController *conversationViewController = [[LCCKConversationViewController alloc] initWithPeerId:peerId];
-```
-
-```Objective-C
-// 单聊或群聊，用于已经获取到一个对话基本信息的场合。
-LCCKConversationViewController *conversationViewController = [[LCCKConversationViewController alloc] initWithConversationId:conversationId];
-```
-
-这里注意，通过 `peerId` 初始化，内部实现时，如果没有一个 unique 对话刚好包含这两个成员，则会先创建一个 unique 对话，所以调用该方法时可能会导致 _Conversation 表中自动增加一条记录。同理，通过 `conversationId` 初始化群聊，内部实现时，如果不是对话成员会先把当前用户加入对话，并开启群聊。
-
-#### 响应聊天界面的几类操作
-
-由于有了 ChatKit 的帮助，聊天界面的初始化和展示非常简单，但是这里面交互上还有很多地方需要自定义扩展。
-
-- 内部异常对话无法创建
-
-如果通过 peerId 打开对话，或者通过 conversationId 打开对话时，网络出现问题或 传入参数有误，那么对话根本无法进行，这时候我们可以通过给 LCCKConversationViewController 设定 conversationHandler 进行处理。示例代码如下：
-
-```objective-c
-[conversationVC setConversationHandler:^(AVIMConversation *conversation, LCCKConversationViewController *conversationController) {
-    if (!conversation) {
-        // 显示错误提示信息
-        [conversationController alert:@"failed to create/load conversation."];
-    } else {
-        // 正常处理
+```objc
+// AVUser 登录
+[AVUser logInWithUsernameInBackground:@"张三" password:@"123" block:^(AVUser *user, NSError *error) {
+    if (user!=nil) {
+         //登录聊天服务
+        [[LCChatKit sharedInstance] openWithClientId:user.objectId callback:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+            //登录成功，跳转到会话列表页面，ChatListViewController 继承于 LCCKConversationListViewController，详情见下面的会话列表介绍。
+            ChatListViewController *vc = [[ChatListViewController alloc]init];
+            [self.navigationController pushViewController:vc animated:YES];
+            }
+        }];
     }
 }];
 ```
 
-- 对话详情页展示
+### 会话列表
 
-在 QQ／微信之类的聊天应用中，聊天界面右上角会提供一个显示对话详细信息的按钮，点击可以打开对话详情页面，在那里可以进行改名、拉人、踢人、静音等操作。LCCKConversationViewController 中通过调用以下 API 也支持这一功能：
+主流的社交聊天软件，例如微信和 QQ 都会把最近联系人界面作为登录后的首页，可见其重要性。因此我们在 ChatKit 也提供了对话列表 `LCCKConversationListViewController` 页面。
 
-```objective-c
-typedef void(^LCCKBarButtonItemActionBlock)(void);
+新建一个 ChatListViewController 继承于 LCCKConversationListViewController，即可开启会话列表页面。后文中会话列表默认为 ChatListViewController。
 
-typedef NS_ENUM(NSInteger, LCCKBarButtonItemStyle) {
-    LCCKBarButtonItemStyleSetting = 0,
-    LCCKBarButtonItemStyleMore,
-    LCCKBarButtonItemStyleAdd,
-    LCCKBarButtonItemStyleAddFriends,
-    LCCKBarButtonItemStyleShare,
-    LCCKBarButtonItemStyleSingleProfile,
-    LCCKBarButtonItemStyleGroupProfile,
-};
+```objc
+ChatListViewController *vc = [[ChatListViewController alloc]init];
+[self.navigationController pushViewController:vc animated:YES];
+```
+ChatListViewController.h 需导入头文件 `#import <ChatKit/LCChatKit.h>`,示例代码：
 
-- (void)configureBarButtonItemStyle:(LCCKBarButtonItemStyle)style action:(LCCKBarButtonItemActionBlock)action;
+```objc
+//ChatListViewController.h 示例
+#import <ChatKit/LCChatKit.h>
+
+@interface ChatListViewController : LCCKConversationListViewController
+ 
+@end
 ```
 
-示例代码如下：
+### 新建一个会话
+
+新用户的会话列表是空的，按照下面的方法可以新建一个会话，发送一条消息。
 
 ```objective-c
-[conversationController configureBarButtonItemStyle:LCCKBarButtonItemStyleGroupProfile action:^{
-    ConversationDetailViewController *detailVC = [[ConversationDetailViewController alloc] init];// 自己实现的对话详情页
-    detailVC.conversation = conversation;
-    [conversationController.navigationController pushViewController:detailVC animated:YES];
+//在 ChatListViewController.m 中
+- (void)viewDidLoad {
+  //创建新会话
+    UIButton *addBtn = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    [addBtn addTarget:self action:@selector(createConversationBtnClick) forControlEvents:(UIControlEventTouchUpInside)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:addBtn];
+}
+- (void)createConversationBtnClick{
+// clientId 是聊天对象 AUser 对象的 objectId。例如下面这个是用户「李四」的 objectId：
+    NSString *clientId = @"5a5b995cac502e006e2e1391";
+    [[LCChatKit sharedInstance].client createConversationWithName:@"创建第一个会话" clientIds:@[clientId]callback:^(AVIMConversation *conversation, NSError *error)
+        {
+           [conversation sendMessage:[AVIMTextMessage messageWithText:@"你好，小王" attributes:nil]
+                              callback:^(BOOL succeeded, NSError *error) {
+               if (succeeded) {
+               //创建会话成功，跳转到聊天详情页
+                LCCKConversationViewController *conversationViewController = [[LCCKConversationViewController alloc] initWithConversationId:conversation.conversationId];
+                [self.navigationController pushViewController:conversationViewController animated:YES];
+               }
+         }];
+    }];
+}
+```
+
+如果创建会话成功后，不想要跳转到聊天详情页，而是做一些其他操作，这种情况下需要手动将新创建的会话插入会话列表：
+
+```objc
+[[LCChatKit sharedInstance] insertRecentConversation:conversation];
+```
+
+### 聊天详情界面
+
+聊天详情对应 LCCKConversationViewController。
+
+从会话列表跳转到聊天详情，需在会话列表 ChatListViewController 中遵守 LCCKConversationListViewControllerDelegate 协议。
+然后在 viewDidLoad 方法中设置自己为代理：
+
+```objc
+self.delegate = self;
+```
+
+实现下面的代理方法：
+
+```objc
+//由会话列表进入聊天详情界面
+- (void)conversation:(AVIMConversation *)conversation tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    //跳转到聊天详情
+    LCCKConversationViewController *conversationVC = [[LCCKConversationViewController alloc] initWithConversationId:conversation.conversationId];
+    [self.navigationController pushViewController:conversationVC animated:YES];
+}
+```
+
+### 个人主页
+在聊天详情界面，点击好友或自己的头像，需要进入个人详细信息界面。实现 `[[LCChatKit sharedInstance] setOpenProfileBlock:]` 可以跳转到个人主页。
+
+```objc
+//跳转到个人主页
+[[LCChatKit sharedInstance] setOpenProfileBlock:^(NSString *userId, id<LCCKUserDelegate> user, __kindof UIViewController *parentController) {
+ if (!userId) {
+    //用户不存在
+  }else{
+    NSString *currentClientId = [LCChatKit sharedInstance].clientId;
+    if ([userId isEqualToString:currentClientId]) {
+        NSLog(@"打开自己的主页ClientId是 : %@\n,我自己的name是 : %@",userId,user.name);
+    }else{
+        NSLog(@"打开用户主页ClientId是 : %@\n,name是 : %@",userId,user.name);
+     }
+   }
 }];
 ```
 
+### 退出登录
 
+调用 `-[[LCChatKit sharedInstance] closeWithCallback:]` 关闭 LeanCloud 的 IM 服务，结束聊天。
+
+### 离线消息
+
+离线消息推送请参考 [iOS 消息推送开发指南](https://leancloud.cn/docs/ios_push_guide.html)。
 
 ### 手动集成
 
@@ -389,3 +487,14 @@ ChatKit 是完全开源并且免费给开发者使用，使用聊天所产生的
 
 **接入 ChatKit 有什么好处？**<br/>
 它可以减轻应用或者新功能研发初期的调研成本，直接引入使用即可。ChatKit 从底层到 UI 提供了一整套的聊天解决方案。
+
+**聊天列表默认用英文显示距离上次聊天的时间，如果需要用中文显示时间如何设置？**<br/>
+在本地化设置中添加简体中文的支持：
+
+![Localization](images/chatkit-ios-localization.png)
+
+
+
+
+
+

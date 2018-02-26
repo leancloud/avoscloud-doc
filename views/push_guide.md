@@ -5,7 +5,7 @@
 
 # 消息推送服务总览
 
-消息推送，使得开发者可以即时地向其应用程序的用户推送通知或者消息，与用户保持互动，从而有效地提高留存率，提升用户体验。平台提供整合了 Android 推送、iOS 推送、Windows Phone 推送和 Web 网页推送的统一推送服务。
+消息推送，使得开发者可以即时地向其应用程序的用户推送通知或者消息，与用户保持互动，从而有效地提高留存率，提升用户体验。平台提供整合了 Android 推送、iOS 推送和 Windows Phone 推送的统一推送服务。
 
 除了 iOS、Android SDK 做推送服务之外，你还可以通过 [REST API](#使用_REST_API_推送消息) 来发送推送请求。
 
@@ -25,7 +25,7 @@ badge|iOS|呈现在应用图标右上角的红色圆形数字提示，例如待�
 channels| |设备订阅的频道
 deviceProfile||在应用有多个 iOS 推送证书或多个 Android 混合推送配置的场景下，deviceProfile 用于指定当前设备使用的证书名或配置名。其值需要与 [控制台 > 消息 > 设置](/messaging.html?appid={{appid}}#/message/push/conf) 内配置的证书名或配置名对应，否则将无法完成推送。使用方法请参考 [iOS 测试和生产证书区分](#iOS_测试和生产证书区分) 和 [Android 混合推送多配置区分](#Android_混合推送多配置区分)。<br/><br/>{{deviceprofile_format}}
 deviceToken|iOS|APNS 推送的唯一标识符
-deviceType| |设备类型，目前支持 "ios"、"android"、"wp"、"web"。
+deviceType| |设备类型，目前支持 "ios"、"android"、"wp"。
 ID|Windows Phone|仅对微软平台的设备（微软平板和手机）有效
 installationId|Android|LeanCloud SDK 为每个 Android 设备产生的唯一标识符
 subscriptionUri|Windows Phone|MPNS（微软推送服务）推送的通道
@@ -74,7 +74,7 @@ errors| | 本次推送过程中的错误信息。
 
 在部分 Android ROM 上，由于系统对后台进程控制较严，Android 推送的到达率会受到影响。为此我们专门设计了一套称为「混合推送」的高级推送机制，用以提高在这部分 Android ROM 上推送的到达率。
 
-目前 Android 混合推送功能仅对商用版应用开放，如果希望使用该功能，请进入 {% if node=='qcloud' %}**控制台** > **设置** > **应用选项**{% else %}[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission){% endif %}，选择 **聊天、推送** > **开启混合推送**。
+目前 Android 混合推送功能仅对商用版应用开放，如果希望使用该功能，请进入 [控制台 > 消息 > 推送 > 设置 > 混合推送](/dashboard/messaging.html?appid={{appid}}#/message/push/conf)，打开混合推送的开关。
 
 请注意，**开启混合推送** 选项可以根据需要随时进行切换，这样做并不会产生不良影响。当该选项关闭后，下一次 Android 推送会与普通推送一样自动选择 LeanCloud 自有通道送达客户端，除了会再次遇到上面提到的自有通道在部分 ROM 上会受到限制的问题之外，不会有别的影响。而当该选项再次开启后，Android 推送又会去选择第三方推送渠道。
 

@@ -4,11 +4,13 @@
 
 LeanCloud 开发者文档
 
+## 技术咨询
+
+与开发相关的技术问题，请直接到 [LeanCloud 论坛](https://forum.leancloud.cn) 中提问。使用 LeanCloud 商用版的用户，请 [提交工单](https://leanticket.cn)。若文档内容有误，可以直接在文档页面上留言或提交 Github Issue。
+
 ## 说明
 
-这个项目是 LeanCloud [文档](http://leancloud.cn/docs/)上的所有文档的 Markdown 格式的源码，最终将渲染成你在网站上看到的 [HTML 文档](http://leancloud.cn/docs/)。
-
-因此 Markdown 文件里部分链接写的是最终渲染后的链接，如果直接点击会发现 404 错误。
+这个项目是 [LeanCloud 文档](http://leancloud.cn/docs/) 上的所有文档的 Markdown 格式的源码，通过转换最终被渲染成 HTML 文档]。因此 Markdown 文件里部分链接写的是最终渲染后的链接，如果直接点击会出现 404 错误。
 
 ## 贡献
 
@@ -31,7 +33,7 @@ LeanCloud 开发者文档
   - 如需要，更新文档首页 `templates/pages/index.html` 和顶部导航菜单 `templates/include/header.html`。
 - 修改文中标题或文件名称
   - 确认要修改的标题 h1-h6 或文件名称有没有被 `/views` 和 `/templates` 目录下任何文件所引用，以免产生断链。
-  - 系统自动生成的 h1-h6 标题的 id，会将所有空格、中西文标点替换为<del>下划线，如 `## 调用 Console.log()` 会生成  `<h2  id="调用_Console_log__">`，在引用时需要留意，包括大小写。</del>（2017-11-18）由数字和中hash 值，在引用时只需要将空白替换成中划线即可，例如引用标题 `## 使用 SSO 登录` 时，应写为 `请参考 [SSO 登录](#使用-SSO-登录)`。
+  - 系统自动生成的 h1-h6 标题的 id，将所有空格、中西文标点替换为由数字和减号组成的 hash 值。在编写 Markdown 需要引用这些标题时，要将原文中的连续空白替换成一个减号即可，例如引用标题 `## 使用 SSO 登录` 时，应写为 `请参考 [SSO 登录](#使用-SSO-登录)`，纯数字标题要先在前面加个下划线，比如标题 `### 601` 引用写为 `[错误码 601](#_601)`。
 - 提交修改并发起 `Pull Request`
 
 ## 内部贡献

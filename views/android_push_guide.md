@@ -511,7 +511,7 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华
 ```
 dependencies {
     compile ('cn.leancloud.android:avoscloud-mixpush:{{ version.leancloud }}@aar')
-    compile ('com.meizu.flyme.internet:push-internal-publish:3.3.170123@aar')
+    compile ('com.meizu.flyme.internet:push-internal:3.6.+@aar‘)
 }
 ```
 
@@ -520,14 +520,15 @@ dependencies {
 然后配置相关 AndroidManifest。添加 Permission：
 
 ```xml
-<!-- 兼容flyme5.0以下版本，魅族内部集成pushSDK必填，不然无法收到消息-->
-  <uses-permission android:name="com.meizu.flyme.push.permission.RECEIVE"/>
+  <!-- 兼容flyme5.0以下版本，魅族内部集成pushSDK必填，不然无法收到消息-->
+  <uses-permission android:name="com.meizu.flyme.push.permission.RECEIVE"></uses-permission>
   <permission android:name="<包名>.push.permission.MESSAGE" android:protectionLevel="signature"/>
-  <uses-permission android:name="<包名>.push.permission.MESSAGE"/>
-
+  <uses-permission android:name="<包名>.push.permission.MESSAGE"></uses-permission>
+    
   <!--  兼容flyme3.0配置权限-->
   <uses-permission android:name="com.meizu.c2dm.permission.RECEIVE" />
-  <permission android:name="<包名>.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
+  <permission android:name="<包名>.permission.C2D_MESSAGE"
+                    android:protectionLevel="signature"></permission>
   <uses-permission android:name="<包名>.permission.C2D_MESSAGE"/>
 ```
 
@@ -536,16 +537,16 @@ dependencies {
 ```xml
 <receiver android:name="com.avos.avoscloud.AVFlymePushMessageReceiver">
     <intent-filter>
-        <!-- 接收 push 消息 -->
-        <action android:name="com.meizu.flyme.push.intent.MESSAGE"/>
-        <!-- 接收 register 消息 -->
-        <action android:name="com.meizu.flyme.push.intent.REGISTER.FEEDBACK"/>
-        <!-- 接收 unregister 消息-->
+        <!-- 接收push消息 -->
+        <action android:name="com.meizu.flyme.push.intent.MESSAGE" />
+        <!-- 接收register消息 -->
+        <action android:name="com.meizu.flyme.push.intent.REGISTER.FEEDBACK" />
+        <!-- 接收unregister消息-->
         <action android:name="com.meizu.flyme.push.intent.UNREGISTER.FEEDBACK"/>
-        <!-- 兼容低版本 Flyme3 推送服务配置 -->
-        <action android:name="com.meizu.c2dm.intent.REGISTRATION"/>
-        <action android:name="com.meizu.c2dm.intent.RECEIVE"/>
-        <category android:name="<包名>"/>
+        <!-- 兼容低版本Flyme3推送服务配置 -->
+        <action android:name="com.meizu.c2dm.intent.REGISTRATION" />
+        <action android:name="com.meizu.c2dm.intent.RECEIVE" />
+        <category android:name="<包名>"></category>
     </intent-filter>
 </receiver>
 ```
@@ -573,12 +574,12 @@ dependencies {
 AVMixpushManager.unRegisterMixPush();
 ```
 
-此函数为异步函数，如果取消注册失败的话会有类似「unRegisterMixPush error」的日志输出。
+此函数为异步函数，如果取消成功会有「Registration canceled successfully」的日志输出，万一取消注册失败的话会有类似「unRegisterMixPush error」的日志输出。
 
 ### 错误排查建议
 
 - 只要注册时有条件不符合，SDK 会在日志中输出导致注册失败的原因，例如「register error, mainifest is incomplete」代表 manifest 未正确填写。如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
-- 查看华为机型的设置，并打开「信任此应用」、「开机自启动」、「自启动管理」和「权限管理」等相关选项。
+- 查看魅族机型的设置，并打开「信任此应用」、「开机自启动」、「自启动管理」和「权限管理」等相关选项。
 - 如果注册一直失败的话，请去论坛发帖，提供相关日志、具体机型以及系统版本号，我们会跟进协助来排查。
 
 ### GCM 推送（仅美国节点）

@@ -147,13 +147,7 @@
 
 <body id="home" class="dashboard-init" ng-cloak ng-controller="AppCtrl" data-spy="scroll" data-target=".scrollspy">
 
-{% if node=='qcloud' %}
-  {% include 'templates/include/qcloudheader.html' %}
-{% endif %}
-
-{% if node!='qcloud' %}
-  {% include 'templates/include/header.html' %}
-{% endif %}
+{% include 'templates/include/header.html' %}
 
 <div class="container-fluid doc-content <%= node %> platform-as-tab" id="content">
   {{body}}
@@ -161,13 +155,7 @@
 <!-- .container-fluid, .doc-content -->
 {% include 'templates/include/common-footer.html' %}
 
-{% if node=='qcloud' %}
-  {% include 'templates/include/qcloudfooter.html' %}
-{% endif %}
-
-{% if node!='qcloud' %}
-  {% include 'templates/include/footer.html' %}
-{% endif %}
+{% include 'templates/include/footer.html' %}
 
 <script type="text/javascript">
 $(document).ready(function(){

@@ -2,9 +2,6 @@
   <div class="container-fluid">
     <nav class="" role="navigation">
       <ul class="nav navbar-nav">
-        {% if node=='qcloud' %}
-        <li><a href="index.html">文档首页</a></li>
-        {% endif %}
         <li class="dropdown">
           <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-hover="dropdown" href="#">功能概览</a>
           <ul class="dropdown-menu">
@@ -163,9 +160,7 @@
             <li><a href="leanengine-rest-api.html">云引擎 API</a></li>
             <li><a href="rest_api.html#Push_通知">消息推送 API</a></li>
             <li><a href="realtime_rest_api_v2.html">实时通信 API</a></li>
-            {% if node != 'qcloud' and node != 'us' %}
             <li><a href="rest_sms_api.html">短信验证 API</a></li>
-            {% endif %}
             <li><a href="rest_api.html#统计数据_API">数据统计 API</a></li>
             <li><a href="status_system.html#REST_API">应用内社交 API</a></li>
             <li><a href="app_search_guide.html#搜索_API">应用内搜索 API</a></li>
@@ -207,11 +202,9 @@
         <li class="dropdown">
           <a class="dropdown-toggle" role="button" data-toggle="dropdown" data-hover="dropdown" href="#">更多</a>
           <ul class="dropdown-menu">
-            {% if node != 'qcloud' %}
             <li><a href="status_system.html">应用内社交使用指南</a></li>
             <li><a href="sns.html">第三方平台账号登录 SNS 开发指南</a></li>
             <li><a href="feedback.html">用户反馈开发指南</a></li>
-            {% endif %}
             <li><a href="app_search_guide.html">应用内搜索和 DeepLink 开发指南</a></li>
             <li><a href="app_data_share.html">应用之间数据共享（Class 绑定）</a></li>
             <!-- <li><a href="user_groups.html">用户群分析指南</a></li> -->

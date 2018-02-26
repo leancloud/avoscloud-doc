@@ -3,24 +3,11 @@ layout: index.swig
 ---
 <div class="row">
   <div class="doc-home-title col-md-8 col-md-offset-2 col-xs-offset-0">
-    {% if node=='qcloud' %}
-    <div class="text-center" >
-      <h1 class="font-logo">Tencent App Builder Documentation</h1>
-      <h4>TAB 移动开发工具由腾讯云、LeanCloud 联合推出，开发文档由 LeanCloud 提供。</h4>
-      <a href="sdk_down.html" class="btn btn-default" style="margin-top:2em;">SDK 下载</a> </div >
-    {% else %}
     <!-- <h1 class="font-logo">Documentation</h1> -->
-    {# <form class="hero-search" role="search" action="https://newdoc.leanapp.cn/search" method="get"> #}
-      <div class="form-group text-center" style="margin:0 10px;">
-        <input id="site-search" name="q" type="text" class="form-control input-lg" placeholder="&#xf17a 输入错误代码、关键字来搜索&hellip;">
-      </div>
-      <!-- <ul class="list-keyword">
-          <li>热门</li>
-          <li><a href="/search.html?q=小程序" target="_blank">小程序</a></li>
-          <li></li>
-      </ul> -->
-    {# </form> #}
-    {% endif %}
+    <!-- <form class="hero-search" role="search" action="https://newdoc.leanapp.cn/search" method="get"> -->
+    <div class="form-group text-center" style="margin:0 10px;">
+      <input id="site-search" name="q" type="text" class="form-control input-lg" placeholder="&#xf17a 输入错误代码、关键字来搜索&hellip;">
+    </div>
     <ul class="nav nav-pills text-center" role="tablist">
       <!--
       <li role="presentation" class="active">
@@ -107,9 +94,7 @@ layout: index.swig
                 <li> <span><a href="livequery-guide.html">实时数据同步 LiveQuery 开发指南</a></span> </li>
                 <li> <span><a href="relation-guide.html">数据模型设计指南</a></span> </li>
                 <li> <span><a href="acl-guide.html">ACL 权限管理指南</a></span> </li>
-                {%- if node != 'qcloud' -%}
                 {% include 'templates/include/_sms.html' %}
-                {%- endif -%}
               </ul>
             </div>
             <div class="section-content col-xs-12 col-sm-6 col-md-6">
@@ -335,10 +320,8 @@ layout: index.swig
                 <li><a href="realtime_rest_api_v2.html">实时通信 REST API</a></li>
                 <li><a href="rest_api.html#Push_通知">消息推送 REST API</a></li>
                 <li><a href="rest_api.html#统计数据_API">移动统计 REST API</a></li>
-                {% if node != 'qcloud' and node != 'us' %}
                 <li><a href="rest_sms_api.html">短信 SMS REST API</a></li>
                 {% include 'templates/include/_sms.html' %}
-                {% endif %}
                 <li><a href="status_system.html#REST_API">应用内社交 REST API</a></li>
                 <li><a href="app_search_guide.html#搜索_API">应用内搜索 REST API</a></li>
                 <!--<li><a href="oauth2_provider.html">LeanCloud 开放平台接入 OAuth2</a></li>-->
@@ -372,22 +355,16 @@ layout: index.swig
               <h3>开源组件</h3>
               <ul class="list-unstyled">
                 <li><a href="demo.html">开源 Demo 一览</a>
-                <li> {% if node != 'qcloud' %}
                 <li><a href="status_system.html">应用内社交组件</a></li>
                 <li><a href="feedback.html">用户反馈组件</a></li>
                 <li><a href="sns.html">第三方社交账号登录组件</a></li>
-                {% endif %}
               </ul>
             </div>
             <div class="section-content col-xs-12 col-sm-4 col-md-4">
               <h3>使用提示</h3>
               <ul class="list-unstyled">
                 <li><a href="tool_tips.html">常见功能提示</a></li>
-                {% if node!='qcloud' %}
                 <li><a href="dashboard_guide.html">控制台使用说明</a></li>
-                {% else %}
-                <li><a href="dashboard_guide_tab.html">控制台使用说明</a></li>
-                {% endif %}
                 <li><a href="error_code.html">错误码详解</a></li>
                 <li><a href="faq_list.html">常见问题</a></li>
               </ul>

@@ -13,7 +13,7 @@ angular.module('app').controller('WeappDomainsCtrl', [
           var currentApp = $rootScope.pageState.currentApp;
           console.log($rootScope.pageState.currentApp);
           if (currentApp) {
-            // Magic: 通过 push_group 判断是否是 ucloud 节点
+            // Magic: 通过 push_group 判断节点
             if (currentApp.push_group === 'g0') {
               var suffix = currentApp.app_id.slice(0, 8).toLowerCase();
               $scope.extraRequestDomains = [
@@ -22,11 +22,22 @@ angular.module('app').controller('WeappDomainsCtrl', [
                 suffix + '.rtm.lncld.net'
               ];
               $scope.requestDomainsLength = 6;
+            } else if (currentApp.push_group === 'q0'){
+              var suffix = currentApp.app_id.slice(0, 8).toLowerCase();
+              $scope.extraRequestDomains = [
+                'tab.leancloud.cn',
+                suffix + '.api.lncldapi.com',
+                suffix + '.engine.lncldapi.com',
+                suffix + '.rtm.lncldapi.com'
+              ];
+              $scope.requestDomainsLength = 7;
             } else {
               $scope.extraRequestDomains = [];
               $scope.requestDomainsLength = 3;
             }
 
+            AV.applicationId = undefined;
+            AV.applicationKey = undefined;
             AV.init({
               appId: currentApp.app_id,
               appKey: currentApp.app_key,

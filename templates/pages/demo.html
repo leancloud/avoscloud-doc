@@ -3,21 +3,12 @@
   <div class="row">
     <div class="col-md-12">
       <div class="doc-home-title">
-        {% if node=='qcloud' %}
-        <h1 class="font-logo">
-          TAB Demos
-        </h1>
-        <h4>
-          使用 TAB 搭建的各类应用演示
-        </h4>
-        {% else %}
         <h1 class="font-logo">
           LeanCloud Demos
         </h1>
         <h4>
           使用 LeanCloud 搭建的各类应用演示
         </h4>
-        {% endif %}
       </div>
       <!-- .doc-home-title -->
 
@@ -33,7 +24,7 @@
   </div>
 
   <div class="row">
-    <div class="col-md-4" ng-repeat ="demo in displayDemos{% if node=='qcloud' %} | filter: {qcloudShow: true}{% endif %}">
+    <div class="col-md-4" ng-repeat ="demo in displayDemos">
       <div class="demo-card">
         <h1>
           {{demo.name}}

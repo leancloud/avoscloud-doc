@@ -1,4 +1,19 @@
 {% import "views/_helper.njk" as docs %}
+
+{% macro gettingStarted() %}
+
+## 开始之前
+
+请确保您已熟练的掌握了实时通信里面关于对话，消息，权限等必要的知识，如果您还不了解这些概念，请一定阅读我们的主文档：[《实时通信服务总览》](./realtime_v2.html)，了解一下实时通信的基本概念和模型以及我们的实时通信 SDK 开发指南：
+
+- [iOS - Objective-C](realtime_guide-objc.html)
+- [Android - Java](realtime_guide-android.html)
+- [JavaScript](realtime_guide-js.html)
+- [Windows Classic Desktop - C#](realtime-guide-dotnet.html)
+- [Unity - C#](realtime-unity.html)
+
+{% endmacro %}
+
 {% macro usingNamespces() %}
 ```cs
 using UnityEngine;
@@ -13,6 +28,15 @@ using LeanCloud.Realtime;
 using LeanCloud.Storage.Internal;
 using LeanCloud.Core.Internal;
 ```
+{% endmacro %}
+
+{% macro receivedMessage() %}
+接收消息在每个语言的 SDK 略有不同，但是大致的流程是一致的，详细的请阅读每个语言对应的 SDK 文档：
+
+- [iOS Objectivc-C#接收消息](realtime_guide-objc.html#接收消息)
+- [Android Java#接收消息](realtime_guide-android.html#接收消息)
+- [JavaScript#接收消息](realtime_guide-js.html#接收消息)
+
 {% endmacro %}
 
 {% macro customMessage() %}

@@ -85,6 +85,10 @@ AVCloud.RequestSMSCodeAsync("18612345678","Register_Notice",null,"LeanCloud").Co
     // result 为 True 则表示调用成功
 });
 ```
+```java
+// 往 18612345678 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）
+AVOSCloud.requestSMSCode("18612345678", "Register_Notice", null);
+```
 
 用户收到的短信内容如下：
 
@@ -98,18 +102,16 @@ AVCloud.RequestSMSCodeAsync("18612345678","Register_Notice",null,"LeanCloud").Co
 ## 开通短信服务
 
 ### 在安全中心开启短信服务
-要使用短信服务，首先需要在控制台创建一个应用，然后进入 {% if node=='qcloud' %}**控制台** > **设置** > **安全中心**{% else %}[控制台 > 设置 > 安全中心](/app.html?appid={{appid}}#/security){% endif %}，确保 **短信服务** 开关是打开的：
+要使用短信服务，首先需要在控制台创建一个应用，然后进入 [控制台 > 设置 > 安全中心](/app.html?appid={{appid}}#/security)，确保 **短信服务** 开关是打开的：
 
 ![sms_switch](images/sms_switch_setting.png)
 
-### 在应用选项中完成短信配置
-然后进入 {% if node=='qcloud' %}**控制台** > **设置** > **应用选项**{% else %}[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission){% endif %}，查看与短信相关选项：
+### 完成短信配置
+然后进入 [控制台 > 消息 > 短信 > 设置 > 短信选项](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf)，请确保以下选项处于勾选状态。
 
 {{ include.checkbox(true) }}**启用通用的短信验证码服务（开放 `requestSmsCode` 和 `verifySmsCode` 接口）**
 - 开启：开发者可以使用短信进行验证功能的开发，比如，敏感的操作认证、异地登录、付款验证等业务相关的需求。
 - 关闭：请求验证发送短信以及验证短信验证码都会被服务端拒绝，但是请注意，跟用户相关的验证与该选项无关。
-
-请确保该选项处于勾选状态。
 
 ### 设置默认签名
 短信发送的时候需要有签名运营商才会放行，如前面示例中的「购物网」、「当当」即为短信签名。在开始发送短信之前，你需要进入[控制台 > 消息 > 短信 > 设置](/messaging.html?appid={{appid}}#/message/sms/conf)，设置默认的短信签名（第一个签名即为「默认签名」）：
@@ -185,6 +187,10 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","应用名称","某种操作",10).Cont
     }
 });
 ```
+```java
+// 下面参数中的 10 表示验证码有效时间为 10 分钟
+AVOSCloud.requestSMSCode("186xxxxxxxx", "应用名称", "某种操作", 10);
+```
 
 3. **用户收到短信，并且输入了验证码。**  
   在进行下一步之前，我们建议先进行客户端验证（对有效性进行基本验证，例如长度、特殊字符等），这样就避免了错误的验证码被服务端驳回而产生的流量，以及与服务端沟通的时间，有助于提升用户体验。
@@ -225,6 +231,15 @@ AVCloud.VerifySmsCodeAsync("123456","186xxxxxxxx").ContinueWith(t =>{
     }
 });
 ```
+```java
+try {
+  AVOSCloud.verifySMSCode('123456', '186xxxxxxxx');
+  /* 验证成功 */
+} catch (AVException ex) {
+  /* 验证失败 */
+}
+```
+
 针对上述的需求，可以把场景换成异地登录验证、修改个人敏感信息验证等一些常见的场景，步骤是类似的，调用的接口也是一样的，仅仅是在做 UI 展现的时候需要开发者自己去优化验证过程。
 
 ### 语音短信验证码
@@ -271,6 +286,9 @@ AVCloud.RequestVoiceCodeAsync ("18688888888").ContinueWith(t =>{
     // 发送成功
 });
 ```
+```java
+AVOSCloud.requestVoiceCode("18688888888");
+```
 
 发送成功之后，用户的手机就会收到一段语音通话，它会播报 6 位数的验证码，然后开发者需要再次调用：
 
@@ -308,6 +326,14 @@ AVCloud.VerifySmsCodeAsync("123456","186xxxxxxxx").ContinueWith(t =>{
         // 验证成功
     }
 });
+```
+```java
+try {
+  AVOSCloud.verifyCode('123456', '186xxxxxxxx');
+  /* 验证成功 */
+} catch (AVException ex) {
+  /* 验证失败 */
+}
 ```
 
 再次验证用户输入的验证码是否正确。
@@ -419,6 +445,12 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","Order_Notice",env,"sign_BuyBuyBuy").C
     // result 为 True 则表示调用成功
 });
 ```
+```java
+Map<String, Object> parameters = new HashMap<String, Object>();
+parameters.put("order_id", "7623432424540");      // 使用实际的值来替换模板中的变量
+AVOSCloud.requestSMSCode("186xxxxxxxx", "Order_Notice", parameters);
+```
+
 用户收到的内容如下：
 
 {% call docs.bubbleWrap() -%}
@@ -530,9 +562,9 @@ XX房东您好，租客{{ docs.mustache("guest_name") }}（手机号码：{{ doc
 
 ### 开通图形验证码服务
 
-要使用图形验证码，开发者需要进入 [控制台 > 安全中心](/dashboard/app.html?appid={{appid}}#/security)，打开 **图形验证码服务**。 
+要使用图形验证码，开发者需要进入 [控制台 > 设置 > 安全中心](/dashboard/app.html?appid={{appid}}#/security)，打开 **图形验证码服务**。 
 
-如果希望强制所有的短信接口都必须通过图形验证码验证才能发送，则进入 [控制台 > 应用选项 > 短信服务](/dashboard/app.html?appid={{appid}}#/permission)， 选中 **强制短信验证服务使用图形验证码**。注意：这样一来，所有主动调用发送短信的接口都会强制进行图形验证码验证，否则会直接返回调用错误。
+如果希望强制所有的短信接口都必须通过图形验证码验证才能发送，则进入 [控制台 > 消息 > 短信 > 设置 > 短信选项](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf)， 选中 **强制短信验证服务使用图形验证码**。注意：这样一来，所有主动调用发送短信的接口都会强制进行图形验证码验证，否则会直接返回调用错误。
 
 
 ### 前端接入示例
@@ -689,6 +721,9 @@ AVCloud.RequestCaptchaAsync(width:85, height:30).ContinueWith(t =>{
   var captchaToken = captchaData.captchaToken;// 用来对应后面的验证接口，服务端用这个参数来匹配具体是哪一个图形验证码
 });
 ```
+```java
+// Java SDK 暂不支持图形验证码
+```
 
 #### 校验图形验证码
 
@@ -719,6 +754,9 @@ captcha.verify('这里填写用户输入的图形验证码，例如 AM8N').then(
 AVCloud.VerifyCaptchaAsync("这里填写用户输入的图形验证码，例如 AM8N",'这里填写上一步返回的 captchaToken').CotinuteWith(t =>{
     var validate_token = result;
 });
+```
+```java
+// Java SDK 暂不支持图形验证码
 ```
 
 #### 使用 validate_token 发送短信
@@ -783,10 +821,13 @@ AVCloud.RequestSMSCodeAsync("186xxxxxxxx","New_Series",null,"sign_BuyBuyBuy","�
     // result 为 True 则表示调用成功
 });
 ```
+```java
+// Java SDK 暂不支持图形验证码
+```
 
 ## 国际短信
 
-向国外用户发送短信，只需要在手机号码前加上正确的国际区号即可，如美国和加拿大为 `+1`，当然前提是已在 [应用设置](/dashboard/app.html?appid={{appid}}#/permission) 中选中了 **开启国际短信服务**。中国区号为 `+86`，但可以省略，无区号的手机号码会默认使用中国区号。
+向国外用户发送短信，只需要在手机号码前加上正确的国际区号即可，如美国和加拿大为 `+1`，当然前提是已在 [短信设置](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf) 中选中了 **开启国际短信服务**。中国区号为 `+86`，但可以省略，无区号的手机号码会默认使用中国区号。
 
 {# 被 https://blog.leancloud.cn/4818/ 引用，修改标题时注意更新博客链接 #}
 ### 服务覆盖区域和价格
@@ -914,7 +955,7 @@ $(document).ready(function() {
 </script>
 
 ### 开通国际短信服务
-国际短信服务是需要额外开启的。你需要在[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission)，查看短信服务相关选项：
+国际短信服务是需要额外开启的，你需要在 [控制台 > 消息 > 短信 > 设置 > 短信选项](/dashboard/messaging.html?appid={{appid}}#/message/sms/conf) 进行选择。
 
 {{ include.checkbox() }}**开启国际短信服务**
 - 开启：可以向中国大陆以外的手机号发送短信，详见 [覆盖国家和地区](#短信服务覆盖区域)。
@@ -923,7 +964,7 @@ $(document).ready(function() {
 ## 与 LeanCloud 账户系统集成
 LeanCloud 提供了内建的 [账户系统](leanstorage_guide-js.html#用户) 来帮助开发者快速完成用户系统的注册、登录、重置密码等功能，同时为了方便使用，我们也集成了账户系统手机号码相关的短信功能，譬如账户注册时自动验证手机号、手机号码登录和重置密码等等。
 
-我们可以在[控制台 > 设置 > 应用选项](/app.html?appid={{appid}}#/permission)，查看「用户账户」的相关选项：
+我们可以在 [控制台 > 存储 > 设置 > 用户账号](/dashboard/storage.html?appid={{appid}}#/storage/conf) 查看相关选项：
 
 {{ include.checkbox(true) }}**用户注册时，向注册手机号码发送验证短信**
 - 开启：调用 AVUser 注册相关的接口时，如果传入了手机号，系统则会自动发送验证短信，然后开发者需要手动调用一下验证接口，这样 `_User` 表中的 `mobilePhoneVerified` 值才会被置为 `true`。
@@ -994,6 +1035,9 @@ user.SignUpAsync().ContinueWith(t =>
     // 注册成功之后云端会自动发送验证短信
 });
 ```
+```java
+// Java SDK 与 Android 代码相同
+```
 
 3. **云端发送手机验证码，并且返回注册成功**。但是此时用户的 `mobilePhoneVerified` 依然是 `false`，客户端需要引导用户去输入验证码。   
   
@@ -1033,6 +1077,9 @@ AVUser.VerifyMobilePhoneAsync("6位数字验证码", "186xxxxxxxx").ContinueWith
             // 验证成功
         }
     });
+```
+```java
+// Java SDK 与 Android 代码相同
 ```
 
 以上是一个通用的带有手机号验证的注册过程。开发者可以根据需求增加或减少步骤，但是推荐开发者在使用该功能时，首先明确是否需要勾选「验证注册用户手机号码」。因为一旦勾选，只要调用了 AVUser 相关的注册账号，并传入手机号，云端就会自动发送短信验证码。
@@ -1077,6 +1124,10 @@ AVUser.RequestMobilePhoneVerifyAsync("186xxxxxxxx").ContinueWith(t =>
     }
 });
 ```
+```java
+// Java SDK 与 Android 代码相同
+```
+
 2. **调用验证接口，验证用户输入的纯数字的验证码。** 
 ```objc
 [AVUser verifyMobilePhone:@"123456" withBlock:^(BOOL succeeded, NSError *error) {
@@ -1112,6 +1163,9 @@ AVUser.VerifyMobilePhoneAsync("6位数字验证码").ContinueWith(t =>
             // 验证成功
         }
     });
+```
+```java
+// Java SDK 与 Android 代码相同
 ```
 
 #### 未收到注册验证短信
