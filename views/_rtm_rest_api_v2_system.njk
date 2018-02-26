@@ -199,7 +199,7 @@ push | 可选 | 附带的推送内容，如果设置，所有 iOS 和 Windows Ph
 {"msg-id":"qNkRkFWOeSqP65S9fDyHJw", "timestamp":1495431811151}
 ```
 
-### 查询某个订阅者与服务号的消息
+### 查询服务号给特定订阅者发的消息
 
 该接口要求使用 master key。
 ```sh
@@ -210,7 +210,7 @@ curl -X GET \
   https://{{host}}/1.2/rtm/service-conversations/{conv_id}/subscribers/{client_id}/messages
 ```
 
-参数、返回值与「查询服务号发的订阅消息」相同。
+参数、返回值与「[查询历史消息](#查询历史消息)」相同。
 
 ### 黑名单
 

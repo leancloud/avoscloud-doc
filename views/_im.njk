@@ -8,7 +8,7 @@
 {% macro messagesLifespan(heading="#### 消息的有效期") -%}
 {% if heading !== '' %}{{ heading }}{% endif %}
 
-一个对话的消息记录会在云端保留 **6 个月**，也就是说一个对话可以查询到半年之内的历史消息记录。开发者可以付费来延长这一期限，请联系 {{ supportEmail() }}。{% if heading !== '' %}另外可以参考 [对话的有效期](#对话的有效期)。{% endif %}你也随时可以通过 [REST API](./realtime_rest_api.html#获取聊天记录) 将聊天记录同步到自己的服务器上。
+一个对话的消息记录会在云端保留 **6 个月**，也就是说一个对话可以查询到半年之内的历史消息记录。开发者可以付费来延长这一期限，请联系 {{ supportEmail() }}。{% if heading !== '' %}另外可以参考 [对话的有效期](#对话的有效期)。{% endif %}你也随时可以通过 REST API 将聊天记录同步到自己的服务器上。
 {%- endmacro %}
 
 {% macro conversationsLifespan(heading="#### 对话的有效期") -%}

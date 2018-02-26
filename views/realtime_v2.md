@@ -74,8 +74,7 @@ LeanCloud 实时通信服务的特性主要有：
 
 #### 在线状态
 
-我们目前在 SDK 和 [REST API](realtime_rest_api.html#查询在线状态
-) 上提供主动查询的机制帮助开发者查询目标用户的在线状态。
+我们目前在 SDK 和 [REST API](realtime_rest_api_v2.html#查询在线成员) 上提供主动查询的机制帮助开发者查询目标用户的在线状态。
 
 ### 对话（Conversation）
 
@@ -102,7 +101,7 @@ LeanCloud 实时通信服务的特性主要有：
 **sys**|system|Boolean|可选|是否是系统对话
 **unique**|unique|Boolean|可选|内部字段，标记根据成员原子创建的对话。
 
-除了在各平台的 SDK 里面可以调用 API 创建对话外，我们也提供 [REST API](./realtime_rest_api.html#通过_REST_API_创建_更新_删除对话数据) 可以让大家预先建立对话：对话的信息存储在 _Conversation 表中，你可以直接通过 [数据存储相关的 REST API](./rest_api.html#对象-1) 对其进行操作。
+除了在各平台的 SDK 里面可以调用 API 创建对话外，我们也提供 REST API 可以让大家预先建立对话：对话的信息存储在 _Conversation 表中。
 
 这里要特别讨论一下**单聊**、**群聊**、**聊天室**、**公众号**等使用场景。
 
@@ -166,7 +165,7 @@ REST API 在创建对话时同样支持 `unique` 参数。
 
 #### 创建对话
 
-对话可以通过 SDK 和 [REST API](./realtime_rest_api.html#创建一个对话) 创建。
+对话可以通过 SDK 和 REST API 创建。
 
 在大部分使用场景中，普通对话通过 SDK 创建，用于最终用户之间自发的通信。
 暂态对话和系统对话通常和应用中的特定实体绑定，可以通过 REST API 提前创建，通过应用中的业务逻辑
@@ -184,7 +183,7 @@ REST API 在创建对话时同样支持 `unique` 参数。
 LeanCloud 对普通消息提供「至少一次」的到达保证，并且在官方 SDK 中支持对消息的去重，开发者无需关心。除了基于「推」模型的消息机制，我们还提供消息记录的机制允许
 SDK 和 REST API 通过「拉」的方式获取任意时间点前的消息。
 
-开发者可以通过 SDK 或 [REST API](./realtime_rest_api.html#通过_REST_API_发消息) 发送消息。
+开发者可以通过 SDK 或 REST API 发送消息。
 SDK 通常用于最终用户发送消息，而 REST API 是开发者从云端发送消息的接口。当从 REST API
 发送消息时，开发者可以指定消息的发送者、对话 ID，对于系统对话还可以指定消息的接收者。
 
@@ -306,7 +305,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 * 广播消息具有实效性，可以设置过期时间；过期的消息不会作为离线消息发送给用户，不过仍然可以在历史消息中获取到
 * 新用户第一次登录后，会收到最近一条未过期的系统广播消息
 
-除此以外广播消息与普通消息的处理完全一致。广播消息的发送可以参考[广播消息 REST API](./realtime_rest_api.html#系统对话发送广播消息)
+除此以外广播消息与普通消息的处理完全一致。广播消息的发送可以参考[广播消息 REST API](./realtime_rest_api_v2.html#全局广播)
 
 ## 权限和认证
 
@@ -315,7 +314,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 - **聊天服务，启用对话认证**，用于控制新建或加入对话、邀请/踢出对话成员等操作
 
 开发者可根据实际需要进行选择。一般来说，**登录认证** 能够满足大部分安全需求，而且我们也强烈建议开发者开启登录认证。
-对于使用 AVUser 的应用，可使用 REST API [获取 Client 登录签名](realtime_rest_api.html#获取_Client_登录签名) 进行登录认证。
+对于使用 AVUser 的应用，可使用 REST API [获取 Client 登录签名](./realtime_rest_api_v2.html#获取登录签名) 进行登录认证。
 
 ![image](images/leanmessage_signature2.png)
 
@@ -649,7 +648,7 @@ mute | 可选 | 修改后的关闭对话提醒设置，如果不提供则保持�
 
 ## REST API
 
-参考 [实时通信 REST API](realtime_rest_api.html)。
+参考 [实时通信 REST API](realtime_rest_api_v2.html)。
 
 ## 对话与消息管理 SDK
 
@@ -662,11 +661,11 @@ Python 与 JavaScript 的数据存储 SDK，基于 REST API 封装了一组对�
 
 ### 系统对话的创建
 
-系统对话也是对话的一种，创建后也是在 `_Conversation` 表中增加一条记录，只是该记录 `sys` 列的值为 true，从而与普通会话进行区别。具体创建方法请参考: [创建对话](#创建对话) 。
+系统对话也是对话的一种，创建后也是在 `_Conversation` 表中增加一条记录，只是该记录 `sys` 列的值为 true，从而与普通会话进行区别。具体创建方法请参考: [创建服务号](#创建服务号) 。
 
 ### 系统对话消息的发送
 
-系统对话给用户发消息请参考： [REST API - 系统对话给用户发消息](realtime_rest_api.html#系统对话给用户发消息)。
+系统对话给用户发消息请参考： [REST API - 给部分订阅者发消息](realtime_rest_api_v2.html#给部分订阅者发消息)。
 用户给系统对话发送消息跟用户给普通对话发消息方法一致。
 
 您还可以利用系统对话发送广播消息给全部用户。相比遍历所有用户 ID 逐个发送，广播消息只需要调用一次 REST API。
@@ -674,9 +673,11 @@ Python 与 JavaScript 的数据存储 SDK，基于 REST API 封装了一组对�
 
 ### 获取系统对话消息记录
 
-获取系统对话给用户发送的消息记录请参考： [获取系统对话中某个特定用户与系统的消息记录](realtime_rest_api.html#获取系统对话中某个特定用户与系统的消息记录)
+获取系统对话给用户发送的消息记录请参考： [查询服务号给特定订阅者发的消息](realtime_rest_api_v2.html#查询服务号给特定订阅者发的消息)
 
-获取用户给系统对话发送的消息记录可以通过 `_SysMessage` 表和 [Web Hook](#Web_Hook) 两种方式实现。`_SysMessage` 表在应用首次有用户发送消息给某系统对话时自动创建，创建后我们将所有发送到系统对话的消息都存储在该表中。[Web Hook](#Web_Hook) 方式需要开发者自行定义 [Web Hook](#Web_Hook)，用于实时接收用户发给系统对话的消息。
+获取用户给系统对话发送的消息记录有以下两种方式实现：
+- `_SysMessage` 表方式，在应用首次有用户发送消息给某系统对话时自动创建，创建后我们将所有由用户发送到系统对话的消息都存储在该表中。
+- [Web Hook](#Web_Hook) 方式，这种方式需要开发者自行定义 [Web Hook](#Web_Hook)，用于实时接收用户发给系统对话的消息。
 
 ### 系统对话消息结构
 

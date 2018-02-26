@@ -24,12 +24,25 @@ Key|Value|含义|来源
  
 `_Conversation` 表 包含一些内置的关键字段定义了对话的属性、成员等，单聊/群聊、聊天室、服务号均在此表中，可以在 [实时通信概览 - 对话](./realtime_v2.html#对话（Conversation）) 中了解。
 
+## 新特性
+
+在 [1.1 版本的 API](realtime_rest_api.html) 中，所有类型的对话 API 混淆在一起，1.2 版本将「对话」这一概念按照类型进行了拆分，目前有三类：
+
+- 单聊/群聊，相关 API 以 `rtm/conversations` 标示
+- 聊天室，相关 API 以 `rtm/chatrooms` 标示，在 `_Conversation` 表内用字段 `tr` 为 true 标示。
+- 服务号，相关 API 以 `rtm/service-conversations` 标示，在 `_Conversation` 表内用字段 `sys` 为 true 标示。
+
+除此之外，与 client 相关的请求以 `rtm/clients` 标示。
+最后，一些[全局性质的 API](#全局 API) 直接以 `rtm/{function}` 标示，如 `rtm/all-conversations` 查询所有类型的对话。
+
 {{ normal.normalConversation() }}
 {{ chatroom.chatroom() }}
 {{ system.serviceConversation() }}
 {{ client.rtmClient() }}
 
-## 查询所有对话
+## 全局 API
+
+### 查询所有对话
 
 本接口会返回所有的 单聊群聊/聊天室/服务号
 ```sh
@@ -50,7 +63,7 @@ where | 可选 | 参考 [数据存储 - 查询](rest_api.html#查询)。
 {"results"=>[{"name"=>"conversation", "createdAt"=>"2018-01-17T04:15:33.386Z", "updatedAt"=>"2018-01-17T04:15:33.386Z", "objectId"=>"5a5ecde6c3422b738c8779d7"}]}
 ```
 
-## 全局广播
+### 全局广播
 
 该接口可以给该应用所有 client 广播一条消息，每天最多 30 条。本接口要求使用 master key。
 
@@ -84,7 +97,7 @@ Push 的格式与[推送 REST API 消息内容](push_guide.html#消息内容_Dat
 }
 ```
 
-## 删除广播消息
+### 删除广播消息
 
 调用此 API 将删除已发布的广播消息。本接口要求使用 master key。
 
@@ -103,7 +116,7 @@ message_id | 必填 | 要删除的消息 id，字符串
 
 空 JSON 对象 `{}`。
 
-## 查询广播消息
+### 查询广播消息
 
 调用此 API 可查询目前有效的广播消息。本接口要求使用 master key。
 
@@ -121,7 +134,7 @@ limit | 可选 | 返回消息条数
 skip | 可选 | 跳过消息条数，用于翻页
 
 
-## 查询应用内所有历史消息
+### 查询应用内所有历史消息
 
 该接口要求使用 master key。
 
