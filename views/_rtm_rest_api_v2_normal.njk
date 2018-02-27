@@ -139,13 +139,13 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   -H "Content-Type: application/json" \ 
-  -d '{"conv_id": "some-conv-id"}' \
+  -d '{"client_ids": ["Tom", "Jerry"]}' \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/mutes
 ```
 
 参数 | 说明
 --- | ---
-client_id | 要静音的 Client ID，字符串
+client_ids | 要静音的 Client ID，数组
 
 返回
 
@@ -159,8 +159,8 @@ client_id | 要静音的 Client ID，字符串
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  -G \
-  --data-urlencode 'client_id=some-client-id' \
+  -H "Content-Type: application/json" \
+  -d '{"client_ids": ["Tom", "Jerry"]}' \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/mutes
 ```
 
@@ -282,7 +282,7 @@ signature | 可选 | 签名（签名参数）
 该接口要求使用 master key。
 从 Objective-C SDK v6.0.0、Android SDK v4.4.0、JavaScript SDK v3.5.0 开始，我们支持了新的修改与撤回消息功能。修改或撤回消息后，即使已经收到并已缓存在客户端的消息也会被修改或撤回。对于老版本的 SDK，仅能修改或撤回服务器端的消息记录，并不能修改或撤回客户端已缓存的消息记录。
 ```sh
-curl -X POST \
+curl -X PUT \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
@@ -306,11 +306,11 @@ timestamp | 必填 | 消息的时间戳
 该接口要求使用 master key。需要相应 SDK 的支持，具体可参考「[修改消息](#修改消息)」接口。
 
 ```sh
-curl -X POST \
+curl -X PUT \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
-  -d '{"from_client": "", "message": "", "timestamp": 123}' \
+  -d '{"from_client": "", "timestamp": 123}' \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/messages/{message_id}/recall
 ```
 
@@ -334,7 +334,7 @@ curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -G \
-  --data-urlencode 'client_id=some-client-id' \
+  --data-urlencode 'from_client=some-client-id' \
   --data-urlencode 'timestamp=123' \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/messages/{message_id}
 ```
@@ -360,13 +360,13 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \ 
-  -d '{"conv_id": "some-conv-id", "ttl": 50}' \
+  -d '{"client_id": "some-client-id", "ttl": 50}' \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/temporary-silenceds
 ```
 
 参数 | 说明
 --- | ---
-client_id | 要禁言的 id，字符串
+client_id | 要禁言的 Client ID，字符串
 ttl | 禁言的时间，秒数，最长 24 小时
 
 返回

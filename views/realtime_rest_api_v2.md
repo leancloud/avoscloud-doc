@@ -74,7 +74,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"from_client": "1a", "message": "{\"_lctype\":-1,\"_lctext\":\"这是一个纯文本消息\",\"_lcattrs\":{\"a\":\"_lcattrs 是用来存储用户自定义的一些键值对\"}}", "conv_id": "..."}' \
-  https://{{host}}/1.2/rtm/broadcast
+  https://{{host}}/1.2/rtm/broadcasts
 ```
 
 参数 | 约束 | 类型 | 说明
@@ -105,7 +105,7 @@ Push 的格式与[推送 REST API 消息内容](push_guide.html#消息内容_Dat
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://{{host}}/1.1/rtm/broadcast/{message_id}
+  https://{{host}}/1.1/rtm/broadcasts/{message_id}
 ```
 
 参数 | 约束 | 说明
@@ -124,7 +124,7 @@ message_id | 必填 | 要删除的消息 id，字符串
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
-  https://{{host}}/1.1/rtm/broadcast
+  https://{{host}}/1.1/rtm/broadcasts
 ```
 
 参数 | 约束 | 说明
