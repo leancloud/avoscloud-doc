@@ -433,7 +433,7 @@ Cron 表达式的基本语法为：
 
 ## Master Key 和超级权限
 
-因为云引擎运行在可信的服务器端环境中，所以你可以全局开启超级权限（Master Key），这样会跳过包括 ACL 和 Class 权限在内的检查，自由地操作所有云存储中的数据，也可以调用一些仅供 masterKey 使用的 API，开启 Master Key 的方法：
+因为云引擎运行在可信的服务器端环境中，所以你可以全局开启超级权限（Master Key），这样云端会跳过包括 ACL 和 Class 权限在内的检查，让你自由地操作所有云存储中的数据，当然这种方式也允许调用一些仅供 masterKey 使用的 API。开启 Master Key 的方法如下：
 
 {% block useMasterKey %}{% endblock %}
 
