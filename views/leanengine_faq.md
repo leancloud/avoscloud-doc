@@ -166,7 +166,7 @@ AV.Cloud.define('querySomething', function(req, res) {
 
 ## Gitlab 部署常见问题
 
-很多用户自己使用 [Gitlab](http://gitlab.org/) 搭建了自己的源码仓库，有朋友会遇到无法部署到 LeanCloud 的问题，即使设置了 Deploy Key，却仍然要求输入密码。
+很多用户自己使用 [Gitlab](http://gitlab.org/) 搭建了自己的源码仓库，有时可能会遇到无法部署到 LeanCloud 的问题，即使设置了 Deploy Key，却仍然要求输入密码。
 
 可能的原因和解决办法如下：
 
@@ -224,11 +224,11 @@ npm ERR! peer dep missing: graphql@^0.10.0 || ^0.11.0, required by express-graph
 
 > 健康检查失败：web1 检测到 Error connect ECONNREFUSED 10.19.30.220:51797
 
-如果一周内发生一两次属正常现象（有可能是我们的服务器出现偶发的故障，因为会立刻重新部署，对服务影响很小），如果频繁发生可能是你的程序资源不足，或存在其他问题（运行一段时间后不再响应 HTTP 请求），需结合具体情况来做分析。
+如果一周内发生一两次属正常现象（有可能是我们的服务器出现偶发的故障，因为会立刻重新部署，对服务影响很小），如果频繁发生可能是你的程序资源不足，或存在其他问题（运行一段时间后不再响应 HTTP 请求），需结合具体情况来分析。
 
 ## 如何使用云引擎批量更新数据？
 
-可参考我们的 [Demo: batch-update](https://github.com/leancloud/leanengine-nodejs-demos/blob/master/routes/batch-update.js)。
+可以参考我们的 [Demo: batch-update](https://github.com/leancloud/leanengine-nodejs-demos/blob/master/routes/batch-update.js)。
 
 ## 如何下载云引擎的应用日志和访问日志
 
