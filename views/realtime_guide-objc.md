@@ -490,12 +490,12 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
 
 {% block message_read_ack %}
 1. 首先，Tom 和 Jerry 都要开启「未读消息」，即在 SDK 初始化语句后面加上：
-    
+  
     ```objc
     [AVIMClient setUnreadNotificationEnabled:YES];
     ```
 2. Tom 向 Jerry 发送一条消息，要标记好「需要回执」：
-    
+  
     ```objc
     AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
     option.receipt = YES; /* 将消息设置为需要回执。 */
@@ -510,12 +510,12 @@ typedef NS_ENUM(NSInteger, YourCustomMessageType) {
     ```
 
 3. Jerry 收到 Tom 发的消息后，SDK 调用对话上的方法把「对话中最近的消息」标记为已读：
-    
+  
     ```objc
     [conversation readInBackground];
     ```
 4. Jerry 读完消息后，Tom 将收到一个已读回执，此时对话的 `lastReadAt` 属性会更新。此时可以更新 UI，把时间戳小于 lastReadAt 的消息都标记为已读。
-    
+  
     ```objc
     // Tom 可以在 client 的 delegate 方法中捕捉到 lastReadAt 的更新
     - (void)conversation:(AVIMConversation *)conversation didUpdateForKey:(NSString *)key {
@@ -1930,38 +1930,63 @@ AVIMClient *currentClient = [[AVIMClient alloc] initWithClientId:@"Tom" tag:@"Mo
 为了更灵活地控制登录过程，我们在登录接口上增加了一个选项，以下是方法签名：
 
 ```objc
-- (void)openWithOption:(AVIMClientOpenOption *)option callback:(AVIMBooleanResultBlock)callback;
+- (void)openWithOption:(AVIMClientOpenOption *)option callback:(AVIMBooleanResultBlock)callback; // v9.0.0 以前的使用这个 API
+
+- (void)openWithOption:(AVIMClientOpenOption)openOption callback:(AVIMBooleanResultBlock)callback; // v9.0.0 及以后的使用这个 API
 ```
 
 登录选项由 `AVIMClientOpenOption` 对象表示，其中的每一个属性表示具体的选项，目前支持以下选项：
 
 ```objc
+
+// v9.0.0 以前的使用这个
+
 @interface AVIMClientOpenOption : NSObject
 
 @property (nonatomic, assign) BOOL force;
 
 @end
+
+// v9.0.0 及以后的使用这个
+
+typedef NS_ENUM(NSUInteger, AVIMClientOpenOption) {
+
+    AVIMClientOpenOptionForceOpen = 0,
+    
+    AVIMClientOpenOptionReopen
+};
+
 ```
 
-`force` 选项设置登录动作的强制性。自然地，登录动作也区分成两种不同的类型，即强制登录和非强制登录。
+登录动作分为两种，1. 强制登录 2. 重连
 
-* 强制登录表示这个动作是强制的，不管当前设备有没有被其他设备踢下线过，都强制性地登录。
-* 非强制登录表示这个动作是非强制的，如果当前设备曾被其他设备踢下线过，登录会返回错误。
+* 「强制登录」如果 client 设置了 tag，并使用强制登录选项来登录，则该登录动作总是可以登录成功；登录成功之后，会将其它有相同 ID 以及 tag 的 client 踢下线
+* 「重连」如果client 设置了 tag，并使用重连选项来登录，client 如果已经被有相同 ID 和 tag 的其它 client 踢下线了，则不能登录成功，反之，则能登录成功 
 
-将 `force` 设置为 `YES` 表示强制登录；设置为 `NO` 表示非强制登录。例如，如果希望实现强制登录，代码可以写成：
+用 `AVIMClientOpenOption *` 的 `force` 属性(v9.0.0 之前) 或者 `AVIMClientOpenOption`(v9.0.0 之后) 来设置登录动作。
+
+v9.0.0 之前，将 `force` 设置为 `YES` 表示「强制登录」；设置为 `NO` 表示「重连」。
+v9.0.0 之后，`AVIMClientOpenOptionForceOpen` 表示「强制登录」；`AVIMClientOpenOptionReopen` 表示「重连」。
+
+示例如下：
 
 ```objc
  self.client = [[AVIMClient alloc] initWithClientId:@"Tom" tag:@"Mobile"];
 
+// v9.0.0 之前
 AVIMClientOpenOption *option = [[AVIMClientOpenOption alloc] init];
 option.force = YES;
+[self.client openWithOption:option callback:^(BOOL succeeded, NSError *error) {
+    // Your code
+}];
 
-[self.client openWithCallback:^(BOOL succeeded, NSError *error) {
+// v9.0.0 之后
+[self.client openWithOption:AVIMClientOpenOptionForceOpen callback:^(BOOL succeeded, NSError *error) {
     // Your code
 }];
 ```
 
-如果 `option` 设置为 nil，或者使用 `-[AVIMClient openWithCallback:]` 方法进行登录，默认的登录类型为非强制登录。
+注意，使用 `-[AVIMClient openWithCallback:]` 方法进行登录，v9.0.0 以前的默认为「重连」模式，v9.0.0 及以后的默认为「强制登录」模式。
 
 {% endblock %}
 
