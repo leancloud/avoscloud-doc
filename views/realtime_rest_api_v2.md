@@ -3,7 +3,7 @@
 {% import "views/_rtm_rest_api_v2_normal.njk" as normal %}
 {% import "views/_rtm_rest_api_v2_system.njk" as system %}
 
-# 实时通信 REST API v2 使用指南
+# 实时通信 REST API 使用指南 v2
 
 ## 请求格式
 

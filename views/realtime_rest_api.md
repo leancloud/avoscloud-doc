@@ -1,6 +1,6 @@
 {% import "views/_im.njk" as im %}
 {% import "views/_helper.njk" as docs %}
-# 实时通信 REST API 使用指南
+# 实时通信 REST API 使用指南 v1
 
 ## 请求格式
 对于 POST 和 PUT 请求，请求的主体必须是 JSON 格式，而且 HTTP Header 的 Content-Type 需要设置为 `application/json`。

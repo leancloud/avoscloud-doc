@@ -528,7 +528,7 @@ grunt.registerMultiTask('docmeta', '增加 Title、文档修改日期、设置�
 
         if ( modifiedTime ){
           //$('.docs-meta').find('.doc-mdate').remove().end()
-          $('.docs-meta').append('<span class="doc-mdate" data-toggle="tooltip" title="'+ moment(modifiedTime).format('lll') + '">更新于 <time datetime="' + moment(modifiedTime).format() + '">' + moment(modifiedTime).format('l') + '</time></span>');
+          $('.docs-meta').append('<span class="doc-mdate" data-toggle="tooltip" title="'+ moment(modifiedTime).format('lll') + '">更新于 <time datetime="' + moment(modifiedTime).format() + '">' + moment(modifiedTime).format('YYYY-MM-DD') + '</time></span>');
           changes.push('modified');
         }
 

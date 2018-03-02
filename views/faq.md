@@ -149,7 +149,7 @@ LeanCloud 部署在国内多个云计算平台上，并采用在双线机房内�
 
 ### 如何获取 API 的访问日志
 
-进入 [控制台 > 存储 > API 统计 > API 访问日志](/dashboard/apistat.html?appid={{appid}}#/accesslog)，开启日志服务，稍后刷新页面，就可以看到从开启到当前时间产生的日志了。查看
+进入 [控制台 > 存储 > 统计 > API 访问日志](/dashboard/storage.html?appid={{appid}}#/storage/stat/accesslog)，开启日志服务，稍后刷新页面，就可以看到从开启到当前时间产生的日志了。查看
 
 ### 可以在线测试 API 吗
 

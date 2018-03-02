@@ -126,7 +126,7 @@ https://{{host}}/1.1/go/com.leancloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18
 
 ```
 
-如果直接在 PC 浏览器打开 <https://{{host}}/1.1/go/com.leancloud.todo/classes/Todo/5371f3a9e4b02f7aee2c9a18?render=true>，看到的应该是数据渲染页面，如图：
+如果直接在 PC 浏览器打开上述链接会看到类似如下的数据渲染页面：
 
 ![image](images/todo_render.png)
 
