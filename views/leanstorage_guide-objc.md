@@ -513,7 +513,7 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 
 ```objc
     NSData *data = [@"我的工作经历" dataUsingEncoding:NSUTF8StringEncoding];
-    AVFile *file = [AVFile fileWithName:@"resume.txt" data:data];
+    AVFile *file = [AVFile fileWithData:data name:@"resume.txt"];
 ```
 {% endblock %}
 
@@ -523,21 +523,20 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:@"LeanCloud.png"];
-    AVFile *file = [AVFile fileWithName:fileName contentsAtPath: imagePath];
+	NSError *error;
+    AVFile *file = [AVFile fileWithLocalPath:imagePath error:&error];
 ```
 {% endblock %}
 
 {% block code_create_avfile_from_url %}
 ```objc
-    AVFile *file =[AVFile fileWithURL:@"http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"];
-    [file getData];// 注意这一步很重要，这是把图片从原始地址拉去到本地
-    [file save];
+    AVFile *file =[AVFile fileWithRemoteURL:@"http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"];
 ```
 {% endblock %}
 
 {% block code_upload_file %}
 ```objc
-    [file saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    [file uploadWithCompletionHandler:^(BOOL succeeded, NSError *error) {
         NSLog(file.url);//返回一个唯一的 Url 地址
     }];
 ```
@@ -546,46 +545,49 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 {% block code_upload_file_with_progress %}
 
 ```objc
-    [file saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-      // 成功或失败处理...
-    } progressBlock:^(NSInteger percentDone) {
+    [file uploadWithProgress:^(NSInteger percentDone) {
       // 上传进度数据，percentDone 介于 0 和 100。
+    } completionHandler:^(BOOL succeeded, NSError *error) {
+      // 成功或失败处理...
     }];
 ```
 {% endblock %}
 
 {% block code_file_image_thumbnail %}
 ```objc
-AVFile *file = [AVFile fileWithURL:@"文件-url"];
+AVFile *file = [AVFile fileWithRemoteURL:@"文件-url"];
 [file getThumbnail:YES width:100 height:100 withBlock:^(UIImage *image, NSError *error) {
-    }];
+    // code
+}];
 ```
 {% endblock %}
 
 {% block code_file_metadata %}
 ``` objc
-AVFile *file = [AVFile fileWithName:@"test.jpg" contentsAtPath:@"文件-本地-路径"];
-[file.metaData setObject:@(100) forKey:@"width"];
-[file.metaData setObject:@(100) forKey:@"height"];
-[file.metaData setObject:@"LeanCloud" forKey:@"author"];
 NSError *error = nil;
-[file save:&error];
+AVFile *file = [AVFile fileWithLocalPath:@"文件-本地-路径" error:&error];
+if (!error) {
+	[file.metaData setObject:@(100) forKey:@"width"];
+	[file.metaData setObject:@(100) forKey:@"height"];
+	[file.metaData setObject:@"LeanCloud" forKey:@"author"];
+}
 ```
 {% endblock %}
 
 {% block code_download_file %}
 ```objc
-    [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-        // data 就是文件的数据流
-    } progressBlock:^(NSInteger percentDone) {
+    [file downloadWithProgress:^(NSInteger percentDone) {
         //下载的进度数据，percentDone 介于 0 和 100。
+    } completionHandler:^(NSData *data, NSError *error) {
+        // data 就是文件的数据流
     }];
 ```
 {% endblock %}
 
 {% block code_file_delete %}
 ``` objc
-[file deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+[file deleteWithCompletionHandler:^(BOOL succeeded, NSError *error) {
+    // code
 }];
 ```
 {% endblock %}
@@ -598,13 +600,10 @@ NSError *error = nil;
 
 ``` objc
 //清除当前文件缓存
-- (void)clearCachedFile;
+- (void)clearPersistentCache;
 
 //类方法, 清除所有缓存
-+ (BOOL)clearAllCachedFiles;
-
-//类方法, 清除多久以前的缓存
-+ (BOOL)clearCacheMoreThanDays:(NSInteger)numberOfDays;
++ (BOOL)clearAllPersistentCache;
 ```
 {% endblock %}
 
