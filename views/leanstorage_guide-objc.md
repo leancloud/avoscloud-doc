@@ -523,7 +523,7 @@ AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:@"LeanCloud.png"];
-	NSError *error;
+    NSError *error;
     AVFile *file = [AVFile fileWithLocalPath:imagePath error:&error];
 ```
 {% endblock %}
