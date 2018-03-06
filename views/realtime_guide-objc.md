@@ -1958,15 +1958,19 @@ typedef NS_ENUM(NSUInteger, AVIMClientOpenOption) {
 
 ```
 
-登录动作分为两种，1. 强制登录 2. 重连
+登录动作分为两种：
 
-* 「强制登录」如果 client 设置了 tag，并使用强制登录选项来登录，则该登录动作总是可以登录成功；登录成功之后，会将其它有相同 ID 以及 tag 的 client 踢下线
-* 「重连」如果client 设置了 tag，并使用重连选项来登录，client 如果已经被有相同 ID 和 tag 的其它 client 踢下线了，则不能登录成功，反之，则能登录成功 
+<dl>
+  <dt>强制登录</dt>
+  <dd>如果 client 设置了 tag，并使用强制登录选项来登录，则该登录动作总是可以登录成功；登录成功之后，会将其它有相同 ID 以及 tag 的 client 踢下线。</dd>
+  <dt>重连</dt>
+  <dd>如果 client 设置了 tag，并使用重连选项来登录，client 如果已经被有相同 ID 和 tag 的其它 client 踢下线了，则不能登录成功，反之，则能登录成功。</dd>
+</dl>
 
-用 `AVIMClientOpenOption *` 的 `force` 属性(v9.0.0 之前) 或者 `AVIMClientOpenOption`(v9.0.0 之后) 来设置登录动作。
+用 `AVIMClientOpenOption *` 的 `force` 属性（v9.0.0 之前）或者 `AVIMClientOpenOption`（v9.0.0 之后）来设置登录动作。
 
-v9.0.0 之前，将 `force` 设置为 `YES` 表示「强制登录」；设置为 `NO` 表示「重连」。
-v9.0.0 之后，`AVIMClientOpenOptionForceOpen` 表示「强制登录」；`AVIMClientOpenOptionReopen` 表示「重连」。
+- v9.0.0 之前，将 `force` 设置为 `YES` 表示「强制登录」；设置为 `NO` 表示「重连」。
+- v9.0.0 之后，`AVIMClientOpenOptionForceOpen` 表示「强制登录」；`AVIMClientOpenOptionReopen` 表示「重连」。
 
 示例如下：
 
@@ -1986,7 +1990,7 @@ option.force = YES;
 }];
 ```
 
-注意，使用 `-[AVIMClient openWithCallback:]` 方法进行登录，v9.0.0 以前的默认为「重连」模式，v9.0.0 及以后的默认为「强制登录」模式。
+{{ docs.alert("使用 `-[AVIMClient openWithCallback:]` 方法进行登录，v9.0.0 以前的默认为「重连」模式，v9.0.0 及以后的默认为「强制登录」模式。") }}
 
 {% endblock %}
 
