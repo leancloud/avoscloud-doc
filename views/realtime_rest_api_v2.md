@@ -1,8 +1,3 @@
-{% import "views/_rtm_rest_api_v2_chatroom.njk" as chatroom %}
-{% import "views/_rtm_rest_api_v2_client.njk" as client %}
-{% import "views/_rtm_rest_api_v2_normal.njk" as normal %}
-{% import "views/_rtm_rest_api_v2_system.njk" as system %}
-
 # 实时通信 REST API 使用指南 v2
 
 ## 请求格式
@@ -35,10 +30,10 @@ Key|Value|含义|来源
 除此之外，与 client 相关的请求以 `rtm/clients` 标示。
 最后，一些[全局性质的 API](#全局 API) 直接以 `rtm/{function}` 标示，如 `rtm/all-conversations` 查询所有类型的对话。
 
-{{ normal.normalConversation() }}
-{{ chatroom.chatroom() }}
-{{ system.serviceConversation() }}
-{{ client.rtmClient() }}
+{% include "views/_rtm_rest_api_v2_chatroom.njk" %}
+{% include "views/_rtm_rest_api_v2_client.njk" %}
+{% include "views/_rtm_rest_api_v2_normal.njk" %}
+{% include "views/_rtm_rest_api_v2_system.njk" %}
 
 ## 全局 API
 
