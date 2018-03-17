@@ -20,6 +20,7 @@ composer require leancloud/leancloud-sdk
 use \LeanCloud\Client;
 // 参数依次为 AppId, AppKey, MasterKey
 Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
+Client::setServerUrl("https://{appid 前八位}.api.lncld.net"); // 0.7.0 及以上版本支持
 ```
 {% endblock %}
 
@@ -51,6 +52,7 @@ use \LeanCloud\Client;
 use \LeanCloud\Object;
 // 参数依次为 AppId, AppKey, MasterKey
 Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
+Client::setServerUrl("https://{appid 前八位}.api.lncld.net");
 
 $testObject = new Object("TestObject");
 $testObject->set("words", "Hello World!");
