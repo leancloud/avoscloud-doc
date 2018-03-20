@@ -2042,9 +2042,6 @@ AVIMMessage *oldMessage = <#MessageYouWantToUpdate#>;
 
 {% block code_on_message_recall %}
 ```objc
-/* 设置对话的 delegate */
-[conversation addDelegate:self];
-
 /* 实现 delegate 方法，以处理消息修改和撤回的事件 */
 - (void)conversation:(AVIMConversation *)conversation messageHasBeenUpdated:(AVIMMessage *)message {
     /* A message has been updated or recalled. */
@@ -2078,9 +2075,6 @@ AVIMMessage *newMessage = [AVIMTextMessage messageWithText:@"Just a new message"
 
 {% block code_on_message_modified %}
 ```objc
-/* 设置对话的 delegate */
-[conversation addDelegate:self];
-
 /* 实现 delegate 方法，以处理消息修改和撤回的事件 */
 - (void)conversation:(AVIMConversation *)conversation messageHasBeenUpdated:(AVIMMessage *)message {
     /* A message has been updated or recalled. */
