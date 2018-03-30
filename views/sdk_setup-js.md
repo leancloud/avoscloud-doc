@@ -83,12 +83,6 @@ var { Realtime, TextMessage } = AV;
 localStorage.setItem('debug', 'leancloud*,LC*');
 ```
 
-{{ 
-  docs.alert(
-    include.turningOffDebuggingReminder()
-  )
-}}
-
 ## Node.js
 
 JavaScript SDK 也可以运行在 Node.js 运行环境中。如果希望在云引擎中访问我们的存储服务，请参照 [云引擎快速入门](leanengine_quickstart.html)，使用模板项目中提供的 `leanengine` 包接入存储服务。
@@ -99,7 +93,7 @@ Node.js 中 SDK 的安装与引用也是通过包管理工具 npm，请参考 [n
 
 ### 打开调试日志
 
-在 Web 平台中打开调试日志，需要设置环境变量 `DEBUG` 为 `leancloud*,LC*`。
+在 Node.js 平台中打开调试日志，需要设置环境变量 `DEBUG` 为 `leancloud*,LC*`。
 
 你可以在启动某个命令之前设置环境变量。下面以本地启动云引擎调试的命令（`lean up`）为例：
 
@@ -110,11 +104,6 @@ DEBUG=leancloud*,LC* lean up
 set DEBUG=leancloud*,LC* lean up
 ```
 
-{{ 
-  docs.alert(
-    include.turningOffDebuggingReminder()
-  )
-}}
 
 ## 微信小程序
 
