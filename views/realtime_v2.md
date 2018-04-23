@@ -513,6 +513,8 @@ convId   | 消息所属对话的 ID
 offlinePeers | 数组，离线的收件人列表
 content | 消息内容
 timestamp | 服务器收到消息的时间戳（毫秒）
+mentionAll | 布尔类型，表示本消息是否 @ 了所有成员
+mentionOfflinePeers | 被本消息 @ 且离线的成员 ID。如果 mentionAll 为 true，则该参数为空，表示所有 offlinePeers 参数内的成员全部被 @
 
 #### 返回
 
