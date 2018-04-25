@@ -136,26 +136,27 @@ AVObject *testObject = [AVObject objectWithClassName:@"TestObject"];
 
 {{ include.debuglog('objc') }}
 
-## 查看错误信息
+## 查看服务器返回的错误
 
-某个请求报错，SDK 会在日志中返回错误信息。如果觉得查找日志比较麻烦，需要打印错误信息，可以使用 kLeanCloudRESTAPIResponseError。例如 User 表中已经存在一个叫 Tom 的用户，再次注册用户名为 Tom 会报错「用户已经存在」。
+某个请求出错，SDK 会返回错误信息。可以使用 kLeanCloudRESTAPIResponseError 来获取服务器返回的错误信息。例如 User 表中已经存在一个叫 Tom 的用户，再次注册用户名为 Tom 会报错「用户已经存在」。
 
 ```
  AVUser *user = [AVUser user];
     user.username = @"Tom";
     user.password =  @"cat!@#123";
     [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+
+    	// 获取 RESTAPI 返回的错误信息详情
         if (error) {
-            //打印 RESTAPI 返回的错误信息详情
-            NSLog(@"error.userInfo:%@",error.userInfo[kLeanCloudRESTAPIResponseError]);
+          id responseError = error.userInfo[kLeanCloudRESTAPIResponseError];
         }
  }];
 ```
 
-控制台会打印下列报错信息：
+服务器返回的错误信息一般来说是 JSON 格式，如下：
 
 ```
- error.userInfo:{
+responseError = {
         code = 202;
         error = "Username has already been taken.";
     }
