@@ -1,6 +1,6 @@
 {% import "views/_im.njk" as im %}
 {% import "views/_helper.njk" as docs %}
-# 实时通信 REST API 使用指南
+# 实时通信 REST API 使用指南 v1
 
 ## 请求格式
 对于 POST 和 PUT 请求，请求的主体必须是 JSON 格式，而且 HTTP Header 的 Content-Type 需要设置为 `application/json`。
@@ -262,6 +262,7 @@ timestamp | 必填 | 消息时间戳（毫秒）
 from_peer | 必填 | 发消息用户 Client ID
 message | 必填 | 修改后的消息体 
 recall | 可选 | 布尔类型，代表是否撤回消息
+to_peers | 可选 | 当撤回的是系统对话单独发给用户的消息时，需要将撤回消息的目标用户的 Client ID 填写在这里。最多 20 个，以逗号分隔，多余的 ID 将被忽略
 
 ## 未收取消息数
 

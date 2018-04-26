@@ -61,7 +61,7 @@ lean init
 下图为本文所使用的公众号的设置页面：
 ![wexin_config](images/weixin-mp-console-config.png)
 
-注意，在「服务器配置」中生成 **EncodingAESKey(消息加密解密密钥)** 之后，<u>先不要点击保存设置</u>，其中的 **URL(服务器地址)** 需要在这个云引擎项目 [部署之后](#项目部署) 才可以确定。
+注意，在「服务器配置」中生成 **EncodingAESKey(消息加密解密密钥)** 之后，<u>先不要点击保存设置</u>，其中的 **URL(服务器地址)** 需要在这个云引擎项目 [部署之后](#部署项目) 才可以确定。
 
 ```js
 // 引用 wechat 库，详细请查看 https://github.com/node-webot/wechat

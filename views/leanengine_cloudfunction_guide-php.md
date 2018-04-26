@@ -1,6 +1,8 @@
 {% extends "./leanengine_cloudfunction_guide.tmpl" %}
 
 {% set platformName = 'PHP' %}
+{% set runtimeName = "php" %}
+{% set gettingStartedName = "slim-getting-started" %}
 {% set productName = 'LeanEngine' %}
 {% set storageName = 'LeanStorage' %}
 {% set leanengine_middleware = '[LeanCloud PHP SDK](https://github.com/leancloud/php-sdk)' %}
@@ -61,7 +63,7 @@ Cloud::define("averageStars", function($params, $user) {
 {% block cloudFuncTimeout %}
 ### 云函数超时
 
-云引擎超时时间默认为 30 秒，如果超过阈值，进程将被强制 kill：
+云引擎超时时间默认为 15 秒，如果超过阈值，进程将被强制 kill：
 
 * 客户端将收到 HTTP status code 为 50X 响应。
 * 服务端会出现类似这样的日志：`WARNING: [pool www] child ... exited on signal 9 (SIGKILL) after ... seconds from start`。
@@ -82,7 +84,7 @@ Cloud::define("averageStars", function($params, $user) {
 try {
     $result = Cloud::run("averageStars", array("movie" => "夏洛特烦恼"));
 } catch (\Exception $ex) {
-    // 云函数错误 
+    // 云函数错误
 }
 ```
 
@@ -513,11 +515,9 @@ Cloud::define("pushTimer", function($params, $user) {
 ```
 {% endblock %}
 
-{% block masterKeyInit %}
+{% block useMasterKey %}
 ```php
-//参数依次为 AppId, AppKey, MasterKey
-use \LeanCloud\Client;
-Client::initialize($appId, $appKey, $masterKey);
+// 通常位于 src/app.php
 Client::useMasterKey(true);
 ```
 {% endblock %}

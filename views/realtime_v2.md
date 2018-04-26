@@ -74,8 +74,7 @@ LeanCloud 实时通信服务的特性主要有：
 
 #### 在线状态
 
-我们目前在 SDK 和 [REST API](realtime_rest_api.html#查询在线状态
-) 上提供主动查询的机制帮助开发者查询目标用户的在线状态。
+我们目前在 SDK 和 [REST API](realtime_rest_api_v2.html#查询在线成员) 上提供主动查询的机制帮助开发者查询目标用户的在线状态。
 
 ### 对话（Conversation）
 
@@ -102,7 +101,7 @@ LeanCloud 实时通信服务的特性主要有：
 **sys**|system|Boolean|可选|是否是系统对话
 **unique**|unique|Boolean|可选|内部字段，标记根据成员原子创建的对话。
 
-除了在各平台的 SDK 里面可以调用 API 创建对话外，我们也提供 [REST API](./realtime_rest_api.html#通过_REST_API_创建_更新_删除对话数据) 可以让大家预先建立对话：对话的信息存储在 _Conversation 表中，你可以直接通过 [数据存储相关的 REST API](./rest_api.html#对象-1) 对其进行操作。
+除了在各平台的 SDK 里面可以调用 API 创建对话外，我们也提供 REST API 可以让大家预先建立对话：对话的信息存储在 _Conversation 表中。
 
 这里要特别讨论一下**单聊**、**群聊**、**聊天室**、**公众号**等使用场景。
 
@@ -166,7 +165,7 @@ REST API 在创建对话时同样支持 `unique` 参数。
 
 #### 创建对话
 
-对话可以通过 SDK 和 [REST API](./realtime_rest_api.html#创建一个对话) 创建。
+对话可以通过 SDK 和 REST API 创建。
 
 在大部分使用场景中，普通对话通过 SDK 创建，用于最终用户之间自发的通信。
 暂态对话和系统对话通常和应用中的特定实体绑定，可以通过 REST API 提前创建，通过应用中的业务逻辑
@@ -184,7 +183,7 @@ REST API 在创建对话时同样支持 `unique` 参数。
 LeanCloud 对普通消息提供「至少一次」的到达保证，并且在官方 SDK 中支持对消息的去重，开发者无需关心。除了基于「推」模型的消息机制，我们还提供消息记录的机制允许
 SDK 和 REST API 通过「拉」的方式获取任意时间点前的消息。
 
-开发者可以通过 SDK 或 [REST API](./realtime_rest_api.html#通过_REST_API_发消息) 发送消息。
+开发者可以通过 SDK 或 REST API 发送消息。
 SDK 通常用于最终用户发送消息，而 REST API 是开发者从云端发送消息的接口。当从 REST API
 发送消息时，开发者可以指定消息的发送者、对话 ID，对于系统对话还可以指定消息的接收者。
 
@@ -234,39 +233,41 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 
 #### 离线推送通知
 
-对离线的 iOS 和 Windows Phone 用户，每次有离线消息时，我们会触发一个对应平台的推送通知。通知的过期时间是 7 天，也就是说，如果一个设备 7 天内没有连接到 APNs 或 MPNs，系统将不会再给这个设备推送通知。
+对离线的 iOS 和 Windows Phone 用户，每次有离线消息时，我们提供发送离线推送通知的功能。要想使用本功能，用户需要 **自定义推送的内容**，目前有三种方式，按优先级从高到低依次为：
 
-这部分平台的用户，在完成登录时，SDK 会自动关联当前的 Client ID 和设备。关联的方式是通过设备**订阅**名为 Client ID 的 Channel 实现的。开发者可以在数据存储的 `_Installation` 表中的 `channels` 字段查到这组关联关系。在实际离线推送时，系统根据用户 Client ID 找到对应的关联设备进行推送。由于实时通信触发的推送量比较大，内容单一， 所以云端不会保留这部分记录，在 **控制台 > 消息 > 推送记录** 中也无法找到这些记录。您有三种方式自定义推送的内容：
+1. 动态内容方式
 
-##### 静态内容方式
+  如果希望推送通知显示动态内容，比如消息的实际内容，或根据消息内容、对话信息等上下文信息来自定义内容，则需要通过 [云引擎 Hook `_receiversOffline`](#_receiversOffline) 来实现。该类型优先级最高。
 
-由于不同平台的不同限制，且用户的消息正文可能还包含上层协议，所以我们允许用户在控制台中为应用设置一个静态的 APNs JSON，推送一条内容固定的通知。
+2. 消息附件方式
+  
+  - 对于 SDK，通过各个 SDK 提供的 API 设置这条消息可能产生的推送内容，比如 JS 的是 [pushData 参数](https://leancloud.github.io/js-realtime-sdk/docs/Conversation.html#send)
+  - 对于 REST，通过 [push_data 参数](./realtime_rest_api_v2.html#发消息)设定
 
-{% if node=='qcloud' %}
-进入 `控制台 > 消息 > 实时消息 > 设置 > iOS 用户离线推送设置`，填入：
-{% else %}
-进入 [控制台 > 消息 > 实时消息 > 设置 > iOS 用户离线推送设置](/messaging.html?appid={{appid}}#/message/realtime/conf)，填入：
-{% endif %}
+3. 静态内容方式
 
-```
-{"alert":"您有新的消息", "badge":"Increment"}
-```
+  由于不同平台的不同限制，且用户的消息正文可能还包含上层协议，所以我们允许用户在控制台中为应用设置一个静态的 APNs JSON，推送一条内容固定的通知。
+  {% if node=='qcloud' %}
+  进入 `控制台 > 消息 > 实时消息 > 设置 > iOS 用户离线推送设置`，填入：
+  {% else %}
+  进入 [控制台 > 消息 > 实时消息 > 设置 > iOS 用户离线推送设置](/messaging.html?appid={{appid}}#/message/realtime/conf)，填入：
+  {% endif %}
+  ```
+  {"alert":"您有新的消息", "badge":"Increment"}
+  ```
+  注意，`Increment` 大小写敏感，表示自动增加应用 badge 上的数字计数。清除 badge 的操作请参考 [iOS 推送指南 &middot; 清除 badge](ios_push_guide.html#清除_Badge)。
+  
+  ![image](images/realtime_ios_push.png)
 
-注意，`Increment` 大小写敏感，表示自动增加应用 badge 上的数字计数。清除 badge 的操作请参考 [iOS 推送指南 &middot; 清除 badge](ios_push_guide.html#清除_Badge)。
+  此外，您还可以设置声音等推送属性，具体的字段可以参考[推送 &middot; 消息内容 Data](./push_guide.html#消息内容_Data)。
 
-![image](images/realtime_ios_push.png)
+##### 限制
 
-此外，您还可以设置声音等推送属性，具体的字段可以参考[推送 &middot; 消息内容 Data](./push_guide.html#消息内容_Data)。
+通知的过期时间是 7 天，也就是说，如果一个设备 7 天内没有连接到 APNs 或 MPNs，系统将不会再给这个设备推送通知。
 
-##### 动态内容方式
+##### 原理
 
-如果希望推送通知显示动态内容，比如消息的实际内容，或根据消息内容、对话信息等上下文信息来自定义内容，则需要通过 [云引擎 Hook `_receiversOffline`](#_receiversOffline) 来实现。
-
-##### 消息附件方式
-
-您可以在使用 SDK 发送消息时，通过 SDK 的 API 设置这条消息可能产生的推送内容。
-
-当同时使用以上多种方式的时候，设置的优先级为“动态内容方式” > “消息附件方式” > “静态内容方式”。
+这部分平台的用户，在完成登录时，SDK 会自动关联当前的 Client ID 和设备。关联的方式是通过设备**订阅**名为 Client ID 的 Channel 实现的。开发者可以在数据存储的 `_Installation` 表中的 `channels` 字段查到这组关联关系。在实际离线推送时，系统根据用户 Client ID 找到对应的关联设备进行推送。由于实时通信触发的推送量比较大，内容单一， 所以云端不会保留这部分记录，在 **控制台 > 消息 > 推送记录** 中也无法找到这些记录。
 
 ##### 其他设置
 
@@ -279,7 +280,16 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 }
 ```
 
-`_profile` 属性不会实际推送。
+Apple 不支持在一次推送中向多个从属于不同 Team Id 的设备发推送。在使用 iOS Token Authentication 的鉴权方式后，如果应用配置了多个不同 Team Id 的 Private Key，请确认目标用户设备使用的 APNs Team ID 并将其填写在 `_apns_team_id` 参数内，以保证推送正常进行，只有指定 Team ID 的设备能收到推送。如：
+
+```json
+{
+  "alert":    "您有一条未读消息",
+  "_apns_team_id": "my_fancy_team_id"
+}
+```
+
+`_profile` 和 `_apns_team_id` 属性均不会实际推送。
 
 目前，设置界面的推送内容支持部分内置变量，你可以将上下文信息直接设置到推送内容中：
 
@@ -306,7 +316,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 * 广播消息具有实效性，可以设置过期时间；过期的消息不会作为离线消息发送给用户，不过仍然可以在历史消息中获取到
 * 新用户第一次登录后，会收到最近一条未过期的系统广播消息
 
-除此以外广播消息与普通消息的处理完全一致。广播消息的发送可以参考[广播消息 REST API](./realtime_rest_api.html#系统对话发送广播消息)
+除此以外广播消息与普通消息的处理完全一致。广播消息的发送可以参考[广播消息 REST API](./realtime_rest_api_v2.html#全局广播)
 
 ## 权限和认证
 
@@ -317,7 +327,7 @@ TextMessage  ImageMessage  AudioMessage  VideoMessage  LocationMessage   。。�
 - **聊天记录查询启用签名认证**，用于控制聊天记录查询操作
 
 开发者可根据实际需要进行选择。一般来说，**登录认证** 能够满足大部分安全需求，而且我们也强烈建议开发者开启登录认证。
-对于使用 AVUser 的应用，可使用 REST API [获取 Client 登录签名](realtime_rest_api.html#获取_Client_登录签名) 进行登录认证。
+对于使用 AVUser 的应用，可使用 REST API [获取 Client 登录签名](./realtime_rest_api_v2.html#获取登录签名) 进行登录认证。
 
 ![image](images/leanmessage_signature2.png)
 
@@ -375,6 +385,16 @@ appid:clientid:convid:sorted_member_ids:timestamp:nonce:action
 * appid、clientid、sorted_member_ids、timestamp 和 nonce  的含义同上。对创建群的情况，这里 sorted_member_ids 是空字符串。
 * convid - 此次行为关联的对话 id。
 * action - 此次行为的动作，**invite** 表示加群和邀请，**kick** 表示踢出群。
+
+### 查询聊天记录的签名
+
+```
+appid:client_id:convid:nonce:signature_ts
+```
+* client_id 查看者 id（签名参数）
+* nonce  签名随机字符串（签名参数）
+* signature_ts 签名时间戳（签名参数），单位是秒
+* signature  签名（签名参数）
 
 ### 黑名单的签名
 
@@ -625,7 +645,7 @@ mute | 可选 | 修改后的关闭对话提醒设置，如果不提供则保持�
 
 实时通信的云引擎 Hook 要求云引擎部署在云引擎的 **生产环境**，测试环境仅用于开发者手动调用测试。由于缓存的原因，首次部署的云引擎 Hook 需要至多三分钟来正式生效，后续修改会实时生效。
 
-更多使用详情请参考 [云引擎 - 云函数](leanengine_guide-cloudcode.html#云函数)。所有云引擎调用都有默认超时时间和容错机制，在出错情况下系统将按照默认的流程执行后续操作。
+更多使用方法请参考 [云引擎 · 云函数](leanengine_cloudfunction_guide-node.html)。所有云引擎调用都有默认超时时间和容错机制，在出错情况下系统将按照默认的流程执行后续操作。
 
 ## Android 开发指南
 
@@ -641,7 +661,7 @@ mute | 可选 | 修改后的关闭对话提醒设置，如果不提供则保持�
 
 ## REST API
 
-参考 [实时通信 REST API](realtime_rest_api.html)。
+参考 [实时通信 REST API](realtime_rest_api_v2.html)。
 
 ## 对话与消息管理 SDK
 
@@ -654,11 +674,11 @@ Python 与 JavaScript 的数据存储 SDK，基于 REST API 封装了一组对�
 
 ### 系统对话的创建
 
-系统对话也是对话的一种，创建后也是在 `_Conversation` 表中增加一条记录，只是该记录 `sys` 列的值为 true，从而与普通会话进行区别。具体创建方法请参考: [创建对话](#创建对话) 。
+系统对话也是对话的一种，创建后也是在 `_Conversation` 表中增加一条记录，只是该记录 `sys` 列的值为 true，从而与普通会话进行区别。具体创建方法请参考: [创建服务号](#创建服务号) 。
 
 ### 系统对话消息的发送
 
-系统对话给用户发消息请参考： [REST API - 系统对话给用户发消息](realtime_rest_api.html#系统对话给用户发消息)。
+系统对话给用户发消息请参考： [REST API - 给部分订阅者发消息](realtime_rest_api_v2.html#给部分订阅者发消息)。
 用户给系统对话发送消息跟用户给普通对话发消息方法一致。
 
 您还可以利用系统对话发送广播消息给全部用户。相比遍历所有用户 ID 逐个发送，广播消息只需要调用一次 REST API。
@@ -666,9 +686,11 @@ Python 与 JavaScript 的数据存储 SDK，基于 REST API 封装了一组对�
 
 ### 获取系统对话消息记录
 
-获取系统对话给用户发送的消息记录请参考： [获取系统对话中某个特定用户与系统的消息记录](realtime_rest_api.html#获取系统对话中某个特定用户与系统的消息记录)
+获取系统对话给用户发送的消息记录请参考： [查询服务号给特定订阅者发的消息](realtime_rest_api_v2.html#查询服务号给特定订阅者发的消息)
 
-获取用户给系统对话发送的消息记录可以通过 `_SysMessage` 表和 [Web Hook](#Web_Hook) 两种方式实现。`_SysMessage` 表在应用首次有用户发送消息给某系统对话时自动创建，创建后我们将所有发送到系统对话的消息都存储在该表中。[Web Hook](#Web_Hook) 方式需要开发者自行定义 [Web Hook](#Web_Hook)，用于实时接收用户发给系统对话的消息。
+获取用户给系统对话发送的消息记录有以下两种方式实现：
+- `_SysMessage` 表方式，在应用首次有用户发送消息给某系统对话时自动创建，创建后我们将所有由用户发送到系统对话的消息都存储在该表中。
+- [Web Hook](#Web_Hook) 方式，这种方式需要开发者自行定义 [Web Hook](#Web_Hook)，用于实时接收用户发给系统对话的消息。
 
 ### 系统对话消息结构
 
@@ -725,14 +747,40 @@ timestamp | 消息创建的时间
 ]
 ```
 
+## 高级功能
+
+### 对话权限
+
+「对话权限」功能作为实时通信的一项补充，可以将对话内成员划分成不同角色，实现类似 QQ 群管理员的效果。使用这个功能需要在控制台 实时通信-设置 中开启「对话成员属性功能（成员角色管理功能）」。
+
+目前系统内的角色与功能对应关系：
+
+| 角色 | 功能列表 |
+| ---------|--------- |
+| Owner | 永久性禁言、踢人、加人、拉黑、更新他人权限 |
+| Manager | 永久性禁言、踢人、加人、拉黑、更新他人权限 |
+| Member | 加人 |
+
+需要注意一点，目前不支持 Owner 的变更。
+
+### 黑名单
+
+「黑名单」功能可以实现类似微信 屏蔽 的效果，目前分为两大类
+
+- 对话 --> 成员
+- 成员 --> 对话
+
+使用这个功能需要在控制台 实时通信-设置 中开启「黑名单功能」。
+
 ## 限制
 
 * 对于客户端主动发起的操作会按照操作类型限制其频率。发消息操作限制为 **每分钟 60 次**，历史消息查询操作限制为 **每分钟 120 次**，其他类型操作包括加入对话、离开对话、登录服务、退出服务等均限制为 **每分钟 30 次**。当调用超过限制时，云端会拒绝响应这些超限的操作，这样如果操作本由 SDK 发起则表现为不会走回调。如果使用 REST API 发起各种操作，则不会受到上述频率的限制。
 * 应用全局发送消息的速度默认为每分钟 3 万次，如果你的应用会超过此限制，请 [联系我们](/help.html)。
 * 客户端发送的单条消息大小不得超过 5 KB。
-* 目前单个普通对话的成员上限为 500 个，如果您通过数据存储 API 向 m 字段加入了超过 500 个 id，我们只会使用其中的前 500 个。
+* 单个普通对话的成员上限为 500 个，如果您通过数据存储 API 向 m 字段加入了超过 500 个 id，我们只会使用其中的前 500 个。
 * 请不要使用相同的 id 在大量设备上同时登录，如果系统检测到某个 id 同时在超过 5 个不同的 IP 上登录，会认为此 id 是重复使用的 id，之后此 id 当日的每次登录会按照 `id + IP` 的组合作为计费的独立用户。
 * 如果单个用户有超过 50 个的对话存在未接收的离线消息，那么当该用户登录时服务端只会**随机**下发 50 个对话的离线消息或未读消息数量。也就是说服务端不会再下发超出对话数量限制的那部分离线消息，也不会下发离线消息数量，离线消息不会丟失但需要从历史记录中拉取得到。
+* 单个对话未接收的离线消息数最多 100 条，超过后，系统会以先入先出方式存储新的离线消息，同时移除当前对话存储的最早的一条离线消息。被移除的离线消息可以通过历史消息记录查询，但不会产生离线消息提醒，也不会计入对话的未读消息计数。
 * 系统广播消息一个应用一天最多发 30 条
 
 {{ im.conversationsLifespan("### 对话的有效期") }}

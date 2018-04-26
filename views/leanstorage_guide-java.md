@@ -103,7 +103,7 @@
     AVQuery query = new AVQuery("Account");
     AVObject account = query.getFirst();
     
-    account.increment("balance", -amount);
+    account.increment("balance", amount);
 
     AVSaveOption option = new AVSaveOption();
     option.query(new AVQuery("Account").whereGreaterThanOrEqualTo("balance",-amount));
@@ -1354,3 +1354,26 @@ todo.fetchInBackground("todoFolder", new GetCallback<AVObject>() {
 {# 2018-01-10 Not applicable to Java: https://github.com/leancloud/docs/issues/2429#issuecomment-356483624  #}
 {% block text_user_isAuthenticated %}
 {% endblock %}
+
+{% block anonymous_user_login %}
+```java
+AVAnonymousUtils.logIn(new LogInCallback() {
+  public void done(T user, AVException e) {
+  };
+});
+```
+{% endblock %}
+
+{% block setup_username_and_password_for_anonymous_user %}
+```java
+AVUser currentUSer = AVUser.getCurrentUser();
+currentUser.setEmail("email");
+currentUser.setPassword("password");
+currentUser.setUsername("username");
+currentUser.signUpInBackground(new SignUpCallback() {
+  public void done(AVException e) {
+  }
+});
+```
+{% endblock %}
+

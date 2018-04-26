@@ -111,12 +111,14 @@ git push -u origin master
 
 ### 设置域名
 
-你可以在 {% if node=='qcloud' %}**云引擎** > **设置** {% else %}[云引擎 > 设置](/cloud.html?appid={{appid}}#/conf){% endif %} 的「Web 主机域名」部分，填写一个自定义的二级域名，例如你设置了 `myapp`，那么你就可以通过我们的二级域名来访问你的网站了：
+你可以在 [云引擎 > 设置](/cloud.html?appid={{appid}}#/conf) 的「Web 主机域名」部分，填写一个自定义的二级域名，例如你设置了 `myapp`，那么你就可以通过我们的二级域名来访问你的网站了：
 
 - `http://myapp.leanapp.cn`（中国区）
 - `http://myapp.avosapps.us`（美国区）
 
 <div class="callout callout-info">DNS 可能需要等待几个小时后才能生效。</div>
+
+如果你的应用在 30 天内无访问且没有购买标准实例，二级域名有可能会被回收。
 
 ## 用户状态管理
 
@@ -157,6 +159,13 @@ git push -u origin master
 {% block custom_session %}
 {{platformName}} 暂不支持。
 {% endblock %}
+
+### CSRF Token
+如果你的云引擎应用使用 Cookie 作为鉴权方式的话（例如使用 SDK 的 CookieSession 中间件），那就有受到 [CSRF](https://github.com/pillarjs/understanding-csrf) 攻击的风险，将会允许其他站点伪造带有正确 Cookie 的恶意请求。
+
+业界通常使用 CSRF Token 来防御 CSRF 统计，你需要传递给客户端一个随机字符串（即 CSRF Token，可通过 Cookie 传递），客户端在每个有副作用的请求中都要将 CSRF 包含在请求正文或 Header 中，服务器端需要校验这个 CSRF Token 是否正确。
+
+{% block csrf_token %}{% endblock %}
 
 ### LeanCache
 
@@ -214,7 +223,7 @@ systemDependencies:
 
 <div class="callout callout-info">旧版云引擎使用的以 `LC_` 开头的环境变量（如 `LC_APP_ID`）已经被弃用。为了保证代码兼容性，`LC_` 变量在一段时间内依然有效，但未来可能会完全失效。为了避免报错，建议使用 `LEANCLOUD_` 变量来替换。</div>
 
-你也可以在 {% if node=='qcloud' %}**云引擎** > **设置** > **自定义环境变量**{% else %}[云引擎 > 设置 > 自定义环境变量](/dashboard/cloud.html?appid={{appid}}#/conf){% endif %} 页面中添加自定义的环境变量。其中名字必须是字母、数字、下划线且以字母开头，值必须是字符串，修改环境变量后会在下一次部署时生效。
+你也可以在 [云引擎 > 设置 > 自定义环境变量](/dashboard/cloud.html?appid={{appid}}#/conf) 页面中添加自定义的环境变量。其中名字必须是字母、数字、下划线且以字母开头，值必须是字符串，修改环境变量后会在下一次部署时生效。
 
 按照一般的实践，可以将一些配置项存储在环境变量中，这样可以在不修改代码的情况下，修改环境变量并重新部署，来改变程序的行为；或者可以将一些第三方服务的 Secret Key 存储在环境变量中，避免这些密钥直接出现在代码中。
 
@@ -224,11 +233,25 @@ systemDependencies:
 云引擎运行环境默认提供的环境变量{% if platformName | lower == 'node.js' %}（以及 Node.js 环境变量 `NODE_ENV`）{% endif %}，无法被自定义环境变量覆盖（覆盖无效）。
 {% endcall %}
 
+### 负载均衡
+
+在云引擎上，用户的请求会先经过一个负载均衡组件，再到达你的应用。负载均衡组件会处理 HTTPS 加密、对响应进行压缩等一般性工作，因此你不必在你的应用中添加 HTTPS 或 gzip 相关的功能。
+
+负载均衡同时限制了请求不能超过 100M（包括直接上传文件到云引擎）、请求处理不得超过 60 秒，WebSocket 60 秒无数据会被断开连接。
+
+### 文件系统
+
+你可以向 `/home/leanengine` 或 `/tmp` 目录写入临时文件，最多不能超过 1G。
+
+云引擎每次部署都会产生一个新的容器，即使不部署系统偶尔也会进行一些自动调度，这意味着你 **不能将本地文件系统当作持久的存储**，只能用作临时存储。
+
+如果你写入的文件体积较大，建议在使用后自动删除他们，否则如果占用磁盘空间超过 1G，继续写入文件可能会收到类似 `Disk quota exceeded` 的错误，这种情况下你可以重新部署一下，这样文件就会被清空了。
+
 ### 日志
 
-在控制台的 {% if node=='qcloud' %}「云引擎 / 日志」{% else %}[云引擎 / 日志](/cloud.html?appid={{appid}}#/log){% endif %} 中可以查看云引擎的部署和运行日志，还可以通过日志级别进行筛选。
+在控制台的 [云引擎 / 日志](/cloud.html?appid={{appid}}#/log) 中可以查看云引擎的部署和运行日志，还可以通过日志级别进行筛选。
 
-你还可以 [通过命令行工具来导出](leanengine_cli.html#查看日志) 最长最近七天的日志到本地文件，方便进行进一步的分析和统计。
+你还可以 [通过命令行工具来导出](leanengine_cli.html#查看日志) 最近七天的日志到本地文件，方便进行进一步的分析和统计。
 
 应用的日志可以直接输出到「标准输出」或者「标准错误」，这些信息会分别对应日志的 `info` 和 `error` 级别，比如下列代码会在 info 级别记录参数信息：
 
@@ -238,13 +261,14 @@ systemDependencies:
 
 {% block loggerExtraDescription %}{% endblock %}
 
+云引擎的访问日志（Access Log）可在 [应用控制台 > 云引擎 > 访问日志](/cloud.html?appid={{appid}}#/accesslog) 中导出，通过控制台下载经过打包的日志。
+
 ### 时区
 
 在云引擎的中国区系统默认使用北京时间（`Asia/Shanghai`），美国区默认使用 UTC 时间。
 
 {% block section_timezone %}{% endblock %}
 
-{% if node != 'qcloud' %}
 ## 备案和自定义域名
 
 如果需要绑定自己的域名，进入 [应用控制台 > 账号设置 > 域名绑定](/settings.html#/setting/domainbind)，按照步骤填写资料即可。
@@ -254,10 +278,9 @@ systemDependencies:
 只有主域名需要备案，二级子域名不需要备案；如果没有 ICP 备案，请进入 [应用控制台 > 账号设置 > 域名备案](/settings.html#/setting/domainrecord)，按照步骤填写资料进行备案。
 
 <div class="callout callout-info">备案之前要求云引擎已经部署，并且网站内容和备案申请的内容一致。仅使用云引擎托管静态文件、未使用其他 LeanCloud 服务的企业用户，需要自行完成域名备案工作。</div>
-{% endif %}
 
 ## 出入口 IP 地址
 
 如果开发者希望在第三方服务平台（如微信开放平台）上配置 IP 白名单而需要获取云引擎的入口或出口 IP 地址，请进入 [控制台 > 云引擎 > 设置 > 出入口 IP](/dashboard/cloud.html?appid={{appid}}#/conf) 来自助查询。
 
-我们会尽可能减少出入口 IP 的变化频率，并在变化前后进行邮件通知，但 IP 突然变换的可能性仍然存在。因此在遇到与出入口 IP 相关的问题，我们建议先进入控制台来核实一下 IP 列表是否有变化。
+我们会尽可能减少出入口 IP 的变化频率，但 IP 突然变换的可能性仍然存在。因此在遇到与出入口 IP 相关的问题，我们建议先进入控制台来核实一下 IP 列表是否有变化。

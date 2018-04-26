@@ -2,6 +2,26 @@
   alert  
 %}
 
+{% macro sdkSetupFAQ() -%}
+## 问题排查
+
+### 401 Unauthorized
+
+如果 SDK 抛出 401 异常或者查看本地网络访问日志存在：
+
+```json
+{
+  "code": 401,
+  "error": "Unauthorized."
+}
+```
+则可认定为 App ID 或者 App Key 输入有误，或者是不匹配，很多开发者同时注册了多个应用，导致拷贝粘贴的时候，用 A 应用的 App ID 匹配 B 应用的 App Key，这样就会出现服务端鉴权失败的错误。
+
+### 客户端无法访问网络
+
+客户端尤其是手机端，应用在访问网络的时候需要申请一定的权限。
+{%- endmacro%}
+
 {% macro setService(service=api) %}
 
 <script type="text/javascript">
@@ -89,8 +109,10 @@ DEBUG=leancloud* npm start
 // 或使用云引擎 CLI 启动应用时打开调试，日志会输出到 应用控制台 > 云引擎 > 日志：
 DEBUG=leancloud:* lean up
 
-// 浏览器的 Console 中设置 localStorage
+// 在浏览器的 Console 中设置 localStorage
 localStorage.setItem('debug', 'leancloud*');
+
+{{ debugLiveQuery() }}
 ```
 {%- endif -%}
 {% if segment == "all" or segment == "python" -%}
@@ -109,7 +131,7 @@ Client::setDebug(true);
 ```
 {%- endif %}
 
-{{ alert("在应用发布之前，请关闭调试日志，以免暴露敏感数据。") }}
+{{ alert(turningOffDebuggingReminder()) }}
 {%- endif %}
 {%- endmacro %}
 
@@ -125,4 +147,15 @@ authData 的数据<u>默认为不可查询</u>，也就是说它既不包含在�
 
 {% macro generalEmail() -%}
 <business@leancloud.rocks>
+{%- endmacro %}
+
+{% macro debugLiveQuery(verbose = false) -%}
+// 如果使用 LiveQuery，可以为其开启调试日志。
+{% if verbose -%}// 在浏览器的 Console 中设置 localStorage{%- endif %}
+localStorage.setItem('debug', 'LC*');
+{% if verbose -%}// {{ turningOffDebuggingReminder() }}{%- endif %}
+{%- endmacro %}
+
+{% macro turningOffDebuggingReminder() -%}
+在应用发布之前，请关闭调试日志，以免暴露敏感数据。
 {%- endmacro %}

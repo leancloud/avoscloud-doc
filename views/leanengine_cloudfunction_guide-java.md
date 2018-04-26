@@ -1,6 +1,8 @@
 {% extends "./leanengine_cloudfunction_guide.tmpl" %}
 
 {% set platformName = "Java" %}
+{% set runtimeName = "java" %}
+{% set gettingStartedName = "java-war-getting-started" %}
 {% set productName = "LeanEngine" %}
 {% set storageName = "LeanStorage" %}
 {% set leanengine_middleware = "[LeanEngine Java SDK](https://github.com/leancloud/leanengine-java-sdk)" %}
@@ -228,7 +230,7 @@ EngineRequestContext 则可以获取额外的一些 metaData 信息
     // 获取消息内容
     String content = (String)params.get("content");
     // 转化成 Map 格式
-    Map<String,Object> contentMap = (Map<String,Object>)JSON.parse(content); 
+    Map<String,Object> contentMap = (Map<String,Object>)JSON.parse(content);
     // 读取文本内容
     String text = (String)(contentMap.get("_lctext").toString());
     // 过滤广告内容
@@ -352,7 +354,7 @@ EngineRequestContext 则可以获取额外的一些 metaData 信息
     if ("black".equals(params.get("initBy"))) {
       result.put("reject", true);
       result.put("code", 9893);
-    } 
+    }
     return result;
   }
 ```
@@ -368,10 +370,9 @@ EngineRequestContext 则可以获取额外的一些 metaData 信息
 ```
 {% endblock %}
 
-{% block masterKeyInit %}
-
+{% block useMasterKey %}
 ```java
-  AVOSCloud.initialize({{appid}},{{appkey}},{{masterkey}});
-  EngineRequestSign.instance().setUserMasterKey(true);
+// 通常位于 src/**/AppInitListener.java
+JavaRequestSignImplementation.instance().setUseMasterKey(true);
 ```
 {% endblock %}

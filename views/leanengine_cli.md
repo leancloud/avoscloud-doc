@@ -191,7 +191,7 @@ $ cd AwesomeApp
 - [Python](leanengine_webhosting_guide-python.html#本地运行和调试)
 - [Node.js](leanengine_webhosting_guide-node.html#本地运行和调试)
 - [PHP](leanengine_webhosting_guide-php.html#本地运行和调试)
-- [Java](leanengine_webhosting_guide-java.html#命令行工具)
+- [Java](leanengine_webhosting_guide-java.html#本地运行和调试)
 
 启动应用：
 
@@ -301,7 +301,7 @@ $ lean deploy -g
 
 以下步骤仅适用于生产环境是 [标准实例](leanengine_plan.html#标准实例) 的用户。
 
-如果预备环境如果测试没有问题，此时需要将预备环境的云引擎代码切换到生产环境，可以在 [应用控制台 > 云引擎 > 部署](cloud.html?appid={{appid}}#/deploy) 中发布，也可以直接运行 `publish` 命令：
+如果预备环境如果测试没有问题，此时需要将预备环境的云引擎代码切换到生产环境，可以在 [应用控制台 > 云引擎 > 部署](/dashboard/cloud.html?appid={{appid}}#/deploy) 中发布，也可以直接运行 `publish` 命令：
 
 ```sh
 $ lean publish

@@ -1,6 +1,6 @@
-# LeanEngine 2.0 升级 3.0 指南
+# LeanEngine 2.0 升级指南
 
-如果是新的项目，建议直接使用 3.0 的 [项目框架](https://github.com/leancloud/node-js-getting-started) 作为起步。如果是遗留项目想升级到 3.0，可以参考该指南。
+<div class="callout callout-danger">该文档适用于早期（2015 年之前）的遗留项目升级到最新版本，新的项目可直接使用新版的 [实例项目](https://github.com/leancloud/node-js-getting-started) 来开始开发。</div>
 
 假设当前有一个基本的 2.0 版本的应用，目录结构如下：
 
@@ -23,7 +23,7 @@ $PROJECT_DIR
 
 **提示**：如果项目已经有该文件可以跳过该部分。
 
-一个标准的 Node.js 应用通常有 `$PROJECT_DIR/package.json` 文件，该文件记录了项目的元信息，比如应用名称、版本、依赖的三方包等。因为 LeanEngine 3.0 项目没有沙箱环境，所以依赖的所有三方包都需要明确声明。下面是一个示例：
+一个标准的 Node.js 应用通常有 `$PROJECT_DIR/package.json` 文件，该文件记录了项目的元信息，比如应用名称、版本、依赖的三方包等。因为新版项目没有沙箱环境，所以依赖的所有三方包都需要明确声明。下面是一个示例：
 
 ```
 {
@@ -63,7 +63,7 @@ npm install
 
 ## 增加 leanengine 依赖
 
-3.0 项目会依赖 [leanengine](https://github.com/leancloud/leanengine-node-sdk)，而不是 [leancloud-storage](https://github.com/leancloud/javascript-sdk)，可以认为前者是后者的增强，增加了云函数等支持。
+新版项目会依赖 [leanengine](https://github.com/leancloud/leanengine-node-sdk)，而不是 [avoscloud](https://github.com/leancloud/javascript-sdk)，可以认为前者是后者的增强，增加了云函数等支持。
 
 如果是按照 [创建 package.json 文件](#创建_package_json_文件) 章节描述的操作，`package.json` 文件应该已经有 `leanengine` 的依赖了。如果没有请在 `$PROJECT_DIR` 目录下执行：
 
@@ -75,7 +75,7 @@ npm install leanengine --save
 
 ## 创建 server.js
 
-3.0 的项目会以 `$PROJECT_DIR/server.js` 作为整个项目的启动文件，下面是一份简单的示例代码：
+新版的项目会以 `$PROJECT_DIR/server.js` 作为整个项目的启动文件，下面是一份简单的示例代码：
 
 ```
   1 var AV = require('leanengine');
@@ -109,14 +109,14 @@ npm install leanengine --save
 
 第 1 ~ 13 行，引入 `leanengine` 依赖，并使用环境变量里面的 appId 和 appKey 等信息初始化 `AV` 对象。
 
-* **提示**：2.0 项目直接由沙箱环境提供 `AV` 对象，而 3.0 项目需要手动初始化。前者虽然方便，但略微违反直觉（因为普通的 Node.js 项目全局空间是不会有 `AV` 对象的）。手动初始化还可以做更明确的控制，比如「是否使用 MasterKey 初始化 `AV` 对象，使得 LeanEngine 项目拥有完全权限，不受 ACL 限制等」。
+* **提示**：2.0 项目直接由沙箱环境提供 `AV` 对象，而新版项目需要手动初始化。前者虽然方便，但略微违反直觉（因为普通的 Node.js 项目全局空间是不会有 `AV` 对象的）。手动初始化还可以做更明确的控制，比如「是否使用 MasterKey 初始化 `AV` 对象，使得 LeanEngine 项目拥有完全权限，不受 ACL 限制等」。
 * 如果想了解具体有哪些环境变量，可以参考 [云引擎指南 - 环境变量](./leanengine_webhosting_guide-node.html#环境变量)。
 
 ### 提供 Web 服务
 
 第 16 ~ 23 行，引入 `app` 模块（具体见 [app 模块](#app_模块) 一节），然后使用环境变量提供的端口启动应用。
 
-* **提示**：2.0 项目引入自定义模块时都需要添加 `cloud/` 的前缀（比如 `cloud/app.js`）。Node.js 项目没有这样的引用方式，属于沙箱环境的限制。3.0 项目则使用更加通用的方式，以 `./` 或 `../` 开头来引用自定义模块，如用 `./app` 来引用 `$PROJECT_DIR/app.js` 文件。
+* **提示**：2.0 项目引入自定义模块时都需要添加 `cloud/` 的前缀（比如 `cloud/app.js`）。Node.js 项目没有这样的引用方式，属于沙箱环境的限制。新版项目则使用更加通用的方式，以 `./` 或 `../` 开头来引用自定义模块，如用 `./app` 来引用 `$PROJECT_DIR/app.js` 文件。
 
 ## app 模块
 
@@ -146,7 +146,7 @@ app 模块保存在 `$PROJECT_DIR/app.js` 文件，是应用主要文件之一�
 
 ### 模板目录修改
 
-因为 3.0 项目不受沙箱限制，不需要强制将模板目录保存在 `$PROJECT_DIR/cloud/views` 目录下，取而代之使用更加通用的习惯，保存在 `$PROJECT_DIR/views`，所以改成：
+因为新版项目不受沙箱限制，不需要强制将模板目录保存在 `$PROJECT_DIR/cloud/views` 目录下，取而代之使用更加通用的习惯，保存在 `$PROJECT_DIR/views`，所以改成：
 
 ```
 > 1 var path = require('path');
@@ -163,7 +163,7 @@ app 模块保存在 `$PROJECT_DIR/app.js` 文件，是应用主要文件之一�
 
 ### 定义静态文件目录
 
-因为 2.0 沙箱会默认将 `$PROJECT_DIR/public` 设置为静态资源目录。而 3.0 项目需要手动设置，所以代码会变成下面这样：
+因为 2.0 沙箱会默认将 `$PROJECT_DIR/public` 设置为静态资源目录。而新版项目需要手动设置，所以代码会变成下面这样：
 
 ```
   6 app.set('views', path.join(__dirname, 'views')); // 设置模板目录
@@ -174,7 +174,7 @@ app 模块保存在 `$PROJECT_DIR/app.js` 文件，是应用主要文件之一�
 
 ### Express 中间件
 
-2.0 沙箱环境会默认加载一些 Express 中间件。而 3.0 项目需要手动设置，所以代码可能会变成下面这样：
+2.0 沙箱环境会默认加载一些 Express 中间件。而新版项目需要手动设置，所以代码可能会变成下面这样：
 
 ```
   2 var express = require('express');
@@ -199,7 +199,7 @@ app 模块保存在 `$PROJECT_DIR/app.js` 文件，是应用主要文件之一�
 
 ### 异常处理器
 
-2.0 沙箱环境默认提供很多异常处理，方便应用使用。3.0 项目需要手动设置，所以代码可能会变成下面这样：
+2.0 沙箱环境默认提供很多异常处理，方便应用使用。新版项目需要手动设置，所以代码可能会变成下面这样：
 
 ```
 > 1 var domain = require('domain');
@@ -255,7 +255,7 @@ app 模块保存在 `$PROJECT_DIR/app.js` 文件，是应用主要文件之一�
 
 ### 返回一个 Express 对象
 
-2.0 项目会在 `$PROJECT_DIR/cloud/app.js` 末尾调用 `app.listen()` 方法来提供 web 服务。3.0 项目使用了更为习惯的用法：导出 Express 的实例，由上层模块调用其 `listen` 方法启动端口监听，来提供 web 服务。
+2.0 项目会在 `$PROJECT_DIR/cloud/app.js` 末尾调用 `app.listen()` 方法来提供 web 服务。新版项目使用了更为习惯的用法：导出 Express 的实例，由上层模块调用其 `listen` 方法启动端口监听，来提供 web 服务。
 
 回忆下我们在 [server.js](#创建_server_js) 部分引用了 `app` 并调用了 `app.listen` 方法，所以 `$PROJECT_DIR/app.js` 可能会是这个样子（第 53 行）：
 
@@ -274,9 +274,9 @@ app 模块保存在 `$PROJECT_DIR/app.js` 文件，是应用主要文件之一�
 
 2.0 项目启动文件是 `$PROJECT_DIR/cloud/main.js`，一般情况会在该文件会使用 `AV.Cloud.define` 或者 `AV.Cloud.beforeSave` 等方法定义很多 [云函数](leanengine_cloudfunction_guide-node.html)。
 
-3.0 项目将这样的文件命名为 `$PROJECT_DIR/cloud.js`，所以你需要将 `$PROJECT_DIR/cloud/main.js` 移动并更名为 `$PROJECT_DIR/cloud.js`。
+新版项目将这样的文件命名为 `$PROJECT_DIR/cloud.js`，所以你需要将 `$PROJECT_DIR/cloud/main.js` 移动并更名为 `$PROJECT_DIR/cloud.js`。
 
-**注意**：3.0 项目中**不能**存在 `$PROJECT_DIR/cloud/main.js` 文件，否则会被当做 2.0 的项目加载并运行。2.0 和 3.0 的项目约束可以分别参考 [云引擎指南 - 旧版云引擎](leanengine_guide-cloudcode.html#项目约束) 和 [云引擎指南 - Node.js 环境](leanengine_webhosting_guide-node.html#项目约束)。
+**注意**：新版项目中**不能**存在 `$PROJECT_DIR/cloud/main.js` 文件，否则会被当做 2.0 的项目加载并运行。2.0 和新版的项目约束可以分别参考 [云引擎指南 - 旧版云引擎](leanengine_guide-cloudcode.html#项目约束) 和 [云引擎指南 - Node.js 环境](leanengine_webhosting_guide-node.html#项目约束)。
 
 如果是最基本的 2.0 项目的代码，那它的内容可能是这样：
 
@@ -289,7 +289,7 @@ app 模块保存在 `$PROJECT_DIR/app.js` 文件，是应用主要文件之一�
   6 });
 ```
 
-可以看到 2.0 项目其实是先加载这个文件，然后在引入 `app.js`，而 3.0 项目正好相反，是由 `app.js` 引入 `cloud.js` 文件，所以更改以后应该是类似这样：
+可以看到 2.0 项目其实是先加载这个文件，然后在引入 `app.js`，而新版项目正好相反，是由 `app.js` 引入 `cloud.js` 文件，所以更改以后应该是类似这样：
 
 ```
   1 var AV = require('leanengine');
@@ -326,11 +326,11 @@ app 模块保存在 `$PROJECT_DIR/app.js` 文件，是应用主要文件之一�
 
 ## 移除 global.json
 
-`$PROJECT_DIR/config/global.json` 文件在 3.0 已经废弃，可以移除。如果你自己有其他的配置信息，可以创建相关的配置文件保存在 `$PROJECT_DIR/config` 目录中。
+`$PROJECT_DIR/config/global.json` 文件在新版已经废弃，可以移除。如果你自己有其他的配置信息，可以创建相关的配置文件保存在 `$PROJECT_DIR/config` 目录中。
 
 ## 默认时区
 
-服务端 2.0 项目环境默认使用 UTC 时区，这给很多开发者带来了困惑。3.0 项目环境将默认时区改为东八区，在 [时区问题](leanengine_webhosting_guide-node.html#时区问题) 部分详细讨论这个问题。
+服务端 2.0 项目环境默认使用 UTC 时区，这给很多开发者带来了困惑。新版项目环境将默认时区改为东八区，在 [时区问题](leanengine_webhosting_guide-node.html#时区问题) 部分详细讨论这个问题。
 
 ## cookie-session 中间件
 
@@ -342,7 +342,7 @@ var avosExpressCookieSession = require('avos-express-cookie-session');
 app.use(express.cookieParser('test'));
 app.use(avosExpressCookieSession({ cookie: { maxAge: 3600000 }, fetchUser: false }));
 ```
-3.0 项目该中间件用法稍有不同，代码需要修改为类似这样：
+新版项目该中间件用法稍有不同，代码需要修改为类似这样：
 
 ```
 app.use(AV.Cloud.CookieSession({ secret: 'my secret', maxAge: 3600000, fetchUser: true }));
@@ -352,7 +352,7 @@ app.use(AV.Cloud.CookieSession({ secret: 'my secret', maxAge: 3600000, fetchUser
 
 ## 本地运行
 
-到此为止，我们已经配置了一个基本的 LeanEngine 3.0 的项目，应该可以通过命令行工具进行本地调试（确保本机已经安装 Node.js 运行环境），执行下列命令：
+到此为止，我们已经配置了一个基本的新版云引擎项目，应该可以通过命令行工具进行本地调试（确保本机已经安装 Node.js 运行环境），执行下列命令：
 
 ```
 avoscloud

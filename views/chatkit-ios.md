@@ -404,6 +404,12 @@ ChatListViewController.h 需导入头文件 `#import <ChatKit/LCChatKit.h>`,示�
 }
 ```
 
+如果创建会话成功后，不想要跳转到聊天详情页，而是做一些其他操作，这种情况下需要手动将新创建的会话插入会话列表：
+
+```objc
+[[LCChatKit sharedInstance] insertRecentConversation:conversation];
+```
+
 ### 聊天详情界面
 
 聊天详情对应 LCCKConversationViewController。
@@ -481,3 +487,14 @@ ChatKit 是完全开源并且免费给开发者使用，使用聊天所产生的
 
 **接入 ChatKit 有什么好处？**<br/>
 它可以减轻应用或者新功能研发初期的调研成本，直接引入使用即可。ChatKit 从底层到 UI 提供了一整套的聊天解决方案。
+
+**聊天列表默认用英文显示距离上次聊天的时间，如果需要用中文显示时间如何设置？**<br/>
+在本地化设置中添加简体中文的支持：
+
+![Localization](images/chatkit-ios-localization.png)
+
+
+
+
+
+
