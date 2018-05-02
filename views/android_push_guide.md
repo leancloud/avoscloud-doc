@@ -494,26 +494,26 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华
 
 #### 提升透传消息到达率
 
-当使用华为推送发透传消息时，如果目标设备上 App 进程被杀，会出现推送消息无法接收的情况。这个是华为 ROM 对透传消息广播的限制导致的，需要引导用户在华为 “权限设置” 中对 App 开启自启动权限来避免。
+当使用华为推送发透传消息时，如果目标设备上 App 进程被杀，会出现推送消息无法接收的情况。这个是华为 ROM 对透传消息广播的限制导致的，需要引导用户在华为 「权限设置」中对 App 开启自启动权限来避免。
 
-### 华为推送-HMS（新）版本（仅中国节点）
+### 华为推送-HMS 版本（仅中国节点）
 
 #### 环境配置
 
-1. **注册华为账号**：在 [华为开发者联盟](http://developer.huawei.com/cn/consumer/)注册华为开发者账号（[详细流程](http://developer.huawei.com/cn/consumer/wiki/index.php?title=%E6%B3%A8%E5%86%8C%E7%99%BB%E5%BD%95)）。
+1. **注册华为账号**：在 [华为开发者联盟](http://developer.huawei.com/cn/consumer/) 注册华为开发者账号（[详细流程](http://developer.huawei.com/cn/consumer/wiki/index.php?title=%E6%B3%A8%E5%86%8C%E7%99%BB%E5%BD%95)）。
 2. **创建华为应用**：实名认证通过后，需要创建华为移动应用并配置 Push 权益（[详细流程](http://developer.huawei.com/cn/consumer/wiki/index.php?title=%E6%8E%A5%E5%85%A5%E8%AF%B4%E6%98%8E#2.1_.E6.B3.A8.E5.86.8C)）。
 3. **设置华为的 AppId 及 AppKey**：在 [华为开发者联盟控制中心](http://developer.huawei.com/cn/consumer/devunion/openPlatform/html/memberCenter.html#appManage#) > **应用管理** > **移动应用详情**  可以查到具体的华为推送服务应用的 AppId 及 AppSecret，将此 AppId 及 AppSecret 通过 {% if node == 'qcloud' %}LeanCloud 控制台 > **消息** > **推送** > **设置** > **混合推送**{% else %}[LeanCloud 控制台 > **消息** > **推送** > **设置** > **混合推送**](/messaging.html?appid={{appid}}#/message/push/conf){% endif %} 与 LeanCloud 应用关联。
 
 #### 接入 SDK
 
 ##### 获取 HMS SDK 和 HMS Agent SDK
-华为 HMS 推送 SDK 分为两部分，一个是 HMS SDK，一个是 HMS Agent SDK，两者需要主版本号一致才能正常使用（当前 LeanCloud 混合推送基于 v2.6.0 这一主版本），具体可以参见[华为 SDK 获取](http://developer.huawei.com/consumer/cn/service/hms/catalog/HuaweiJointOperation.html?page=hmssdk_jointOper_sdkdownload)。
+华为 HMS 推送 SDK 分为两部分，一个是 HMS SDK，一个是 HMS Agent SDK，两者需要主版本号一致才能正常使用（当前 LeanCloud 混合推送基于 v2.6.0 这一主版本），具体可以参见 [华为 SDK 获取](http://developer.huawei.com/consumer/cn/service/hms/catalog/HuaweiJointOperation.html?page=hmssdk_jointOper_sdkdownload)。
 
 HMS SDK 可以直接通过 jar 包加入，HMS Agent SDK 则需要下载解压之后把源码完全拷贝进入工程（也可以将 https://github.com/leancloud/android-sdk-all/hmsagent 作为 module 直接加入工程）。
 
 > 注意：华为 HMS 推送不能与老的 HwPush 共存，如果切换到 HMS 推送，则需要将原来的 HwPush SDK 全部删除干净才行。
 
-##### 修改应用 manefiest 配置。
+##### 修改应用 manifest 配置
 
 首先导入 `avoscloud-mixpush` 包，修改 `build.gradle` 文件，在 `dependencies` 中添加依赖：
 
@@ -584,7 +584,7 @@ dependencies {
         <receiver android:name="com.avos.avoscloud.AVHMSPushMessageReceiver">
             <intent-filter>
 
-                <!-- 必须,用于接收TOKEN -->
+                <!-- 必须，用于接收TOKEN -->
                 <action android:name="com.huawei.android.push.intent.REGISTRATION"/>
                 <!-- 必须，用于接收消息 -->
                 <action android:name="com.huawei.android.push.intent.RECEIVE"/>
@@ -619,7 +619,7 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华
 
 #### 提升透传消息到达率
 
-当使用华为推送发透传消息时，如果目标设备上 App 进程被杀，会出现推送消息无法接收的情况。这个是华为 ROM 对透传消息广播的限制导致的，需要引导用户在华为 “权限设置” 中对 App 开启自启动权限来避免。
+当使用华为推送发透传消息时，如果目标设备上 App 进程被杀，会出现推送消息无法接收的情况。这个是华为 ROM 对透传消息广播的限制导致的，需要引导用户在华为 「权限设置」中对 App 开启自启动权限来避免。
 
 #### 使用特定 activity 响应推送消息
 
@@ -634,10 +634,10 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华
             </intent-filter>
         </activity>
 ```
-这里 intent-filter 的内容不能修改，在目标 activity 的 onCreate 函数中可以从 bundle 中通过 `content` key 可以获得推送内容（JSON 格式）。
+这里 intent-filter 的内容不能修改，在目标 activity 的 `onCreate` 函数中可以从 bundle 中通过 `content` key 可以获得推送内容（JSON 格式）。
 
 #### 参考 demo
-我们提供了一个[最新的华为推送 demo](https://github.com/leancloud/mixpush-demos/tree/master/huawei)，可供你在接入过程中参考。
+我们提供了一个 [最新的华为推送 demo](https://github.com/leancloud/mixpush-demos/tree/master/huawei)，可供你在接入过程中参考。
 
 ### 魅族推送（仅中国节点）
 
