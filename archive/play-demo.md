@@ -66,9 +66,9 @@ public override void OnAuthenticated()
 ![创建 / 加入房间](images/unity/playdemo_2.png)
 
 ```cs
-PlayRoom room = new PlayRoom(roomId); // roomId 为房间 Id
-room.MaxPlayerCount = 4;
-Play.CreateRoom(room);
+var roomConfig = PlayRoom.PlayRoomConfig.Default;
+roomConfig.MaxPlayerCount = 4;
+Play.CreateRoom(roomConfig, roomId);
 ```
 
 房间创建完后，SDK 会依次回调 OnCreatingRoom() 和 OnCreatedRoom() 或 OnCreateRoomFailed(int errorCode, string reason)。如果房间创建成功，玩家会自动加入到房间，所以还会回调 OnJoinedRoom()。
