@@ -1,0 +1,197 @@
+{% import "views/_helper.njk" as docs %}
+
+
+# 排行榜开发指南 &middot; {{platformName}}
+
+## SDK 安装
+{{sdkSetup}}
+  
+## 服务端操作
+服务端逻辑包括创建、修改、重置排行榜，**所有操作推荐您在[控制台]()完成**，如果您已经完成相关操作，可直接跳转至[客户端操作]()部分。
+如果您有特殊需求，可以使用下方的代码在[云函数](leanengine_cloudfunction_guide-node.html)中操作。
+
+### 创建排行榜
+排行榜需要在服务端创建，无法通过客户端创建。管理员根据游戏逻辑提前创建排行榜，客户端通过排行榜名称更新榜内的游戏数据。
+
+```js
+示例代码嗷嗷嗷
+```
+
+其中各参数含义如下：
+
+* statisticName - 排行榜唯一名称，不可修改，只能包含字母、数字、下划线，并且以字母或数字开头
+* versionChangeInterval 的重置频率可选项有：
+  * Never：从来不自动重置，只能手动重置
+  * Hour：每小时 UTC 时间 XX:00 重置
+  * Day：每天 UTC 时间 00:00（北京时间 08:00）重置
+  * Week：每周一 UTC 时间 00:00（北京时间 08:00）重置
+  * Month：每月 1 号 UTC 时间 00:00（北京时间 08:00）重置
+* options - `{useMasterKey: true}` 创建排行榜需要使用[超级权限](https://leancloud.cn/docs/leanengine_cloudfunction_guide-node.html#hash348891298)。
+
+### 更新排行榜 Meta 数据
+排行榜可以更新的 Meta 数据只有 versionChangeInterval 。
+
+
+```js
+示例代码嗷嗷嗷
+```
+
+### 获取排行榜 Meta 数据
+#### 获取多个排行榜
+如果想要查询当前应用下所有的排行榜，可以如下操作：
+
+```js
+示例代码嗷嗷嗷
+```
+示例返回结果
+
+```
+[{
+  objectId: b123, 
+  statisticName: wins,
+  versionChangeInterval: MONTH,
+  version: 1
+}]
+
+```
+
+#### 获取某个排行榜
+获取某个排行榜，可以如下操作：
+
+```js
+示例代码嗷嗷嗷
+```
+其中参数含义为：
+
+* statisticName - 排行榜唯一名称
+
+示例返回结果
+
+```
+{
+  objectId: b123, 
+  statisticName: wins, 
+  versionChangeInterval: week, 
+  version: 1
+}
+```
+
+
+### 重置排行榜
+重置后排行榜所有数据清零，历史数据开始归档到 JSON 文件中。每个排行榜最多保存 200 个历史数据文件。线上数据立刻启用新的版本，所有玩家的分数从 0 开始计算。
+
+#### 手动重置排行榜
+您可以随时运行以下代码来重置数据。可以在正常的游戏运营逻辑需要时手动重置，也可以在由于各种原因导致分数失衡时立刻重置重新开始。
+
+```js
+示例代码嗷嗷嗷
+```
+
+
+#### 获取某个排行榜的历史版本文件
+获取这些历史数据文件 url 的方法为：
+
+```js
+示例代码嗷嗷嗷
+```
+示例返回结果
+
+```
+[{
+  statisticName: wins,
+  version: 1, 
+  status: "completed", 
+  file: {url: "", bucket: "xxx"},
+  activatedAt: "", 
+  deactivatedAt: "", 
+  createdAt: "", 
+  updatedAt: ""
+}]
+```
+
+
+## 客户端操作
+客户端内的所有操作都需要用户先登录。
+
+### 用户登录
+客户端在进行任何数据操作前，都需要确保已经成功登录。
+
+```
+AV.User.logIn('Tom', 'cat!@#123').then(function (loginedUser) {
+  console.log(loginedUser);
+}, function (error) {
+});
+```
+
+关于更详细的用户注册及登录的介绍，请参考：[用户系统](https://leancloud.cn/docs/leanstorage_guide-js.html#hash954895)
+
+### 获取当前用户的分数
+```js
+示例代码嗷嗷嗷
+```
+
+### 更新当前用户的分数
+```js
+示例代码嗷嗷嗷
+// 首先获取当前用户的成绩
+// 成绩比较
+// 更新成绩
+```
+
+### 获取榜单
+客户端可以拉取排行榜内的数据用做展示。
+
+
+#### 获取名列前茅的用户
+这个接口一般用在世界排行榜的场景，查出名列前茅的用户供所有用户仰望。例如获取前 20 名用户数据：
+
+```js
+示例代码嗷嗷嗷
+```
+其中各参数含义如下：
+
+* statisticName - 排行榜唯一名称
+* startPosition - 从第几名开始查询，默认为 0
+* maxResultsCount - 最大返回多少数据，默认为 100，可设置范围为 0-1000
+
+示例返回结果
+
+```
+[
+  {user: {objectId:xxx, username: jack, age: 26}, statisticName: wins, value: 1001, position: 0},
+  {user: {objectId:xxx, username: jill, age: 24}, statisticName: wins, value: 1000, position: 1}
+]
+```
+
+
+#### 获取当前用户排名附近的其他用户
+
+这个方法会返回以当前用户排名为中心的数据。如果你希望水平相当的用户之间发起挑战，那么用这个接口来获取和当前用户水平相当的用户再合适不过。
+
+```js
+示例代码嗷嗷嗷
+```
+其中各参数含义如下：
+
+* statisticName - 排行榜唯一名称
+* maxResultsCount - 最大返回多少数据，默认为 100，可设置范围为 0-1000
+
+示例返回结果
+
+```
+[
+  {user: {objectId:xxx, username: jack, age: 26}, statisticName: wins, value: 1001, position: 0},
+  {user: {objectId:xxx, username: jill, age: 24}, statisticName: wins, value: 1, position: 1}
+]
+```
+
+#### 获取当前用户在榜单中的成绩
+
+
+```js
+示例代码嗷嗷嗷
+```
+其中各参数含义如下：
+
+* statisticNames - 要查询的排行榜，可以一次查询一个，也可以一次查询多个
+
