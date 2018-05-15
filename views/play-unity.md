@@ -303,8 +303,10 @@ Play.CreateRoom(roomConfig);
 1. 所有成员都离开了
 2. 所有成员都掉线，并且都没有重连回来，超过 30 分钟，云端就会认为失效
 
-
 ### 加入房间
+
+加入房间指的是某一位玩家加入到一个已经存在的并且有效的房间内，而加入到一个房间，云端会下发一条通知告知已经在房间里面的玩家：有新玩家加入，具体的事件回调请查看[新玩家加入的事件通知](#新玩家加入的事件通知)。
+
 
 #### 根据 Name 加入
 
@@ -432,6 +434,21 @@ Play.JoinOrCreate(roomConfig);
 如果加入成功则会回调 `OnJoinedRoom`，如果是创建成功，则会先调用 `OnCreatedRoom` 然后再调用 `OnJoinedRoom`。
 
 **适用场景**：两人（或者多人）约定了一个房间名，但是这些人进入游戏的时间不一样，因此所有人都调用 `JoinOrCreate` 并且传入一样的名字，则 SDK 会确保这些人一定会加入到一个相同的房间内。
+
+
+### 新玩家加入的事件通知
+
+A 创建了房间，然后 B 加入进来（不管是随机加入还是匹配加入，还是使用 Name 直接加入），A 都会收到 B 加入到房间的事件通知 `OnNewPlayerJoinedRoom`，具体的实例代码如下：
+
+```cs
+[PlayEvent]
+public override void OnNewPlayerJoinedRoom(Player player)
+{
+    Play.Log(player.UserID);
+}
+```
+
+假设在 B 加入之前，C 先于 B 加入了，C 也会收到 `OnNewPlayerJoinedRoom` 的事件通知。
 
 ## 开始游戏
 
@@ -674,6 +691,16 @@ public override void OnLeftRoom()
 }
 ```
 
+假设在 B 退出房间之前，房间里面有 A B C，总共 3 位玩家，B 调用 `Play.LeaveRoom()` 之后，A 和 C 就会收到 `OnPlayerLeftRoom` 的事件通知：
+
+```cs
+[PlayEvent]
+public override void OnPlayerLeftRoom(Player player)
+{
+    Play.Log("someone left room with user id:", player.UserID);
+}
+```
+
 ## 内置的属性访问器
 
 通过 SDK 开放的属性访问器，可以快捷地读取如下信息：
@@ -719,7 +746,6 @@ var lobby = Play.Lobby;
 var gameVersion = Play.GameVersion;
 ```
 
-
 ## 断线重连
 
 SDK 内置了断线重连的机制，但是 SDK 重连的逻辑如下：
@@ -728,6 +754,8 @@ SDK 内置了断线重连的机制，但是 SDK 重连的逻辑如下：
 2. 尝试重新打开 WebSocket 连接，但是并没有重新加入到原来的房间。
 3. SDK 提供了重新加入房间的接口（参照随后的示例代码），发生掉线之后，开发者需要根据自身的游戏行为来判断是否要主动重新加入到原来的房间，比如某些竞速类的游戏掉线了就可能会被踢出房间。
 4. 调用 `Play.RejoinRoom()` 之后可以通过监听 `OnRejoinRoomFailed` 来判断房间是否失效或者是其他什么原因导致重新加入失败的。
+
+假设房间内已有 A B C ，总共 3 名玩家，然后此时忽然 B 掉线了，在 B 这一端会收到如下的事件通知：
 
 ```cs
 [PlayEvent]
@@ -738,5 +766,17 @@ public override void OnDisconnected()
     Play.RejoinRoom();//从 SDK 中的 Play.Room 读取房间信息
 }
 ```
+
+而在 A 和 C 端会收到如下的事件通知：
+
+```cs
+[PlayEvent]
+public override void OnPlayerDisconnectedRoom(Player player)
+{
+    Play.Log("someone disconnect from room with user id:", player.UserID);
+}
+```
+
+
 
 
