@@ -305,7 +305,7 @@ Play.CreateRoom(roomConfig);
 
 ### 加入房间
 
-当前玩家成功加入到房间后，云端会下发一条通知告知已经在房间里面的其他玩家：有新玩家加入，具体的事件回调请查看[新玩家加入的事件通知](#新玩家加入的事件通知)。
+当前玩家成功加入到房间后，云端会向已经在房间里面的其他玩家下发一条「有新玩家加入」的通知，具体的事件回调请查看 [新玩家加入的事件通知](#新玩家加入的事件通知)。
 
 #### 根据 Name 加入
 
@@ -437,7 +437,7 @@ Play.JoinOrCreate(roomConfig);
 
 ### 新玩家加入的事件通知
 
-A 创建了房间，然后 B 加入进来（不管是随机加入还是匹配加入，还是使用 Name 直接加入），A 都会收到 B 加入到房间的事件通知 `OnNewPlayerJoinedRoom`，具体的实例代码如下：
+A 创建了房间，然后 B 加入进来（不管是随机加入还是匹配加入，还是使用 Name 直接加入），A 都会收到 B 加入到房间的事件通知 `OnNewPlayerJoinedRoom`：
 
 ```cs
 [PlayEvent]
@@ -447,7 +447,7 @@ public override void OnNewPlayerJoinedRoom(Player player)
 }
 ```
 
-假设在 B 加入之前，C 先于 B 加入了，C 也会收到 `OnNewPlayerJoinedRoom` 的事件通知。
+如果 C 先于 B 加入了，C 也会收到 `OnNewPlayerJoinedRoom` 的事件通知。
 
 ## 开始游戏
 
@@ -690,7 +690,7 @@ public override void OnLeftRoom()
 }
 ```
 
-假设在 B 退出房间之前，房间里面有 A B C，总共 3 位玩家，B 调用 `Play.LeaveRoom()` 之后，A 和 C 就会收到 `OnPlayerLeftRoom` 的事件通知：
+假设在 B 退出房间之前，房间里面有 A、B、C 三位玩家，B 调用 `Play.LeaveRoom()` 之后，A 和 C 就会收到 `OnPlayerLeftRoom` 的事件通知：
 
 ```cs
 [PlayEvent]
@@ -754,7 +754,7 @@ SDK 内置了断线重连的机制，但是 SDK 重连的逻辑如下：
 3. SDK 提供了重新加入房间的接口（参照随后的示例代码），发生掉线之后，开发者需要根据自身的游戏行为来判断是否要主动重新加入到原来的房间，比如某些竞速类的游戏掉线了就可能会被踢出房间。
 4. 调用 `Play.RejoinRoom()` 之后可以通过监听 `OnRejoinRoomFailed` 来判断房间是否失效或者是其他什么原因导致重新加入失败的。
 
-假设房间内已有 A B C ，总共 3 名玩家，然后此时忽然 B 掉线了，在 B 这一端会收到如下的事件通知：
+假设房间内已有 A、B、C 三名玩家，然后此时忽然 B 掉线了，在 B 这一端会收到如下的事件通知：
 
 ```cs
 [PlayEvent]
@@ -775,7 +775,3 @@ public override void OnPlayerDisconnectedRoom(Player player)
     Play.Log("someone disconnect from room with user id:", player.UserID);
 }
 ```
-
-
-
-
