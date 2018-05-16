@@ -380,6 +380,12 @@ JavaRequestSignImplementation.instance().setUseMasterKey(true);
 {% block code_hook_message_sent %}
 
 ```java
-
+  @IMHook(type = IMHookType.messageSent)
+  public static Map<String, Object> onMessageSent(Map<String, Object> params) {
+    System.out.println(params);
+    Map<String, Object> result = new HashMap<String, Object>();
+    // ...
+    return result;
+  }
 ```
 {% endblock %}
