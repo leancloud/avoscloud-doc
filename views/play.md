@@ -50,7 +50,7 @@ public override void OnJoinedRoom()
 ```
 
 
-3、如果没有空房间，就会加入失败。此时建立一个房间等待其他人加入，建立房间时：
+3、如果没有空房间，就会加入失败。此时在失败触发的回调中建立一个房间等待其他人加入，建立房间时：
 * 不需要关心房间名称。
 * 默认一个房间内最大人数是 10，可以通过设置 MaxPlayerCount 来限制最大人数。
 
@@ -68,13 +68,13 @@ public override void OnJoinRoomFailed(int errorCode, string reason)
 
 ```
 
-#### 并不很随机的匹配
+#### 自定义房间匹配规则
 
 有的时候我们希望将水平差不多的用户匹配到一起。例如当前玩家 5 级，他只能和 0-10 级的玩家匹配，10 以上的玩家无法被匹配到。这个场景可以通过给房间设置属性来实现，具体实现逻辑如下：
 
-1、确定匹配属性，例如 0-10 级是 level-1, 10 以上是 level-2。
+1、确定匹配属性，例如 0-10 级是 level-1，10 以上是 level-2。
 
-```
+```cs
 int matchLevel = 0;
 if (level < 10) {
   matchLevel = 1;
@@ -85,7 +85,7 @@ if (level < 10) {
 
 2、根据匹配属性加入房间
 
-```
+```cs
 Hashtable matchProp = new Hashtable();
 matchProp.Add("matchLevel", matchLevel);
 Play.JoinRandomRoom(matchProp);
@@ -93,7 +93,7 @@ Play.JoinRandomRoom(matchProp);
 
 3、如果随机加入房间失败，则创建具有匹配属性的房间等待其他同水平的人加入。
 
-```
+```cs
 [PlayEvent]
 public void OnRandomJoinRoomFailed() {
   PlayRoom.RoomConfig config = new PlayRoom.RoomConfig() {
@@ -126,7 +126,7 @@ Play.CreateRoom(config, roomName);
 
 3、PlayerB 根据房间名称加入到房间中。
 
-```
+```cs
 Play.JoinRoom(roomName);
 ```
 
@@ -141,7 +141,7 @@ Play.JoinRandomRoom(expectedUsers: new string[] { "playerA", "playerB" });
 
 2、如果有足够空位的房间，加入成功。
 
-```
+```cs
 [PlayEvent]
 public override void OnJoinedRoom()
 {
