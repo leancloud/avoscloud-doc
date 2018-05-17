@@ -41,7 +41,7 @@ Play.JoinRandomRoom();
 
 2、在顺利情况下，会进入某个有空位的房间开始游戏。
 
-```
+```cs
 [PlayEvent]
 public override void OnJoinedRoom()
 {
