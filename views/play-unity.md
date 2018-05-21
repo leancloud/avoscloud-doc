@@ -71,15 +71,6 @@ namespace PlayDocSample
     /// </summary>
     public class SampleConnect : PlayMonoBehaviour
     {
-
-        /// <summary>
-        /// 并且一定要定无参数的构造函数，而且一定要调用父类的构造函数
-        /// </summary>
-        public SampleConnect() : base()
-        {
-
-        }
-
         void start()
         {
             // 打开调试日志
@@ -91,20 +82,36 @@ namespace PlayDocSample
             // 如果成功则会回调 OnAuthenticated
         }
 
-
         [PlayEvent]
         public override void OnAuthenticated()
         {
             Play.Log("OnAuthenticated");
         }
+
+        protected override void Awake()
+        {
+            base.Awake();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
     }
 }
 ```
 
-### 重要的步骤
+### 重要的注意事项
 
-在上面的例子中可以看见，代码声明了一个 `ConnectSample` 类，它继承自 `PlayMonoBehaviour`，并要包含一个无参的构造函数，且构造函数需要调用父类的构造函数 `base()`，最后要为所有的事件回调加上 `[PlayEvent]` 属性标记，这些都是**必须的**。后面的示例代码都会如此，开发者的代码也需要遵守这一约定，少了一项，事件回调就不会生效。
+在上面的例子中可以看见，代码声明了一个 `ConnectSample` 类，它继承自 `PlayMonoBehaviour`，所有的事件回调都加上了 `[PlayEvent]` 属性标记，这些都是**必须的**。后面的示例代码都会如此，开发者的代码也需要遵守这一约定，少了一项，事件回调就不会生效。
 
+因此任何一个使用 Play 进行游戏开发的 `PlayMonoBehaviour` 子类必须满足如下条件：
+
+1. 继承自 `PlayMonoBehaviour`
+2. 事件回调必须带有 `[PlayEvent]` 标记
+3. 如果需要重写(new)或者覆盖(override) `Awake` 和 `OnDestroy` 方法的时候，必须调用父类的方法 `base.Awake()` 或者 `base.OnDestroy`
+
+上述第 3 条**尤其重要**。
 
 ## 房间匹配
 
@@ -128,14 +135,6 @@ namespace TestUnit.NetFx46.Docs
 
     public class SampleCreateRoom : PlayMonoBehaviour
     {
-        /// <summary>
-        /// 一定要有无参数的构造函数，而且一定要调用父类的构造函数
-        /// </summary>
-        public SampleCreateRoom() : base()
-        {
-
-        }
-
         void start()
         {
             // 打开调试日志
@@ -312,14 +311,6 @@ Play.CreateRoom(roomConfig);
 ```cs
 public class SampleJoinRoom : PlayMonoBehaviour
 {
-    /// <summary>
-    /// 并且一定要定无参数的构造函数，而且一定要调用父类的构造函数
-    /// </summary>
-    public SampleJoinRoom() : base()
-    {
-
-    }
-
     void start()
     {
         // 打开调试日志
