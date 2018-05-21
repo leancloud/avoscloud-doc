@@ -109,9 +109,7 @@ namespace PlayDocSample
 
 1. 继承自 `PlayMonoBehaviour`
 2. 事件回调必须带有 `[PlayEvent]` 标记
-3. 如果需要重写(new)或者覆盖(override) `Awake` 和 `OnDestroy` 方法的时候，必须调用父类的方法 `base.Awake()` 或者 `base.OnDestroy`
-
-上述第 3 条**尤其重要**。
+3. 尤其重要的是，**如果需要 new（重写）或者 override（覆盖）`Awake` 和 `OnDestroy` 方法的时候，必须调用父类的方法 `base.Awake()` 或者 `base.OnDestroy`**。
 
 ## 房间匹配
 
