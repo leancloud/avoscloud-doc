@@ -241,6 +241,19 @@ roomConfig.MaxPlayerCount = 6;
 Play.CreateRoom(roomConfig);
 ```
 
+#### 玩家掉线之后被保留的时间
+
+默认情况下，玩家在掉线之后，会**立即离开房间**，可以通过设置这个保留时间，来避免玩家一掉线就默认被踢出房间，比如如下代码指定玩家掉线之后的保留时间是 10 分钟：
+
+```cs
+var roomConfig = PlayRoom.RoomConfig.Default;
+// 单位是秒
+roomConfig.PlayerTimeToKeep = 600;// 设置成 600 秒，也就是 10 分钟
+
+Play.CreateRoom(roomConfig);
+```
+最高只允许设置成 30 分钟，也就是 1800 秒。
+
 ### 设置房间的自定义属性
 
 房间的自定义属性指的是一些 key-value 的键值对，在创建成功之后，云端也会保留一份拷贝（注意这里不是持久化存储，当该房间失效之后所有的自定义属性都会被销毁）。
