@@ -1245,7 +1245,9 @@ update | 保存一个已经存在并且被修改的对象
 查询数据时，SDK 默认不会返回对象的 ACL 值。如果想在获取对象的同时返回对象的 ACL 值，需要同时满足下面两个条件：
 
 1. 进入 [控制台 > 存储 > 设置 > 其他](/dashboard/storage.html?appid={{appid}}#/storage/conf)，勾选「查询时返回值包括 ACL」才可以在查询结果中获取到 ACL 的数据。
-2. 客户端查询对象时需要额外 `includeACL`，代码如下：
+2. 客户端查询对象时需要指定 `includeACL`。
+
+代码如下：
 
 ```objc
 AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
