@@ -14,10 +14,8 @@ Play 是专门针对多人在线对战游戏推出的后端服务。开发者不
 - 沿用了 LeanCloud 现有的可横向扩展的架构，支持动态扩容，从容应对海量并发。
 - 在久经考验的底层架构上进行了深度优化与改进，可以稳定承接每秒亿级的消息下发量。
 
-
 ## 游戏核心流程
 这里给出简单的示例代码使您更快地了解到整体流程，详细的开发指南请参考 [Play SDK for Unity（C#）开发指南](play-unity.html)。
-
 
 ### 连接服务器
 
@@ -54,7 +52,7 @@ public override void OnJoinedRoom()
 3、如果没有空房间，就会加入失败。此时在失败触发的回调中建立一个房间等待其他人加入，建立房间时：
 * 不需要关心房间名称。
 * 默认一个房间内最大人数是 10，可以通过设置 MaxPlayerCount 来限制最大人数。
-* 设置[玩家掉线后的保留时间](play-unity.html#玩家掉线之后被保留的时间)，避免玩家掉线后立刻被踢出房间，服务端在保留时间内不会匹配其他玩家进入房间
+* 设置[玩家掉线后的保留时间](play-unity.html#玩家掉线之后被保留的时间)，在有效时间内如果该玩家加回房间，房间内依然保留该玩家的自定义属性。
 
 ```cs
 // 加入失败时，这个回调会被触发
@@ -64,8 +62,8 @@ public override void OnJoinRoomFailed(int errorCode, string reason)
   var roomConfig = PlayRoom.RoomConfig.Default;
   // 设置最大人数，当房间满员时，服务端不会再匹配新的玩家进来。
   roomConfig.MaxPlayerCount = 4;
-  //设置玩家掉线后的保留时间为 600 秒
-  roomConfig.PlayerTimeToKeep = 600;
+  //设置玩家掉线后的保留时间为 120 秒
+  roomConfig.PlayerTimeToKeep = 120;
   // 创建房间
   Play.CreateRoom(roomConfig);
 }
@@ -106,8 +104,10 @@ public void OnRandomJoinRoomFailed() {
     LobbyMatchKeys = new string[] { "matchLevel" }
   };
 
-  //设置玩家掉线后的保留时间为 600 秒
-  roomConfig.PlayerTimeToKeep = 600; 
+  // 设置最大人数，当房间满员时，服务端不会再匹配新的玩家进来。
+  roomConfig.MaxPlayerCount = 4;
+  //设置玩家掉线后的保留时间为 120 秒
+  roomConfig.PlayerTimeToKeep = 120; 
   Play.CreateRoom(config);
 }
 ```
@@ -179,7 +179,7 @@ public void OnRandomJoinRoomFailed() {
 
 #### 开始游戏
 
-游戏开始前，我们建议每个玩家有一个准备状态，当所有玩家准备完毕后，MasterClient 开始游戏。
+游戏开始前，我们建议每个玩家有一个准备状态，当所有玩家准备完毕后，MasterClient 开始游戏。开始游戏前需要将房间设置为不可见，防止游戏期间有其他玩家被匹配进来。
 
 Player A 通过设置自定义属性的方式设置准备状态
 
@@ -196,17 +196,20 @@ Play.Player.CustomProperties = prop;
 [PlayEvent]
 public override void OnPlayerCustomPropertiesChanged(Player player, Hashtable updatedProperties)
 {
+  // MasterClient 才会执行这个运算
   if (Play.Player.IsMasterClient)
   {
     // 检查是否所有玩家都准备好了，如果都准备好了就开始游戏
     if (readyPlayersCount > 1 && readyPlayersCount == Play.Players.Count()) 
     {
+      // 设置房间不可见，避免其他玩家被匹配进来
+      Play.Room.SetVisible(false);
+      // 开始游戏
       start();
     } 
   }
 }
 ```
-
 
 #### 游戏中发送消息
 游戏中的大部分消息都发给 [MasterClient](play-unity.html#MasterClient)，由 MasterClient 运算后再判定下一步操作。
