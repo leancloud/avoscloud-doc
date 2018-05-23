@@ -52,7 +52,7 @@ public override void OnJoinedRoom()
 3、如果没有空房间，就会加入失败。此时在失败触发的回调中建立一个房间等待其他人加入，建立房间时：
 * 不需要关心房间名称。
 * 默认一个房间内最大人数是 10，可以通过设置 MaxPlayerCount 来限制最大人数。
-* 设置[玩家掉线后的保留时间](play-unity.html#玩家掉线之后被保留的时间)，在有效时间内如果该玩家加回房间，房间内依然保留该玩家的自定义属性。
+* 设置 [玩家掉线后的保留时间](play-unity.html#玩家掉线之后被保留的时间)，在有效时间内如果该玩家加回房间，房间内依然保留该玩家的自定义属性。
 
 
 ```cs
@@ -63,7 +63,7 @@ public override void OnJoinRoomFailed(int errorCode, string reason)
   var roomConfig = PlayRoom.RoomConfig.Default;
   // 设置最大人数，当房间满员时，服务端不会再匹配新的玩家进来。
   roomConfig.MaxPlayerCount = 4;
-  //设置玩家掉线后的保留时间为 120 秒
+  // 设置玩家掉线后的保留时间为 120 秒
   roomConfig.PlayerTimeToKeep = 120;
   // 创建房间
   Play.CreateRoom(roomConfig);
@@ -106,7 +106,7 @@ public void OnRandomJoinRoomFailed() {
 
   // 设置最大人数，当房间满员时，服务端不会再匹配新的玩家进来。
   roomConfig.MaxPlayerCount = 4;
-  //设置玩家掉线后的保留时间为 120 秒
+  // 设置玩家掉线后的保留时间为 120 秒
   roomConfig.PlayerTimeToKeep = 120; 
   Play.CreateRoom(config);
 }
@@ -178,7 +178,7 @@ public void OnRandomJoinRoomFailed() {
 
 #### 开始游戏
 
-游戏开始前，我们建议每个玩家有一个准备状态，当所有玩家准备完毕后，MasterClient 开始游戏。开始游戏前需要将房间设置为不可见，防止游戏期间有其他玩家被匹配进来。
+游戏开始前，我们建议为每个玩家有一个准备状态，当所有玩家准备完毕后，MasterClient 开始游戏。开始游戏前需要将房间设置为不可见，防止游戏期间有其他玩家被匹配进来。
 
 Player A 通过设置自定义属性的方式设置准备状态：
 
