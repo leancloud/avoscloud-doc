@@ -14,6 +14,7 @@ Play 是专门针对多人在线对战游戏推出的后端服务。开发者不
 - 沿用了 LeanCloud 现有的可横向扩展的架构，支持动态扩容，从容应对海量并发。
 - 在久经考验的底层架构上进行了深度优化与改进，可以稳定承接每秒亿级的消息下发量。
 
+
 ## 游戏核心流程
 这里给出简单的示例代码使您更快地了解到整体流程，详细的开发指南请参考 [Play SDK for Unity（C#）开发指南](play-unity.html)。
 
@@ -53,6 +54,7 @@ public override void OnJoinedRoom()
 3、如果没有空房间，就会加入失败。此时在失败触发的回调中建立一个房间等待其他人加入，建立房间时：
 * 不需要关心房间名称。
 * 默认一个房间内最大人数是 10，可以通过设置 MaxPlayerCount 来限制最大人数。
+* 设置[玩家掉线后的保留时间](play-unity.html#玩家掉线之后被保留的时间)，避免玩家掉线后立刻被踢出房间，服务端在保留时间内不会匹配其他玩家进入房间
 
 ```cs
 // 加入失败时，这个回调会被触发
@@ -60,8 +62,10 @@ public override void OnJoinedRoom()
 public override void OnJoinRoomFailed(int errorCode, string reason)
 {
   var roomConfig = PlayRoom.RoomConfig.Default;
-  // 设置最大人数，当房间满员时，服务端不会再匹配新的用户进来。
+  // 设置最大人数，当房间满员时，服务端不会再匹配新的玩家进来。
   roomConfig.MaxPlayerCount = 4;
+  //设置玩家掉线后的保留时间为 600 秒
+  roomConfig.PlayerTimeToKeep = 600;
   // 创建房间
   Play.CreateRoom(roomConfig);
 }
@@ -70,7 +74,7 @@ public override void OnJoinRoomFailed(int errorCode, string reason)
 
 #### 自定义房间匹配规则
 
-有的时候我们希望将水平差不多的用户匹配到一起。例如当前玩家 5 级，他只能和 0-10 级的玩家匹配，10 以上的玩家无法被匹配到。这个场景可以通过给房间设置属性来实现，具体实现逻辑如下：
+有的时候我们希望将水平差不多的玩家匹配到一起。例如当前玩家 5 级，他只能和 0-10 级的玩家匹配，10 以上的玩家无法被匹配到。这个场景可以通过给房间设置属性来实现，具体实现逻辑如下：
 
 1、确定匹配属性，例如 0-10 级是 level-1，10 以上是 level-2。
 
@@ -96,10 +100,14 @@ Play.JoinRandomRoom(matchProp);
 ```cs
 [PlayEvent]
 public void OnRandomJoinRoomFailed() {
+  // 设置匹配属性
   PlayRoom.RoomConfig config = new PlayRoom.RoomConfig() {
     CustomRoomProperties = matchProp
     LobbyMatchKeys = new string[] { "matchLevel" }
   };
+
+  //设置玩家掉线后的保留时间为 600 秒
+  roomConfig.PlayerTimeToKeep = 600; 
   Play.CreateRoom(config);
 }
 ```
@@ -160,8 +168,48 @@ public void OnRandomJoinRoomFailed() {
 
 更多匹配接口请参考文档 [房间匹配](play-unity.html#房间匹配)。
 
-### 游戏内发送消息
-Play 中使用 MasterClient 在客户端担任运算主机的概念。 游戏中的大部分消息都发给 MasterClient，由 MasterClient 运算后再判定下一步操作。
+
+### 游戏中
+
+#### 相关概念
+
+* **MasterClient**：Play 中使用 [MasterClient](play-unity.html#MasterClient) 在客户端担任运算主机，由 MasterClient 来控制游戏逻辑，例如游戏开始/结束/判定下一轮由谁操作/扣除玩家多少金币等等。
+* **自定义属性**：自定义属性又分为[房间自定义属性](play-unity.html#房间自定义属性)和[玩家自定义属性](play-unity.html#玩家自定义属性)。我们建议将游戏数据加入到自定义属性中，例如房间的当前地图、下注总金币、每个人的手牌等数据，这样当 MasterClient 转移时新的 MasterClient 可以拿到当前游戏的最新数据继续进行运算。
+
+
+#### 开始游戏
+
+游戏开始前，我们建议每个玩家有一个准备状态，当所有玩家准备完毕后，MasterClient 开始游戏。
+
+Player A 通过设置自定义属性的方式设置准备状态
+
+```cs
+// 玩家设置准备状态
+Hashtable prop = new Hashtable();
+prop.Add("ready", true);
+Play.Player.CustomProperties = prop;
+```
+
+所有玩家（包括 PlayerA）都会收到事件回调通知
+
+```cs
+[PlayEvent]
+public override void OnPlayerCustomPropertiesChanged(Player player, Hashtable updatedProperties)
+{
+  if (Play.Player.IsMasterClient)
+  {
+    // 检查是否所有玩家都准备好了，如果都准备好了就开始游戏
+    if (readyPlayersCount > 1 && readyPlayersCount == Play.Players.Count()) 
+    {
+      start();
+    } 
+  }
+}
+```
+
+
+#### 游戏中发送消息
+游戏中的大部分消息都发给 [MasterClient](play-unity.html#MasterClient)，由 MasterClient 运算后再判定下一步操作。
 假设有下面的场景：
 玩家 A 跟牌完成后，告诉 MasterClient 跟牌完成，MasterClient 收到消息后通知所有人当前需要下一个玩家 B 操作。
 
@@ -178,7 +226,7 @@ Play 中使用 MasterClient 在客户端担任运算主机的概念。 游戏中
 Play.RPC("rpcFollow", PlayRPCTargets.MasterClient, Play.Player.ActorID);
 ```
 
-2、 MasterClient 中的 `rpcFollow` 会触发。MasterClient 在 `rpcFollow` 中计算出下一位操作的用户是 PlayerB，然后使用`Play.RPC` 接口指定调用 `rpcNext` 方法，通知所有玩家当前需要 PlayerB 操作。
+2、 MasterClient 中的 `rpcFollow` 会触发。MasterClient 在 `rpcFollow` 中计算出下一位操作的玩家是 PlayerB，然后使用`Play.RPC` 接口指定调用 `rpcNext` 方法，通知所有玩家当前需要 PlayerB 操作。
 
 ```cs
 // 提前定义的名为 rpcFollow 方法，此时这个方法被自动触发。
@@ -199,14 +247,18 @@ public void rpcFollow(int playerId)
 [PlayRPC]
 public void rpcNext(int playerId) 
 {
-  // 告诉所有用户当前需要 playerId 操作。
+  // 告诉所有玩家当前需要 playerId 操作。
   Debug.Log("Next Player: " + playerId);
 }
 ```
 
-更详细的用法及介绍，请参考 [masterClient](play-unity.html#MasterClient) 及 [远程调用函数 - RPC](play-unity.html#远程调用函数-RPC)
+更详细的用法及介绍，请参考[远程调用函数 - RPC](play-unity.html#远程调用函数-RPC)
 
-### 退出房间
+#### 游戏中断线重连
+请参考[断线重连](play-unity.html#断线重连)。请注意：MasterClient 断线后会重新挑选其他成员成为新的 MasterClient，原来的 MasterClient 重连后会成为一名普通成员。
+
+
+#### 退出房间
 
 ```cs
 Play.LeaveRoom();
