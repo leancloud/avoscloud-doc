@@ -54,6 +54,7 @@ public override void OnJoinedRoom()
 * 默认一个房间内最大人数是 10，可以通过设置 MaxPlayerCount 来限制最大人数。
 * 设置[玩家掉线后的保留时间](play-unity.html#玩家掉线之后被保留的时间)，在有效时间内如果该玩家加回房间，房间内依然保留该玩家的自定义属性。
 
+
 ```cs
 // 加入失败时，这个回调会被触发
 [PlayEvent]
@@ -67,7 +68,6 @@ public override void OnJoinRoomFailed(int errorCode, string reason)
   // 创建房间
   Play.CreateRoom(roomConfig);
 }
-
 ```
 
 #### 自定义房间匹配规则
@@ -173,15 +173,14 @@ public void OnRandomJoinRoomFailed() {
 
 #### 相关概念
 
-* **MasterClient**：Play 中使用 [MasterClient](play-unity.html#MasterClient) 在客户端担任运算主机，由 MasterClient 来控制游戏逻辑，例如游戏开始/结束/判定下一轮由谁操作/扣除玩家多少金币等等。
-* **自定义属性**：自定义属性又分为[房间自定义属性](play-unity.html#房间自定义属性)和[玩家自定义属性](play-unity.html#玩家自定义属性)。我们建议将游戏数据加入到自定义属性中，例如房间的当前地图、下注总金币、每个人的手牌等数据，这样当 MasterClient 转移时新的 MasterClient 可以拿到当前游戏的最新数据继续进行运算。
-
+* **MasterClient**：Play 中使用 [MasterClient](play-unity.html#MasterClient) 在客户端担任运算主机，由 MasterClient 来控制游戏逻辑，例如判定游戏开始还是结束、下一轮由谁操作、扣除玩家多少金币等等。
+* **自定义属性**：自定义属性又分为 [房间自定义属性](play-unity.html#房间自定义属性) 和 [玩家自定义属性](play-unity.html#玩家自定义属性)。我们建议将游戏数据加入到自定义属性中，例如房间的当前地图、下注总金币、每个人的手牌等数据，这样当 MasterClient 转移时新的 MasterClient 可以拿到当前游戏的最新数据继续进行运算。
 
 #### 开始游戏
 
 游戏开始前，我们建议每个玩家有一个准备状态，当所有玩家准备完毕后，MasterClient 开始游戏。开始游戏前需要将房间设置为不可见，防止游戏期间有其他玩家被匹配进来。
 
-Player A 通过设置自定义属性的方式设置准备状态
+Player A 通过设置自定义属性的方式设置准备状态：
 
 ```cs
 // 玩家设置准备状态
@@ -190,7 +189,7 @@ prop.Add("ready", true);
 Play.Player.CustomProperties = prop;
 ```
 
-所有玩家（包括 PlayerA）都会收到事件回调通知
+所有玩家（包括 PlayerA）都会收到事件回调通知：
 
 ```cs
 [PlayEvent]
@@ -212,14 +211,11 @@ public override void OnPlayerCustomPropertiesChanged(Player player, Hashtable up
 ```
 
 #### 游戏中发送消息
-游戏中的大部分消息都发给 [MasterClient](play-unity.html#MasterClient)，由 MasterClient 运算后再判定下一步操作。
-假设有下面的场景：
-玩家 A 跟牌完成后，告诉 MasterClient 跟牌完成，MasterClient 收到消息后通知所有人当前需要下一个玩家 B 操作。
+游戏中的大部分消息都发给 [MasterClient](play-unity.html#MasterClient)，由 MasterClient 运算后再判定下一步操作。假设有这样一个场景：玩家 A 跟牌完成后，告诉 MasterClient 跟牌完成，MasterClient 收到消息后通知所有人当前需要下一个玩家 B 操作。
 
 客户端需要提前定义以下两个 RPC 方法，示例代码请见下方流程中的代码：
-* 接收跟牌完成的消息：rpcFollow。
-* 接收需要某个玩家操作的消息：rpcNext。
-
+* 调用 `rpcFollow` 方法来接收跟牌完成的消息
+* 调用 `rpcNext` 方法来接收需要某个玩家操作的消息
 
 具体发消息流程如下：
 
@@ -229,7 +225,7 @@ public override void OnPlayerCustomPropertiesChanged(Player player, Hashtable up
 Play.RPC("rpcFollow", PlayRPCTargets.MasterClient, Play.Player.ActorID);
 ```
 
-2、 MasterClient 中的 `rpcFollow` 会触发。MasterClient 在 `rpcFollow` 中计算出下一位操作的玩家是 PlayerB，然后使用`Play.RPC` 接口指定调用 `rpcNext` 方法，通知所有玩家当前需要 PlayerB 操作。
+2、 MasterClient 中的 `rpcFollow` 会触发。MasterClient 在 `rpcFollow` 中计算出下一位操作的玩家是 PlayerB，然后使用 `Play.RPC` 接口指定调用 `rpcNext` 方法，通知所有玩家当前需要 PlayerB 操作。
 
 ```cs
 // 提前定义的名为 rpcFollow 方法，此时这个方法被自动触发。
@@ -255,10 +251,10 @@ public void rpcNext(int playerId)
 }
 ```
 
-更详细的用法及介绍，请参考[远程调用函数 - RPC](play-unity.html#远程调用函数-RPC)
+更详细的用法及介绍，请参考 [远程调用函数 - RPC](play-unity.html#远程调用函数-RPC)。
 
 #### 游戏中断线重连
-请参考[断线重连](play-unity.html#断线重连)。请注意：MasterClient 断线后会重新挑选其他成员成为新的 MasterClient，原来的 MasterClient 重连后会成为一名普通成员。
+MasterClient 断线后会重新挑选其他成员成为新的 MasterClient，原来的 MasterClient 重连后会成为一名普通成员。具体请参考 [断线重连](play-unity.html#断线重连)。
 
 
 #### 退出房间
