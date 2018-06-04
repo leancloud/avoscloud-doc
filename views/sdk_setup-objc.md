@@ -166,15 +166,6 @@ user.password =  @"cat!@#123";
 }];
 ```
 
-服务器返回的错误信息一般来说是 JSON 格式，如下：
-
-```
-com.leancloud.restapi.response.error = {
-     code = 202;
-     error = "Username has already been taken.";
-}
-```
-
 ## 社交组件
 
 如果需要使用社交组件功能，可以使用我们的开源组件：[leancloud-social-ios](https://github.com/leancloud/leancloud-social-ios)。
