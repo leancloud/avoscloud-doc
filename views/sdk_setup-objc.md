@@ -138,28 +138,41 @@ AVObject *testObject = [AVObject objectWithClassName:@"TestObject"];
 
 ## 查看服务器返回的错误
 
-某个请求出错，SDK 会返回错误信息。可以使用 kLeanCloudRESTAPIResponseError 来获取服务器返回的错误信息。例如 User 表中已经存在一个叫 Tom 的用户，再次注册用户名为 Tom 会报错「用户已经存在」。
+某个请求出错，SDK 会返回对应的错误信息。错误信息格式如下表：
+ 
+ 参数 | 含义 | 说明 | 
+--- | --- | --- 
+**error.code** | 错误码 | [错误码详解](error_code.html)
+**error.domain** | 错误域名 |  只有当 `error.domain` = `kLeanCloudErrorDomain` 时，才是 LeanCloud 返回的错误
+**error.localizedFailureReason** | 错误信息 | 错误信息详情
+**error.userInfo** | 其它信息 | 历史版本的兼容信息等
+
+例如 User 表中已经存在一个叫 Tom 的用户，再次注册用户名为 Tom 会报错「用户已经存在」。代码示例：
 
 ```
- AVUser *user = [AVUser user];
-    user.username = @"Tom";
-    user.password =  @"cat!@#123";
-    [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+AVUser *user = [AVUser user];
+user.username = @"Tom";
+user.password =  @"cat!@#123";
+[user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
 
-    	// 获取 RESTAPI 返回的错误信息详情
-        if (error) {
-          id responseError = error.userInfo[kLeanCloudRESTAPIResponseError];
-        }
- }];
+   // 获取 RESTAPI 返回的错误信息详情（SDK 11.0.0 及以上的版本适用）
+    if ([error.domain isEqualToString:kLeanCloudErrorDomain] && error.code == 202) {
+    
+    	NSString *errorMessage = error.localizedFailureReason;
+    	if (errorMessage) {
+        // handle error message
+    }
+}
+}];
 ```
 
 服务器返回的错误信息一般来说是 JSON 格式，如下：
 
 ```
-responseError = {
-        code = 202;
-        error = "Username has already been taken.";
-    }
+com.leancloud.restapi.response.error = {
+     code = 202;
+     error = "Username has already been taken.";
+}
 ```
 
 ## 社交组件
