@@ -138,18 +138,16 @@ AVObject *testObject = [AVObject objectWithClassName:@"TestObject"];
 
 ## 查看服务器返回的错误
 
-某个请求出错，SDK 会返回对应的错误信息。错误信息格式如下表：
+某个请求出错，SDK 会返回对应的错误信息。错误信息格式如下：
  
- 参数 | 含义 | 说明 | 
---- | --- | --- 
-**error.code** | 错误码 | [错误码详解](error_code.html)
-**error.domain** | 错误域名 |  只有当 `error.domain` = `kLeanCloudErrorDomain` 时，才是 LeanCloud 返回的错误
-**error.localizedFailureReason** | 错误信息 | 错误信息详情
-**error.userInfo** | 其它信息 | 历史版本的兼容信息等
+- **error.code**：错误码，详见 [文档](error_code.html)。
+- **error.domain**：错误域名，只有当 `error.domain` = `kLeanCloudErrorDomain` 时，才是 LeanCloud 返回的错误。
+- **error.localizedFailureReason**：错误信息详情
+- **error.userInfo**：其他信息，如历史版本的兼容信息等。
 
-例如 User 表中已经存在一个叫 Tom 的用户，再次注册用户名为 Tom 会报错「用户已经存在」。代码示例：
+例如 User 表中已经存在一个叫 Tom 的用户，再次注册用户名为 Tom 会报错「用户已经存在」，示例代码如下：
 
-```
+```objc
 AVUser *user = [AVUser user];
 user.username = @"Tom";
 user.password =  @"cat!@#123";
