@@ -131,6 +131,19 @@ AVObject 保存到 LeanCloud 云端之后，如何再次获取到它们呢？这
 
 LeanCloud 平台用「AVFile」来表示文件。要存储一个文件到 LeanCloud 云端，调用过程非常简单。
 
+### 启用 HTTPS 域名
+在 [控制台 > 存储 > 设置 > 文件](/dashboard/storage.html?appid={{appid}}#/storage/conf)，勾选「启用 https 域名」，这样便启用了文件 SSL 域名，支持 HTTPS 访问。启用文件 HTTPS 域名流量费用为 0.36 元/GB。如图所示：
+
+![File SSL Config](images/ios_file_ssl_config.png)
+
+如果启用文件 SSL 域名前已经保存了许多文件，启用之后，这些文件的 URL 也会跟着变化，来支持 HTTPS 访问。
+
+需要注意的是，「启用 https 域名」这个选项，会影响到 API 返回的文件地址是 HTTPS 还是 HTTP 类型的 URL，即使没有启用，终端也是可以选择访问 HTTPS，也会产生 HTTPS 流量扣费。
+
+### 自定义文件域名
+
+为了规避文件 URL 变更的风险，可以为应用绑定自定义文件域名。在 [控制台 > 存储 > 设置 > 文件 ](/dashboard/storage.html?appid={{appid}}#/storage/conf) 目录下点击「绑定」按钮，按照提示步骤绑定即可。
+
 ## 用户对象 AVUser
 
 几乎所有的应用都会用户的概念。例如手机号注册用户、邮箱注册、手机验证码登录、手机号一键登录等等，这些都是与用户相关的常见功能，开发者可以通过 AVUser 对象来快速实现它们。
