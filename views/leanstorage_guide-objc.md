@@ -642,7 +642,7 @@ iOS 9 默认屏蔽了 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了文
 
 #### 启用文件 SSL 域名
 
-另外一种方法是在进入 [控制台 > 存储 > 设置 > 文件](/dashboard/storage.html?appid={{appid}}#/storage/conf)，勾选「启用 https 域名」，这样便启用了文件 SSL 域名，支持 HTTPS 访问。启用文件 https 域名流量费用为 0.36 元/GB。如图所示：
+另外一种方法是在进入 [控制台 > 存储 > 设置 > 文件](/dashboard/storage.html?appid={{appid}}#/storage/conf)，勾选「启用 https 域名」，这样便启用了文件 SSL 域名，支持 HTTPS 访问。如图所示：
 
 ![File SSL Config](images/ios_file_ssl_config.png)
 
