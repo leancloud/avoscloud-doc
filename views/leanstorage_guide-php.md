@@ -37,7 +37,7 @@
 {# --Start--主模板留空的代码段落，子模板根据自身实际功能给予实现 #}
 
 {% block text_object_extra %}
-{{ docs.note("在 PHP SDK 0.4 - 0.8 之间的版本中，表示对象的类名为 `Object` 而不是 `LeanObject`，详见「[Object 更名 LeanObject](#Object_更名_LeanObject)」") }}
+{{ docs.note("在 PHP SDK 0.4 - 0.8 之间的版本中，表示对象的类名为 `Object` 而不是 `LeanObject`，详见 [Object 更名为 LeanObject](#Object_更名为_LeanObject)。") }}
 {% endblock %}
 
 {% block code_create_todo_object %}
@@ -1168,8 +1168,8 @@ $query->find();
 
 {% block object_extra %}
 
-### Object 更名 LeanObject
-在 PHP 7.2 中，PHP 将 `object` 规定为了保留关键字，不允许用作类名，因此我们在 PHP SDK 0.8 版本中，将 `Object` 类更名为了 `LeanObject` 以兼容 PHP 7.2。
+### Object 更名为 LeanObject
+PHP 7.2 将 `object` 规定为保留关键字，不允许用作类名，因此我们在 PHP SDK 0.8 版本中将 `Object` 类更名为 `LeanObject` 以兼容 PHP 7.2。
 
-当 SDK 运行在 PHP 7.2 以下版本时，会为 `LeanObject` 创建一个别名，继续支持之前使用 `Object` 类的代码，这两个名字实际上指向同一个类，两个类名也可以混用。我们会在 PHP 7.2 以下继续支持 `Object` 一段时间，希望开发者尽快将代码中的 `Object` 改为 `LeanObject`。
+当 SDK 运行在 PHP 7.2 以下版本时，会为 `LeanObject` 创建一个别名，继续支持之前使用 `Object` 类的代码，这两个名字实际上指向同一个类，两个类名也可以混用。将来我们会废弃在 PHP 7.2 以下版本中对 `Object` 的支持，建议开发者尽早将代码中的 `Object` 改为 `LeanObject`。
 {% endblock %}
