@@ -1,4 +1,5 @@
 {% import "views/_data.njk" as data %}
+{% import "views/_helper.njk" as docs %}
 # 数据存储服务总览
 
 感谢你选用 LeanCloud 数据存储服务。你可以通过使用我们提供的 SDK，一行后端代码都不用写，而快速完成一个产品（网站或应用）的开发和发布。
@@ -130,6 +131,24 @@ AVObject 保存到 LeanCloud 云端之后，如何再次获取到它们呢？这
 除了应用内数据存储之外，LeanCloud 云端也支持「文件」类数据的存储。这里的「文件」指的是图片、音乐、视频等常见的文件类型，以及其他任何二进制数据。因为 AVObject 有大小限制，所以超过 **128 KB** 的数据不能直接存储到 AVObject 里面；而且，更重要的是，对于图片、音乐、视频类数据，因为他们的体积太大，为了终端用户有快捷的下载体验，都需要额外的 CDN 加速服务，这时候，就需要使用特别的类型「文件」来存储。
 
 LeanCloud 平台用「AVFile」来表示文件。要存储一个文件到 LeanCloud 云端，调用过程非常简单。
+
+### 启用 HTTPS 域名
+
+在 [控制台 > 存储 > 设置 > 文件](/dashboard/storage.html?appid={{appid}}#/storage/conf)，勾选「启用 https 域名」，这样便启用了文件 SSL 域名，支持 HTTPS 访问。如图所示：
+
+![File SSL Config](images/ios_file_ssl_config.png)
+
+如果启用文件 SSL 域名前已经保存了许多文件，启用之后，这些文件的 URL 也会跟着变化，来支持 HTTPS 访问。如果取消 HTTPS 域名，已经改为 HTTPS 域名的文件不会变回到 HTTP。
+
+HTTPS 文件流量无免费额度，价格亦略有不同，具体收费请参考控制台说明。
+
+{{ docs.note("需要注意的是，「启用 https 域名」这个选项，会影响到 API 返回的文件地址是 HTTPS 还是 HTTP 类型的 URL，即使没有启用，终端也是可以选择访问 HTTPS，也会产生 HTTPS 流量扣费。") }}
+
+### 自定义文件域名
+
+LeanCloud 文件存储服务默认提供公用的二级域名，来满足开发者及其用户对文件的便捷访问。随着云端文件数量的迅速增长，文件种类和内容变得混杂且难以掌控，如此便徒增了 LeanCloud 公用域名被封禁的风险（如文件内容涉黄或其他违反国家法律法规等情况）。
+
+为了规避文件 URL 不可用的风险，可以为应用绑定自定义文件域名。在 [控制台 > 存储 > 设置 > 文件 ](/dashboard/storage.html?appid={{appid}}#/storage/conf) 目录下点击「绑定」按钮，按照提示步骤绑定即可。
 
 ## 用户对象 AVUser
 
