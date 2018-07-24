@@ -457,3 +457,11 @@ Play.LeaveRoom();
 * [快速入门](play-quick-start-unity.html)：快速接入 Play 并运行一个小 Demo
 * [Play 开发指南 · Unity（C#）](play-unity.html)：对 Play 所有功能及接口的详细介绍。
 * [实现小游戏「炸金花」](play-unity-demo.html)
+
+## 价格及试用
+
+Play 的核心计费单位为 CCU，即同时在线人数。
+
+Play 目前正在公测中，所有应用免费使用 100 CCU，如果您需要更高额度，请联系 support@leancloud.rocks
+
+未来收费方案为 ¥18 / 500 CCU / 天，我们会在正式收费时进行更详细的说明。
