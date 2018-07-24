@@ -593,6 +593,14 @@ play.on(Event.CUSTOM_EVENT, event => {
 });
 ```
 
+`event` 参数
+
+| 事件   | 参数     | 描述                                       |
+| ------------------------------------ | ------------------ | ---------------------------------------- |
+| eventId    | Number/String | 事件 Id，用于表示事件                         |
+| eventData   | Object  | 事件参数 |
+| senderId   | Number  | 事件发送者 |
+
 
 
 ## 断开连接
