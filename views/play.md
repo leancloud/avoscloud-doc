@@ -410,7 +410,7 @@ public void follow(int playerId)
 ```js
 // Event.CUSTOM_EVENT 方法会被触发
 play.on(Event.CUSTOM_EVENT, event => {
-  const { eventId } = event;
+  const { eventId, eventData } = event;
   if (eventId === 'follow') {
     ......
   } else if (eventId === 'next') {
