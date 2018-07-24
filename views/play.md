@@ -462,6 +462,6 @@ Play.LeaveRoom();
 
 Play 的核心计费单位为 CCU，即同时在线人数。
 
-Play 目前正在公测中，所有应用免费使用 100 CCU，如果您需要更高额度，请联系 support@leancloud.rocks
+Play 目前正在公测中，所有应用免费使用 100 CCU，如果您需要更高额度，请联系 support@leancloud.rocks。
 
 未来收费方案为 ¥18 / 500 CCU / 天，我们会在正式收费时进行更详细的说明。
