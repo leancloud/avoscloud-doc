@@ -645,7 +645,7 @@ play.createRoom({
 // 注册玩家掉线 / 上线事件
 play.on(Event.PLAYER_ACTIVITY_CHANGED, (player) => {
 	// 获得用户是否「活跃」状态
-  	cc.log(player.isInActive());
+  	cc.log(player.isActive());
   	// TODO 根据玩家的在线状态可以做显示和逻辑处理
 });
 ```
@@ -688,7 +688,7 @@ play.on(Event.LOBBY_JOINED, () => {
 // 注册玩家在线状态变化事件
 play.on(Event.PLAYER_ACTIVITY_CHANGED, (player) => {
 	// 获得用户是否「活跃」状态
-  	cc.log(player.isInActive());
+  	cc.log(player.isActive());
 	// TODO 根据玩家的在线状态可以做显示和逻辑处理
 
 });
