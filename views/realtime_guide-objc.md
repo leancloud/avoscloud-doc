@@ -755,7 +755,7 @@ option.pushData = @{@"alert" : @"您有一条未读消息", @"sound" : @"message
     1. `AVIMConversationOptionTransient`：聊天室，具体可以参见[创建聊天室](#创建聊天室)；
     2. `AVIMConversationOptionNone`：普通对话；
     3. `AVIMConversationOptionTemporary`：临时对话；
-    4. `AVIMConversationOptionUnique`：根据成员（clientIds）创建原子对话。如果没有这个选项，服务端会为相同的 clientIds 创建新的对话。clientIds 即 \_Conversation 表的 **m** 字段。
+    4. `AVIMConversationOptionUnique`：根据成员（clientIds）创建原子对话。如果没有这个选项，服务端会为相同的 clientIds 创建新的对话。clientIds 即 `_Conversation` 表的 **m** 字段。
 
 * **callback** － 结果回调，在操作结束之后调用，通知开发者成功与否。
   {% endblock %}
