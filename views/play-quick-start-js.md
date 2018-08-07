@@ -178,7 +178,7 @@ play.on(Event.CUSTOM_EVENT, event => {
 
 ## 构建注意事项
 
-您可以通过 Cocos Creator 构建出其支持的工程，目前 SDK 支持的平台包括：Mac，Web，微信小游戏，iOS，android。
+您可以通过 Cocos Creator 构建出其支持的工程，目前 SDK 支持的平台包括：Mac，Web，微信小游戏，FaceBook Instant Game, iOS，android。
 
 其中仅在构建 Android 工程时需要做一点额外的配置，需要在初始化 play 之前添加如下代码：
 
