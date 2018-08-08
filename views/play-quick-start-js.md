@@ -11,7 +11,7 @@ Play 客户端 SDK 是开源的，源码地址请访问 [Play-SDK-JS](https://gi
 
 ### Cocos Creator
 
-也适用于 Cocos Creator 导出的微信小游戏。下载 `play.js` 并拖拽至 Cocos Creator 项目中即可。**注意不要选择「插件方式」**。
+下载 `play.js` 并拖拽至 Cocos Creator 项目中即可。**注意不要选择「插件方式」**。
 
 ### 微信小程序
 
