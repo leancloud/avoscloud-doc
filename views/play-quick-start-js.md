@@ -7,6 +7,8 @@
 
 Play 客户端 SDK 是开源的，源码地址请访问 [Play-SDK-JS](https://github.com/leancloud/Play-SDK-JS)。也可以直接下载 [Release 版本]((https://github.com/leancloud/Play-SDK-JS/releases)。
 
+目前 SDK 支持的平台包括：Mac、Web、微信小游戏、FaceBook Instant Game、iOS、Android。
+
 ### Cocos Creator
 
 也适用于 Cocos Creator 导出的微信小游戏。下载 `play.js` 并拖拽至 Cocos Creator 项目中即可。**注意不要选择「插件方式」**。
@@ -177,7 +179,7 @@ play.on(Event.CUSTOM_EVENT, event => {
 
 ## 构建注意事项
 
-你可以通过 Cocos Creator 构建出其支持的工程，目前 SDK 支持的平台包括：Mac、Web、微信小游戏、FaceBook Instant Game、iOS、Android。
+你可以通过 Cocos Creator 构建出其支持的工程.
 
 其中仅在构建 Android 工程时需要做一点额外的配置，需要在初始化 `play` 之前添加如下代码：
 
