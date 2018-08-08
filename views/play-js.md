@@ -211,6 +211,7 @@ play.createRoom({
 - `maxPlayerCount`：房间允许的最大玩家数量。
 - `customRoomProperties`：房间的自定义属性。
 - `customRoomPropertyKeysForLobby`：房间的自定义属性 `customRoomProperties` 中「键」的数组，包含在 `customRoomPropertyKeysForLobby` 中的属性将会出现在大厅的房间属性中（`play.lobbyRoomList`），而全部属性要在加入房间后的 `room.getCustomProperties()` 中查看。这些属性将会在匹配房间时用到。
+- `flag`：创建房间标志位，包括是否固定 Master，只允许 Master 设置房间属性，只允许 Master 设置 Master。请参考 [API 文档](https://leancloud.github.io/Play-SDK-JS/doc/global.html#CreateRoomFlag)。
 
 #### expectedUserIds
 
