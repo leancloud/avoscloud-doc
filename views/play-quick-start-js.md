@@ -7,7 +7,9 @@
 
 Play 客户端 SDK 是开源的，源码地址请访问 [Play-SDK-JS](https://github.com/leancloud/Play-SDK-JS)。也可以直接下载 [Release 版本]((https://github.com/leancloud/Play-SDK-JS/releases)。
 
-目前 SDK 支持的平台包括：Mac、Web、微信小游戏、FaceBook Instant Game、iOS、Android。
+支持原生导入平台：微信小程序
+
+支持 CocosCreator 导出以下平台的项目：Mac、Web、微信小游戏、Facebook Instant Game、iOS、Android。
 
 ### Cocos Creator
 
