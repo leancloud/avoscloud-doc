@@ -30,6 +30,10 @@ import {
   Region,
   // Play SDK 事件常量
   Event,
+  // 事件接收组
+  ReceiverGroup,
+  // 创建房间标志
+  CreateRoomFlag,
 } from '../play';
 ```
 
