@@ -65,7 +65,7 @@ AVOSCloud.initialize(this,"{{appid}}","{{appkey}}");
 // 推荐使用 CDN：
 <script src="//cdn.jsdelivr.net/npm/leancloud-storage@{{jssdkversion}}/dist/av-live-query-min.js"></script>
 
-更多环境下的安装方式，请参考 https://leancloud.cn/docs/sdk_setup-js.html
+更多环境下的安装方式，请参考 [JavaScript SDK 安装文档](sdk_setup-js.html)。
 
 {{ parts.debugLiveQuery(true) }}
 ```
