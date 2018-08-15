@@ -11,7 +11,7 @@
 将示例代码 [node-js-getting-started](https://github.com/leancloud/node-js-getting-started) 克隆到本地：
 
 ```sh
-git clone https://github.com:leancloud/node-js-getting-started.git
+git clone https://github.com/leancloud/node-js-getting-started.git
 ```
 
 在根目录执行如下命令安装依赖：
@@ -541,6 +541,10 @@ if (cluster.isMaster) {
 
 <div class="callout callout-info">多进程运行要求你的程序中没有在内存中维护全局状态（例如锁），建议在首次切换到多进程或多实例运行时进行充分的测试。</div>
 
+{% endblock %}
+
+{% block depentencyCache %}
+例如 node 项目连续两次部署，`package.json` 并没有修改，那么就会直接使用已经缓存的依赖。
 {% endblock %}
 
 {% block code_calling_custom_variables %}
