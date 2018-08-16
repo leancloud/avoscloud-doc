@@ -1920,7 +1920,6 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
      }
   }
 ```
-
 同时，请在控制台的 `_User` 表里为 `authData.第三方平台名称.uid` 建立唯一索引，并且勾选上 **允许缺失值** 选项，这样才能保证一个第三方账号只绑定到一个 LeanCloud 应用内用户上。
 
 {{ 
@@ -1994,6 +1993,88 @@ Location: https://{{host}}/1.1/users/55a4800fe4b05001a7745c41
   "sessionToken":"tfrvbzmdf609nu9204v5f0tuj",
   "createdAt":"2015-07-14T03:20:47.733Z",
   "objectId":"55a4800fe4b05001a7745c41"
+}
+```
+#### UnionID 注册和登录
+
+微信与新浪微博都有 UnionID 登录机制，使用 UnionID 注册登录，可以使得不同微信公众号或小程序之间共享用户。
+
+微信的 authData 内容：
+
+```json
+  "authData": {
+    "access_token" = "access_token";
+    "expires_in" = 7200;
+    openid = openid;
+    "refresh_token" = "refresh_token";
+    scope = "snsapi_userinfo";
+    unionid = "ox7NLs-e-32ZyHg2URi_F2iPEI2U";
+}
+```
+
+使用 UnionID 注册登录，需要提供带有 `unionid` 参数的 `authData`。另外需要配合传递 `main_account` 和 `platform` 这两个字段。
+
+* `main_account`： `main_account` 为 true 表示使用 `unionid` 来登录或者注册。
+* `platform`：用来识别注册平台，如新浪微博或微信等。
+
+在服务端进行存储的时候会根据 `platform` 来命名新增的平台，如传入 `"platform" = "weibo"` 时，返回数据中会增加 `_weibo_unionid` 字段存储 `{"uid":"xxxxx"}`。
+
+```
+"_weibo_unionid": {
+            "uid": "ox7NLs-e-32ZyHg2URi_F2iPEI2U"
+        }
+```
+
+同样使用 POST 请求 users，以微信 UnionID 登录为例：
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \ 
+  -H "Content-Type: application/json" \
+  -d '{
+     "authData": {
+       "weixin1": {
+         "openid": "oTY851cqL0gk3DqW3xINqG1Q4PTc",
+         "access_token": "12_b6mz7ujXbTY4vpbqCRaKVa_y0Ij3N9grCeVtM8VJT8KFd4qnQ9lXtBsZVxG6x9c9Nay_oNgvbKK7KYKbn8R2P7uEgA0EhsXMHmxkx-xU-Tk",
+         "expires_in": 7200,
+         "refresh_token": "12_71UYUnqHDuIfekimsJsYjBDfY67ilo30fDqrYkqlwZtxNgcBhMmQgDVhT6mJWkRg0mngvX9kXeCGP8kmBWdvUtc5ngRiN5LDTWAau4du838",
+          "scope": "snsapi_userinfo",
+          "unionid": "ox7NLs-e-32ZyHg2URi_F2iPEI2U",
+          "platform": "weixin",
+          "main_account":"true"
+         }
+    }
+    }' \
+   https://{{host}}/1.1/users
+  
+```
+应答内容包括 objectId、createdAt、sessionToken、authData 以及一个自动生成的随机 username，应答的 body 类似：
+
+```json
+{
+    "sessionToken": "v53f0q4oecbrjojn530w89s5f", 
+    "updatedAt": "2018-08-16T08:03:44.203Z", 
+    "objectId": "5b752fe0a22b9d003137e16d", 
+    "username": "vp7szn9ytuaylgtnw14qnjx2u", 
+    "createdAt": "2018-08-16T08:03:44.203Z", 
+    "emailVerified": false, 
+    "authData": {
+        "weixin1": {
+            "openid": "oTY851cqL0gk3DqW3xINqG1Q4PTc", 
+            "access_token": "12_b6mz7ujXbTY4vpbqCRaKVa_y0Ij3N9grCeVtM8VJT8KFd4qnQ9lXtBsZVxG6x9c9Nay_oNgvbKK7KYKbn8R2P7uEgA0EhsXMHmxkx-xU-Tk", 
+            "expires_in": 7200, 
+            "refresh_token": "12_71UYUnqHDuIfekimsJsYjBDfY67ilo30fDqrYkqlwZtxNgcBhMmQgDVhT6mJWkRg0mngvX9kXeCGP8kmBWdvUtc5ngRiN5LDTWAau4du838", 
+            "scope": "snsapi_userinfo", 
+            "unionid": "ox7NLs-e-32ZyHg2URi_F2iPEI2U", 
+            "platform": "weixin", 
+            "main_account": "true"
+        }, 
+        "_weixin_unionid": {
+            "uid": "ox7NLs-e-32ZyHg2URi_F2iPEI2U"
+        }
+    }, 
+    "mobilePhoneVerified": false
 }
 ```
 
@@ -2181,7 +2262,7 @@ curl -X GET \
 }
 ```
 
-注意 users 和 roles 关系无法在 JSON 中见到，你需要相应地用 `$relatedTo` 操作符来查询角色中的子角色和用户。
+注意 users 和 roles 关系  无法在 JSON 中见到，你需要相应地用 `$relatedTo` 操作符来查询角色中的子角色和用户。
 
 ### 更新角色
 
