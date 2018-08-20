@@ -2003,12 +2003,12 @@ Location: https://{{host}}/1.1/users/55a4800fe4b05001a7745c41
 
 ```json
   "authData": {
-    "access_token" = "access_token";
-    "expires_in" = 7200;
-    openid = openid;
-    "refresh_token" = "refresh_token";
-    scope = "snsapi_userinfo";
-    unionid = "ox7NLs-e-32ZyHg2URi_F2iPEI2U";
+    "access_token" : "access_token",
+    "expires_in" : 7200,
+    "openid" : "openid",
+    "refresh_token" : "refresh_token",
+    "scope" : "snsapi_userinfo",
+    "unionid" : "ox7NLs-e-32ZyHg2URi_F2iPEI2U"
 }
 ```
 
@@ -2262,7 +2262,7 @@ curl -X GET \
 }
 ```
 
-注意 users 和 roles 关系  无法在 JSON 中见到，你需要相应地用 `$relatedTo` 操作符来查询角色中的子角色和用户。
+注意 users 和 roles 关系无法在 JSON 中见到，你需要相应地用 `$relatedTo` 操作符来查询角色中的子角色和用户。
 
 ### 更新角色
 
