@@ -6,118 +6,17 @@
 
 # Android 混合推送开发指南
 
-自 Android 8.0 之后，系统权限控制越来越严，第三方推送通道的生命周期受到较大限制，同时国内主流厂商也开始推出自己独立的推送服务，为了提升到达率，我们特推出了混合推送的方案，完美对接国内主要厂商，让 Android 推送无障碍。
+自 Android 8.0 之后，系统权限控制越来越严，第三方推送通道的生命周期受到较大限制，同时国内主流厂商也开始推出自己独立的推送服务，为了提升到达率，我们特推出了混合推送的方案，逐一对接国内主流厂商，将厂商间千差万别的繁杂接口隐藏起来，通过统一的 API，大幅降低开发复杂度，保障了主流 Android 系统上的推送到达率。
 
-## 小米推送（仅中国节点）
+在混合推送方案里，消息下发时使用的通道不再是 LeanCloud 自己维持的 WebSocket 长链接，而是借用厂商和 OS 层的系统通道进行通信。一条推送消息下发的步骤如下：
+1. 开发者调用 LeanCloud Push API 请求对全部或特定设备进行推送；
+2. LeanCloud 服务端将请求转发给厂商的推送接口；
+3. 厂商通过手机端的系统通道下发推送消息，同时手机端系统消息接收器将推送消息展示到通知栏；
+4. 终端用户点击消息之后唤起目标应用或者页面。
 
-### 环境配置
+在这一过程中，LeanCloud SDK 在客户端能做的事情较少，消息的下发和展示都依赖客户端系统的行为，整个流程与苹果的 APNs 推送类似。
 
-1. **注册小米账号**：在 [小米开放平台][xiaomi] 上注册小米开发者账号并完成实名认证（[详细流程](http://dev.xiaomi.com/doc/?p=90)）。
-2. **创建小米推送服务应用**（[详细流程](http://dev.xiaomi.com/doc/?p=1621)）。
-3. **设置小米的 AppId 及 AppSecret**：在 [小米开放平台][xiaomi] > **管理控制台** > **消息推送** > **相关应用** 可以查到具体的小米推送服务应用的 AppId 及 AppSecret。将此 AppId 及 AppSecret 通过 {% if node == 'qcloud' %}LeanCloud 控制台 > **消息** > **推送** > **设置** > **混合推送**{% else %}[LeanCloud 控制台 > **消息** > **推送** > **设置** > **混合推送**](/messaging.html?appid={{appid}}#/message/push/conf){% endif %} 与 LeanCloud 应用关联。
-
-### 接入 SDK
-
-首先导入 `avoscloud-mixpush` 包。修改 `build.gradle` 文件，在 **dependencies** 中添加依赖：
-
-```
-dependencies {
-    compile ('cn.leancloud.android:avoscloud-mixpush:{{ version.leancloud }}@aar')
-}
-```
-
-注：如果是通过 jar 包导入，则需要手动下载 jar 包 [小米 Push SDK](http://dev.xiaomi.com/mipush/downpage/)。
-
-然后配置相关 AndroidManifest。添加 Permission：
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-<uses-permission android:name="android.permission.GET_TASKS" />
-<uses-permission android:name="android.permission.VIBRATE"/>
-<permission android:name="<包名>.permission.MIPUSH_RECEIVE" android:protectionLevel="signature" />
-<uses-permission android:name="<包名>.permission.MIPUSH_RECEIVE" />
-```
-
-添加 service 与 receiver。开发者要将其中的 `<包名>` 替换为自己的应用对应的 package：
-
-```xml
-<service
-  android:name="com.xiaomi.push.service.XMPushService"
-  android:enabled="true"
-  android:process=":pushservice"/>
-
-<service
-  android:name="com.xiaomi.push.service.XMJobService"
-  android:enabled="true"
-  android:exported="false"
-  android:permission="android.permission.BIND_JOB_SERVICE"
-  android:process=":pushservice" />
-
-<service
-  android:name="com.xiaomi.mipush.sdk.PushMessageHandler"
-  android:enabled="true"
-  android:exported="true"/>
-
-<service
-  android:name="com.xiaomi.mipush.sdk.MessageHandleService"
-  android:enabled="true"/>
-
-<receiver
-  android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
-  android:exported="true">
-  <intent-filter>
-      <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-      <category android:name="android.intent.category.DEFAULT"/>
-  </intent-filter>
-</receiver>
-
-<receiver
-  android:name="com.xiaomi.push.service.receivers.PingReceiver"
-  android:exported="false"
-  android:process=":pushservice">
-  <intent-filter>
-      <action android:name="com.xiaomi.push.PING_TIMER"/>
-  </intent-filter>
-</receiver>
-
-<receiver
-  android:name="com.avos.avoscloud.AVMiPushMessageReceiver"
-  android:exported="true">
-  <intent-filter>
-      <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE"/>
-  </intent-filter>
-  <intent-filter>
-      <action android:name="com.xiaomi.mipush.MESSAGE_ARRIVED"/>
-  </intent-filter>
-  <intent-filter>
-      <action android:name="com.xiaomi.mipush.ERROR"/>
-  </intent-filter>
-</receiver>
-```
-
-### 具体使用
-
-在 `AVOSCloud.initialize` 时调用以下函数：
-
-```java
-AVMixpushManager.registerXiaomiPush(context, miAppId, miAppKey, profile)
-```
-
-- 参数 `miAppKey` 需要的是 AppKey，而在控制台的混合推送配置中 Profile 的第二个参数是 AppSecret，请注意区分，并分别正确填写。
-- 参数 `profile` 的用法可以参考 [Android 混合推送多配置区分](push_guide.html#Android_混合推送多配置区分)。
-
-LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用小米推送：
-
-- MIUI 系统
-- manifest 正确填写
-- appId、appKey、appSecret 有效
-
-### 小米推送通知栏消息的点击事件
-
-当小米通知栏消息被点击后，如果已经设置了 [自定义 Receiver](#自定义_Receiver)，则 SDK 会发送一个 action 为 `com.avos.avoscloud.mi_notification_action` 的 broadcast。如有需要，开发者可以通过订阅此消息获取点击事件，否则 SDK 会默认打开 [启动推送服务](#启动推送服务) 对应设置的 Activity。
+下面我们逐一看看如何对接华为、小米、魅族等厂商的推送服务，文档的最后也提及了在海外市场如何对接 Firebase Cloud Messaging 的方法。
 
 ## 华为推送-HMS 版本（仅中国节点）
 
@@ -130,9 +29,9 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用小
 ### 接入 SDK
 
 #### 获取 HMS SDK 和 HMS Agent SDK
-华为 HMS 推送 SDK 分为两部分，一个是 HMS SDK，一个是 HMS Agent SDK，两者需要主版本号一致才能正常使用（当前 LeanCloud 混合推送基于 v2.6.0 这一主版本），具体可以参见 [华为 SDK 获取](http://developer.huawei.com/consumer/cn/service/hms/catalog/HuaweiJointOperation.html?page=hmssdk_jointOper_sdkdownload)。
+华为 HMS 推送 SDK 分为两部分，一个是 HMS SDK，一个是 HMS Agent SDK，两者需要主版本号一致才能正常使用（当前 LeanCloud 混合推送基于 v2.6.1 这一主版本），具体可以参见 [华为 SDK 获取](http://developer.huawei.com/consumer/cn/service/hms/catalog/HuaweiJointOperation.html?page=hmssdk_jointOper_sdkdownload)。
 
-HMS SDK 可以直接通过 jar 包加入，HMS Agent SDK 则需要下载解压之后把源码完全拷贝进入工程（也可以将 https://github.com/leancloud/android-sdk-all/tree/master/hmsagent 作为 module 直接加入工程）。
+HMS SDK 可以直接通过 jar 包加入，HMS Agent SDK 则需要下载解压之后把源码完全拷贝进入工程。
 
 > 注意：华为 HMS 推送不能与老的 HwPush 共存，如果切换到 HMS 推送，则需要将原来的 HwPush SDK 全部删除干净才行。
 
@@ -263,6 +162,117 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华
 
 ### 参考 demo
 我们提供了一个 [最新的华为推送 demo](https://github.com/leancloud/mixpush-demos/tree/master/huawei)，可供你在接入过程中参考。
+
+## 小米推送（仅中国节点）
+
+### 环境配置
+
+1. **注册小米账号**：在 [小米开放平台][xiaomi] 上注册小米开发者账号并完成实名认证（[详细流程](http://dev.xiaomi.com/doc/?p=90)）。
+2. **创建小米推送服务应用**（[详细流程](http://dev.xiaomi.com/doc/?p=1621)）。
+3. **设置小米的 AppId 及 AppSecret**：在 [小米开放平台][xiaomi] > **管理控制台** > **消息推送** > **相关应用** 可以查到具体的小米推送服务应用的 AppId 及 AppSecret。将此 AppId 及 AppSecret 通过 {% if node == 'qcloud' %}LeanCloud 控制台 > **消息** > **推送** > **设置** > **混合推送**{% else %}[LeanCloud 控制台 > **消息** > **推送** > **设置** > **混合推送**](/messaging.html?appid={{appid}}#/message/push/conf){% endif %} 与 LeanCloud 应用关联。
+
+### 接入 SDK
+
+首先导入 `avoscloud-mixpush` 包。修改 `build.gradle` 文件，在 **dependencies** 中添加依赖：
+
+```
+dependencies {
+    compile ('cn.leancloud.android:avoscloud-mixpush:{{ version.leancloud }}@aar')
+}
+```
+
+注：如果是通过 jar 包导入，则需要手动下载 jar 包 [小米 Push SDK](http://dev.xiaomi.com/mipush/downpage/)。
+
+然后配置相关 AndroidManifest。添加 Permission：
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.GET_TASKS" />
+<uses-permission android:name="android.permission.VIBRATE"/>
+<permission android:name="<包名>.permission.MIPUSH_RECEIVE" android:protectionLevel="signature" />
+<uses-permission android:name="<包名>.permission.MIPUSH_RECEIVE" />
+```
+
+添加 service 与 receiver。开发者要将其中的 `<包名>` 替换为自己的应用对应的 package：
+
+```xml
+<service
+  android:name="com.xiaomi.push.service.XMPushService"
+  android:enabled="true"
+  android:process=":pushservice"/>
+
+<service
+  android:name="com.xiaomi.push.service.XMJobService"
+  android:enabled="true"
+  android:exported="false"
+  android:permission="android.permission.BIND_JOB_SERVICE"
+  android:process=":pushservice" />
+
+<service
+  android:name="com.xiaomi.mipush.sdk.PushMessageHandler"
+  android:enabled="true"
+  android:exported="true"/>
+
+<service
+  android:name="com.xiaomi.mipush.sdk.MessageHandleService"
+  android:enabled="true"/>
+
+<receiver
+  android:name="com.xiaomi.push.service.receivers.NetworkStatusReceiver"
+  android:exported="true">
+  <intent-filter>
+      <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+      <category android:name="android.intent.category.DEFAULT"/>
+  </intent-filter>
+</receiver>
+
+<receiver
+  android:name="com.xiaomi.push.service.receivers.PingReceiver"
+  android:exported="false"
+  android:process=":pushservice">
+  <intent-filter>
+      <action android:name="com.xiaomi.push.PING_TIMER"/>
+  </intent-filter>
+</receiver>
+
+<receiver
+  android:name="com.avos.avoscloud.AVMiPushMessageReceiver"
+  android:exported="true">
+  <intent-filter>
+      <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE"/>
+  </intent-filter>
+  <intent-filter>
+      <action android:name="com.xiaomi.mipush.MESSAGE_ARRIVED"/>
+  </intent-filter>
+  <intent-filter>
+      <action android:name="com.xiaomi.mipush.ERROR"/>
+  </intent-filter>
+</receiver>
+```
+
+### 具体使用
+
+在 `AVOSCloud.initialize` 时调用以下函数：
+
+```java
+AVMixpushManager.registerXiaomiPush(context, miAppId, miAppKey, profile)
+```
+
+- 参数 `miAppKey` 需要的是 AppKey，而在控制台的混合推送配置中 Profile 的第二个参数是 AppSecret，请注意区分，并分别正确填写。
+- 参数 `profile` 的用法可以参考 [Android 混合推送多配置区分](push_guide.html#Android_混合推送多配置区分)。
+
+LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用小米推送：
+
+- MIUI 系统
+- manifest 正确填写
+- appId、appKey、appSecret 有效
+
+### 小米推送通知栏消息的点击事件
+
+当小米通知栏消息被点击后，如果已经设置了 [自定义 Receiver](#自定义_Receiver)，则 SDK 会发送一个 action 为 `com.avos.avoscloud.mi_notification_action` 的 broadcast。如有需要，开发者可以通过订阅此消息获取点击事件，否则 SDK 会默认打开 [启动推送服务](#启动推送服务) 对应设置的 Activity。
 
 ## 魅族推送（仅中国节点）
 
