@@ -1126,51 +1126,11 @@ LeanCloud 后端要求 authData 至少含有 `openid 或 uid`、`access_token` �
 
 如果是新用户，则生成一个新的 AVUser 并登录。示例代码如下：
 
-```
-    // 以下的 platform 是通过 ShareSDK 获取的 authData 结果集。
-    // 使用其他第三方登录 SDK 的获取方法，请自行查询对应 SDK 提供商的文档 
-    Map<String, Object> map = new HashMap<>();
-    map.put("access_token", platform.getDb().getToken());
-    map.put("expires_in", platform.getDb().getExpiresIn());
-    map.put("openid", platform.getDb().getUserId());
-
-    AVUser.loginWithAuthData(map, "weixin", new LogInCallback<AVUser>() {
-      @Override
-      public void done(AVUser avUser, AVException e) {
-    if (e == null) {
-
-        } else {
-          e.printStackTrace();
-        }
-      }
-    });
-```
+{% block loginwithauthdata %}{% endblock %}
 
 成功后，在您的控制台的 _User 表里会生成一条新的 AVUser，它的数据格式如下：
 
-```
-{
-  "ACL": {
-    "*": {
-      "read": true,
-      "write": true
-    }
-  },
-  "username": "y43mxrnj3kvrfkt8w5gezlep1",
-  "emailVerified": false,
-  "authData": {
-    "weixin": {
-      "openid": "oTY851aFzn4TdDgujsEl0f36Huxk",
-      "expires_in": 7200,
-      "access_token": "11_gaS_CfX47PH3n6g33zwONEyUsFRmiWJPIEcmWVzqS48JeZjpII6uRkTD6g36GY7_5pxKciSM-v8OGnYR26DC-VBffwMHaVx5_ik8FVQdE5Y"
-    }
-  },
-  "mobilePhoneVerified": false,
-  "objectId": "5b3def469f545400310c939d",
-  "createdAt": "2018-07-05T10:13:26.310Z",
-  "updatedAt": "2018-07-05T10:13:26.310Z"
-}
-```
+{% block loginwithauthdataresult %}{% endblock %}
 
 如果是已有用户，则返回对应 authData 的 AVUser 实例并登录。
 
@@ -1180,55 +1140,11 @@ LeanCloud 后端要求 authData 至少含有 `openid 或 uid`、`access_token` �
 
 示例代码如下：
 
-```
-    // 以下是用登录获取 avuser 的示例，您也可以直接用当前用户 currentUser 对象来操作
-    AVUser.logInInBackground("大卫", "79Lis13SSv", new LogInCallback<AVUser>() {
-      @Override
-      public void done(AVUser avUser, AVException e) {
-        avUser.associateWithAuthData(authData, "qq", new SaveCallback() {
-          @Override
-          public void done(AVException e) {
-            if (e == null) {
-              // 绑定成功，authData 成功加入到 username 为"大卫"的 AVUser authData 字段数据里
-            } else {
-              e.printStackTrace();
-            }
-          }
-        });
-      }
-    });
-```
+{% block associatewithauthdata %}{% endblock %}
 
 `_User` 表的对应 AVUser 数据的 authData 字段会新增一个 qq 的数据，如下：
 
-```
-{
-  "ACL": {
-    "*": {
-      "read": true,
-      "write": true
-    }
-  },
-  "username": "y43mxrnj3kvrfkt8w5gezlep1",
-  "emailVerified": false,
-  "authData": {
-    "weixin": {
-      "access_token": "11_U4Nuh9PGpfuBJqtm7KniWn48rkJ7vBTCVN2beHcVvceswua2sLU_5Afq26ZJrRF0vpSX0xcDwI-zxeo3qcf-cMftjqEvWh7Vpp05bgxeWtc",
-      "expires_in": 7200,
-      "openid": "oTY851aFzn4TdDgujsEl0f36Huxk"
-    },
-    "qq": {
-      "openid": "0395BA18A5CD6255E5BA185E7BEBA242",
-      "expires_in": 7200,
-      "access_token": "11_CCveaBR_Lu0lmhff6NC33Lhx662zCnbzcSYhbYZQZ01YPdFav3sjhzjoM1hxs3AMMMydhguh2M0PumUaglpzuAlpzRzQn4vEXTRaZuovEnQ"
-    }
-  },
-  "mobilePhoneVerified": false,
-  "objectId": "5b3def469f545400310c939d",
-  "createdAt": "2018-07-05T10:13:26.310Z",
-  "updatedAt": "2018-07-06T07:46:58.097Z"
-}
-```
+{% block associatewithauthdataresult %}{% endblock %}
 
 以上，就是一个第三方登录开发的基本完整流程。
 
@@ -1242,33 +1158,7 @@ LeanCloud 后端要求 authData 至少含有 `openid 或 uid`、`access_token` �
 
 示例代码如下：
 
-``` 
-    AVUser.loginWithAuthData(authData, "weixin", true, new LogInCallback<AVUser>() {
-      @Override
-      public void done(AVUser avUser, AVException e) {
-        if (e == null) {
-
-        } else if (e.getCode() == 211) {
-          // 跳转到输入用户名、密码、手机号等业务页面
-        } else {
-          e.printStackTrace();
-        }
-      }
-    });
-
-    .....
-    
-    // 跳转到输入用户名、密码、手机号等业务页面之后
-    AVUser avUser = new AVUser();
-    avUser.setUsername("大卫");
-    avUser.setMobilePhoneNumber("1xxxxxxxxxx");
-    avUser.loginWithAuthData(authData, "weixinapp", new LogInCallback<AVUser>() {
-      @Override
-      public void done(AVUser avUser, AVException e) {
-
-      }
-    });
-```
+{% block loginwithauthdatawithoutfail %}{% endblock %}
 
 #### 接入 UnionID 体系
 
@@ -1293,61 +1183,15 @@ asMainAccount | boolean | true 表示会把 unionId 绑定进当前 authData 并
 
 接入新 UnionID 系统时，每次传入的 authData 必须包含成对的平台 `uid 或 openid` 和平台 `unionid`。示例代码如下：
 
-```
-    AVUser.loginWithauthData(authData, "weixinapp1", platform.getDb().get("unionid"), "weixin", true, new LogInCallback<AVUser>() {
-      @Override
-      public void done(final AVUser avUser, AVException e) {
-        if (e == null) {
-      // avUser 用户创建并登录成功
-        } else {
-          e.printStackTrace();
-        }
-      }
-    });
-```
+{% block loginwithauthdataunionid %}{% endblock %}
 
 然后让我们来看看生成的 authData 的数据格式：
 
-```
-  "authData": {
-    "weixinapp1": {
-      "platform": "weixin",
-      "openid": "oTY851axxxgujsEl0f36Huxk",
-      "expires_in": 7200,
-      "main_account": true,
-      "access_token": "10_chx_dLz402ozf3TX1sTFcQQyfABgilOa-xxx-1HZAaC60LEo010_ab4pswQ",
-      "unionid": "ox7NLs06ZGfdxxxxxe0F1po78qE"
-    },
-    "_weixin_unionid": {
-      "uid": "ox7NLs06ZGfdxxxxxe0F1po78qE"
-    }
-  }
-```
+{% block loginwithauthdataunionidresult %}{% endblock %}
+
 当您想加入该 UnionID 下的一个新平台，比如 miniprogram1 时，再次登录后生成的数据为：
 
-```
-  "authData": {
-    "weixinapp1": {
-      "platform": "weixin",
-      "openid": "oTY851axxxgujsEl0f36Huxk",
-      "expires_in": 7200,
-      "main_account": true,
-      "access_token": "10_chx_dLz402ozf3TX1sTFcQQyfABgilOa-xxx-1HZAaC60LEo010_ab4pswQ",
-      "unionid": "ox7NLs06ZGfdxxxxxe0F1po78qE"
-    },
-    "_weixin_unionid": {
-      "uid": "ox7NLs06ZGfdxxxxxe0F1po78qE"
-    },
-    "miniprogram1": {
-      "platform": "weixin",
-      "openid": "ohxoK3ldpsGDGGSaniEEexxx",
-      "expires_in": 7200,
-      "main_account": true,
-      "access_token": "10_QfDeXVp8fUKMBYC_d4PKujpuLo3sBV_pxxxxIZivS77JojQPLrZ7OgP9PC9ZvFCXxIa9G6BcBn45wSBebsv9Pih7Xdr4-hzr5hYpUoSA",
-      "unionid": "ox7NLs06ZGfdxxxxxe0F1po78qE"
-    }
-  }
-```
+{% block loginwithauthdataunionidresultmore %}{% endblock %}
 
 可以看到，最终该 authData 实际包含了来自 `weixin` 这个 `unionId` 体系内的两个不同平台，一个来自移动应用(weixinapp)，一个来自小程序(miniprogram)。`_weixin_unionid ` 这个字段的值就是用户在 `weixin` 这个 `unionId` 平台的唯一标识 UnionID 值。
 

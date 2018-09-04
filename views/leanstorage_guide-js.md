@@ -1706,3 +1706,195 @@ AV.User.signUpOrlogInWithAuthData({
 {% block anonymous_user_save %}{%  endblock %}
 
 {% block text_using_async_methods %}{% endblock %}
+
+{% block loginwithauthdata %}
+```js
+var authData = {
+    access_token: 'ACCESS_TOKEN',
+    expires_in: 7200,
+    refresh_token: 'REFRESH_TOKEN',
+    openid: 'OPENID',
+    scope: 'SCOPE',
+};
+
+AV.User.signUpOrlogInWithAuthData(authData, 'weixin').then(function (s) {
+    //登录成功
+}, function (error) {
+    // 登录失败
+});
+```
+{% endblock %}
+
+{% block loginwithauthdataresult %}
+```js
+{
+  "ACL": {
+    "*": {
+      "read": true,
+      "write": true
+    }
+  },
+  "username": "y43mxrnj3kvrfkt8w5gezlep1",
+  "emailVerified": false,
+  "authData": {
+    "weixin": {
+      "openid": "oTY851aFzn4TdDgujsEl0f36Huxk",
+      "expires_in": 7200,
+      "access_token": "11_gaS_CfX47PH3n6g33zwONEyUsFRmiWJPIEcmWVzqS48JeZjpII6uRkTD6g36GY7_5pxKciSM-v8OGnYR26DC-VBffwMHaVx5_ik8FVQdE5Y"
+    }
+  },
+  "mobilePhoneVerified": false,
+  "objectId": "5b3def469f545400310c939d",
+  "createdAt": "2018-07-05T10:13:26.310Z",
+  "updatedAt": "2018-07-05T10:13:26.310Z"
+}
+```
+{% endblock %}
+
+{% block associatewithauthdata %}
+```js
+var authData = {
+    access_token: 'ACCESS_TOKEN',
+    expires_in: 7200,
+    refresh_token: 'REFRESH_TOKEN',
+    openid: 'OPENID',
+    scope: 'SCOPE',
+};
+var user = AV.User.current();
+user.associateWithAuthData(authData, 'weixin').then(function (user) {
+    // 绑定成功
+}, function (error) {
+    // 绑定失败
+});
+```
+{% endblock %}
+
+{% block associatewithauthdataresult %}
+```js
+{
+  "ACL": {
+    "*": {
+      "read": true,
+      "write": true
+    }
+  },
+  "username": "y43mxrnj3kvrfkt8w5gezlep1",
+  "emailVerified": false,
+  "authData": {
+    "weixin": {
+      "access_token": "11_U4Nuh9PGpfuBJqtm7KniWn48rkJ7vBTCVN2beHcVvceswua2sLU_5Afq26ZJrRF0vpSX0xcDwI-zxeo3qcf-cMftjqEvWh7Vpp05bgxeWtc",
+      "expires_in": 7200,
+      "openid": "oTY851aFzn4TdDgujsEl0f36Huxk"
+    },
+    "qq": {
+      "openid": "0395BA18A5CD6255E5BA185E7BEBA242",
+      "expires_in": 7200,
+      "access_token": "11_CCveaBR_Lu0lmhff6NC33Lhx662zCnbzcSYhbYZQZ01YPdFav3sjhzjoM1hxs3AMMMydhguh2M0PumUaglpzuAlpzRzQn4vEXTRaZuovEnQ"
+    }
+  },
+  "mobilePhoneVerified": false,
+  "objectId": "5b3def469f545400310c939d",
+  "createdAt": "2018-07-05T10:13:26.310Z",
+  "updatedAt": "2018-07-06T07:46:58.097Z"
+}
+```
+{% endblock %}
+
+{% block loginwithauthdatawithoutfail %}
+``` js
+var authData = {
+    access_token: 'ACCESS_TOKEN',
+    expires_in: 7200,
+    refresh_token: 'REFRESH_TOKEN',
+    openid: 'OPENID',
+    scope: 'SCOPE',
+};
+
+AV.User.signUpOrlogInWithAuthData(authData, 'weixin',{ failOnNotExist:true }).then(function (s) {
+    // 登录成功
+}, function (error) {
+    // 登录失败
+    // 检查 error.code == 211，跳转到用户名、手机号等资料的输入页面
+});
+
+
+var user = new AV.User();
+// 设置用户名
+user.setUsername('Tom');
+// 设置密码
+user.setMobilePhoneNumber('18666666666');
+user.setPassword('cat@#123');
+// 设置邮箱
+user.setEmail('tom@leancloud.cn');
+user.loginWithAuthData(authData, 'wexin').then(function (loggedInUser) {
+    console.log(loggedInUser);
+}, function (error) {
+});
+```
+{% endblock %}
+
+{% block loginwithauthdataunionid %}
+```js
+var authData = {
+    access_token: 'ACCESS_TOKEN',
+    expires_in: 7200,
+    refresh_token: 'REFRESH_TOKEN',
+    openid: 'OPENID',
+    scope: 'SCOPE',
+};
+
+AV.User.loginWithAuthDataAndUnionId(authData,
+    'wxminiprogram1', 'o6_bmasdasdsad6_2sgVt7hMZOPfL', {
+    unionIdPlatform: 'weixin',
+    asMainAccount: true,
+  }).then(function(user) {
+    // 绑定成功
+  },function (error) {
+    // 绑定失败 
+});
+```
+{% endblock %}
+
+{% block loginwithauthdataunionidresult %}
+```js
+  "authData": {
+    "weixinapp1": {
+      "platform": "weixin",
+      "openid": "oTY851axxxgujsEl0f36Huxk",
+      "expires_in": 7200,
+      "main_account": true,
+      "access_token": "10_chx_dLz402ozf3TX1sTFcQQyfABgilOa-xxx-1HZAaC60LEo010_ab4pswQ",
+      "unionid": "ox7NLs06ZGfdxxxxxe0F1po78qE"
+    },
+    "_weixin_unionid": {
+      "uid": "ox7NLs06ZGfdxxxxxe0F1po78qE"
+    }
+  }
+```
+{% endblock %}
+
+{% block loginwithauthdataunionidresultmore %}
+```js
+  "authData": {
+    "weixinapp1": {
+      "platform": "weixin",
+      "openid": "oTY851axxxgujsEl0f36Huxk",
+      "expires_in": 7200,
+      "main_account": true,
+      "access_token": "10_chx_dLz402ozf3TX1sTFcQQyfABgilOa-xxx-1HZAaC60LEo010_ab4pswQ",
+      "unionid": "ox7NLs06ZGfdxxxxxe0F1po78qE"
+    },
+    "_weixin_unionid": {
+      "uid": "ox7NLs06ZGfdxxxxxe0F1po78qE"
+    },
+    "miniprogram1": {
+      "platform": "weixin",
+      "openid": "ohxoK3ldpsGDGGSaniEEexxx",
+      "expires_in": 7200,
+      "main_account": true,
+      "access_token": "10_QfDeXVp8fUKMBYC_d4PKujpuLo3sBV_pxxxxIZivS77JojQPLrZ7OgP9PC9ZvFCXxIa9G6BcBn45wSBebsv9Pih7Xdr4-hzr5hYpUoSA",
+      "unionid": "ox7NLs06ZGfdxxxxxe0F1po78qE"
+    }
+  }
+```
+{% endblock %}
