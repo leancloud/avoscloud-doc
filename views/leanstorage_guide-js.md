@@ -1228,46 +1228,6 @@ file.save({
 ```
 {% endblock %}
 
-{% block sns_authdata %}
-#### 第三方账号登录
-
-为了简化用户注册的繁琐流程，许多应用都在登录界面提供了第三方社交账号登录的按钮选项，例如微信、QQ、微博、Github、豆瓣、Twitter、FaceBook 等，以此来提高用户体验。LeanCloud 封装的 {{userObjectName}} 对象也支持通过第三方账号的 accessToken 信息来创建一个用户。例如，使用微信授权信息创建 {{userObjectName}} 的代码如下：
-
-```js
-  AV.User.signUpOrlogInWithAuthData({
-      // 微博（weibo）用 uid
-      // 微信（weixin）和 QQ（qq）用 openid
-      "openid": "oPrJ7uM5Y5oeypd0fyqQcKCaRv3o",
-      "access_token": "OezXcEiiBSKSxW0eoylIeNFI3H7HsmxM7dUj1dGRl2dXJOeIIwD4RTW7Iy2IfJePh6jj7OIs1GwzG1zPn7XY_xYdFYvISeusn4zfU06NiA1_yhzhjc408edspwRpuFSqtYk0rrfJAcZgGBWGRp7wmA",
-      "expires_in": "2016-01-06T11:43:11.904Z"
-  }, 'weixin').then(function (s) {
-  }, function (e) {
-
-  });
-```
-
-目前我们仅支持验证以下平台的 `access_token` 的合法性：
-- 微信
-- QQ 
-- 微博
-
-要接入其他平台，开发者需要完成以下步骤：
-
-- 进入 [控制台 > 存储 > 设置 > 用户账号](/dashboard/storage.html?appid={{appid}}#/storage/conf) 中取消 **第三方登录时，验证用户 AccessToken 合法性** 的勾选。这样开发者要自行验证 `access_token` 的合法性。
-- 确保 authData 包含 `uid`（即将上例代码中的 `openid` 换为 `uid`），否则 SDK 会返回「无效的第三方注册数据（authData）」的错误。
-
-以使用 Github 登录为例：
-
-```js
-  AV.User.signUpOrlogInWithAuthData({
-    'uid':          githubClientId,
-    'access_token': accessToken
-  }, 'github');
-```
-
-更多用法请参考 [REST API · 连接用户账户和第三方平台](rest_api.html#连接用户账户和第三方平台)。
-{% endblock %}
-
 {% block code_send_verify_email %}
 
 ```js
@@ -1439,7 +1399,6 @@ AV.User.requestLoginSmsCode('13577778888').then(function (success) {
 
 
 {% block text_subclass %}{% endblock %}
-{% block text_sns %}{% endblock %}
 {% block text_feedback %}{% endblock %}
 
 {% block text_js_promise %}
