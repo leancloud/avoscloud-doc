@@ -1116,7 +1116,7 @@ CQL 是 {{productName}} 独创的使用类似 SQL 语法来实现云端查询功
 
 ### 常规开发流程介绍
 
-LeanCloud 暂 **不提供** 获取第三方 authData 的 SDK。开发者需要调用微信、QQ 等官方的 SDK，根据他们的文档进行获取，也可以使用其他 SNS 组件提供商，比如 ShareSDK、友盟等所提供的 SDK。
+LeanCloud 暂 **不提供** 获取第三方 authData 的 SDK。开发者需要调用微信、QQ 等官方的 SDK，根据他们的文档进行获取，也可以使用其他服务商提供的社交登录组件。
 
 开发者在获取了第三方的完整 authData 后，就可以使用我们提供的 AVUser 类的 `loginWithauthData` 或 `associateWithauthData` 两个接口，传入 authData，进行用户数据的绑定了。在操作成功之后，这部分第三方账户数据会存入 `_User` 表的 `authData` 字段里。
 
@@ -1211,7 +1211,7 @@ asMainAccount | boolean | true 表示会把 unionId 绑定进当前 authData 并
 
 
 ### 示例 Demo
-为了便于开发者更快熟悉整个开发流程，我们的示例项目 [LeanStorageSNSDemo]() 通过 ShareSDK 完成了第一阶段 authData 的获取，并细致地讲解第二阶段与 LeanCloud 用户体系 AVUser 进行集成的各种操作。请下载运行后查看具体代码实现。
+为了便于开发者更快熟悉整个开发流程，我们的示例项目 [LeanCloudSNSDemo-Android](https://github.com/leancloud/LeanCloudSNSDemo-Android)/[LeanCloudSNSDemo-iOS](https://github.com/leancloud/LeanCloudSNSDemo-iOS) 展示了第一阶段 authData 的获取，并细致地讲解第二阶段与 LeanCloud 用户体系 AVUser 进行集成的各种操作。请下载运行后查看具体代码实现。
 {% endblock %}
 {% endif %}
 
