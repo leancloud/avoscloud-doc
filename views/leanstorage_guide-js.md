@@ -1666,7 +1666,7 @@ AV.User.signUpOrlogInWithAuthData({
 
 {% block text_using_async_methods %}{% endblock %}
 
-{% block loginwithauthdata %}
+{% block login_with_authdata %}
 ```js
 var authData = {
     access_token: 'ACCESS_TOKEN',
@@ -1684,7 +1684,7 @@ AV.User.signUpOrlogInWithAuthData(authData, 'weixin').then(function (s) {
 ```
 {% endblock %}
 
-{% block loginwithauthdataresult %}
+{% block login_with_authdata_result %}
 ```js
 {
   "ACL": {
@@ -1710,7 +1710,7 @@ AV.User.signUpOrlogInWithAuthData(authData, 'weixin').then(function (s) {
 ```
 {% endblock %}
 
-{% block associatewithauthdata %}
+{% block associate_with_authdata %}
 ```js
 var authData = {
     access_token: 'ACCESS_TOKEN',
@@ -1728,7 +1728,7 @@ user.associateWithAuthData(authData, 'weixin').then(function (user) {
 ```
 {% endblock %}
 
-{% block associatewithauthdataresult %}
+{% block associate_with_authdata_result %}
 ```js
 {
   "ACL": {
@@ -1759,7 +1759,7 @@ user.associateWithAuthData(authData, 'weixin').then(function (user) {
 ```
 {% endblock %}
 
-{% block loginwithauthdatawithoutfail %}
+{% block login_with_authdata_without_fail %}
 ``` js
 var authData = {
     access_token: 'ACCESS_TOKEN',
@@ -1792,7 +1792,7 @@ user.loginWithAuthData(authData, 'wexin').then(function (loggedInUser) {
 ```
 {% endblock %}
 
-{% block loginwithauthdataunionid %}
+{% block login_with_authdata_unionid %}
 ```js
 var authData = {
     access_token: 'ACCESS_TOKEN',
@@ -1814,7 +1814,7 @@ AV.User.loginWithAuthDataAndUnionId(authData,
 ```
 {% endblock %}
 
-{% block loginwithauthdataunionidresult %}
+{% block login_with_authdata_unionid_result %}
 ```js
   "authData": {
     "weixinapp1": {
@@ -1832,7 +1832,7 @@ AV.User.loginWithAuthDataAndUnionId(authData,
 ```
 {% endblock %}
 
-{% block loginwithauthdataunionidresultmore %}
+{% block login_with_authdata_unionid_result_more %}
 ```js
   "authData": {
     "weixinapp1": {

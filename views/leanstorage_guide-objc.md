@@ -1660,7 +1660,7 @@ AVObject *todo = [AVObject objectWithClassName:@"Todo" objectId:@"5735aae7c4c971
 ```
 {% endblock %}
 
-{% block loginwithauthdata %}
+{% block login_with_authdata %}
 ```objc
 NSDictionary *authData = @{
                             @"access_token":@"ACCESS_TOKEN",
@@ -1682,7 +1682,7 @@ option.platform = LeanCloudSocialPlatformWeiXin;
 ```
 {% endblock %}
 
-{% block loginwithauthdataresult %}
+{% block login_with_authdata_result %}
 ```objc
 {
   "ACL": {
@@ -1708,7 +1708,7 @@ option.platform = LeanCloudSocialPlatformWeiXin;
 ```
 {% endblock %}
 
-{% block associatewithauthdata %}
+{% block associate_with_authdata %}
 ```objc
 NSDictionary *authData = @{
                             @"access_token":@"ACCESS_TOKEN",
@@ -1730,7 +1730,7 @@ option.platform = LeanCloudSocialPlatformWeiXin;
 ```
 {% endblock %}
 
-{% block associatewithauthdataresult %}
+{% block associate_with_authdata_result %}
 ```objc
 {
   "ACL": {
@@ -1761,7 +1761,7 @@ option.platform = LeanCloudSocialPlatformWeiXin;
 ```
 {% endblock %}
 
-{% block loginwithauthdatawithoutfail %}
+{% block login_with_authdata_without_fail %}
 ``` objc
 NSDictionary *authData = @{
                             @"access_token":@"ACCESS_TOKEN",
@@ -1798,7 +1798,7 @@ NSDictionary *authData = @{
     }];```
 {% endblock %}
 
-{% block loginwithauthdataunionid %}
+{% block login_with_authdata_unionid %}
 ```objc
 NSDictionary *authData = @{
                             @"access_token":@"ACCESS_TOKEN",
@@ -1823,7 +1823,7 @@ option.isMainAccount = true;
 ```
 {% endblock %}
 
-{% block loginwithauthdataunionidresult %}
+{% block login_with_authdata_unionid_result %}
 ```objc
   "authData": {
     "weixinapp1": {
@@ -1841,7 +1841,7 @@ option.isMainAccount = true;
 ```
 {% endblock %}
 
-{% block loginwithauthdataunionidresultmore %}
+{% block login_with_authdata_unionid_result_more %}
 ```objc
   "authData": {
     "weixinapp1": {

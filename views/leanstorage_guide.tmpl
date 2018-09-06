@@ -1126,11 +1126,11 @@ LeanCloud 后端要求 authData 至少含有 `openid 或 uid`、`access_token` �
 
 如果是新用户，则生成一个新的 AVUser 并登录。示例代码如下：
 
-{% block loginwithauthdata %}{% endblock %}
+{% block login_with_authdata %}{% endblock %}
 
 成功后，在您的控制台的 _User 表里会生成一条新的 AVUser，它的数据格式如下：
 
-{% block loginwithauthdataresult %}{% endblock %}
+{% block login_with_authdata_result %}{% endblock %}
 
 如果是已有用户，则返回对应 authData 的 AVUser 实例并登录。
 
@@ -1140,11 +1140,11 @@ LeanCloud 后端要求 authData 至少含有 `openid 或 uid`、`access_token` �
 
 示例代码如下：
 
-{% block associatewithauthdata %}{% endblock %}
+{% block associate_with_authdata %}{% endblock %}
 
 `_User` 表的对应 AVUser 数据的 authData 字段会新增一个 qq 的数据，如下：
 
-{% block associatewithauthdataresult %}{% endblock %}
+{% block associate_with_authdata_result %}{% endblock %}
 
 以上，就是一个第三方登录开发的基本完整流程。
 
@@ -1158,7 +1158,7 @@ LeanCloud 后端要求 authData 至少含有 `openid 或 uid`、`access_token` �
 
 示例代码如下：
 
-{% block loginwithauthdatawithoutfail %}{% endblock %}
+{% block login_with_authdata_without_fail %}{% endblock %}
 
 #### 接入 UnionID 体系
 
@@ -1170,30 +1170,30 @@ LeanCloud 后端要求 authData 至少含有 `openid 或 uid`、`access_token` �
 
 其他平台，如 QQ 的 UnionID 体系，和微信的设计保持一致。
 
-LeanCloud 已经兼容了新的 UnionID 体系。您只需要给 loginWithauthData 和 associateWithauthData 接口传入更多的参数，即可完成新 UnionID 体系的集成。
+LeanCloud 支持 UnionID 体系。您只需要给 loginWithauthData 和 associateWithauthData 接口传入更多的参数，即可完成新 UnionID 体系的集成。
 
 要使用到的关键参数列表：
 
 参数名 | 类型 | 意义
 ---- | ----- | ----
-platform | String | 平台，命名如 `weixinapp1`、`wxminiprogram1` 和 `qqapp1` 等
-unionIdPlatform | String | unionId 平台，如 `weixin`、`weibo` 和 `qq` 等
-unionId | String | 由 unionId 平台提供。需 **配合 asMainAccount、unionIdPlatform 一起使用**
-asMainAccount | boolean | true 表示会把 unionId 绑定进当前 authData 并作为主账号，之后该 unionId 来识别用。需 **配合 unionId 、unionIdPlatform 一起使用**
+platform | String | 平台，命名如 `weixinapp1`、`wxminiprogram1` 和 `qqapp1` 等。
+unionIdPlatform | String | UnionID 平台，如 `weixin`、`weibo` 和 `qq` 等。
+unionId | String | 由 UnionID 平台提供。需 **配合 asMainAccount、unionIdPlatform 一起使用**。
+asMainAccount | boolean | true 表示会把 UnionID 绑定进当前 authData 并作为主账号，之后该 unionId 来识别用。需 **配合 unionId 、unionIdPlatform 一起使用**。
 
 接入新 UnionID 系统时，每次传入的 authData 必须包含成对的平台 `uid 或 openid` 和平台 `unionid`。示例代码如下：
 
-{% block loginwithauthdataunionid %}{% endblock %}
+{% block login_with_authdata_unionid %}{% endblock %}
 
 然后让我们来看看生成的 authData 的数据格式：
 
-{% block loginwithauthdataunionidresult %}{% endblock %}
+{% block login_with_authdata_unionid_result %}{% endblock %}
 
 当您想加入该 UnionID 下的一个新平台，比如 miniprogram1 时，再次登录后生成的数据为：
 
-{% block loginwithauthdataunionidresultmore %}{% endblock %}
+{% block login_with_authdata_unionid_result_more %}{% endblock %}
 
-可以看到，最终该 authData 实际包含了来自 `weixin` 这个 `unionId` 体系内的两个不同平台，一个来自移动应用(weixinapp)，一个来自小程序(miniprogram)。`_weixin_unionid ` 这个字段的值就是用户在 `weixin` 这个 `unionId` 平台的唯一标识 UnionID 值。
+可以看到，最终该 authData 实际包含了来自 `weixin` 这个 `unionId` 体系内的两个不同平台，`weixinapp1` 代表来自移动应用，`miniprogram1` 来自小程序。。`_weixin_unionid ` 这个字段的值就是用户在 `weixin` 这个 `unionId` 平台的唯一标识 UnionID 值。
 
 当一个用户以来自 weixinapp 的 `OpenID oTY851axxxgujsEl0f36Huxk` 和 `UnionID ox7NLs06ZGfdxxxxxe0F1po78qE` 一起传入生成新的 AVUser 后，接下来这个用户以来自 miniprogram 不同的 `OpenID ohxoK3ldpsGDGGSaniEEexxx` 和同样的 `UnionID ox7NLs06ZGfdxxxxxe0F1po78qE` 一起传入时，LeanCloud 判定是同样的 UnionID，就直接把来自 `miniprogram `的新用户数据加入到已有 authData 里了，不会再创建新的用户。
 
@@ -1205,7 +1205,7 @@ asMainAccount | boolean | true 表示会把 unionId 绑定进当前 authData 并
 
 1、如果没有的话，直接按前面「接入 UnionID 体系」小节的代码集成即可。
 
-2、如果有的话，需要确认自身的业务需要，确定要以哪个已有平台的账号为主。比如决定使用某个移动应用程序上生成的账号，则在该移动应用程序更新新版 App 时，使用到 `asMainAccount` 参数。这个移动应用带着 unionId 登录匹配或创建的账号将作为主账号，之后所有这个 unionId 的登录都会匹配到这个账号。
+2、如果有的话，需要确认自身的业务需要，确定要以哪个已有平台的账号为主。比如决定使用某个移动应用程序上生成的账号，则在该移动应用程序更新新版 App 时，使用到 `asMainAccount` 参数。这个移动应用带着 UnionID 登录匹配或创建的账号将作为主账号，之后所有这个 UnionID 的登录都会匹配到这个账号。
 
 **请注意**，第 2 种情况下，在 _User 表里会剩下一些用户数据，也就是没有被选为主账号的，其他平台的同一个用户的旧账号数据。这部分数据，会继续服务于你们已经发布的，仍然使用 OpenID 登录的旧版应用程序。
 

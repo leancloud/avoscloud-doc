@@ -1681,7 +1681,7 @@ currentUser.signUpInBackground(new SignUpCallback() {
 ```
 {% endblock %}
 
-{% block loginwithauthdata %}
+{% block login_with_authdata %}
 ```java
     // 以下的 platform 是通过 ShareSDK 获取的 authData 结果集。
     // 使用其他第三方登录 SDK 的获取方法，请自行查询对应 SDK 提供商的文档 
@@ -1703,7 +1703,7 @@ currentUser.signUpInBackground(new SignUpCallback() {
 ```
 {% endblock %}
 
-{% block loginwithauthdataresult %}
+{% block login_with_authdata_result %}
 ```java
 {
   "ACL": {
@@ -1729,7 +1729,7 @@ currentUser.signUpInBackground(new SignUpCallback() {
 ```
 {% endblock %}
 
-{% block associatewithauthdata %}
+{% block associate_with_authdata %}
 ```java
     // 以下是用登录获取 avuser 的示例，您也可以直接用当前用户 currentUser 对象来操作
     AVUser.logInInBackground("大卫", "79Lis13SSv", new LogInCallback<AVUser>() {
@@ -1750,7 +1750,7 @@ currentUser.signUpInBackground(new SignUpCallback() {
 ```
 {% endblock %}
 
-{% block associatewithauthdataresult %}
+{% block associate_with_authdata_result %}
 ```java
 {
   "ACL": {
@@ -1781,7 +1781,7 @@ currentUser.signUpInBackground(new SignUpCallback() {
 ```
 {% endblock %}
 
-{% block loginwithauthdatawithoutfail %}
+{% block login_with_authdata_without_fail %}
 ``` java
     AVUser.loginWithAuthData(authData, "weixin", true, new LogInCallback<AVUser>() {
       @Override
@@ -1811,7 +1811,7 @@ currentUser.signUpInBackground(new SignUpCallback() {
 ```
 {% endblock %}
 
-{% block loginwithauthdataunionid %}
+{% block login_with_authdata_unionid %}
 ```java
     AVUser.loginWithauthData(authData, "weixinapp1", platform.getDb().get("unionid"), "weixin", true, new LogInCallback<AVUser>() {
       @Override
@@ -1826,7 +1826,7 @@ currentUser.signUpInBackground(new SignUpCallback() {
 ```
 {% endblock %}
 
-{% block loginwithauthdataunionidresult %}
+{% block login_with_authdata_unionid_result %}
 ```java
   "authData": {
     "weixinapp1": {
@@ -1844,7 +1844,7 @@ currentUser.signUpInBackground(new SignUpCallback() {
 ```
 {% endblock %}
 
-{% block loginwithauthdataunionidresultmore %}
+{% block login_with_authdata_unionid_result_more %}
 ```java
   "authData": {
     "weixinapp1": {
