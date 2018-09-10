@@ -28,6 +28,7 @@
 - [Python](leanengine_cloudfunction_guide-python.html)
 - [PHP](leanengine_cloudfunction_guide-php.html)
 - [Java](leanengine_cloudfunction_guide-java.html)
+- [.NET](leanengine_cloudfunction_guide-dotnet.html)
 
 {% block initialize %}
 {% endblock %}
@@ -139,6 +140,7 @@ from leancloud import cloudfunc
 
 cloudfunc.run('averageStars', movie='夏洛特烦恼')
 ```
+
 ### 通过 REST API 调用云函数
 
 请查看我们的 [云引擎 REST API 使用指南](leanengine-rest-api.html)。
@@ -183,7 +185,7 @@ AVCloud.rpcFunctionInBackground("averageStars", dicParameters,
     });
 ```
 ```php
-// PHP 有待支持
+// PHP 暂不支持
 ```
 ```nodejs
 var paramsJson = {
@@ -258,9 +260,14 @@ Hook 函数本质上是云函数，但它有固定的名称，定义之后会**�
 
 ### {{hook_after_update}}
 
+{{ docs.alert("本 Hook 使用不当可能会造成死循环，导致数据存储 API 的调用次数暴涨，甚至产生更多的费用。因此请仔细阅读 [防止死循环调用](#防止死循环调用) 部分，做出必要的调整和预防措施。") }}
+
 在更新已存在的对象后执行特定的动作，比如每次修改文章后记录下日志：
 
 {% block afterUpdateExample %}{% endblock %}
+
+{% block hookDeadLoop %}
+{% endblock %}
 
 ### {{hook_before_delete}}
 
@@ -288,9 +295,10 @@ Hook 函数本质上是云函数，但它有固定的名称，定义之后会**�
 
 {% block onLoginExample %}{% endblock %}
 
-### 实时通信 Hook 函数
+{% block realtime_hook %}
+### 即时通讯 Hook 函数
 
-请阅读 [实时通信概览 &middot; 云引擎 Hook](realtime_v2.html#云引擎_Hook) 来了解以下函数的相关参数和用法。
+请阅读 [即时通讯概览 &middot; 云引擎 Hook](realtime_v2.html#云引擎_Hook) 来了解以下函数的相关参数和用法。
 
 #### {{hook_message_received}}
 在消息达到服务器、群组成员已解析完成、发送给收件人之前触发。例如，提前过滤掉聊天内容中的一些广告类的关键词：
@@ -331,8 +339,6 @@ Hook 函数本质上是云函数，但它有固定的名称，定义之后会**�
 修改对话属性、设置或取消对话消息提醒，在实际修改之前触发。例如在更新发生时，在云引擎日志中打印出对话的名称：
 
 {% block code_hook_conversation_update %}{% endblock %}
-
-{% block hookDeadLoop %}
 {% endblock %}
 
 ### Hook 函数错误响应码

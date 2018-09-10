@@ -140,9 +140,9 @@ supported_type.save()
 ```python
 import leancloud
 
-Todo = leancloud.Object.extend('Todo')
 query = leancloud.Query('Todo')
 # 也可以获取 Todo 的 query 属性
+# Todo = leancloud.Object.extend('Todo')
 # query = Todo.query
 
 # 这里填入需要查询的 objectId
@@ -1440,8 +1440,4 @@ leancloud.push.send(data, cql='select * from _Installation where installationId=
 ```
 {% endblock %}
 
-{% block setup_username_and_password_for_anonymous_user %}
-```
-暂不支持
-```
-{% endblock %}
+{% block anonymous_user_save %}{% endblock %}

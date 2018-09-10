@@ -10,7 +10,7 @@
 
 ```ruby
 pod 'AVOSCloud'               # 数据存储、短信、云引擎调用等基础服务模块
-pod 'AVOSCloudIM'             # 实时通信模块
+pod 'AVOSCloudIM'             # 即时通讯模块
 ```
 
 {% call docs.noteWrap() %}
@@ -103,10 +103,13 @@ ruby build-framework.rb
 然后粘贴下列代码到 `application:didFinishLaunchingWithOptions:` 方法中：
 
 ```objc
-{% if node != 'qcloud' %}// 使用美国站点需要增加以下代码：
-// [AVOSCloud setServiceRegion:AVServiceRegionUS];{% endif %}
-
 [AVOSCloud setApplicationId:@"{{appid}}" clientKey:@"{{appkey}}"];
+```
+
+使用 **美国节点** 需要增加以下代码：
+
+```objc
+[AVOSCloud setServiceRegion:AVServiceRegionUS];
 ```
 
 如果想跟踪统计应用的打开情况，后面还可以添加下列代码：
