@@ -26,7 +26,7 @@
 
 ### 4006
 * 信息 - JOIN_OR_CREATE_ROOM_NOT_ALLOWED_DUE_TO_APP_MSG_QUOTA_EXCEEDED
-* 含义 - 应用房间中最大消息发送速率超过 500 msg/s，禁止创建新房间，禁止加入其他房间。
+* 含义 - 应用房间中最大消息发送速率超过每秒 500 条，禁止创建新房间，禁止加入其他房间。
 
 ## 服务故障错误码
 
@@ -35,7 +35,7 @@
 * 含义 - 服务器内部错误，请联系 LeanCloud。
 
 ### 4202
-* 信息 - SERVICE_TEMPORARY_UNAVAILABLE
+* 信息 - SERVICE_TEMPORARILY_UNAVAILABLE
 * 含义 - 游戏服务临时不可用，请联系 LeanCloud。
 
 ##  Room 错误码
@@ -96,7 +96,7 @@
 * 含义 - Room id 格式不合要求。
 
 ### 4317
-* 信息 - NEED_LEAVE_PREVIOUS_JOINED_ROOM_FIRST
+* 信息 - SHOULD_LEAVE
 * 含义 - 用户在线时未退出当前房间强制加入其他房间时报错，请先调用 leave 方法再加入其他房间。
 
 <!-- 
@@ -130,7 +130,7 @@
 * 含义 -  从 room 离开后会断开链接，此时服务器会主动发送 session/closed 并带上该 code -->
 
 ### 4324
-* 信息 - NEED_JOIN_ROOM
+* 信息 - SHOULD_JOIN
 * 含义 - Client 当前未加入任何 Room，却试图做一些 Room 内的操作，请先加入一个 Room 再进行操作。
 
 <!-- 
@@ -183,7 +183,7 @@ SDK 还未实现此功能
 ## 其它错误
 
 ### 4101
-* 信息 - DUPLICATED_LOGIN
+* 信息 - DUPLICATE_LOGIN
 * 含义 - 在一个已经有用户登录的链接上，再次收到另一个用户的登录请求。
 
 ### 4102
@@ -191,7 +191,7 @@ SDK 还未实现此功能
 * 含义 - 同一用户在不同链接上登录。
 
 ### 4013
-* 信息 - SIGNATURE_FAILED
+* 信息 - SIGNATURE_VERIFICATION_FAILED
 * 含义 - 签名错误。
 
 ### 4104
@@ -249,7 +249,7 @@ SDK 还未实现此功能
 * 含义 - 没有传 Game Version 或 Game Version 格式不合要求 -->
 
 ### 4124
-* 信息 - CALL_GAME_HOOK_FAILED
+* 信息 - CALLING_GAME_HOOK_FAILED
 * 含义 - 调用 Game Hook 失败。
 
 ### 4125
