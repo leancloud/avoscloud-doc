@@ -45,7 +45,7 @@
 
 ### 4302
 * 信息 - ROOM_FULL
-* 含义 - Room 已满。
+* 含义 - Room 已满，请加入其他的房间。
 
 <!-- 
 需要 SDK 处理的错误，开发者不用关心
@@ -89,7 +89,7 @@
 
 ### 4315
 * 信息 - TARGET_MASTER_CLIENT_OFFLINE
-* 含义 - 转移 master 时目标 master 不在线。
+* 含义 - 转移 Master 时目标 Master 不在线。
 
 ### 4316
 * 信息 - INVALID_ROOM_ID
@@ -248,13 +248,17 @@ SDK 还未实现此功能
 * 信息 - INVALID_GAME_VERSION
 * 含义 - 没有传 Game Version 或 Game Version 格式不合要求 -->
 
+<!-- 
+Hook 相关错误，Hook 还未上线
 ### 4124
 * 信息 - CALLING_GAME_HOOK_FAILED
-* 含义 - 调用 Game Hook 失败。
+* 含义 - 调用 Game Hook 失败。 -->
 
+<!-- 
+Hook 相关错误，Hook 还未上线
 ### 4125
 * 信息 - REJECTED_BY_APP_HOOK
-* 含义 - 本次操作被用户的 Game Hook 拒绝。
+* 含义 - 本次操作被用户的 Game Hook 拒绝。 -->
 
 <!-- 
 应当 SDK 处理
