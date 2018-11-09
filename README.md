@@ -1,4 +1,5 @@
 # LeanCloud Documentation
+
 [![Build Status](https://travis-ci.org/leancloud/docs.svg)](https://travis-ci.org/leancloud/docs)
 [![devDependency Status](https://david-dm.org/leancloud/docs/dev-status.svg)](https://david-dm.org/leancloud/docs#info=devDependencies)
 
@@ -226,13 +227,17 @@ AVObject|AVObject|AV.Object|LCObject|LeanCloud.Object|AVObject
 
  「一套模板多分渲染」的不同渲染文件编写起来比较困难，需要先从主模板上找到变量在对应到渲染文件，所以开发了一个简单的工具来简化这一步骤。使用方式如下：	
  * 安装需要的依赖，该步骤只需要执行一次：	
-   ```	
-  npm install	
+ 
   ```	
+  $ npm install	
+  ```	
+
  * 启动辅助工具的本地 webServer，使用以下命令：	
-   ```	
+   
+  ```	
   $ node server	
   ```	
+  
 * 使用浏览器打开 http://localhost:3001，将会看到一个「选择模板」的下拉列表框，该列表框里会显示 `views/<tmplName>.tmpl` 的所有模板文件，文件名的 `tmplName` 部分是下拉列表框选项的名称。选择你需要编写的模板（比如 `leanengine_guide`）。	
 * 你会看到模板文件被读取，其中所有 `{% block <blockName> %}<content>{% endblock %}` 部分的下面都会有一些按钮。这些按钮表示该「模板」拥有的不同「渲染」，也就是对应的 `views/<tmplName>-<impl>.md` 文件，文件名的 `impl` 部分是按钮的名称。	
 * 点击对应的按钮，即可看到「渲染」文件中对应 `block` 的内容已经读取到一个文本域中，如果为空，表明该「渲染」文件未渲染该 block，或者内容为空。	
