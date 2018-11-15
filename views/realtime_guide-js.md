@@ -42,8 +42,7 @@ JavaScript 即时通讯 SDK 支持如下运行时：
 var { Realtime } = require('leancloud-realtime');
 var realtime = new Realtime({
   appId: '{{appid}}',
-  appKey: '{{appkey}}',
-  region: 'cn', // 美国节点为 "us"
+  appKey: '{{appkey}}'
 });
 ```
 
@@ -418,7 +417,7 @@ conversation.on(Event.MESSAGE, function messageEventHandler(message) {
 
 ```js
 var { Realtime, TextMessage, MessagePriority } = require('leancloud-realtime');
-var realtime = new Realtime({ appId: '{{appId}}', region: 'cn' });
+var realtime = new Realtime({ appId: '{{appId}}' });
 realtime.createIMClient('host').then(function (host) {
     return host.createConversation({
         members: ['broadcast'],
@@ -583,7 +582,7 @@ conversation.on(Event.LAST_READ_AT_UPDATE, function() {
 
 ```js
 var { Realtime, TextMessage } = require('leancloud-realtime');
-var realtime = new Realtime({ appId: '{{appId}}', region: 'cn' });
+var realtime = new Realtime({ appId: '{{appId}}' });
 realtime.createIMClient('Tom').then(function (host) {
     return host.createConversation({
         members: ['Jerry'],
