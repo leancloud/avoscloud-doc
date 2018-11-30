@@ -745,6 +745,7 @@ liveQuery.unsubscribe().then(function() {
 });
 ```
 ```cs
+await  liveQuery.UnsubscribeAsync();
 ```
 
 ## 断开连接
