@@ -37,7 +37,7 @@ Java 运行环境对内存的使用较多，所以建议：
 * 使用 [Spring Boot](https://projects.spring.io/spring-boot/) 的应用，建议使用 1 GB 或以上规格的实例。
 * 本地启动并模拟完成主要业务流程操作，待应用充分初始化后，根据 Java 进程内存占用量选择相应的实例规格，需要注意保留一定的余量用以应对请求高峰。
 
-云引擎运行 Java 应用时，会自动将 `-Xmx` 参数设置为实例规格的 70%，剩下的 30% 留给堆外内存和其他开销。如果的应用比较特殊（比如大量使用堆外内存）可以自己定制 `-Xmx` 参数。假设使用 2 GB 内存规格的实例运行，则可以在云引擎的设置页面增加「自定义环境变量」，名称为 `JAVA_OPTS`，值为 `-Xmx1500m`，这样会限制 JVM 堆最大为 1.5 GB，剩下 500 MB 留给持久代、堆外内存或者其他一些杂项使用。**注意：`-Xmx` 参数如果设置得过小可能会导致大量 CPU 消耗在反复的的 GC 任务上**。
+云引擎运行 Java 应用时，会自动将 `-Xmx` 参数设置为实例规格的 70%，剩下的 30% 留给堆外内存和其他开销。如果你的应用比较特殊（比如大量使用堆外内存）可以自己定制 `-Xmx` 参数。假设使用 2 GB 内存规格的实例运行，则可以在云引擎的设置页面增加「自定义环境变量」，名称为 `JAVA_OPTS`，值为 `-Xmx1500m`，这样会限制 JVM 堆最大为 1.5 GB，剩下 500 MB 留给持久代、堆外内存或者其他一些杂项使用。**注意：`-Xmx` 参数如果设置得过小可能会导致大量 CPU 消耗在反复的的 GC 任务上**。
 
 <div class="callout callout-danger">如果云引擎 [实例规格](leanengine_plan.html#选择实例规格) **选择不当**，可能造成应用启动时因为内存溢出（OOM）导致部署失败，或运行期内存溢出导致应用频繁重启。</div>
 {% endblock %}
@@ -312,7 +312,7 @@ LeanEngine.addSessionCookie(new EngineSessionCookie("my secret", 3600, true));
 
 * **secret**：一个只保存在服务端的字符串，可以设置为任意值。但每次修改之后，所有已有的 cookie 都会失效，也就是所有用户的登录 session 都将过期。
 * **maxAge**：设置 Cookie 的过期时间。单位秒。
-* **fetchUser**：**是否自动 fetch 当前登录的 AV.User 对象。默认为 false。** 如果设置为 true，每个 HTTP 请求都将发起一次 LeanCloud API 调用来 fetch 用户对象。如果设置为 false，默认只可以访问 `AVUser.getCurrentUser()` 的 `id`（`_User` 表记录的 ObjectId）和 `sessionToken` 属性，你可以在需要时再手动 fetch 整个用户。
+* **fetchUser**：**是否自动 fetch 当前登录的 AV.User 对象。默认为 false。** 如果设置为 true，每个 HTTP 请求都将发起一次 LeanCloud API 调用来 fetch 用户对象。如果设置为 false，默认只可以访问 `AVUser.getCurrentUser()` 的 `id`（`_User` 表记录的 objectId）和 `sessionToken` 属性，你可以在需要时再手动 fetch 整个用户。
 * 在云引擎方法中，通过 `AVUser.getCurrentUser()` 获取用户信息。
 * 在网站托管中，通过 `AVUser.getCurrentUser()` 获取用户信息。
 

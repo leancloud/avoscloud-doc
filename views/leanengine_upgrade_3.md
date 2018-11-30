@@ -43,7 +43,7 @@ $PROJECT_DIR
 }
 ```
 
-可以通过这个文件看到各个依赖的版本，例如 Node.js 8.x, leanengine 3.3.2 等。
+可以通过这个文件看到各个依赖的版本，例如 Node.js 8.x、leanengine 3.3.2 等。
 
 `package.json` 创建完成后在 `$PROJECT_DIR` 目录执行下列命令：
 
@@ -197,7 +197,7 @@ app 模块保存在 `$PROJECT_DIR/app.js` 文件，是应用主要文件之一�
 
 2.0 沙箱环境默认提供很多异常处理，方便应用使用。新版项目需要手动设置，所以需要在 `$PROJECT_DIR/app.js` 中添加如下代码：
 
-```
+```js
 app.use(function(req, res, next) {
   // 如果任何一个路由都没有返回响应，则抛出一个 404 异常给后续的异常处理器
   if (!res.headersSent) {
@@ -282,7 +282,7 @@ app.use(function(err, req, res, next) {
 
 * 第 1 行不需要再次引入 `app.js`，取而代之是引入 `leanengine` 模块，然后就可以使用 `AV.Cloud.define` 方法来定义云函数了。
 
-然后我们需要将 SDK 提供的 因为 `AV.express()` 作为中间件来挂载到 express 上（在 `$PROJECT_DIR/app.js` 中）：
+然后我们需要将 SDK 提供的 `AV.express()` 作为中间件来挂载到 express 上（在 `$PROJECT_DIR/app.js` 中）：
 
 ```
   5 var bodyParser = require('body-parser');
@@ -296,7 +296,7 @@ app.use(function(err, req, res, next) {
  13 app.use(express.static('public'));
 ```
 
-我们在第 6 行引入 `cloud` 模块；然后在第 12 行将云函数的中间件挂载到 express 上，请尽量将 `AV.express()` 挂载到靠前的位置，因为该中间件会提供一个健康监测的 URL，LeanEngine 监控服务会根据该 URL 的响应判断应用是否启动成功。放在后面很容易被其他的 router 替代，导致响应不是预期而认为启动失败。关于健康监测的详细信息请参考 [云引擎指南 - Node.js 环境](./leanengine_webhosting_guide-node.html#健康监测)。
+我们在第 6 行引入 `cloud` 模块；然后在第 12 行将云函数的中间件挂载到 express 上，请尽量将 `AV.express()` 挂载到靠前的位置，因为该中间件会提供一个健康监测的 URL，LeanEngine 监控服务会根据该 URL 的响应判断应用是否启动成功。放在后面很容易被其他的 router 替代，导致响应不是预期的而被健康监测认为启动失败。关于健康监测的详细信息请参考 [云引擎指南 - Node.js 环境](./leanengine_webhosting_guide-node.html#健康监测)。
 
 ## 移除 global.json
 
@@ -310,7 +310,7 @@ app.use(function(err, req, res, next) {
 
 如果你的 2.0 项目使用了 `avos-express-cookie-session` 中间件，则你的 `$PROJECT_DIR/cloud/app.js` 中可能有类似这样的代码：
 
-```
+```js
 var avosExpressCookieSession = require('avos-express-cookie-session');
 
 app.use(express.cookieParser('test'));
@@ -318,7 +318,7 @@ app.use(avosExpressCookieSession({ cookie: { maxAge: 3600000 }, fetchUser: false
 ```
 新版项目该中间件用法稍有不同，代码需要修改为类似这样：
 
-```
+```js
 app.use(AV.Cloud.CookieSession({ secret: 'my secret', maxAge: 3600000, fetchUser: true }));
 ```
 
@@ -332,13 +332,13 @@ app.use(AV.Cloud.CookieSession({ secret: 'my secret', maxAge: 3600000, fetchUser
 lean up
 ```
 
-因为 `$PROJECT_DIR/app.js` 中定义了一个 `/hello` 的路由，所以 http://localhost:3000/hello 应该可以正常响应：
+因为 `$PROJECT_DIR/app.js` 中定义了一个 `/hello` 的路由，所以 `http://localhost:3000/hello` 应该可以正常响应：
 
 ```
 Congrats, you just set up your app!
 ```
 
-如果使用其他的 url，比如 http://localhost:3000/foobar 会得到一个 404 响应，内容是
+如果使用其他的 url，比如 `http://localhost:3000/foobar` 会得到一个 404 响应，内容是
 
 ```
 error:Not Found
@@ -346,7 +346,7 @@ error:Not Found
 
 说明我们的异常处理器起作用了。
 
-还可以打开云函数调试页面 http://localhost:3001 来测试 `$PROJECT_DIR/cloud.js` 里面定义的 `hello`云函数。
+还可以打开云函数调试页面 `http://localhost:3001` 来测试 `$PROJECT_DIR/cloud.js` 里面定义的 `hello`云函数。
 
 ## 部署
 
