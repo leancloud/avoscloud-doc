@@ -160,6 +160,7 @@
 <script type="text/javascript">
 $(document).ready(function(){
   var navbar = $("#navbar"); 
+  var navhash = ['#docs','#faqlist','#opencourses']
   navbar.delegate('li','click',function(e){
     $(navbar)
       .children('li')
@@ -175,9 +176,12 @@ $(document).ready(function(){
       });
     }
   })
+
   if(window.location.hash){
     var hash = window.location.hash;
-    $('a[href="'+hash+'"]').trigger('click');
+    if(navhash.indexOf(hash)>-1){
+      $('a[href="'+hash+'"]').trigger('click');
+    }
   }
 });
 
