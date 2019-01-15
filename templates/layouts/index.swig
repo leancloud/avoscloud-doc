@@ -159,19 +159,26 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-  $('a[data-toggle="pill"]').on('show.bs.tab', function (e) {
-    var $this = $(e.target),
-        source = $this.attr('href'),
-        pane = $this.attr('data-target');
-    //console.log($this, source, pane, source.charAt(0) !== '#',$(pane).is(':empty'));
-    if( source.charAt(0) !== '#' && $(pane).is(':empty') ) {  
+  var navbar = $("#navbar"); 
+  navbar.delegate('li','click',function(e){
+    $(navbar)
+      .children('li')
+      .removeClass('active');
+    $(this).addClass('active')
+    var target = $('a',this);
+    target.tab('show');
+    var source = target.attr('data-href');
+    var pane = target.attr('data-target');
+    if(source && $(pane).is(':empty')){
       $.get(source, function(data) {
           $(pane).html($(data).find('#backbone').html());
       });
-      //console.log("filled");
     }
-    return true;
-  });
+  })
+  if(window.location.hash){
+    var hash = window.location.hash;
+    $('a[href="'+hash+'"]').trigger('click');
+  }
 });
 
 // get nav items ready for scrollspy

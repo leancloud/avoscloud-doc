@@ -8,7 +8,7 @@ layout: index.swig
     <div class="form-group text-center" style="margin:0 10px;">
       <input id="site-search" name="q" type="text" class="form-control input-lg" placeholder="&#xf17a 输入错误代码、关键字来搜索&hellip;">
     </div>
-    <ul class="nav nav-pills text-center" role="tablist">
+    <ul class="nav nav-pills text-center" role="tablist" id="navbar">
       <!--
       <li role="presentation" class="active">
         <a href="#tab-docs" data-target="#tab-docs" data-toggle="pill">技术文档</a>
@@ -19,7 +19,9 @@ layout: index.swig
       -->
       <li role="presentation" class="active">
         <div class="doc-hero-links">
-          <a href="#tab-docs" data-target="#tab-docs" data-toggle="pill" class="doc-quick-start-btn">
+          <a href="#docs" 
+          data-target="#tab-docs"
+          class="doc-quick-start-btn">
             <i class="icon icon-log"></i>
           技术文档
           </a>
@@ -27,7 +29,10 @@ layout: index.swig
       </li>
       <li>
         <div class="doc-hero-links">
-          <a href="faq_list.html" data-target="#tab-faqlist" data-toggle="pill" class="doc-quick-start-btn">
+          <a href="#faqlist" 
+          data-href="faq_list.html" 
+          data-target="#tab-faqlist"
+          class="doc-quick-start-btn">
             <i class="icon icon-signpost"></i>
           常见问题
           </a>
@@ -35,7 +40,8 @@ layout: index.swig
       </li>
       <li>
         <div class="doc-hero-links">
-          <a href="opencourse.html" data-target="#tab-opencourses" data-toggle="pill" class="doc-quick-start-btn">
+          <a href="#opencourses"  data-href="opencourse.html" data-target="#tab-opencourses" 
+          class="doc-quick-start-btn">
             <i class="icon icon-graduation"></i>
           视频公开课
           </a>
