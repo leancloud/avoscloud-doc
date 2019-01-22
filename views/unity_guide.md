@@ -4,6 +4,7 @@
 {% import "views/_data.njk" as data %}
 {% import "views/_sms.njk" as sms %}
 {% import "views/_parts.html" as include %}
+{% set segment_code ="dotnet" %}
 {% set middot = '·' %}
 {% set link_to_blog_password_reset = '关于自定义邮件模板和验证链接，请参考《[自定义应用内用户重设密码和邮箱验证页面](https://blog.leancloud.cn/607/)》。' %}
 {% set app_permission_link = "[控制台 > 存储 > 设置 > 用户账号](/dashboard/storage.html?appid={{appid}}#/storage/conf)" %}
@@ -667,7 +668,7 @@ var query = new AVQuery<AVObject>("GameEquip").Include('pointerArrayKey');
 var innerQuery = new AVQuery<AVObject>("GameEquipBag").WhereEqualTo("scale", 20);
 var query = new AVQuery<AVObject>("GameEquip").WhereMatchesQuery("gameEquipBag", innerQuery);
 ```
-与普通查询一样，内嵌查询默认也最多返回 100 条记录，想修改这一默认请参考 [限定结果返回数量](#限定结果返回数量)。
+与普通查询一样，内嵌查询默认也最多返回 100 条记录，想修改这一默认请参考 [限定结果返回数量](#限定返回数量)。
 
 **如果所有返回的记录没有匹配到外层的查询条件，那么整个查询也查不到结果**。
 
