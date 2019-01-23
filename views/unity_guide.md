@@ -48,7 +48,7 @@ LeanStorage 在结构化数据存储方面，与 MySQL、Postgres、MongoDB 等�
 
 ## SDK 安装
 
-Unity 支持 Mono 使用 .NET 语言来实现跨平台开发的解决方案，请阅读 [ Unity 安装指南](sdk_setup-{{segment_code}}.html)。
+请阅读 [ Unity 安装指南](sdk_setup-{{segment_code}}.html)。
 
 ## 对象
 
@@ -58,29 +58,36 @@ Unity 支持 Mono 使用 .NET 语言来实现跨平台开发的解决方案，�
 `AVObject` 支持以下数据类型：
 
 ```cs
-  bool testBool = true;
-  int testNumber = 2018;
-  string testString = testNumber + " 年度音乐排行";
-  DateTime testDate = DateTime.Today;
-  byte[] testData = System.Text.Encoding.UTF8.GetBytes("短篇小说");
+int testNumber = 2018;
+float testFloat = 1.23f;
+double testDouble = 3.2D;
 
-  List<int> testNumbers = new List<int>();
-  testNumbers.Add(testNumber);
+bool testBool = true;
+string testString = testNumber + " 年度音乐排行";
+DateTime testDate = DateTime.Today;
+byte[] testData = System.Text.Encoding.UTF8.GetBytes("短篇小说");
 
-  var testDictionary = new Dictionary<string, object>();
-  testDictionary.Add("数字", testNumber);
-  testDictionary.Add("字符串", testString);
+List<int> testNumbers = new List<int>();
+testNumbers.Add(testNumber);
 
-  AVObject testObject = new AVObject("DataTypes");
-  testObject["testBoolean"] = testBool;
-  testObject["testInteger"] = testNumber;
-  testObject["testDate"] = testDate;
-  testObject["testData"] = testData;
-  testObject["testArrayList"] = testNumbers;
-  testObject["testDictionary"] = testDictionary;
-  await testObject.SaveAsync();
-  Debug.Log(testObject.ObjectId);
+var testDictionary = new Dictionary<string, object>();
+testDictionary.Add("number", testNumber);
+testDictionary.Add("string", testString);
+
+AVObject testObject = new AVObject("DataTypes");
+testObject["testInteger"] = testNumber;
+testObject["testFloat"] = testFloat;
+testObject["testDouble"] = testDouble;
+testObject["testBoolean"] = testBool;
+testObject["testDate"] = testDate;
+testObject["testData"] = testData;
+testObject["testArrayList"] = testNumbers;
+testObject["testDictionary"] = testDictionary;
+await testObject.SaveAsync();
+Debug.Log(testObject.ObjectId);
 ```
+
+其中 `int`、`float`、`double` 类型的数据，服务端统一为 `Number` 类型来做处理，SDK 会在开发者获取相关值时自动做类型转换。
 
 ### 保存对象
 
@@ -125,7 +132,7 @@ Debug.Log(equipBag.ObjectId);
 每个被成功保存在云端的对象会有一个唯一的 Id 标识 `objectId`，因此获取对象的最基本的方法就是根据 `objectId` 来查询：
 
 ```cs
-AVQuery<AVObject> query=new AVQuery<AVObject>("GameEquip");
+AVQuery<AVObject> query = new AVQuery<AVObject>("GameEquip");
 AVObject equipment = await query.GetAsync("5c4147887565716f2485fc89");
 Debug.Log(equipment.ObjectId);
 ```
@@ -142,7 +149,7 @@ Debug.Log(equipBag.ObjectId);
 ```
 
 #### 访问对象的属性
-objectId、createdAt、updatedAt 三个特殊属性可以直接获取，其他的自定义属性可以使用相应数据类型的 `Get<T>范型` 方法：
+objectId、createdAt、updatedAt 三个特殊属性可以直接获取，其他的自定义属性可以使用相应数据类型的 `Get<T>` 泛型方法：
 
 ```cs
 AVObject equipBag = new AVObject("GameEquipBag");
@@ -305,6 +312,89 @@ equipments.ForEach((equip) =>
 更多内容可参考 [关联数据查询](relation-guide.html#Pointers_查询)。
 
 
+## 子类化
+LeanCloud 希望设计成能让人尽快上手并使用。你可以通过 `avobject.get<T>` 方法访问所有的数据。但是在很多现有成熟的代码中，子类化能带来更多优点，诸如简洁、可扩展性以及 IDE 提供的代码自动完成的支持等等。子类化不是必须的，你可以将下列代码转化：
+
+```cs
+AVObject equip = new AVObject("GameEquip");
+equip["name"] = "短剑";
+equip["attackValue"] = 5;
+await equip.SaveAsync();
+```
+
+可以写成：
+
+```cs
+AVObject equip = new GameEquip();
+equip.Name = "短剑";
+equip.AttackValue = 5;
+await equip.SaveAsync();
+```
+
+### 子类化 AVObject
+
+要实现子类化，需要下面几个步骤：
+
+1. 首先声明一个子类继承自 AVObject；
+2. 添加 `[AVClassName("xxx")]` 注解。它的值必须是一个字符串，也就是你过去传入 AVObject 构造函数的类名。这样以来，后续就不需要再在代码中出现这个字符串类名；
+3. 实现自定义属性的 `get` 及 `set` 方法;
+4. 在应用初始化的地方，在系统启动时注册子类 `AVObject.RegisterSubclass<yourClassName>();`。
+
+下面是实现 `GameEquip` 子类化的例子:
+
+```cs
+[AVClassName("GameEquip")]
+public class GameEquip : AVObject
+{
+    [AVFieldName("name")]
+    public string Name
+    {
+        get { return GetProperty<string>("Name"); }
+        set { SetProperty<string>(value, "Name"); }
+    }
+
+    [AVFieldName("attackValue")]
+    public int AttackValue
+    {
+        get { return GetProperty<int>("AttackValue"); }
+        set { SetProperty<int>(value, "AttackValue"); }
+    }
+}
+```
+`[AVFieldName("name")]` 中的 `name` 为存储后台中对应的「列名」；`public string Name` 中的 `Name` 为自定义属性名。
+
+然后在系统启动时，注册子类:
+
+```cs
+AVObject.RegisterSubclass<GameEquip>();
+```
+
+### 使用子类
+
+#### 新增和修改
+
+```cs
+var knife = new GameEquip();
+var className = knife.ClassName;
+Debug.Log(className);
+knife.Name = "小刀";
+knife.AttackValue = 1;
+await knife.SaveAsync();
+```
+
+#### 查询
+
+```cs
+var query = new AVQuery<GameEquip>();
+await query.FindAsync();
+```
+
+#### 删除
+
+```cs
+await knife.DeleteAsync();
+```
+
 ## 文件
 
 文件存储也是数据存储的一种方式，图像、音频、视频、通用文件等等都是数据的载体。很多开发者也习惯把复杂对象序列化之后保存成文件，比如 JSON 或 XML 文件。文件存储在 LeanStorage 中被单独封装成一个 `AVFile` 来实现文件的上传、下载等操作。
@@ -432,7 +522,7 @@ equipments.ForEach((equip) =>
 <div class="callout callout-danger">默认情况下，文件的删除权限是关闭的，需要进入 {% if node == 'qcloud' %}**控制台** > **存储** > `_File`{% else %}[控制台 > 存储 > **`_File`**](/data.html?appid={{appid}}#/_File){% endif %}，选择菜单 **其他** > **权限设置** > **delete** 来开启。</div>
 
 ```cs
-var file = await AVFile.GetFileWithObjectIdAsync("538ed669e4b0e335f6102809");
+AVFile file = await AVFile.GetFileWithObjectIdAsync("538ed669e4b0e335f6102809");
 await file.DeleteAsync();
 ```
 
@@ -1068,10 +1158,8 @@ Debug.Log(user); //此时打印出来为 Null
 查询用户代码如下：
 
 ```cs
-AVUser.Query.WhereEqualTo("gender", "female").FindAsync().ContinueWith(t =>
-{
-     IEnumerable<AVUser> women = t.Result;
-});
+var query = AVUser.Query.WhereEqualTo("gender", "female");
+await query.FindAsync();
 ```
 
 ## 第三方账户登录
@@ -1098,7 +1186,7 @@ AVUser.Query.WhereEqualTo("gender", "female").FindAsync().ContinueWith(t =>
 
 LeanCloud **暂不提供** 获取第三方 authData 的 SDK。开发者需要调用微信、QQ 等官方的 SDK，并根据其文档进行获取，也可以使用其他服务商提供的社交登录组件。
 
-开发者在获取了第三方的完整 authData 后，就可以使用我们提供的 AVUser 类的 `loginWithauthData` 或 `associateWithauthData` 两个接口，传入 authData，进行用户数据的绑定了。在操作成功之后，这部分第三方账户数据会存入 `_User` 表的 `authData` 字段里。
+开发者在获取了第三方的完整 authData 后，就可以使用我们提供的 AVUser 类的 `LoginWithAuthDataAsync()` 或 `AssociateAuthDataAsync()` 两个接口，传入 authData，进行用户数据的绑定了。在操作成功之后，这部分第三方账户数据会存入 `_User` 表的 `authData` 字段里。
 
 LeanCloud 后端要求 authData 至少含有 `openid 或 uid`、`access_token` 和 `expires_in` 三个字段。微信和 QQ 使用 `openid`，其他平台使用 `uid`。
 

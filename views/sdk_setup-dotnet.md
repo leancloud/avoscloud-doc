@@ -78,7 +78,11 @@ using LeanCloud.Realtime;
 ![AVInitializeBehaviour](images/unity/avinitializebehaviour.png)
 
 #### 即时通讯初始化
-使用即时通讯前请确保已经[初始化数据存储](#数据存储初始化)，然后在任意一个 `MonoBehaviour` 启动的时候调用如下代码：
+初始化**必须**在 Unity Editor 上将 `AVRealtimeInitializeBehavior` 挂载在某一个 GameObject 下，如下图：
+
+![AVRealtimeInitializeBehavior](images/unity/realtime-unity-setup.png)
+
+然后在任意一个 `MonoBehaviour` 启动的时候调用如下代码：
 
 ```cs
 var realtime = new AVRealtime("{{appid}}", "{{appkey}}");
