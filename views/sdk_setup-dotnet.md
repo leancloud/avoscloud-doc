@@ -6,9 +6,11 @@
 
 ## 安装
 
-### Mono for Unity
+### Unity
 
-- 支持 Unity 5.3+
+- 支持 Unity 5.3+。
+<!-- 等升级 Unity 即时通讯的文档后再增加这句话 -->
+<!-- - 支持 .NET 4.x。SDK 在 .NET 3.x 版本下仅做 Bug 维护，不再增加新版本，请大家尽快升级到 4.x 版本。 -->
 
 支持使用 Unity 开发的 iOS、Android、Windows Phone 8、Windows Store、Windows Desktop，以及网页游戏。
 
