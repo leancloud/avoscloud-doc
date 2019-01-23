@@ -1291,8 +1291,7 @@ var user = await AVUser.LogInWithAuthDataAndUnionIdAsync(authData, "weixinapp1",
 
 1. 基于 Unity 自身的 WWW 类发送 Http 请求的限制，单个请求的大小不能超过 2MB，所以在使用 Unity SDK 时，开发者需要注意存储数据，构建查询等操作时，需要做到简洁高效。
 2. Unity 中请将 `Optimization` 中的 `Stripping Level` 设置为 `Disabled`。
-3. 从官网上下载的 SDK，在 Unity 4.3 以后的版本都需要重命名，把版本号去掉，例如下载的文件叫做 `AVOSCloud.Unity-v1.1.5.dll`，请重命名为 `AVOSCloud.Unity.dll`，否则会出现引入脚本失败的错误。
-4. Unity 自从升级到 5.0 之后就会出现一个 iOS 上访问 HTTPS 请求时的 SSL 证书访问错误：**NSURLErrorDomain error -1012**。解决方案是：在 Unity 构建完成 iOS 项目之后，使用 XCode 打开项目，找到 `Classes/Unity/WWWConnection.mm` 文件，找到这个方法：
+3. Unity 自从升级到 5.0 之后就会出现一个 iOS 上访问 HTTPS 请求时的 SSL 证书访问错误：**NSURLErrorDomain error -1012**。解决方案是：在 Unity 构建完成 iOS 项目之后，使用 XCode 打开项目，找到 `Classes/Unity/WWWConnection.mm` 文件，找到这个方法：
 
   ```objc
   -(void)connection:(NSURLConnection*)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge*)challenge
