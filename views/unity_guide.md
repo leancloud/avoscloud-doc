@@ -316,7 +316,7 @@ equipments.ForEach((equip) =>
 LeanCloud 希望设计成能让人尽快上手并使用。你可以通过 `avobject.get<T>` 方法访问所有的数据。但是在很多现有成熟的代码中，子类化能带来更多优点，诸如简洁、可扩展性以及 IDE 提供的代码自动完成的支持等等。子类化不是必须的，你可以将下列代码转化：
 
 ```cs
-AVObject equip = new AVObject("GameEquip");
+var equip = new AVObject("GameEquip");
 equip["name"] = "短剑";
 equip["attackValue"] = 5;
 await equip.SaveAsync();
@@ -325,7 +325,7 @@ await equip.SaveAsync();
 可以写成：
 
 ```cs
-AVObject equip = new GameEquip();
+var equip = new GameEquip();
 equip.Name = "短剑";
 equip.AttackValue = 5;
 await equip.SaveAsync();
@@ -575,7 +575,7 @@ AVQuery<AVObject> query = new AVQuery<AVObject>("GameEquip").WhereEqualTo("name"
 最基础的用法是根据 objectId 来查询对象：
 
 ```cs
-AVQuery<AVObject> query=new AVQuery<AVObject>("GameEquip");
+AVQuery<AVObject> query = new AVQuery<AVObject>("GameEquip");
 AVObject gameEquip = await query.GetAsync("53706cd1e4b0d4bef5eb32ab");
 Debug.Log(gameEquip.ObjectId);
 ```
@@ -1284,7 +1284,7 @@ await user.AssociateAuthDataAsync(facebookAuthData, "facebook");
 
 其他平台，如 QQ 的 UnionID 体系，和微信的设计保持一致。
 
-LeanCloud 支持 UnionID 体系。你只需要给 `loginWithauthData` 和 `associateWithauthData` 接口传入更多的参数，即可完成新 UnionID 体系的集成。
+LeanCloud 支持 UnionID 体系。你只需要给 `LogInWithAuthDataAndUnionIdAsync` 和 `AssociateAuthDataAndUnionIdAsync` 接口传入更多的参数，即可完成新 UnionID 体系的集成。
 
 要使用到的关键参数列表：
 
@@ -1360,7 +1360,7 @@ var user = await AVUser.LogInWithAuthDataAndUnionIdAsync(authData, "weixinapp1",
 
 可以看到，最终该 authData 实际包含了来自 `weixin` 这个 `unionId` 体系内的两个不同平台，`weixinapp1` 代表来自移动应用，`miniprogram1` 来自小程序。`_weixin_unionid ` 这个字段的值就是用户在 `weixin` 这个 `unionId` 平台的唯一标识 UnionID 值。
 
-当一个用户以来自 weixinapp 的 OpenID `oTY851axxxgujsEl0f36Huxk` 和 UnionID `ox7NLs06ZGfdxxxxxe0F1po78qE` 一起传入生成新的 AVUser 后，接下来这个用户以来自 miniprogram 不同的 OpenID `ohxoK3ldpsGDGGSaniEEexxx` 和同样的 UnionID `ox7NLs06ZGfdxxxxxe0F1po78qE` 一起传入时，LeanCloud 判定是同样的 UnionID，就直接把来自 `miniprogram` 的新用户数据加入到已有 authData 里了，不会再创建新的用户。
+当一个用户以来自 `weixinapp1` 的 OpenID `oTY851axxxgujsEl0f36Huxk` 和 UnionID `ox7NLs06ZGfdxxxxxe0F1po78qE` 一起传入生成新的 AVUser 后，接下来这个用户以来自 miniprogram 不同的 OpenID `ohxoK3ldpsGDGGSaniEEexxx` 和同样的 UnionID `ox7NLs06ZGfdxxxxxe0F1po78qE` 一起传入时，LeanCloud 判定是同样的 UnionID，就直接把来自 `miniprogram` 的新用户数据加入到已有 authData 里了，不会再创建新的用户。
 
 这样一来，LeanCloud 后台通过识别平台性的用户唯一标识 UnionID，让来自同一个 UnionID 体系内的应用程序、小程序等不同平台的用户都绑定到了一个 AVUser 上，实现互通。
 
