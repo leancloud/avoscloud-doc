@@ -10,6 +10,10 @@ composer 是推荐的 PHP 包管理工具。安装 leancloud-sdk 只需执行以
 composer require leancloud/leancloud-sdk
 ```
 
+注意：
+
+- leancloud-sdk 依赖 PHP 的 curl 扩展（常见 Linux 系统下一般需要安装 `php-curl` 这个包）
+
 {% endblock %}
 
 {% block init_with_app_keys %}
