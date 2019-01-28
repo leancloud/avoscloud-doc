@@ -15,13 +15,7 @@ composer require leancloud/leancloud-sdk
 - leancloud-sdk 依赖 PHP 的 curl 扩展（常见 Linux 系统下一般需要安装 `php-curl` 这个包）
 
 
-- 如果 composer 访问 packagist 仓库有问题，需要[设置镜像][packagist-mirror]或者通过代理访问。composer 尚不支持 socks 代理，如果使用 socks 代理，可配合 proxychains 使用：
-
-        proxychains composer require leancloud/leancloud-sdk
-
-    （有些人可能更习惯用 tsocks 而不是 proxychains，然而 [composer 搭配 tsocks 使用无效]。）
-
-[composer 搭配 tsocks 使用无效]: https://github.com/composer/composer/issues/2900#issuecomment-269097050
+- 如果 composer 访问 packagist 仓库有问题，需要[设置镜像][packagist-mirror]或者通过代理（设置 `http_proxy` 环境变量）访问。
 [packagist-mirror]: https://pkg.phpcomposer.com/
 
 {% endblock %}
