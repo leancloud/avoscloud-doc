@@ -61,7 +61,10 @@ Client::useRegion(Region::CN_E1);
 ```php
 // test.php
 
-require 'vendor/autoload.php';
+// 通过 composer 安装
+require_once 'vendor/autoload.php';
+// 手动安装
+// require_once("vendor/leancloud/src/autoload.php");
 
 use \LeanCloud\Client;
 use \LeanCloud\LeanObject;
