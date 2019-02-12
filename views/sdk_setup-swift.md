@@ -21,7 +21,7 @@ platform :ios, '10.0'
 use_frameworks!
 
 target 'YOUR_APP_TARGET' do # 替换 YOUR_APP_TARGET 为你的应用名称。
-    pod 'LeanCloud'
+    pod 'LeanCloud','~> 15.0.0'
 end
 ```
 
