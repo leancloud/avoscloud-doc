@@ -763,12 +763,10 @@ $innerQuery->equalTo("tags", $tag);
 $query = new Query("Comment");
 // 执行内嵌操作
 $query->matchesInQuery("targetTodoFolder", $innerQuery);
-// 返回符合 TodoFolder 超过 20 个赞这一条件的 Comment 对象集合
 $comments = $query->find();
 
 // 注意如果要做相反的查询可以使用
 $query->notMatchInQuery("targetTodoFolder", $innerQuery);
-// 如此做将查询出 likes 小于或者等于 20 的 TodoFolder 的 Comment 对象
 $comments = $query->find();
 ```
 {% endblock %}

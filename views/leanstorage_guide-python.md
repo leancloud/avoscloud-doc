@@ -956,9 +956,9 @@ inner_query.equal_to('tags', tag)
 
 query = leancloud.Query('Comment')
 query.matches_query('targetTodoFolder', inner_query)  # 将内嵌查询赋予目标查询
+query.find()
 # query.does_not_match_query('targetTodoFolder', inner_query)
 # 也可以查询不包含内嵌查询的目标查询
-query.find()  # 返回符合超过 20 个赞的 TodoFolder 这一条件的 Comment 对象集合
 ```
 {% endblock %}
 

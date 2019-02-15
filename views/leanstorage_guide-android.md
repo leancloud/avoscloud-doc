@@ -946,13 +946,11 @@ fetchAllInBackground()
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> list, AVException e) {
-                // list 就是符合超过 20 个赞的 TodoFolder 这一条件的 Comment 对象集合
             }
         });
 
         // 注意如果要做相反的查询可以使用
         query.whereDoesNotMatchQuery("targetTodoFolder", innerQuery);
-        // 如此做将查询出 likes 小于或者等于 20 的 TodoFolder 的 Comment 对象
 ```
 {% endblock %}
 
