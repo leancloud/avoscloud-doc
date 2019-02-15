@@ -904,8 +904,10 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 
 ```objc
     // 构建内嵌查询
+    AVObject *tag = [AVObject objectWithClassName:@"Tag" objectId:@"5661031a60b204d55d3b7b89"];
     AVQuery *innerQuery = [AVQuery queryWithClassName:@"TodoFolder"];
-    [innerQuery whereKey:@"likes" greaterThan:@20];
+    [innerQuery whereKey:@"tags" equalTo:tag];
+
     // 将内嵌查询赋予目标查询
     AVQuery *query = [AVQuery queryWithClassName:@"Comment"];
     // 执行内嵌操作

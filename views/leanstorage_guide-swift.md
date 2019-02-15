@@ -1106,13 +1106,13 @@ query.find { result in
 {% block code_query_comment_match_query_todoFolder %}
 
 ```swift
+// 构建内嵌查询
+let tag = LCObject(className: "Tag", objectId: "5661031a60b204d55d3b7b89")
+let innerQuery = LCQuery(className: "TodoFolder")
+innerQuery.whereKey("tags", .EqualTo(tag))
+
 // 将内嵌查询赋予目标查询
 let query = LCQuery(className: "Comment")
-
-// 构建内嵌查询
-let innerQuery = LCQuery(className: "TodoFolder")
-innerQuery.whereKey("likes", .GreaterThan(20))
-
 // 执行内嵌操作
 query.whereKey("targetTodoFolder", .MatchedQuery(innerQuery))
 

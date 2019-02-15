@@ -847,8 +847,10 @@
 
 ```java
     // 构建内嵌查询
+    AVObject tag = AVObject.createWithoutData("Tag", "5661031a60b204d55d3b7b89");
     AVQuery<AVObject> innerQuery = new AVQuery<>("TodoFolder");
-    innerQuery.whereGreaterThan("likes", 20);
+    innerQuery.whereEqualTo("tags", tag);
+
     // 将内嵌查询赋予目标查询
     AVQuery<AVObject> query = new AVQuery<>("Comment");
     // 执行内嵌操作

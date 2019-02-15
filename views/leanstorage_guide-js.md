@@ -970,8 +970,9 @@ file.save({
 
 ```js
   // 构建内嵌查询
+  var targetTag = AV.Object.createWithoutData('Tag', '5655729900b0bf3785ca8192');
   var innerQuery = new AV.Query('TodoFolder');
-  innerQuery.greaterThan('likes', 20);
+  innerQuery.equalTo('tags', targetTag);
 
   // 将内嵌查询赋予目标查询
   var query = new AV.Query('Comment');
