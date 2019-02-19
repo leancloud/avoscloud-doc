@@ -267,7 +267,10 @@ $ lean deploy -m 'Be more awesome! 这是定制的部署备注'
 
 部署项目时，如果有一些临时文件或是项目源码管理软件用到的文件，不需要上传到服务器，可以将它们加入到 `.leanignore` 文件。
 
-`.leanignore` 文件格式与 Git 使用的 `.gitignore` 格式基本相同，每行写一个忽略项，可以是文件或者文件夹。如果项目没有 `.leanignore` 文件，部署时会根据当前项目所使用的语言创建一个默认的 `.leanignore` 文件。请确认此文件中的默认配置是否与项目需求相符。
+`.leanignore` 文件格式与 Git 使用的 `.gitignore` 格式基本相同（严格地说，`.leanignore` 支持的语法为 [`.gitignore`　的子集][parseignore]），每行写一个忽略项，可以是文件或者文件夹。如果项目没有 `.leanignore` 文件，部署时会根据当前项目所使用的语言创建一个默认的 `.leanignore` 文件。请确认此文件中的[默认配置][defaultIgnorePatterns]是否与项目需求相符。
+
+[parseignore]: https://github.com/facebookarchive/parseignore/blob/master/parseignore_test.go
+[defaultIgnorePatterns]: https://github.com/leancloud/lean-cli/blob/master/runtimes/ignorefiles.go#L13
 
 ### 从 Git 仓库部署
 
