@@ -259,9 +259,10 @@ conversation.sendMessage(msg, new AVIMConversationCallback() {
 ```
 ```cs
 var textMessage = new AVIMTextMessage("Jerry，起床了！");
-await conversation.SendAsync(textMessage);
+await conversation.SendMessageAsync(textMessage);
 ```
 
+<!-- //////////////////////////////这里 conversation.send 似乎是根据每个语言的不同渲染的，C# 应该是 SendMessageAsync，但渲染出来是 conversation.SendAsync ，请丰老师看一下 ///////////////////////// -->
 `conversation.send` 接口实现的功能就是向对话中发送一条消息。
 
 Jerry 只要在线他就会收到消息，至此 Jerry 还没有登场，那么他怎么接收消息呢？
@@ -322,7 +323,7 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
 AVIMMessageManager.registerDefaultMessageHandler(new CustomMessageHandler());
 ```
 ```cs
-var jerry =await realtime.CreateClientAsync("Jerry");
+var jerry = await realtime.CreateClientAsync("Jerry");
 jerry.OnInvited += (sender, args) =>
 {
   var invitedBy = args.InvitedBy;
@@ -438,7 +439,7 @@ conv.addMembers(Arrays.asList("Mary"), new AVIMConversationCallback() {
 });
 ```
 ```cs
-var tom = await realtime.CreateClientAsync();
+var tom = await realtime.CreateClientAsync("Tom");
 var conversation = await tom.GetConversationAsync("CONVERSATION_ID");
 await tom.InviteAsync(conversation, "Mary");
 ```
@@ -588,7 +589,8 @@ conversation.sendMessage(msg, new AVIMConversationCallback() {
 });
 ```
 ```cs
-await conversation.SendAsync("大家好，欢迎来到我们的群聊对话！");
+var textMessage = new AVIMTextMessage("大家好，欢迎来到我们的群聊对话！");
+await conversation.SendMessageAsync(textMessage);
 ```
 
 而 Jerry 和 Mary 都会有 `Event.MESSAGE` 事件触发，利用它来接收群聊消息，这一点与一对一单聊没区别。
@@ -743,9 +745,7 @@ conversation.quit(new AVIMConversationCallback(){
 });
 ```
 ```cs
-jerry.LeaveAsync(conversation);
-// 或者传入 conversation id
-jerry.LeaveAsync("590aa654fab00f41dda86f51");
+await tom.LeaveAsync(conversation);
 ```
 
 执行了这段代码之后会触发如下流程：
@@ -846,7 +846,20 @@ query.findInBackground(new AVIMConversationQueryCallback(){
 });      
 ```
 ```cs
-var query = tom.GetQuery().WhereContainedIn("m","Tom");
+//////////////////////////给丰老师的提示/////////////////////////////////
+//////////////////////////注意 query 时这种写法是错误的！！！！！！一定要连成一串来写////////////
+/////////////////////////////////////////////////////////////////////////////////////
+var members = new[] { "Tom" };
+var query = tom.GetQuery().WhereContainedIn("m", members)
+query.WhereEqualTo("Hobbies", "4")
+query.WhereEqualTo("leader", "测试");
+await query.FindAsync();
+
+//////////////////////////给丰老师的提示/////////////////////////////////
+//////////////////////////注意这种的才是正确的！！！！！！！！！！！！！////////////
+/////////////////////////////////////////////////////////////////////////////////////
+var members = new[] { "Tom" };
+var query = tom.GetQuery().WhereContainedIn("m", members).WhereEqualTo("Hobbies", "4").WhereEqualTo("leader", "测试");
 await query.FindAsync();
 ```
 
@@ -956,18 +969,11 @@ conv.sendMessage(m, new AVIMConversationCallback() {
 });
 ```
 ```cs
-// 假设在程序运行目录下有一张图片，Unity/Xamarin 可以参照这种做法通过路径获取图片
-// 以下是发送图片消息的快捷用法
-using (FileStream fileStream = new FileStream(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "San_Francisco.png"), FileMode.Open, FileAccess.Read))
-{
-    await conversation.SendImageAsync("San_Francisco.png", fileStream);
-}
-// 或者如下比较常规的用法
-
+var image = new AVFile("screenshot.png", Path.Combine(Application.persistentDataPath, "screenshot.PNG"));
 var imageMessage = new AVIMImageMessage();
-imageMessage.File = new AVFile("San_Francisco.png", fileStream);
+imageMessage.File = image;
 imageMessage.TextContent = "发自我的 Windows";
-await conversation.SendAsync(imageMessage);
+await conversation.SendMessageAsync(imageMessage);
 ```
 
 
@@ -1013,7 +1019,11 @@ conv.sendMessage(m, new AVIMConversationCallback() {
 });
 ```
 ```cs
-await conversation.SendImageAsync("http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif", "Satomi_Ishihara", "萌妹子一枚");
+var image = new AVFile("Satomi_Ishihara.gif", "http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif");
+var imageMessage = new AVIMImageMessage();
+imageMessage.File = image;
+imageMessage.TextContent = "发自我的 Windows";
+await conversation.SendMessageAsync(imageMessage);
 ```
 
 #### 接收图像消息
@@ -1079,8 +1089,8 @@ private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 {
     if (e.Message is AVIMImageMessage imageMessage)
     {
-        Console.WriteLine(imageMessage.File.Url);
-        // imageMessage.File 是一个 AVFile 对象，更多操作可以参考数据存储里面的文件
+        AVFile file = imageMessage.File;
+        Debug.Log(file.Url);
     }
 }
 ```
@@ -1134,6 +1144,13 @@ conv.queryMessages(10, new AVIMMessagesQueryCallback() {
 ```cs
 // limit 取值范围 1~1000，默认 20
 var messages = await conversation.QueryMessageAsync(limit: 10);
+foreach (var message in messages)
+{
+  if (message is AVIMTextMessage)
+  {
+    var textMessage = (AVIMTextMessage)message;
+  }
+}
 ```
 
 而如果想继续拉取更早的消息记录，可以使用如下代码：
