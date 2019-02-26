@@ -159,9 +159,13 @@ client.createConversation(Arrays.asList("Jerry"),"猫和老鼠",attr,
 }
 ```
 ```cs
-// 推荐使用 Builder 模式来构建对话
-var conversationBuilder = tom.GetConversationBuilder().SetProperty("type", "private").SetProperty("pinned", true);
-var conversation = await tom.CreateConversationAsync(conversationBuilder);
+var attr = new Dictionary<string, object>()
+{
+    {"type", "private"},
+    {"pinned", true},
+};
+var memberList = new List<string>() { "jerry" };
+var conversation = await tom.CreateConversationAsync(members : memberList, name: "Tom & Jerry", options: attr);
 ```
 
 **自定义属性在 SDK 级别是对所有成员可见的**。我们也支持通过自定义属性来查询对话，请参见[对话的查询](#对话的查询)
@@ -316,11 +320,8 @@ tom.createConversation(Arrays.asList("Bob", "Harry", "William"), "三年二班",
 });
 ```
 ```cs
-var conversationBuilder = tom.GetConversationBuilder().SetName("三年二班")
-                              .AddMember("Bob")
-                              .AddMember("Harry")
-                              .AddMember("William");
-var conversation = await tom.CreateConversationAsync(conversationBuilder);
+var memberList = new List<string>() { "Bob", "Harry", "William" };
+var conversation = await tom.CreateConversationAsync(members : memberList, name: "三年二班");
 ```
 
 #### 通过查询加入同学群
@@ -401,7 +402,7 @@ conv.addMembers(Arrays.asList("Harry"), new AVIMConversationCallback() {
 });
 ```
 ```cs
-await schoolmateGroup.InviteAsync(new string[]{ "Harry" });
+await tom.InviteAsync(schoolmateGroup, "Marrry");
 ```
 
 ### 聊天室
@@ -447,12 +448,7 @@ tom.createChatRoom(null, "聊天室", null,
 });
 ```
 ```cs
-// 第一种是最直接间接的方式，传入 name 即可
 tom.CreateChatRoomAsync("聊天室");
-// 第二种是更为推荐的形式采用 Builder 模式
-var chatRoomBuilder = tom.GetConversationBuilder().SetName("聊天室")
-                              .SetTransient();
-var chatRoom = await tom.CreateConversationAsync(chatRoomBuilder);
 ```
 
 #### 查找聊天室列表
@@ -558,7 +554,7 @@ var temporaryConversation = await tom.CreateTemporaryConversationAsync();
 其他操作与普通对话无异，更多功能请查看[即时通讯 - 临时对话开发指南](realtime-temporary-conversation.html)。
 
 ## 对话查询
-
+////////////////////////////////////////////这里看起来和存储的查询是一样的，可能结构上需要优化一下而不是重复写一份文档////////////////////////////
 ### 根据 id 查询
 
 `id` 对应就是 `_Conversation` 表中的 `objectId` 的字段值:
@@ -809,7 +805,7 @@ var query = AVIMConversationQuery.or(new AVIMConversationQuery[] { ageQuery, key
 
 
 ## 消息类型
-
+////////////////////////// 在基础指南里面已经写了图像消息，这里虽然是音频/视频/文件，但是也还是重复了/////////////////////////
 ### 发送音频消息/视频/文件
 
 #### 发送流程
@@ -869,18 +865,12 @@ conv.sendMessage(m, new AVIMConversationCallback() {
 });
 ```
 ```cs
-// 假设在程序运行目录下有一张图片，Unity/Xamarin 可以参照这种做法通过路径获取音频文件
-// 以下是发送音频消息的快捷用法
-using (FileStream fileStream = new FileStream(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "忐忑.mp3"), FileMode.Open, FileAccess.Read))
-{
-    await conversation.SendAudioAsync("忐忑.mp3", fileStream);
-}
 
-// 或者如下比较常规的用法
+var audio = new AVFile("tante.mp3", Path.Combine(Application.persistentDataPath, "tante.mp3"));
 var audioMessage = new AVIMAudioMessage();
-audioMessage.File = new AVFile("忐忑.mp3", fileStream);
+audioMessage.File = audio;
 audioMessage.TextContent = "听听人类的神曲";
-await conversation.SendAsync(audioMessage);
+await conversation.SendMessageAsync(audioMessage);
 ```
 
 与图像消息类似，音频消息也支持从 URL 构建：
@@ -921,7 +911,11 @@ conv.sendMessage(m, new AVIMConversationCallback() {
 });
 ```
 ```cs
-await conversation.SendAudioAsync("https://some.website.com/apple.acc", "apple.acc", "来自苹果发布会现场的录音");
+var audio = new AVFile("Satomi_Ishihara.gif", "http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif");
+var audioMessage = new AVIMAudioMessage();
+audioMessage.File = audio;
+audioMessage.TextContent = "听听人类的神曲";
+await conversation.SendMessageAsync(audioMessage);
 ```
 
 ### 内置消息类型
@@ -980,7 +974,9 @@ conversation.sendMessage(locationMessage, new AVIMConversationCallback() {
 });
 ```
 ```cs
-await conv.SendLocationAsync(new AVGeoPoint(31.3753285, 120.9664658));
+var locationMessage = new AVIMLocationMessage();
+locationMessage.Location = new AVGeoPoint(31.3753285, 120.9664658);
+await conversation.SendMessageAsync(locationMessage);
 ```
 
 ### 自定义消息类型
@@ -991,6 +987,69 @@ await conv.SendLocationAsync(new AVGeoPoint(31.3753285, 120.9664658));
 - 通过继承内置的消息类型添加一些属性
 - 完全自由实现一个全新的消息类型
 
+
+///////////////////////////////// 如何在 C# 中自定义消息 ////////////////////////////
+
+首先定义一个自定义的子类继承自 `AVIMTypedMessage`：
+
+```cs
+// 定义自定义消息类名
+[AVIMMessageClassName("InputtingMessage")]
+// 标记消息类型，仅允许使用正整数，LeanCloud 保留负数内部使用
+[AVIMTypedMessageTypeIntAttribute(2)]
+public class InputtingMessage : AVIMTypedMessage
+{
+    public InputtingMessage() { }
+
+    // 我们在发送消息时可以附带一个 Emoji 表情，这里用 Ecode 来表示表情编码
+    [AVIMMessageFieldName("Ecode")]
+    public string Ecode { get; set; }
+}
+```
+
+然后在[初始化](#初始化)的时候注册这个子类：
+
+```cs
+realtime.RegisterMessageType<InputtingMessage>();
+```
+
+到这里，自定义消息的工作就完成了。
+
+现在我们发送一个自己定义的消息：
+
+```cs
+var inputtingMessage = new InputtingMessage();
+// 这里的 TextContent 继承自 AVIMTypedMessage
+inputtingMessage.TextContent = "对方正在输入...";
+// 这里的 Ecode 是我们刚刚自己定义的
+inputtingMessage.Ecode = "#e001";
+        
+// 执行此行代码前，用户已经登录并拿到了当前的 conversation 对象
+await conversation.SendMessageAsync(inputtingMessage);
+```
+
+在同一个 conversation 中的其他用户，接收该条自定义消息：
+
+```cs
+async void Start() 
+{   
+    var jerry = await realtime.CreateClientAsync("jerry");
+    // 接收消息事件
+    jerry.OnMessageReceived += Jerry_OnMessageReceived;
+}
+
+void Jerry_OnMessageReceived(object sender, AVIMMessageEventArgs e)
+{
+    if (e.Message is InputtingMessage)
+    {
+        var inputtingMessage = (InputtingMessage)e.Message;
+        Debug.Log(string.Format("收到自定义消息 {0} {1}", inputtingMessage.TextContent, inputtingMessage.Ecode));
+    }
+}
+```
+
+在这个案例中，通过「对方正在输入...」这种场景，我们介绍了如何自定义消息，但要真正实现「对方正在输入...」这个完整的功能，我们还需要指定该条消息为「[暂态消息](#暂态消息)」。
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ### 接收消息
 
@@ -1191,6 +1250,8 @@ private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 
 <div class="callout callout-info">此功能仅针对<u>聊天室消息</u>有效。普通对话的消息不需要设置等级，即使设置了也会被系统忽略，因为普通对话的消息不会被丢弃。</div>
 
+//////////////////////////////////////// 既然仅对聊天室有效，那么单独写到聊天室下面是比较合适的 ///////////////////////////////////
+
 
 ### @ 成员提醒
 
@@ -1226,7 +1287,7 @@ var textMessage = new AVIMTextMessage("@Tom")
 {
     MentionList = new List<string>() { "Tom" }
 };
-await conversation.SendAsync(textMessage);
+await conversation.SendMessageAsync(textMessage);
 ```
 
 或者也可以提醒所有人：
@@ -1263,7 +1324,7 @@ var textMessage = new AVIMTextMessage("@all")
 {
     MentionAll = true
 };
-await conv.SendAsync(textMessage);
+await conversation.SendMessageAsync(textMessage);
 ```
 
 消息的接收方，可以通过读取消息的提醒列表来获取哪些 client Id 被提醒了：
@@ -1361,6 +1422,8 @@ private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 ```
 
 ### 消息的撤回和修改
+////////////////////////// 注意，注意注意！！！c# 代码还不可用 //////////////////////////////////////////////
+
 
 > 需要在 控制台 > 消息 > 设置 中启用「聊天服务，对消息启用撤回功能」。
 
@@ -1472,7 +1535,7 @@ imConversation.updateMessage(oldMessage, textMessage, new AVIMMessageUpdatedCall
 // 直接修改对应的内容
 textMessage.TextContent = "修改之后的文本消息内容";
 // 将修改后的消息传入 ModifyAsync
-conversation.ModifyAsync(textMessage);
+await conversation.ModifyAsync(textMessage);
 ```
 
 对应的是接收方会触发 `MESSAGE_UPDATE`：
@@ -1514,6 +1577,8 @@ private void Tom_OnMessageModified(object sender, AVIMMessagePatchEventArgs e)
 
 
 ### 消息的离线推送通知
+
+////////////////////////////////////注意，注意！！！由于 C# 无法获取设备信息，因此单独集成 C# 是无法自定义离线推送的，建议先去除 C# 推送的代码，等 C# 包装了推送 SDK 之后再写 C# 的文档//////////////////
 
 iOS 和 Android 分别提供了内置的离线消息推送通知服务，但是使用的前提是按照推送文档配置 iOS 的推送证书和 Android 开启推送的开关，详细请阅读如下文档：
 
@@ -1636,12 +1701,14 @@ conversation.queryMessages(internal, AVIMMessageQueryDirectionFromOldToNew, limi
 });
 ```
 ```cs
-var earliestMessages = await conversation.QueryMessageFromOldToNewAsync();
+var earliestMessages = await conversation.QueryMessageAsync(direction: 0);
 ```
 
 为了实现翻页，请配合下一节[从某一时间戳往某一方向查询](#从某一时间戳往某一方向查询)
 
 ### 从某一时间戳往某一方向查询
+
+///////////////////////// 这里 iOS 的代码看起来也有问题 ///////////////////////////////
 
 已某一条消息的 Id 和 时间戳为准，往一个方向查：
 
@@ -1683,7 +1750,8 @@ conversation.queryMessages(internal, direction, limit,
 });
 ```
 ```cs
-var earliestMessages = await conversation.QueryMessageFromOldToNewAsync();
+var earliestMessages = await conversation.QueryMessageAsync(direction: 0, limit: 1);
+// var earliestMessages = await conversation.QueryMessageFromOldToNewAsync();
 // get some messages after earliestMessages.Last()
 var nextPageMessages = await conversation.QueryMessageAfterAsync(earliestMessages.Last());
 ```
@@ -1729,7 +1797,7 @@ conversation.queryMessages(internal, direction, limit,
 });
 ```
 ```cs
-var earliestMessage = await conversation.QueryMessageFromOldToNewAsync(limit: 1);
+var earliestMessage = await conversation.QueryMessageAsync(direction: 0, limit: 1);
 var latestMessage = await conversation.QueryMessageAsync(limit: 1);
 // mex count for messagesInInterval is 100
 var messagesInInterval = await conversation.QueryMessageInIntervalAsync(earliestMessage.FirstOrDefault(), latestMessage.FirstOrDefault());
@@ -1753,5 +1821,5 @@ iOS 和 Android SDK 针对移动应用的特殊场景，实现了客户端消息
 {{ docs.relatedLinks("更多文档",[
   { title: "服务总览", href: "realtime_v2.html" },
   { title: "基础入门", href: "realtime-guide-beginner.html" }, 
-  { title: "高阶技巧", href: "/realtime-guide-senior.html"}])
+  { title: "高阶技巧", href: "realtime-guide-senior.html"}])
 }}
