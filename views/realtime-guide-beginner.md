@@ -3058,4 +3058,4 @@ realtime.on(Event.RECONNECT, function() {
 
 [三，安全与签名、黑名单和权限管理、玩转直播聊天室和临时对话](realtime-guide-senior.html)
 
-[四，详解消息 hook 与系统对话的使用，打造自己的聊天机器人](realtime-guide-systemconv.html)
+[四，详解消息 hook 与系统对话，打造自己的聊天机器人](realtime-guide-systemconv.html)

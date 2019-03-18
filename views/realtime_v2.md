@@ -269,7 +269,7 @@ LeanCloud 即时通讯系统设计了四种类型的「对话」来满足不同�
 - [一，从简单的单聊、群聊、收发图文消息开始](realtime-guide-beginner.html)
 - [二，消息收发的更多方式，离线推送与消息同步，多设备登录](realtime-guide-intermediate.html)
 - [三，安全与签名、黑名单和权限管理、玩转直播聊天室和临时对话](realtime-guide-senior.html)
-- [四，详解消息 hook 与系统对话的使用，打造自己的聊天机器人](realtime-guide-systemconv.html)
+- [四，详解消息 hook 与系统对话，打造自己的聊天机器人](realtime-guide-systemconv.html)
 
 按客户端开发语言和平台区分，可以参考：
 
