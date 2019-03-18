@@ -684,7 +684,7 @@ tom.createConversation(Arrays.asList("Jerry","Mary"), "Tom & Jerry & friends", n
    });
 ```
 ```cs
-var conversation = await tom.CreateConversationAsync(new string[]{ "Jerry","Mary" },"Tom & Jerry & friends");
+var conversation = await tom.CreateConversationAsync(new string[]{ "Jerry","Mary" }, name:"Tom & Jerry & friends", isUnique:true);
 ```
 
 ### 群发消息
