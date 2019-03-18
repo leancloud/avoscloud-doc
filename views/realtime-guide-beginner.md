@@ -664,7 +664,9 @@ tom.createConversation({
 ```objc
 // Jerry 建立了与朋友们的会话
 NSArray *friends = @[@"Jerry", @"Mary"];
-[tom createConversationWithName:@"Tom & Jerry & friends" clientIds:friends callback:^(AVIMConversation *conversation, NSError *error) {
+[tom createConversationWithName:@"Tom & Jerry & friends" clientIds:friends
+  options:AVIMConversationOptionUnique
+  callback:^(AVIMConversation *conversation, NSError *error) {
     if (!error) {
         NSLog(@"创建成功");
     }
