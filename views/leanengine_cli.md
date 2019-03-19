@@ -1,5 +1,5 @@
 {% import "views/_leanengine.njk" as leanengine %}
-{% set release = "[Github releases 页面](https://releases.leanapp.cn/#/leancloud/lean-cli/releases)" %}
+{% set release = "[GitHub releases 页面](https://releases.leanapp.cn/#/leancloud/lean-cli/releases)" %}
 
 # 命令行工具 CLI 使用指南
 
@@ -50,11 +50,10 @@ brew upgrade
 
 ## 使用
 
-安装成功之后，直接在 terminal 终端运行 `lean -h`，输出帮助信息：
+安装成功之后，直接在 terminal 终端运行 `lean help`，输出帮助信息：
 
 ```sh
 $ lean help
-
  _                        ______ _                 _
 | |                      / _____) |               | |
 | |      ____ ____ ____ | /     | | ___  _   _  _ | |
@@ -68,7 +67,7 @@ USAGE:
    lean [global options] command [command options] [arguments...]
 
 VERSION:
-   0.20.0
+   0.20.1
 
 COMMANDS:
      login    Log in to LeanCloud
@@ -86,11 +85,32 @@ COMMANDS:
      cache    LeanCache shell
      cql      Start CQL interactive mode
      search   Search development docs
-     help, h  Show all commands or help info for one command
+     help, h  Show all commands
 
 GLOBAL OPTIONS:
    --version, -v  print the version
+
 ```
+
+简单介绍下主要的子命令：
+
+命令 | 用途
+- | -
+`login` | 登录 LeanCloud 账号
+`metric` | 当前项目的 LeanStorage 统计信息
+`info` | 当前用户、应用
+`up` | 启动本地开发调试实例
+`init` | 初始化云引擎项目
+`switch` | 切换关联的云引擎项目
+`deploy` | 部署项目至云引擎
+`publish` | 部署至生产环境
+`upload` | 上传文件至当前应用（可以在 `_File` 类中查看）
+`logs` | 显示云引擎日志
+`debug` | 单独运行云函数调试功能，而不在本地运行项目本身
+`env` | 显示当前项目的环境变量
+`cache` | LeanCache 命令行
+`cql` | 交互式 CQL
+
 
 可以通过 `--version` 选项查看版本：
 
@@ -281,13 +301,13 @@ $ lean deploy -m 'Be more awesome! 这是定制的部署备注'
 
 部署项目时，如果有一些临时文件或是项目源码管理软件用到的文件，不需要上传到服务器，可以将它们加入到 `.leanignore` 文件。
 
-`.leanignore` 文件格式与 Git 使用的 `.gitignore` 格式基本相同（严格地说，`.leanignore` 支持的语法为 `.gitignore`　的子集），每行写一个忽略项，可以是文件或者文件夹。如果项目没有 `.leanignore` 文件，部署时会根据当前项目所使用的语言创建一个默认的 `.leanignore` 文件。请确认此文件中的[默认配置][defaultIgnorePatterns]是否与项目需求相符。
+`.leanignore` 文件格式与 Git 使用的 `.gitignore` 格式基本相同（严格地说，`.leanignore` 支持的语法为 `.gitignore` 的子集），每行写一个忽略项，可以是文件或者文件夹。如果项目没有 `.leanignore` 文件，部署时会根据当前项目所使用的语言创建一个默认的 `.leanignore` 文件。请确认此文件中的 [默认配置][defaultIgnorePatterns] 是否与项目需求相符。
 
 [defaultIgnorePatterns]: https://github.com/leancloud/lean-cli/blob/master/runtimes/ignorefiles.go#L13
 
 ### 从 Git 仓库部署
 
-如果代码保存在某个 Git 仓库上，例如 [Github](https://github.com)，并且在 LeanCloud 控制台已经正确设置了 git repo 地址以及 deploy key，你也可以请求 LeanCloud 平台从 Git 仓库获取源码并自动部署。这个操作可以在云引擎的部署菜单里完成，也可以在本地执行：
+如果代码保存在某个 Git 仓库上，例如 [GitHub](https://github.com)，并且在 LeanCloud 控制台已经正确设置了 git repo 地址以及 deploy key，你也可以请求 LeanCloud 平台从 Git 仓库获取源码并自动部署。这个操作可以在云引擎的部署菜单里完成，也可以在本地执行：
 
 ```sh
 $ lean deploy -g

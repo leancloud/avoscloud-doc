@@ -52,10 +52,10 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         type: 'ios',
         qcloudShow: true
       },{
-        name: 'LiveKit 直播 UI 组件',
-        desc: 'LeanCloud 官方推出的一个专门开发视频直播的 UI 组件，包含直播、文字聊天、弹幕、送礼物等界面。支持无人数限制的聊天室和自定义消息。',
+        name: 'SNS 第三方登录',
+        desc: 'iOS 第三方登录示例 Demo',
         downPath: '',
-        mdPath: 'https://github.com/leancloud/LeanCloudLiveKit-iOS',
+        mdPath: 'https://github.com/leancloud/LeanCloudSNSDemo-iOS',
         type: 'ios',
         qcloudShow: true
       },{
@@ -92,13 +92,6 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         desc: '一个免费开源的 UI 聊天组件，基于 LeanCloud 实时通信 IM 服务，支持 iOS 7+。它将聊天的常用功能和 UI 一起提供给开发者进行二次开发。',
         downPath: '',
         mdPath: 'https://github.com/leancloud/LeanCloudChatKit-Android',
-        type: 'android',
-        qcloudShow: true
-      },{
-        name: 'LiveKit 直播 UI 组件',
-        desc: 'LeanCloud 官方推出的一个专门开发视频直播的 UI 组件，包含直播、文字聊天、弹幕、送礼物等界面。支持无人数限制的聊天室和自定义消息。',
-        downPath: '',
-        mdPath: 'https://github.com/leancloud/LeanCloudLiveKit-Android',
         type: 'android',
         qcloudShow: true
       },{
