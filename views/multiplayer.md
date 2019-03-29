@@ -481,8 +481,8 @@ Play.LeaveRoom();
 * [实时对战开发指南 · C#](multiplayer-guide-csharp.html)：对实时对战所有功能及接口的详细介绍。
 
 ### Demo
-* [回合制对战 Demo](game-demos.html#回合制对战 Demo)
-* [位置即时同步 Demo](game-demos.html#位置即时同步 Demo)
+* [回合制 Demo](game-demos.html#回合制 Demo)
+* [实时 Demo](game-demos.html#实时 Demo)
 
 ## 价格及试用
 

@@ -28,7 +28,7 @@ Client Engine 是 LeanCloud Play 提供的实时对战游戏 Client 托管方案
 
 示例 Demo：
 
-* [回合制对战 Demo](game-demos.html#回合制对战 Demo)。
+* [回合制 Demo](game-demos.html#回合制 Demo)。
 
 ## 价格及试用
 
