@@ -36,6 +36,12 @@ const {
 } = Play;
 ```
 
+注意，在 Cocos Creator 导出「微信小程序」项目时，会导致 Play 无法正常加载到全局变量中。所以，如果要发布微信小程序项目，请在前面添加
+
+```javascript
+const Play = require('./play');
+```
+
 接着我们需要实例化一个实时对战 SDK 的客户端对象。
 
 ```javascript
