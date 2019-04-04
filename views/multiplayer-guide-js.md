@@ -36,7 +36,7 @@ const {
 } = Play;
 ```
 
-注意，在 Cocos Creator 导出「微信小程序」项目时，会导致 Play 无法正常加载到全局变量中。所以，如果要发布微信小程序项目，请在前面添加
+注意：Cocos Creator 在构建「微信小游戏」项目时，无法将 `Play` 正常加载到全局变量中，因此需要先导入 `Play` 模块
 
 ```javascript
 const Play = require('./play');
