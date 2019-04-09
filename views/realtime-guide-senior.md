@@ -63,7 +63,7 @@ appid:clientid::timestamp:nonce
 `timestamp` | 当前的 UTC 时间距离 unix epoch 的 **毫秒数**。
 `nonce` | 随机字符串。
 
-> 注意：签名的 key **必须** 是应用的 Master Key，你可以在 [控制台 > 设置 > 应用 Key](/app.html?appid={{appid}}#/key) 里找到。**请保护好 Master Key，不要泄露给任何无关人员。**
+> 注意：签名的 key **必须** 是应用的 Master Key，你可以在 [控制台 > 设置 > 应用 Key](/dashboard/app.html?appid={{appid}}#/key) 里找到。**请保护好 Master Key，不要泄露给任何无关人员。**
 
 开发者可以实现自己的 `SignatureFactory`，调用远程服务器的签名接口获得签名。如果你没有自己的服务器，可以直接在 LeanCloud 云引擎上通过 **网站托管** 来实现自己的签名接口。在移动应用中直接做签名的作法 **非常危险**，它可能导致你的 **Master Key** 泄漏。
 
@@ -98,7 +98,7 @@ appid:client_id:convid:nonce:signature_ts
 
 * `client_id` 是查看者的 ID（签名参数）。
 * `nonce` 是签名随机字符串（签名参数）。
-* `signature_ts` 是签名时间戳（签名参数），单位是秒。
+* `signature_ts` 是签名时间戳（签名参数），单位是毫秒。
 * `signature` 是签名（签名参数）。
 
 #### 黑名单的签名
@@ -126,7 +126,7 @@ appid:client_id:convid:nonce:signature_ts
 
 ### 云引擎签名范例
 
-为了帮助开发者理解云端签名的算法，我们开源了一个用「Node.js + 云引擎」实现签名的云端，供开发者学习和使用：[LeanCloud 即时通讯云引擎签名 Demo](https://github.com/leancloud/realtime-messaging-signature-cloudcode)。
+为了帮助开发者理解云端签名的算法，我们开源了一个用「Node.js + 云引擎」实现签名的云端，供开发者学习和使用：[LeanCloud 即时通讯云引擎签名 Demo](https://github.com/leancloud/leanengine-nodejs-demos/blob/master/functions/rtm-signature.js)。
 
 ### 客户端如何支持操作签名
 

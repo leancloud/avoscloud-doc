@@ -76,8 +76,8 @@
 * 请不要泄露你的账号或者应用信息给他人，[定期更新账户密码](https://leancloud.cn/settings.html#/setting/password) 是一个好习惯。
 * 在应用设置的协作者菜单里，可以添加应用协作者，协作者将拥有该应用的绝大部分权限，因此请慎重添加。
 {% if node!='qcloud' %}
-* **请在 [开发者信息](/settings.html#/setting/info) 填写更加详细的联系信息**，方便我们在紧急情况下联系你。
-* 马上创建一个 [团队](/settings.html#/setting/team)，协作开发应用。团队可以作为应用的协作者添加。
+* **请在 [开发者信息](/dashboard/settings.html#/setting/info) 填写更加详细的联系信息**，方便我们在紧急情况下联系你。
+* 马上创建一个 [团队](/dashboard/settings.html#/setting/team)，协作开发应用。团队可以作为应用的协作者添加。
 {% endif %}
 
 ## 云引擎
@@ -93,13 +93,13 @@
 * 想用好云引擎，请先熟悉 [JavaScript SDK 开发指南](leanstorage_guide-js.html)。
 {% if node != 'qcloud' %}
 * 云引擎 Web 主机托管，可以绑定备案过的独立域名，请在 [工单系统](https://leanticket.cn/t/leancloud) 提出技术申请。
-* 云引擎 Web 主机托管，我们可以协助你完成域名的备案，请在 [应用控制台 > 账户设置 > 域名备案](/settings.html#/setting/domainrecord) 操作。
+* 云引擎 Web 主机托管，我们可以协助你完成域名的备案，请在 [应用控制台 > 账户设置 > 域名备案](/dashboard/settings.html#/setting/domainrecord) 操作。
 {% endif %}
 
 ## 其他
 {% if node !='qcloud' %}
-* [邀请朋友](/settings.html#/setting/invite) 注册 LeanCloud，获取赠送金额。
-* 修改登录邮箱，请进入 [邮箱](/settings.html#/setting/mail) 菜单。
+* [邀请朋友](/dashboard/settings.html#/setting/invite) 注册 LeanCloud，获取赠送金额。
+* 修改登录邮箱，请进入 [邮箱](/dashboard/settings.html#/setting/mail) 菜单。
 * 为你的应用添加用户反馈，请使用我们的 [用户反馈组件](feedback.html)。
 {% endif %}
 * 查看 [SDK 安装文档](start.html)，开始应用开发之旅。
@@ -108,7 +108,6 @@
 * 在工具栏的资源菜单里，可以找到 LeanCloud 移动客户端下载链接，在移动设备上查看应用分析数据。
 * 使用 [fir.im](http://fir.im/) 分发测试你的应用。
 * 不知道怎么使用 LeanCloud？各种 [Demo](demo.html) 等你来拿。
-* [文档搜索工具](/search.html)，查找问题或资料不用愁。
 * 所有 SDK 都提供 [API 文档](index.html)，开发指南没有覆盖的 API 介绍都可以在里面找到解释。
 * 关注我们的 [博客](https://blog.leancloud.cn/) 和 [微博](http://weibo.com/avoscloud)，获取 LeanCloud 最新消息。
 * 在应用设置的基本设置菜单里，可以更改应用名称，提交应用图标，申请发布到 [应用墙](https://leancloud.cn/customers.html)。

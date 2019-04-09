@@ -76,7 +76,7 @@ var AV = require('leancloud-storage/live-query');
 ```js
 // 存储服务
 var { Query, User } = AV;
-AV.init('appId', 'appKey');
+AV.init({{appid}}, {{appkey}});
 // 即时通讯服务
 var { Realtime, TextMessage } = AV;
 ```
@@ -212,7 +212,7 @@ set DEBUG=leancloud*,LC* lean up
 ```js
 // 存储服务
 var { Query, User } = AV;
-AV.init('appId', 'appKey');
+AV.init({{appid}}, {{appkey}});
 // 即时通讯服务
 var { Realtime, TextMessage } = AV;
 ```
@@ -280,7 +280,7 @@ var { Realtime, TextMessage } = AV;
 
 ```js
 var { Query, User } = AV;
-AV.init('appId', 'appKey');
+AV.init({{appid}}, {{appkey}});
 ```
 
 {{ docs.note("目前在 Egret 平台上，我们只提供存储服务的 SDK（不含 LiveQuery 功能）。") }} 
@@ -330,7 +330,7 @@ $ npm install leancloud-realtime --save
 
 ## 初始化
 
-首先进入 [控制台 > 设置 > 应用 Key](/app.html?appid={{appid}}#/key) 来获取 App ID 以及 App Key。
+首先进入 [控制台 > 设置 > 应用 Key](/dashboard/app.html?appid={{appid}}#/key) 来获取 App ID 以及 App Key。
 
 如果是在前端项目里面使用 LeanCloud JavaScript SDK，那么可以在页面加载的时候调用一下初始化的函数：
 
@@ -397,7 +397,7 @@ testObject.save({
 })
 ```
 
-然后打开 [控制台 > 存储 > 数据 > TestObject](/data.html?appid={{appid}}#/TestObject)，如果看到如下内容，说明 SDK 已经正确地执行了上述代码，安装完毕。
+然后打开 [控制台 > 存储 > 数据 > TestObject](/dashboard/data.html?appid={{appid}}#/TestObject)，如果看到如下内容，说明 SDK 已经正确地执行了上述代码，安装完毕。
 
 
 ![testobject_saved](images/testobject_saved.png)
