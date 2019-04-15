@@ -2717,7 +2717,7 @@ conv.queryMessages(10, new AVIMMessagesQueryCallback() {
   @Override
   public void done(List<AVIMMessage> messages, AVIMException e) {
     if (e == null) {
-      // 成功获取最新10条消息记录
+      // 成功获取最新 10 条消息记录
       // 返回的消息一定是时间增序排列，也就是最早的消息一定是第一个
       AVIMMessage oldestMessage = messages.get(0);
 
