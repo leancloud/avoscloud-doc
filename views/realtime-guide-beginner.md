@@ -1980,7 +1980,7 @@ conversation.updateInfoInBackground(new AVIMConversationCallback(){
   @Override
   public void done(AVIMException e){        
     if(e==null){
-      //  更新成功
+      // 更新成功
     }
   }
 });
