@@ -60,7 +60,7 @@ message.mentionList = @[@"Tom"];
 String content = "@Tom 早点回家";
 AVIMTextMessage  message = new AVIMTextMessage();
 message.setText(content);
-List<String> list = new ArrayList<>(); // 部分用户的 mention list，你可以向下面代码这样来填充
+List<String> list = new ArrayList<>(); // 部分用户的 mention list，你可以像下面代码这样来填充
 list.add("Tom");
 message.setMentionList(list);
 imConversation.sendMessage(message, new AVIMConversationCallback() {
