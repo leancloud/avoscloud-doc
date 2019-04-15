@@ -253,7 +253,7 @@ async createConversation({
  * @param members 对话的成员
  * @param name 对话的名字
  * @param attributes 对话的额外属性
- * @param isTransient 是否是暂态会话
+ * @param isTransient 是否是聊天室
  * @param isUnique 如果已经存在符合条件的会话，是否返回已有回话
  *                 为 false 时，则一直为创建新的回话
  *                 为 true 时，则先查询，如果已有符合条件的回话，则返回已有的，否则，创建新的并返回
@@ -268,7 +268,7 @@ public void createConversation(final List<String> members, final String name,
  *
  * @param members 对话参与者
  * @param attributes 对话的额外属性
- * @param isTransient 是否为暂态对话
+ * @param isTransient 是否为聊天室
  * @param callback  结果回调函数
  */
 public void createConversation(final List<String> members, final String name,
@@ -305,7 +305,7 @@ public void createConversation(final List<String> conversationMembers,
 /// <param name="members">目标成员列表.</param>
 /// <param name="name">对话名称.</param>
 /// <param name="isSystem">是否是系统对话。注意：在客户端无法创建系统对话，所以这里设置为 true 会导致创建失败。</param>
-/// <param name="isTransient">是否为暂态对话（聊天室）.</param>
+/// <param name="isTransient">是否为聊天室.</param>
 /// <param name="isUnique">是否是唯一对话.</param>
 /// <param name="options">自定义属性.</param>
 public Task<AVIMConversation> CreateConversationAsync(string member = null,
@@ -1782,7 +1782,7 @@ private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 | `name`                | `name`             | 成员共享的统一的名字                               |
 | `members`             | `m`                | 成员列表                                           |
 | `creator`             | `c`                | 对话创建者                                         |
-| `transient`           | `tr`               | 是否为聊天室（暂态对话）                           |
+| `transient`           | `tr`               | 是否为聊天室                                       |
 | `system`              | `sys`              | 是否为服务号（系统对话）                           |
 | `mutedMembers`        | `mu`               | 静音该对话的成员                                   |
 | `muted`               | N/A                | 当前用户是否静音该对话                             |
@@ -1805,7 +1805,7 @@ private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 | `members`               | `m`                | 成员列表                                           |
 | `creator`               | `c`                | 对话创建者                                         |
 | `attributes`            | `attr`             | 自定义属性                                         |
-| `transient`             | `tr`               | 是否为聊天室（暂态对话）                           |
+| `transient`             | `tr`               | 是否为聊天室                                       |
 | `createdAt`             | `createdAt`        | 创建时间                                           |
 | `updatedAt`             | `updatedAt`        | 最后更新时间                                       |
 | `system`                | `sys`              | 是否为系统对话                                     |
@@ -1827,7 +1827,7 @@ private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 | `members`               | `m`                | 成员列表                                         |
 | `creator`               | `c`                | 对话创建者                                       |
 | `attributes`            | `attr`             | 自定义属性                                       |
-| `isTransient`           | `tr`               | 是否为聊天室（暂态对话）                         |
+| `isTransient`           | `tr`               | 是否为聊天室                                     |
 | `lastMessageAt`         | `lm`               | 该对话最后一条消息，也可以理解为最后一次活跃时间 |
 | `lastMessage`           | N/A                | 最后一条消息，可能会空                           |
 | `muted`                 | N/A                | 当前用户是否静音该对话                           |
@@ -1849,7 +1849,7 @@ private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 | `MemberIds`             | `m`                | 成员列表                                         |
 | `MuteMemberIds`         | `mu`               | 静音该对话的成员                                 |
 | `Creator`               | `c`                | 对话创建者                                       |
-| `IsTransient`           | `tr`               | 是否为聊天室（暂态对话）                         |
+| `IsTransient`           | `tr`               | 是否为聊天室                                     |
 | `IsUnique`              | `unique`           | 是否为相同成员的唯一对话                         |
 | `IsSystem`              | `sys`              | 是否为系统对话                                   |
 | `LastMessageAt`         | `lm`               | 该对话最后一条消息，也可以理解为最后一次活跃时间 |

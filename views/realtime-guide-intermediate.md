@@ -395,7 +395,7 @@ public static Task<T> SendAsync<T>(this AVIMConversation conversation, T message
  * @param {Boolean} [options.receipt] 是否需要回执，仅在普通对话中有效
  * @param {Boolean} [options.will] since v3.4.0，是否指定该消息作为「掉线消息」发送，
  * 「掉线消息」会延迟到当前用户掉线后发送，常用来实现「下线通知」功能
- * @param {MessagePriority} [options.priority] 消息优先级，仅在暂态对话中有效，
+ * @param {MessagePriority} [options.priority] 消息优先级，仅在聊天室中有效，
  * see: {@link module:leancloud-realtime.MessagePriority MessagePriority}
  * @param {Object} [options.pushData] 消息对应的离线推送内容，如果消息接收方不在线，会推送指定的内容。其结构说明参见: {@link https://url.leanapp.cn/pushData 推送消息内容}
  * @return {Promise.<Message>} 发送的消息
@@ -1262,6 +1262,7 @@ public class AVIMTextMessage extends AVIMTypedMessage {
 {{ docs.langSpecStart('cs') }}
 
 首先定义一个自定义的子类继承自 `AVIMTypedMessage`：
+
 ```cs
 // 定义自定义消息类名
 [AVIMMessageClassName("InputtingMessage")]
