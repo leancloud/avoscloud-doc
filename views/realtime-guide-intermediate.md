@@ -124,7 +124,7 @@ client.on(Event.MESSAGE, function messageEventHandler(message, conversation) {
 ```objc
 // 示例代码演示 AVIMTypedMessage 接收时，获取该条消息提醒的 clientId 列表，同理可以用类似的代码操作 AVIMMessage 的其他子类
 - (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
-    // Get a list of clientIds being mentioned
+    // 读取消息 @ 的 clientId 列表
     NSArray *mentionList = message.mentionList;
 }
 ```
@@ -159,10 +159,11 @@ client.on(Event.MESSAGE, function messageEventHandler(message, conversation) {
 });
 ```
 ```objc
-  // 示例代码演示 AVIMTypedMessage 接收时，获取该条消息是否 @ 了当前对话里的所有成员，同理可以用类似的代码操作 AVIMMessage 的其他子类
+// 示例代码演示 AVIMTypedMessage 接收时，获取该条消息是否 @ 了当前对话里的所有成员或当前用户，同理可以用类似的代码操作 AVIMMessage 的其他子类
 - (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
-    // Check if this message mentioned all members of this conversion
+    // 读取消息是否 @ 了对话的所有成员
     BOOL mentionAll = message.mentionAll;
+    // 读取消息是否 @ 了当前用户
     BOOL mentionedMe = message.mentioned;
 }
 ```
@@ -171,6 +172,7 @@ client.on(Event.MESSAGE, function messageEventHandler(message, conversation) {
 public void onMessage(AVIMAudioMessage msg, AVIMConversation conv, AVIMClient client) {
   // 读取消息是否 @ 了对话的所有成员
   boolean currentMsgMentionAllUsers = message.isMentionAll();
+  // 读取消息是否 @ 了当前用户
   boolean currentMsgMentionedMe = message.mentioned();
 }
 ```
