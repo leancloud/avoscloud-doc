@@ -190,7 +190,7 @@ private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 
 ### 消息的撤回和修改
 
-> 需要在 **控制台** > **消息** > **设置** 中启用「聊天服务，对消息启用撤回功能」。
+> 需要在 [控制台 > 消息 > 即时通讯 > 设置 > 即时通讯选项](/dashboard/messaging.html?appid={{appid}}#/message/realtime/conf) 中启用「允许通过 SDK 编辑消息」和「允许通过 SDK 撤回消息」。
 
 终端用户在消息发送之后，还可以对自己已经发送的消息进行修改（`Conversation#updateMessage` 方法）或撤回（`Conversation#recallMessage` 方法），目前即时通讯服务端并没有在时效性上进行限制，不过只允许用户修改或撤回自己发出去的消息，对别人的消息进行修改或撤回是被禁止的（错误码：）。
 
@@ -832,7 +832,7 @@ LeanCloud 本就提供完善的 [消息推送服务](push_guide.html)，现在�
 
 1. 静态配置提醒消息
 
-  用户可以在控制台中为应用设置一个全局的静态 JSON 字符串，指定固定内容来发送通知。例如，我们进入 [控制台 > 消息 > 即时消息 > 设置 > 离线推送设置](/dashboard/messaging.html?appid={{appid}}#/message/realtime/conf)，填入：
+  用户可以在控制台中为应用设置一个全局的静态 JSON 字符串，指定固定内容来发送通知。例如，我们进入 [控制台 > 消息 > 即时通讯 > 设置 > 离线推送设置](/dashboard/messaging.html?appid={{appid}}#/message/realtime/conf)，填入：
 
   ```
   { "alert": "您有新的消息", "badge": "Increment" }
@@ -933,7 +933,7 @@ LeanCloud 本就提供完善的 [消息推送服务](push_guide.html)，现在�
 
 同时使用了 LeanCloud 推送服务和即时通讯服务的应用，客户端在成功登录即时通讯服务时，SDK 会自动关联当前的 `clientId` 和设备数据（推送服务中的 `Installation` 表）。关联的方式是通过让目标设备 **订阅** 名为 `clientId` 的 Channel 实现的。开发者可以在数据存储的 `_Installation` 表中的 `channels` 字段查到这组关联关系。在实际离线推送时，云端系统会根据用户 `clientId` 找到对应的关联设备进行推送。
 
-由于即时通讯触发的推送量比较大，内容单一，所以推送服务云端不会保留这部分记录，开发者在 **控制台 > 消息 > 推送记录** 中也无法找到这些记录。
+由于即时通讯触发的推送量比较大，内容单一，所以推送服务云端不会保留这部分记录，开发者在 **控制台** > **消息** > **推送** > **推送记录** 中也无法找到这些记录。
 
 LeanCloud 推送服务的通知过期时间是 7 天，也就是说，如果一个设备 7 天内没有连接到 APNs、MPNs 或设备对应的混合推送平台，系统将不会再给这个设备推送通知。
 
@@ -959,7 +959,7 @@ Apple 不允许在一次推送请求中向多个从属于不同 Team ID 的设�
 
 `_profile` 和 `_apns_team_id` 属性均不会实际推送。
 
-目前，[控制台 > 消息 > 即时消息 > 设置 > 离线推送设置](/dashboard/messaging.html?appid={{appid}}#/message/realtime/conf) 这里的推送内容也支持一些内置变量，你可以将上下文信息直接设置到推送内容中：
+目前，[控制台 > 消息 > 即时通讯 > 设置 > 离线推送设置](/dashboard/messaging.html?appid={{appid}}#/message/realtime/conf) 这里的推送内容也支持一些内置变量，你可以将上下文信息直接设置到推送内容中：
 
 * `${convId}` 推送相关的对话 ID
 * `${timestamp}` 触发推送的时间戳（Unix 时间戳）
