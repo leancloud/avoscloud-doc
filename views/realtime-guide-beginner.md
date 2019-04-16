@@ -144,7 +144,7 @@ AVUser.logInInBackground("username", "password", new LogInCallback<AVUser>() {
         client.open(new AVIMClientCallback() {
           @Override
           public void done(final AVIMClient avimClient, AVIMException e) {
-            // do something as you need.
+            // 执行其他逻辑
           }
        });
     }
@@ -298,16 +298,16 @@ public void createConversation(final List<String> conversationMembers,
 ```
 ```cs
 /// <summary>
-/// 创建与目标成员的对话.
+/// 创建与目标成员的对话
 /// </summary>
-/// <returns>返回对话实例.</returns>
-/// <param name="member">目标成员.</param>
-/// <param name="members">目标成员列表.</param>
-/// <param name="name">对话名称.</param>
+/// <returns>返回对话实例</returns>
+/// <param name="member">目标成员</param>
+/// <param name="members">目标成员列表</param>
+/// <param name="name">对话名称</param>
 /// <param name="isSystem">是否是系统对话。注意：在客户端无法创建系统对话，所以这里设置为 true 会导致创建失败。</param>
-/// <param name="isTransient">是否为聊天室.</param>
-/// <param name="isUnique">是否是唯一对话.</param>
-/// <param name="options">自定义属性.</param>
+/// <param name="isTransient">是否为聊天室</param>
+/// <param name="isUnique">是否是唯一对话</param>
+/// <param name="options">自定义属性</param>
 public Task<AVIMConversation> CreateConversationAsync(string member = null,
     IEnumerable<string> members = null,
     string name = "",
@@ -422,7 +422,7 @@ jerry.on(Event.INVITED, function invitedEventHandler(payload, conversation) {
 
 // 当前用户收到了某一条消息，可以通过响应 Event.MESSAGE 这一事件来处理。
 jerry.on(Event.MESSAGE, function(message, conversation) {
-    console.log('Message received: ' + message.text);
+    console.log('收到新消息：' + message.text);
 });
 ```
 ```objc
@@ -432,10 +432,10 @@ jerry.delegate = self;
 /*!
  当前用户被邀请加入对话的通知。
  @param conversation － 所属对话
- @param clientId - 邀请者的 id
+ @param clientId - 邀请者的 ID
  */
 -(void)conversation:(AVIMConversation *)conversation invitedByClientId:(NSString *)clientId{
-    NSLog(@"%@", [NSString stringWithFormat:@"当前 ClientId(Jerry) 被 %@ 邀请，加入了对话",clientId]);
+    NSLog(@"%@", [NSString stringWithFormat:@"当前 clientId（Jerry）被 %@ 邀请，加入了对话",clientId]);
 }
 
 /*!
@@ -460,7 +460,7 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
    */
   @Override
   public void onInvited(AVIMClient client, AVIMConversation conversation, String invitedBy) {
-    // 当前 ClientId(Jerry) 被邀请到对话，执行此处逻辑
+    // 当前 clientId（Jerry）被邀请到对话，执行此处逻辑
   }
 }
 // 设置全局的对话事件处理 handler
@@ -539,7 +539,7 @@ tom.getConversation('CONVERSATION_ID').then(function(conversation) {
   return conversation.add(['Mary']);
 }).then(function(conversation) {
   console.log('添加成功', conversation.members);
-  // 此时对话成员为: ['Mary', 'Tom', 'Jerry']
+  // 此时对话成员为：['Mary', 'Tom', 'Jerry']
 }).catch(console.error.bind(console));
 ```
 ```objc
@@ -588,7 +588,7 @@ jerry.delegate = self;
  对话中有新成员加入时所有成员都会收到这一通知。
  @param conversation － 所属对话
  @param clientIds - 加入的新成员列表
- @param clientId - 邀请者的 id
+ @param clientId - 邀请者的 ID
  */
 - (void)conversation:(AVIMConversation *)conversation membersAdded:(NSArray *)clientIds byClientId:(NSString *)clientId {
     NSLog(@"%@", [NSString stringWithFormat:@"%@ 加入到对话，操作者为：%@",[clientIds objectAtIndex:0],clientId]);
@@ -608,9 +608,9 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
     @Override
     public void onMemberJoined(AVIMClient client, AVIMConversation conversation,
         List<String> members, String invitedBy) {
-        // 手机屏幕上会显示一小段文字：Mary 加入到 551260efe4b01608686c3e0f ；操作者为：Tom
+        // 手机屏幕上会显示一小段文字：Mary 加入到 551260efe4b01608686c3e0f；操作者为：Tom
         Toast.makeText(AVOSCloud.applicationContext,
-          members + "加入到" + conversation.getConversationId() + "；操作者为： "
+          members + " 加入到 " + conversation.getConversationId() + "；操作者为："
               + invitedBy, Toast.LENGTH_SHORT).show();
     }
 }
@@ -620,7 +620,7 @@ AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandle
 ```cs
 private void OnMembersJoined(object sender, AVIMOnInvitedEventArgs e)
 {
-    // e.InvitedBy 是该项操作的发起人, e.ConversationId 是该项操作针对的对话 Id
+    // e.InvitedBy 是该项操作的发起人，e.ConversationId 是该项操作针对的对话 ID
     Debug.Log(string.Format("{0} 邀请了 {1} 加入了 {2} 对话", e.InvitedBy,e.JoinedMembers, e.ConversationId));
 }
 jerry.OnMembersJoined += OnMembersJoined;
@@ -785,7 +785,7 @@ jerry.delegate = self;
  对话中有成员离开时所有剩余成员都会收到这一通知。
  @param conversation － 所属对话
  @param clientIds - 离开的成员列表
- @param clientId - 操作者的 id
+ @param clientId - 操作者的 ID
  */
 - (void)conversation:(AVIMConversation *)conversation membersRemoved:(NSArray<NSString *> * _Nullable)clientIds byClientId:(NSString * _Nullable)clientId {
   ;
@@ -793,7 +793,7 @@ jerry.delegate = self;
 /*!
  当前用户被踢出对话的通知。
  @param conversation － 所属对话
- @param clientId - 操作者的 id
+ @param clientId - 操作者的 ID
  */
 - (void)conversation:(AVIMConversation *)conversation kickedByClientId:(NSString * _Nullable)clientId {
   ;
@@ -814,7 +814,7 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
   public abstract void onMemberLeft(AVIMClient client,
     AVIMConversation conversation, List<String> members, String kickedBy) {
     Toast.makeText(AVOSCloud.applicationContext,
-      members + " 离开对话：" + conversation.getConversationId() + "；操作者为： "
+      members + " 离开对话 " + conversation.getConversationId() + "；操作者为："
           + kickedBy, Toast.LENGTH_SHORT).show();
   }
   /**
@@ -829,7 +829,7 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
   public abstract void onKicked(AVIMClient client, AVIMConversation conversation,
     String kickedBy) {
     Toast.makeText(AVOSCloud.applicationContext,
-      "你已离开对话：" + conversation.getConversationId() + "；操作者为： "
+      "你已离开对话 " + conversation.getConversationId() + "；操作者为："
           + kickedBy, Toast.LENGTH_SHORT).show();
   }
 }
@@ -1642,75 +1642,75 @@ conversation.on(Event.MESSAGE, function messageEventHandler(message) {
     // for example: received image message
     if (message.mediaType == kAVIMMessageMediaTypeImage) {
         AVIMImageMessage *imageMessage = (AVIMImageMessage *)message;
-        // handle image message
+        // 处理图片消息
     } else if(message.mediaType == kAVIMMessageMediaTypeAudio){
-        // handle audio message
+        // 处理音频消息
     } else if(message.mediaType == kAVIMMessageMediaTypeVideo){
-        // handle video message
+        // 处理视频消息
     } else if(message.mediaType == kAVIMMessageMediaTypeLocation){
-        // handle location message
+        // 处理位置消息
     } else if(message.mediaType == kAVIMMessageMediaTypeFile){
-        // handle file message
+        // 处理文件消息
     } else if(message.mediaType == kAVIMMessageMediaTypeText){
-        // handle text message
+        // 处理文本消息
     }
 }
 
-// handle customize typed message
+// 处理自定义类型消息
 
-// 1. register subclass
+// 1. 注册子类
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [AVIMCustomMessage registerSubclass];
 }
-// 2. received message
+// 2. 接收消息
 - (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
     if (message.mediaType == 1) {
         AVIMCustomMessage *imageMessage = (AVIMCustomMessage *)message;
-        // handle image message
+        // 处理图片消息
     }
 }
 ```
 ```java
-// 1. register default handler
+// 1. 注册默认 handler
 AVIMMessageManager.registerDefaultMessageHandler(new AVIMMessageHandler(){
     public void onMessage(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
-      // receive new-coming message
+      // 接收消息
     }
 
     public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
-      // do something responding of message receipt event
+      // 执行收到消息后的逻辑
     }
 });
-// 2. register typed message handler
+// 2. 为每一种消息类型注册 handler
 AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new AVIMTypedMessageHandler<AVIMTypedMessage>(){
     public void onMessage(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
     switch (message.getMessageType()) {
         case AVIMMessageType.TEXT_MESSAGE_TYPE:
-        // do something
+        // 执行其他逻辑
         AVIMTextMessage textMessage = (AVIMTextMessage)message;
         break;
         case AVIMMessageType.IMAGE_MESSAGE_TYPE:
-        // do something
+        // 执行其他逻辑
         AVIMImageMessage imageMessage = (AVIMImageMessage)message;
         break;
         case AVIMMessageType.AUDIO_MESSAGE_TYPE:
-        // do something
+        // 执行其他逻辑
         AVIMAudioMessage audioMessage = (AVIMAudioMessage)message;
         break;
         case AVIMMessageType.VIDEO_MESSAGE_TYPE:
-        // do something
+        // 执行其他逻辑
         AVIMVideoMessage videoMessage = (AVIMVideoMessage)message;
         break;
         case AVIMMessageType.LOCATION_MESSAGE_TYPE:
-        // do something
+        // 执行其他逻辑
         AVIMLocationMessage locationMessage = (AVIMLocationMessage)message;
         break;
         case AVIMMessageType.FILE_MESSAGE_TYPE:
-        // do something
+        // 执行其他逻辑
         AVIMFileMessage fileMessage = (AVIMFileMessage)message;
         break;
         case AVIMMessageType.RECALLED_MESSAGE_TYPE:
-        // do something
+        // 执行其他逻辑
         AVIMRecalledMessage recalledMessage = (AVIMRecalledMessage)message;
         break;
         default:
@@ -1720,22 +1720,22 @@ AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new AVIMTypedM
     }
 
     public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
-    // do something responding of message receipt event
+    // 执行收到消息后的逻辑
     }
 });
 
-// handle customize typed message
+// 处理自定义类型消息
 public class CustomMessage extends AVIMMessage {
   
 }
 
 AVIMMessageManager.registerMessageHandler(CustomMessage.class, new MessageHandler<CustomMessage>(){
   public void onMessage(CustomMessage message, AVIMConversation conversation, AVIMClient client) {
-    // receive new-coming message
+    // 接收消息
   }
 
   public void onMessageReceipt(CustomMessage message, AVIMConversation conversation, AVIMClient client){
-    // do something responding of message receipt event
+    // 执行收到消息后的逻辑
   }
 });
 ```
@@ -2010,7 +2010,7 @@ LeanCloud 即时通讯云端提供了实时同步的通知机制，会把单个�
  * @event IMClient#CONVERSATION_INFO_UPDATED
  * @param {Object} payload
  * @param {Object} payload.attributes 被更新的属性
- * @param {String} payload.updatedBy 该操作的发起者 id
+ * @param {String} payload.updatedBy 该操作的发起者 ID
  */
 var { Event } = require('leancloud-realtime');
 client.on(Event.CONVERSATION_INFO_UPDATED, function(payload) {
@@ -2018,12 +2018,12 @@ client.on(Event.CONVERSATION_INFO_UPDATED, function(payload) {
 ```
 ```objc
 /**
- Notification for conversation's attribution updated.
+ 对话信息被更新
  
- @param conversation Updated conversation.
- @param date Updated date.
- @param clientId Client ID of doing updates.
- @param data Updated data.
+ @param conversation 被更新的对话
+ @param date 更新时间
+ @param clientId 该操作的发起者 ID
+ @param data 更新内容
  */
 - (void)conversation:(AVIMConversation *)conversation didUpdateAt:(NSDate * _Nullable)date byClientId:(NSString * _Nullable)clientId updatedData:(NSDictionary * _Nullable)data;
 ```
@@ -2035,7 +2035,7 @@ client.on(Event.CONVERSATION_INFO_UPDATED, function(payload) {
  * @param client
  * @param conversation
  * @param attr      被更新的属性
- * @param operator  该操作的发起者 id
+ * @param operator  该操作的发起者 ID
  */
 public void onInfoChanged(AVIMClient client, AVIMConversation conversation, JSONObject attr,
                           String operator)
@@ -2784,15 +2784,15 @@ var { MessageQueryDirection } = require('leancloud-realtime');
 conversation.queryMessages({
   direction: MessageQueryDirection.OLD_TO_NEW,
 }).then(function(messages) {
-  // handle result
+  // 处理结果
 }.catch(function(error) {
-  // handle error
+  // 处理异常
 });
 ```
 ```objc
 [conversation queryMessagesInInterval:nil direction:AVIMMessageQueryDirectionFromOldToNew limit:20 callback:^(NSArray<AVIMMessage *> * _Nullable messages, NSError * _Nullable error) {
     if (messages.count) {
-        // handle result.
+        // 处理结果
     }
 }];
 ```
@@ -2801,7 +2801,7 @@ AVIMMessageInterval interval = new AVIMMessageInterval(null, null);
 conversation.queryMessages(interval, AVIMMessageQueryDirectionFromOldToNew, limit,
   new AVIMMessagesQueryCallback(){
     public void done(List<AVIMMessage> messages, AVIMException exception) {
-      // handle result
+      // 处理结果
     }
 });
 ```
@@ -2828,9 +2828,9 @@ conversation.queryMessages({
 startClosed: false,
   direction: MessageQueryDirection.OLD_TO_NEW,
 }).then(function(messages) {
-  // handle result
+  // 处理结果
 }.catch(function(error) {
-  // handle error
+  // 处理异常
 });
 ```
 ```objc
@@ -2838,7 +2838,7 @@ AVIMMessageIntervalBound *start = [[AVIMMessageIntervalBound alloc] initWithMess
 AVIMMessageInterval *interval = [[AVIMMessageInterval alloc] initWithStartIntervalBound:start endIntervalBound:nil];
 [conversation queryMessagesInInterval:interval direction:direction limit:20 callback:^(NSArray<AVIMMessage *> * _Nullable messages, NSError * _Nullable error) {
     if (messages.count) {
-        // handle result.
+        // 处理结果
     }
 }];
 ```
@@ -2849,13 +2849,13 @@ AVIMMessageQueryDirection direction;
 conversation.queryMessages(interval, direction, limit,
   new AVIMMessagesQueryCallback(){
     public void done(List<AVIMMessage> messages, AVIMException exception) {
-      // handle result
+      // 处理结果
     }
 });
 ```
 ```cs
 var earliestMessages = await conversation.QueryMessageAsync(direction: 0, limit: 1);
-// get some messages after earliestMessages.Last()
+// 获取 earliestMessages.Last() 之后的消息
 var nextPageMessages = await conversation.QueryMessageAfterAsync(earliestMessages.Last());
 ```
 
@@ -2872,9 +2872,9 @@ conversation.queryMessages({
   endTime: endTimestamp,
   endMessageId: endMessageId,
 }).then(function(messages) {
-  // handle result
+  // 处理结果
 }.catch(function(error) {
-  // handle error
+  // 处理异常
 });
 ```
 ```objc
@@ -2883,7 +2883,7 @@ AVIMMessageIntervalBound *start = [[AVIMMessageIntervalBound alloc] initWithMess
 AVIMMessageInterval *interval = [[AVIMMessageInterval alloc] initWithStartIntervalBound:start endIntervalBound:end];
 [conversation queryMessagesInInterval:interval direction:direction limit:100 callback:^(NSArray<AVIMMessage *> * _Nullable messages, NSError * _Nullable error) {
     if (messages.count) {
-        // handle result.
+        // 处理结果
     }
 }];
 ```
@@ -2895,14 +2895,14 @@ AVIMMessageQueryDirection direction;
 conversation.queryMessages(interval, direction, limit,
   new AVIMMessagesQueryCallback(){
     public void done(List<AVIMMessage> messages, AVIMException exception) {
-      // handle result
+      // 处理结果
     }
 });
 ```
 ```cs
 var earliestMessage = await conversation.QueryMessageAsync(direction: 0, limit: 1);
 var latestMessage = await conversation.QueryMessageAsync(limit: 1);
-// max count for messagesInInterval is 100
+// messagesInInterval 最多可包含 100 条消息
 var messagesInInterval = await conversation.QueryMessageInIntervalAsync(earliestMessage.FirstOrDefault(), latestMessage.FirstOrDefault());
 ```
 

@@ -137,7 +137,7 @@ LeanCloud 即时通讯 SDK 为每一个 `AVIMClient` 实例都预留了一个 `S
 ```js
 // 基于 LeanCloud 云引擎进行登录签名的 signature 工厂方法
 var signatureFactory = function(clientId) {
-  return AV.Cloud.rpc('sign', { clientId: clientId }); // AV.Cloud.rpc returns a Promise
+  return AV.Cloud.rpc('sign', { clientId: clientId }); // AV.Cloud.rpc 返回一个 Promise
 };
 // 基于 LeanCloud 云引擎进行对话创建/加入、邀请成员、踢出成员等操作签名的 signature 工厂方法
 var conversationSignatureFactory = function(conversationId, clientId, targetIds, action) {
@@ -171,12 +171,12 @@ realtime.createIMClient('Tom', {
 ```objc
 // AVIMSignatureDataSource 接口的主要方法
 /*!
- 对一个操作进行签名. 注意:本调用会在后台线程被执行
- @param clientId - 操作发起人的 id
- @param conversationId － 操作所属对话的 id
+ 对一个操作进行签名。注意：本调用会在后台线程被执行
+ @param clientId - 操作发起人的 ID
+ @param conversationId － 操作所属对话的 ID
  @param action － @see AVIMSignatureAction
- @param clientIds － 操作目标的 id 列表
- @return 一个 AVIMSignature 签名对象.
+ @param clientIds － 操作目标的 ID 列表
+ @return 一个 AVIMSignature 签名对象
  */
 - (AVIMSignature *)signatureWithClientId:(NSString *)clientId
                           conversationId:(NSString * _Nullable)conversationId
@@ -378,14 +378,14 @@ AVUser.logInInBackground("username", "password", new LogInCallback<AVUser>() {
         client.open(new AVIMClientCallback() {
           @Override
           public void done(final AVIMClient avimClient, AVIMException e) {
-            // do something as you need.
+            // 执行其他逻辑
           }
        });
     }
 });
 ```
 ```cs
-// not support yet
+// 暂不支持
 ```
 
 LeanCloud 内置账户系统与即时通讯服务可以共享登录签名信息，这里我们直接用 `logIn` 成功之后的 `AVUser` 实例来创建 `IMClient`，在即时通讯服务的用户登录环节，LeanCloud 云端会自动关联账户系统来确认用户身份的合法性，这样可以省掉 SDK 向第三方申请登录签名的操作，进一步简化开发流程。
@@ -416,7 +416,7 @@ LeanCloud 内置账户系统与即时通讯服务可以共享登录签名信息�
 /**
  * 更新指定用户的角色
  * @since 4.0.0
- * @param {String} memberId 成员 Id
+ * @param {String} memberId 成员 ID
  * @param {module:leancloud-realtime.ConversationMemberRole | String} role 角色
  * @return {Promise.<this>} self
  */
@@ -424,11 +424,11 @@ async updateMemberRole(memberId, role);
 ```
 ```objc
 /**
- Change a member's role.
+ 更新成员的角色信息
 
- @param memberId Equal to client id.
- @param role Changing role.
- @param callback Result callback.
+ @param memberId 成员的 clientId
+ @param role 角色
+ @param callback 结果回调函数
  */
 - (void)updateMemberRoleWithMemberId:(NSString *)memberId
                                 role:(AVIMConversationMemberRole)role
@@ -437,14 +437,14 @@ async updateMemberRole(memberId, role);
 ```java
 /**
  * 更新成员的角色信息
- * @param memberId  成员的 client id
+ * @param memberId  成员的 clientId
  * @param role      角色
  * @param callback  结果回调函数
  */
 public void updateMemberRole(final String memberId, final ConversationMemberRole role, final AVIMConversationCallback callback);
 ```
 ```cs
-// not support yet
+// 暂不支持
 ```
 
 ### 获取成员权限
@@ -463,17 +463,17 @@ public void updateMemberRole(final String memberId, final ConversationMemberRole
   ```
   ```objc
   /**
-  Get all member info. using cache as a default.
+  获取当前对话的所有角色信息。默认使用缓存。
 
-  @param callback Result callback.
+  @param callback 结果回调函数
   */
   - (void)getAllMemberInfoWithCallback:(void (^)(NSArray<AVIMConversationMemberInfo *> * _Nullable memberInfos, NSError * _Nullable error))callback;
 
   /**
-  Get all member info.
+  获取当前对话的所有角色信息。
 
-  @param ignoringCache Cache option.
-  @param callback Result callback.
+  @param ignoringCache 缓存选项
+  @param callback 结果回调函数
   */
   - (void)getAllMemberInfoWithIgnoringCache:(BOOL)ignoringCache
                                   callback:(void (^)(NSArray<AVIMConversationMemberInfo *> * _Nullable memberInfos, NSError * _Nullable error))callback;
@@ -488,7 +488,7 @@ public void updateMemberRole(final String memberId, final ConversationMemberRole
   public void getAllMemberInfo(int offset, int limit, final AVIMConversationMemberQueryCallback callback);
   ```
   ```cs
-  // not support yet
+  // 暂不支持
   ```
 
 - `Conversation#getMemberInfo(memberId)` 可用来获取指定成员的权限信息
@@ -497,17 +497,17 @@ public void updateMemberRole(final String memberId, final ConversationMemberRole
   /**
    * 获取指定成员的对话属性
    * @since 4.0.0
-   * @param {String} memberId 成员 Id
+   * @param {String} memberId 成员 ID
    * @return {Promise.<ConversationMemberInfo>} 指定成员的对话属性
    */
   async getMemberInfo(memberId);
   ```
   ```objc
   /**
-  Get a member info by member id. using cache as a default.
+  获取对话内指定成员的角色信息。默认使用缓存。
 
-  @param memberId Equal to client id.
-  @param callback Result callback.
+  @param memberId 成员的 clientid
+  @param callback 结果回调函数
   */
   - (void)getMemberInfoWithMemberId:(NSString *)memberId
                           callback:(void (^)(AVIMConversationMemberInfo * _Nullable memberInfo, NSError * _Nullable error))callback;
@@ -521,7 +521,7 @@ public void updateMemberRole(final String memberId, final ConversationMemberRole
   public void getMemberInfo(final String memberId, final AVIMConversationMemberQueryCallback callback);
   ```
   ```cs
-  // not support yet
+  // 暂不支持
   ```
 
 这两类函数的返回值都是包含 `<ConversationId, MemberId, ConversationMemberRole>` 信息的三元组（数组）。
@@ -535,15 +535,15 @@ public void updateMemberRole(final String memberId, final ConversationMemberRole
 ```js
 /**
  * 在该对话中禁言成员
- * @param {String|String[]} clientIds 成员 client id
- * @return {Promise.<PartiallySuccess>} 部分成功结果，包含了成功的 id 列表、失败原因与对应的 id 列表
+ * @param {String|String[]} clientIds 成员 clientId
+ * @return {Promise.<PartiallySuccess>} 部分成功结果，包含了成功的 ID 列表、失败原因与对应的 ID 列表
  */
 async muteMembers(clientIds);
 
 /**
  * 对话中解除禁言
- * @param {String|String[]} clientIds 成员 client id
- * @return {Promise.<PartiallySuccess>} 部分成功结果，包含了成功的 id 列表、失败原因与对应的 id 列表
+ * @param {String|String[]} clientIds 成员 clientId
+ * @return {Promise.<PartiallySuccess>} 部分成功结果，包含了成功的 ID 列表、失败原因与对应的 ID 列表
  */
 async unmuteMembers(clientIds);
 
@@ -558,27 +558,27 @@ async queryMutedMembers({ limit, next } = {});
 ```
 ```objc
 /**
- Muting some members in the conversation.
+ 将部分成员禁言。
  
- @param memberIds Who will be muted.
- @param callback Result callback.
+ @param memberIds 成员列表
+ @param callback 结果回调函数
  */
 - (void)muteMembers:(NSArray<NSString *> *)memberIds
            callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<AVIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
 /**
- Unmuting some members in the conversation.
+ 将部分成员解除禁言。
  
- @param memberIds Who will be unmuted.
- @param callback Result callback.
+ @param memberIds 成员列表
+ @param callback 结果回调函数
  */
 - (void)unmuteMembers:(NSArray<NSString *> *)memberIds
              callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<AVIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
 /**
- Query muted members in the conversation.
+ 查询被禁言的成员列表。
  
- @param limit Count of the muted members you want to query.
- @param next Offset, if callback's next is nil or empty, that means there is no more muted members.
- @param callback Result callback.
+ @param limit 查询结果集上限
+ @param next 查询结果的起始点；若 next 是 nil 或为空，则意味着没有更多被禁言的成员
+ @param callback 结果回调函数
  */
 - (void)queryMutedMembersWithLimit:(NSInteger)limit
                               next:(NSString * _Nullable)next
@@ -606,7 +606,7 @@ public void unmuteMembers(final List<String> memberIds, final AVIMOperationParti
 public void queryMutedMembers(int offset, int limit, final AVIMConversationSimpleResultCallback callback);
 ```
 ```cs
-// not support yet
+// 暂不支持
 ```
 
 注意这里对用户禁言/解除禁言的结果与以往的操作结果不一样，这里是 ***部分成功结果***，里面包含三部分数据：
@@ -633,15 +633,15 @@ public void queryMutedMembers(int offset, int limit, final AVIMConversationSimpl
 ```js
 /**
  * 将用户加入该对话黑名单
- * @param {String|String[]} clientIds 成员 client id
- * @return {Promise.<PartiallySuccess>} 部分成功结果，包含了成功的 id 列表、失败原因与对应的 id 列表
+ * @param {String|String[]} clientIds 成员 clientId
+ * @return {Promise.<PartiallySuccess>} 部分成功结果，包含了成功的 ID 列表、失败原因与对应的 ID 列表
  */
 async blockMembers(clientIds);
 
 /**
  * 将用户移出该对话黑名单
- * @param {String|String[]} clientIds 成员 client id
- * @return {Promise.<PartiallySuccess>} 部分成功结果，包含了成功的 id 列表、失败原因与对应的 id 列表
+ * @param {String|String[]} clientIds 成员 clientId
+ * @return {Promise.<PartiallySuccess>} 部分成功结果，包含了成功的 ID 列表、失败原因与对应的 ID 列表
  */
 async unblockMembers(clientIds);
 
@@ -656,10 +656,10 @@ async queryBlockedMembers({ limit, next } = {});
 ```
 ```objc
 /**
- Blocking some members in the conversation.
+ 将部分成员加入黑名单
 
- @param memberIds Who will be blocked.
- @param callback Result callback.
+ @param memberIds 成员列表
+ @param callback 结果回调函数
  */
 - (void)blockMembers:(NSArray<NSString *> *)memberIds
             callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<AVIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
@@ -667,8 +667,8 @@ async queryBlockedMembers({ limit, next } = {});
 /**
  Unblocking some members in the conversation.
 
- @param memberIds Who will be unblocked.
- @param callback Result callback.
+ @param memberIds 成员列表
+ @param callback 结果回调函数
  */
 - (void)unblockMembers:(NSArray<NSString *> *)memberIds
               callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<AVIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
@@ -676,9 +676,9 @@ async queryBlockedMembers({ limit, next } = {});
 /**
  Query blocked members in the conversation.
 
- @param limit Count of the blocked members you want to query.
- @param next Offset, if callback's next is nil or empty, that means there is no more blocked members.
- @param callback Result callback.
+ @param limit 查询结果集上限
+ @param next 查询结果的起始点；若 next 是 nil 或为空，则意味着没有更多黑名单成员
+ @param callback 结果回调函数
  */
 - (void)queryBlockedMembersWithLimit:(NSInteger)limit
                                 next:(NSString * _Nullable)next
@@ -706,7 +706,7 @@ public void unblockMembers(final List<String> memberIds, final AVIMOperationPart
 public void queryBlockedMembers(int offset, int limit, final AVIMConversationSimpleResultCallback callback);
 ```
 ```cs
-// not support yet
+// 暂不支持
 ```
 
 > 注意这里对黑名单操作的结果与禁言操作一样，是 ***部分成功结果***。
@@ -768,7 +768,7 @@ tom.CreateChatRoomAsync("聊天室");
 在前面一章中，我们已经了解了 [构造复杂条件来查询对话](realtime-guide-beginner.html#使用复杂条件来查询对话) 的方法，`ConversationsQuery` 依然适用于查询聊天室，只需要添加 `transient = true` 的限制条件即可。
 
 ```js
-var query = tom.getQuery().equalTo('tr',true);// 聊天室对象
+var query = tom.getQuery().equalTo('tr',true); // 聊天室对象
 }).catch(console.error);
 ```
 ```objc
@@ -783,7 +783,7 @@ query.findInBackground(new AVIMConversationQueryCallback() {
         if (null != e) {
             // 获取成功
         } else {
-          // 获取失败
+            // 获取失败
         }
     }
 });
@@ -813,7 +813,7 @@ var query = tom.GetChatRoomQuery();
 
 ```js
 chatRoom.count().then(function(count) {
-  console.log('在线人数: ' + count);
+  console.log('在线人数：' + count);
 }).catch(console.error.bind(console));
 ```
 ```objc
@@ -825,7 +825,7 @@ chatRoom.count().then(function(count) {
     [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
         // Tom 创建一个对话的查询
         AVIMConversationQuery *query = [self.client conversationQuery];
-        // 根据已知 Id 获取对话实例，当前实例为聊天室。
+        // 根据已知 ID 获取对话实例，当前实例为聊天室。
         [query getConversationById:conversationId callback:^(AVIMConversation *conversation, NSError *error) {
             // 查询在线人数
             [conversation countMembersWithCallback:^(NSInteger number, NSError *error) {
@@ -843,23 +843,23 @@ private void TomQueryWithLimit() {
     @Override
     public void done(AVIMClient client, AVIMException e) {
       if (e == null) {
-        //登录成功
+        // 登录成功
         AVIMConversationsQuery query = tom.getConversationsQuery();
         query.setLimit(1);
-        //获取第一个对话
+        // 获取第一个对话
         query.findInBackground(new AVIMConversationQueryCallback() {
           @Override
           public void done(List<AVIMConversation> convs, AVIMException e) {
             if (e == null) {
               if (convs != null && !convs.isEmpty()) {
                 AVIMConversation conv = convs.get(0);
-                //获取第一个对话的
+                // 获取第一个对话的在线人数
                 conv.getMemberCount(new AVIMConversationMemberCountCallback() {
 
                   @Override
                   public void done(Integer count, AVIMException e) {
                     if (e == null) {
-                      Log.d("Tom & Jerry", "conversation got " + count + " members");
+                      Log.d("Tom & Jerry 对话的在线人数为 " + count);
                     }
                   }
                 });
@@ -877,9 +877,9 @@ private void TomQueryWithLimit() {
 public async void CountMembers_SampleCode()
 {
     AVIMClient client = new AVIMClient("Tom");
-    await client.ConnectAsync();//Tom 登录客户端
+    await client.ConnectAsync(); // Tom 登录客户端
 
-    AVIMConversation conversation = (await client.GetQuery().FindAsync()).FirstOrDefault();//获取对话列表，找到第一个对话
+    AVIMConversation conversation = (await client.GetQuery().FindAsync()).FirstOrDefault(); // 获取对话列表，找到第一个对话
     int membersCount = await conversation.CountMembersAsync();
 }
 ```
@@ -939,7 +939,7 @@ AVIMClient tom = AVIMClient.getInstance("Tom");
       @Override
       public void done(AVIMClient client, AVIMException e) {
         if (e == null) {
-          // 创建名为“猫和老鼠”的对话
+          // 创建名为「猫和老鼠」的对话
           client.createConversation(Arrays.asList("Jerry"), "猫和老鼠", null,
             new AVIMConversationCreatedCallback() {
               @Override
@@ -966,7 +966,7 @@ AVIMClient tom = AVIMClient.getInstance("Tom");
     });
 ```
 ```cs
-// not support yet
+// 暂不支持
 ```
 
 > 注意：
@@ -993,7 +993,7 @@ black.getConversation(CONVERSATION_ID).then(function(conversation) {
 
     // Tom 打开 client
     [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
-        // Tom 查询 id 为 551260efe4b01608686c3e0f 的会话
+        // Tom 查询 ID 为 551260efe4b01608686c3e0f 的会话
         AVIMConversationQuery *query = [self.client conversationQuery];
         [query getConversationById:@"551260efe4b01608686c3e0f" callback:^(AVIMConversation *conversation, NSError *error) {
             // Tom 将会话设置为静音
@@ -1013,14 +1013,14 @@ tom.open(new AVIMClientCallback(){
     @Override
     public void done(AVIMClient client,AVIMException e){
       if(e==null){
-      //登录成功
+      // 登录成功
       AVIMConversation conv = client.getConversation("551260efe4b01608686c3e0f");
       conv.mute(new AVIMConversationCallback(){
 
         @Override
         public void done(AVIMException e){
           if(e==null){
-          //设置成功
+          // 设置成功
           }
         }
       });
@@ -1029,7 +1029,7 @@ tom.open(new AVIMClientCallback(){
 });
 ```
 ```cs
-// not support yet
+// 暂不支持
 ```
 
 设置静音之后，iOS、Windows Phone 及启用混合推送的 Android 用户就不会收到推送消息了。与之对应的就是取消静音的操作（`Conversation#unmute` 方法），即取消免打扰模式。
@@ -1037,7 +1037,7 @@ tom.open(new AVIMClientCallback(){
 > 使用建议：
 >
 > - 对话内消息的静音/取消静音操作不光对聊天室有效，普通的群聊对话也可以执行该操作。
-> - `mute` 和 `unmute` 操作会修改云端 `_Conversation` 里面的 `mu` 属性。**强烈建议开发者切勿在控制台中对 `mu` 随意进行修改**，否则可能会引起即时通讯云端的离线推送功能失效。
+> - `mute` 和 `unmute` 操作会修改云端 `_Conversation` 里面的 `mu` 属性。**开发者切勿在控制台中对 `mu` 随意进行修改**，否则可能会引起即时通讯云端的离线推送功能失效。
 
 
 ### 消息内容的实时过滤
@@ -1083,7 +1083,7 @@ realtime.createIMClient('Tom').then(function(tom) {
                 [tempConv sendMessage:textMessage callback:^(BOOL success, NSError *error) {
 
                     if (success) {
-                        // send message success.
+                        // 发送成功
                     }
                 }];
             }];
@@ -1138,7 +1138,7 @@ AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
                 [tempConv sendMessage:textMessage callback:^(BOOL success, NSError *error) {
                     
                     if (success) {
-                        // send message success.
+                        // 发送成功
                     }
                 }];
             }];
