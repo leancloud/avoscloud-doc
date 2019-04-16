@@ -486,4 +486,4 @@ Play.LeaveRoom();
 
 ## 价格及试用
 
-多人在线对战的核心计费单位为 CCU，即同时在线人数。价格请参考[博客](https://blog.leancloud.cn/6646/)。
+多人在线对战的核心计费单位为 CCU，即同时在线人数。价格请参考[官网](https://leancloud.cn/pricing/)。
