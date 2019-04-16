@@ -665,7 +665,7 @@ async queryBlockedMembers({ limit, next } = {});
             callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<AVIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
 
 /**
- Unblocking some members in the conversation.
+ 将部分成员从黑名单移出来
 
  @param memberIds 成员列表
  @param callback 结果回调函数
@@ -674,7 +674,7 @@ async queryBlockedMembers({ limit, next } = {});
               callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<AVIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
 
 /**
- Query blocked members in the conversation.
+ 查询黑名单的成员列表
 
  @param limit 查询结果集上限
  @param next 查询结果的起始点；若 next 是 nil 或为空，则意味着没有更多黑名单成员
