@@ -216,7 +216,7 @@ async createConversation({
   unique,
   tempConv,
   tempConvTTL,
-  ...properties
+  // 可添加更多属性
 });
 ```
 ```objc
@@ -1598,33 +1598,33 @@ AVIMClient.Status != Online
 // });
 var { Event, TextMessage } = require('leancloud-realtime');
 var { FileMessage, ImageMessage, AudioMessage, VideoMessage, LocationMessage } = require('leancloud-realtime-plugin-typed-messages');
-// 注册 message 事件的 handler
+// 注册 MESSAGE 事件的 handler
 client.on(Event.MESSAGE, function messageEventHandler(message, conversation) {
   // 请按自己需求改写
   var file;
   switch (message.type) {
     case TextMessage.TYPE:
-      console.log('收到文本消息，text: ' + message.getText() + ', msgId: ' + message.id);
+      console.log('收到文本消息，内容：' + message.getText() + '，ID：' + message.id);
       break;
     case FileMessage.TYPE:
       file = message.getFile(); // file 是 AV.File 实例
-      console.log('收到文件消息，url: ' + file.url() + ', size: ' + file.metaData('size'));
+      console.log('收到文件消息，URL：' + file.url() + '，大小：' + file.metaData('size'));
       break;
     case ImageMessage.TYPE:
       file = message.getFile();
-      console.log('收到图片消息，url: ' + file.url() + ', width: ' + file.metaData('width'));
+      console.log('收到图片消息，URL：' + file.url() + '，宽度：' + file.metaData('width'));
       break;
     case AudioMessage.TYPE:
       file = message.getFile();
-      console.log('收到音频消息，url: ' + file.url() + ', width: ' + file.metaData('duration'));
+      console.log('收到音频消息，URL：' + file.url() + '，长度：' + file.metaData('duration'));
       break;
     case VideoMessage.TYPE:
       file = message.getFile();
-      console.log('收到视频消息，url: ' + file.url() + ', width: ' + file.metaData('duration'));
+      console.log('收到视频消息，URL：' + file.url() + '，长度：' + file.metaData('duration'));
       break;
     case LocationMessage.TYPE:
       var location = message.getLocation();
-      console.log('收到位置消息，latitude: ' + location.latitude + ', longitude: ' + location.longitude);
+      console.log('收到位置消息，纬度：' + location.latitude + '，经度：' + location.longitude);
       break;
     default:
       console.warn('收到未知类型消息');
@@ -1637,12 +1637,10 @@ conversation.on(Event.MESSAGE, function messageEventHandler(message) {
 });
 ```
 ```objc
-// handle built-in typed message
+// 处理默认类型消息
 - (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
-    // for example: received image message
     if (message.mediaType == kAVIMMessageMediaTypeImage) {
-        AVIMImageMessage *imageMessage = (AVIMImageMessage *)message;
-        // 处理图片消息
+        AVIMImageMessage *imageMessage = (AVIMImageMessage *)message; // 处理图片消息
     } else if(message.mediaType == kAVIMMessageMediaTypeAudio){
         // 处理音频消息
     } else if(message.mediaType == kAVIMMessageMediaTypeVideo){
@@ -1674,53 +1672,53 @@ conversation.on(Event.MESSAGE, function messageEventHandler(message) {
 // 1. 注册默认 handler
 AVIMMessageManager.registerDefaultMessageHandler(new AVIMMessageHandler(){
     public void onMessage(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
-      // 接收消息
+        // 接收消息
     }
 
     public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
-      // 执行收到消息后的逻辑
+        // 执行收到消息后的逻辑
     }
 });
 // 2. 为每一种消息类型注册 handler
 AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new AVIMTypedMessageHandler<AVIMTypedMessage>(){
     public void onMessage(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
-    switch (message.getMessageType()) {
-        case AVIMMessageType.TEXT_MESSAGE_TYPE:
-        // 执行其他逻辑
-        AVIMTextMessage textMessage = (AVIMTextMessage)message;
-        break;
-        case AVIMMessageType.IMAGE_MESSAGE_TYPE:
-        // 执行其他逻辑
-        AVIMImageMessage imageMessage = (AVIMImageMessage)message;
-        break;
-        case AVIMMessageType.AUDIO_MESSAGE_TYPE:
-        // 执行其他逻辑
-        AVIMAudioMessage audioMessage = (AVIMAudioMessage)message;
-        break;
-        case AVIMMessageType.VIDEO_MESSAGE_TYPE:
-        // 执行其他逻辑
-        AVIMVideoMessage videoMessage = (AVIMVideoMessage)message;
-        break;
-        case AVIMMessageType.LOCATION_MESSAGE_TYPE:
-        // 执行其他逻辑
-        AVIMLocationMessage locationMessage = (AVIMLocationMessage)message;
-        break;
-        case AVIMMessageType.FILE_MESSAGE_TYPE:
-        // 执行其他逻辑
-        AVIMFileMessage fileMessage = (AVIMFileMessage)message;
-        break;
-        case AVIMMessageType.RECALLED_MESSAGE_TYPE:
-        // 执行其他逻辑
-        AVIMRecalledMessage recalledMessage = (AVIMRecalledMessage)message;
-        break;
-        default:
-        // UnsupportedMessageType
-        break;
-    }
+        switch (message.getMessageType()) {
+            case AVIMMessageType.TEXT_MESSAGE_TYPE:
+                // 执行其他逻辑
+                AVIMTextMessage textMessage = (AVIMTextMessage)message;
+                break;
+            case AVIMMessageType.IMAGE_MESSAGE_TYPE:
+                // 执行其他逻辑
+                AVIMImageMessage imageMessage = (AVIMImageMessage)message;
+                break;
+            case AVIMMessageType.AUDIO_MESSAGE_TYPE:
+                // 执行其他逻辑
+                AVIMAudioMessage audioMessage = (AVIMAudioMessage)message;
+                break;
+            case AVIMMessageType.VIDEO_MESSAGE_TYPE:
+                // 执行其他逻辑
+                AVIMVideoMessage videoMessage = (AVIMVideoMessage)message;
+                break;
+            case AVIMMessageType.LOCATION_MESSAGE_TYPE:
+                // 执行其他逻辑
+                AVIMLocationMessage locationMessage = (AVIMLocationMessage)message;
+                break;
+            case AVIMMessageType.FILE_MESSAGE_TYPE:
+                // 执行其他逻辑
+                AVIMFileMessage fileMessage = (AVIMFileMessage)message;
+                break;
+            case AVIMMessageType.RECALLED_MESSAGE_TYPE:
+                // 执行其他逻辑
+                AVIMRecalledMessage recalledMessage = (AVIMRecalledMessage)message;
+                break;
+            default:
+                // UnsupportedMessageType
+                break;
+        }
     }
 
     public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
-    // 执行收到消息后的逻辑
+        // 执行收到消息后的逻辑
     }
 });
 
@@ -1730,13 +1728,13 @@ public class CustomMessage extends AVIMMessage {
 }
 
 AVIMMessageManager.registerMessageHandler(CustomMessage.class, new MessageHandler<CustomMessage>(){
-  public void onMessage(CustomMessage message, AVIMConversation conversation, AVIMClient client) {
-    // 接收消息
-  }
+    public void onMessage(CustomMessage message, AVIMConversation conversation, AVIMClient client) {
+        // 接收消息
+    }
 
-  public void onMessageReceipt(CustomMessage message, AVIMConversation conversation, AVIMClient client){
-    // 执行收到消息后的逻辑
-  }
+    public void onMessageReceipt(CustomMessage message, AVIMConversation conversation, AVIMClient client){
+        // 执行收到消息后的逻辑
+    }
 });
 ```
 ```cs
