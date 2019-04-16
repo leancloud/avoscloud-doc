@@ -27,8 +27,7 @@
 
 > 阅读准备
 >
-> 在阅读本章之前，如果您还不太了解 LeanCloud 即时通讯服务的总体架构，建议先阅读 [即时通讯服务总览](realtime_v2.html)。
-> 另外，如果您还没有下载对应开发环境（语言）的 SDK，请参考 [SDK 安装指南](start.html) 完成 SDK 安装与初始化。
+> 在阅读本章之前，如果您还不太了解 LeanCloud 即时通讯服务的总体架构，建议先阅读 [即时通讯服务总览](realtime_v2.html)。另外，如果您还没有下载对应开发环境（语言）的 SDK，请参考 [SDK 安装指南](start.html) 完成 SDK 安装与初始化。
 
 ## 一对一单聊
 
@@ -170,7 +169,7 @@ tom.CreateConversationAsync({ // tom 是一个 IMClient 实例
   // 对话名称
   name: 'Tom & Jerry',
   unique: true
-}).then(/* 略 */)
+}).then(/* 略 */);
 ```
 ```objc
 // 创建与 Jerry 之间的对话
@@ -858,7 +857,7 @@ william.getConversation('CONVERSATION_ID').then(function(conversation) {
   return conversation.join();
 }).then(function(conversation) {
   console.log('加入成功', conversation.members);
-  // 加入成功 ['William', 'Tom', 'Jerry']
+  // 此时对话成员为：['William', 'Tom', 'Jerry']
 }).catch(console.error.bind(console));
 ```
 ```objc
@@ -1011,7 +1010,6 @@ Tom 剔除 Mary | `MEMBERS_LEFT` | `MEMBERS_LEFT` | `KICKED` | /
 William 加入 | `MEMBERS_JOINED` | `MEMBERS_JOINED` | / | `MEMBERS_JOINED`
 Jerry 主动退出 | `MEMBERS_LEFT` | `MEMBERS_LEFT` | / | `MEMBERS_LEFT`
 
-
 ## 文本之外的聊天消息
 
 上面的示例都是发送文本消息，但是实际上可能图片、视频、位置等消息也是非常常见的消息格式，接下来我们就看看如何发送这些富媒体类型的消息。
@@ -1155,7 +1153,7 @@ AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"萌妹子一枚"
 ```
 ```java
 AVFile file = AVFile.withAbsoluteLocalPath("San_Francisco.png", Environment.getExternalStorageDirectory() + "/San_Francisco.png");
-// 创建一条图片消息
+// 创建一条图像消息
 AVIMImageMessage m = new AVIMImageMessage(file);
 m.setText("发自我的小米手机");
 conv.sendMessage(m, new AVIMConversationCallback() {
@@ -1206,7 +1204,7 @@ AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"萌妹子一枚"
 AVFile file =new AVFile("萌妹子","http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif", null);
 AVIMImageMessage m = new AVIMImageMessage(file);
 m.setText("萌妹子一枚");
-// 创建一条图片消息
+// 创建一条图像消息
 conv.sendMessage(m, new AVIMConversationCallback() {
     @Override
     public void done(AVIMException e) {
@@ -1237,7 +1235,7 @@ client.on(Event.MESSAGE, function messageEventHandler(message, conversation) {
    switch (message.type) {
       case ImageMessage.TYPE:
         file = message.getFile();
-        console.log('收到图像消息，url: ' + file.url());
+        console.log('收到图像消息，URL：' + file.url());
         break;
    }
 }
@@ -1612,7 +1610,7 @@ client.on(Event.MESSAGE, function messageEventHandler(message, conversation) {
       break;
     case ImageMessage.TYPE:
       file = message.getFile();
-      console.log('收到图片消息，URL：' + file.url() + '，宽度：' + file.metaData('width'));
+      console.log('收到图像消息，URL：' + file.url() + '，宽度：' + file.metaData('width'));
       break;
     case AudioMessage.TYPE:
       file = message.getFile();
@@ -1640,7 +1638,7 @@ conversation.on(Event.MESSAGE, function messageEventHandler(message) {
 // 处理默认类型消息
 - (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
     if (message.mediaType == kAVIMMessageMediaTypeImage) {
-        AVIMImageMessage *imageMessage = (AVIMImageMessage *)message; // 处理图片消息
+        AVIMImageMessage *imageMessage = (AVIMImageMessage *)message; // 处理图像消息
     } else if(message.mediaType == kAVIMMessageMediaTypeAudio){
         // 处理音频消息
     } else if(message.mediaType == kAVIMMessageMediaTypeVideo){
@@ -1664,7 +1662,7 @@ conversation.on(Event.MESSAGE, function messageEventHandler(message) {
 - (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
     if (message.mediaType == 1) {
         AVIMCustomMessage *imageMessage = (AVIMCustomMessage *)message;
-        // 处理图片消息
+        // 处理图像消息
     }
 }
 ```
@@ -1875,7 +1873,7 @@ tom.createConversation({
   type: 'private',
   pinned: true,
 }).then(function(conversation) {
-  console.log('创建成功。id: ' + conversation.id);
+  console.log('创建成功。ID：' + conversation.id);
 }).catch(console.error.bind(console));
 ```
 ```objc
@@ -2057,7 +2055,7 @@ conversation.fetch().then(function(conversation) {
 ).catch(console.error.bind(console));
 ```
 ```objc
-// fetch 方法会执行一次刷新操作，以获取云端最新对话数据。
+// fetchWithCallback 方法会执行一次刷新操作，以获取云端最新对话数据。
 [conversation fetchWithCallback:^(BOOL succeeded, NSError *error) {
     if (succeeded) {
         NSLog(@"", conversation.members);
@@ -2065,7 +2063,7 @@ conversation.fetch().then(function(conversation) {
 }];
 ```
 ```java
-// fetch 方法会执行一次刷新操作，以获取云端最新对话数据。
+// fetchInfoInBackground 方法会执行一次刷新操作，以获取云端最新对话数据。
 conversation.fetchInfoInBackground(new AVIMConversationCallback() {
   @Override
   public void done(AVIMException e) {
@@ -2076,7 +2074,7 @@ conversation.fetchInfoInBackground(new AVIMConversationCallback() {
 });
 ```
 ```cs
-// fetch 方法会执行一次刷新操作，以获取云端最新对话数据。
+// 暂不支持
 ```
 
 > 使用提示：
@@ -2240,10 +2238,10 @@ await query.FindAsync();
 `ConversationsQuery` 也支持在查询条件中使用正则表达式来匹配数据。比如要查询所有 `language` 是中文的对话：
 
 ```js
-query.matches('language',/[\\u4e00-\\u9fa5]/);
+query.matches('language',/[\\u4e00-\\u9fa5]/); // language 是中文字符
 ```
 ```objc
-[query whereKey:@"language" matchesRegex:@"[\u4e00-\u9fa5]"];
+[query whereKey:@"language" matchesRegex:@"[\u4e00-\u9fa5]"]; // language 是中文字符
 ```
 ```java
 query.whereMatches("language","[\\u4e00-\\u9fa5]"); // language 是中文字符
@@ -2689,7 +2687,7 @@ messageIterator.next().then(function(result) {
   //   done: false,
   // }
 }).catch(console.error.bind(console));
-// 第二次调用 next 方法，获得第 11 ~ 20 条消息，还有更多消息，done 为 false
+// 第二次调用 next 方法，获得第 11~20 条消息，还有更多消息，done 为 false
 // 迭代器内部会记录起始消息的数据，无需开发者显示指定
 messageIterator.next().then(function(result) {
   // result: {
@@ -2991,10 +2989,10 @@ realtime.on(Event.ONLINE, function() {
   console.log('已恢复在线');
 });
 realtime.on(Event.SCHEDULE, function(attempt, delay) {
-  console.log(delay + 'ms 后进行第' + (attempt + 1) + '次重连');
+  console.log(delay + ' ms 后进行第 ' + (attempt + 1) + ' 次重连');
 });
 realtime.on(Event.RETRY, function(attempt) {
-  console.log('正在进行第' + (attempt + 1) + '次重连');
+  console.log('正在进行第 ' + (attempt + 1) + ' 次重连');
 });
 realtime.on(Event.RECONNECT, function() {
   console.log('与服务端连接恢复');
