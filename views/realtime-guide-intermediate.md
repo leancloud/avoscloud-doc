@@ -192,7 +192,7 @@ private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 
 > 需要在 [控制台 > 消息 > 即时通讯 > 设置 > 即时通讯选项](/dashboard/messaging.html?appid={{appid}}#/message/realtime/conf) 中启用「允许通过 SDK 编辑消息」和「允许通过 SDK 撤回消息」。
 
-终端用户在消息发送之后，还可以对自己已经发送的消息进行修改（`Conversation#updateMessage` 方法）或撤回（`Conversation#recallMessage` 方法），目前即时通讯服务端并没有在时效性上进行限制，不过只允许用户修改或撤回自己发出去的消息，对别人的消息进行修改或撤回是被禁止的（错误码：）。
+终端用户在消息发送之后，还可以对自己已经发送的消息进行修改（`Conversation#updateMessage` 方法）或撤回（`Conversation#recallMessage` 方法），目前即时通讯服务端并没有在时效性上进行限制，不过只允许用户修改或撤回自己发出去的消息，对别人的消息进行修改或撤回是被禁止的。
 
 如果 Tom 要 ***撤回一条自己之前发送过的消息***，示例代码如下：
 
@@ -840,7 +840,7 @@ LeanCloud 本就提供完善的 [消息推送服务](push_guide.html)，现在�
 
   那么在有新消息到达的时候，符合条件的离线用户会收到一条「您有新消息」的通知栏消息。
 
-  注意，这里 `badge` 参数为 iOS 设备专用，且 `Increment` 大小写敏感，表示自动增加应用 badge 上的数字计数。{# （坏链）清除 badge 的操作请参考 [iOS 推送指南 · 清除 badge](ios_push_guide.html#清除_Badge)。 #}此外，对于 iOS 设备您还可以设置声音等推送属性，具体的字段可以参考 [推送 · 消息内容 Data](push_guide.html#消息内容_Data)。
+  注意，这里 `badge` 参数为 iOS 设备专用，且 `Increment` 大小写敏感，表示自动增加应用 badge 上的数字计数。清除 badge 的操作请参考 [iOS 推送指南 · 定制通知](ios_push_guide.html#定制通知)。此外，对于 iOS 设备您还可以设置声音等推送属性，具体的字段可以参考 [推送 · 消息内容 Data](push_guide.html#消息内容_Data)。
 
 2. 客户端发送消息的时候额外指定推送信息
 
