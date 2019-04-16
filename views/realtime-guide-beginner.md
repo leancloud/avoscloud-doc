@@ -127,7 +127,7 @@ AV.User.logIn('username', 'password').then(function(user) {
     AVIMClient *client = [[AVIMClient alloc] initWithUser:user];
     // 打开 client，与云端进行连接
     [client openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
-        // Do something you like.
+        // 执行其他逻辑
     }];
 }];
 ```
