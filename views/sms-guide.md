@@ -1056,6 +1056,7 @@ var smsPrices = [{"CountryNumber":1,"CountryOrRegion":"美国","CountryCode":"US
 {"CountryNumber":61,"CountryOrRegion":"澳大利亚","CountryCode":"AU","UnitPrice":0.48},
 {"CountryNumber":62,"CountryOrRegion":"印度尼西亚","CountryCode":"ID","UnitPrice":0.25},
 {"CountryNumber":63,"CountryOrRegion":"菲律宾","CountryCode":"PH","UnitPrice":0.37},
+{"CountryNumber":64,"CountryOrRegion":"新西兰","CountryCode":"NZ","UnitPrice":0.84},
 {"CountryNumber":65,"CountryOrRegion":"新加坡","CountryCode":"SG","UnitPrice":0.43},
 {"CountryNumber":66,"CountryOrRegion":"泰国","CountryCode":"TH","UnitPrice":0.34},
 {"CountryNumber":81,"CountryOrRegion":"日本","CountryCode":"JP","UnitPrice":0.68},
@@ -1074,6 +1075,7 @@ var smsPrices = [{"CountryNumber":1,"CountryOrRegion":"美国","CountryCode":"US
 {"CountryNumber":960,"CountryOrRegion":"马尔代夫","CountryCode":"MV","UnitPrice":0.11},
 {"CountryNumber":966,"CountryOrRegion":"沙特阿拉伯","CountryCode":"SA","UnitPrice":0.31},
 {"CountryNumber":971,"CountryOrRegion":"阿拉伯联合酋长国","CountryCode":"AE","UnitPrice":0.27},
+{"CountryNumber":974,"CountryOrRegion":"卡塔尔","CountryCode":"QA","UnitPrice":0.52},
 {"CountryNumber":977,"CountryOrRegion":"尼泊尔","CountryCode":"NP","UnitPrice":0.73},
 {"CountryNumber":998,"CountryOrRegion":"乌兹别克斯坦","CountryCode":"UZ","UnitPrice":0.73}];
 var nodes = [{ code: "cn", name: "华北节点"},{ code: "tab", name: "华东节点"  },{ code: "us", name: "美国节点"  }];
