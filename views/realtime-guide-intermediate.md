@@ -198,7 +198,7 @@ private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
 
 ```js
 conversation.recall(oldMessage).then(function(recalledMessage) {
-  // 修改成功
+  // 撤回成功
   // recalledMessage 是一个 RecalledMessage
 }).catch(function(error) {
   // 异常处理
