@@ -56,7 +56,7 @@ AV.init({
 ```js
 const getDataForRender = todo => ({
   content: todo.get('content'),
-  done: todo.get('content')
+  done: todo.get('done')
 });
 
 Page({
