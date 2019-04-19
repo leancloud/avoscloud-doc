@@ -1298,13 +1298,20 @@ $(document).ready(function() {
             { "data": "nodes.us" }
         ],
         columnDefs: [
-            { 
-                targets: [3, 4, 5],
+            {
+                targets: [3, 4],
                 className: 'text-right', 
                 render: function(data, type, row, meta){
-                    return data.toFixed(2)
+                    return '<span class="text-muted" style="opacity: 0.5; padding-right: 4px;">¥</span> ' + data.toFixed(2)
                 }
             },
+            {
+                targets: 5,
+                className: 'text-right', 
+                render: function(data, type, row, meta){
+                    return '<span class="text-muted" style="opacity: 0.5; padding-right: 4px;">$</span> ' + data.toFixed(2)
+                }
+            }
         ]
     });
     // style global filter
