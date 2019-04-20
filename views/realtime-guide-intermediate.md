@@ -1148,9 +1148,9 @@ private void Tom_OnSessionClosed(object sender, AVIMSessionClosedEventArgs e)
 
 {{ docs.langSpecStart('js') }}
 
-通过继承 TypedMessage，开发者也可以扩展自己的富媒体消息。其要求和步骤是：
+通过继承 `TypedMessage`，开发者也可以扩展自己的富媒体消息。其要求和步骤是：
 
-* 申明新的消息类型，继承自 TypedMessage 或其子类，然后：
+* 申明新的消息类型，继承自 `TypedMessage` 或其子类，然后：
   * 对 class 使用 `messageType(123)` 装饰器，具体消息类型的值（这里是 `123`）由开发者自己决定（LeanCloud 内建的 [消息类型使用负数](realtime-guide-beginner.html#默认消息类型)，所有正数都预留给开发者扩展使用）。
   * 对 class 使用 `messageField(['fieldName'])` 装饰器来声明需要发送的字段。
 * 调用 `Realtime#register()` 函数注册这个消息类型。
@@ -1179,7 +1179,7 @@ realtime.register(OperationMessage);
 继承于 `AVIMTypedMessage`，开发者也可以扩展自己的富媒体消息。其要求和步骤是：
 
 * 实现 `AVIMTypedMessageSubclassing` 协议；
-* 子类将自身类型进行注册，一般可在子类的 `+load` 方法或者 UIApplication 的 `-application:didFinishLaunchingWithOptions:` 方法里面调用 `[YourClass registerSubclass]`。
+* 子类将自身类型进行注册，一般可在子类的 `+load` 方法或者 `UIApplication` 的 `-application:didFinishLaunchingWithOptions:` 方法里面调用 `[YourClass registerSubclass]`。
 
 ```objc
 // 定义
