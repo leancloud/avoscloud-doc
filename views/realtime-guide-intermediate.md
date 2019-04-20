@@ -671,13 +671,13 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     // 暂不支持
     ```
 
-3. Tom 将收到一个已读回执，对话的 `lastReadAt` 属性会更新。此时可以更新 UI，把时间戳小于 `lastReadAt` 的消息都标记为已读。
+3. Tom 将收到一个已读回执，对话的 `lastReadAt` 属性会更新。此时可以更新 UI，把时间戳小于 `lastReadAt` 的消息都标记为已读：
   
     ```js
     var { Event } = require('leancloud-realtime');
     conversation.on(Event.LAST_READ_AT_UPDATE, function() {
-      console.log(conversation.lastDeliveredAt);
-      // 在 UI 中将早于 lastDeliveredAt 的消息都标记为「已送达」
+      console.log(conversation.lastReadAt);
+      // 在 UI 中将早于 lastReadAt 的消息都标记为「已读」
     });
     ```
     ```objc
