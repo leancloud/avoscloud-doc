@@ -718,7 +718,7 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
 
 LeanCloud 即时通讯服务还支持一类比较特殊的消息：Will（遗愿）消息。「Will 消息」是在一个用户突然掉线之后，系统自动通知对话的其他成员关于该成员已掉线的消息，好似在掉线后要给对话中的其他成员一个妥善的交待，所以被戏称为「遗愿」消息，如下图中的「Tom 已断线，无法收到消息」：
 
-<img src="images/lastwill-message.png" width="400" class="img-responsive" alt="Jerry 在一个名为「Tom & Jerry」的对话中收到内容为「Tom 已断线，无法收到消息」的 Will 消息。">
+<img src="images/lastwill-message.png" width="400" class="img-responsive" alt="在一个名为「Tom & Jerry」的对话中，Jerry 收到内容为「Tom 已断线，无法收到消息」的 Will 消息。这条消息看起来像一条系统通知，与普通消息的样式不同。">
 
 要发送 Will 消息，用户需要设定好消息内容发给云端，云端并不会将其马上发送给对话的成员，而是缓存下来，一旦检测到该用户掉线，云端立即将这条遗愿消息发送出去。开发者可以利用它来构建自己的断线通知的逻辑。
 
