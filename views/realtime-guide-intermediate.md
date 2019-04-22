@@ -849,28 +849,16 @@ LeanCloud 本就提供完善的 [消息推送服务](push_guide.html)，现在�
   还记得我们发送「暂态消息」时的 `AVIMMessageOption` 参数吗？即时通讯 SDK 允许客户端在发送消息的时候，指定附加的推送信息（在 `AVIMMessageOption` 中设置 `pushData` 属性），这样在需要离线推送的时候我们就会使用这里设置的内容来发出推送通知。示例代码如下：
 
   ```js
-  var { Realtime, TextMessage } = require('leancloud-realtime');
-  var realtime = new Realtime({ appId: '', region: 'cn' });
-  realtime.createIMClient('Tom').then(function (host) {
-      return host.createConversation({
-          members: ['Jerry'],
-          name: 'Tom & Jerry',
-          unique: true
-      });
-  }).then(function (conversation) {
-      console.log(conversation.id);
-      return conversation.send(new TextMessage('Jerry，今晚有比赛，我约了 Kate，咱们仨一起去酒吧看比赛啊？！'), {
-          pushData: {
-              "alert": "您有一条未读的消息",
-              "category": "消息",
-              "badge": 1,
-              "sound": "message.mp3", // 声音文件名，前提在应用里存在
-              "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
-          }
-      });
-  }).then(function (message) {
-      console.log(message);
-  }).catch(console.error);
+  const message = new TextMessage('Jerry，今晚有比赛，我约了 Kate，咱们仨一起去酒吧看比赛啊？！');
+  conversation.send(message), {
+      pushData: {
+          "alert": "您有一条未读的消息",
+          "category": "消息",
+          "badge": 1,
+          "sound": "message.mp3", // 声音文件名，前提在应用里存在
+          "custom-key": "由用户添加的自定义属性，custom-key 仅是举例，可随意替换"
+      }
+  });
   ```
   ```objc
   AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
