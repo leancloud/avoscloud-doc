@@ -82,7 +82,7 @@ const getDataForRender = todo => todo.toJSON();
 
 {{ docs.note("使用 `#toJSON()` 会比手动 pick 需要的数据带来更多的性能消耗。这是因为小程序的 `data` 在逻辑层与渲染层之间是通过序列化后的字符串格式通讯的，过大的 `data` 结构会造成渲染耗时过久。因此对于结构复杂的 `AV.Object`，特别是如果是一个列表，手动 pick 需要的数据设置为 `data` 是一种常见的优化方法。") }}
 
-当然，每次 `setData` 时遇到不同的 `AV.Object` 的时候都进行这样的处理会让代码很冗余，你可以使用各种技巧对此进行优化。这里分享一个 Demo 中使用的一个统一对 `setData` 的对象进行「处理」的 utility 方法 `jsonify`：
+当然，每次 `setData` 时遇到不同结构中的 `AV.Object` 都要进行这样的处理会让代码充斥噪音，你可以使用各种技巧对此进行优化。这里分享一个 Demo 中使用的一个统一对 `setData` 的对象进行「处理」的 utility 方法 `jsonify`：
 
 ```js
 const isPlainObject = target =>
@@ -244,7 +244,7 @@ wx.getUserInfo({
 
 #### 一键登录时静默获取 unionid
 
-当满足以下条件时，一键登录 API `AV.User.loginWithWeapp()` 能静默地获取到用户的 unionid 并用 unionid 进行匹配登录。
+当满足以下条件时，一键登录 API `AV.User.loginWithWeapp()` 能静默地获取到用户的 unionid 并用 unionid + openid 进行匹配登录。
 
 - 微信开放平台帐号下存在同主体的公众号，并且该用户已经关注了该公众号。
 - 微信开放平台帐号下存在同主体的公众号或移动应用，并且该用户已经授权登录过该公众号或移动应用。
@@ -275,10 +275,10 @@ AV.User.loginWithWeapp({
 }
 ```
 
-用这种方式登录时，会按照下面的步骤进行用户匹配：
+用 unionid + openid 登录时，会按照下面的步骤进行用户匹配：
 
 1. 如果已经存在对应 unionid（`authData._weixin_unionid.uid`）的用户，则会直接作为这个用户登录，并将所有信息（`openid`、`session_key`、`unionid` 等）更新到该用户的 `authData.lc_ewapp` 中。
-2. 如果不存在匹配 unionid 的用户，但对应 openid `authData.lc_weapp.openid`）的用户，则会直接作为这个用户登录，并将所有信息（`session_key`、`unionid` 等）更新到该用户的 `authData.lc_ewapp` 中，同时将 `unionid` 保存到 `authData._weixin_unionid.uid` 中。
+2. 如果不存在匹配 unionid 的用户，但存在匹配 openid（`authData.lc_weapp.openid`）的用户，则会直接作为这个用户登录，并将所有信息（`session_key`、`unionid` 等）更新到该用户的 `authData.lc_ewapp` 中，同时将 `unionid` 保存到 `authData._weixin_unionid.uid` 中。
 3. 如果不存在匹配 unionid 的用户，也不存在匹配 openid 的用户，则创建一个新用户，将所有信息（`session_key`、`unionid` 等）更新到该用户的 `authData.lc_ewapp` 中，同时将 `unionid` 保存到 `authData._weixin_unionid.uid` 中。
 
 不管匹配的过程是如何的，最终登录用户的 `authData` 都会是上面这种结构。
