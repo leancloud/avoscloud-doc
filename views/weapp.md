@@ -196,7 +196,21 @@ AV.User.loginWithWeapp().then(user => {
 }).catch(console.error);
 ```
 
-如果该用户是第一次使用此应用，调用登录 API 会创建一个新的用户，你可以在 控制台 > **存储** 中的 `_User` 表中看到该用户的信息，如果该用户曾经使用该方式登录过此应用，再次调用登录 API 会返回同一个用户。
+使用一键登录方式登录时，LeanCloud 会将该用户的小程序 `openid` 与 `session_key` 等信息保存在对应的 `user.authData.lc_weapp` 属性中，你可以在控制台的 `_User` 表中看到：
+
+```json
+{
+  "authData": {
+    "lc_weapp": {
+      "session_key": "2zIDoEEUhkb0B5pUTzsLVg==",
+      "expires_in": 7200,
+      "openid": "obznq0GuHPxdRYaaDkPOHk785DuA"
+    }
+  }
+}
+```
+
+如果用户是第一次使用此应用，调用登录 API 会创建一个新的用户，你可以在 控制台 > **存储** 中的 `_User` 表中看到该用户的信息，如果用户曾经使用该方式登录过此应用（存在对应 `openid` 的用户），再次调用登录 API 会返回同一个用户。
 
 用户的登录状态会保存在客户端中，可以使用 `AV.User.current()` 方法来获取当前登录的用户，下面的例子展示了如何为登录用户保存额外的信息：
 
@@ -214,20 +228,6 @@ wx.getUserInfo({
     }).catch(console.error);
   }
 });
-```
-
-使用一键登录方式登录时，LeanCloud 会将该用户的小程序 `openid` 与 `session_key` 等信息保存在对应的 `user.authData.lc_weapp` 属性中，你可以在控制台的 `_User` 表中看到：
-
-```json
-{
-  "authData": {
-    "lc_weapp": {
-      "session_key": "2zIDoEEUhkb0B5pUTzsLVg==",
-      "expires_in": 7200,
-      "openid": "obznq0GuHPxdRYaaDkPOHk785DuA"
-    }
-  }
-}
 ```
 
 `authData` 默认只有对应用户可见，开发者可以使用 masterKey 在云引擎中获取该用户的 `openid` 与 `session_key` 进行支付、推送等操作。详情的示例请参考 [支付](#支付)。
@@ -257,7 +257,7 @@ AV.User.loginWithWeapp({
 });
 ```
 
-使用 unionid 登录后，用户的 authData 中会增加 `_weixin_unionid` 一项，同时 `lc_weapp` 也会被更新为最新的值：
+使用 unionid 登录后，用户的 authData 中会增加 `_weixin_unionid` 一项（与 `lc_weapp` 平级）：
 
 ```json
 {
@@ -274,6 +274,14 @@ AV.User.loginWithWeapp({
   }
 }
 ```
+
+用这种方式登录时，会按照下面的步骤进行用户匹配：
+
+1. 如果已经存在对应 unionid（`authData._weixin_unionid.uid`）的用户，则会直接作为这个用户登录，并将所有信息（`openid`、`session_key`、`unionid` 等）更新到该用户的 `authData.lc_ewapp` 中。
+2. 如果不存在匹配 unionid 的用户，但对应 openid `authData.lc_weapp.openid`）的用户，则会直接作为这个用户登录，并将所有信息（`session_key`、`unionid` 等）更新到该用户的 `authData.lc_ewapp` 中，同时将 `unionid` 保存到 `authData._weixin_unionid.uid` 中。
+3. 如果不存在匹配 unionid 的用户，也不存在匹配 openid 的用户，则创建一个新用户，将所有信息（`session_key`、`unionid` 等）更新到该用户的 `authData.lc_ewapp` 中，同时将 `unionid` 保存到 `authData._weixin_unionid.uid` 中。
+
+不管匹配的过程是如何的，最终登录用户的 `authData` 都会是上面这种结构。
 
 [LeanTodo Demo](#Demo) 便是使用这种方式登录的，如果你已经关注了其关联的公众号（搜索 AVOSCloud，或通过小程序关于页面的相关公众号链接访问），那么你在登录后会在 LeanTodo Demo 的 **设置 - 用户** 页面看到当前用户的 `authData` 中已经绑定了 unionid。
 
