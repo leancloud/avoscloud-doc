@@ -82,7 +82,7 @@ const getDataForRender = todo => todo.toJSON();
 
 {{ docs.note("使用 `#toJSON()` 会比手动 pick 需要的数据带来更多的性能消耗。这是因为小程序的 `data` 在逻辑层与渲染层之间是通过序列化后的字符串格式通讯的，过大的 `data` 结构会造成渲染耗时过久。因此对于结构复杂的 `AV.Object`，特别是如果是一个列表，手动 pick 需要的数据设置为 `data` 是一种常见的优化方法。") }}
 
-更进一步，每次 `setData` 不同的 `AV.Object` 的时候都需要进行这样的处理会让代码很冗余。对此我们可以使用一个通用的 utility 方法统一对 `setData` 的对象进行「处理」：
+当然，每次 `setData` 时遇到不同的 `AV.Object` 的时候都进行这样的处理会让代码很冗余，你可以使用各种技巧对此进行优化。这里分享一个 Demo 中使用的一个统一对 `setData` 的对象进行「处理」的 utility 方法 `jsonify`：
 
 ```js
 const isPlainObject = target =>
@@ -107,7 +107,7 @@ const jsonify = target =>
     : _jsonify(target);
 ```
 
-上面的 `jsonify` 能正确的处理 `AV.Object`、`AV.Object` 数组以及其他类型的数据。使用时可以简单的在所有的 `setData` 之前对数据调用一次 `jsonify` 方法：
+`jsonify` 能正确的处理 `AV.Object`、`AV.Object` 数组以及其他类型的数据。使用时可以简单的在所有的 `setData` 之前对数据调用一次 `jsonify` 方法：
 
 ```js
 this.setData(jsonify({
