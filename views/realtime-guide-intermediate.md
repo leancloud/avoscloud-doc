@@ -834,11 +834,11 @@ LeanCloud 本就提供完善的 [消息推送服务](push_guide.html)，现在�
 
   用户可以在控制台中为应用设置一个全局的静态 JSON 字符串，指定固定内容来发送通知。例如，我们进入 [控制台 > 消息 > 即时通讯 > 设置 > 离线推送设置](/dashboard/messaging.html?appid={{appid}}#/message/realtime/conf)，填入：
 
-  ```
+  ```json
   { "alert": "您有新的消息", "badge": "Increment" }
   ```
 
-  那么在有新消息到达的时候，符合条件的离线用户会收到一条「您有新消息」的通知栏消息。
+  那么在有新消息到达的时候，符合条件的离线用户会收到一条「您有新的消息」的通知栏消息。
 
   注意，这里 `badge` 参数为 iOS 设备专用，且 `Increment` 大小写敏感，表示自动增加应用 badge 上的数字计数。清除 badge 的操作请参考 [iOS 推送指南 · 定制通知](ios_push_guide.html#定制通知)。此外，对于 iOS 设备您还可以设置声音等推送属性，具体的字段可以参考 [推送 · 消息内容 Data](push_guide.html#消息内容_Data)。
 
