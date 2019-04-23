@@ -908,10 +908,10 @@ LeanCloud 本就提供完善的 [消息推送服务](push_guide.html)，现在�
   我们还提供了第三种方式，让开发者在推送动态内容的时候，也不失实现上的灵活性。这种方式需要使用 [即时通讯 Hook 机制](realtime-guide-systemconv.html#万能的 Hook 机制) 在服务端来统一指定离线推送消息内容，感兴趣的开发者可以参阅下述文档：
 
   - [详解消息 hook 与系统对话](realtime-guide-systemconv.html#_receiversOffline)
-  - [即时通讯 Hook（云引擎 PHP 开发）](leanengine_cloudfunction_guide-php.html#_receiversOffline)
-  - [即时通讯 Hook（云引擎 Node.js 开发）](leanengine_cloudfunction_guide-node.html#_receiversOffline)
+  - [即时通讯 Hook（云引擎 Node.js 开发）](leanengine_cloudfunction_guide-node.html#onIMReceiversOffline)
   - [即时通讯 Hook（云引擎 Python 开发）](leanengine_cloudfunction_guide-python.html#_receiversOffline)
-
+  - [即时通讯 Hook（云引擎 PHP 开发）](leanengine_cloudfunction_guide-php.html#_receiversOffline)
+  - [即时通讯 Hook（云引擎 Java 开发）](leanengine_cloudfunction_guide-java.html#_receiversOffline)
 
 三种方式之间的优先级如下：**服务端动态生成通知 > 客户端发送消息的时候额外指定推送信息 > 静态配置提醒消息**。
 
