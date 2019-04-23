@@ -296,7 +296,7 @@ AV.Object.register(Todo);
 ```js
   //设置 fetchWhenSave 为 true
   todo.fetchWhenSave(true);
-  todo.save().then(function () {
+  todo.save().then(function (todo) {
     // 保存成功
   }, function (error) {
     // 异常处理
@@ -331,7 +331,7 @@ AV.Object.register(Todo);
   // 更改属性
   todo.set('location', '二楼大会议室');
   // 保存
-  todo.save().then(function () {
+  todo.save().then(function (todo) {
     // 保存成功
   }, function (error) {
     // 异常处理
@@ -348,7 +348,7 @@ AV.Object.register(Todo);
   // 修改属性
   todo.set('content', '每周工程师会议，本周改为周三下午3点半。');
   // 保存到云端
-  todo.save();
+  todo.save().then(function (todo) { /* 保存成功 */ });
 ```
 
 {% endblock %}
@@ -535,7 +535,7 @@ AV.Object.register(Todo);
   // 假设已知被分享的该 TodoFolder 的 objectId 是 5735aae7c4c9710060fbe8b0
   var targetTodoFolder = AV.Object.createWithoutData('TodoFolder', '5735aae7c4c9710060fbe8b0');
   comment.set('targetTodoFolder', targetTodoFolder);
-  comment.save();//保存到云端
+  comment.save().then(function (comment) { /* 保存成功 */ });//保存到云端
 ```
 {% endblock %}
 
@@ -568,7 +568,7 @@ todo.set('whereCreated', point);
   var testDate = new Date('2016-06-04');
   var testAVObject = new AV.Object('TestClass');
   testAVObject.set('testDate', testDate);
-  testAVObject.save();
+  testAVObject.save().then(function (testObject) { /* 保存成功 */ });
 ```
 {% endblock %}
 
@@ -578,11 +578,11 @@ todo.set('whereCreated', point);
 ```js
   var data = { base64: '6K+077yM5L2g5Li65LuA5LmI6KaB56C06Kej5oiR77yf' };
   var file = new AV.File('resume.txt', data);
-  file.save();
+  file.save().then(function (file) { /* 保存成功 */ });
 
   var bytes = [0xBE, 0xEF, 0xCA, 0xFE];
   var byteArrayFile = new AV.File('myfile.txt', bytes);
-  byteArrayFile.save();
+  byteArrayFile.save().then(function (file) { /* 保存成功 */ });
 ```
 {% endblock %}
 
@@ -879,7 +879,7 @@ file.save({
 ```js
   var tag = new AV.Object('Tag');
   tag.set('name', '今日必做');
-  tag.save();
+  tag.save().then(function (tag) { /* 保存成功 */ });
 ```
 {% endblock %}
 
@@ -908,8 +908,11 @@ file.save({
       relation.add(tag2);
       relation.add(tag3);
 
-      todoFolder.save();
-  }, function (error) {
+      return todoFolder.save();
+  }).then(function (folder) {
+    // todoFolder 保存成功
+  }).catch(function (error) {
+    // 异常处理
   });
 ```
 {% endblock %}
@@ -1118,7 +1121,7 @@ file.save({
   var todo = new AV.Object('Todo');
   todo.set('images', aTodoAttachmentImage);
   todo.set('content', '记得买过年回家的火车票！！！');
-  todo.save();
+  todo.save().then(function (todo) { /* 保存成功 */ });
 
   var query = new AV.Query('Todo');
   query.exists('images');
@@ -1311,10 +1314,11 @@ AV.User.requestLoginSmsCode('13577778888').then(function (success) {
 ```js
   AV.User.logIn('Tom', 'cat!@#123').then(function (loggedInUser) {
     loggedInUser.set('age', 25);
-    loggedInUser.save();
-  }, function (error) {
+    return loggedInUser.save();
+  }).then(function (user) {
+    // 用户信息更新成功
+  }).catch(function (error) {
     // 异常处理
-    console.error(error);
   });
 ```
 {% endblock %}
@@ -1633,7 +1637,7 @@ var file = AV.File.withURL('Satomi_Ishihara.gif', 'http://ww3.sinaimg.cn/bmiddle
 var todo = new AV.Object('Todo');
 todo.set('girl',file);
 todo.set('topic','明星');
-todo.save();
+todo.save().then(function (todo) { /* 保存成功 */ });
 ```
 {% endblock %}
 
