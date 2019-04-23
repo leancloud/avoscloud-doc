@@ -1455,7 +1455,7 @@ obj.save().then(function(obj) {
 
 其中第二个参数是可选的。
 
-你还可以使用 `catch` 三个方法，将逻辑写成：
+你还可以使用 `catch` 方法，将逻辑写成：
 
 ```javascript
 obj.save().then(function(obj) {
@@ -1500,7 +1500,7 @@ new AV.Query('Chapter').get(chapterIds[0]).then(function(chapter0) {
 通常来说，在正常情况的回调函数链的末尾，加一个错误处理的回调函数，是一种很
 常见的做法。
 
-利用 `try,catch` 方法可以将上述代码改写为：
+利用 `catch` 方法可以将上述代码改写为：
 
 ```javascript
 new AV.Query('Chapter').get(chapterIds[0]).then(function(chapter0) {
