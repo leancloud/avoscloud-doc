@@ -75,7 +75,7 @@ appid:clientid::timestamp:nonce
 appid:clientid:sorted_member_ids:timestamp:nonce
 ```
 
-* `appid`、`clientid`、`timestamp` 和 `nonce` 的含义 [同上](#用户登录的签名)。
+* `appid`、`clientid`、`timestamp` 和 `nonce` 的含义 [同上](#用户登录签名)。
 * `sorted_member_ids` 是以半角冒号（`:`）分隔、**升序排序** 的 user ID，即邀请参与该对话的成员列表。
 
 #### 群组功能的签名
