@@ -1191,7 +1191,7 @@ realtime.register(OperationMessage);
 - (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
     if (message.mediaType == 123) {
         CustomMessage *imageMessage = (CustomMessage *)message;
-        // 处理图片消息
+        // 处理自定义消息
     }
 }
 ```
