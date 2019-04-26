@@ -34,7 +34,7 @@
 appid:clientid::timestamp:nonce
 ```
 
-参数|说明<a name="signature-param-table"></a><!--2015-09-04 -->
+参数|说明<a id="signature-param-table"></a><!--2015-09-04 -->
 ---|---
 appid|应用的 id
 clientid|登录时使用的 clientId
