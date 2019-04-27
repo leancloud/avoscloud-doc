@@ -38,8 +38,8 @@
 AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
 options.templateName = @"Register_Notice";// 控制台预设的模板名称
 options.signatureName = @"LeanCloud";     // 控制台预设的短信签名
-// 往 18612345678 这个手机号码发送短信，使用预设的模板和签名
-[AVSMS requestShortMessageForPhoneNumber:@"18612345678"
+// 往 186xxxxxxxx 这个手机号码发送短信，使用预设的模板和签名
+[AVSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx"
                                 options:options
                                 callback:^(BOOL succeeded, NSError * _Nullable error) {
                                     if (succeeded) {
@@ -50,18 +50,16 @@ options.signatureName = @"LeanCloud";     // 控制台预设的短信签名
                                 }];
 ```
 ```swift
-let options = AVShortMessageRequestOptions()
-
-options.templateName = "Register_Notice"
-options.signatureName = "LeanCloud"
-
-// 控制台预设的短信签名
-// 往 18612345678 这个手机号码发送短信，使用预设的模板和签名
-AVSMS.requestShortMessage(forPhoneNumber: "18612345678", options: options) { (succeeded, error) in
-    if succeeded {
-        /* 请求成功 */
-    } else {
-        /* 请求失败 */
+let dic: LCDictionary = [
+    "sign": LCString("LeanCloud") // 控制台预设的短信签名
+]
+// Register_Notice 控制台预设的模板名称
+LCSMSClient.requestShortMessage(mobilePhoneNumber: "186xxxxxxxx", templateName: "Register_Notice", variables: dic) { (result) in
+    switch result {
+    case .success:
+        print("success")
+    case .failure(error: let error):
+        print(error)
     }
 }
 ```
@@ -69,8 +67,8 @@ AVSMS.requestShortMessage(forPhoneNumber: "18612345678", options: options) { (su
 AVSMSOption option = new AVSMSOption();
 option.setTemplateName("Register_Notice");  // 控制台预设的模板名称
 option.setSignatureName("LeanCloud");       // 控制台预设的短信签名
-// 往 18612345678 这个手机号码发送短信，使用预设的模板和签名
-AVSMS.requestSMSCodeInBackground("18612345678", option, new RequestMobileCodeCallback() {
+// 往 186xxxxxxxx 这个手机号码发送短信，使用预设的模板和签名
+AVSMS.requestSMSCodeInBackground("186xxxxxxxx", option, new RequestMobileCodeCallback() {
   @Override
   public void done(AVException e) {
     if (null == e) {
@@ -82,9 +80,9 @@ AVSMS.requestSMSCodeInBackground("18612345678", option, new RequestMobileCodeCal
 });
 ```
 ```javascript
-// 往 18612345678 这个手机号码发送短信，使用预设的模板和签名
+// 往 186xxxxxxxx 这个手机号码发送短信，使用预设的模板和签名
 AV.Cloud.requestSmsCode({
-  mobilePhoneNumber: '18612345678',  // 目标手机号
+  mobilePhoneNumber: '186xxxxxxxx',  // 目标手机号
   template: 'Register_Notice',       // 控制台预设的模板名称
   sign:'LeanCloud'.                  // 控制台预设的短信签名
 }).then(function(){
@@ -94,28 +92,28 @@ AV.Cloud.requestSmsCode({
 });
 ```
 ```cs
-// 往 18612345678 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
-AVCloud.RequestSMSCodeAsync("18612345678","Register_Notice",null,"LeanCloud").ContinueWith(t =>
+// 往 186xxxxxxxx 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
+AVCloud.RequestSMSCodeAsync("186xxxxxxxx","Register_Notice",null,"LeanCloud").ContinueWith(t =>
 {
     var result = t.Result;
     // result 为 True 则表示调用成功
 });
 ```
 ```java
-// 往 18612345678 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）
-AVOSCloud.requestSMSCode("18612345678", "Register_Notice", null);
+// 往 186xxxxxxxx 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）
+AVOSCloud.requestSMSCode("186xxxxxxxx", "Register_Notice", null);
 ```
 ```php
-// 往 18612345678 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）
+// 往 186xxxxxxxx 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）
 $options = [
   "template" => "Register_Notice",
   "name" => "LeanCloud",
 ];
-SMS::requestSMSCode("18612345678", $options);
+SMS::requestSMSCode("186xxxxxxxx", $options);
 ```
 ```python
 from leancloud import cloud
-cloud.request_sms_code("18612345678", template="Register_Notice", sign="LeanCloud")
+cloud.request_sms_code("186xxxxxxxx", template="Register_Notice", sign="LeanCloud")
 ```
 
 
@@ -180,17 +178,19 @@ options.operation = @"某种操作";        // 操作名称
                                 }];
 ```
 ```swift
-let options = AVShortMessageRequestOptions()
+let dic: LCDictionary = [
+    "ttl": LCNumber(10), // 验证码有效时间为 10 分钟
+    "name": LCString("应用名称"), // 应用名称
+    "op": LCString("某种操作")  // 操作名称
+]
 
-options.ttl = 10 /* 验证码有效时间 */
-options.applicationName = "应用名称" /* 应用名称 */
-options.operation = "某种操作" /* 操作名称 */
-
-AVSMS.requestShortMessage(forPhoneNumber: "186xxxxxxxx", options: options) { (succeeded, error) in
-    if succeeded {
-        /* 请求成功 */
-    } else {
-        /* 请求失败 */
+// templateName: 短信模板，不传此参数会使用默认短信模板
+LCSMSClient.requestShortMessage(mobilePhoneNumber: "186xxxxxxxx", templateName: "", variables: dic) { (result) in
+    switch result {
+    case .success:
+        print("success")
+    case .failure(error: let error):
+        print(error)
     }
 }
 ```
@@ -258,6 +258,7 @@ cloud.request_sms_code("186xxxxxxxx", sign="应用名称", params=options)
   
 4. **调用接口验证用户输入的验证码是否有效。**  
   注意，调用时需要确保验证码和手机号的参数顺序，我们假设验证码数字是「123456」。
+  
 ```objc
 [AVOSCloud verifySmsCode:@"123456" mobilePhoneNumber:@"186xxxxxxxx" callback:^(BOOL succeeded, NSError *error) {
     if(succeeded){
@@ -266,9 +267,12 @@ cloud.request_sms_code("186xxxxxxxx", sign="应用名称", params=options)
 }];
 ```
 ```swift
-AVOSCloud.verifySmsCode("123456", mobilePhoneNumber: "186xxxxxxxx") { (succeeded, error) in
-    if succeeded {
-        /* 验证成功 */
+LCSMSClient.verifyMobilePhoneNumber("186xxxxxxxx", verificationCode: "123456") { (result) in
+    switch result {
+    case .success:
+        print("success")
+    case .failure(error: let error):
+        print(error)
     }
 }
 ```
@@ -335,13 +339,12 @@ options.type = AVShortMessageTypeVoice;
 }];
 ```
 ```swift
-let options = AVShortMessageRequestOptions()
-
-options.type = .voice
-
-AVSMS.requestShortMessage(forPhoneNumber: "188xxxxxxxx", options: options) { (succeeded, error) in
-    if succeeded {
+LCSMSClient.requestVoiceVerificationCode(mobilePhoneNumber: "188xxxxxxxx") { (result) in
+    switch result {
+    case .success:
         print("A voice short message has been sent.")
+    case .failure(error: let error):
+        print(error)
     }
 }
 ```
@@ -399,9 +402,12 @@ cloud.request_sms_code("186xxxxxxxx", sms_type="voice")
 }];
 ```
 ```swift
-AVOSCloud.verifySmsCode("123456", mobilePhoneNumber: "186xxxxxxxx") { (succeeded, error) in
-    if succeeded {
-        /* 验证成功 */
+LCSMSClient.verifyMobilePhoneNumber("186xxxxxxxx", verificationCode: "123456") { (result) in
+    switch result {
+    case .success:
+        print("success")
+    case .failure(error: let error):
+        print(error)
     }
 }
 ```
@@ -518,18 +524,16 @@ options.templateVariables = @{ @"order_id": @"7623432424540" }; // 使用实际�
                                 }];
 ```
 ```swift
-let options = AVShortMessageRequestOptions()
-
-options.templateName = "Order_Notice"
-options.signatureName = "sign_BuyBuyBuy"
-options.templateVariables = ["order_id": "7623432424540"]
-
-/* 使用实际的值来替换模板中的变量 */
-AVSMS.requestShortMessage(forPhoneNumber: "186xxxxxxxx", options: options) { (succeeded, error) in
-    if succeeded {
-        /* 请求成功 */
-    } else {
-        /* 请求失败 */
+let dic: LCDictionary = [
+    "sign": LCString("sign_BuyBuyBuy"),
+    "order_id": LCString("7623432424540")
+]
+LCSMSClient.requestShortMessage(mobilePhoneNumber: "186xxxxxxxx", templateName: "Order_Notice", variables: dic) { (result) in
+    switch result {
+    case .success:
+        print("success")
+    case .failure(error: let error):
+        print(error)
     }
 }
 ```
@@ -837,17 +841,6 @@ options.height = 50;
                                 NSString *url = captchaDigest.URLString;
                             }];
 ```
-```swift
-let options = AVCaptchaRequestOptions()
-
-options.width = 100
-options.height = 50
-
-AVCaptcha.request(with: options) { (captchaDigest, error) in
-    /* URL string of captcha image. */
-    var url = captchaDigest?.urlString
-}
-```
 ```android
 AVCaptchaOption option = new AVCaptchaOption();
 option.setWidth(85);
@@ -898,11 +891,6 @@ captcha = cloud.request_captcha(width=100, height=50)
                         /* validationToken 可用短信认证 */
                     }];
 ```
-```swift
-AVCaptcha.verifyCaptchaCode(code, for: captchaDigest) { (validationToken, error) in
-    /* validationToken 可用短信认证 */
-}
-```
 ```android
 AVCaptcha.verifyCaptchaCodeInBackground(code, captchaDigest, new AVCallback<String>() {
   @Override
@@ -952,21 +940,6 @@ options.validationToken = <#validationToken#>;
                                         /* 请求失败 */
                                     }
                                 }];
-```
-```swift
-let options = AVShortMessageRequestOptions()
-
-options.templateName = "New_Series"
-options.signatureName = "sign_BuyBuyBuy"
-options.validationToken = <#A validation Token#>
-
-AVSMS.requestShortMessage(forPhoneNumber: "186xxxxxxxx", options: options) { (succeeded, error) in
-    if succeeded {
-        /* 请求成功 */
-    } else {
-        /* 请求失败 */
-    }
-}
 ```
 ```android
 AVSMSOption option = new AVSMSOption();
@@ -1030,63 +1003,235 @@ cloud.request_sms_code("186xxxxxxxx",
 {# 被 https://blog.leancloud.cn/4818/ 引用，修改标题时注意更新博客链接 #}
 ### 服务覆盖区域和价格
 
-<a id="pricing"></a>以下金额为每条短信的价格，以人民币计费。列表中未包含的国家或区域，请在论坛或工单中提问确认。
+<a id="pricing"></a>以下金额为每条短信的价格，美国节点以美元计费，其他节点以人民币计费。列表中未包含的国家或区域，请在论坛或工单中提问确认。
 
 <script src="custom/js/lib/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
-var smsPrices = [{"CountryNumber":1,"CountryOrRegion":"美国","CountryCode":"US","UnitPrice":0.07},
-{"CountryNumber":1,"CountryOrRegion":"加拿大","CountryCode":"CA","UnitPrice":0.07},
-{"CountryNumber":7,"CountryOrRegion":"哈萨克斯坦","CountryCode":"KZ","UnitPrice":0.85},
-{"CountryNumber":7,"CountryOrRegion":"俄罗斯","CountryCode":"RU","UnitPrice":0.85},
-{"CountryNumber":27,"CountryOrRegion":"南非","CountryCode":"ZA","UnitPrice":0.23},
-{"CountryNumber":30,"CountryOrRegion":"希腊","CountryCode":"GR","UnitPrice":0.5},
-{"CountryNumber":33,"CountryOrRegion":"法国","CountryCode":"FR","UnitPrice":0.64},
-{"CountryNumber":34,"CountryOrRegion":"西班牙","CountryCode":"ES","UnitPrice":0.75},
-{"CountryNumber":39,"CountryOrRegion":"意大利","CountryCode":"IT","UnitPrice":0.75},
-{"CountryNumber":40,"CountryOrRegion":"罗马尼亚","CountryCode":"RO","UnitPrice":0.62},
-{"CountryNumber":44,"CountryOrRegion":"英国","CountryCode":"GB","UnitPrice":0.35},
-{"CountryNumber":49,"CountryOrRegion":"德国","CountryCode":"DE","UnitPrice":0.72},
-{"CountryNumber":52,"CountryOrRegion":"墨西哥","CountryCode":"MX","UnitPrice":0.42},
-{"CountryNumber":54,"CountryOrRegion":"阿根廷","CountryCode":"AR","UnitPrice":0.59},
-{"CountryNumber":55,"CountryOrRegion":"巴西","CountryCode":"BR","UnitPrice":0.48},
-{"CountryNumber":57,"CountryOrRegion":"哥伦比亚","CountryCode":"CO","UnitPrice":0.55},
-{"CountryNumber":58,"CountryOrRegion":"委内瑞拉","CountryCode":"VE","UnitPrice":0.41},
-{"CountryNumber":60,"CountryOrRegion":"马来西亚","CountryCode":"MY","UnitPrice":0.34},
-{"CountryNumber":61,"CountryOrRegion":"澳大利亚","CountryCode":"AU","UnitPrice":0.48},
-{"CountryNumber":62,"CountryOrRegion":"印度尼西亚","CountryCode":"ID","UnitPrice":0.25},
-{"CountryNumber":63,"CountryOrRegion":"菲律宾","CountryCode":"PH","UnitPrice":0.37},
-{"CountryNumber":65,"CountryOrRegion":"新加坡","CountryCode":"SG","UnitPrice":0.43},
-{"CountryNumber":66,"CountryOrRegion":"泰国","CountryCode":"TH","UnitPrice":0.34},
-{"CountryNumber":81,"CountryOrRegion":"日本","CountryCode":"JP","UnitPrice":0.68},
-{"CountryNumber":82,"CountryOrRegion":"韩国","CountryCode":"KR","UnitPrice":0.4},
-{"CountryNumber":86,"CountryOrRegion":"中国","CountryCode":"CN","UnitPrice":0.05},
-{"CountryNumber":90,"CountryOrRegion":"土耳其","CountryCode":"TR","UnitPrice":0.25},
-{"CountryNumber":92,"CountryOrRegion":"巴基斯坦","CountryCode":"PK","UnitPrice":0.22},
-{"CountryNumber":91,"CountryOrRegion":"印度","CountryCode":"IN","UnitPrice":0.09},
-{"CountryNumber":95,"CountryOrRegion":"缅甸","CountryCode":"MM","UnitPrice":1.1},
-{"CountryNumber":351,"CountryOrRegion":"葡萄牙","CountryCode":"PT","UnitPrice":0.43},
-{"CountryNumber":852,"CountryOrRegion":"香港","CountryCode":"HK","UnitPrice":0.53},
-{"CountryNumber":853,"CountryOrRegion":"澳门","CountryCode":"MO","UnitPrice":0.27},
-{"CountryNumber":855,"CountryOrRegion":"柬埔寨","CountryCode":"KH","UnitPrice":0.93},
-{"CountryNumber":856,"CountryOrRegion":"老挝","CountryCode":"LA","UnitPrice":0.68},
-{"CountryNumber":886,"CountryOrRegion":"台湾","CountryCode":"TW","UnitPrice":0.46},
-{"CountryNumber":960,"CountryOrRegion":"马尔代夫","CountryCode":"MV","UnitPrice":0.11},
-{"CountryNumber":966,"CountryOrRegion":"沙特阿拉伯","CountryCode":"SA","UnitPrice":0.31},
-{"CountryNumber":971,"CountryOrRegion":"阿拉伯联合酋长国","CountryCode":"AE","UnitPrice":0.27},
-{"CountryNumber":977,"CountryOrRegion":"尼泊尔","CountryCode":"NP","UnitPrice":0.73},
-{"CountryNumber":998,"CountryOrRegion":"乌兹别克斯坦","CountryCode":"UZ","UnitPrice":0.73}];
+var smsPrices = [ { CountryNumber: 1,
+    CountryOrRegion: '美国',
+    CountryCode: 'US',
+    UnitPrice: 0.07,
+    USUnitPrice: 0.009 },
+  { CountryNumber: 1,
+    CountryOrRegion: '加拿大',
+    CountryCode: 'CA',
+    UnitPrice: 0.07,
+    USUnitPrice: 0.009 },
+  { CountryNumber: 7,
+    CountryOrRegion: '哈萨克斯坦',
+    CountryCode: 'KZ',
+    UnitPrice: 0.85,
+    USUnitPrice: 0.0396 },
+  { CountryNumber: 7,
+    CountryOrRegion: '俄罗斯',
+    CountryCode: 'RU',
+    UnitPrice: 0.85,
+    USUnitPrice: 0.0396 },
+  { CountryNumber: 27,
+    CountryOrRegion: '南非',
+    CountryCode: 'ZA',
+    UnitPrice: 0.23,
+    USUnitPrice: 0.0324 },
+  { CountryNumber: 30,
+    CountryOrRegion: '希腊',
+    CountryCode: 'GR',
+    UnitPrice: 0.5,
+    USUnitPrice: 0.0708 },
+  { CountryNumber: 33,
+    CountryOrRegion: '法国',
+    CountryCode: 'FR',
+    UnitPrice: 0.64,
+    USUnitPrice: 0.0912 },
+  { CountryNumber: 34,
+    CountryOrRegion: '西班牙',
+    CountryCode: 'ES',
+    UnitPrice: 0.75,
+    USUnitPrice: 0.1 },
+  { CountryNumber: 39,
+    CountryOrRegion: '意大利',
+    CountryCode: 'IT',
+    UnitPrice: 0.75,
+    USUnitPrice: 0.106 },
+  { CountryNumber: 40,
+    CountryOrRegion: '罗马尼亚',
+    CountryCode: 'RO',
+    UnitPrice: 0.62,
+    USUnitPrice: 0.0816 },
+  { CountryNumber: 44,
+    CountryOrRegion: '英国',
+    CountryCode: 'GB',
+    UnitPrice: 0.35,
+    USUnitPrice: 0.05 },
+  { CountryNumber: 49,
+    CountryOrRegion: '德国',
+    CountryCode: 'DE',
+    UnitPrice: 0.72,
+    USUnitPrice: 0.102 },
+  { CountryNumber: 52,
+    CountryOrRegion: '墨西哥',
+    CountryCode: 'MX',
+    UnitPrice: 0.42,
+    USUnitPrice: 0.048 },
+  { CountryNumber: 54,
+    CountryOrRegion: '阿根廷',
+    CountryCode: 'AR',
+    UnitPrice: 0.59,
+    USUnitPrice: 0.0829 },
+  { CountryNumber: 55,
+    CountryOrRegion: '巴西',
+    CountryCode: 'BR',
+    UnitPrice: 0.48,
+    USUnitPrice: 0.0684 },
+  { CountryNumber: 57,
+    CountryOrRegion: '哥伦比亚',
+    CountryCode: 'CO',
+    UnitPrice: 0.55,
+    USUnitPrice: 0.078 },
+  { CountryNumber: 58,
+    CountryOrRegion: '委内瑞拉',
+    CountryCode: 'VE',
+    UnitPrice: 0.41,
+    USUnitPrice: 0.0576 },
+  { CountryNumber: 60,
+    CountryOrRegion: '马来西亚',
+    CountryCode: 'MY',
+    UnitPrice: 0.34,
+    USUnitPrice: 0.0484 },
+  { CountryNumber: 61,
+    CountryOrRegion: '澳大利亚',
+    CountryCode: 'AU',
+    UnitPrice: 0.48,
+    USUnitPrice: 0.0684 },
+  { CountryNumber: 62,
+    CountryOrRegion: '印度尼西亚',
+    CountryCode: 'ID',
+    UnitPrice: 0.25,
+    USUnitPrice: 0.0346 },
+  { CountryNumber: 63,
+    CountryOrRegion: '菲律宾',
+    CountryCode: 'PH',
+    UnitPrice: 0.37,
+    USUnitPrice: 0.0516 },
+  { CountryNumber: 64,
+    CountryOrRegion: '新西兰',
+    CountryCode: 'NZ',
+    UnitPrice: 0.84,
+    USUnitPrice: 0.12 },
+  { CountryNumber: 65,
+    CountryOrRegion: '新加坡',
+    CountryCode: 'SG',
+    UnitPrice: 0.43,
+    USUnitPrice: 0.036 },
+  { CountryNumber: 66,
+    CountryOrRegion: '泰国',
+    CountryCode: 'TH',
+    UnitPrice: 0.34,
+    USUnitPrice: 0.0348 },
+  { CountryNumber: 81,
+    CountryOrRegion: '日本',
+    CountryCode: 'JP',
+    UnitPrice: 0.68,
+    USUnitPrice: 0.096 },
+  { CountryNumber: 82,
+    CountryOrRegion: '韩国',
+    CountryCode: 'KR',
+    UnitPrice: 0.4,
+    USUnitPrice: 0.0564 },
+  { CountryNumber: 86,
+    CountryOrRegion: '中国',
+    CountryCode: 'CN',
+    UnitPrice: 0.05,
+    USUnitPrice: 0.0336 },
+  { CountryNumber: 90,
+    CountryOrRegion: '土耳其',
+    CountryCode: 'TR',
+    UnitPrice: 0.25,
+    USUnitPrice: 0.0348 },
+  { CountryNumber: 92,
+    CountryOrRegion: '巴基斯坦',
+    CountryCode: 'PK',
+    UnitPrice: 0.22,
+    USUnitPrice: 0.03 },
+  { CountryNumber: 91,
+    CountryOrRegion: '印度',
+    CountryCode: 'IN',
+    UnitPrice: 0.09,
+    USUnitPrice: 0.012 },
+  { CountryNumber: 95,
+    CountryOrRegion: '缅甸',
+    CountryCode: 'MM',
+    UnitPrice: 1.1,
+    USUnitPrice: 0.1572 },
+  { CountryNumber: 351,
+    CountryOrRegion: '葡萄牙',
+    CountryCode: 'PT',
+    UnitPrice: 0.43,
+    USUnitPrice: 0.0612 },
+  { CountryNumber: 852,
+    CountryOrRegion: '香港',
+    CountryCode: 'HK',
+    UnitPrice: 0.53,
+    USUnitPrice: 0.048 },
+  { CountryNumber: 853,
+    CountryOrRegion: '澳门',
+    CountryCode: 'MO',
+    UnitPrice: 0.27,
+    USUnitPrice: 0.013 },
+  { CountryNumber: 855,
+    CountryOrRegion: '柬埔寨',
+    CountryCode: 'KH',
+    UnitPrice: 0.93,
+    USUnitPrice: 0.0528 },
+  { CountryNumber: 856,
+    CountryOrRegion: '老挝',
+    CountryCode: 'LA',
+    UnitPrice: 0.68,
+    USUnitPrice: 0.0444 },
+  { CountryNumber: 886,
+    CountryOrRegion: '台湾',
+    CountryCode: 'TW',
+    UnitPrice: 0.46,
+    USUnitPrice: 0.0648 },
+  { CountryNumber: 960,
+    CountryOrRegion: '马尔代夫',
+    CountryCode: 'MV',
+    UnitPrice: 0.11,
+    USUnitPrice: 0.0156 },
+  { CountryNumber: 966,
+    CountryOrRegion: '沙特阿拉伯',
+    CountryCode: 'SA',
+    UnitPrice: 0.31,
+    USUnitPrice: 0.0372 },
+  { CountryNumber: 971,
+    CountryOrRegion: '阿拉伯联合酋长国',
+    CountryCode: 'AE',
+    UnitPrice: 0.27,
+    USUnitPrice: 0.0372 },
+  { CountryNumber: 974,
+    CountryOrRegion: '卡塔尔',
+    CountryCode: 'QA',
+    UnitPrice: 0.52,
+    USUnitPrice: 0.073 },
+  { CountryNumber: 977,
+    CountryOrRegion: '尼泊尔',
+    CountryCode: 'NP',
+    UnitPrice: 0.73,
+    USUnitPrice: 0.0516 },
+  { CountryNumber: 998,
+    CountryOrRegion: '乌兹别克斯坦',
+    CountryCode: 'UZ',
+    UnitPrice: 0.73,
+    USUnitPrice: 0.1038 } ];
+
 var nodes = [{ code: "cn", name: "华北节点"},{ code: "tab", name: "华东节点"  },{ code: "us", name: "美国节点"  }];
 
 for (var j = 0; j < smsPrices.length; j++){
     smsPrices[j].nodes = {};
-    for (var i = 0; i < nodes.length; i++){
-        // console.log(nodes[i].code, smsPrices[j]['nodes']);
+    for (var i = 0; i < nodes.length - 1; i++){ // assuming us node is in the last 
         smsPrices[j]['nodes'][nodes[i]['code']] = smsPrices[j]['UnitPrice'];
-        if (nodes[i].code === 'us' && smsPrices[j].CountryCode === 'CN') {
-            smsPrices[j].nodes.us = 0.2
-        }
     }
+    smsPrices[j]['nodes'][nodes[nodes.length - 1]['code']] = smsPrices[j]['USUnitPrice'];
 }
 </script>
 
@@ -1126,12 +1271,18 @@ $(document).ready(function() {
             { "data": "nodes.us" }
         ],
         columnDefs: [
-            { 
-                targets: [3, 4, 5], 
+            {
+                targets: [3, 4],
                 className: 'text-right', 
                 render: function(data, type, row, meta){
-                    // &yen; &#165;
-                    return '<span class="text-muted" style="opacity: 0.5; padding-right: 4px;">&#65509;</span> ' + data.toFixed(2)
+                    return '<span class="text-muted" style="opacity: 0.5; padding-right: 4px;">¥</span> ' + data.toFixed(2)
+                }
+            },
+            {
+                targets: 5,
+                className: 'text-right', 
+                render: function(data, type, row, meta){
+                    return '<span class="text-muted" style="opacity: 0.5; padding-right: 4px;">$</span> ' + data.toFixed(2)
                 }
             }
         ]
@@ -1196,19 +1347,22 @@ AVUser *user = [AVUser user];
 user.username = @"hjiang";
 user.password =  @"f32@ds*@&dsa";
 user.email = @"hang@leancloud.rocks";
-user.mobilePhoneNumber = @"18612340000";
-NSError *error = nil;
-[user signUp:&error];
+user.mobilePhoneNumber = @"186xxxxxxxx";
+[user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        // 注册成功
+    } else {
+        // 注册失败
+    }
+}];
 ```
 ```swift
-user.username = "hjiang"
-user.password = "f32@ds*@&dsa"
-user.email = "hang@leancloud.rocks"
-user.mobilePhoneNumber = "18612340000"
-
-var error: NSError? = nil
-
-user.signUp(&error)
+let user = LCUser()
+user.username = LCString("hjiang")
+user.password = LCString("f32@ds*@&dsa")
+user.email = LCString("hang@leancloud.rocks")
+user.mobilePhoneNumber = LCString("186xxxxxxxx")
+user.signUp()
 ```
 ```android
 AVUser user = new AVUser();
@@ -1270,14 +1424,15 @@ user.sign_up()
   最好本地先验证一下有效性（例如长度、特殊字符等）。
   
 5. **调用验证接口，检查用户输入的纯数字验证码是否合法。**
+
 ```objc
 [AVUser verifyMobilePhone:@"123456" withBlock:^(BOOL succeeded, NSError *error) {
     //验证结果
 }];
 ```
 ```swift
-AVUser.verifyMobilePhone("123456") { (succeeded, error) in
-    /* 验证结果 */
+LCUser.verifyMobilePhoneNumber("186xxxxxxxx", verificationCode: "123456") { (result) in
+   //验证结果
 }
 ```
 ```android
@@ -1326,22 +1481,26 @@ user.verify_mobile_phone_number("6位数字验证码")
 另外，假如注册的时候并没有强制用户验证手机号，而是在用户使用某一个功能的时候，要求用户验证手机号，也可以调用接口进行「延迟验证」，验证之后 `mobilePhoneVerified` 就会被置为 `true`。
 
 1. **请求发送验证码**    
+
 ```objc
-[AVUser requestMobilePhoneVerify:@"18612345678" withBlock:^(BOOL succeeded, NSError *error) {
+[AVUser requestMobilePhoneVerify:@"186xxxxxxxx" withBlock:^(BOOL succeeded, NSError *error) {
 if(succeeded){
     //调用成功
 }
 }];
 ```
 ```swift
-AVUser.requestMobilePhoneVerify("18612345678") { (succeeded, error) in
-    if succeeded {
-        /* 调用成功 */
+LCUser.requestVerificationCode(mobilePhoneNumber: "186xxxxxxxx") { (result) in
+	switch result {
+    case .success:
+        print("调用成功")
+    case .failure(error: let error):
+        print(error)
     }
 }
 ```
 ```android
-AVUser.requestMobilePhoneVerifyInBackground("13800000000", new RequestMobileCodeCallback() {
+AVUser.requestMobilePhoneVerifyInBackground("186xxxxxxxx", new RequestMobileCodeCallback() {
     @Override
     public void done(AVException e) {
         if(e == null){
@@ -1380,6 +1539,7 @@ cloud.request_mobile_phone_verify("186xxxxxxxx")
 ```
 
 2. **调用验证接口，验证用户输入的纯数字的验证码。** 
+
 ```objc
 [AVUser verifyMobilePhone:@"123456" withBlock:^(BOOL succeeded, NSError *error) {
     if(succeeded){
@@ -1388,9 +1548,12 @@ cloud.request_mobile_phone_verify("186xxxxxxxx")
 }];
 ```
 ```swift
-AVUser.verifyMobilePhone("123456") { (succeeded, error) in
-    if succeeded {
-        /* 验证成功 */
+LCUser.verifyMobilePhoneNumber("186xxxxxxxx", verificationCode: "123456") { (result) in
+    switch result {
+    case .success:
+        print("验证成功")
+    case .failure(error: let error):
+        print(error)
     }
 }
 ```

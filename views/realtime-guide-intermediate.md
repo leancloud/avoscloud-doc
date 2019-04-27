@@ -44,7 +44,7 @@
 带有提醒信息的消息，有可能既有提醒全部成员的标志，也还单独设置了 `mentionList`，这由应用层去控制。发送方在发送「@ 成员」提醒消息的时候，如何输入、选择成员名称，这是业务方 UI 层面需要解决的问题，即时通讯 SDK 不关心其实现逻辑，SDK 只要求开发者在发送一条「@ 成员」消息的时候，调用 `mentionList` 和 `mentionAll` 的 setter 方法，设置正确的成员列表即可。示例代码如下：
 
 ```js
-const message = new TextMessage(`@Tom 早点回家`).setMentionList('Tom');
+const message = new TextMessage(`@Tom 早点回家`).setMentionList(['Tom']);
 conversation.send(message).then(function(message) {
   console.log('发送成功！');
 }).catch(console.error);
@@ -820,8 +820,6 @@ conversation.removeFromLocalCache(message);
 ## 离线推送通知
 
 对于移动设备来说，在聊天的过程中部分客户端难免会临时下线，如何保证离线用户也能及时收到消息，是我们需要考虑的重要问题。LeanCloud 即时通讯云端会在用户下线的时候，主动通过「Push Notification」这种外部方式来通知客户端新消息到达事件，以促使用户尽快打开应用查看新消息。
-
-![iPhone 的屏幕顶端弹出了一条消息通知，包含应用名「LeanChat」以及通知内容「您有新的消息」。](images/realtime_ios_push.png)
 
 LeanCloud 本就提供完善的 [消息推送服务](push_guide.html)，现在将推送与即时通讯服务无缝结合起来，LeanCloud 云端会将用户的即时通讯 `clientId` 与推送服务的设备数据 `_Installation` 自动进行关联。当用户 A 发出消息后，如果对话中部分成员当前不在线，而且这些成员使用的是 iOS、Windows Phone 设备，或者是成功开通 [混合推送功能](android_mixpush_guide.html) 的 Android 设备的话，LeanCloud 云端会自动将即时通讯消息转成特定的推送通知发送至客户端，同时我们也提供扩展机制，允许开发者对接第三方的消息推送服务。
 

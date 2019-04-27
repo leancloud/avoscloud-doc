@@ -25,6 +25,15 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
 
 [API 在线测试工具](/dashboard/apionline/index.html)，目前仅支持调试**中国节点**下的应用。
 
+为了方便测试 REST API，文档给出了 curl 命令示例，示例针对类 unix 平台（macOS、Linux 等）编写，直接粘贴至 Windows 平台 cmd.exe 很可能无法工作。
+例如，curl 命令示例中的 shell 换行符（`\`）在 cmd.exe 中是目录分隔符。
+Windows 平台建议使用 [Postman] 等客户端测试。
+Postman 可直接导入 curl 命令。
+
+[Postman]: https://forum.leancloud.cn/t/postman-rest-api/8638
+
+![Postman 中点击 Import 按钮，在「Paste Raw Text」标签中粘贴 curl 命令](../images/postman-import-curl.png)
+
 ### 对象
 
 <table>
@@ -238,6 +247,31 @@ REST API 可以让你用任何支持发送 HTTP 请求的设备来与 LeanCloud 
       <td>/1.1/push</td>
       <td>POST</td>
       <td>推送通知</td>
+    </tr>
+    <tr>
+      <td>/1.1/notifications</td>
+      <td>GET</td>
+      <td>查询推送记录</td>
+    </tr>
+    <tr>
+      <td>/1.1/notifications/:notification_id</td>
+      <td>GET</td>
+      <td>根据 ID 查推送记录</td>
+    </tr>
+    <tr>
+      <td>/1.1/notifications/:notification_id</td>
+      <td>DELETE</td>
+      <td>根据 ID 删推送记录</td>
+    </tr>
+    <tr>
+      <td>/1.1/scheduledPushMessages</td>
+      <td>GET</td>
+      <td>查询应用下所有的定时推送</td>
+    </tr>
+    <tr>
+      <td>/1.1/scheduledPushMessages/:id</td>
+      <td>DELETE</td>
+      <td>根据 ID 删定时推送</td>
     </tr>
   </tbody>
 </table>
