@@ -42,7 +42,7 @@ LeanMessage Cluster-->终端: 4. 对请求的内容和签名进行验证，执�
 3. 客户端获得签名后，编码到请求中，发给 LeanCloud 即时通讯服务器；
 4. 即时通讯服务器对请求的内容和签名做一遍验证，确认这个操作是被应用服务器允许的，进而执行后续的实际操作。
 
-签名采用 **Hmac-sha1** 算法，输出字节流的十六进制字符串（hex dump）。针对不同的请求，开发者需要拼装不同组合的字符串，加上 UTC timestamp 以及随机字符串作为签名的消息。对于使用 `AVUser` 的应用，可使用 REST API [获取 Client 登录签名](./realtime_rest_api_v2.html#获取登录签名) 进行登录认证。
+签名采用 **HMAC-SHA1** 算法，输出字节流的十六进制字符串（hex dump）。针对不同的请求，开发者需要拼装不同组合的字符串，加上 UTC timestamp 以及随机字符串作为签名的消息。对于使用 `AVUser` 的应用，可使用 REST API [获取 Client 登录签名](./realtime_rest_api_v2.html#获取登录签名) 进行登录认证。
 
 ### 签名格式说明
 
@@ -60,12 +60,12 @@ appid:clientid::timestamp:nonce
 --- | ---
 `appid` | 应用的 ID。
 `clientid` | 登录时使用的 `clientId`。
-`timestamp` | 当前的 UTC 时间距离 unix epoch 的 **毫秒数**。
+`timestamp` | 当前的 UTC 时间距离 Unix epoch 的 **毫秒数**。
 `nonce` | 随机字符串。
 
 > 注意：签名的 key **必须** 是应用的 Master Key，你可以在 [控制台 > 设置 > 应用 Key](/dashboard/app.html?appid={{appid}}#/key) 里找到。**请保护好 Master Key，不要泄露给任何无关人员。**
 
-开发者可以实现自己的 `SignatureFactory`，调用远程服务器的签名接口获得签名。如果你没有自己的服务器，可以直接在 LeanCloud 云引擎上通过 **网站托管** 来实现自己的签名接口。在移动应用中直接做签名的作法 **非常危险**，它可能导致你的 **Master Key** 泄漏。
+开发者可以实现自己的 `SignatureFactory`，调用远程服务器的签名接口获得签名。如果你没有自己的服务器，可以直接在 LeanCloud 云引擎上通过 **网站托管** 来实现自己的签名接口。在移动应用中直接进行签名的做法 **非常危险**，它可能导致你的 **Master Key** 泄漏。
 
 #### 开启对话签名
 
@@ -711,7 +711,7 @@ public void queryBlockedMembers(int offset, int limit, final AVIMConversationSim
 
 > 注意这里对黑名单操作的结果与禁言操作一样，是 ***部分成功结果***。
 
-用户被加入黑名单之后，就被从对话的成员中移除出去了，以后都无法再接受到对话里面的新消息，并且除非解除黑名单，其他人都无法再把 ta 加为对话成员了。
+用户被加入黑名单之后，就被从对话的成员中移除出去了，以后都无法再接收到对话里面的新消息，并且除非解除黑名单，其他人都无法再把 ta 加为对话成员了。
 
 #### 黑名单的通知事件
 
@@ -759,7 +759,7 @@ tom.CreateChatRoomAsync("聊天室");
 在创建聊天室的时候，开发者可以指定聊天室的名字和附加属性（非必须），与 [创建普通对话的接口](realtime-guide-beginner.html#创建对话 Conversation) 相比，有如下差异：
 
 - 聊天室因为没有成员列表，所以创建的时候指定 `members` 是没有意义的
-- 同样的原因，创建聊天室的时候指定 `unique` 标志也是没有意义的（云端根据成员 ID 来去重）
+- 同样的原因，创建聊天室的时候指定 `unique` 标志也是没有意义的（云端无需根据成员 ID 来去重）
 
 > 尽管我们调用 `createConversation` 接口，通过传递合适的参数（`{ transient: true }`），也可以创建一个聊天室，但是还是建议大家直接使用 `createChatRoom` 方法。
 
@@ -890,7 +890,7 @@ public async void CountMembers_SampleCode()
 
 | 消息等级                 | 描述                                                               |
 | ------------------------ | ------------------------------------------------------------------ |
-| `MessagePriority.HIGH`   | 高等级，针对时效性要求较高的消息，比如直播聊天室中的礼物，打赏等。 |
+| `MessagePriority.HIGH`   | 高等级，针对时效性要求较高的消息，比如直播聊天室中的礼物、打赏等。 |
 | `MessagePriority.NORMAL` | 正常等级，比如普通非重复性的文本消息。                             |
 | `MessagePriority.LOW`    | 低等级，针对时效性要求较低的消息，比如直播聊天室中的弹幕。         |
 
@@ -1108,7 +1108,7 @@ tom.createTemporaryConversation(Arrays.asList(members), 3600, new AVIMConversati
 var temporaryConversation = await tom.CreateTemporaryConversationAsync();
 ```
 
-与其他对话类型不同的是，临时对话有一个 **重要** 的属性：TTL，它标记着这个对话的有效期，系统默认是 1 天，但是在创建对话的时候是可以指定这个时间的，最高不超过 30 天，如果您的需求是一定要超过 30 天，请使用普通对话，传入 TTL 创建临时对话的代码如下：
+与其他对话类型不同的是，临时对话有一个 **重要** 的属性：TTL。它标记着这个对话的有效期，系统默认是 1 天，但是在创建对话的时候是可以指定这个时间的，最高不超过 30 天。如果您的需求是一定要超过 30 天，请使用普通对话。传入 TTL 创建临时对话的代码如下：
 
 ```js
 realtime.createIMClient('Tom').then(function(tom) {
