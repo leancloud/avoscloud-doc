@@ -360,7 +360,7 @@ AV.User.logIn('username', 'password').then(function(user) {
     AVIMClient *client = [[AVIMClient alloc] initWithUser:user];
     // 登录即时通讯云端
     [client openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
-        // Do something you like.
+        // 执行其他逻辑
     }];
 }];
 ```
