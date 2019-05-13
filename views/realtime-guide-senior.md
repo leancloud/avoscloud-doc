@@ -769,6 +769,8 @@ tom.CreateChatRoomAsync("聊天室");
 
 ```js
 var query = tom.getQuery().equalTo('tr',true); // 聊天室对象
+query.find().then(function(conversations) {
+  // conversations 就是想要的结果
 }).catch(console.error);
 ```
 ```objc
