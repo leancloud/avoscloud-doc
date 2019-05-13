@@ -761,10 +761,9 @@ Tom 端执行了这段代码之后会触发如下流程：
 Tom->Cloud: 1. 对话中移除 Mary
 Cloud-->Mary: 2. 下发通知：你被 Tom 从对话中剔除了
 Cloud-->Jerry: 2. 下发通知：Mary 被 Tom 移除
-Cloud-->Tom: 2. 下发通知：Mary 被移除了对话 
 ```
 
-这里出现了两个新的事件：当前用户被踢出对话 `KICKED`（Mary 收到的），成员 XX 被踢出对话 `MEMBERS_LEFT`（Jerry 和 Tom 收到的）。其处理方式与邀请人的流程类似：
+这里出现了两个新的事件：当前用户被踢出对话 `KICKED`（Mary 收到的），成员 XX 被踢出对话 `MEMBERS_LEFT`（Jerry 收到的）。其处理方式与邀请人的流程类似：
 
 ```js
 // 有成员被从某个对话中移除
@@ -781,7 +780,7 @@ jerry.delegate = self;
 
 #pragma mark - AVIMClientDelegate
 /*!
- 对话中有成员离开时所有剩余成员都会收到这一通知。
+ 对话中有成员离开时所有剩余成员都会收到这一通知（踢人者除外）。
  @param conversation － 所属对话
  @param clientIds - 离开的成员列表
  @param clientId - 操作者的 ID
