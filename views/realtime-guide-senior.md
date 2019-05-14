@@ -982,7 +982,7 @@ AVIMClient tom = AVIMClient.getInstance("Tom");
 比如 Tom 工作繁忙，对某个对话设置了静音：
 
 ```js
-black.getConversation(CONVERSATION_ID).then(function(conversation) {
+tom.getConversation('CONVERSATION_ID').then(function(conversation) {
   return conversation.mute();
 }).then(function(conversation) {
   console.log('静音成功');
