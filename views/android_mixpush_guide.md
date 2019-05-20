@@ -60,7 +60,7 @@ HMS Agent SDK 需要下载解压之后把源码完全拷贝进入工程。HMS Ag
 1. 执行 `GetHMSAgent_xx.bat` 生成 copysrc 的文件夹，copysrc 里面是根据您选择需要集成 HMS 服务，抽取后的 HMSAgent 代码（java 文件夹）和manifest文件（AndroidManifest.xml）。注意此步骤中会用到当前应用签名对应的 SHA256 指纹与应用的 App ID 与 App Secret 等信息。
 2. 拷贝 copysrc/java 里面的代码到您现有的工程。请保持 HMSAgent 代码的包的路径和结构不变。AndroidManifest.xml仅供配置参考。
 
-这样可以既可以减少应用大小，也可以避免要求不必要的权限。
+这样既可以减少应用大小，也可以避免要求不必要的权限。
 详见 [华为开发者文档 > 集成 HMS SDK Agent](https://developer.huawei.com/consumer/cn/service/hms/catalog/huaweipush_agent.html?page=hmssdk_huaweipush_devprepare_agent#5.1%20%E9%9B%86%E6%88%90SDK)。
 注意，华为的文档里只提到了 `GetHMSAgent_cn.bat`，但实际上HMS Agent SDK 压缩包中还提供了 `GetHMSAgent_cn.sh`，如果您的开发环境是 macOS 或 Linux，可以用这个脚本。
 
