@@ -57,7 +57,7 @@ assets/ | HMS SDK 请求华为服务器需要使用的证书文件 | 请直接�
 
 HMS Agent SDK 需要下载解压之后把源码完全拷贝进入工程。HMS Agent SDK 包含帐号、支付、消息、推送、游戏等功能，如果只打算使用其中的推送功能，可以使用 HMS Agent SDK 压缩包中自带的 GetHMSAgent 脚本删除不需要的文件，具体步骤如下：
 
-1. 执行 `GetHMSAgent_xx.bat` 生成 copysrc 的文件夹，copysrc 里面是根据您选择需要集成 HMS 服务，抽取后的 HMSAgent 代码（java 文件夹）和manifest文件（AndroidManifest.xml）。注意此步骤中会用到当前应用签名对应的 SHA256 指纹与应用的 App ID 与 App Secret 等信息。
+1. 执行 `GetHMSAgent_cn.bat` 生成 copysrc 的文件夹，copysrc 里面是根据您选择需要集成 HMS 服务，抽取后的 HMSAgent 代码（java 文件夹）和manifest文件（AndroidManifest.xml）。注意此步骤中会用到当前应用签名对应的 SHA256 指纹与应用的 App ID 与 App Secret 等信息。
 2. 拷贝 copysrc/java 里面的代码到您现有的工程。请保持 HMSAgent 代码的包的路径和结构不变。AndroidManifest.xml仅供配置参考。
 
 这样既可以减少应用大小，也可以避免要求不必要的权限。
