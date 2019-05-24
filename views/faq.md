@@ -220,13 +220,6 @@ LeanCloud 数据存储的查询接口不支持这些函数，可以查询到客�
 ### sessionToken 在什么情况下会失效？
 如果在控制台的存储的设置中勾选了「密码修改后，强制客户端重新登录」，则用户修改密码后， sessionToken 会变更，需要重新登录。如果没有勾选这个选项，Token 就不会改变。当新建应用时，这个选项默认是被勾上的。
 
-### 默认值的查询结果为什么不对
-
-这是默认值的限制。MongoDB 本身是不支持默认值，我们提供的默认值只是应用层面的增强，对于老数据只是在查询后做了展现层的优化。有两种解决方案：
-
-1. 对老的数据做一次更新，查询出 key 不存在（whereDoesNotExist）的记录，再更新回去。
-2. 查询条件加上 or 查询，or key 不存在（whereDoesNotExist）。
-
 ### User 表中有 authData 数据，但是当前登录用户无法获取 authData 数据
 
 {{ include.retrieveAuthData(node) }}
