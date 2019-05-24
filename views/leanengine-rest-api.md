@@ -18,21 +18,7 @@ LeanCloud 云端提供的统一的访问云函数的接口，所有的客户端 
 * `X-LC-Prod: 0` 表示调用预备环境
 * `X-LC-Prod: 1` 表示调用生产环境
 
-在云引擎通过 SDK 调用云函数时，包括显式调用以及隐式调用（由于触发 hook 条件导致 hook 函数被调用），
-SDK 会根据云引擎所属环境（预备、生产）调用相应环境的云函数。
-例如，假定定义了 beforeDelete 云函数，在预备环境通过 SDK 删除一个对象，会触发预备环境的 beforeDelete hook 函数。
-
-在云引擎以外的环境通过 SDK 显式或隐式调用云函数时，`X-LC-Prod` 的默认值一般为 `1`，也就是调用生产环境。
-但由于历史原因，各 SDK 的具体行为有一些差异：
-
-- 在 Node.js、PHP、Java 这三个 SDK 下，默认总是调用生产环境的云函数。
-- 在 Python SDK 下，配合 lean-cli 本地调试时，且应用存在预备环境时，默认调用预备环境的云函数，其他情况默认调用生产环境的云函数。
-- 云引擎 Java 环境的模板项目 [java-war-getting-started] 和 [spring-boot-getting-started] 做了处理，配合 lean-cli 本地调试时，且应用存在预备环境时，默认调用预备环境的云函数，其他情况默认调用生产环境的云函数（与 Python SDK 的行为一致）。
-
-[java-war-getting-started]: https://github.com/leancloud/java-war-getting-started/
-[spring-boot-getting-started]: https://github.com/leancloud/spring-boot-getting-started/
-
-在本地调试时，可以通过设置 `LEANCLOUD_APP_ENV` (Node.js 是 `NODE_ENV`）这个环境变量来指定调用哪个环境的云函数（`stage` 对应预备环境，`production` 对应生产环境）。
+通过 SDK 调用云函数时，SDK 会根据当前环境设置 `X-LC-Prod` HTTP 头，详见 [云函数开发指南中关于预备环境和生产环境的说明](leanengine_cloudfunction_guide-node.html#切换云引擎环境)。
 
 ## 云函数
 
