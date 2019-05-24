@@ -385,7 +385,9 @@ AV.Cloud.useMasterKey(true);
 ### 有一些 iOS 设备收不到推送，到控制台查看推送记录，发现 invalidTokens的 数量大于0，是怎么回事？
 
 invalidTokens 的数量由以下两部分组成：
+
 * 选择的设备与选择的证书不匹配时，会增加 invalidTokens 的数量，例如使用开发证书给生产证书的设备推送。
+* 使用 APNs Authentication Key 的 Team ID 和目标 Device Token 的 Team ID 不符。要给多个不同 Team ID 下的设备发推送，则必须提供 apns_team_id 参数，参考 [推送消息](push_guide.html#推送消息)。
 * 目标设备移除或重装了对应的 App。
 
 针对第一种情况，请检查 APNS 证书是否过期，并检查是否使用了正确的证书类型。
