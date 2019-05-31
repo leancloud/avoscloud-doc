@@ -194,7 +194,7 @@ var leaderboard = await AVLeaderboard.CreateLeaderboard("score", order: AVLeader
 |:--:|:--:|:--:|:--:|--|
 |`statisticName`|`string`|||所排名的成绩名字|
 |`order`|`AVLeaderboardOrder`|||排序|
-|`updateStrategy`|`AVLeaderboardUpdateStrategy`|可选|`AV.LeaderboardUpdateStrategy.BETTER`|成绩更新策略|
+|`updateStrategy`|`AVLeaderboardUpdateStrategy`|可选|`AVLeaderboardUpdateStrategy.BETTER`|成绩更新策略|
 |`versionChangeInterval`|`AVLeaderboardVersionChangeInterval`|可选|`AVLeaderboardVersionChangeInterval.WEEK`|自动重置周期|
 
 
