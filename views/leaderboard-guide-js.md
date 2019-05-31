@@ -1,7 +1,7 @@
 {% import "views/_helper.njk" as docs %}
 {% extends "./leaderboard-guide.tmpl" %}
 {% set platformName = "JavaScript" %}
-
+{% set avUser = "AV.User" %}
 
 {% block Demo %}
 
@@ -16,6 +16,8 @@
 {% endblock %}
 
 {% block leaderboardClass %}
+
+### AV.Leaderboard
 
 `AV.Leaderboard` 类是对排行榜的抽象。`Leaderboard` 实例有以下属性：
 
@@ -175,6 +177,17 @@ AV.Leaderboard.createLeaderboard({
   // 创建成功得到 leaderboard 实例
 }).catch(console.error);
 ```
+
+你可以指定以下参数：
+
+|参数|类型|是否可选|默认值|说明|
+|:--:|:--:|:--:|:--:|--|
+|`statisticName`|`string`|||所排名的成绩名字|
+|`order`|[`AV.LeaderboardOrder`](https://leancloud.github.io/javascript-sdk/docs/AV.html#.LeaderboardOrder)|||排序|
+|`updateStrategy`|[`AV.LeaderboardUpdateStrategy`](https://leancloud.github.io/javascript-sdk/docs/AV.html#.LeaderboardUpdateStrategy)|可选|`AV.LeaderboardUpdateStrategy.BETTER`|成绩更新策略|
+|`versionChangeInterval`|[`AV.LeaderboardVersionChangeInterval`](https://leancloud.github.io/javascript-sdk/docs/AV.html#.LeaderboardVersionChangeInterval)|可选|`AV.LeaderboardVersionChangeInterval.WEEK`|自动重置周期|
+
+详见《[创建排行榜 API 文档](https://leancloud.github.io/javascript-sdk/docs/AV.Leaderboard.html#.createLeaderboard)》。
 
 {% endblock %}
 

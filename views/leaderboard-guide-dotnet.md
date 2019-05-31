@@ -1,7 +1,7 @@
 {% import "views/_helper.njk" as docs %}
 {% extends "./leaderboard-guide.tmpl" %}
 {% set platformName = "C\#` `" %}
-
+{% set avUser = "AVUser" %}
 
 {% block Demo %}
 
@@ -15,6 +15,7 @@
 {% endblock %}
 
 {% block leaderboardClass %}
+### AVLeaderboard
 
 `AVLeaderboard` 类是对排行榜的抽象。`Leaderboard` 实例有以下属性：
 
@@ -186,6 +187,17 @@ AVClient.UseMasterKey = true;
 ```c#
 var leaderboard = await AVLeaderboard.CreateLeaderboard("score", order: AVLeaderboardOrder.ASCENDING, updateStrategy: AVLeaderboardUpdateStrategy.BETTER);
 ```
+
+你可以指定以下参数：
+
+|参数|类型|是否可选|默认值|说明|
+|:--:|:--:|:--:|:--:|--|
+|`statisticName`|`string`|||所排名的成绩名字|
+|`order`|`AVLeaderboardOrder`|||排序|
+|`updateStrategy`|`AVLeaderboardUpdateStrategy`|可选|`AV.LeaderboardUpdateStrategy.BETTER`|成绩更新策略|
+|`versionChangeInterval`|`AVLeaderboardVersionChangeInterval`|可选|`AVLeaderboardVersionChangeInterval.WEEK`|自动重置周期|
+
+
 {% endblock %}
 
 {% block resetLeaderboard %}
