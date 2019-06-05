@@ -826,7 +826,7 @@ if let fileURL = Bundle.main.url(forResource: "LeanCloud", withExtension: "png")
 {% block code_file_image_thumbnail %}
 
 ```swift
-// 暂不持支
+// 暂不支持
 ```
 
 {% endblock %}
