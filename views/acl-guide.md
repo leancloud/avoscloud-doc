@@ -153,8 +153,7 @@ post.save()
 
 ```objc
 AVQuery *query = [AVUser query];
-[query whereKey:@"objectId" equalTo:@"55f1572460b2ce30e8b7afde"];
-[query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+[query getObjectInBackgroundWithId:@"55f1572460b2ce30e8b7afde" block:^(AVUser *otherUser, NSError *error) {
     if (error == nil) {
         // 新建一个帖子对象
         AVObject *post = [AVObject objectWithClassName:@"Post"];
@@ -165,8 +164,6 @@ AVQuery *query = [AVUser query];
         AVACL *acl = [AVACL ACL];
         [acl setPublicReadAccess:YES];// 设置公开的「读」权限，任何人都可阅读
         [acl setWriteAccess:YES forUser:[AVUser currentUser]];// 为当前用户赋予「写」权限
-        
-        AVUser *otherUser = [objects objectAtIndex:0];// 读取 admin
         [acl setWriteAccess:YES forUser:otherUser];
         
         post.ACL = acl;// 将 ACL 实例赋予 Post 对象
