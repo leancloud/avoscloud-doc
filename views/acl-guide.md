@@ -180,11 +180,9 @@ AVQuery *query = [AVUser query];
 ```swift
 let query = LCQuery(className: LCUser.objectClassName())
 
-query.whereKey("objectId", .equalTo("55f1572460b2ce30e8b7afde"))
-
-_ = query.find { result in
+_ = query.get("55f1572460b2ce30e8b7afde") { result in
     switch result {
-    case .success(objects: let objects):
+    case .success(object: let object):
         do {
             let post = LCObject(className: "Post")
             
@@ -197,7 +195,7 @@ _ = query.find { result in
             if let currentUserID = LCApplication.default.currentUser?.objectId?.value {
                 acl.setAccess([.write], allowed: true, forUserID: currentUserID)
             }
-            if let anotherUserID = (objects.first as? LCUser)?.objectId?.value {
+            if let anotherUserID = (object as? LCUser)?.objectId?.value {
                 acl.setAccess([.write], allowed: true, forUserID: anotherUserID)
             }
             
