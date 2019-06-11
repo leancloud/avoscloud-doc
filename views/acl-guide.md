@@ -214,10 +214,9 @@ _ = query.find { result in
 ```
 ```java
   AVQuery<AVUser> query = AVUser.getQuery();
-  query.whereEqualTo("objectId","55f1572460b2ce30e8b7afde");
-  query.findInBackground(new FindCallback<AVUser>() {
+  query.getInBackground("55f1572460b2ce30e8b7afde", new FindCallback<AVUser>() {
     @Override
-    public void done(List<AVUser> list, AVException e) {
+    public void done(AVUser anotherUser, AVException e) {
       if(e == null){
         // 新建一个帖子对象
         AVObject post= new AVObject("Post");
@@ -228,9 +227,6 @@ _ = query.find { result in
         AVACL acl = new AVACL();
         acl.setPublicReadAccess(true);// 设置公开的「读」权限，任何人都可阅读
         acl.setWriteAccess(AVUser.getCurrentUser(), true);//为当前用户赋予「写」权限
-
-        //注：此处为了简化展现代码，未做 list 为空的判断。
-        AVUser anotherUser= list.get(0);
         acl.setWriteAccess(anotherUser,true);
 
         // 将 ACL 实例赋予 Post对象
