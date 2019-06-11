@@ -451,38 +451,11 @@ Tom 想建立一个群，把自己好朋友都拉进这个群，然后给他们�
 
 除此以外，还有其他方法来自定义离线推送内容，请参考 [离线推送通知](realtime-guide-intermediate.html#离线推送通知)。
 
-### 未读消息
+### 离线消息
 
 {% if segment_code != "dotnet" %}
-未读消息有两种处理方式：未读消息数量通知与离线消息通知（默认）。
 
-#### 未读消息数更新通知
-
-未读消息数更新通知的机制为：当客户端上线时，会收到其参与过的对话的离线消息数量，云端不会主动将离线消息通知发送至客户端，而是由客户端负责主动拉取。
-
-SDK 会在 Conversation 上维护 `unreadMessagesCount` 字段，这个字段在变化时 IMClient 会派发一个「未读消息数量更新」的事件。这个字段会在下面这些情况下发生变化：
-
-- 收到在线消息
-- 用户将对话标记为已读
-- 开发者应当监听「未读消息数量更新」 事件，在对话列表界面上更新这些对话的未读消息数量。
-
-{% block message_unread_message_count %}{% endblock %}
-
-{{ docs.note("开启未读消息数后，即使客户端在线收到了消息，未读消息数量也会增加，因此开发者需要在合适时机重置未读消息数。") }}
-
-清除对话未读消息数的唯一方式是调用 Conversation#read 方法将对话标记为已读，一般来说开发者至少需要在下面两种情况下将对话标记为已读：
-
-- 在对话列表点击某对话进入到对话页面时
-- 用户正在某个对话页面聊天，并在这个对话中收到了消息时
-{% endif %}
-
-#### 离线消息推送通知
-
-离线消息推送通知是 SDK 默认的未读消息处理方式。不管是单聊还是群聊，当用户 A 发出消息后，如果目标对话的部分用户当前不在线，LeanCloud 云端可以提供离线推送的方式将消息提醒发送至客户端。{% block offlineMessage %}{% endblock %}
-
-{%  if segment_code !== 'android' %}
-我们也提供多种自定义推送通知的方式，操作方法请参考 [离线推送通知](realtime-guide-intermediate.html#离线推送通知)。
-{% endif %}
+离线消息的处理请参考 [离线推送通知](realtime-guide-intermediate.html#离线推送通知) 与 [离线消息同步](realtime-guide-intermediate.html#离线消息同步)。
 
 ### 消息类详解
 {% block message_Relation_intro %}{% endblock %}
