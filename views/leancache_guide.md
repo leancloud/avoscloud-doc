@@ -95,7 +95,6 @@ LeanCache 不提供外网直接访问。如果需要进行简单的数据操作�
 const Redis = require('ioredis')
 
 const client = new Redis(process.env['REDIS_URL_<实例名称>']);
-// 建议增加 client 的 on error 事件处理，否则可能因为网络波动或 redis server 主从切换等原因造成短暂不可用导致应用进程退出。
 client.on('error', function(err) {
   return console.error('redis err: ', err);
 });
