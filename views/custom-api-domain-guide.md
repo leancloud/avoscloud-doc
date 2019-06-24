@@ -151,7 +151,7 @@ wss://cn-n1-wechat-mesos-cell-4.avoscloud.com
 // 配置 SDK 推送
 [AVOSCloud setServerURLString:@"https://xxx.example.com" forServiceModule:AVServiceModulePush];
 // 配置 SDK 云引擎
-[AVOSCloud setServerURLString:@"https://exmaple.com" forServiceModule:AVServiceModuleEngine];
+[AVOSCloud setServerURLString:@"https://xxx.example.com" forServiceModule:AVServiceModuleEngine];
 // 配置 SDK 即时通讯
 [AVOSCloud setServerURLString:@"https://xxx.example.com" forServiceModule:AVServiceModuleRTM];
 // 初始化
