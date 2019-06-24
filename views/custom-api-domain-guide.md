@@ -118,7 +118,7 @@ AV.init({
 });
 ```
 
-多人在线对战 SDK：
+<!-- 多人在线对战 SDK：
 
 ```js
 new Client({
@@ -127,7 +127,7 @@ new Client({
   userId,
   playServer: 'https://xxx.example.com/1/multiplayer/router',
 });
-```
+``` -->
 
 #### 微信小程序白名单中增加：
 
@@ -220,12 +220,12 @@ var realtime = new AVRealtime(new AVRealtime.Configuration
 });
 ```
 
-多人在线对战, v0.5.0-alpha.0 及之后的版本
+<!-- 多人在线对战, v0.5.0-alpha.0 及之后的版本
 
 ```cs
 var client = new Client(appId, appKey, userId, playServer: "https://xxx.example.com/1/multiplayer/router");
 await client.Connect();
-```
+``` -->
 
 ### PHP SDK
 
