@@ -17,11 +17,11 @@ Play 客户端 SDK 是开源的，源码地址请访问 [Play-SDK-CSharp](https:
 LeanCloud.Play.Logger.LogDelegate = (level, log) =>
 {
     if (level == LogLevel.Debug) {
-        Debug.Log($"[DEBUG] {log}");
+        Debug.Log(\$"[DEBUG] {log}");
     } else if (level == LogLevel.Warn) {
-        Debug.Log($"[WARN] {log}");
+        Debug.Log(\$"[WARN] {log}");
     } else if (level == LogLevel.Error) {
-        Debug.LogFormat($"[ERROR] {log}");
+        Debug.LogFormat(\$"[ERROR] {log}");
     }
 };
 ```
@@ -49,7 +49,7 @@ try {
     await client.Connect();
 } catch (PlayException e) {
     // 连接失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogError(\$"{e.Code}, {e.Detail}");
 }
 ```
 {% endblock %}
@@ -62,7 +62,7 @@ try {
     await client.JoinOrCreateRoom(roomName);
 } catch (PlayException e) {
     // 创建或加入房间失败
-    Debug.LogError($"{e.Code}, {e.Detail}");    
+    Debug.LogError(\$"{e.Code}, {e.Detail}");    
 }
 ```
 
@@ -75,7 +75,7 @@ try {
 ```cs
 // 注册新玩家加入房间事件
 client.OnPlayerRoomJoined += (newPlayer) => {
-    Debug.Log($"new player: {newPlayer.UserId}");
+    Debug.Log(\$"new player: {newPlayer.UserId}");
     if (client.Player.IsMaster) {
         // 获取房间内玩家列表
         var playerList = client.Room.PlayerList;
@@ -112,8 +112,8 @@ client.OnPlayerCustomPropertiesChanged += (player, changedProps) => {
     if (player.IsLocal) {
         // 得到玩家的分数
         long point = player.CustomProperties.GetInt("point");
-        Debug.Log($"{player.UserId} : {point}");
-        scoreText.text = $"Score: {point}";
+        Debug.Log(\$"{player.UserId} : {point}");
+        scoreText.text = \$"Score: {point}";
     }
 };
 ```
