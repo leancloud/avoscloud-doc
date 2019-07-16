@@ -83,8 +83,8 @@ Server 启动后，本地的 Server 地址为 `http://localhost:8081`，游戏�
 
 ```js
 const client = new Client({
-  appId: YOUR_APP_ID,
-  appKey: YOUR_APP_KEY,
+  appId: {{appid}},
+  appKey: {{appkey}},
   userId: 'leancloud'
   // 指定连接本地的 Server 地址
   playServer: 'http://localhost:8081',
@@ -101,7 +101,7 @@ client.connect().then(()=> {
 ```
 
 ```cs
-var client = new Client(appId, appKey, userId, playServer: "http://localhost:8081", ssl: false);
+var client = new Client({{appid}}, {{appkey}}, userId, playServer: "http://localhost:8081", ssl: false);
 await client.Connect();
 ```
 
@@ -239,8 +239,8 @@ lean deploy
 
 ```js
 const client = new Client({
-  appId: YOUR_APP_ID,
-  appKey: YOUR_APP_KEY,
+  appId: {{appid}},
+  appKey: {{appkey}},
   userId: userId
   // 指定连接本地的 Server 地址
   // playServer: 'http://localhost:8081',  // 连接线上服务器时，去掉本行代码
@@ -250,7 +250,7 @@ const client = new Client({
 ```
 
 ```cs
-var client = new Client(appId, appKey, userId);
+var client = new Client({{appid}}, {{appkey}}, userId);
 await client.Connect();
 ```
 

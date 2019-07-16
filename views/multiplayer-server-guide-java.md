@@ -7,7 +7,7 @@
 ## 基础概念
 
 ### Plugin
-一个 Plugin 里面包含多个 Hook 函数，不同的 Plugin 中可以撰写不同的逻辑，客户端在。例如 PluginA 和 PluginB 里面都可以写 `onCreateRoom()` 函数，但两个 Plugin 中同一个函数的逻辑不同，客户端在创建房间时可以指定使用其中某一个 Plugin 中的逻辑。
+一个 Plugin 里面包含多个 Hook 函数，不同的 Plugin 中可以撰写不同的逻辑，例如 PluginA 和 PluginB 里面都可以写 `onCreateRoom()` 函数，但两个 Plugin 中同一个函数的逻辑不同。客户端在创建房间时可以指定使用其中某一个 Plugin 中的逻辑。
 
 Plugin 中的代码写完之后，我们会将其打包给本地的 Server 加载或部署到服务端的 Server 中。
 
@@ -215,7 +215,7 @@ public void onBeforeSetRoomSystemProperties(BeforeSetRoomSystemPropertiesContext
   Set<String> userIds = new HashSet<>();
   userIds.add("user99");
   userIds.add("user100");
-  // 请空所有的预留位置
+  // 清空所有的预留位置
   userIdsProperty.drop();
   // 更新本次请求中的预留位置
   request.setExpectedUserIdsProperty(userIdsProperty);
