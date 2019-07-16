@@ -21,7 +21,7 @@ LeanCloud.Play.Logger.LogDelegate = (level, log) =>
     } else if (level == LogLevel.Warn) {
         Debug.Log($\\"[WARN] {log}");
     } else if (level == LogLevel.Error) {
-        Debug.LogFormat(`$`"[ERROR] {log}");
+        Debug.Log(\$\"[ERROR] {log}");
     }
 };
 ```
