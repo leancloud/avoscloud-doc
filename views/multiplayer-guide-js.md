@@ -360,6 +360,8 @@ client.kickPlayer(otherPlayer.actorId, info).then(() => {
 {% endblock %}
 
 {% block kick_event %}
+踢出房间后，被踢的玩家会收到 `ROOM_KICKED` 事件。
+
 ```javascript
 client.on(Event.ROOM_KICKED, (data) => {
 	// code 和 msg 就是 MasterClient 在踢人时传递的信息
@@ -370,6 +372,8 @@ client.on(Event.ROOM_KICKED, (data) => {
 {% endblock %}
 
 {% block kick_left_event %}
+同时 MasterClient 和其他还存在房间的玩家会收到 `PLAYER_ROOM_LEFT` 事件：
+
 ```javascript
 client.on(Event.PLAYER_ROOM_LEFT, (data) => {
 	const player = data.leftPlayer;

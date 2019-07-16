@@ -50,7 +50,7 @@ try {
 {% block join_lobby %}
 ```cs
 try {
-    client.JoinLobby();
+    await client.JoinLobby();
 } catch (PlayException e) {
     // 加入大厅失败
     Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
@@ -307,7 +307,7 @@ try {
 ```cs
 try {
     // 可以传入踢人的 code 和 msg
-    await c0.KickPlayer(otherPlayer.actorId, 1, "你已被踢出房间"); 
+    await client.KickPlayer(otherPlayer.actorId, 1, "你已被踢出房间"); 
 } catch (PlayException e) {
     // 踢人失败
     Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
@@ -317,6 +317,8 @@ try {
 
 
 {% block kick_event %}
+踢出房间后，被踢的玩家会收到 `OnRoomKicked` 事件。
+
 ```cs
 client.OnRoomKicked += (code, msg) => {
     // code 和 msg 就是 MasterClient 在踢人时传递的信息
@@ -326,6 +328,8 @@ client.OnRoomKicked += (code, msg) => {
 
 
 {% block kick_left_event %}
+同时 MasterClient 和其他还存在房间的玩家会收到 `OnPlayerRoomLeft` 事件：
+
 ```cs
 client.OnPlayerRoomLeft += leftPlayer => {
     

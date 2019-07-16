@@ -251,12 +251,9 @@ MasterClient 可以把房间内的其他玩家踢出房间：
 {% block kick_player %}
 {% endblock %}
 
-踢出房间后，被踢的玩家会收到 `ROOM_KICKED` 事件。
 
 {% block kick_event %}
 {% endblock %}
-
-同时 MasterClient 和其他还存在房间的玩家会收到 `PLAYER_ROOM_LEFT` 事件：
 
 {% block kick_left_event %}
 {% endblock %}
