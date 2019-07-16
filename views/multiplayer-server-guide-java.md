@@ -1,15 +1,15 @@
-# Multiplayer Server 开发指南 &middot; Java
+# 多人对战 Server 开发指南 &middot; Java
 
-阅读此文档前请先阅读 [Multiplayer Server 总览](multiplayer-server.html)及 [Multiplayer Server 快速入门](multiplayer-server-quick-start-java.html)，了解基本架构及概念。
+阅读此文档前请先阅读 [多人对战 Server 总览](multiplayer-server.html)及 [多人对战 Server 快速入门](multiplayer-server-quick-start-java.html)，了解基本架构及概念。
 
-多人在线对战公有云中在运行的代码就是 Multiplayer Server 中的代码。在 Multiplayer Server 中撰写自定义逻辑逻辑的方法是，将自己的代码写入到预先定义好的 Server Hook 函数中。
+多人对战 Server 是多人在线对战公有云代码的独立部署版本，在 Server 中撰写自定义逻辑逻辑的方法是，将自己的代码写入到预先定义好的 Server Hook 函数中。
 
 ## 基础概念
 
 ### Plugin
 一个 Plugin 里面包含多个 Hook 函数，不同的 Plugin 中可以撰写不同的逻辑，客户端在。例如 PluginA 和 PluginB 里面都可以写 `onCreateRoom()` 函数，但两个 Plugin 中同一个函数的逻辑不同，客户端在创建房间时可以指定使用其中某一个 Plugin 中的逻辑。
 
-Plugin 中的代码写完之后，我们会将其打包给本地的 Multiplayer Server 加载或部署到服务端的 Multiplayer Server 中。
+Plugin 中的代码写完之后，我们会将其打包给本地的 Server 加载或部署到服务端的 Server 中。
 
 ### Hook 函数
 从进入房间的一刻起，房间内的各种操作会触发相关的 Hook 函数：
@@ -28,9 +28,9 @@ Plugin 中的代码写完之后，我们会将其打包给本地的 Multiplayer 
 
 ### PluginFactory
 
-`PluginFactory` 用来指定多个 Plugin 的集合。客户端在创建房间时可以指定使用 `PluginFactory` 中的任意一个 `Plugin` 中的 Hook 逻辑，例如不同玩法的房间使用不同的 `Plugin`，或不同的 `plugin` 支持不同的游戏版本。
+在 `PluginFactory` 中我们可以配置多个 `Plugin`。客户端在创建房间时可以指定使用 `PluginFactory` 中的任意一个 `Plugin` 中的 Hook 逻辑，例如不同玩法的房间使用不同的 `Plugin`，或不同的 `plugin` 支持不同的游戏版本。
 
-我们通过继承 `PluginFactory` 来实现自己的 Factory，`PluginFactory` 中只有一个 `create` 方法需要实现：
+我们通过继承 `PluginFactory` 来实现自己的 Factory，`PluginFactory` 中只有一个 `create` 方法需要实现。在下面的示例代码中，我们设置了三个 `Plugin`：
 
 ```java
 public class MyFancyPluginFactory implements PluginFactory {
@@ -46,16 +46,15 @@ public class MyFancyPluginFactory implements PluginFactory {
             return new DefaultPlugin(room);
         }
       }
-      Log.error("unknown plugin name {}", pluginName);
-      return null;
+      return new DefaultPlugin(room);
     }
 }
 ```
 
 在上面的代码中，`create` 方法中有这三个参数：
-* BoundRoom。触发当前逻辑的 room，可以通过 BoundRoom 中的方法获取房间的各种信息、发送自定义时间、修改房间属性等。
-* pluginName。MasterClient 创建 room 时传入的 Plugin 名称，根据这个名称 Plugin Factory 可以返回不同的 Plugin。
-* initConfigs。Plugin 的初始配置，一般情况下不需要关心。
+* `room`。触发当前逻辑的房间，可以通过 `BoundRoom` 中的方法获取房间的各种信息、发送自定义事件、修改房间属性等。
+* `pluginName`。MasterClient 创建 room 时传入的 Plugin 名称，根据这个名称 Plugin Factory 可以返回不同的 Plugin。
+* `initConfigs`。Plugin 的初始配置，一般情况下不需要关心。
 
 MasterClient 在创建房间时，可以使用以下代码来指定 Plugin：
 
@@ -63,16 +62,16 @@ MasterClient 在创建房间时，可以使用以下代码来指定 Plugin：
 const options = {
   plugin : "somePlugin"
 };
-client.createRoom({ roomOptions:options });
+client.createRoom({ roomOptions:options }).then().catch();
 ```
 
-```c#
+```cs
 var options = new RoomOptions()
 {
-    plugin = "otherPlugin"
+  plugin = "otherPlugin"
 };
 
-play.CreateRoom(roomOptions: options);
+await client.CreateRoom(roomOptions: options);
 ```
 
 ### Plugin 文件
@@ -95,37 +94,6 @@ public class DefaultPlugin extends AbstractPlugin {
 
 ## 实现 Hook 函数
 
-### 获取房间内信息
-Plugin 提供了获取 `BoundRoom` 实例的方法 `getBoundRoom()`，每一个 Hook 函数都可以调用该方法获取与 Hook 绑定的 `BoundRoom` 实例，例如：
-
-```java
-public class DefaultPlugin extends AbstractPlugin {
-  public DefaultPlugin(BoundRoom room) {
-    super(room);
-  }
-
-  @Override
-  public void onCreateRoom(CreateRoomContext ctx) {
-    BoundRoom room = getBoundRoom();
-    ctx.continueProcess();
-  }
-}
-```
-
-`BoundRoom` 下可以获取房间内的以下信息：
-* `getRoomName()`：获取房间名称。
-* `getMaster()`：获取 Master 玩家的 Actor 实例。
-* `getRoomProperties()`：获取房间自定义属性。
-* `getAllActors()`：获取房间所有玩家列表。
-* `getMaxPlayerCount()`：获取房间最大玩家数量限制。
-* `getEmptyRoomTtlSecs()`：获取所有玩家离开房间后，空房间的最大保留时长。
-* `getPlayerTtlSecs()`：获取允许玩家的最大离线时间，默认为 0 表示玩家一旦断线就自动从房间离开。
-* `getExpectUsers()`：获取在房间占位的玩家 ID 列表，包括已经加入房间的和没有加入房间的。
-* `isVisible()`：房间是否可见。默认为可见，即所有玩家都能自动匹配到本房间。
-* `isOpen()`：房间是否关闭。房间关闭后不允许新玩家加入。
-* `getLobbyKeys()`：获取用于房间匹配的房间自定义属性键。不在本列表内的房间自定义属性不会用来做房间匹配
-
-
 ### Hook 的处理
 Hook 中有以下处理请求的方式：
 
@@ -146,7 +114,7 @@ public void onCreateRoom(CreateRoomContext ctx) {
 
 
 ### Hook 函数中的参数
-每一个 Hook 函数都有一个接口参数 `Context`，通过 `Context` 可以拿到触发当前 hook 的请求参数，也可以通过调用[Hook 的处理](Hook 的处理)中的方法通知 Server 如何处理触发 Hook 调用的请求。
+每一个 Hook 函数都有一个接口参数 `Context`，通过 `Context` 可以拿到触发当前 hook 的请求参数，也可以通过调用 [Hook 的处理](Hook 的处理)中的方法通知 Server 如何处理触发 Hook 调用的请求。
 
 `Context` 可以获取以下信息：
 * `getHookName()`：获取当前 Context 所属 Hook 名称。
@@ -174,7 +142,7 @@ public void onCreateRoom(CreateRoomContext ctx) {
   List<String > matchKeys = request.getLobbyKeys();  // 获取 request 请求中用作匹配的 key
   int maxPlayerCount = request.getMaxPlayerCount();  // 获取 request 请求中设置的房间最大人数。
   PlayObject roomProperties = request.getRoomProperties();  // 获取 request 请求中设置的房间属性。
-  ctx.continueProcess();
+  ctx.continueProcess(); // 允许创建房间
 }
 ```
 
@@ -185,21 +153,30 @@ public void onCreateRoom(CreateRoomContext ctx) {
 
 #### onBeforeJoinRoom
 
-触发时机：Client 请求加入房间，服务端将 Client 加入房间前该函数被触发。///////////////////////////
+触发时机：Client 请求加入房间，服务端将 Client 加入房间前该函数被触发。
 
 ```java
 @Override
 public void onBeforeJoinRoom(BeforeJoinRoomContext ctx) {
-  // 允许该玩家加入房间
-  ctx.continueProcess();
-  // 获取当前加入房间的玩家
-  const player = ................;
-  
-  // 更新当前 player 的信息
-  PlayObject playerAProperties = new PlayObject();
-  playerAProperties.put("speed", 20);
+  JoinRoomRequest request = ctx.getRequest();
   BoundRoom room = getBoundRoom();
-  room.updatePlayerProperty(player.getActorId(), playerAProperties);
+
+  // 查看这个加入房间的请求中是否给其他玩家占位了
+  List<String> expectUsers = request.getExpectUsers();
+
+  // 查看是否是掉线重新回到房间的玩家请求
+  boolean isRejoin = request.isRejoin();
+
+  // 获取要加入的 userId
+  String userId = request.getUserId();
+
+  // 设置请求中的玩家属性
+  PlayObject properties = request.getActorProperties();
+  properties.put("equip", "bomb"); // 进屋的人送给他一个炸弹
+  request.setActorProperties(properties); // 保存玩家的新的属性
+
+  // 允许加入
+  ctx.continueProcess();
 }
 ```
 
@@ -277,7 +254,17 @@ public void onBeforeSetRoomSystemProperties(BeforeSetRoomSystemPropertiesContext
 @Override
 public void onBeforeSetRoomProperties(BeforeSetRoomPropertiesContext ctx) {
   SetRoomPropertiesRequest request = ctx.getRequest();
+  BoundRoom room = getBoundRoom();
 
+  // 获取是哪个玩家发出的请求
+  String fromUserId = request.getUserId();
+  Actor fromActor = room.getActorByUserId(fromUserId);
+  // 如果不是 masterClient 的操作，则拒绝本次请求
+  if (fromActor.getActorId() != room.getMaster().getActorId()) {
+    Reason reson = Reason.of(403, "forbidden");
+    ctx.rejectProcess(reson);
+  }
+  
   // 获取本次请求中的自定义属性
   PlayObject properties = request.getProperties();
   // 修改本次请求中的自定义属性
@@ -309,6 +296,17 @@ public void onBeforeSetRoomProperties(BeforeSetRoomPropertiesContext ctx) {
 @Override
 public void onBeforeSetPlayerProperties(BeforeSetPlayerPropertiesContext ctx) {
   SetPlayerPropertiesRequest request = ctx.getRequest();
+  BoundRoom room = getBoundRoom();
+
+  // 获取是哪个玩家发出的请求
+  String fromUserId = request.getUserId();
+  Actor fromActor = room.getActorByUserId(fromUserId);
+  // 如果不是 masterClient 的操作，则拒绝本次请求
+  if (fromActor.getActorId() != room.getMaster().getActorId()) {
+    Reason reson = Reason.of(403, "forbidden");
+    ctx.rejectProcess(reson);
+  }
+  
   // 要修改哪个玩家的自定义属性
   int targetActorId = request.getTargetActorId();
 
@@ -339,22 +337,48 @@ public void onBeforeSetPlayerProperties(BeforeSetPlayerPropertiesContext ctx) {
 #### onBeforeSendEvent
 触发时机：Client 发送自定义事件时被触发。
 
+在 `getting-started` 项目中，我们写了一段示例代码，其逻辑为：拦截用户发来的事件请求，如果发现它没有将消息发送给 Master Client，则强制让消息发给 Master Client 一份，并通知房间内所有人有人偷偷发了一条不想让 Master Client 看到的消息。
+
 ```java
 @Override
 public void onBeforeSendEvent(BeforeSendEventContext ctx) {
-  SendEventRequest request = ctx.getRequest();
+  SendEventRequest req = ctx.getRequest();
+  BoundRoom room = getBoundRoom();
   
-  // 获取本地请求的 eventId
-  byte eventId = request.getEventId();
-  if (eventId == 1) {
-    // 获取本次请求中的事件内容
-    PlayObject eventData = request.getEventData();
-    // 根据当前收到的 event 做一些自定义的逻辑。
-    doSomeCustomLogic(eventData);
+  // 获取该房间内的 MasterClient 的 Actor 对象
+  Actor master = room.getMaster();
+  if (master == null) {
+    // no master in this room
+    // reject and swallow this request
+    ctx.skipProcess();
+    return;
   }
 
-  // 同意本次请求，允许发送自定义事件
-  ctx.continueProcess();
+  boolean masterIsInTargets = true;
+  // 获取本次事件的接收对象
+  List<Integer> targetActors = req.getToActorIds();
+  // 检查事件接收对象中有没有 MasterClient。
+  if (!targetActors.isEmpty() &&
+      targetActors.stream().noneMatch(actorId -> actorId == master.getActorId())) {
+    
+    // 事件接收对象中没有 MasterClient，强制让消息发给 MasterClient 一份
+    masterIsInTargets = false;
+    ArrayList<Integer> newTargets = new ArrayList<>(targetActors);
+    newTargets.add(master.getActorId());
+    req.setToActorIds(newTargets);
+  }
+
+  ctx.continueProcess(); // 同意发送本次事件
+
+  // 如果事件接收对象中没有 MasterClient ，告诉所有人有人偷偷发了一条不想让 MasterClient 看到的消息
+  if (!masterIsInTargets) {
+    String msg = String.format("actor %d is sending sneaky rpc", req.getFromActorId());
+    room.sendEventToReceiverGroup(ReceiverGroup.ALL,
+            master.getActorId(),
+            (byte)0,
+            new PlayObject().fluentPut("data", msg),
+            SendEventOptions.emptyOption);
+  }
 }
 ```
 
