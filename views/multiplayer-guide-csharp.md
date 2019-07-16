@@ -634,9 +634,6 @@ client.OnDisconnected += async () => {
         Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
     }
 };
-client.On(Event.DISCONNECTED, (evtData) => {
-    
-});
 ```
 
 这个接口相当于 `Reconnect()` 和 `RejoinRoom()` 的合并。通过这个接口，可以直接重新连接并回到「之前的房间」。
