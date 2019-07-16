@@ -17,7 +17,7 @@ Play 客户端 SDK 是开源的，源码地址请访问 [Play-SDK-CSharp](https:
 LeanCloud.Play.Logger.LogDelegate = (level, log) =>
 {
     if (level == LogLevel.Debug) {
-        Debug.Log(\$"[DEBUG] {log}");
+        Debug.Log(\$\"[DEBUG] {log}");
     } else if (level == LogLevel.Warn) {
         Debug.Log(\$"[WARN] {log}");
     } else if (level == LogLevel.Error) {
