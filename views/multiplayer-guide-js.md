@@ -25,8 +25,6 @@
 const {
   // SDK 
   Client,
-  // 连接节点区域
-  Region,
   // Play SDK 事件常量
   Event,
   // 事件接收组
@@ -288,7 +286,7 @@ client.on(Event.PLAYER_ROOM_JOINED, (data) => {
 {% block player_is_local %}
 ```javascript
 const players = client.room.playerList;
-const player = palyers[0];
+const player = players[0];
 const isLocal = player.isLocal;
 ```
 {% endblock %}
@@ -330,8 +328,8 @@ client.on(Event.PLAYER_ROOM_LEFT, (data) => {
 {% block open_room %}
 ```javascript
 // 设置房间关闭
-client.setRoomOpened(false).then(() => {
-	console.log(client.room.opened);
+client.setRoomOpen(false).then(() => {
+	console.log(client.room.open);
 }).catch((error) => {
 	console.error(errod.code, error.detail);
 });
@@ -352,19 +350,16 @@ client.setRoomVisible(false).then(() => {
 {% endblock %}
 
 {% block kick_player %}
-#### 踢人
-MasterClient 可以把房间内的其他玩家踢出房间：
-
 ```javascript
 // 可以传入一个 object 对象传递信息，该对象仅支持 code 和 msg 两个 key。
 var info = {code: 1, msg: "你已被踢出房间"};
-this.currentClient.kickPlayer(otherPlayer.actorId, info).then(() => {
+client.kickPlayer(otherPlayer.actorId, info).then(() => {
 	console.log("成功踢出房间");
 })
 ```
+{% endblock %}
 
-踢出房间后，被踢的玩家会收到 `ROOM_KICKED` 事件。
-
+{% block kick_event %}
 ```javascript
 client.on(Event.ROOM_KICKED, (data) => {
 	// code 和 msg 就是 MasterClient 在踢人时传递的信息
@@ -372,15 +367,16 @@ client.on(Event.ROOM_KICKED, (data) => {
 	var msg = data.msg
 });
 ```
+{% endblock %}
 
-同时 MasterClient 和其他还存在房间的玩家会收到 `PLAYER_ROOM_LEFT` 事件：
-
+{% block kick_left_event %}
 ```javascript
 client.on(Event.PLAYER_ROOM_LEFT, (data) => {
 	const player = data.leftPlayer;
 });
 ```
 {% endblock %}
+
 
 {% block set_master %}
 ```javascript
@@ -405,6 +401,12 @@ client.on(Event.MASTER_SWITCHED, (data) => {
 	}
 });
 ```
+
+#### 相关事件
+
+| 事件   | 参数     | 描述                                       |
+| ------------------------------------ | ------------------ | ---------------------------------------- |
+| MASTER_SWITCHED    | { player } | Master 更换                         |
 {% endblock %}
 
 
@@ -539,6 +541,13 @@ client.room.setCustomProperties(props, { expectedValues }).then(() => {
 ```
 
 这样，在「第一个玩家」获得屠龙刀之后，`tulong` 对应的值为「第一个玩家」，后续的请求（`const expectedValues = {tulong: null}`）将会失败。
+
+### 相关事件
+
+| 事件   | 参数     | 描述                                       |
+| ------------------------------------ | ------------------ | ---------------------------------------- |
+| ROOM_CUSTOM_PROPERTIES_CHANGED    | { changedProps } | 房间自定义属性变化                         |
+| PLAYER_CUSTOM_PROPERTIES_CHANGED   | { player, changedProps }  | 玩家自定义属性变化 |
 {% endblock %}
 
 
@@ -575,7 +584,7 @@ client.sendEvent(SKILL_EVENT_ID, eventData, options).then(() => {
 client.on(Event.CUSTOM_EVENT, event => {
 	// 解构事件参数
 	const { eventId, eventData } = event;
-	if (eventId === 'skill') {
+	if (eventId === SKILL_EVENT_ID) {
 		// 如果是 skill 事件，则 解构事件数据
 		const { skillId, targetId } = eventData;
 		// TODO 处理释放技能的表现
