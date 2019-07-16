@@ -121,14 +121,14 @@ try {
 - `PlayerTtl`：当玩家掉线时，保留玩家在房间内的数据的时间（单位：秒）。默认为 0，即 玩家掉线后，立即销毁玩家数据。最大值为 300，即 5 分钟。
 - `MaxPlayerCount`：房间允许的最大玩家数量。
 - `CustomRoomProperties`：房间的自定义属性。
-- `CustomRoomPropertyKeysForLobby`：房间的自定义属性 `CustomRoomProperties` 中「键」的数组，包含在 `CustomRoomPropertyKeysForLobby` 中的属性将会出现在大厅的房间属性中（`play.LobbyRoomList`），而全部属性要在加入房间后的 `room.CustomProperties` 中查看。这些属性将会在匹配房间时用到。
+- `CustomRoomPropertyKeysForLobby`：房间的自定义属性 `CustomRoomProperties` 中「键」的数组，包含在 `CustomRoomPropertyKeysForLobby` 中的属性将会出现在大厅的房间属性中（`client.LobbyRoomList`），而全部属性要在加入房间后的 `room.CustomProperties` 中查看。这些属性将会在匹配房间时用到。
 - `Flag`：创建房间标志位，详情请看下文中 [MasterClient 掉线不转移](#MasterClient 掉线不转移), [指定其他成员为 MasterClient](#指定其他成员为 MasterClient)，[只允许 MasterClient 修改房间属性](#只允许 MasterClient 修改房间属性)。
 {% endblock %}
 
 
 
 {% block create_room_api %}
-更多关于 `CreateRoom`，请参考 [API 文档](https://leancloud.github.io/Play-SDK-CSharp/html/classLeanCloud_1_1Play_1_1Play.htm#a11e463efda7b325c4a55e3f7553d38f3)。
+更多关于 `CreateRoom`，请参考 [API 文档](https://leancloud.github.io/Play-SDK-CSharp/html/classLeanCloud_1_1Play_1_1Client.htm#a0478f278b300dd4ae4c4e1fe311d3c7c)。
 {% endblock %}
 
 
@@ -165,7 +165,7 @@ try {
 
 
 {% block join_room_api %}
-更多关于 `JoinRoom`，请参考 [API 文档](https://leancloud.github.io/Play-SDK-CSharp/html/classLeanCloud_1_1Play_1_1Play.htm#a894b6a1118c6ea3aed71df3068b54997)。
+更多关于 `JoinRoom`，请参考 [API 文档](https://leancloud.github.io/Play-SDK-CSharp/html/classLeanCloud_1_1Play_1_1Client.htm#ab19049bfb2cf5e62c746f5e4a4ce79b2)。
 {% endblock %}
 
 
@@ -216,7 +216,7 @@ try {
 
 
 {% block join_or_create_room_api %}
-更多关于 `JoinOrCreateRoom`，请参考 [API 文档](https://leancloud.github.io/Play-SDK-CSharp/html/classLeanCloud_1_1Play_1_1Play.htm#a3b98b509a36d489bd970c1052df67f38)。
+更多关于 `JoinOrCreateRoom`，请参考 [API 文档](https://leancloud.github.io/Play-SDK-CSharp/html/classLeanCloud_1_1Play_1_1Client.htm#ad4a489ac7663ee9eee812cba2659a187)。
 {% endblock %}
 
 
@@ -412,7 +412,7 @@ try {
 ```cs
 // 注册房间属性变化事件
 client.OnRoomCustomPropertiesChanged += changedProps => {
-    var props = play.Room.CustomProperties;
+    var props = client.Room.CustomProperties;
     var gold = props.GetInt("gold");
 };
 ```
