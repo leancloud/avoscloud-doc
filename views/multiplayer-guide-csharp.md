@@ -40,7 +40,7 @@ try {
     await client.Connect();
 } catch (PlayException e) {
     // 连接失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -53,7 +53,7 @@ try {
     client.JoinLobby();
 } catch (PlayException e) {
     // 加入大厅失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -78,7 +78,7 @@ try {
     // 创建房间成功也意味着自己已经成功加入了该房间
 } catch (PlayException e) {
     // 创建房间失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -107,7 +107,7 @@ try {
     // 创建房间成功也意味着自己已经成功加入了该房间
 } catch (PlayException e) {
     // 创建房间失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -141,7 +141,7 @@ try {
     // 加入房间成功
 } catch (PlayException e) {
     // 加入房间失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -156,7 +156,7 @@ try {
     await client.JoinRoom("game", expectedUserIds);
 } catch (PlayException e) {
     // 加入房间失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 
 ```
@@ -177,7 +177,7 @@ try {
     // 加入房间成功
 } catch (PlayException e) {
     // 加入房间失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -194,7 +194,7 @@ try {
     await client.JoinRandomRoom(matchProps);
 } catch (PlayException e) {
     // 加入房间失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -208,7 +208,7 @@ try {
     await client.JoinOrCreateRoom("room1");
 } catch (PlayException e) {
     // 加入房间失败，也没有成功创建房间
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -248,7 +248,7 @@ try {
     // 离开房间成功，可以执行跳转场景等逻辑
 } catch (PlayException e) {
     // 离开房间失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -282,7 +282,7 @@ try {
     Debug.Log(client.Room.Open);
 } catch (PlayException e) {
     // 设置失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -297,7 +297,7 @@ try {
     Debug.Log(client.Room.Visible);
 } catch (PlayException e) {
     // 设置失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -310,7 +310,7 @@ try {
     await c0.KickPlayer(otherPlayer.actorId, 1, "你已被踢出房间"); 
 } catch (PlayException e) {
     // 踢人失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -341,7 +341,7 @@ try {
     await client.SetMaster(newMasterId);
 } catch (PlayException e) {
     // 设置 Master 失败
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -397,7 +397,7 @@ try {
     var newProperties = client.Room.CustomProperties;
 } catch (PlayException e) {
     // 设置属性错误
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -446,7 +446,7 @@ try {
     await client.Player.SetCustomProperties(props);
 } catch (PlayException e) {
     // 设置属性错误
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 {% endblock %}
@@ -511,7 +511,7 @@ try {
     await client.SendEvent(SKILL_EVENT_ID, eventData, options);
 } catch (PlayException e) {
     // 发送事件错误
-    Debug.LogError($"{e.Code}, {e.Detail}");
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
 
@@ -606,12 +606,12 @@ client.OnDisconnected += async () => {
                 await client.RejoinRoom(roomName);
             } catch (PlayException e) {
                 // 返回房间失败
-                Debug.LogError($"{e.Code}, {e.Detail}");
+                Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
             }
         }
     } catch (PlayException e) {
         // 重连失败
-        Debug.LogError($"{e.Code}, {e.Detail}");
+        Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
     }
 };
 ```
@@ -627,7 +627,7 @@ client.OnDisconnected += async () => {
         await client.ReconnectAndRejoin();
     } catch (PlayException e) {
         // 重连或返回失败
-        Debug.LogError($"{e.Code}, {e.Detail}");
+        Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
     }
 };
 client.On(Event.DISCONNECTED, (evtData) => {
