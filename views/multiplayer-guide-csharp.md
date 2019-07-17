@@ -38,7 +38,7 @@ using LeanCloud.Play;
 ```
 接着我们需要实例化一个在线对战 SDK 的客户端对象。
 ```cs
-var client = new Client(YOUR_APP_ID, YOUR_APP_KEY, userId, gameVersion: "0.0.1");
+var client = new Client(YOUR_APP_ID, YOUR_APP_KEY, "leancloud", gameVersion: "0.0.1");
 ```
 {% endblock %}
 
@@ -48,6 +48,7 @@ var client = new Client(YOUR_APP_ID, YOUR_APP_KEY, userId, gameVersion: "0.0.1")
 ```cs
 try {
     await client.Connect();
+    // 连接成功
 } catch (PlayException e) {
     // 连接失败
     Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
@@ -61,6 +62,7 @@ try {
 ```cs
 try {
     await client.JoinLobby();
+    // 加入大厅成功
 } catch (PlayException e) {
     // 加入大厅失败
     Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
@@ -73,7 +75,7 @@ try {
 {% block room_list %}
 ```cs
 client.OnLobbyRoomListUpdated += () => {
-    var roomList = client.LobbyRoomList; // 返回 List<LobbyRoom>
+    var roomList = client.LobbyRoomList;
     // TODO 可以做房间列表展示的逻辑
 };
 ```
@@ -415,7 +417,7 @@ await client.CreateRoom(roomOptions: options);
 
 
 {% block set_custom_props %}
-房间除了固有的属性外，还包括一个 `PlayObject` 类型的自定义属性，比如战斗的回合数、所有棋牌等。
+可以给房间设置一个 `PlayObject` 类型的自定义属性，比如战斗的回合数、所有棋牌等。
 ```cs
 // 设置想要修改的自定义属性
 var props = new PlayObject {
@@ -592,7 +594,7 @@ client.OnDisconnected += () => {
 // 注册玩家掉线 / 上线事件
 client.OnPlayerActivityChanged += player => {
     // 获得用户是否「活跃」状态
-    // player.IsActive;
+    Debug.Log(player.IsActive);
     // TODO 根据玩家的在线状态可以做显示和逻辑处理
 };
 ```
@@ -628,10 +630,11 @@ client.OnDisconnected += async () => {
 try {
     // 重连
     await client.Reconnect();
-    // TODO 根据是否有缓存的之前的房间名，回到房间。
+    // 重连成功，回到之前的某房间
     if (roomName) {
         try {
             await client.RejoinRoom(roomName);
+            // 回到房间成功，房间内其他玩家会收到 `OnPlayerActivityChanged` 事件。
         } catch (PlayException e) {
             // 返回房间失败
             Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
@@ -649,8 +652,8 @@ try {
 {% block reconnect_and_rejoin %}
 ```cs
 try {
-    // 重连并回到房间
     await client.ReconnectAndRejoin();
+    // 回到房间成功，更新数据和界面
 } catch (PlayException e) {
     // 重连或返回失败
     Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);

@@ -57,7 +57,7 @@ const client = new Client({
 	// 设置 APP Key
 	appKey: YOUR_APP_KEY,
 	// 设置用户 id
-	userId,
+	userId: 'leancloud',
 	// 设置游戏版本号（选填，默认 0.0.1）
 	gameVersion: '0.0.1'
 });
@@ -69,9 +69,9 @@ const client = new Client({
 {% block connection %}
 ```javascript
 client.connect().then(()=> {
-  // 连接成功
+  	// 连接成功
 }).catch((error) => {
-  // 连接失败
+  	// 连接失败
 	console.error(error.code, error.detail);
 });
 ```
@@ -84,7 +84,7 @@ client.connect().then(()=> {
 client.joinLobby().then(() => {
 	// 加入大厅成功
 }).catch((error) => {
-  // 加入大厅失败
+  	// 加入大厅失败
 	console.error(error.code, error.detail);
 });
 ```
@@ -116,6 +116,7 @@ client.on(Event.LOBBY_ROOM_LIST_UPDATED, () => {
 client.createRoom().then(() => {
 	// 创建房间成功也意味着自己已经成功加入了该房间
 }).catch((error) => {
+	// 创建房间失败
 	console.error(error.code, error.detail);
 });
 ```
@@ -174,23 +175,6 @@ client.createRoom({
 
 {% block create_room_api %}
 更多关于 `createRoom`，请参考 [API 文档](https://leancloud.github.io/Play-SDK-JS/doc/Client.html#createRoom)。
-{% endblock %}
-
-
-
-{% block create_room_event %}
-```javascript
-// 注册创建房间成功事件
-client.on(Event.ROOM_CREATED, () => {
-	// 房间创建成功
-
-});
-// 注册创建房间失败事件
-client.on(Event.ROOM_CREATE_FAILED, (error) => {
-	// TODO 可以根据 error 提示用户创建失败
-
-});
-```
 {% endblock %}
 
 
@@ -368,7 +352,7 @@ client.setRoomVisible(false).then(() => {
 
 {% block kick_player %}
 ```javascript
-// 可以传入一个 object 对象传递信息，该对象仅支持 code 和 msg 两个 key。
+// 可以传入一个 Object 对象传递信息，该对象仅支持 code 和 msg 两个 key。
 var info = {code: 1, msg: "你已被踢出房间"};
 client.kickPlayer(otherPlayer.actorId, info).then(() => {
 	console.log("成功踢出房间");
@@ -556,7 +540,7 @@ client.room.setCustomProperties(props, { expectedValues }).then(() => {
 
 }).catch(console.error);
 ```
-这样，在「第一个玩家」获得屠龙刀之后，`tulong` 对应的值为「第一个玩家」，后续的请求（`const expectedValues = {tulong: null}`）将会失败。
+这样，在「第一个玩家」获得屠龙刀之后，`tulong` 对应的值为「第一个玩家」，后续的请求（`const expectedValues = { tulong: null }`）将会失败。
 {% endblock %}
 
 
@@ -590,7 +574,6 @@ client.sendEvent(SKILL_EVENT_ID, eventData, options).then(() => {
 
 }).catch(console.error);
 ```
-
 其中 `options` 是指事件发送参数，包括「接收组」和「接收者 ID 数组」。
 - 接收组（ReceiverGroup）是接收事件的目标的枚举值，包括 Others（房间内除自己之外的所有人）、All（房间内的所有人）、MasterClient（房主）。
 - 接收者 ID 数组是指接收事件的目标的具体值，即玩家的 `actorId` 数组。`actorId` 可以通过 `player.actorId` 获得。
