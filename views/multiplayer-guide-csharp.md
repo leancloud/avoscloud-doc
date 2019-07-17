@@ -14,6 +14,8 @@
 {% set DISCONNECTED_EVENT = "OnDisconnected" %}
 {% set PLAYER_ACTIVITY_CHANGED_EVENT = "OnPlayerActivityChanged" %}
 {% set PLAYER_ROOM_LEFT_EVENT = "OnPlayerRoomLeft" %}
+{% set ROOM_CUSTOM_PROPERTIES_CHANGED_EVENT = "OnRoomCustomPropertiesChanged" %}
+{% set MASTER_SWITCHED_EVENT_EVENT = "OnMasterSwitched" %}
 
 
 {% block import %}

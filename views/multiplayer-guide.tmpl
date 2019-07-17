@@ -211,7 +211,7 @@
 您可以将 MasterClient 的逻辑写在客户端中，作为房间创建者的玩家终端会承担游戏运算。在这种情况下，多人对战为 MasterClient 提供了以下方便的功能：
 
 #### MasterClient 掉线转移
-当 MasterClient 掉线后，多人对战服务会指任一名新的玩家客户端为 MasterClient。即使当原 MasterClient 恢复上线之后，也不会成为新的 MasterClient。当 MasterClient 变化时，SDK 会派发 `MASTER_SWITCHED`（主机切换）事件通知客户端。
+当 MasterClient 掉线后，多人对战服务会指任一名新的玩家客户端为 MasterClient。即使当原 MasterClient 恢复上线之后，也不会成为新的 MasterClient。当 MasterClient 变化时，SDK 会派发 `{{MASTER_SWITCHED_EVENT}}`（主机切换）事件通知客户端。
 
 {% block master_switched_event %}
 {% endblock %}
@@ -221,7 +221,7 @@
 {% block set_master %}
 {% endblock %}
 
-转移 MasterClient 身份后，房间内所有玩家都会收到 `MASTER_SWITCHED` 事件。
+转移 MasterClient 身份后，房间内所有玩家都会收到 `{{MASTER_SWITCHED_EVENT}}` 事件。
 
 ### MasterClient 位于服务端
 
@@ -283,7 +283,7 @@ MasterClient 可以把房间内的其他玩家踢出房间：
 
 注意：这个接口并不是直接设置「客户端中自定义属性的内存值」，而是发送修改自定义属性的消息，由服务端最终确定是否修改。
 
-当房间属性变化时，SDK 将派发 `ROOM_CUSTOM_PROPERTIES_CHANGED`（房间自定义属性）事件通知所有玩家客户端（包括自己）。
+当房间属性变化时，SDK 将派发 `{{ROOM_CUSTOM_PROPERTIES_CHANGED_EVENT}}`（房间自定义属性）事件通知所有玩家客户端（包括自己）。
 
 {% block custom_props_event %}
 {% endblock %}
@@ -374,7 +374,7 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 {% block set_player_ttl %}
 {% endblock %}
 
-掉线玩家在 `{{playerTtl}}` 时间内回到房间时，其他玩家的 `PLAYER_ACTIVITY_CHANGED` 事件会被再次触发，开发者可以在这个事件中判断玩家的当前状态。
+掉线玩家在 `{{playerTtl}}` 时间内回到房间时，其他玩家的 `{{PLAYER_ACTIVITY_CHANGED_EVENT}}` 事件会被再次触发，开发者可以在这个事件中判断玩家的当前状态。
 
 {% block player_activity %}
 {% endblock %}
