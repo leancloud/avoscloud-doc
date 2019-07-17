@@ -92,7 +92,7 @@ var props = new PlayObject {
     { "title", "room title" },
     { "level", 2 }
 };
-var options = new RoomOptions {
+var roomOptions = new RoomOptions {
     Visible = false,
     EmptyRoomTtl = 10000,
     PlayerTtl = 600,
@@ -103,7 +103,7 @@ var options = new RoomOptions {
 };
 var expectedUserIds = new List<string> { "cr3_2" };
 try {
-    await client.CreateRoom(roomName, options, expectedUserIds);
+    await client.CreateRoom(roomName, roomOptions, expectedUserIds);
     // 创建房间成功也意味着自己已经成功加入了该房间
 } catch (PlayException e) {
     // 创建房间失败
@@ -222,6 +222,8 @@ try {
 
 
 {% block player_room_joined %}
+对于已经在房间的玩家，当有新玩家加入到房间时，服务端会派发 `OnPlayerRoomJoined`（新玩家加入）事件通知客户端，客户端可以通过新玩家的属性，做一些显示逻辑。
+
 ```cs
 // 注册新玩家加入事件
 client.OnPlayerRoomJoined += newPlayer => {
@@ -537,6 +539,15 @@ client.OnCustomEvent += (eventId, eventData, senderId) => {
 
     }
 };
+
+`event` 参数
+
+| 事件   | 参数     | 描述                                       |
+| ------------------------------------ | ------------------ | ---------------------------------------- |
+| eventId    | byte | 事件 Id，用于表示事件                         |
+| eventData   | PlayObject  | 事件参数 |
+| senderId   | int  | 事件发送者 Id（玩家的 actorId） |
+
 ```
 {% endblock %}
 

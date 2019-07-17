@@ -49,7 +49,7 @@ const client = new Client({
 	// 设置 APP Key
 	appKey: YOUR_APP_KEY,
 	// 设置用户 id
-	userId: 'leancloud',
+	userId,
 	// 设置游戏版本号（选填，默认 0.0.1）
 	gameVersion: '0.0.1'
 });
@@ -272,6 +272,8 @@ client.joinOrCreateRoom('room1').then(() => {
 
 
 {% block player_room_joined %}
+对于已经在房间的玩家，当有新玩家加入到房间时，服务端会派发 `PLAYER_ROOM_JOINED`（新玩家加入）事件通知客户端，客户端可以通过新玩家的属性，做一些显示逻辑。
+
 ```javascript
 // 注册新玩家加入事件
 client.on(Event.PLAYER_ROOM_JOINED, (data) => {
@@ -595,6 +597,14 @@ client.on(Event.CUSTOM_EVENT, event => {
 
 	}
 });
+
+`event` 参数
+
+| 事件   | 参数     | 描述                                       |
+| ------------------------------------ | ------------------ | ---------------------------------------- |
+| eventId    | Number | 事件 Id，用于表示事件                         |
+| eventData   | Object  | 事件参数 |
+| senderId   | Number  | 事件发送者 Id（玩家的 actorId） |
 ```
 {% endblock %}
 
