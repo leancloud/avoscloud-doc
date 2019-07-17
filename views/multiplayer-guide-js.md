@@ -11,6 +11,7 @@
 {% set playerTtl = "playerTtl" %}
 {% set api_url = "https://leancloud.github.io/Play-SDK-JS/doc/" %}
 {% set gameVersion = "gameVersion" %}
+{% set DISCONNECTED_EVENT = "DISCONNECTED" %}
 
 
 {% block import %}
@@ -611,22 +612,6 @@ client.on(Event.CUSTOM_EVENT, event => {
 
 
 {% block disconnect %}
-## 断开连接
-
-### 主动断开连接
-
-开发者也可以通过下面的接口自行断开连接，断开连接后，房间内的其他玩家会收到 `PLAYER_ACTIVITY_CHANGED` 事件。
-
-```javascript
-client.close().then(() => {
-	// 断开连接成功
-});
-```
-
-### 被动断开连接
-
-在网络不稳定的情况下，可能会被动断开连接，被动断开连接时 SDK 会向客户端派发 `DISCONNECTED`（断开连接）事件，开发者可以在这里在 UI 上对玩家进行提示：
-
 ```javascript
 // 注册断开连接事件
 client.on(Event.DISCONNECTED, () => {
@@ -704,6 +689,16 @@ client.reconnectAndRejoin().then(() => {
 }).catch(console.error);
 ```
 {% endblock %}
+
+
+{% block close %}
+```javascript
+client.close().then(() => {
+	// 断开连接成功
+});
+```
+{% endblock %}
+
 
 {% block promise_error %}
 ## 错误处理

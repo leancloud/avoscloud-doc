@@ -11,6 +11,7 @@
 {% set playerTtl = "PlayerTtl" %}
 {% set api_url = "https://leancloud.github.io/Play-SDK-CSharp/html/" %}
 {% set gameVersion = "这个参数" %}
+{% set DISCONNECTED_EVENT = "OnDisconnected" %}
 
 
 {% block import %}
@@ -553,24 +554,13 @@ client.OnCustomEvent += (eventId, eventData, senderId) => {
 
 
 {% block disconnect %}
-## 断开连接
-
-当游戏过程中，由于网络原因可能会断开连接，此时 SDK 会向客户端派发 `OnDisconnected`（断开连接）事件，开发者可以根据需要注册并处理。
-
 ```cs
 // 注册断开连接事件
 client.OnDisconnected += () => {
     // TODO 如果需要，可以选择重连
 };
 ```
-
-开发者也可以通过下面的接口自行断开连接。
-
-```cs
-client.Close();
-```
 {% endblock %}
-
 
 
 
@@ -649,6 +639,12 @@ client.OnDisconnected += async () => {
 ```
 
 这个接口相当于 `Reconnect()` 和 `RejoinRoom()` 的合并。通过这个接口，可以直接重新连接并回到「之前的房间」。
+{% endblock %}
+
+{% block close %}
+```cs
+client.Close();
+```
 {% endblock %}
 
 
