@@ -12,6 +12,8 @@
 {% set api_url = "https://leancloud.github.io/Play-SDK-JS/doc/" %}
 {% set gameVersion = "gameVersion" %}
 {% set DISCONNECTED_EVENT = "DISCONNECTED" %}
+{% set PLAYER_ACTIVITY_CHANGED_EVENT = "PLAYER_ACTIVITY_CHANGED" %}
+{% set PLAYER_ROOM_LEFT_EVENT = "PLAYER_ROOM_LEFT" %}
 
 
 {% block import %}

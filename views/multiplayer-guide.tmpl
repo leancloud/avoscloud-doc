@@ -189,7 +189,7 @@
 {% block leave_room %}
 {% endblock %}
 
-房间里的其他玩家将会接收到 `PLAYER_ROOM_LEFT`（有玩家离开房间）事件。
+房间里的其他玩家将会接收到 `{{PLAYER_ROOM_LEFT_EVENT}}`（有玩家离开房间）事件。
 
 {% block player_room_left_event %}
 {% endblock %}
@@ -363,12 +363,12 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 
 ### 在房间内保留断线用户
 
-网路不稳定、玩家将游戏置于后台等情况可能导致玩家掉线，玩家掉线时，其他在线玩家的 `PLAYER_ACTIVITY_CHANGED` 事件会被触发：
+网路不稳定、玩家将游戏置于后台等情况可能导致玩家掉线，玩家掉线时，其他在线玩家的 `{{PLAYER_ACTIVITY_CHANGED_EVENT}}` 事件会被触发：
 
 {% block player_activity_changed %}
 {% endblock %}
 
-如果玩家长时间内没有回到游戏，服务器会将玩家移除房间并销毁玩家数据，房间里的其他玩家将会接收到 `PLAYER_ROOM_LEFT`（有玩家离开房间）事件。
+如果玩家长时间内没有回到游戏，服务器会将玩家移除房间并销毁玩家数据，房间里的其他玩家将会接收到 `{{PLAYER_ROOM_LEFT_EVENT}}`（有玩家离开房间）事件。
 在创建房间时，我们可以通过 `{{playerTtl}}` 来设置「玩家掉线后的保留时间」，这样当玩家掉线时，在 `{{playerTtl}}` 时间内服务端会保留掉线玩家在房间内的数据，并等待该玩家恢复上线。
 
 {% block set_player_ttl %}

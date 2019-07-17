@@ -12,6 +12,8 @@
 {% set api_url = "https://leancloud.github.io/Play-SDK-CSharp/html/" %}
 {% set gameVersion = "这个参数" %}
 {% set DISCONNECTED_EVENT = "OnDisconnected" %}
+{% set PLAYER_ACTIVITY_CHANGED_EVENT = "OnPlayerActivityChanged" %}
+{% set PLAYER_ROOM_LEFT_EVENT = "OnPlayerRoomLeft" %}
 
 
 {% block import %}
