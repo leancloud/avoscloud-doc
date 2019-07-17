@@ -30,21 +30,18 @@
 {% block initialization %}
 {% endblock %}
 
-其中 `userId` 作为客户端的唯一标识连接至服务器。
+其中，
+`userId` 作为客户端的唯一标识连接至服务器。
 需要注意，这个 `userId` 有如下限制：
-- 只允许英文、数字与下划线。	
+- 只允许英文、数字与下划线	
 - 长度不能超过 32 字符	
 - 一个应用内全局唯一
 
 `gameVersion` 表示客户端的版本号，如果允许多个版本的游戏共存，则可以根据这个版本号路由到不同的游戏服务器。
 
 
-## 连接
-{% block set_userid %}
-{% endblock %}
 
-{% block set_game_version %}
-{% endblock %}
+## 连接
 
 ### 建立连接
 
@@ -79,6 +76,7 @@
 ### 相关事件
 {% block lobby_event %}
 {% endblock %}
+
 
 
 ## 房间匹配
@@ -202,6 +200,7 @@
 {% endblock %}
 
 
+
 ## MasterClient
 
 多人对战服务默认房间的创建者房主为 MasterClient。在游戏中他可以关闭房间、设置房间不可见、踢人等，同时他所在的设备还承担了「逻辑运算功能」，例如它在游戏中可以负责以下场景：
@@ -274,6 +273,7 @@ MasterClient 可以把房间内的其他玩家踢出房间：
 {% endblock %}
 
 
+
 ## 自定义属性及同步
 
 {% block custom_props %}
@@ -342,6 +342,7 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 {% endblock %}
 
 
+
 ## 自定义事件
 
 在[自定义属性](#自定义属性及同步)中，我们介绍了如何根据游戏需求来自定义游戏的数据结构和数据类型。
@@ -368,12 +369,15 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 {% block send_event_args %}
 {% endblock %}
 
+
+
 ## 断线
 
 在网络不稳定的情况下，可能会被动断开连接，被动断开连接时 SDK 会向客户端派发 `{{DISCONNECTED_EVENT}}`（断开连接）事件，开发者可以在这里在 UI 上对玩家进行提示：
 
 {% block disconnect %}
 {% endblock %}
+
 
 
 ## 断线重连
@@ -416,12 +420,16 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 {% block reconnect_and_rejoin %}
 {% endblock %}
 
+
+
 ## 关闭
 
 开发者也可以通过下面的接口主动关闭 SDK。关闭后如果需要再次使用，需要重新实例化 Client。
 
 {% block close %}
 {% endblock %}
+
+
 
 ## 错误处理
 
@@ -432,6 +440,8 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 如果当前发生重大错误，这个事件轻易不会被触发，一旦触发请联系 LeanCloud 来处理。
 {% block error_event %}
 {% endblock %}
+
+
 
 ## API 文档
 
