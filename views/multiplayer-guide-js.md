@@ -12,6 +12,8 @@
 {% set api_url = "https://leancloud.github.io/Play-SDK-JS/doc/" %}
 {% set gameVersion = "gameVersion" %}
 {% set rejoin = "rejoin" %}}
+{% set reconnect = "reconnect" %}
+{% set rejoinRoom = "rejoinRoom" %}
 {% set DISCONNECTED_EVENT = "DISCONNECTED" %}
 {% set PLAYER_ACTIVITY_CHANGED_EVENT = "PLAYER_ACTIVITY_CHANGED" %}
 {% set PLAYER_ROOM_LEFT_EVENT = "PLAYER_ROOM_LEFT" %}
@@ -686,9 +688,7 @@ client.reconnect().then(() => {
 
 
 {% block reconnect_and_rejoin %}
-这个接口相当于 `reconnect()` 和 `rejoinRoom()` 的合并。通过这个接口，可以直接重新连接并回到「之前的房间」。
 ```javascript
-// SDK 会维护上一个房间的 roomName，因此不需要再传入参数
 client.reconnectAndRejoin().then(() => {
   // 回到房间成功，更新数据和界面
 

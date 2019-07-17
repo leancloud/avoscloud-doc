@@ -12,6 +12,8 @@
 {% set api_url = "https://leancloud.github.io/Play-SDK-CSharp/html/" %}
 {% set gameVersion = "这个参数" %}
 {% set rejoin = "Rejoin" %}}
+{% set reconnect = "Reconnect" %}
+{% set rejoinRoom = "RejoinRoom" %}
 {% set DISCONNECTED_EVENT = "OnDisconnected" %}
 {% set PLAYER_ACTIVITY_CHANGED_EVENT = "OnPlayerActivityChanged" %}
 {% set PLAYER_ROOM_LEFT_EVENT = "OnPlayerRoomLeft" %}
@@ -648,17 +650,14 @@ client.OnDisconnected += async () => {
 
 {% block reconnect_and_rejoin %}
 ```cs
-client.OnDisconnected += async () => {
-    try {
-        // 重连并回到房间
-        await client.ReconnectAndRejoin();
-    } catch (PlayException e) {
-        // 重连或返回失败
-        Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
-    }
-};
+try {
+    // 重连并回到房间
+    await client.ReconnectAndRejoin();
+} catch (PlayException e) {
+    // 重连或返回失败
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
+}
 ```
-这个接口相当于 `Reconnect()` 和 `RejoinRoom()` 的合并。通过这个接口，可以直接重新连接并回到「之前的房间」。
 {% endblock %}
 
 
