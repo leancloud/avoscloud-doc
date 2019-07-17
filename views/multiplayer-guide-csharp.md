@@ -18,10 +18,11 @@
 {% set PLAYER_ACTIVITY_CHANGED_EVENT = "OnPlayerActivityChanged" %}
 {% set PLAYER_ROOM_LEFT_EVENT = "OnPlayerRoomLeft" %}
 {% set ROOM_CUSTOM_PROPERTIES_CHANGED_EVENT = "OnRoomCustomPropertiesChanged" %}
-{% set MASTER_SWITCHED_EVENT_EVENT = "OnMasterSwitched" %}
+{% set MASTER_SWITCHED_EVENT = "OnMasterSwitched" %}
 {% set PLAYER_ROOM_JOINED_EVENT = "OnPlayerRoomJoined" %}
 {% set ROOM_KICKED_EVENT = "OnRoomKicked" %}
 {% set PLAYER_ROOM_LEFT_EVENT = "OnPlayerRoomLeft" %}
+{% set CUSTOM_EVENT_EVENT = "OnCustomEvent" %}
 
 
 

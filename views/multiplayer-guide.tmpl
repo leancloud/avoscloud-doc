@@ -353,7 +353,7 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 
 ### 接收自定义事件
 
-当事件发送成功后，事件接收者中的自定义事件 `CUSTOM_EVENT` 会被触发，此时可以根据 `eventId`（事件 ID）来处理不同事件。
+当事件发送成功后，事件接收者中的自定义事件 `{{CUSTOM_EVENT_EVENT}}` 会被触发，此时可以根据 `eventId`（事件 ID）来处理不同事件。
 
 {% block send_event_event %}
 {% endblock %}
@@ -396,7 +396,7 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 
 ### 重新连接
 
-不论是由于网络原因或者用户主动断开连接，都可以通过下面的接口重新连接至服务器。
+用户断线后，可以通过下面的接口重新连接至服务器。
 
 {% block reconnect %}
 {% endblock %}

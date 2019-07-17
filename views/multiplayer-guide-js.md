@@ -18,10 +18,11 @@
 {% set PLAYER_ACTIVITY_CHANGED_EVENT = "PLAYER_ACTIVITY_CHANGED" %}
 {% set PLAYER_ROOM_LEFT_EVENT = "PLAYER_ROOM_LEFT" %}
 {% set ROOM_CUSTOM_PROPERTIES_CHANGED_EVENT = "ROOM_CUSTOM_PROPERTIES_CHANGED" %}
-{% set MASTER_SWITCHED_EVENT_EVENT = "MASTER_SWITCHED" %}
+{% set MASTER_SWITCHED_EVENT = "MASTER_SWITCHED" %}
 {% set PLAYER_ROOM_JOINED_EVENT = "PLAYER_ROOM_JOINED" %}
 {% set ROOM_KICKED_EVENT = "ROOM_KICKED" %}
 {% set PLAYER_ROOM_LEFT_EVENT = "PLAYER_ROOM_LEFT" %}
+{% set CUSTOM_EVENT_EVENT = "CUSTOM_EVENT" %}
 
 
 
@@ -414,7 +415,7 @@ client.on(Event.MASTER_SWITCHED, ({ newMaster }) => {
 {% block master_switched_event %}
 | 事件   | 参数     | 描述                                       |
 | ------------------------------------ | ------------------ | ---------------------------------------- |
-| MASTER_SWITCHED    | { player } | Master 更换                         |
+| MASTER_SWITCHED    | { newMaster } | Master 更换                         |
 {% endblock %}
 
 
