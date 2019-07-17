@@ -360,6 +360,7 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 
 
 ## 断线重连
+
 ### 在房间内保留断线用户
 
 网路不稳定、玩家将游戏置于后台等情况可能导致玩家掉线，玩家掉线时，其他在线玩家的 `PLAYER_ACTIVITY_CHANGED` 事件会被触发：
@@ -398,14 +399,16 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 {% block reconnect_and_rejoin %}
 {% endblock %}
 
-{% block promise_error %}
-{% endblock %}
-
 ## 关闭
 
 开发者也可以通过下面的接口主动关闭 SDK。关闭后如果需要再次使用，需要重新实例化 Client。
 
 {% block close %}
+{% endblock %}
+
+## 错误处理
+
+{% block promise_error %}
 {% endblock %}
 
 ## 重大错误事件

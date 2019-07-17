@@ -647,7 +647,16 @@ client.Close();
 ```
 {% endblock %}
 
-
+{% block promise_error %}
+在我们发起请求时，可以通过 try catch 具体的 exception 信息，例如创建房间时：
+```cs
+try {
+    await client.createRoom();
+} catch (PlayException e) {
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
+}
+```
+{% endblock %}
 
 {% block error_event %}
 ```cs

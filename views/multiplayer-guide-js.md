@@ -701,7 +701,6 @@ client.close().then(() => {
 
 
 {% block promise_error %}
-## 错误处理
 在我们发起请求时，可以通过 Promise catch 具体的 error 信息，例如创建房间时：
 ```javascript
 client.createRoom().then(() => {
