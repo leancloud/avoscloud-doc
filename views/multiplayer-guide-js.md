@@ -704,6 +704,7 @@ client.close().then(() => {
 在我们发起请求时，可以通过 Promise catch 具体的 error 信息，例如创建房间时：
 ```javascript
 client.createRoom().then(() => {
+	// 创建房间成功
 }).catch((error) => {
     console.error(error.code, error.detail);
 });

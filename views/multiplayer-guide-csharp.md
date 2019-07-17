@@ -652,6 +652,7 @@ client.Close();
 ```cs
 try {
     await client.createRoom();
+    // 创建房间成功
 } catch (PlayException e) {
     Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
