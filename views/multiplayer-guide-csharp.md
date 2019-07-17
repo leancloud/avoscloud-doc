@@ -539,6 +539,7 @@ client.OnCustomEvent += (eventId, eventData, senderId) => {
 
     }
 };
+```
 
 `event` 参数
 
@@ -547,8 +548,6 @@ client.OnCustomEvent += (eventId, eventData, senderId) => {
 | eventId    | byte | 事件 Id，用于表示事件                         |
 | eventData   | PlayObject  | 事件参数 |
 | senderId   | int  | 事件发送者 Id（玩家的 actorId） |
-
-```
 {% endblock %}
 
 {% block disconnect %}

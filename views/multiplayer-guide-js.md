@@ -597,6 +597,7 @@ client.on(Event.CUSTOM_EVENT, event => {
 
 	}
 });
+```
 
 `event` 参数
 
@@ -605,7 +606,6 @@ client.on(Event.CUSTOM_EVENT, event => {
 | eventId    | Number | 事件 Id，用于表示事件                         |
 | eventData   | Object  | 事件参数 |
 | senderId   | Number  | 事件发送者 Id（玩家的 actorId） |
-```
 {% endblock %}
 
 
