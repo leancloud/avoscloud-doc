@@ -11,6 +11,7 @@
 {% set playerTtl = "PlayerTtl" %}
 {% set api_url = "https://leancloud.github.io/Play-SDK-CSharp/html/" %}
 {% set gameVersion = "这个参数" %}
+{% set rejoin = "Rejoin" %}}
 {% set DISCONNECTED_EVENT = "OnDisconnected" %}
 {% set PLAYER_ACTIVITY_CHANGED_EVENT = "OnPlayerActivityChanged" %}
 {% set PLAYER_ROOM_LEFT_EVENT = "OnPlayerRoomLeft" %}
@@ -237,17 +238,16 @@ try {
 
 
 {% block player_room_joined %}
-对于已经在房间的玩家，当有新玩家加入到房间时，服务端会派发 `OnPlayerRoomJoined`（新玩家加入）事件通知客户端，客户端可以通过新玩家的属性，做一些显示逻辑。
-
 ```cs
 // 注册新玩家加入事件
 client.OnPlayerRoomJoined += newPlayer => {
     // TODO 新玩家加入逻辑
 };
 ```
-
 可以通过 `client.Room.PlayerList` 获取房间内的所有玩家。
 {% endblock %}
+
+
 
 {% block player_is_local %}
 ```cs
@@ -256,6 +256,7 @@ var player = players[0];
 var isLocal = player.isLocal;
 ```
 {% endblock %}
+
 
 
 {% block leave_room %}
@@ -271,6 +272,7 @@ try {
 {% endblock %}
 
 
+
 {% block player_room_left_event %}
 ```cs
 // 注册有玩家离开房间事件
@@ -279,6 +281,8 @@ client.OnPlayerRoomLeft += leftPlayer => {
 }
 ```
 {% endblock %}
+
+
 
 {% block room_events %}
 | 事件   | 参数     | 描述                                       |
@@ -318,6 +322,7 @@ try {
 {% endblock %}
 
 
+
 {% block kick_player %}
 ```cs
 try {
@@ -331,6 +336,7 @@ try {
 {% endblock %}
 
 
+
 {% block kick_event %}
 ```cs
 client.OnRoomKicked += (code, msg) => {
@@ -340,15 +346,15 @@ client.OnRoomKicked += (code, msg) => {
 {% endblock %}
 
 
-{% block kick_left_event %}
-同时 MasterClient 和其他还存在房间的玩家会收到 `OnPlayerRoomLeft` 事件：
 
+{% block kick_left_event %}
 ```cs
 client.OnPlayerRoomLeft += leftPlayer => {
     
 };
 ```
 {% endblock %}
+
 
 
 {% block set_master %}
@@ -408,7 +414,6 @@ await client.CreateRoom(roomOptions: options);
 
 {% block set_custom_props %}
 房间除了固有的属性外，还包括一个 `PlayObject` 类型的自定义属性，比如战斗的回合数、所有棋牌等。
-
 ```cs
 // 设置想要修改的自定义属性
 var props = new PlayObject {
@@ -435,21 +440,19 @@ client.OnRoomCustomPropertiesChanged += changedProps => {
     var gold = props.GetInt("gold");
 };
 ```
-
 注意：`changedProps` 参数只表示当前修改的参数，不是「全部属性」。如需获得全部属性，请通过 `client.Room.CustomProperties` 获得。
 {% endblock %}
 
 
 {% block master_update_room_properties %}
-
 ```cs
 var options = new RoomOptions {
    Flag = MasterUpdateRoomProperties
 };
 await client.CreateRoom(roomOptions: options);
 ```
-
 {% endblock %}
+
 
 
 {% block set_player_custom_props %}
@@ -538,7 +541,6 @@ try {
     Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
 }
 ```
-
 其中 `options` 是指事件发送参数，包括「接收组」和「接收者 ID 数组」。
 - 接收组（ReceiverGroup）是接收事件的目标的枚举值，包括 Others（房间内除自己之外的所有人）、All（房间内的所有人）、MasterClient（主机）。
 - 接收者 ID 数组是指接收事件的目标的具体值，即玩家的 `ActorId` 数组。`ActorId` 可以通过 `player.ActorId` 获得。
@@ -595,6 +597,7 @@ client.OnPlayerActivityChanged += player => {
 {% endblock %}
 
 
+
 {% block set_player_ttl %}
 ```cs
 var options = new RoomOptions {
@@ -603,8 +606,9 @@ var options = new RoomOptions {
 }
 await client.CreateRoom(roomOptions: options);
 ```
-
 {% endblock %}
+
+
 
 {% block reconnect %}
 ```cs
@@ -654,15 +658,18 @@ client.OnDisconnected += async () => {
     }
 };
 ```
-
 这个接口相当于 `Reconnect()` 和 `RejoinRoom()` 的合并。通过这个接口，可以直接重新连接并回到「之前的房间」。
 {% endblock %}
+
+
 
 {% block close %}
 ```cs
 client.Close();
 ```
 {% endblock %}
+
+
 
 {% block promise_error %}
 在我们发起请求时，可以通过 try catch 具体的 exception 信息，例如创建房间时：
@@ -675,6 +682,8 @@ try {
 }
 ```
 {% endblock %}
+
+
 
 {% block error_event %}
 ```cs
