@@ -558,7 +558,11 @@ client.OnCustomEvent += (eventId, eventData, senderId) => {
     }
 };
 ```
-`event` 参数
+{% endblock %}
+
+
+
+{% block send_event_args %}
 | 事件   | 参数     | 描述                                       |
 | ------------------------------------ | ------------------ | ---------------------------------------- |
 | eventId    | byte | 事件 Id，用于表示事件                         |
