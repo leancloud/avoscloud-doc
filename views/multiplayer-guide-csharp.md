@@ -550,10 +550,12 @@ client.OnCustomEvent += (eventId, eventData, senderId) => {
 | senderId   | int  | 事件发送者 Id（玩家的 actorId） |
 {% endblock %}
 
+
+
 {% block disconnect %}
 ## 断开连接
 
-当游戏过程中，由于网络原因可能会断开连接，此时 SDK 会向客户端派发 `DISCONNECTED`（断开连接）事件，开发者可以根据需要注册并处理。
+当游戏过程中，由于网络原因可能会断开连接，此时 SDK 会向客户端派发 `OnDisconnected`（断开连接）事件，开发者可以根据需要注册并处理。
 
 ```cs
 // 注册断开连接事件
