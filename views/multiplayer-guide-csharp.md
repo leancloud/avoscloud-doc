@@ -16,6 +16,10 @@
 {% set PLAYER_ROOM_LEFT_EVENT = "OnPlayerRoomLeft" %}
 {% set ROOM_CUSTOM_PROPERTIES_CHANGED_EVENT = "OnRoomCustomPropertiesChanged" %}
 {% set MASTER_SWITCHED_EVENT_EVENT = "OnMasterSwitched" %}
+{% set PLAYER_ROOM_JOINED_EVENT = "OnPlayerRoomJoined" %}
+{% set ROOM_KICKED_EVENT = "OnRoomKicked" %}
+{% set PLAYER_ROOM_LEFT_EVENT = "OnPlayerRoomLeft" %}
+
 
 
 {% block import %}
@@ -23,15 +27,13 @@
 {% endblock %}
 
 
+
 {% block initialization %}
 导入需要的命名空间
-
 ```cs
 using LeanCloud.Play;
 ```
-
 接着我们需要实例化一个在线对战 SDK 的客户端对象。
-
 ```cs
 var client = new Client(YOUR_APP_ID, YOUR_APP_KEY, userId, gameVersion: "0.0.1");
 ```
@@ -72,6 +74,14 @@ client.OnLobbyRoomListUpdated += () => {
     // TODO 可以做房间列表展示的逻辑
 };
 ```
+{% endblock %}
+
+
+
+{% block lobby_event %}
+| 事件   | 参数     | 描述                                       |
+| ------------------------------------ | ------------------ | ---------------------------------------- |
+| OnLobbyRoomListUpdated | 无 | 大厅房间列表更新                                  |
 {% endblock %}
 
 
@@ -271,12 +281,10 @@ client.OnPlayerRoomLeft += leftPlayer => {
 {% endblock %}
 
 {% block room_events %}
-### 相关事件
-
 | 事件   | 参数     | 描述                                       |
 | ------------------------------------ | ------------------ | ---------------------------------------- |
-| OnPlayerRoomJoined    | { newPlayer } | 新玩家加入房间                         |
-| OnPlayerRoomLeft   | { leftPlayer }  | 玩家离开房间 |
+| OnPlayerRoomJoined    | newPlayer | 新玩家加入房间                         |
+| OnPlayerRoomLeft   | leftPlayer | 玩家离开房间 |
 {% endblock %}
 
 
@@ -324,8 +332,6 @@ try {
 
 
 {% block kick_event %}
-踢出房间后，被踢的玩家会收到 `OnRoomKicked` 事件。
-
 ```cs
 client.OnRoomKicked += (code, msg) => {
     // code 和 msg 就是 MasterClient 在踢人时传递的信息
@@ -357,7 +363,9 @@ try {
 ```
 {% endblock %}
 
-{% block master_switched_event %}
+
+
+{% block master_switched %}
 ```cs
 // 注册主机切换事件
 client.OnMasterSwitched += newMaster => {
@@ -369,13 +377,17 @@ client.OnMasterSwitched += newMaster => {
     }
 }
 ```
+{% endblock %}
 
-#### 相关事件
 
+
+{% block master_switched_event %}
 | 事件   | 参数     | 描述                                       |
 | ------------------------------------ | ------------------ | ---------------------------------------- |
-| OnMasterSwitched    | { newMaster } | Master 更换                         |
+| OnMasterSwitched    | newMaster | Master 更换                         |
 {% endblock %}
+
+
 
 {% block master_fixed %}
 ```cs
@@ -490,15 +502,16 @@ var expectedValues = new PlayObject {
 };
 await client.Room.SetCustomProperties(props, expectedValues);
 ```
-
 这样，在「第一个玩家」获得屠龙刀之后，`tulong` 对应的值为「第一个玩家」，后续的请求 `expectedValues = { tulong: null }` 将会失败。
+{% endblock %}
 
-### 相关事件
 
+
+{% block set_player_custom_props_with_cas_event %}
 | 事件   | 参数     | 描述                                       |
 | ------------------------------------ | ------------------ | ---------------------------------------- |
-| OnRoomCustomPropertiesChanged    | { changedProps } | 房间自定义属性变化                         |
-| OnPlayerCustomPropertiesChanged   | { player, changedProps }  | 玩家自定义属性变化 |
+| OnRoomCustomPropertiesChanged    | changedProps | 房间自定义属性变化                         |
+| OnPlayerCustomPropertiesChanged   | (player, changedProps)  | 玩家自定义属性变化 |
 {% endblock %}
 
 
@@ -528,7 +541,7 @@ try {
 
 其中 `options` 是指事件发送参数，包括「接收组」和「接收者 ID 数组」。
 - 接收组（ReceiverGroup）是接收事件的目标的枚举值，包括 Others（房间内除自己之外的所有人）、All（房间内的所有人）、MasterClient（主机）。
-- 接收者 ID 数组是指接收事件的目标的具体值，即玩家的 `actorId` 数组。`actorId` 可以通过 `player.actorId` 获得。
+- 接收者 ID 数组是指接收事件的目标的具体值，即玩家的 `ActorId` 数组。`ActorId` 可以通过 `player.ActorId` 获得。
 {% endblock %}
 
 
@@ -545,9 +558,7 @@ client.OnCustomEvent += (eventId, eventData, senderId) => {
     }
 };
 ```
-
 `event` 参数
-
 | 事件   | 参数     | 描述                                       |
 | ------------------------------------ | ------------------ | ---------------------------------------- |
 | eventId    | byte | 事件 Id，用于表示事件                         |
@@ -569,7 +580,6 @@ client.OnDisconnected += () => {
 
 
 {% block player_activity_changed %}
-
 ```cs
 // 注册玩家掉线 / 上线事件
 client.OnPlayerActivityChanged += player => {
@@ -582,7 +592,6 @@ client.OnPlayerActivityChanged += player => {
 
 
 {% block set_player_ttl %}
-
 ```cs
 var options = new RoomOptions {
     // 将 PlayerTtl 设置为 300 秒

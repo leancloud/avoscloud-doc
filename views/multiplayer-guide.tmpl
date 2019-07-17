@@ -76,6 +76,7 @@
 
 更多关于 `LobbyRoom`，请参考 [API 文档]({{lobby_room_url}})。
 
+### 相关事件
 {% block lobby_event %}
 {% endblock %}
 
@@ -172,6 +173,7 @@
 
 ### 新玩家加入事件
 
+对于已经在房间的玩家，当有新玩家加入到房间时，服务端会派发 `{{PLAYER_ROOM_JOINED_EVENT}}`（新玩家加入）事件通知客户端，客户端可以通过新玩家的属性，做一些显示逻辑。
 {% block player_room_joined %}
 {% endblock %}
 
@@ -194,6 +196,8 @@
 {% block player_room_left_event %}
 {% endblock %}
 
+
+### 相关事件
 {% block room_events %}
 {% endblock %}
 
@@ -213,6 +217,10 @@
 #### MasterClient 掉线转移
 当 MasterClient 掉线后，多人对战服务会指任一名新的玩家客户端为 MasterClient。即使当原 MasterClient 恢复上线之后，也不会成为新的 MasterClient。当 MasterClient 变化时，SDK 会派发 `{{MASTER_SWITCHED_EVENT}}`（主机切换）事件通知客户端。
 
+{% block master_switched %}
+{% endblock %}
+
+#### 相关事件
 {% block master_switched_event %}
 {% endblock %}
 
@@ -257,9 +265,11 @@ MasterClient 可以把房间内的其他玩家踢出房间：
 {% endblock %}
 
 
+踢出房间后，被踢的玩家会收到 `{{ROOM_KICKED_EVENT}}` 事件。
 {% block kick_event %}
 {% endblock %}
 
+同时 MasterClient 和其他还存在房间的玩家会收到 `{{PLAYER_ROOM_LEFT_EVENT}}` 事件：
 {% block kick_left_event %}
 {% endblock %}
 
@@ -323,9 +333,13 @@ CAS 全称为 Compare And Swap，即「检测并更新」的意思，用于避�
 
 我们可以设置 `expectedValues` 中 `tulong` 值：
 
+
 {% block set_player_custom_props_with_cas %}
 {% endblock %}
 
+### 相关事件
+{% block set_player_custom_props_with_cas_event %}
+{% endblock %}
 
 
 ## 自定义事件
