@@ -281,8 +281,7 @@ client.joinOrCreateRoom('room1').then(() => {
 
 ```javascript
 // 注册新玩家加入事件
-client.on(Event.PLAYER_ROOM_JOINED, (data) => {
-	const { newPlayer } = data;
+client.on(Event.PLAYER_ROOM_JOINED, ({ newPlayer }) => {
 	// TODO 新玩家加入逻辑
 
 });
@@ -313,8 +312,7 @@ client.leaveRoom().then(() => {
 {% block player_room_left_event %}
 ```javascript
 // 注册有玩家离开房间事件
-client.on(Event.PLAYER_ROOM_LEFT, (data) => {
-	const { leftPlayer } = data;
+client.on(Event.PLAYER_ROOM_LEFT, ({ leftPlayer }) => {
 	// TODO 可以执行玩家离开的销毁工作
 
 });
@@ -370,10 +368,9 @@ client.kickPlayer(otherPlayer.actorId, info).then(() => {
 踢出房间后，被踢的玩家会收到 `ROOM_KICKED` 事件。
 
 ```javascript
-client.on(Event.ROOM_KICKED, (data) => {
+client.on(Event.ROOM_KICKED, ({ code, msg }) => {
 	// code 和 msg 就是 MasterClient 在踢人时传递的信息
-	const code = data.code;
-	var msg = data.msg
+	
 });
 ```
 {% endblock %}
@@ -382,8 +379,8 @@ client.on(Event.ROOM_KICKED, (data) => {
 同时 MasterClient 和其他还存在房间的玩家会收到 `PLAYER_ROOM_LEFT` 事件：
 
 ```javascript
-client.on(Event.PLAYER_ROOM_LEFT, (data) => {
-	const player = data.leftPlayer;
+client.on(Event.PLAYER_ROOM_LEFT, ({ leftPlayer }) => {
+
 });
 ```
 {% endblock %}
@@ -402,8 +399,7 @@ client.setMaster(otherActorId).then(() => {
 {% block master_switched_event %}
 ```javascript
 // 注册主机切换事件
-client.on(Event.MASTER_SWITCHED, (data) => {
-	const { newMaster } = data;
+client.on(Event.MASTER_SWITCHED, ({ newMaster }) => {
 	// TODO 可以做主机切换的展示
 
 	// 可以根据判断当前客户端是否是 Master，来确定是否执行逻辑处理。
@@ -465,10 +461,7 @@ client.room.setCustomProperties(props).then(() => {
 {% block custom_props_event %}
 ```javascript
 // 注册房间属性变化事件
-client.on(Event.ROOM_CUSTOM_PROPERTIES_CHANGED, (data) => {
-	// 可以从 data 中拿到变化的属性
-	const changedProperties = data.changedProps;
-
+client.on(Event.ROOM_CUSTOM_PROPERTIES_CHANGED, ({ changedProps }) => {
 	// 可以从这个方法中获得房间的全部属性
 	const properties = client.room.customProperties;
 	const gold = properties.gold;
@@ -524,9 +517,7 @@ client.player.setCustomProperties(props).then(() => {
 {% block player_custom_props_event %}
 ```javascript
 // 注册玩家自定义属性变化事件
-client.on(Event.PLAYER_CUSTOM_PROPERTIES_CHANGED, (data) => {
-	// 从 data 中可以拿到是哪个 player 的属性被修改了
-	const { player } = data;
+client.on(Event.PLAYER_CUSTOM_PROPERTIES_CHANGED, ({ player }) => {
 	// 得到玩家所有自定义属性
 	const props = player.customProperties;
 	const { title, gold } = props;
@@ -592,9 +583,7 @@ client.sendEvent(SKILL_EVENT_ID, eventData, options).then(() => {
 {% block send_event_event %}
 ```javascript
 // 注册自定义事件
-client.on(Event.CUSTOM_EVENT, event => {
-	// 解构事件参数
-	const { eventId, eventData } = event;
+client.on(Event.CUSTOM_EVENT, ({ eventId, eventData }) => {
 	if (eventId === SKILL_EVENT_ID) {
 		// 如果是 skill 事件，则 解构事件数据
 		const { skillId, targetId } = eventData;
@@ -632,8 +621,7 @@ client.on(Event.DISCONNECTED, () => {
 
 ```javascript
 // 注册玩家掉线 / 上线事件
-client.on(Event.PLAYER_ACTIVITY_CHANGED, (data) => {
-	const { player } = data;
+client.on(Event.PLAYER_ACTIVITY_CHANGED, ({ player }) => {
 	// 获得用户是否「活跃」状态
   	cc.log(player.isActive());
   	// TODO 根据玩家的在线状态可以做显示和逻辑处理
@@ -718,8 +706,7 @@ client.createRoom().then(() => {
 {% block error_event %}
 
 ```javascript
-client.on(Event.Error, (err) => {
-	const { code, detail } = err;
+client.on(Event.Error, ({ code, detail }) => {
 	// 联系 LeanCloud
 
 });
