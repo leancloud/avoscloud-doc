@@ -625,24 +625,22 @@ client.OnDisconnected += async () => {
 
 {% block rejoin_room %}
 ```cs
-client.OnDisconnected += async () => {
-    try {
-        // 重连
-        await client.Reconnect();
-        // TODO 根据是否有缓存的之前的房间名，回到房间。
-        if (roomName) {
-            try {
-                await client.RejoinRoom(roomName);
-            } catch (PlayException e) {
-                // 返回房间失败
-                Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
-            }
+try {
+    // 重连
+    await client.Reconnect();
+    // TODO 根据是否有缓存的之前的房间名，回到房间。
+    if (roomName) {
+        try {
+            await client.RejoinRoom(roomName);
+        } catch (PlayException e) {
+            // 返回房间失败
+            Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
         }
-    } catch (PlayException e) {
-        // 重连失败
-        Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
     }
-};
+} catch (PlayException e) {
+    // 重连失败
+    Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
+}
 ```
 {% endblock %}
 
