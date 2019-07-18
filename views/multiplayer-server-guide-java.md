@@ -379,6 +379,31 @@ public void onBeforeSetPlayerProperties(BeforeSetPlayerPropertiesContext ctx) {
 #### onBeforeSendEvent
 触发时机：Client 发送自定义事件时被触发。
 
+```java
+@Override
+public void onBeforeSendEvent(BeforeSendEventContext ctx) {
+  SendEventRequest request = ctx.getRequest();
+  
+  // 获取本地请求的 eventId
+  byte eventId = request.getEventId();
+  if (eventId == 1) {
+    // 获取本次请求中的事件内容
+    PlayObject eventData = request.getEventData();
+    // 根据当前收到的 event 做一些自定义的逻辑。
+    doSomeCustomLogic(eventData);
+  }
+   // 同意本次请求，允许发送自定义事件
+  ctx.continueProcess();
+}
+```
+
+支持的操作：
+* `ctx.continueProcess();` 同意本次请求。
+* `ctx.rejectProcess(Reason reason)` 拒绝本次请求。
+* `ctx.skipProcess();` 拒绝本次请求，但不返回任何信息给发送请求的玩家
+* `ctx.deferProcess();` 延迟处理本次请求
+
+
 在 [`getting-started`](https://github.com/leancloud/multiplayer-server-plugin-getting-started) 项目中，我们写了一段示例代码，其逻辑为：拦截用户发来的事件请求，如果发现它没有将消息发送给 MasterClient，则强制让消息发给 MasterClient 一份，并通知房间内所有人有人偷偷发了一条不想让 MasterClient 看到的消息。
 
 ```java
@@ -422,12 +447,6 @@ public void onBeforeSendEvent(BeforeSendEventContext ctx) {
   }
 }
 ```
-
-支持的操作：
-* `ctx.continueProcess();` 同意本次请求。
-* `ctx.rejectProcess(Reason reason)` 拒绝本次请求。
-* `ctx.skipProcess();` 拒绝本次请求，但不返回任何信息给发送请求的玩家
-* `ctx.deferProcess();` 延迟处理本次请求
 
 #### onBeforeLeaveRoom
 
