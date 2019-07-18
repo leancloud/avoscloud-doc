@@ -100,9 +100,11 @@ Hook 中有以下处理请求的方式：
 1. `continueProcess()`。同意本次请求，Server 会执行 Hook 之后的操作。
 2. `rejectProcess(Reason reason)`。拒绝本次请求，并发送 Reason 信息给发送请求的玩家。
 3. `skipProcess()`。拒绝本次请求，但不返回任何信息给发送请求的玩家。仅部分 Hook 支持。
-4. `deferProcess()`。不立刻处理请求，稍后再处理请求。仅部分 Hook 支持。在 hook 中可能需要一些耗时的操作，例如定时器、异步请求等，此时可以先告知 server defer 后再执行请求，请求完成后再调用 `continueProcess()` `rejectProcess(Reason reason)` 或 `skipProcess()`。
+4. `deferProcess()`。仅部分 Hook 支持。调用 `deferProcess()` 后暂时不告知 Game Server 当前请求的处理方式，稍后再调用前面三种方法 `continueProcess()`、`rejectProcess(Reason reason)` 或 `skipProcess()`。
 
-其中 `rejectProcess(Reason reason)` 的 Reason 可以指定具体的错误码及信息，例如：
+#### rejectProcess
+
+`rejectProcess(Reason reason)` 的 Reason 可以指定具体的错误码及信息，例如：
 
 ```java
 @Override
@@ -112,6 +114,43 @@ public void onCreateRoom(CreateRoomContext ctx) {
 }
 ```
 
+#### deferProcess
+
+不立刻处理请求，稍后再处理请求。仅下面三个 Hook 支持 `deferProcess()`：
+
+* [onBeforeSetRoomProperties](#onBeforeSetRoomProperties)
+* [onBeforeSetPlayerProperties](#onBeforeSetPlayerProperties)
+* [onBeforeSendEvent](#onBeforeSendEvent)
+
+例如我们可以用 `deferProcess()` 实现这样的逻辑：在 `onBeforeSendEvent` 收到自定义事件后先不下发，聚合在一起每 100ms 处理一次。
+
+```java
+public class DefaultPlugin extends AbstractPlugin {
+  private List<BeforeSendEventContext> batchedEvents = new LinkedList<>();
+
+  public DefaultPlugin(BoundRoom room) {
+    super(room);
+
+    room.getScheduler().scheduleWithFixedDelay(
+      () -> {
+
+        for (BeforeSendEventContext ctx : batchedEvents) {
+          ctx.skipProcess(); // 拒绝原来的 hook 事件，但不返回任何信息给客户端
+        }
+
+        handleEvents(batchedEvents); // 自定义方法，处理 100ms 内的 events ，可以聚合消息后统一下发给客户端
+        batchedEvents.clear();
+
+      }, 100, 100, TimeUnit.MILLISECONDS);
+  }
+
+  @Override
+  public void onBeforeSendEvent(BeforeSendEventContext ctx) {
+    ctx.deferProcess();
+    batchedEvents.add(ctx);
+  }
+}
+```
 
 ### Hook 函数中的参数
 每一个 Hook 函数都有一个接口参数 `Context`，通过 `Context` 可以拿到触发当前 hook 的请求参数，也可以通过调用 [Hook 的处理](Hook 的处理)中的方法通知 Server 如何处理触发 Hook 调用的请求。
@@ -149,6 +188,7 @@ public void onCreateRoom(CreateRoomContext ctx) {
 支持的操作：
 * `ctx.continueProcess();` 同意本次请求。
 * `ctx.rejectProcess(Reason reason)` 拒绝本次请求。
+* `ctx.skipProcess();` 拒绝本次请求，但不返回任何信息给发送请求的玩家
 
 
 #### onBeforeJoinRoom
@@ -183,6 +223,7 @@ public void onBeforeJoinRoom(BeforeJoinRoomContext ctx) {
 支持的操作：
 * `ctx.continueProcess();` 同意本次请求。
 * `ctx.rejectProcess(Reason reason)` 拒绝本次请求。
+* `ctx.skipProcess();` 拒绝本次请求，但不返回任何信息给发送请求的玩家
 
 #### onBeforeSetRoomSystemProperties
 
@@ -244,6 +285,7 @@ public void onBeforeSetRoomSystemProperties(BeforeSetRoomSystemPropertiesContext
 支持的操作：
 * `ctx.continueProcess();` 同意本次请求。
 * `ctx.rejectProcess(Reason reason)` 拒绝本次请求。
+* `ctx.skipProcess();` 拒绝本次请求，但不返回任何信息给发送请求的玩家
 
 #### onBeforeSetRoomProperties
 
@@ -337,7 +379,7 @@ public void onBeforeSetPlayerProperties(BeforeSetPlayerPropertiesContext ctx) {
 #### onBeforeSendEvent
 触发时机：Client 发送自定义事件时被触发。
 
-在 `getting-started` 项目中，我们写了一段示例代码，其逻辑为：拦截用户发来的事件请求，如果发现它没有将消息发送给 Master Client，则强制让消息发给 Master Client 一份，并通知房间内所有人有人偷偷发了一条不想让 Master Client 看到的消息。
+在 [`getting-started`](https://github.com/leancloud/multiplayer-server-plugin-getting-started) 项目中，我们写了一段示例代码，其逻辑为：拦截用户发来的事件请求，如果发现它没有将消息发送给 MasterClient，则强制让消息发给 MasterClient 一份，并通知房间内所有人有人偷偷发了一条不想让 MasterClient 看到的消息。
 
 ```java
 @Override
@@ -348,8 +390,7 @@ public void onBeforeSendEvent(BeforeSendEventContext ctx) {
   // 获取该房间内的 MasterClient 的 Actor 对象
   Actor master = room.getMaster();
   if (master == null) {
-    // no master in this room
-    // reject and swallow this request
+    // 拒接本次请求，不返回任何信息给客户端。
     ctx.skipProcess();
     return;
   }
@@ -421,6 +462,7 @@ public void onBeforeLeaveRoom(BeforeLeaveRoomContext ctx) {
 支持的操作：
 * `ctx.continueProcess();` 同意本次请求。
 * `ctx.rejectProcess(Reason reason)` 拒绝本次请求。
+* `ctx.skipProcess();` 拒绝本次请求，但不返回任何信息给发送请求的玩家
 
 #### onDestroyRoom
 
@@ -547,4 +589,26 @@ room.sendEventToActors(toActorIds, fromActorId, eventId, eventData, SendEventOpt
 
 上述代码中 `getActorId()` 的调用对象是一个 `Actor` 实例对象。
 
+
+#### 定时器
+
+`BoundRoom` 提供了一个定时器给开发者使用，例如您可以使用定时器每 1s 向客户端发送一次事件消息：
+
+```java
+public class DefaultPlugin extends AbstractPlugin {
+
+  public DefaultPlugin(BoundRoom room) {
+    super(room);
+
+    room.getScheduler().scheduleWithFixedDelay( () -> {
+      sendEventToEveryone(); // 自定义方法，发送事件消息给客户端
+    }, 1, 1, TimeUnit.SECONDS);
+
+  }
+}
+```
+
+这个定时器将某个任务交给与当前房间绑定的线程来执行。在该线程上能保证任务运行期间房间属性不会发生变化，但需要任务尽快执行完以避免过长时间的阻塞线程。因为性能原因，返回的 ScheduledExecutorService 时间精度为 20ms，比如布置一个任务 30ms 后执行则实际执行时间在 30ms ~ 50ms 之间，即不会早于预期执行时间且与预期执行时间最大偏差为 20ms。
+
+返回的 ScheduledExecutorService 不能被 shutdown，执行 shutdown 没有任何作用。
 
