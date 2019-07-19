@@ -28,7 +28,7 @@ Plugin 中的代码写完之后，我们会将其打包给本地的 Server 加�
 
 ### PluginFactory
 
-在 `PluginFactory` 中我们可以配置多个 `Plugin`。客户端在创建房间时可以指定使用 `PluginFactory` 中的任意一个 `Plugin` 中的 Hook 逻辑，例如不同玩法的房间使用不同的 `Plugin`，或不同的 `plugin` 支持不同的游戏版本。
+在 `PluginFactory` 中我们可以配置多个 `Plugin`。客户端在创建房间时可以指定使用 `PluginFactory` 中的任意一个 `Plugin` 中的 Hook 逻辑，例如不同玩法的房间使用不同的 `Plugin`，或不同的 `Plugin` 支持不同的游戏版本。
 
 我们通过继承 `PluginFactory` 来实现自己的 Factory，`PluginFactory` 中只有一个 `create` 方法需要实现。在下面的示例代码中，我们设置了三个 `Plugin`：
 
@@ -38,7 +38,7 @@ public class MyFancyPluginFactory implements PluginFactory {
     public Plugin create(BoundRoom room, String pluginName, Map<String, Object> initConfigs) {
       if (pluginName != null && pluginName.length() > 0) {
         switch (pluginName) {
-          case "somePlugin":
+          case "onePlugin":
             return new NameOfSomePlugin(room, initConfigs);
           case "otherPlugin":
             return new NameOfOtherPlugin(room);
@@ -53,14 +53,14 @@ public class MyFancyPluginFactory implements PluginFactory {
 
 在上面的代码中，`create` 方法中有这三个参数：
 * `room`。触发当前逻辑的房间，可以通过 `BoundRoom` 中的方法获取房间的各种信息、发送自定义事件、修改房间属性等。
-* `pluginName`。MasterClient 创建 room 时传入的 Plugin 名称，根据这个名称 Plugin Factory 可以返回不同的 Plugin。
-* `initConfigs`。Plugin 的初始配置，一般情况下不需要关心。
+* `pluginName`。MasterClient 创建房间时传入的 `Plugin` 名称，根据这个名称 `PluginFactory` 可以返回不同的 `Plugin`。
+* `initConfigs`。`Plugin` 的初始配置，一般情况下不需要关心。
 
-MasterClient 在创建房间时，可以使用以下代码来指定 Plugin：
+MasterClient 在创建房间时，可以使用以下代码来指定要使用的 Server 中的 `Plugin`：
 
 ```js
 const options = {
-  plugin : "somePlugin"
+  pluginName : "onePlugin"
 };
 client.createRoom({ roomOptions:options }).then().catch();
 ```
@@ -68,16 +68,22 @@ client.createRoom({ roomOptions:options }).then().catch();
 ```cs
 var options = new RoomOptions()
 {
-  plugin = "otherPlugin"
+  PluginName = "otherPlugin"
 };
 
 await client.CreateRoom(roomOptions: options);
 ```
 
 ### Plugin 文件
-下面我们来实现 `PluginFactory` 的 `create` 方法中返回的 Plugin 类。这里示例的 Plugin 类名为 `DefaultPlugin`，继承自 `AbstractPlugin`。`DefaultPlugin` 需要一个 constructor 方法，除此之外，我们还实现了一个hook 函数 `onCreateRoom()`。您还可以在这个类中撰写其他 Hook 函数。
+下面我们来实现 `PluginFactory` 的 `create` 方法中返回的 `Plugin` 类。这里示例的 `Plugin` 类名为 `DefaultPlugin`，继承自 `AbstractPlugin`。`DefaultPlugin` 需要一个 constructor 方法，除此之外，我们还实现了一个hook 函数 `onCreateRoom()`。您还可以在这个类中撰写其他 Hook 函数。
 
 ```java
+package cn.leancloud.play.plugin.getting_started;
+import cn.leancloud.play.plugin.AbstractPlugin;
+import cn.leancloud.play.plugin.BoundRoom;
+import cn.leancloud.play.plugin.context.CreateRoomContext;
+import cn.leancloud.play.utils.Log;
+
 public class DefaultPlugin extends AbstractPlugin {
   public DefaultPlugin(BoundRoom room) {
     super(room);
@@ -109,8 +115,8 @@ Hook 中有以下处理请求的方式：
 ```java
 @Override
 public void onCreateRoom(CreateRoomContext ctx) {
-  Reason reson = Reason.of(1, "unauthorized"); // 第一个参数是错误 code，第二个参数是错误 message。
-  ctx.rejectProcess(reson);
+  Reason reason = Reason.of(1, "unauthorized"); // 第一个参数是错误 code，第二个参数是错误 message。
+  ctx.rejectProcess(reason);
 }
 ```
 
@@ -303,8 +309,8 @@ public void onBeforeSetRoomProperties(BeforeSetRoomPropertiesContext ctx) {
   Actor fromActor = room.getActorByUserId(fromUserId);
   // 如果不是 masterClient 的操作，则拒绝本次请求
   if (fromActor.getActorId() != room.getMaster().getActorId()) {
-    Reason reson = Reason.of(403, "forbidden");
-    ctx.rejectProcess(reson);
+    Reason reason = Reason.of(403, "forbidden");
+    ctx.rejectProcess(reason);
   }
   
   // 获取本次请求中的自定义属性
@@ -345,8 +351,8 @@ public void onBeforeSetPlayerProperties(BeforeSetPlayerPropertiesContext ctx) {
   Actor fromActor = room.getActorByUserId(fromUserId);
   // 如果不是 masterClient 的操作，则拒绝本次请求
   if (fromActor.getActorId() != room.getMaster().getActorId()) {
-    Reason reson = Reason.of(403, "forbidden");
-    ctx.rejectProcess(reson);
+    Reason reason = Reason.of(403, "forbidden");
+    ctx.rejectProcess(reason);
   }
   
   // 要修改哪个玩家的自定义属性

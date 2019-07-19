@@ -57,14 +57,16 @@ cd project/game-standalone
 ./launch.sh
 ```
 
-执行 `./launch.sh` 启动后，进入 `game-standalone/integration-test-scripts` 测试服务是否顺利启动成功。
+服务启动后，命令行窗口会自动展示 Multiplayer Server 进程的 STDOUT 输出，不关心其输出时可以 CTRL + C 退出，Multiplayer Server 会在后台继续运行。
+
+执行 `./launch.sh` 启动后，进入 `multiplayer-server-plugin-getting-started-x.x/integration-test-scripts` 测试服务是否顺利启动成功。
 
 ```
-cd game-standalone/integration-test-scripts
+cd multiplayer-server-plugin-getting-started-x.x/integration-test-scripts
 ./run-tests.sh
 ```
 
-测试通过后说明服务顺利启动。服务启动后，命令行窗口会自动展示 Multiplayer Server 进程的 STDOUT 输出，不关心其输出时可以 CTRL + C 退出，Multiplayer Server 会在后台继续运行。
+测试通过后说明服务顺利启动。
 
 
 如果要关闭服务，执行以下命令：
@@ -116,7 +118,7 @@ await client.Connect();
 
 下面我们撰写自己的代码：
 
-在 `PluginFactory` 中我们只简单的使用一个 Plugin，所以注释掉示例代码，重新写一个简单的 `create` 方法，即不管什么情况下都使用 `MasterIsWatchingYouPlugin`：
+在 `MyFancyPluginFactory` 中我们只简单的使用一个 Plugin，所以注释掉示例代码，重新写一个简单的 `create` 方法，即不管什么情况下都使用 `MasterIsWatchingYouPlugin`：
 
 ```java
 @Override
@@ -149,7 +151,7 @@ public class MasterIsWatchingYouPlugin extends AbstractPlugin {
 mvn clean package
 ```
 
-完成后拷贝刚生成的 `multiplayer-server-plugin-getting-started-x.x/target/multiplayer-server-plugin-getting-started-1.0-SNAPSHOT-jar-with-dependencies.jar` 这个 jar 包到 `leangame` 本地服务器启动目录的 `extensions` 文件夹内：
+完成后拷贝刚生成的 `multiplayer-server-plugin-getting-started-x.x/target/multiplayer-server-plugin-getting-started-x.x-jar-with-dependencies.jar` 这个 jar 包到 `leangame` 本地服务器启动目录的 `extensions` 文件夹内：
 
 ```
 # 回到 project 目录
@@ -219,7 +221,7 @@ cd multiplayer-server-plugin-getting-started/
 lean login
 ```
 
-登录后，选择关联华东节点下的应用。
+登录后，选择关联**华东节点**下的应用。
 
 ```
 lean switch
