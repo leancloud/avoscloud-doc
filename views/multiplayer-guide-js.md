@@ -597,7 +597,7 @@ client.on(Event.CUSTOM_EVENT, ({ eventId, eventData }) => {
 
 
 {% block send_event_args %}
-| 事件   | 参数     | 描述                                       |
+| 参数   | 类型     | 描述                                       |
 | ------------------------------------ | ------------------ | ---------------------------------------- |
 | eventId    | Number | 事件 Id，用于表示事件                         |
 | eventData   | Object  | 事件参数 |

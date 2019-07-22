@@ -39,7 +39,7 @@ using LeanCloud.Play;
 ```
 接着我们需要实例化一个在线对战 SDK 的客户端对象。
 ```cs
-var client = new Client(YOUR_APP_ID, YOUR_APP_KEY, "leancloud", gameVersion: "0.0.1");
+var client = new Client(YOUR_APP_ID, YOUR_APP_KEY, userId, gameVersion: "0.0.1");
 ```
 {% endblock %}
 
@@ -570,7 +570,7 @@ client.OnCustomEvent += (eventId, eventData, senderId) => {
 
 
 {% block send_event_args %}
-| 事件   | 参数     | 描述                                       |
+| 参数   | 类型     | 描述                                       |
 | ------------------------------------ | ------------------ | ---------------------------------------- |
 | eventId    | byte | 事件 Id，用于表示事件                         |
 | eventData   | PlayObject  | 事件参数 |
