@@ -205,7 +205,7 @@ onCreateRoom 被触发
 plugin.log | game-server hook 输出的日志
 gc-XXX.current | GC 日志
 server.log | game-server 运行日志
-stdout.log | 进程的 STDOUT 输出
+stdout.log | 进程的标准输出
 event.log | 事件日志，如用户登录登出等
 
 ## 部署到云端
