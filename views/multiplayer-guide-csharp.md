@@ -173,7 +173,7 @@ try {
 ```cs
 var expectedUserIds = new List<string>() { "LiLei", "Jim" };
 try {
-    // 玩家在加入 "game" 房间，并为 hello 和 world 玩家占位
+    // 玩家在加入 "game" 房间，并为 LiLei 和 Jim 玩家占位
     await client.JoinRoom("game", expectedUserIds);
 } catch (PlayException e) {
     // 加入房间失败
@@ -332,7 +332,7 @@ try {
 ```cs
 try {
     // 可以传入踢人的 code 和 msg
-    await client.KickPlayer(otherPlayer.actorId, 1, "你已被踢出房间"); 
+    await client.KickPlayer(otherPlayer.ActorId, 1, "你已被踢出房间"); 
 } catch (PlayException e) {
     // 踢人失败
     Debug.LogErrorFormat("{0}, {1}", e.Code, e.Detail);
@@ -501,7 +501,7 @@ client.OnPlayerCustomPropertiesChanged += (player, changedProps) => {
 {% block set_player_custom_props_with_cas %}
 ```cs
 var props = new PlayObject {
-    // X 分别表示当前的客户端
+    // X 表示当前的客户端
     { "tulong", X }
 };
 var expectedValues = new PlayObject {

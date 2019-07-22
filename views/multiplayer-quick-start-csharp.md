@@ -66,7 +66,7 @@ try {
 }
 ```
 
-`JoinOrCreateRoom` 通过相同的 roomName 保证两个客户端玩家可以进入到相同的房间。请参考 [开发指南](multiplayer-guide-csharp.html#加入或创建指定房间) 获取更多关于 `JoinOrCreateRoom` 的用法。    
+`JoinOrCreateRoom` 通过相同的 roomName 保证两个客户端玩家可以进入到相同的房间。请参考 [开发指南](multiplayer-guide-csharp.html#加入或创建指定房间) 获取更多关于 `JoinOrCreateRoom` 的用法。
 {% endblock %}
 
 
