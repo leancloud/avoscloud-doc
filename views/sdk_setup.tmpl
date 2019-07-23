@@ -1018,9 +1018,9 @@ AVObject *testObject = [AVObject objectWithClassName:@"TestObject"];
 
 ```swift
 do {
-    let post = LCObject(className: "Post")
-    try post.set("words", value: "Hello world!")
-    _ = post.save { result in
+    let testObject = LCObject(className: "TestObject")
+    try testObject.set("words", value: "Hello world!")
+    _ = testObject.save { result in
         switch result {
         case .success:
             break
@@ -1039,24 +1039,17 @@ do {
 在 `MainActivity.java` 中的 `onCreate` 方法添加如下代码：
 
 ```java
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
-    ...
-    // 测试 SDK 是否正常工作的代码
-    AVObject testObject = new AVObject("TestObject");
-    testObject.put("words", "Hello world!");
-    testObject.saveInBackground(new SaveCallback() {
-        @Override
-        public void done(AVException e) {
-            if(e == null){
-                Log.d("saved", "success!");
-            }
-        }
-    });
-    ...
-}
+AVObject testObject = new AVObject("TestObject");
+testObject.put("words", "Hello world!");
+testObject.saveInBackground().subscribe(new Observer<AVObject>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(AVObject testObject) {
+        System.out.println("保存成功。");
+    }
+    public void onError(Throwable throwable) {
+    }
+    public void onComplete() {}
+});
 ```
 
 然后，点击 `Run` 运行调试，真机和虚拟机均可。
@@ -1067,10 +1060,9 @@ protected void onCreate(Bundle savedInstanceState) {
 ```js
 var TestObject = AV.Object.extend('TestObject');
 var testObject = new TestObject();
-testObject.save({
-  words: 'Hello world!'
-}).then(function(object) {
-  alert('LeanCloud Rocks!');
+testObject.set('words', 'Hello world!');
+testObject.save().then(function (testObject) {
+  console.log('保存成功。')
 })
 ```
 
@@ -1080,10 +1072,6 @@ testObject.save({
 然后在项目中编写如下测试代码：
 
 ```python
-import leancloud
-
-leancloud.init("{{appid}}", "{{appkey}}")
-
 TestObject = leancloud.Object.extend('TestObject')
 test_object = TestObject()
 test_object.set('words', "Hello world!")
@@ -1096,30 +1084,17 @@ test_object.save()
 然后在项目中编写如下测试代码：
 
 ```php
-// test.php
-
-// 通过 composer 安装
-require_once 'vendor/autoload.php';
-// 手动安装
-// require_once("vendor/leancloud/src/autoload.php");
-
-use \LeanCloud\Client;
-use \LeanCloud\LeanObject;
-// 参数依次为 App ID、App Key、Master Key
-Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
-Client::setServerUrl("https://{{host}}");
-
 $testObject = new LeanObject("TestObject");
 $testObject->set("words", "Hello world!");
 try {
     $testObject->save();
-    echo "Save object success!";
+    echo "保存成功。";
 } catch (Exception $ex) {
-    echo "Save object fail!";
+    echo "保存失败";
 }
 ```
 
-保存后运行 `php test.php`。
+保存后运行程序。
 {% endif %}
 {% if platform_name === "Java" %}
 然后在项目中编写如下测试代码：
