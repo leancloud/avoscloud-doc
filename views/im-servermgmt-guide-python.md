@@ -2,11 +2,11 @@
 
 Python 的数据存储 SDK，基于 REST API 封装了一组对话及消息管理的接口。这部分接口主要用来在服务器或者云引擎中对[即时通讯](realtime_v2.html)的对话或者消息进行管理。
 
-SDK 的安装请参考[安装指南](sdk_setup-python.html)。
+SDK 的安装及初始化请参考[安装指南](sdk_setup-python.html)。
 
 ## 对话管理
 
-`leancloud.Conversation` 对应即时通讯中的[对话概念](realtime_v2.html#对话（Conversation）)，同时也是 Python SDK 中 `leancloud.Object` 的子类，因此可以像正常的 `leancloud.Object` 来创建、查询对话。
+`leancloud.Conversation` 对应即时通讯中的[对话概念](realtime_v2.html#对话（Conversation）)，同时也是 Python SDK 中 `leancloud.Object` 的子类，因此可以像正常的 `leancloud.Object` 那样来创建、查询对话。
 
 `leancloud.Conversation` 的查询与修改等操作，也受限于 LeanCloud 存储服务的 Class 权限设置与 ACL 权限设置。因此创建对话时，请确保当前权限设置正确，以免造成数据泄漏。
 
@@ -49,7 +49,7 @@ tr_conv.save()
 
 ### 添加用户到对话
 
-调用 `leancloud.Conversation` 上的 `add_member` 方法，可以将一个用户添加到此对话上来。需要注意的是，后面的参数应该是即时通讯的 [clientId](realtime_v2.html#ClientID、用户和登录)，而不是 `leancloud.User` 实例。如果项目使用 `leancloud.User` 作为用户系统，而没有使用自己的用户系统，需要直接将 `leancloud.User` 的 `id` 当作参数进行调用。
+调用 `leancloud.Conversation` 上的 `add_member` 方法，可以将一个用户添加到此对话上来。需要注意的是，后面的参数应该是即时通讯的 [client ID](realtime_v2.html#ClientID、用户和登录)，而不是 `leancloud.User` 实例。如果项目使用 `leancloud.User` 作为用户系统，而没有使用自己的用户系统，可以直接使用 `leancloud.User` 的 `id` 作为 client ID。
 
 ```python
 import leancloud
@@ -63,7 +63,8 @@ conversation.add_member(client_id)
 ### 发送消息
 
 #### 普通消息
-可以使用任意一个 client id，在某个对话中发送消息。发送消息时，必须使用 master key 权限进行操作。
+
+可以使用任意一个 client ID，在某个对话中发送消息。发送消息时，必须使用 master key 权限进行操作。
 
 ```python
 import leancloud
@@ -89,7 +90,9 @@ conversation.send(client_id, message, to_clients=to_client_ids)
 
 #### 发送广播消息
 
-可以给系统中所有的用户发送广播消息，即使用户没有在此对话中。只能在系统对话上调用。
+可以在一个系统对话中，向系统中的所有用户广播消息。
+目前广播消息只能在系统对话上调用。
+系统中的所有用户都会收到此消息，不论是否在此会话中。
 
 ```python
 conversation = get_a_system_conversation()
@@ -98,7 +101,9 @@ message = 'System broadcast!'
 conversation.broadcast(from_client_id, message)
 ```
 
-另外以上三个发送消息的方法，都有一个可选的 `push_data` 参数，用来指定消息的[离线推送通知](realtime-guide-intermediate.html#离线推送通知)。
+#### 离线推送消息
+
+`send` 和 `broadcast` 方法有一个可选的 `push_data` 参数，用来指定消息的[离线推送通知](realtime-guide-intermediate.html#离线推送通知)。
 
 ### 历史消息查询
 
