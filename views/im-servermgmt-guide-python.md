@@ -21,8 +21,15 @@ same_conv = leancloud.Conversation.query.get(conv.id)
 
 `leancloud.Conversation` 上有一些额外的属性，代表对话上的属性：
 
-```python
-import leancloud
+| 属性名 | 属性说明 |
+| - | - |
+| name    |  此对话的名称 |
+| creator    |  此对话的创建者，对应表中 'c' 字段 |
+| last_message_read_at    |  此对话最后一条已读消息，对应表中 'lm' 字段 |
+| members    |  包含此对话中，所有用户的 client id 的 list，对应表中 'm' 字段 |
+| muted_members    |  包含此对话中，所有将对话设置为静音的用户的 client id 的 list，对应表中 'mu' 字段 |
+| is_system    |  是否为系统对话 |
+| is_transient    |  是否为暂态对话 |
 
 
 ### 创建对话
