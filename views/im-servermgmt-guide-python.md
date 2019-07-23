@@ -131,10 +131,10 @@ messages = leancloud.Message.find_by_client("Tom", limit="50")
 可以直接查询应用中所有的历史消息。
 
 ```python
-import leancloud
-
-messages = find_by_client()
+messages = find_all(limit="1000")
 ```
+
+其中，可选参数 `limit` 指定消息返回数量，服务端默认为 100 条，最大 1000 条。
 
 #### 更多功能
 
