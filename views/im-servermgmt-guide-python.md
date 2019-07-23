@@ -37,19 +37,17 @@ same_conv = leancloud.Conversation.query.get(conv.id)
 有些时候需要在服务端来进行对话创建，可以把 `leancloud.Conversation` 当作一个 `leancloud.Object` 来直接创建并保存就可以。
 
 ```python
-import leancloud
+conv = leancloud.Conversation('testConversation')
+conv.set('chatRoomNumber', 233)
+conv.save()
+```
 
-conversation = leancloud.Conversation()
-conversation.set('chatRoomNumber', 233)    # 可以像一个正常的 `leancloud.Object` 一样，给对话添加属性
-conversation.save()
+创建对话时，指定 `is_system` 或 `is_transient` 参数为真，可以创建系统对话或暂态对话。
 
-# 创建系统对话
+```python
 sys_conv = leancloud.Conversation(is_system=True)
-sys_conv.save()
 
-# 创建暂态对话
 tr_conv = leancloud.Conversation(is_transient=True)
-tr_conv.save()
 ```
 
 Python SDK 暂不支持创建聊天室。
@@ -59,10 +57,7 @@ Python SDK 暂不支持创建聊天室。
 调用 `leancloud.Conversation` 上的 `add_member` 方法，可以将一个用户添加到此对话上来。需要注意的是，后面的参数应该是即时通讯的 [client ID](realtime_v2.html#ClientID、用户和登录)，而不是 `leancloud.User` 实例。如果项目使用 `leancloud.User` 作为用户系统，而没有使用自己的用户系统，可以直接使用 `leancloud.User` 的 `id` 作为 client ID。
 
 ```python
-import leancloud
-
-conversation = get_a_conversation()
-conversation.add_member(client_id)
+conv.add_member("Tom")
 ```
 
 ## 消息管理
@@ -74,11 +69,7 @@ conversation.add_member(client_id)
 可以使用任意一个 client ID，在某个对话中发送消息。发送消息时，必须使用 master key 权限进行操作。
 
 ```python
-import leancloud
-conversation = get_a_conversation()
-client_id = 'user1'
-message = 'Hello, World!'  # message 需要是一个字符串或者 dict
-conversation.send(client_id, message)
+conv.send("Tom", "Hello, World!")
 ```
 
 #### 系统消息
@@ -86,13 +77,8 @@ conversation.send(client_id, message)
 可以在一个系统对话中，给指定的一组用户发送消息，这时只有这部分用户会收到消息。
 
 ```python
-import leancloud
-
-conversation = get_a_system_conversation()
-from_client_id = 'admin1'
-to_client_ids = ['user1', 'user2', 'user3']    # 最多同时给 20 个用户发送消息
-message = 'Ready Check'
-conversation.send(client_id, message, to_clients=to_client_ids)
+client_ids = ["Tom", "Jerry", "Spike"]  # 最多同时给 20 个用户发送消息
+sys_conv.send("Mammy Two Shoes", "安静！安静！", to_clients=client_ids)
 ```
 
 #### 发送广播消息
@@ -102,10 +88,7 @@ conversation.send(client_id, message, to_clients=to_client_ids)
 系统中的所有用户都会收到此消息，不论是否在此会话中。
 
 ```python
-conversation = get_a_system_conversation()
-from_client_id = 'admin1'
-message = 'System broadcast!'
-conversation.broadcast(from_client_id, message)
+sys_conv.broadcast("Mammy Two Shoes", "周六有晚会！")
 ```
 
 #### 离线推送消息
@@ -119,11 +102,7 @@ conversation.broadcast(from_client_id, message)
 可以查询某个对话中的历史消息。
 
 ```python
-import leancloud
-
-conversation = get_a_conversation()
-
-messages = find_by_conversation(conversation.id)
+messages = leancloud.Message.find_by_conversation(conv.id)
 ```
 
 可选参数：
@@ -138,9 +117,7 @@ messages = find_by_conversation(conversation.id)
 可以根据 Client ID 查询历史消息。
 
 ```python
-import leancloud
-
-messages = find_by_client(client_id)
+messages = leancloud.Message.find_by_client("Tom", limit="50")
 ```
 
 可选参数：
