@@ -95,6 +95,12 @@ sys_conv.broadcast("Mammy Two Shoes", "周六有晚会！")
 
 `send` 和 `broadcast` 方法有一个可选的 `push_data` 参数，用来指定消息的[离线推送通知](realtime-guide-intermediate.html#离线推送通知)。
 
+#### 文本之外的聊天消息
+
+上面的例子中，消息都是一个简单的字符串（文本消息）。如果需要发送文本之外的消息（图像y音频、视频、文件、地理位置等），需要使用符合[指定格式]的 JSON 字符串。也可以传入一个 Python 字典（SDK 会将其自动序列化为 JSON 字符串）。
+
+[指定格式]: https://leancloud.cn/docs/realtime_rest_api.html#hash2100394145
+
 ### 历史消息查询
 
 #### 查询对话历史消息
