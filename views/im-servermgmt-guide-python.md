@@ -52,6 +52,8 @@ tr_conv = leancloud.Conversation(is_transient=True)
 tr_conv.save()
 ```
 
+Python SDK 暂不支持创建聊天室。
+
 ### 添加用户到对话
 
 调用 `leancloud.Conversation` 上的 `add_member` 方法，可以将一个用户添加到此对话上来。需要注意的是，后面的参数应该是即时通讯的 [client ID](realtime_v2.html#ClientID、用户和登录)，而不是 `leancloud.User` 实例。如果项目使用 `leancloud.User` 作为用户系统，而没有使用自己的用户系统，可以直接使用 `leancloud.User` 的 `id` 作为 client ID。
@@ -157,8 +159,8 @@ import leancloud
 messages = find_by_client()
 ```
 
-可选参数：
+#### 更多功能
 
-- `limit`：指定消息返回数量，服务端默认为 100 条，最大 1000 条。
-- `after_time`：查询起始的时间戳，返回小于这个时间(不包含)的记录。
-- `after_message_id`：查询起始的消息 id，使用时必须加上对应消息的时间 `after_time` 参数，一起作为查询的起点。
+目前 Python SDK 只封装了即时通讯 REST API 的部分接口，缺少的功能目前需要通过直接调用 [REST API] 实现（例如，通过 Python 标准库的 `http.client` 调用）。
+
+[REST API]: https://leancloud.cn/docs/realtime_rest_api_v2.html
