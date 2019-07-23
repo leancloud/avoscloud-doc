@@ -24,17 +24,8 @@ same_conv = leancloud.Conversation.query.get(conv.id)
 ```python
 import leancloud
 
-conversation = leancloud.Conversation.query.first()
-conversation.name    # 此对话的名称
-conversation.creator    # 此对话的创建者，对应表中 'c' 字段
-conversation.last_message_read_at    # 此对话最后一条已读消息，对应表中 'lm' 字段
-conversation.members    # 包含此对话中，所有用户的 client id 的 list，对应表中 'm' 字段
-conversation.muted_members    # 包含此对话中，所有将对话设置为静音的用户的 client id 的 list，对应表中 'mu' 字段
-conversation.is_system    # 是否为系统对话
-conversation.is_transient    # 是否为暂态对话
-```
 
-### 创建会话
+### 创建对话
 
 有些时候需要在服务端来进行对话创建，可以把 `leancloud.Conversation` 当作一个 `leancloud.Object` 来直接创建并保存就可以。
 
