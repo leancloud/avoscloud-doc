@@ -8,6 +8,13 @@ SDK 的安装及初始化请参考[安装指南](sdk_setup-python.html)。
 
 `leancloud.Conversation` 对应即时通讯中的[对话概念](realtime_v2.html#对话（Conversation）)，同时也是 Python SDK 中 `leancloud.Object` 的子类，因此可以像正常的 `leancloud.Object` 那样来创建、查询对话。
 
+```python
+conv = leancloud.Conversation()
+conv.save()
+
+same_conv = leancloud.Conversation.query.get(conv.id)
+```
+
 `leancloud.Conversation` 的查询与修改等操作，也受限于 LeanCloud 存储服务的 Class 权限设置与 ACL 权限设置。因此创建对话时，请确保当前权限设置正确，以免造成数据泄漏。
 
 ### 对话属性
