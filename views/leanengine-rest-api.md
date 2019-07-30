@@ -79,15 +79,6 @@ curl -X POST \
 }
 ```
 
-如果云函数超时，云端会报错 524：
-
-```json
-{
-  "code": 1,
-  "error": "LeanCloud was able to complete a TCP connection to the upstream server, but did not receive a timely HTTP response."
-}
-```
-
 你还可以阅读以下云引擎开发指南来获取更多的信息。
 
 * [云引擎 Node.js 环境](leanengine_cloudfunction_guide-node.html)
