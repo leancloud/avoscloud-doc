@@ -2299,14 +2299,7 @@ public static AVObject reviewBeforeSaveHook(AVObject review) throws Exception {
 ```cs
 cloud.BeforeSave("Review", (AVObject review) =>
 {
-    var updatedKeys = review.GetUpdatedKeys();
-    if (updatedKeys.Contains("comment"))
-    {
-        var comment = review.Get<string>("comment");
-        // code 可以自定义为任意数字
-        // message 可以自定义为任何字符串
-        if (comment.Length > 140) throw new EngineException(123, "comment 长度不得超过 140 字符。");
-    }
+    throw new EngineException(123, "An error occurred.");
 });
 ```
 {% endif %}
