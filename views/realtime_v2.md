@@ -78,7 +78,7 @@ LeanCloud 即时通讯服务提供的主要功能有：
   * [LeanMessage Demo 网页版](https://github.com/leancloud/leanmessage-demo)
   * [Simple Chatroom](https://leancloud.github.io/js-realtime-sdk/demo/simple-chatroom/)（[源码](https://github.com/leancloud/js-realtime-sdk/tree/next/demo/simple-chatroom)）
 
-关于这些项目的更多介绍、截图预览，可见 [LeanCloud Demos](https://github.com/leancloud/leancloud-demos)。
+关于这些项目的更多介绍、截图预览，可见 [LeanCloud Demos](demo.html)。
 
 ## 核心概念说明
 
@@ -269,12 +269,6 @@ LeanCloud 即时通讯系统设计了四种类型的「对话」来满足不同�
 - [二，消息收发的更多方式，离线推送与消息同步，多设备登录](realtime-guide-intermediate.html)
 - [三，安全与签名、黑名单和权限管理、玩转直播聊天室和临时对话](realtime-guide-senior.html)
 - [四，详解消息 hook 与系统对话，打造自己的聊天机器人](realtime-guide-systemconv.html)
-
-按客户端开发语言和平台区分，可以参考：
-
-- [Android 开发指南](realtime_guide-android.html)
-- [iOS 开发指南](realtime_guide-objc.html)
-- [JavaScript 开发指南](realtime_guide-js.html)
 
 服务端开发指南，可以参考：
 
