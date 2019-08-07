@@ -130,6 +130,20 @@ dotnet add package LeanCloud.Engine.Middleware.AspNetCore
 ```objc
 [AVCloud setProductionMode:NO]; // 调用预备环境
 ```
+```swift
+// 调用预备环境
+do {
+    let environment: LCApplication.Environment = [.cloudEngineDevelopment]
+    let configuration = LCApplication.Configuration(environment: environment)
+    try LCApplication.default.set(
+        id: "APP_ID",
+        key: "APP_KEY",
+        configuration: configuration
+    )
+} catch {
+    print(error)
+}
+```
 ```js
 AV.setProduction(false); // 调用预备环境
 ```
@@ -427,6 +441,16 @@ NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦�
                    }
 }];
 ```
+```swift
+LCEngine.run("averageStars", parameters: ["movie": "夏洛特烦恼"]) { (result) in
+    switch result {
+    case .success(value: let resultValue):
+        print(resultValue)
+    case .failure(error: let error):
+        print(error)
+    }
+}
+```
 ```js
 var paramsJson = {
   movie: "夏洛特烦恼"
@@ -562,6 +586,18 @@ NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦�
                     // 处理报错
                   }
 }];
+```
+```swift
+LCEngine.call("averageStars", parameters: ["movie": "夏洛特烦恼"]) { (result) in
+    switch result {
+    case .success(object: let object):
+        if let object = object {
+            print(object)
+        }
+    case .failure(error: let error):
+        print(error)
+    }
+}
 ```
 ```js
 var paramsJson = {
