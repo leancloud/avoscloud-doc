@@ -20,4 +20,4 @@
 
 微信扫码试玩：
 
-![image](images/leancloud_birthday_game.jpg)s
+![image](images/leancloud_birthday_game.jpg)
