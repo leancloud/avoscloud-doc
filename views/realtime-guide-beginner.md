@@ -42,6 +42,7 @@
 假设我们产品中有一个叫「Tom」的用户，首先我们在 SDK 中创建出一个与之对应的 `IMClient` 实例：
 
 ```js
+//v5.0.0-alpha.2 以上版本支持 server 参数指定协议（https://)，v5.0.0-alpha.2 以下版本 server 参数需要这样设置： server:'xxx.example.com'。
 var realtime = new Realtime({
   appId: '{{appid}}',
   appKey: '{{appkey}}',
