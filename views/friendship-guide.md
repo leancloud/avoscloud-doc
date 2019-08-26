@@ -30,15 +30,26 @@ NSString *userObjectId = @"XXXXXX";
 ```
 
 ```java
-AVUser.getCurrentUser().followInBackground(userObjectId, new FollowCallback() {
+AVUser.getCurrentUser().followInBackground(userObjectId).subscribe(new Observer<JSONObject>() {
   @Override
-  public void done(AVObject object, AVException e) {
-    if (e == null) {
-      Log.i(TAG, "follow succeeded.");
-    } else if (e.getCode() == AVException.DUPLICATE_VALUE) {
+  public void onSubscribe(Disposable disposable) {}
+
+  @Override
+  public void onNext(JSONObject jsonObject) {
+    Log.i(TAG, "follow succeeded.");
+  }
+
+  @Override
+  public void onError(Throwable throwable) {
+    if (throwable.getCode() == AVException.DUPLICATE_VALUE) {
       Log.w(TAG, "Already followed.");
+    } else {
+      throwable.printStackTrace();
     }
   }
+
+  @Override
+  public void onComplete() {}
 });
 ```
 
@@ -65,15 +76,22 @@ NSString *userObjectId = @"XXXXXX";
 ```
 
 ```java
-AVUser.getCurrentUser().unfollowInBackground("userObjectId", new FollowCallback() {
+AVUser.getCurrentUser().unfollowInBackground("userObjectId").subscribe(new Observer<JSONObject>() {
   @Override
-  public void done(AVObject object, AVException e) {
-    if (e == null) {
-      Log.i(TAG, "succeeded.");
-    } else {
-      Log.w(TAG, "failed.");
-    }
+  public void onSubscribe(Disposable disposable) {}
+
+  @Override
+  public void onNext(JSONObject jsonObject) {
+    Log.i(TAG, "succeeded.");
   }
+
+  @Override
+  public void onError(Throwable throwable) {
+    Log.w(TAG, "failed.");
+  }
+
+  @Override
+  public void onComplete() {}
 });
 ```
 
@@ -100,11 +118,20 @@ AVQuery *query= [AVUser followeeQuery:currentUser.objectId];
 ```java
 AVUser currentUser = AVUser.getCurrentUser();
 AVQuery<AVUser> followeeQuery = currentUser.followeeQuery(AVUser.class);
-followeeQuery.findInBackground(new FindCallback<AVUser>() {
+followeeQuery.findInBackground().subscribe(new Observer<List<AVUser>>() {
   @Override
-  public void done(List<AVUser> avObjects, AVException avException) {
-    //avObjects 就是用户的好友列表
+  public void onSubscribe(Disposable disposable) {}
+
+  @Override
+  public void onNext(List<AVUser> avUsers) {
+    // avUsers 就是用户的好友列表
   }
+
+  @Override
+  public void onError(Throwable throwable) {}
+
+  @Override
+  public void onComplete() {}
 });
 ```
 
@@ -131,11 +158,20 @@ AVQuery *query= [AVUser followerQuery:currentUser.objectId];
 ```java
 AVUser currentUser = AVUser.getCurrentUser();
 AVQuery<AVUser> followerQuery = currentUser.followerQuery(AVUser.class);
-followerQuery.findInBackground(new FindCallback<AVUser>() {
+followerQuery.findInBackground().subscribe(new Observer<List<AVUser>>() {
   @Override
-  public void done(List<AVUser> avObjects, AVException avException) {
-    //avObjects 就是添加当前用户为好友的人
+  public void onSubscribe(Disposable disposable) {}
+
+  @Override
+  public void onNext(List<AVUser> avUsers) {
+    // avUsers 就是添加当前用户为好友的人
   }
+
+  @Override
+  public void onError(Throwable throwable) {}
+
+  @Override
+  public void onComplete() {}
 });
 ```
 
