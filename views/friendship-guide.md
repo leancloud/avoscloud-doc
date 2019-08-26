@@ -1,7 +1,7 @@
 {% import "views/_helper.njk" as docs %}
 
 # 好友及社交
-这篇文档主要讲解如何使用 [AVUser](storage_overview.html#用户对象 AVUser) 开发好友社交的功能，包括添加删除好友、好友聊天。
+这篇文档主要讲解如何使用 [AVUser](storage_overview.html#用户对象 AVUser) 开发好友相关的功能，包括添加删除好友、好友聊天。如果要实现类似于微博的陌生人关注及动态，请参考[应用内社交](status_system.html)。
 
 ## 好友关系
 
