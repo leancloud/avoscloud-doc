@@ -203,20 +203,20 @@ curl -X GET \
 1.1 版本：
 
 * [发送消息](realtime_rest_api.html#通过 REST API 发消息)
+* [修改与撤回消息](realtime_rest_api.html#修改与撤回消息)
+* [系统对话给用户发消息](realtime_rest_api.html#系统对话给用户发消息)
 
 1.2 版本：
 
-单聊群聊消息接口：
-
-* [发送消息](https://leancloud.cn/docs/realtime_rest_api_v2.html#hash21514104)
-* [修改消息](https://leancloud.cn/docs/realtime_rest_api_v2.html#hash635379762)
-* [撤回消息](https://leancloud.cn/docs/realtime_rest_api_v2.html#hash789799969)
-
-聊天室消息接口：
-
-* [发送消息](https://leancloud.cn/docs/realtime_rest_api_v2.html#hash-799781092)
-* [修改消息](https://leancloud.cn/docs/realtime_rest_api_v2.html#hash714596694)
-* [撤回消息](https://leancloud.cn/docs/realtime_rest_api_v2.html#hash-1211439739)
+* [单聊/群聊-发消息](#单聊/群聊-发消息)
+* [单聊/群聊-修改消息](#单聊/群聊-修改消息)
+* [单聊/群聊-撤回消息](#单聊/群聊-撤回消息)
+* [聊天室-发消息](#聊天室-发消息)
+* [聊天室-修改消息](#聊天室-修改消息)
+* [聊天室-撤回消息](#聊天室-撤回消息)
+* [服务号-给任意用户单独发消息](#给任意用户单独发消息)
+* [服务号-修改给用户单独发送的消息](#修改给用户单独发送的消息)
+* [服务号-撤回给用户单独发送的消息](#撤回给用户单独发送的消息)
 
 #### 限制
 
@@ -264,9 +264,6 @@ curl -X GET \
 * [给所有订阅者发消息](#给所有订阅者发消息)
 * [修改给所有订阅者发送的消息](#修改给所有订阅者发送的消息)
 * [撤回给所有订阅者发送的消息](#撤回给所有订阅者发送的消息)
-* [给任意用户单独发消息](#给任意用户单独发消息)
-* [修改给用户单独发送的消息](#修改给用户单独发送的消息)
-* [撤回给用户单独发送的消息](#撤回给用户单独发送的消息)
 
 #### 限制
 
