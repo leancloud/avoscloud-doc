@@ -302,7 +302,7 @@ LeanCloud 云端最终发送给 HMS Server 的请求中 payload 字段为：
 如果你想推送消息，但不显示在 Android 系统的通知栏中，而是执行应用程序预定义的逻辑，可以 [自定义 Receiver](android_push_guide.html#自定义_Receiver)。华为混合推送自定义 Receiver 需要继承 AVHMSPushMessageReceiver，在收到透传消息的回调方法 `onPushMsg` 获取推送消息数据。
 你的 Receiver 可以按照如下方式实现：
 
-```
+```java
 public class MyHuaweiReceiver extends AVHMSPushMessageReceiver {
     @Override
     public boolean onPushMsg(Context context, byte[] msg, Bundle bundle) {
@@ -319,7 +319,7 @@ public class MyHuaweiReceiver extends AVHMSPushMessageReceiver {
 
 AndroidManifest.xml 中把 AVHMSPushMessageReceiver 替换为你自定义的 MyHuaweiReceiver。
  		
-```
+```xml
 <!-- LeanCloud 自定义 receiver -->
 <!-- ${PACKAGE_NAME} 要替换上您应用的包名 -->
 <receiver android:name="${PACKAGE_NAME}.MyHuaweiReceiver"
@@ -336,7 +336,7 @@ AndroidManifest.xml 中把 AVHMSPushMessageReceiver 替换为你自定义的 MyH
 ```
 推送的内容如下
 
-```
+```json
 {
   "alert":      "消息内容",
   "title":      "显示在通知栏的标题",
