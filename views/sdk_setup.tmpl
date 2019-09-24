@@ -1049,7 +1049,7 @@ AVClient.Initialize(new AVClient.Configuration {
 在安装[即时通讯 SDK](#安装即时通讯) 后，需要进入 [控制台 > 存储 > 设置](https://leancloud.cn/dashboard/storage.html?appid={{appid}}#/storage/conf)，在 **其他** 里面勾选 **启用 LiveQuery**，然后按照下面的代码初始化。
 
 ```cs
-Websockets.Net.WebsocketConnection.Link();
+Websockets.Net.WebsocketConnection.Link(); // Unity 下不需要此行设置
 var realtime = new AVRealtime(new AVRealtime.Configuration {
     ApplicationId = appId,
     ApplicationKey = appKey,
