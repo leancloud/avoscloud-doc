@@ -244,6 +244,7 @@ do {
 
 </details>
 
+`<16.1.0` 的版本不支持自定义域名。
 
 #### Java Unified SDK
 
