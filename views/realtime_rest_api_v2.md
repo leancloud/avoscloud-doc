@@ -58,7 +58,7 @@ curl -X GET \
 
 ### 查询所有对话
 
-本接口会返回所有的 单聊群聊/聊天室/服务号。在 `_Conversation` 表默认权限下要求使用 master key。
+本接口会返回所有的 单聊群聊/聊天室/服务号。在 `_Conversation` 表默认 ACL 权限下要求使用 master key。
 
 ```sh
 curl -X GET \
