@@ -5,7 +5,7 @@
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"name":"My First Conversation", "m": ["BillGates", "SteveJobs"], "unique": true}' \
   https://{{host}}/1.2/rtm/conversations
@@ -27,7 +27,7 @@ curl -X POST \
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
   -G \
   --data-urlencode 'where={"name": "first conversation"}' \
   --data-urlencode 'skip=1' \
@@ -52,7 +52,7 @@ where | 可选 | 参考 [数据存储 - 查询](rest_api.html#查询)。
 ```sh
 curl -X PUT \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"name":"Updated Conversation"}' \
   https://{{host}}/1.2/rtm/conversations/{conv_id}
@@ -71,7 +71,7 @@ curl -X PUT \
 ```sh
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
   https://{{host}}/1.2/rtm/conversations/{conv_id}
 ```
 
@@ -85,7 +85,7 @@ curl -X DELETE \
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"client_ids": ["Tom", "Jerry"]}' \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/members
@@ -101,7 +101,7 @@ curl -X POST \
 ```sh
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"client_ids": ["Tom", "Jerry"]}' \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/members
@@ -119,7 +119,7 @@ curl -X DELETE \
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/members
 ```
 
@@ -135,7 +135,7 @@ curl -X GET \
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"client_ids": ["Tom", "Jerry"]}' \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/mutes
@@ -156,7 +156,7 @@ client_ids | 要静音的 Client ID，数组
 ```sh
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '{"client_ids": ["Tom", "Jerry"]}' \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/mutes
@@ -173,7 +173,7 @@ curl -X DELETE \
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
   https://{{host}}/1.2/rtm/conversations/{conv_id}/mutes
 ```
 
