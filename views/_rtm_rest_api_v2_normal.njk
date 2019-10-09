@@ -2,6 +2,8 @@
 
 ### 创建对话
 
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
+
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
@@ -23,6 +25,8 @@ curl -X POST \
 需要注意，群聊与单聊的唯一区别是 client 数量，API 层面保持一致。
 
 ### 查询对话
+
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
 
 ```sh
 curl -X GET \
@@ -49,6 +53,8 @@ where | 可选 | 参考 [数据存储 - 查询](rest_api.html#查询)。
 
 ### 更新对话
 
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
+
 ```sh
 curl -X PUT \
   -H "X-LC-Id: {{appid}}" \
@@ -68,6 +74,8 @@ curl -X PUT \
 
 ### 删除对话
 
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
+
 ```sh
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
@@ -81,6 +89,8 @@ curl -X DELETE \
 ```
 
 ### 增加成员
+
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
 
 ```sh
 curl -X POST \
@@ -97,6 +107,8 @@ curl -X POST \
 ```
 
 ### 移除成员
+
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
 
 ```sh
 curl -X DELETE \
@@ -116,6 +128,8 @@ curl -X DELETE \
 
 ### 查询成员
 
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
+
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
@@ -131,6 +145,8 @@ curl -X GET \
 
 
 ### 增加静音用户
+
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
 
 ```sh
 curl -X POST \
@@ -153,6 +169,8 @@ client_ids | 要静音的 Client ID，数组
 
 ### 移除静音用户
 
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
+
 ```sh
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
@@ -169,6 +187,8 @@ curl -X DELETE \
 ```
 
 ### 查询静音用户
+
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
 
 ```sh
 curl -X GET \

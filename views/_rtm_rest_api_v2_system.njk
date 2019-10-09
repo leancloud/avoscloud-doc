@@ -2,6 +2,8 @@
 
 ### 创建服务号
 
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
+
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
@@ -19,6 +21,8 @@ curl -X POST \
 ```
 
 ### 查询服务号
+
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
 
 ```sh
 curl -X GET \
@@ -45,6 +49,8 @@ where | 可选 | 参考 [数据存储 - 查询](rest_api.html#查询)。
 
 ### 更新服务号
 
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
+
 ```sh
 curl -X PUT \
   -H "X-LC-Id: {{appid}}" \
@@ -61,6 +67,8 @@ curl -X PUT \
 
 
 ### 删除服务号
+
+在 `_Conversation` 表默认 ACL 权限下本接口要求使用 master key。
 
 ```sh
 curl -X DELETE \
