@@ -8,7 +8,7 @@ SDK 的安装及初始化请参考[安装指南](sdk_setup-python.html)。
 ```python
 import leancloud
 
-leancloud.init("{{appid}}", master_key="{{masterkey}}"
+leancloud.init("{{appid}}", master_key="{{masterkey}}")
 ```
 
 ## 对话管理
