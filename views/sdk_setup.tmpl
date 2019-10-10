@@ -1089,6 +1089,24 @@ localStorage.setItem('debug', 'leancloud*');
 // 为即时通讯、 LiveQuery 启用日志
 localStorage.setItem('debug', 'LC*');
 ```
+
+除了在 Node.js 中使用环境变量，在浏览器中使用 localStorage 启用调试模式外，新版本的 SDK 还支持在代码中启用、停用调试模式。
+
+存储服务可以按照以下方式启用、停用调试模式（javascript-sdk `>= v3.14.0`）：
+
+```js
+AV.debug.enable();  // 启用
+AV.debug.disable(); // 停用
+```
+
+即时通讯服务可以按照以下方式启用、停用调试模式（js-realtime-sdk `>= v5.0.0-alpha.1`）：
+
+```js
+const { debug } = require('leancloud-realtime');
+AV.debug.enable();  // 启用
+AV.debug.disable(); // 停用
+```
+
 {% endif %}
 {% if platform_name === "Python" %}
 ```python
