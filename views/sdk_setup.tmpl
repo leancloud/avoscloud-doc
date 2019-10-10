@@ -1066,10 +1066,13 @@ AVOSCloud.setLogLevel(AVLogger.Level.DEBUG);
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
-如果使用的是 Node.js，可以在通过 npm 启动应用时设置环境变量 `DEBUG=leancloud*`：
+如果使用的是 Node.js，可以在通过 npm 启动应用时设置环境变量 `DEBUG=leancloud*`（存储）、`DEBUG=LC*`（即时通讯）：
 
 ```sh
+// 存储
 DEBUG=leancloud* npm start
+// 即时通讯
+DEBUG=LC* npm start
 ```
 
 若是在 [云引擎](leanengine_overview.html) 中使用 Node.js，可以到 [控制台 > 云引擎 > 设置 > 自定义环境变量](/dashboard/cloud.html?appid={{appid}}#/conf) 里面添加一个新的变量，在第一栏填入 `DEBUG`，第二栏填入 `leancloud:*`（不要丢掉 `leancloud` 和 `*` 之间的冒号）。保存成功后，在本地通过 [命令行工具](leanengine_cli.html) 调试时，可以通过设置环境变量 `DEBUG=leancloud:*` 来让日志信息输出到 [LeanCloud 控制台 > 云引擎 > 应用日志](/dashboard/cloud.html?appid={{appid}}#/log)：
@@ -1083,7 +1086,7 @@ DEBUG=leancloud:* lean up
 ```js
 localStorage.setItem('debug', 'leancloud*');
 
-// 为 LiveQuery 启用日志
+// 为即时通讯、 LiveQuery 启用日志
 localStorage.setItem('debug', 'LC*');
 ```
 {% endif %}
