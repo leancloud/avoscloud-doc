@@ -255,7 +255,9 @@ export default class RPSGame extends Game {
     // 标记房间不再可加入
     this.masterClient.setRoomOpened(false);
     // 向客户端广播游戏开始事件
-    this.broadcast("game-start");
+    // 设置事件 Id
+    const GAME_START_EVENT = 10;
+    this.broadcast(GAME_START_EVENT);
   }
 }
 ```
@@ -290,7 +292,7 @@ export default class RPSGame extends Game {
 choices = ["✊", "✌️", "✋"];
 
 // 当用户选择时，我们把对应选项的 index 发送给服务端
-const PLAY_EVENT_ID = 1;
+const PLAY_EVENT_ID = 11;
 play.sendEvent(PLAY_EVENT_ID, {index}, {receiverGroup: ReceiverGroup.MasterClient});
 ```
 
@@ -303,7 +305,7 @@ protected start = async () => {
   ......
   // 接收自定义事件
   this.masterClient.on(Event.CUSTOM_EVENT, ({ eventId, eventData, senderId }) => {
-    if (eventId === "play") {
+    if (eventId === PLAY_EVENT_ID) {
       // 收到其他玩家的事件，转发事件
       this.forwardToTheRests({ eventId, eventData, senderId }, (eventData) => {
         return {}
@@ -324,7 +326,7 @@ play.on(Event.CUSTOM_EVENT, ({ eventId, eventData, senderId }) => {
   ......
   switch (eventId) {
     ......
-    case "play":
+    case PLAY_EVENT_ID:
       this.log(`对手已选择`);
       break;
     .....
@@ -354,7 +356,7 @@ protected start = async () => {
   const choices = [-1, -1];
 
   this.masterClient.on(Event.CUSTOM_EVENT, ({ eventId, eventData, senderId }) => {
-    if (eventId === "play") {
+    if (eventId === PLAY_EVENT_ID) {
       // 收到其他玩家的事件，转发事件
       ......
       // 存储当前玩家的选择
@@ -379,7 +381,7 @@ protected start = async () => {
   const choices = [-1, -1];
 
   this.masterClient.on(Event.CUSTOM_EVENT, ({ eventId, eventData, senderId }) => {
-    if (eventId === "play") {
+    if (eventId === PLAY_EVENT_ID) {
       // 收到其他玩家的事件，转发事件
       ......
       // 存储当前玩家的选择
@@ -388,7 +390,8 @@ protected start = async () => {
       if (choices.every((choice) => choice > 0)) {
         // 两个玩家都已经做出选择，游戏结束,向客户端广播游戏结果
         const winner = this.getWinner(choices);
-        this.broadcast("game-over", {
+        const GAME_OVER_EVENT = 20;
+        this.broadcast(GAME_OVER_EVENT, {
           choices,
           winnerId: winner ? winner.userId : null,
         });

@@ -58,9 +58,6 @@ const gameManager = new SampleGameManager(
   APP_KEY,
   {
     concurrency: 2,
-    // 如果要使用其他节点，暂时需要手动指定，该参数会在今后移除。
-    // 需要先 import { Region } from "@leancloud/play";
-    // region: Region.NorthChina,
   },
 );
 ```
@@ -279,7 +276,8 @@ export default class SampleGame extends Game {
     // 标记房间不再可加入
     this.masterClient.setRoomOpened(false);
     // 向客户端广播游戏开始事件
-    this.broadcast("game-start");
+    const GAME_START_EVENT = 10;
+    this.broadcast(GAME_START_EVENT);
   }
 }
 ```
@@ -288,15 +286,16 @@ export default class SampleGame extends Game {
 在[房间人满事件](#房间人满事件)中，`Game` 向房间内所有成员广播了游戏开始：
 
 ```js
-this.broadcast("game-start");
+const GAME_START_EVENT = 10;
+this.broadcast(GAME_START_EVENT);
 ```
 
 在广播事件时您还可以带有一些数据：
 
 ```js
 const gameData = {someGameData};
-//  'gameStart' 是自定义事件的名称
-this.broadcast('game-start', gameData);
+const GAME_START_EVENT = 10;
+this.broadcast(AME_START_EVENT, gameData);
 ```
 
 此时客户端的[接收自定义事件](multiplayer-guide-js.html#接收自定义事件)方法会被触发，如果发现是 `game-start` 事件，客户端可以在 UI 上展示对战开始。
@@ -305,13 +304,14 @@ this.broadcast('game-start', gameData);
 MasterClient 可以转发某个客户端发来的事件给其他客户端，在转发时还可以处理数据：
 
 ```js
+const SOME_ONE_ACT_EVENT = 15;
 this.forwardToTheRests(event, (eventData) => {
   // 准备要转发的数据
   const actUserId = event.senderId;
   const result = {actUserId};
   return result;
-  // `someOneAct` 是自定义事件的名称
-}, 'someOneAct')
+  // SOME_ONE_ACT 是自定义事件的 ID，如果省略则使用原 event 事件的 ID
+}, SOME_ONE_ACT_EVENT)
 ```
 在这个代码中，`event` 参数是某个客户端发来的原始事件，`eventData` 是原始事件的数据，您可以在转发事件给其他客户端时处理该数据，例如抹去或增加一些信息。MasterClient 发送该事件后，客户端的[接收自定义事件](multiplayer-guide-js.html#接收自定义事件)会被触发。
 
