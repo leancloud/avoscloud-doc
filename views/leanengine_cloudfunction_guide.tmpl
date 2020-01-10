@@ -1669,6 +1669,95 @@ cloud.OnLogIn((AVUser user) =>
 ```
 {% endif %}
 
+{% if platformName !== ".NET" %}
+再比如校验第三方登录的 access token：
+
+假设某 Example 平台的 `authData` 如下：
+
+```json
+{
+  "example_platform": {
+    "openid": "42",
+    "access_token": "access token string",
+    "expires_in": 7200
+  }
+}
+```
+
+{% if platformName === "Node.js" %}
+```js
+AV.Cloud.onLogin(function (request) {
+  const authData = request.object.get("authData");
+  const userID = authData.example_platform.openid;
+  const token = authData.example_platform.access_token;
+
+  https.get(`https://example.com/applications/${userID}/tokens/${token}`, (res) => {
+    if (res.statusCode !== 200) {
+      throw new AV.Cloud.Error('Example platform token invalid');
+    }
+  }).on('error', (e) => {
+    console.error(e);
+    throw new AV.Cloud.Error('Failed to verify Example platform token'); 
+  });
+});
+```
+{% endif %}
+{% if platformName === "Python" %}
+```python
+@engine.on_login
+def on_login(user):
+  auth_data = user.get("authData")
+  user_id = auth_data["example_platform"]["openid"]
+  token = auth_data["example_platform"]["access_token"]
+
+  conn = http.client.HTTPSConnection("example.com")
+  conn.request("GET", f"/applications/{user_id}/tokens/{token}")
+  response = conn.getresponse()
+  if response.status != 200:
+    raise LeanEngineError("Example platform token invalid")
+```
+{% endif %}
+{% if platformName === "PHP" %}
+```php
+Cloud::onLogin(function($user) {
+  $authData = $user->get("authData");
+  $userID = $authData["example_platform"]["openid"];
+  $token = $authData["example_platform"]["access_token"];
+
+  $headers = get_headers("https://example.com/applications/${userID}/tokens/${token}");
+  $statusCode = $header[0];
+  if (strpos($statusCode, "200") === false) {
+    throw new FunctionError("Example platform token invalid");
+  }
+});
+```
+{% endif %}
+{% if platformName === "Java" %}
+```java
+@EngineHook(className = "_User", type = EngineHookType.onLogin)
+public static AVUser userOnLoginHook(AVUser user) throws Exception {
+  JSONObject authData = user.getJSONObject("authData");
+  JSONObject examplePlatform = (JSONObject) authData.get("example_platform");
+  String userID = (String) examplePlatform.get("openid");
+  String token = (String) examplePlatform.get("access_token");
+  OkHttpClient client = new OkHttpClient();
+  String url = "https://example.com/applications/" + userID + "/tokens/" + token;
+  Request request = new Request.Builder().url(url).build();
+  Response response = client.newCall(request).execute();
+  int statusCode = response.code();
+  if (statusCode == 200) {
+    return user;
+  } else {
+    throw new Exception("Example platform token invalid");
+  }
+}
+```
+{% endif %}
+
+注意，上面的示例片段仅为示意，为了简短省略了许多逻辑，包括 token 时效性检查、其他登录方式的处理、网络请求异常的处理等。
+
+{% endif %}
+
 {% if platformName === "Node.js" or platformName === "Python" or platformName === "PHP" or platformName === "Java" %}
 ### 即时通讯 Hook 函数
 
