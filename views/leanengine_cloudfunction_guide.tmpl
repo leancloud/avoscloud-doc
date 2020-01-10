@@ -1669,20 +1669,20 @@ cloud.OnLogIn((AVUser user) =>
 ```
 {% endif %}
 
-{% if platformName !== ".NET" %}
 再比如校验第三方登录的 access token：
 
 假设某 Example 平台的 `authData` 如下：
 
 ```json
 {
-  "example_platform": {
     "openid": "42",
     "access_token": "access token string",
     "expires_in": 7200
-  }
 }
 ```
+
+平台名称为 `example_platform`。
+那么我们可以定义如下 `onLogin` 函数：
 
 {% if platformName === "Node.js" %}
 ```js
@@ -1755,8 +1755,6 @@ public static AVUser userOnLoginHook(AVUser user) throws Exception {
 {% endif %}
 
 注意，上面的示例片段仅为示意，为了简短省略了许多逻辑，包括 token 时效性检查、其他登录方式的处理、网络请求异常的处理等。
-
-{% endif %}
 
 {% if platformName === "Node.js" or platformName === "Python" or platformName === "PHP" or platformName === "Java" %}
 ### 即时通讯 Hook 函数
