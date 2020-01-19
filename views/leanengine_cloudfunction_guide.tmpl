@@ -1675,9 +1675,8 @@ cloud.OnLogIn((AVUser user) =>
 
 ```json
 {
-    "openid": "42",
+    "uid": "42",
     "access_token": "access token string",
-    "expires_in": 7200
 }
 ```
 
@@ -1688,7 +1687,7 @@ cloud.OnLogIn((AVUser user) =>
 ```js
 AV.Cloud.onLogin(function (request) {
   const authData = request.object.get("authData");
-  const userID = authData.example_platform.openid;
+  const userID = authData.example_platform.uid;
   const token = authData.example_platform.access_token;
 
   https.get(`https://example.com/applications/${userID}/tokens/${token}`, (res) => {
@@ -1707,7 +1706,7 @@ AV.Cloud.onLogin(function (request) {
 @engine.on_login
 def on_login(user):
   auth_data = user.get("authData")
-  user_id = auth_data["example_platform"]["openid"]
+  user_id = auth_data["example_platform"]["uid"]
   token = auth_data["example_platform"]["access_token"]
 
   conn = http.client.HTTPSConnection("example.com")
@@ -1721,7 +1720,7 @@ def on_login(user):
 ```php
 Cloud::onLogin(function($user) {
   $authData = $user->get("authData");
-  $userID = $authData["example_platform"]["openid"];
+  $userID = $authData["example_platform"]["uid"];
   $token = $authData["example_platform"]["access_token"];
 
   $headers = get_headers("https://example.com/applications/${userID}/tokens/${token}");
@@ -1738,7 +1737,7 @@ Cloud::onLogin(function($user) {
 public static AVUser userOnLoginHook(AVUser user) throws Exception {
   JSONObject authData = user.getJSONObject("authData");
   JSONObject examplePlatform = (JSONObject) authData.get("example_platform");
-  String userID = (String) examplePlatform.get("openid");
+  String userID = (String) examplePlatform.get("uid");
   String token = (String) examplePlatform.get("access_token");
   OkHttpClient client = new OkHttpClient();
   String url = "https://example.com/applications/" + userID + "/tokens/" + token;
