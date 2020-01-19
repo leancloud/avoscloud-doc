@@ -1752,6 +1752,22 @@ public static AVUser userOnLoginHook(AVUser user) throws Exception {
 }
 ```
 {% endif %}
+{% if platformName === ".NET" %}
+```cs
+cloud.OnLogIn(async user =>
+{
+  var authData = user.GetAuthData();
+  var examplePlatform = authData["example_platform"];
+  var userID = examplePlatform["uid"];
+  var accessToken = examplePlatform["access_token"];
+  var client = new HttpClient();
+  var response = await client.SendAsync("https://example.com/applications/" + userID + "/tokens/" + token);
+  if (response.StatusCode != 200) {
+    throw new Exception("Example platform token invalid"); 
+  }
+});
+```
+{% endif %}
 
 注意，上面的示例片段仅为示意，为了简短省略了许多逻辑，包括 token 时效性检查、其他登录方式的处理、网络请求异常的处理等。
 
