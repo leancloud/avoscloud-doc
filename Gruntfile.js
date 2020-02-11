@@ -21,7 +21,8 @@ module.exports = function(grunt) {
     'qcloud': 'cn-e1.leanapp.cn'
   }
 
-  console.log('current theme --- '+grunt.option('theme'))
+  var region = process.env.REGION || grunt.option('theme') || 'cn';
+  console.log('current region: '+ region)
 
   // Project configuration.
   grunt.initConfig({
@@ -123,8 +124,8 @@ module.exports = function(grunt) {
         },
         layoutdir: 'templates/layouts/',
         layout: ['template.swig'],
-        node: grunt.option('theme'),
-        region: grunt.option('theme'),
+        node: region,
+        region: region,
         flatten: true
       },
       md: {
@@ -245,14 +246,14 @@ module.exports = function(grunt) {
           data:{
             jssdkversion: '<%= JSSDKVersion %>',
             jsimsdkversion: '<%= JSIMSDKVersion %>',
-            node: grunt.option('theme'),
+            node: region,
             appid: '{{appid}}',
             appkey: '{{appkey}}',
             masterkey: '{{masterkey}}',
             sign_masterkey: "{{sign_masterkey}}",
             sign_appkey: '{{sign_appkey}}',
             host: 'API_BASE_URL',
-            engineDomain: engineDomainMap[grunt.option('theme')] || engineDomainMap['cn']
+            engineDomain: engineDomainMap[region] || engineDomainMap['cn']
           }
         }
       }

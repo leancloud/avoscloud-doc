@@ -1,10 +1,19 @@
 //apps data
 
-var purl = '/1/';
 angular.module("app", ['ui.gravatar', 'md5']);
 angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout', '$compile', '$rootScope', '$filter',
 
     function ($scope, $http, $timeout, $compile, $rootScope, $filter) {
+        var hosts = {
+          cn: 'https://cn-n1-console-api.leancloud.cn',
+          qcloud: '',
+          us: '',
+        }
+        var apiHost = hosts[$rootScope.region] || '';
+        var apiVersion = '/1.1'
+        var baesUrl = apiHost + apiVersion;
+        console.log($rootScope.region, baesUrl)
+
         $scope.appid = "{{appid}}";
         $scope.appkey = "{{appkey}}";
         $scope.masterkey = "{{masterkey}}";
@@ -12,7 +21,7 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout', '$co
         $scope.sign_appkey = "{{sign_appkey}}";
         var service = $scope.service || 'api';
         var domains = {
-          n1: 'lncld.net',
+          cn: 'lncld.net',
           qcloud: 'lncldapi.com',
           us: 'lncldglobal.com',
         };
@@ -25,11 +34,15 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout', '$co
         }
         angular.element("body").scope().sdkversion = sdkversion;
 
-        $http.get('/1/clients/self').success(function (data) {
+        $http.get(baesUrl + '/clients/self', {
+          withCredentials: true,
+        }).success(function (data) {
             $scope.user = data;
         });
 
-        $http.get("/1/clients/self/apps").success(
+        $http.get(baesUrl + "/clients/self/apps", {
+          withCredentials: true,
+        }).success(
             function (data) {
                 if (data.length > 0) {
                     $rootScope.pageState.currentApp = data[0];
@@ -51,7 +64,9 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout', '$co
 
             });
         $scope.signout = function () {
-            $http.post('/1/signout').success(function (data) {
+            $http.post(baesUrl + '/signout', {
+              withCredentials: true,
+            }).success(function (data) {
                 location.reload();
             });
         }
@@ -225,13 +240,6 @@ angular.module('app').controller('StartCtrl', [
         };
 
         $scope.selectedPlat = 'objc';
-
-        $scope.createApp = function () {
-            $http.post(purl + 'clients/self/apps', { name: $scope.appname }).success(function (data) {
-                $scope.SelectedApp = data;
-            }).error(function (data) {
-            });
-        };
 
         $scope.$watch('selectedPlat', function () {
             var dom = $('#start-main');
