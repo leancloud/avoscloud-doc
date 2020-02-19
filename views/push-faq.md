@@ -59,7 +59,6 @@ iOS 能做到这点，是因为当应用进程关闭后，Apple 和设备的系�
 
 推送记录会保留 7 天，7 天之前的推送记录无法查询。
 
-
 ### 同一个账号在两个设备登录过，两个设备都会收到推送信息吗？
 
 推送的时候是根据推送查询条件，在 _installation 表中查找符合条件的目标设备来推送。只要查询条件能包含这两个设备，则两个设备都能收到推送。
@@ -71,21 +70,13 @@ iOS 能做到这点，是因为当应用进程关闭后，Apple 和设备的系�
 对于 Android 非混合推送设备，当返回的记录成功数为 1 时，表示一定收到了 SDK 确认收到该消息的回应。即此条推送消息一定是到达了设备。
 建议检查推送是否使用了自定义 Receiver 功能（消息中是否有 action 字段），消息到达后 SDK 会直接将消息转交给自定义 Receiver，由自定义 Receiver 完成推送提醒。这种情况需要检查自定义 Receiver 实现逻辑排查消息到达后为什么没有弹出提醒。
 
-### Objective-C SDK 在 iOS 13 环境下，无法接收推送的解决办法。
+### 旧版本 Objective-C SDK 在 iOS 13 环境下，无法接收推送的解决办法。
 
-在 iOS 13 环境下，由于苹果更改了基础框架的 API，导致旧版本的 Objc SDK（<= 11.6.6）无法上传有效的 device token，解决办法如下：
+在 iOS 13 环境下，由于苹果更改了基础框架的 API，导致旧版本的 Objc SDK（<= 11.6.6）无法上传有效的 device token。
 
-Objective-C SDK v11.6.7 及以上版本，按如下方式上传 device token：
+解决办法是升级 SDK 版本到 v11.6.7 及以上，保存 deviceToken 的方法参见  [保存 Token](ios_push_guide.html#保存_Token)。
 
-```
-// 二进制数据（device token）转化为正确的十六进制字符串，
-// 同时配置苹果开发者账号的 Team ID
-[installation setDeviceTokenFromData:deviceToken teamId:@"Apple Developer Team ID"];
-// 上传有效的十六进制字符串和 Team ID
-[installation saveInBackground];
-```
-
-旧版本的 Objective-C SDK（<= 11.6.6），按如下方式上传 device token：
+旧版本的 Objective-C SDK（<= 11.6.6）的解决办法是按如下方式上传 device token：
 
 ```
 NSUInteger dataLength = deviceToken.length;
