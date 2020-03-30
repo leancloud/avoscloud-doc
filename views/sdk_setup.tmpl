@@ -1138,9 +1138,10 @@ var realtime = new AVRealtime(new AVRealtime.Configuration
 
 ## 开启调试日志
 
-在应用开发阶段，你可以选择开启 SDK 的调试日志（debug log）来方便追踪问题。调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 IDE 的日志窗口，或是浏览器 Console 或是 LeanCloud 控制台的 [云引擎日志](/dashboard/cloud.html?appid={{appid}}#/log) 中。
+在应用开发阶段，你可以选择开启 SDK 的调试日志（debug log）来方便追踪问题。
 
 {% if platform_name === "Objective-C" %}
+调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 Xcode 的日志窗口。
 ```objc
 // 在 Application 初始化代码执行之前执行
 [AVOSCloud setAllLogsEnabled:YES];
@@ -1151,12 +1152,15 @@ var realtime = new AVRealtime(new AVRealtime.Configuration
 [objc-debug-guide]: https://forum.avoscloud.com/t/leancloud-sdk-objective-c-sdk/21851
 {% endif %}
 {% if platform_name === "Swift" %}
+调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 Xcode 的日志窗口。
 ```swift
 // 在 Application 初始化代码执行之前执行
 LCApplication.logLevel = .all
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
+调试日志开启后，SDK 会把网络请求、错误消息等信息输出到浏览器 Console 或是 LeanCloud 控制台的 [云引擎日志](/dashboard/cloud.html?appid={{appid}}#/log) 中。
+
 如果使用的是 Node.js，可以在通过 npm 启动应用时设置环境变量 `DEBUG=leancloud*`（存储）、`DEBUG=LC*`（即时通讯）：
 
 ```sh
@@ -1200,6 +1204,8 @@ debug.disable(); // 停用
 
 {% endif %}
 {% if platform_name === "Python" %}
+调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 IDE 的日志窗口，或是浏览器 Console 或是 LeanCloud 控制台的 [云引擎日志](/dashboard/cloud.html?appid={{appid}}#/log) 中。
+
 ```python
 # 写在启动脚本的头部
 # 如果是在云引擎环境，启动脚本是 wsgi.py
@@ -1209,12 +1215,16 @@ logging.basicConfig(level=logging.DEBUG)
 ```
 {% endif %}
 {% if platform_name === "PHP" %}
+调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 IDE 的日志窗口，或是浏览器 Console 或是 LeanCloud 控制台的 [云引擎日志](/dashboard/cloud.html?appid={{appid}}#/log) 中。
+
 ```php
 // 放在 SDK 初始化语句 Client::initialize() 后面，只需要调用一次即可
 Client::setDebug(true);
 ```
 {% endif %}
 {% if platform_name === "Android / Java" %}
+调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 Android Studio 的日志窗口。
+
 ```java
 // 在 AVOSCloud.initialize() 之前调用
 AVOSCloud.setLogLevel(AVLogger.Level.DEBUG);
@@ -1225,6 +1235,8 @@ AVOSCloud.setLogLevel(AVLogger.Level.DEBUG);
 [android-debug-guide]: https://forum.avoscloud.com/t/leancloud-sdk-android-sdk/21829/
 {% endif %}
 {% if platform_name === ".NET" %}
+调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 IDE 的日志窗口，或是浏览器 Console 或是 LeanCloud 控制台的 [云引擎日志](/dashboard/cloud.html?appid={{appid}}#/log) 中。
+
 ```cs
 // 开启存储日志
 AVClient.HttpLog(Debug.Log);
