@@ -524,7 +524,7 @@ $ npm install leancloud-realtime --save
 $ npm install leancloud-realtime-plugin-typed-message --save
 ```
 
-然后在代码中通过 `require` 获得 SDK 的引用：
+安装完成后，在代码中通过 `require` 获得 SDK 的引用：
 
 ```js
 // 存储服务
@@ -541,7 +541,7 @@ var AV = require('leancloud-storage/live-query');
 // 有了这一行，无需另外 require('leancloud-storage')
 ```
 
-如果需要使用即时通讯的富媒体消息，需要按以下方法进行引用：
+如果需要使用即时通讯的富媒体消息，需要按如下做法引入：
 
 ```js
 // 富媒体消息依赖存储功能
@@ -552,13 +552,12 @@ var { TypedMessagesPlugin, ImageMessage } = require('leancloud-realtime-plugin-t
 ```
 
 同样，如果同时需要使用 LiveQuery 功能，请将上面代码中的 `require('leancloud-storage')` 替换为 `require('leancloud-storage/live-query')`。
-
-富媒体消息插件暴露（export）的成员完整列表请参考
-[富媒体消息插件 API 文档](https://leancloud.github.io/js-realtime-sdk/plugins/typed-messages/docs/module-leancloud-realtime-plugin-typed-messages.html)
+富媒体消息插件暴露（export）的成员完整列表可以参考
+[富媒体消息插件 API 文档](https://leancloud.github.io/js-realtime-sdk/plugins/typed-messages/docs/module-leancloud-realtime-plugin-typed-messages.html)。
 
 为了保证兼容性，SDK 一直以来分发的都是 ECMAScript 5 版本的代码，并打包了所有需要的 Polyfills（比如 Promise）。
 即时通讯 SDK v5.0.0-rc.2 起同时提供以最新版本 ECMAScript 为编译目标的版本，该版本拥有更小的体积与更好的运行时优化，适用于只需要兼容最新版本浏览器的使用场景。
-如果应用使用了 @babel/preset-env 或类似方案，也可以在转译时 include 最新 ECMAScript 版本的 SDK，由应用来决定要兼容的目标运行环境。
+如果应用使用了 `@babel/preset-env` 或类似方案，也可以在转译时 include 最新 ECMAScript 版本的 SDK，由应用来决定要兼容的目标运行环境。
 需要注意最新版本 ECMAScript 每年都会变，而该版本的目标即是提供与最新标准对齐的代码，因此由于引入了新版本 ECMASCript 特性导致不再支持某些非最新版本的运行环境将不被视为破坏兼容性的改动。
 当前 ECMAScript 的版本为 2020。
 
@@ -712,7 +711,7 @@ import AV from 'leancloud-storage/dist/av-weapp.js';
 
 如果你的 LayaAir 项目需要发布为微信或 QQ 小游戏，需要在构建发布到小游戏之前修改 SDK 的引用路径，具体替换方法请参考 [CocosCreator](#cocoscreator) 章节。
 
-请注意，此改动会导致其他平台的产出（包括浏览器与模拟器的预览功能）不能正常工作，因此应该只在构建发布到小游戏之前临时修改，并在发布之后修改回来。
+同样，此改动会导致其他平台的产出（包括浏览器与模拟器的预览功能）不能正常工作，因此应该只在构建发布到小游戏之前临时修改，并在发布之后修改回来。
 
 ### Egret（白鹭引擎）
 
@@ -796,12 +795,13 @@ $ npm install @leancloud/platform-adapters-react-native --save
 获得引用：
 
 ```sh
-# 存储（不带 LiveQuery）
+// 存储（不带 LiveQuery）
 const AV = require('leancloud-storage/core');
-# 如果使用 LiveQuery，那么将上面一行替换为
-# const AV = require('leancloud-storage/core-live-query');
-# 即时通讯
+// 如果使用 LiveQuery，那么将上面一行替换为
+// const AV = require('leancloud-storage/core-live-query');
+// 即时通讯
 const { Realtime, setAdapters } = require('leancloud-realtime/im');
+// React Native Adapter 
 const reactNativeAdapters = require('@leancloud/platform-adapters-react-native');
 ```
 
