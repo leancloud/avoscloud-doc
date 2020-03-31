@@ -599,12 +599,11 @@ var { Realtime, TextMessage } = AV;
 ```html
 <!-- 富媒体消息依赖存储功能 -->
 <script src="//cdn.jsdelivr.net/npm/leancloud-storage@{{jssdkversion}}/dist/av-min.js"></script>
-<!-- 如果同时需要使用 LiveQuery，请将上面一行替换为
-<script src="//cdn.jsdelivr.net/npm/leancloud-storage@{{jssdkversion}}/dist/av-live-query-min.js"></script>
--->
 <script src="//cdn.jsdelivr.net/npm/leancloud-realtime@{{jsimsdkversion}}/dist/im-browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leancloud-realtime-plugin-typed-messages@3.1.0/dist/typed-messages.js"></script>
 ```
+
+同样，如果同时需要使用 LiveQuery 功能，请将 url 中的 `av-min.js` 替换为 `av-live-query-min.js`。
 
 通过 CDN 加载时，富媒体消息插件暴露的所有的成员都通过全局变量 `AV` 获得引用：
 
