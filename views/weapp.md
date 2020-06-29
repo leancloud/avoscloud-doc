@@ -213,6 +213,14 @@ SDK 提供了一系列小程序特有的用户相关的 API，适用于不同的
 
 以上 API 均使用微信 Adapters 的 `AuthInfo` 进行登录。`AuthInfo` 可通过 Adapters 的 `getAuthInfo` 函数获取。若未提供 `AuthInfo` ，API 会使用默认参数调用 `getAuthInfo` 函数自动获取。
 
+`getAuthInfo` 支持传入一个 `object` 来配置 Adapters 如何调用小程序的登录 API ，以下是配置支持的参数及其默认值：
+
+|key|类型|默认值|说明|
+|---|---|-----|---|
+|`preferUnionId`|`boolean`|`false`|如果可以自动获取 unionid 则使用 unionid 登录
+|`platform`|`string`|`weixin`|unionid 对应的 platform 字符串
+|`asMainAccount`|`boolean`|`false`|是否把当前平台的鉴权信息作为主账号来使用
+
 下面我们以微信平台为例讨论不同场景下的使用方式。
 
 ### 一键登录
