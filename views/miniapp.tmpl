@@ -46,6 +46,9 @@
 {% if miniapp === "toutiao" %}
 TODO
 {% endif %}
+{% if miniapp === "baidu" %}
+TODO
+{% endif %}
 
 ### 配置域名白名单
 
@@ -56,6 +59,9 @@ TODO
 如果你不需要进行真机调试可以暂时跳过这一步（可在开发者工具的 **详情** > **项目设置** 中勾选**不校验安全域名、TLS 版本以及 HTTPS 证书**）。
 {% endif %}
 {% if miniapp === "toutiao" %}
+TODO
+{% endif %}
+{% if miniapp === "baidu" %}
 TODO
 {% endif %}
 
@@ -81,6 +87,9 @@ AV.init({
 ```
 {% endif %}
 {% if miniapp === "toutiao" %}
+TODO
+{% endif %}
+{% if miniapp === "baidu" %}
 TODO
 {% endif %}
 
@@ -226,6 +235,9 @@ wx.chooseImage({
 {% if miniapp === "toutiao" %}
 TODO
 {% endif %}
+{% if miniapp === "baidu" %}
+TODO
+{% endif %}
 
 ## 用户系统
 
@@ -253,6 +265,11 @@ SDK 提供了一系列小程序特有的用户相关的 API，适用于不同的
 |key|类型|默认值|说明|
 |---|---|-----|---|
 |`force`|`boolean`|`false`|未登录时, 是否强制调起登录框
+{% endif %}
+{% if miniapp === "baidu" %}
+|key|类型|默认值|说明|
+|---|---|-----|---|
+|`platform`|`string`|`baidu`|unionid 对应的 platform 字符串
 {% endif %}
 
 下面我们讨论不同场景下的使用方式。
@@ -290,6 +307,9 @@ AV.User.loginWithMiniApp().then(user => {
 {% if miniapp === "toutiao" %}
 TODO
 {% endif %}
+{% if miniapp === "baidu" %}
+TODO
+{% endif %}
 
 如果用户是第一次使用此应用，调用登录 API 会创建一个新的用户，你可以在 控制台 > **存储** 中的 `_User` 表中看到该用户的信息，如果用户曾经使用该方式登录过此应用（存在对应 `openid` 的用户），再次调用登录 API 会返回同一个用户。
 
@@ -317,6 +337,9 @@ wx.getUserInfo({
 {{ docs.note("小程序的登录态（`session_key`）存在有效期，可以通过 [`wx.checkSession()`](https://developers.weixin.qq.com/miniprogram/dev/api/wx.checkSession.html) 方法检测当前用户登录态是否有效，失效后可以通过调用 `AV.User.loginWithMiniApp()` 重新登录。") }}
 {% endif %}
 {% if miniapp === "toutiao" %}
+TODO
+{% endif %}
+{% if miniapp === "baidu" %}
 TODO
 {% endif %}
 
@@ -526,6 +549,9 @@ const realtime = new Realtime({
 {% if miniapp === "toutiao" %}
 TODO
 {% endif %}
+{% if miniapp === "baidu" %}
+TODO
+{% endif %}
 
 需要特别注意的是，小程序对 WebSocket 连接的数量是有限制的，因此推荐的用法是初始化 `Realtime` 一次，挂载到全局的 App 实例上，然后在所有需要的时候都使用这个 `Realtime` 实例。
 
@@ -552,6 +578,9 @@ const realtime = getApp().realtime;
 ```
 {% endif %}
 {% if miniapp === "toutiao" %}
+TODO
+{% endif %}
+{% if miniapp === "baidu" %}
 TODO
 {% endif %}
 
