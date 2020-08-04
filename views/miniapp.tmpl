@@ -10,8 +10,11 @@
 # 在微信小程序（游戏）与 QQ 小程序（游戏）中使用 LeanCloud
 
 小程序是一个全新的跨平台移动应用平台，小游戏是小程序的一个类目，在小程序的基础上开放了游戏相关的 API。LeanCloud 为小程序提供一站式后端云服务，为你免去服务器维护、证书配置等繁琐的工作，大幅降低你的开发和运维成本。本文说明了如何在小程序与小游戏中使用 LeanCloud 提供的各项服务。
-{% endif %}
-{% if miniapp === "toutiao" %}
+{% elif miniapp === "alipay" %}
+# 在支付宝小程序中使用 LeanCloud
+{% elif miniapp === "baidu" %}
+# 在百度小程序中使用 LeanCloud
+{% elif miniapp === "toutiao" %}
 # 在头条小程序中使用 LeanCloud
 {% endif %}
 
@@ -32,6 +35,7 @@
 <img src="images/leantodo-weapp-qr.jpg" alt="LeanTodo Weapp QR" width="250"> <img src="images/leantodo-qqapp-qr.png" alt="LeanTodo Weapp QR" width="250">
 {% endif %}
 
+{% if miniapp === "wechat" %}  {# wechat-only-begin #}
 ## 准备工作
 
 ### 创建应用
@@ -43,12 +47,6 @@
 [微信公众平台]: https://mp.weixin.qq.com
 [QQ 小程序开放平台]: https://q.qq.com
 {% endif %}
-{% if miniapp === "toutiao" %}
-TODO
-{% endif %}
-{% if miniapp === "baidu" %}
-TODO
-{% endif %}
 
 ### 配置域名白名单
 
@@ -57,12 +55,6 @@ TODO
 - 登录 [微信公众平台] 或 [QQ 小程序开放平台]，前往 **设置 > 开发设置 > 服务器配置 > 「修改」** 链接，**增加**上述域名白名单中的域名。
 
 如果你不需要进行真机调试可以暂时跳过这一步（可在开发者工具的 **详情** > **项目设置** 中勾选**不校验安全域名、TLS 版本以及 HTTPS 证书**）。
-{% endif %}
-{% if miniapp === "toutiao" %}
-TODO
-{% endif %}
-{% if miniapp === "baidu" %}
-TODO
 {% endif %}
 
 ### 安装与初始化 SDK
@@ -85,12 +77,6 @@ AV.init({
   serverURLs: "https://xxx.example.com",
 });
 ```
-{% endif %}
-{% if miniapp === "toutiao" %}
-TODO
-{% endif %}
-{% if miniapp === "baidu" %}
-TODO
 {% endif %}
 
 要使用 LeanCloud 的即时通讯服务实现聊天等功能，需要使用 LeanCloud 即时通讯 SDK。即时通讯 SDK 是与存储 SDK 独立的 SDK，我们在单独的 [即时通讯](#即时通讯) 章节介绍其安装与初始化的步骤。
@@ -232,12 +218,7 @@ wx.chooseImage({
 
 关于文件存储更详细的用法请参考 [JavaScript 数据存储开发指南 · 文件](leanstorage_guide-js.html#文件)。
 {% endif %}
-{% if miniapp === "toutiao" %}
-TODO
-{% endif %}
-{% if miniapp === "baidu" %}
-TODO
-{% endif %}
+{% endif %} {# wechat-only-end #}
 
 ## 用户系统
 
@@ -260,13 +241,15 @@ SDK 提供了一系列小程序特有的用户相关的 API，适用于不同的
 |`preferUnionId`|`boolean`|`false`|如果可以自动获取 unionid 则使用 unionid 登录
 |`platform`|`string`|`weixin`|unionid 对应的 platform 字符串
 |`asMainAccount`|`boolean`|`false`|是否把当前平台的鉴权信息作为主账号来使用
-{% endif %}
-{% if miniapp === "toutiao" %}
+{% elif miniapp === "alipay" %}
+|key|类型|默认值|说明|
+|---|---|-----|---|
+|`scopes`|`string` / `Array`|`auth_base`|授权类型，默认 auth_base。支持 auth_base（静默授权）/ auth_user（主动授权）/ auth_zhima （获取用户芝麻信息）
+{% elif miniapp === "toutiao" %}
 |key|类型|默认值|说明|
 |---|---|-----|---|
 |`force`|`boolean`|`false`|未登录时, 是否强制调起登录框
-{% endif %}
-{% if miniapp === "baidu" %}
+{% elif miniapp === "baidu" %}
 |key|类型|默认值|说明|
 |---|---|-----|---|
 |`platform`|`string`|`baidu`|unionid 对应的 platform 字符串
@@ -303,12 +286,88 @@ AV.User.loginWithMiniApp().then(user => {
   }
 }
 ```
-{% endif %}
-{% if miniapp === "toutiao" %}
-TODO
-{% endif %}
-{% if miniapp === "baidu" %}
-TODO
+{% elif miniapp === "alipay" %}
+LeanCloud 的用户系统支持一键使用支付宝的用户身份登录。要使用一键登录功能，需要先设置小程序的应用 ID 、应用私钥和支付宝公钥（注意不是应用公钥）：
+
+1. 按照[设置接口加签方式](https://opendocs.alipay.com/open/291/105971/)中的步骤生成应用私钥和公钥。
+2. 进入[支付宝开放平台](https://mini.open.alipay.com/channel/miniIndex.htm)并打开对应的应用，在应用的开发设置页面进行**接口加签方式**设置，填写应用公钥。
+3. 前往 LeanCloud 控制台 > 存储 > 用户 > 设置 > 第三方集成，启用「支付宝小程序」后填写应用 ID 、应用私钥和支付宝公钥。
+
+这样你就可以在应用中使用 `AV.User.loginWithMiniApp()` 方法来使用当前用户身份登录了。
+
+```js
+AV.User.loginWithMiniApp().then(user => {
+  // user 为当前登录用户
+})
+```
+
+使用一键登录方式登录时，LeanCloud 会将该用户的 `user_id` 与 `access_token` 等信息保存在对应的 `user.authData.lc_alipay` 属性中，你可以在控制台的 `_User` 表中看到：
+
+```json
+{
+  "authData": {
+    "lc_alipay": {
+      "access_token": "...",
+      "alipay_user_id": "...",
+      "expires_in": 31536000,
+      "re_expires_in": 31536000,
+      "refresh_token": "...",
+      "user_id": "..."
+    }
+  }
+}
+```
+{% elif miniapp === "baidu" %}
+LeanCloud 的用户系统支持一键使用百度用户的身份登录。要使用一键登录功能，需要先设置小程序的 App Key 和 App Secret ：
+
+1. 登录百度小程序[开发者平台](https://smartprogram.baidu.com/developer/index.html)，在 **开发管理** > **设置** > **开发设置** 中获得 App Key 与 App Secret 。
+2. 前往 LeanCloud 控制台 > 存储 > 用户 > 设置 > 第三方集成，启用「百度小程序」后填写 App Key 与 App Secret。
+
+这样你就可以在应用中使用 `AV.User.loginWithMiniApp()` 方法来使用当前用户身份登录了。
+
+```js
+AV.User.loginWithMiniApp().then(user => {
+  // user 为当前登录用户
+})
+```
+
+使用一键登录方式登录时，LeanCloud 会将该用户的小程序 `openid` 与 `session_key` 等信息保存在对应的 `user.authData.lc_baidu` 属性中，你可以在控制台的 `_User` 表中看到：
+
+```json
+{
+  "authData": {
+    "lc_baidu": {
+      "openid": "...",
+      "session_key": "..."
+    }
+  }
+}
+```
+{% elif miniapp === "toutiao" %}
+LeanCloud 的用户系统支持一键使用头条用户的身份登录。要使用一键登录功能，需要先设置小程序的 AppID 和 AppSecret ：
+
+1. 登录字节跳动[小程序开发者平台](https://microapp.bytedance.com/)并选择要关联的小程序，在 **开发管理** > **开发设置** 中获得 AppID 与 AppSecret 。
+2. 前往 LeanCloud 控制台 > 存储 > 用户 > 设置 > 第三方集成，启用「字节跳动小程序」后填写 AppID 与 AppSecret。
+
+这样你就可以在应用中使用 `AV.User.loginWithMiniApp()` 方法来使用当前用户身份登录了。
+
+```js
+AV.User.loginWithMiniApp().then(user => {
+  // user 为当前登录用户
+})
+```
+
+使用一键登录方式登录时，LeanCloud 会将该用户的小程序 `openid` 与 `session_key` 等信息保存在对应的 `user.authData.lc_tt` 属性中，你可以在控制台的 `_User` 表中看到：
+
+```json
+{
+  "lc_tt": {
+    "anonymousCode": "...",
+    "openid": "...",
+    "session_key": "..."
+  }
+}
+```
 {% endif %}
 
 如果用户是第一次使用此应用，调用登录 API 会创建一个新的用户，你可以在 控制台 > **存储** 中的 `_User` 表中看到该用户的信息，如果用户曾经使用该方式登录过此应用（存在对应 `openid` 的用户），再次调用登录 API 会返回同一个用户。
@@ -335,12 +394,58 @@ wx.getUserInfo({
 `authData` 默认只有对应用户可见，开发者可以使用 masterKey 在云引擎中获取该用户的 `openid` 与 `session_key` 进行支付、推送等操作。详情的示例请参考 [支付](#支付)。
 
 {{ docs.note("小程序的登录态（`session_key`）存在有效期，可以通过 [`wx.checkSession()`](https://developers.weixin.qq.com/miniprogram/dev/api/wx.checkSession.html) 方法检测当前用户登录态是否有效，失效后可以通过调用 `AV.User.loginWithMiniApp()` 重新登录。") }}
-{% endif %}
-{% if miniapp === "toutiao" %}
-TODO
-{% endif %}
-{% if miniapp === "baidu" %}
-TODO
+{% elif miniapp === "alipay" %}
+```js
+// 假设已经通过 AV.User.loginWithMiniApp() 登录
+// 获得当前登录用户
+const user = AV.User.current();
+// 调用小程序 API，得到用户信息
+my.getOpenUserInfo({
+  success: (res) => {
+    const userInfo = JSON.parse(res.response).response;
+    // 更新当前用户的信息
+    user.set(userInfo).save().then(user => {
+      // 成功，此时可在控制台中看到更新后的用户信息
+    }).catch(console.error)
+  }
+});
+```
+
+`authData` 默认只有对应用户可见，开发者可以使用 masterKey 在云引擎中获取该用户的 `user_id` 、 `access_token` 等信息。
+{% elif miniapp === "baidu" %}
+```js
+// 假设已经通过 AV.User.loginWithMiniApp() 登录
+// 获得当前登录用户
+const user = AV.User.current();
+// 调用小程序 API，得到用户信息
+swan.getUserInfo({
+  success: ({userInfo}) => {
+    // 更新当前用户的信息
+    user.set(userInfo).save().then(user => {
+      // 成功，此时可在控制台中看到更新后的用户信息
+    }).catch(console.error);
+  }
+});
+```
+
+`authData` 默认只有对应用户可见，开发者可以使用 masterKey 在云引擎中获取该用户的 `openid` 与 `session_key` 。
+{% elif miniapp === "toutiao" %}
+```js
+// 假设已经通过 AV.User.loginWithMiniApp() 登录
+// 获得当前登录用户
+const user = AV.User.current();
+// 调用小程序 API，得到用户信息
+tt.getUserInfo({
+  success: ({userInfo}) => {
+    // 更新当前用户的信息
+    user.set(userInfo).save().then(user => {
+      // 成功，此时可在控制台中看到更新后的用户信息
+    }).catch(console.error);
+  }
+});
+```
+
+`authData` 默认只有对应用户可见，开发者可以使用 masterKey 在云引擎中获取该用户的 `openid` 与 `session_key` 。
 {% endif %}
 
 {% if miniapp === "wechat" %}
@@ -522,6 +627,7 @@ AV.User.logIn('username', 'password').then(user => {
 }).catch(console.error);
 ```
 
+{% if miniapp === "wechat" %} {# wechat-only-begin #}
 ## 即时通讯
 
 要使用 LeanCloud 的即时通讯服务实现聊天等功能，需要使用 LeanCloud 即时通讯 SDK。
@@ -545,12 +651,6 @@ const realtime = new Realtime({
   serverURLs: "https://xxx.example.com",
 });
 ```
-{% endif %}
-{% if miniapp === "toutiao" %}
-TODO
-{% endif %}
-{% if miniapp === "baidu" %}
-TODO
 {% endif %}
 
 需要特别注意的是，小程序对 WebSocket 连接的数量是有限制的，因此推荐的用法是初始化 `Realtime` 一次，挂载到全局的 App 实例上，然后在所有需要的时候都使用这个 `Realtime` 实例。
@@ -576,12 +676,6 @@ App({
 // some-page.js
 const realtime = getApp().realtime;
 ```
-{% endif %}
-{% if miniapp === "toutiao" %}
-TODO
-{% endif %}
-{% if miniapp === "baidu" %}
-TODO
 {% endif %}
 
 即时通讯 SDK 的详细用法请参考 [即时通讯开发指南](realtime_v2.html)。
@@ -722,6 +816,7 @@ AV.Cloud.run('order').then((data) => {
 
 * [小程序客户端发起支付 API](https://mp.weixin.qq.com/debug/wxadoc/dev/api/api-pay.html)
 {% endif %}
+{% endif %} {# wechat-only-end #}
 
 ## FAQ
 
