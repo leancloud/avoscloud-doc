@@ -59,7 +59,7 @@
 同时，信息流 API 是与用户账号系统绑定以及好友关系 API 绑定的，如果不使用这些内置组件，将无法正常使用信息流功能。接下来我们通过一些例子，看看如何使用信息流 API 来完成产品开发。
 
 > 特别提示：
-> 
+>
 > 发了一条状态，并不代表会自动发送了一条推送消息，开发者可以自由控制是否使用推送。更多信息请参考 [消息推送开发指南](./push_guide.html)。
 
 ## JavaScript SDK
@@ -273,6 +273,221 @@ query.find().then(function(statuses){
 ```
 
 `AV.Status.statusQuery` 返回的是一个普通的 AV.Query 对象，本质上是查询数据管理平台的 `_Status` 表。你可以自主添加更多查询条件。
+
+## JavaScript SDK (Next)
+
+### 用户关系
+
+User 新增两个方法 `follow` 和 `unfollow` 来建立用户关系，你可以关注某个用户：
+
+```javascript
+LC.User.current()
+  .follow('52f9be45e4b035debf88b6e2')
+  .then(() => {
+    //关注成功
+  })
+  .catch((error) => {
+    //关注失败
+  });
+```
+
+`follow` 方法接收一个 User 对象或者 User 对象的 objectId（通过 user.objectId 拿到）。
+
+取消关注使用 `unfollow` 方法：
+
+```javascript
+LC.User.current()
+  .unfollow('52f9be45e4b035debf88b6e2')
+  .then(() => {
+    // 取消关注成功
+  })
+  .catch((error) => {
+    // 取消关注失败
+  });
+```
+
+关注后，可以查询自己关注的用户列表：
+
+```javascript
+LC.CLASS('_Followee')
+  .where('user', '==', LC.User.current())
+  .include('followee')
+  .find()
+  .then((results) => {
+    // 关注的用户列表 followees
+    const followees = results.map((result) => result.data.followee);
+  });
+```
+
+followee 是一个 Pointer 类型，通过 `include()` 将它的所有信息查询包括进来，否则只会返回用户的 objectId 。当查询计数的时候（使用 `Query#count` 方法）不建议 `include()`。
+
+查询自己的粉丝（他人关注了我，他人就是我的粉丝），可以通过：
+
+```javascript
+LC.CLASS('_Follower')
+  .where('user', '==', LC.User.current()).
+  .include('follower')
+  .find()
+  .then((results) => {
+    // 粉丝列表 followers
+    const followers = results.map((result) => result.data.follower);
+  });
+```
+
+### 状态
+
+关注了用户之后（也就是成为他的粉丝），你就会接收到该用户发送给他的粉丝的状态信息。例如，我喜欢了某个视频，我可以发送这条信息「我喜欢了视频 xxxx」给我的粉丝。我的粉丝就可以在他们的收件箱（inbox）里收到这条状态信息。
+
+#### 发布状态
+
+当前登录用户发送一条状态给关注他的粉丝：
+
+```javascript
+LC.Status.sendToFollowers({
+  url: '视频url',
+  message: '我喜欢了视频xxxx.',
+  sound: 'sound.wmv',
+})
+  .then((status) => {
+    // 发布状态成功，返回状态信息
+  })
+  .catch((err) => {
+    // 发布失败
+  });
+```
+
+发布状态成功，粉丝的收件箱不一定马上能看到，因为发布过程是一个异步的过程，会有一定的延迟，通常这个延迟都在几秒之内。发送状态必须处于用户登录状态，使用 `sendToFollowers` 将发送给指定用户的粉丝。
+
+Status 对象包含下列属性：
+
+属性|说明
+---|---
+id|对象的objectId
+messageId|状态在某个用户收件箱的消息编号，发件箱返回的 status 则没有此属性，messageId 可用于 [收件箱的分页查询](#查询收件箱)。
+inboxType|收件箱类型，默认是 timeline 收件箱，也就是 default。SDK 默认提供 private(私信)，default 表示 timeline，你也可以自定义。
+data|状态属性，一个 JSON 对象
+createdAt|消息的创建时间
+
+其中 data.source 属性是保留属性，默认指向状态的发布者。
+
+#### 发送私信给某个用户
+
+我还可以发送一条私信给单独某个用户：
+
+```javascript
+LC.Status.sendToUser('52f9be45e4b035debf88b6e2', { message: '机密消息' })
+  .then((status) => {
+    // 发送成功
+  })
+  .catch((err) => {
+    // 发布失败
+  });
+```
+
+`sendToUser` 的第二个参数指定私信接收的用户或者用户的 objectId。
+
+#### 发送给自定义收件箱
+
+`sendToFollowers` 和 `sendToUser` 方法还可以自定义 inboxType：
+
+```javascript
+LC.Status.sendToFollowers(
+  {
+    message: '我读了《clojure 编程乐趣》',
+  },
+  {
+    // 定义一个 book 收件箱
+    inboxType: 'book',
+  }
+).then((status) => {
+  // 发送成功
+});
+```
+
+#### 查询收件箱
+
+查询我的 timeline 收件箱，可以通过：
+
+```javascript
+LC.Status.whereInboxOwner(LC.User.current())
+  .find()
+  .then((statuses) => {
+    // 查询成功，返回状态列表，每个对象都是 LC.Object
+  })
+  .catch((err) => {
+    // 查询失败
+    console.dir(err);
+  });
+```
+
+收件箱返回的 status 列表，每个 status 都有 messageId 属性，表示这条 status 在这个收件箱里的唯一编号，有两个方法用于限制 messageId 的范围：
+
+- **whereSinceId**：设定查询返回的 status 的 messageId 必须**大于**传入的 messageId。
+- **whereMaxId**：限定查询返回的 status 的 messageId 必须小于等于传入的 messageId。
+
+通过 sinceId 和 maxId 可以实现分页查询：
+
+查询本次查询之后新增的 status（向后翻页刷新）:
+
+```javascript
+// 假设 messageId 是上次查询返回的 status 的最大 messageId 编号
+LC.Status.whereInboxOwner(LC.User.current())
+  // 查询从上次查询返回结果之后的更新 status
+  .whereSinceId(messageId)
+  .find()
+  .then((statuses) => {
+    // 查询成功，返回状态列表，每个对象都是 LCObject
+  })
+  .catch((err) => {
+    // 查询失败
+  });
+```
+
+查询本次查询的前一页（也就是更老的 status，向前翻页）：
+
+```javascript
+// 假设 messageId 是上次查询返回的 status 的最大 messageId 编号
+LC.Status.whereInboxOwner(LC.User.current()).whereMaxId(messageId);
+```
+
+`whereInboxType` 还可以指定收件箱的类型，默认是查询 timeline 收件箱，也可以查询私信收件箱：
+
+```javascript
+LC.Status.whereInboxType('private');
+```
+
+#### 查询收件箱未读状态数目
+
+使用 `getUnreadCount` 可以查询某个收件箱的未读状态数目和总数目：
+
+```javascript
+LC.Status.getUnreadCount().then((result) => {
+  const { unread, total } = result;
+});
+```
+
+同样的，你可以这样查询当前登录用户未读私信的未读数目和总数目：
+
+```javascript
+LC.Status.getUnreadCount({ inboxType: 'private' }).then((result) => {
+  const { unread, total } = result;
+});
+```
+
+#### 查询发件箱
+
+查询我发出去的状态信息，可以通过 `whereStatusOwner` 方法：
+
+```javascript
+LC.Status.whereStatusOwner(LC.User.current())
+  .find()
+  .then((statuses) => {
+    // 查询成功，返回状态列表，每个对象都是 LCObject
+  })
+  .catch((err) => {
+    // 查询失败
+  });
+```
 
 ## iOS SDK
 
@@ -641,7 +856,7 @@ AVUser.currentUser().getFollowersAndFolloweesInBackground(new FollowersAndFollow
     try {
       List<AVUser> followerArray = (List<AVUser>)avObjects.get("follower");
       List<AVUser> followeeArray = (List<AVUser>)avObjects.get("followee");
-    
+
       System.out.println("followers=" + followerArray);
       System.out.println("followees=" + followeeArray);
     } catch (Exception ex) {
@@ -676,7 +891,7 @@ class AVStatus {
   AVStatus(String imageUrl, String message)
   // 附带其他自定义属性的 Status
   AVStatus(Map<String, Object> customData)
-  
+
   // 设置与获取自定义属性
   void put(String key, Object value)
   Object get(String key)
@@ -745,18 +960,18 @@ status.sendToFollowersInBackground()
         @Override
         public void onSubscribe(Disposable disposable) {
         }
-  
+
         @Override
         public void onNext(AVStatus avNull) {
           // succeed
         }
-  
+
         @Override
         public void onError(Throwable throwable) {
           // failed
           throwable.printStackTrace();
         }
-  
+
         @Override
         public void onComplete() {
         }
@@ -828,7 +1043,7 @@ AVStatus.statusQuery(targetUser)
           @Override
           public void onNext(List<AVStatus> avStatuses) {
             // succeed
-            // 这时候每一个 AVStatus 实例都会有 source，messageId，objectId，createdAt，inboxType 
+            // 这时候每一个 AVStatus 实例都会有 source，messageId，objectId，createdAt，inboxType
             // 等预留属性，也会有开发者自定义设置的所有属性值。
           }
 
@@ -955,15 +1170,15 @@ AVStatus.statusQuery(targetUser)
         @Override
         public void onSubscribe(Disposable disposable) {
         }
-  
+
         @Override
         public void onNext(Integer integer) {
         }
-  
+
         @Override
         public void onError(Throwable throwable) {
         }
-  
+
         @Override
         public void onComplete() {
         }
@@ -995,17 +1210,17 @@ target.deleteInBackground()
         @Override
         public void onSubscribe(Disposable disposable) {
         }
-    
+
         @Override
         public void onNext(AVNull v) {
           // succeed
         }
-    
+
         @Override
         public void onError(Throwable throwable) {
           // failed
         }
-    
+
         @Override
         public void onComplete() {
         }
@@ -1024,17 +1239,17 @@ target.deleteInBackground()
         @Override
         public void onSubscribe(Disposable disposable) {
         }
-    
+
         @Override
         public void onNext(AVNull v) {
           // succeed
         }
-    
+
         @Override
         public void onError(Throwable throwable) {
           // failed
         }
-    
+
         @Override
         public void onComplete() {
         }
@@ -1410,5 +1625,3 @@ curl -X POST \
 ```
 
 接收的参数与 [查询状态计数 API](#查询状态计数_API) 是一致的。
-
-

@@ -24,7 +24,7 @@ LeanCloud 云端使用的 ACL 机制是将每个操作授权给特定的 User �
 
 - 所有人可读，但不能写（`*` 代表所有人）。
 - 角色为 admin（包含子角色）的用户可读可写。
-- ID 为 58113fbda0bb9f0061ddc869 的用户可读可写。 
+- ID 为 58113fbda0bb9f0061ddc869 的用户可读可写。
 
 LeanCloud 使用内建数据表 `_User` 来维护 [用户/账户系统](leanstorage_guide-js.html#用户)，以及内建数据表 `_Role` 来维护 [角色](leanstorage_guide-js.html#角色)。角色既可以包含用户，也可以包含其他角色，也就是说角色有层次关系，将权限授予一个角色代表该角色所包含的其他角色也会得到相应的权限。
 
@@ -85,9 +85,9 @@ AVQuery *query = [AVUser query];
         [acl setPublicReadAccess:YES];// 设置公开的「读」权限，任何人都可阅读
         [acl setWriteAccess:YES forUser:[AVUser currentUser]];// 为当前用户赋予「写」权限
         [acl setWriteAccess:YES forUser:otherUser];
-        
+
         post.ACL = acl;// 将 ACL 实例赋予 Post 对象
-        
+
         [post save];
     } else {
         NSLog(@"error");
@@ -102,12 +102,12 @@ _ = query.get("55f1572460b2ce30e8b7afde") { result in
     case .success(object: let object):
         do {
             let post = LCObject(className: "Post")
-            
+
             try post.set("title", value: "这是我的第二条发言，谢谢大家！")
             try post.set("content", value: "我最近喜欢看足球和篮球了。")
-            
+
             let acl = LCACL()
-            
+
             acl.setAccess([.read], allowed: true)
             if let currentUserID = LCApplication.default.currentUser?.objectId?.value {
                 acl.setAccess([.write], allowed: true, forUserID: currentUserID)
@@ -115,9 +115,9 @@ _ = query.get("55f1572460b2ce30e8b7afde") { result in
             if let anotherUserID = (object as? LCUser)?.objectId?.value {
                 acl.setAccess([.write], allowed: true, forUserID: anotherUserID)
             }
-            
+
             post.ACL = acl
-            
+
             assert(post.save().isSuccess)
         } catch {
             print(error)
@@ -162,27 +162,48 @@ query.getInBackground("55f1572460b2ce30e8b7afde").subscribe(new Observer<AVUser>
 }
 ```
 ```js
-  // 创建一个针对 User 的查询
-  var query = new AV.Query(AV.User);
-  query.get('55f1572460b2ce30e8b7afde').then(function(otherUser) {
-    var post = new AV.Object('Post');
-    post.set('title', '这是我的第二条发言，谢谢大家！');
-    post.set('content','我最近喜欢看足球和篮球了。');
+// 创建一个针对 User 的查询
+var query = new AV.Query(AV.User);
+query.get('55f1572460b2ce30e8b7afde').then(function(otherUser) {
+  var post = new AV.Object('Post');
+  post.set('title', '这是我的第二条发言，谢谢大家！');
+  post.set('content','我最近喜欢看足球和篮球了。');
 
-    // 新建一个 ACL 实例
-    var acl = new AV.ACL();
-    acl.setPublicReadAccess(true);
-    acl.setWriteAccess(AV.User.current(), true);
-    acl.setWriteAccess(otherUser, true);
+  // 新建一个 ACL 实例
+  var acl = new AV.ACL();
+  acl.setPublicReadAccess(true);
+  acl.setWriteAccess(AV.User.current(), true);
+  acl.setWriteAccess(otherUser, true);
 
-    // 将 ACL 实例赋予 Post 对象
-    post.setACL(acl);
+  // 将 ACL 实例赋予 Post 对象
+  post.setACL(acl);
 
-    // 保存到云端
-    return post.save();
-  }).then(function() {
+  // 保存到云端
+  return post.save();
+}).then(function() {
+  // 保存成功
+}).catch(function(error) {
+  // 错误信息
+  console.log(error);
+});
+```
+```JavaScript(Next)
+// 新建一个 ACL 实例
+const acl = new LC.ACL();
+acl.setPublicReadAccess(true);
+acl.setWriteAccess(LC.User.current(), true);
+acl.setWriteAccess(LC.User.object('55f1572460b2ce30e8b7afde'), true);
+
+LC.CLASS('Post').add({
+  title: '这是我的第二条发言，谢谢大家！',
+  content: '我最近喜欢看足球和篮球了。',
+  // 将 ACL 实例赋予 Post 对象
+  ACL: acl,
+})
+  .then(() => {
     // 保存成功
-  }).catch(function(error) {
+  })
+  .catch((error) => {
     // 错误信息
     console.log(error);
   });
@@ -285,6 +306,9 @@ acl.setWriteAccess(anAdministrator, true);
 ```js
 acl.setWriteAccess(anAdministrator, true);
 ```
+```JavaScript(Next)
+acl.setWriteAccess(anAdministrator, true);
+```
 ```python
 acl.set_write_access(an_administrator_id, True)
 ```
@@ -322,6 +346,9 @@ acl.setRoleWriteAccess("admin", true);
 const admin = new AV.Role('admin');
 acl.setRoleWriteAccess(admin, true);
 ```
+```JavaScript(Next)
+acl.setRoleWriteAccess('admin', true);
+```
 ```python
 admin = leancloud.Role('admin')
 acl.set_role_write_access(admin, True)
@@ -355,7 +382,7 @@ AVRole *admin = [AVRole roleWithName:@"admin" acl:roleACL];
 ```
 ```swift
 do {
-  // 角色本身的 ACL 
+  // 角色本身的 ACL
   let roleACL = LCACL()
   roleACL.setAccess([.read], allowed: true)
   if let currentUserID = LCApplication.default.currentUser?.objectId?.value {
@@ -387,6 +414,14 @@ roleAcl.setWriteAccess(AV.User.current(), true);
 const admin = new AV.Role('admin', roleAcl);
 await admin.save();
 ```
+```JavaScript(Next)
+// 角色本身的 ACL
+const roleAcl = new LC.ACL();
+roleAcl.setPublicReadAccess(true);
+roleAcl.setWriteAccess(LC.User.current(), true);
+
+LC.Role.add({ name: 'admin', ACL: roleAcl });
+```
 ```python
 # 角色本身的 ACL
 role_acl = leancloud.ACL()
@@ -398,7 +433,7 @@ admin = leancloud.Role('admin', role_acl)
 admin.save()
 ```
 ```php
-// 角色本身的 ACL 
+// 角色本身的 ACL
 $roleACL = new ACL();
 $roleACL->setPublicReadAccess(true);
 $roleACL->setWriteAccess(User::getCurrentUser(), true);
@@ -410,7 +445,7 @@ $admin->save();
 ```
 ```dart
 try {
-  // 角色本身的 ACL 
+  // 角色本身的 ACL
   LCACL acl = LCACL();
   acl.setPublicReadAccess(true);
   LCUser currentUser = await LCUser.getCurrent();
@@ -436,7 +471,7 @@ if let currentUser = LCApplication.default.currentUser {
         let users = admin.relationForKey("users")
         if (try? users.insert(currentUser)) != nil {
           admin.users = users
-        }   
+        }
     }
 }
 ```
@@ -445,6 +480,9 @@ admin.getUsers().add(AVUser.getCurrentUser());
 ```
 ```js
 admin.getUsers().add(AV.User.current());
+```
+```JavaScript(Next)
+admin.addUser(LC.User.current());
 ```
 ```python
 admin.get_users().add(leancloud.User.get_current())
@@ -472,6 +510,9 @@ admin.getUsers().remove(AVUser.getCurrentUser());
 ```
 ```js
 admin.getUsers().remove(AV.User.current());
+```
+```JavaScript(Next)
+admin.removeUser(LC.User.current());
 ```
 ```python
 admin.get_users().remove(leancloud.User.get_current())
@@ -506,6 +547,9 @@ moderator.getRoles().add(admin);
 ```js
 moderator.getRoles().add(admin);
 ```
+```JavaScript(Next)
+moderator.addRole(admin);
+```
 ```python
 moderator.get_roles().add(admin)
 ```
@@ -530,6 +574,9 @@ moderator.getRoles().remove(admin);
 ```js
 moderator.getRoles().remove(admin);
 ```
+```JavaScript(Next)
+moderator.removeRole(admin);
+```
 ```python
 moderator.get_roles().remove(admin)
 ```
@@ -551,9 +598,9 @@ AVUser *user = [AVUser currentUser];
 }];
 ```
 ```swift
-if let user = LCApplication.default.currentUser {  
-    let roleQuery = LCQuery(className: LCRole.objectClassName())   
-    roleQuery.whereKey("users", .equalTo(user))   
+if let user = LCApplication.default.currentUser {
+    let roleQuery = LCQuery(className: LCRole.objectClassName())
+    roleQuery.whereKey("users", .equalTo(user))
     _ = roleQuery.find { result in
         switch result {
         case .success(objects: let roles):
@@ -577,6 +624,9 @@ user.getRolesInBackground().subscribe(new Observer<List<AVRole>>() {
 ```
 ```js
 const roles = await AV.User.current().getRoles();
+```
+```JavaScript(Next)
+const roles = await LC.User.current().getRoles();
 ```
 ```python
 roles = leancloud.User.get_current().get_roles()
@@ -609,6 +659,9 @@ AVQuery<AVUser> userQuery = moderator.getUsers().getQuery();
 ```js
 const userQuery = moderator.getUsers().query();
 ```
+```JavaScript(Next)
+const userQuery = moderator.getUsersQuery();
+```
 ```python
 user_query = moderator.get_users().query
 ```
@@ -634,6 +687,9 @@ AVQuery<AVRole> subroleQuery = moderator.getRoles().getQuery();
 ```
 ```js
 const subroleQuery = moderator.getRoles().query();
+```
+```JavaScript(Next)
+const subroleQuery = moderator.getRolesQuery();
 ```
 ```python
 subrole_query = moderator.get_roles().query
@@ -676,6 +732,9 @@ query.includeACL(true);
 var query = new AV.Query('Todo');
 query.includeACL(true);
 ```
+```JavaScript(Next)
+const query = LC.CLASS('Todo').returnACL(true);
+```
 ```python
 query = leancloud.Object.extend('Todo').query.include_acl(True)
 ```
@@ -693,7 +752,7 @@ query.includeACL(true);
 
 对于权限控制需求复杂的应用，我们推荐在控制台设置 Class 权限、字段权限、默认 ACL 后，在云引擎统一处理 ACL 相关的逻辑。
 一方面，这样免去了在 iOS、Android、Web 等各处不断升级和维护逻辑十分类似的客户端代码。
-另一方面，云引擎除了处理 ACL 外，还可以通过 hook 基于更复杂的条件进行权限控制，比如不允许发布超过一定字数的帖子。 
+另一方面，云引擎除了处理 ACL 外，还可以通过 hook 基于更复杂的条件进行权限控制，比如不允许发布超过一定字数的帖子。
 详见 [在云引擎中使用 ACL](acl_guide_leanengine.html)。
 
 对于储存敏感数据、安全性要求非常严苛的 Class，开发者也可以考虑将对应的 [Class 权限](data_security.html#Class_权限)的写权限乃至读权限完全关闭，客户端所有请求都通过云引擎中转，这样与自己搭建后端具有同样的数据安全性保障。

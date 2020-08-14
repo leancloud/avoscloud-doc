@@ -41,6 +41,15 @@ query.find().then(function(results) {
   //处理 err
 });
 ```
+```JavaScript(Next)
+const query = new LC.SearchQuery('GameScore');
+query
+  .queryString('dennis')
+  .find()
+  .then((result) => {
+    console.log('Find ' + result.hits + ' docs.');
+  });
+```
 ```objc
 AVSearchQuery *searchQuery = [AVSearchQuery searchWithQueryString:@"test-query"];
 searchQuery.className = @"GameScore";
@@ -91,6 +100,7 @@ searchQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
 
 有关查询语法，可以参考 [q 查询语法](search-rest-api.html#q_查询语法)。
 
+{{ docs.langSpecStart('js') }}
 因为每次请求都有 limit 限制，所以一次请求可能并不能获取到所有满足条件的记录。
 `AVSearchQuery` 的 `hits()` 标示所有满足查询条件的记录数。
 你可以多次调用同一个 `AV.SearchQuery` 的 `find()` 获取余下的记录。
@@ -100,9 +110,51 @@ searchQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
 sid 在 5 分钟内有效。
 
 复杂排序可以使用 `AV.SearchSortBuilder`，例如，假设 `scores` 是由分数组成的数组，现在需要根据分数的平均分倒序排序，并且没有分数的排在最后：
+{{ docs.langSpecEnd('js') }}
+
+{{ docs.langSpecStart('JavaScript(Next)') }}
+因为每次请求都有 limit 限制，所以一次请求可能并不能获取到所有满足条件的记录。
+`SearchQuery` 的 `find()` 方法返回一个 `SearchResult`，其中的 `results` 属性标示所有满足查询条件的记录。
+你可以多次调用 `SearchResult` 的 `next()` 获取余下的记录。
+
+如果在不同请求之间无法保存查询的 query 对象，可以利用 sid 做到翻页，一次查询是通过 `SearchQuery` 的 `_sid` 属性来标示的。
+你可以通过 `SearchQuery` 的 `sid()` 来重建查询 query 对象，继续翻页查询。
+sid 在 5 分钟内有效。
+
+复杂排序可以使用 `SearchSortBuilder`，例如，假设 `scores` 是由分数组成的数组，现在需要根据分数的平均分倒序排序，并且没有分数的排在最后：
+{{ docs.langSpecEnd('JavaScript(Next)') }}
+
+{{ docs.langSpecStart('objc') }}
+因为每次请求都有 limit 限制，所以一次请求可能并不能获取到所有满足条件的记录。
+`AVSearchQuery` 的 `hits()` 标示所有满足查询条件的记录数。
+你可以多次调用同一个 `AV.SearchQuery` 的 `find()` 获取余下的记录。
+
+如果在不同请求之间无法保存查询的 query 对象，可以利用 sid 做到翻页，一次查询是通过 `AV.SearchQuery` 的 `_sid` 属性来标示的。
+你可以通过 `AV.SearchQuery` 的 `sid()` 来重建查询 query 对象，继续翻页查询。
+sid 在 5 分钟内有效。
+
+复杂排序可以使用 `AV.SearchSortBuilder`，例如，假设 `scores` 是由分数组成的数组，现在需要根据分数的平均分倒序排序，并且没有分数的排在最后：
+{{ docs.langSpecEnd('objc') }}
+
+{{ docs.langSpecStart('java') }}
+因为每次请求都有 limit 限制，所以一次请求可能并不能获取到所有满足条件的记录。
+`AVSearchQuery` 的 `hits()` 标示所有满足查询条件的记录数。
+你可以多次调用同一个 `AV.SearchQuery` 的 `find()` 获取余下的记录。
+
+如果在不同请求之间无法保存查询的 query 对象，可以利用 sid 做到翻页，一次查询是通过 `AV.SearchQuery` 的 `_sid` 属性来标示的。
+你可以通过 `AV.SearchQuery` 的 `sid()` 来重建查询 query 对象，继续翻页查询。
+sid 在 5 分钟内有效。
+
+复杂排序可以使用 `AV.SearchSortBuilder`，例如，假设 `scores` 是由分数组成的数组，现在需要根据分数的平均分倒序排序，并且没有分数的排在最后：
+{{ docs.langSpecEnd('java') }}
 
 ```js
 searchQuery.sortBy(new AV.SearchSortBuilder().descending('scores', 'avg', 'last'));
+```
+```JavaScript(Next)
+searchQuery.sortBy(
+  new LC.SearchSortBuilder().orderBy('scores', 'desc', { mode: 'avg', missing: 'last' })
+);
 ```
 ```objc
 AVSearchSortBuilder *builder = [AVSearchSortBuilder newBuilder];
@@ -121,6 +173,10 @@ searchQuery.setSortBuilder(builder);
 - [AV.SearchQuery](https://leancloud.github.io/javascript-sdk/docs/AV.SearchQuery.html)
 - [AV.SearchSortBuilder](https://leancloud.github.io/javascript-sdk/docs/AV.SearchSortBuilder.html)
 {{ docs.langSpecEnd('js') }}
+{{ docs.langSpecStart('JavaScript(Next)') }}
+- [SearchQuery](https://doc.leanapp.cn/classes/searchquery)
+- [SearchSortBuilder](https://doc.leanapp.cn/classes/searchsortbuilder)
+{{ docs.langSpecEnd('JavaScript(Next)') }}
 {{ docs.langSpecStart('objc') }}
 - [AVSearchQuery](https://leancloud.cn/api-docs/iOS/Classes/AVSearchQuery.html)
 - [AVSearchSortBuilder](https://leancloud.cn/api-docs/iOS/Classes/AVSearchSortBuilder.html)
@@ -171,7 +227,7 @@ implementation("cn.leancloud:storage-core:{{ version.unified }}")
 ``` java
 AVSearchQuery searchQuery = new AVSearchQuery("keyword");
 // 通过以下方法，你可以像指定html tag一样设定搜索匹配字符的高亮风格
-SearchActivity.setHighLightStyle("<font color='#E68A00'>"); 
+SearchActivity.setHighLightStyle("<font color='#E68A00'>");
 SearchActivity activity = new SearchActivity();
 activity.setSearchQuery(searchQuery);
 Intent intent = new Intent(MainActivity.this, SearchActivity.class);

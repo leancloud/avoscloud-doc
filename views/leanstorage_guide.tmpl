@@ -52,6 +52,22 @@ todo.save().then((todo) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .add({
+    title: '工程师周会',
+    content: '周二两点，全体成员',
+  })
+  .then((todo) => {
+    // 成功保存之后，执行其他逻辑
+    console.log(`保存成功。objectId：${todo.objectId}`);
+  })
+  .catch((error) => {
+    // 异常处理
+  });
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 # 声明 class
@@ -154,6 +170,9 @@ await todo.save();
 {% if platform_name === "JavaScript" %}
 请阅读 [JavaScript 安装指南](sdk_setup-js.html)。
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+请阅读 [JavaScript 安装指南](sdk_setup-js-next.html)。
+{% endif %}
 {% if platform_name === "Python" %}
 请阅读 [Python 安装指南](sdk_setup-python.html)。
 {% endif %}
@@ -177,7 +196,7 @@ await todo.save();
 
 {% endif %}
 
-{% if platform_name === "JavaScript" %}
+{% if platform_name === "JavaScript" or platform_name === "JavaScript(Next)" %}
 ## Web 安全
 
 如果在前端使用 JavaScript SDK，当你准备正式发布的时候，请务必在 **控制台 > 设置 > 安全中心** 中配置 **Web 安全域名**，这样可以防止其他人通过外网其他地址盗用你的服务器资源。
@@ -260,6 +279,27 @@ testObject.set('testDate',    date);
 testObject.set('testArray',   array);
 testObject.set('testObject',  object);
 testObject.save();
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 基本类型
+const boolean = true;
+const number  = 2018;
+const string  = `${number} 流行音乐榜单`;
+const date    = new Date();
+const array   = [string, number];
+const object  = { number, string };
+
+// 创建对象
+LC.CLASS('TestObject').add({
+  testBoolean: boolean,
+  testNumber:  number,
+  testString:  string,
+  testDate:    date,
+  testArray:   array,
+  testObject:  object,
+});
 ```
 {% endif %}
 {% if platform_name === "Flutter" %}
@@ -416,7 +456,7 @@ let getNumber2: LCNumber? = object["number"] as? LCNumber
 ```
 {% endif %}
 
-我们不推荐{% if platform_name === "Objective-C" %}通过 `NSData` {% endif %}{% if platform_name === "JavaScript" %}{% endif %}{% if platform_name === "Python" %}通过 `byte[]` {% endif %}{% if platform_name === "PHP" %}通过 `Bytes` {% endif %}{% if platform_name === "Android / Java" %}通过 `byte[]` {% endif %}{% if platform_name === "Swift" %}通过 `LCData` {% endif %}{% if platform_name === "Flutter" %}通过 `Uint8List` {% endif %}在 `{{ baseObjectName }}` 里面存储图片、文档等大型二进制数据。每个 `{{ baseObjectName }}` 的大小不应超过 **128 KB**。如需存储大型文件，可创建 `{{ fileObjectName }}` 实例并将将其关联到 `{{ baseObjectName }}` 的某个属性上。参见 [文件](#文件)。
+我们不推荐{% if platform_name === "Objective-C" %}通过 `NSData` {% endif %}{% if platform_name === "Python" %}通过 `byte[]` {% endif %}{% if platform_name === "PHP" %}通过 `Bytes` {% endif %}{% if platform_name === "Android / Java" %}通过 `byte[]` {% endif %}{% if platform_name === "Swift" %}通过 `LCData` {% endif %}{% if platform_name === "Flutter" %}通过 `Uint8List` {% endif %}在 `{{ baseObjectName }}` 里面存储图片、文档等大型二进制数据。每个 `{{ baseObjectName }}` 的大小不应超过 **128 KB**。如需存储大型文件，可创建 `{{ fileObjectName }}` 实例并将将其关联到 `{{ baseObjectName }}` 的某个属性上。参见 [文件](#文件)。
 
 {% call docs.noteWrap() %}
 注意：时间类型在云端将会以 UTC 时间格式存储，但是客户端在读取之后会转化成本地时间。
@@ -426,6 +466,7 @@ let getNumber2: LCNumber? = object["number"] as? LCNumber
 
 若想了解 LeanCloud 是如何保护应用数据的，请阅读 [数据和安全](data_security.html)。
 
+{% if platform_name !== "JavaScript(Next)" %}
 ### 构建对象
 
 下面的代码构建了一个 class 为 `Todo` 的 `{{ baseObjectName }}`：
@@ -502,6 +543,7 @@ AV.Object.register(Todo);
 
 这样你就能在 `AV.Object` 的子类中添加额外的方法和属性了。
 {% endif %}
+{% endif %}{# platform_name !== "JavaScript(Next)" #}
 
 ### 保存对象
 
@@ -546,6 +588,21 @@ todo.save().then((todo) => {
 }, (error) => {
   // 异常处理
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo').add({
+  title: '马拉松报名',
+  priority: 2,
+})
+  .then((todo) => {
+    // 成功保存之后，执行其他逻辑
+    console.log(`保存成功。objectId：${todo.data.objectId}`);
+  })
+  .catch((error) => {
+    // 异常处理
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -664,10 +721,10 @@ await todo.save();
 
 内置属性 | 类型 | 描述
 --- | --- | ---
-`objectId` | `{% if platform_name === "Objective-C" %}NSString{% endif %}{% if platform_name === "JavaScript" %}String{% endif %}{% if platform_name === "Python" %}str{% endif %}{% if platform_name === "PHP" %}String{% endif %}{% if platform_name === "Android / Java" %}String{% endif %}{% if platform_name === "Swift" %}LCString{% endif %}{% if platform_name === "Flutter" %}String{% endif %}` | 该对象唯一的 ID 标识。
-`ACL` | `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}AVACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}{% if platform_name === "Flutter" %}LCACL{% endif %}` | 该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
-`createdAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}` | 该对象被创建的时间。
-`updatedAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}` | 该对象最后一次被修改的时间。
+`objectId` | `{% if platform_name === "Objective-C" %}NSString{% endif %}{% if platform_name === "JavaScript" %}String{% endif %}{% if platform_name === "JavaScript(Next)" %}String{% endif %}{% if platform_name === "Python" %}str{% endif %}{% if platform_name === "PHP" %}String{% endif %}{% if platform_name === "Android / Java" %}String{% endif %}{% if platform_name === "Swift" %}LCString{% endif %}{% if platform_name === "Flutter" %}String{% endif %}` | 该对象唯一的 ID 标识。
+`ACL` | `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}{{ aclObjectName }}{% endif %}{% if platform_name === "JavaScript(Next)" %}{{ aclObjectName }}{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}AVACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}{% if platform_name === "Flutter" %}LCACL{% endif %}` | 该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
+`createdAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" %}Date{% endif %}{% if platform_name === "JavaScript(Next)" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}` | 该对象被创建的时间。
+`updatedAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" %}Date{% endif %}{% if platform_name === "JavaScript(Next)" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}` | 该对象最后一次被修改的时间。
 
 这些属性的值会在对象被存入云端时自动填入，代码中尚未保存的 `{{ baseObjectName }}` 不存在这些属性。
 
@@ -709,6 +766,22 @@ query.get('582570f38ac247004f39c24b').then((todo) => {
   const updatedAt = todo.updatedAt;
   const createdAt = todo.createdAt;
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .object('582570f38ac247004f39c24b')
+  .get()
+  .then((todo) => {
+    // todo 就是 objectId 为 582570f38ac247004f39c24b 的 Todo 实例
+    const { title, priority } = todo.data;
+
+    // 获取内置属性
+    const objectId  = todo.objectId;
+    const updatedAt = todo.updatedAt;
+    const createdAt = todo.createdAt;
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -793,9 +866,13 @@ DateTime createdAt = todo.createdAt;
 ```
 {% endif %}
 
-对象拿到之后，可以通过 `get` 方法来获取各个属性的值。注意 `objectId`、`updatedAt`和`createdAt` 这三个内置属性不能通过 `get` 获取或通过 `set` 修改，只能由云端自动进行填充。尚未保存的 `{{ baseObjectName }}` 不存在这些属性。
+{% if platform_name === "JavaScript(Next)" %}
+`{{ baseObjectName }}` 的 `data` 属性包含云端保存的对象的各个属性的值。注意 `objectId`、`updatedAt` 和 `createdAt` 这三个内置属性不能修改，只能由云端自动进行填充。尚未保存的 `{{ baseObjectName }}` 不存在这些属性。
+{% else %}
+对象拿到之后，可以通过 `get` 方法来获取各个属性的值。注意 `objectId`、`updatedAt` 和 `createdAt` 这三个内置属性不能通过 `get` 获取或通过 `set` 修改，只能由云端自动进行填充。尚未保存的 `{{ baseObjectName }}` 不存在这些属性。
+{% endif %}
 
-如果你试图获取一个不存在的属性，SDK 不会报错，而是会返回 `{% if platform_name in ["Objective-C", "Swift"] %}nil{% endif %}{% if platform_name === "JavaScript" %}undefined{% endif %}{% if platform_name === "Python" %}None{% endif %}{% if platform_name in ["Android / Java", "PHP"] %}null{% endif %}`。
+如果你试图获取一个不存在的属性，SDK 不会报错，而是会返回 `{% if platform_name in ["Objective-C", "Swift"] %}nil{% endif %}{% if platform_name === "JavaScript" %}undefined{% endif %}{% if platform_name === "JavaScript(Next)" %}undefined{% endif %}{% if platform_name === "Python" %}None{% endif %}{% if platform_name in ["Android / Java", "PHP"] %}null{% endif %}`。
 
 {% if platform_name === "JavaScript" %}
 如果需要一次性获取返回对象的所有属性（比如进行数据绑定）而非显式地调用 `get`，可以利用 `AV.Object` 实例的 `toJSON` 方法：
@@ -812,6 +889,38 @@ query.get('582570f38ac247004f39c24b').then((todo) => {
   //   updatedAt: "2017-03-08T11:25:07.804Z"
   // }
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+如果需要获取对象以及对象内子对象的所有属性（通常用于数据绑定），可以使用 `{{ baseObjectName }}` 实例的 `toJSON` 方法：
+```js
+LC.CLASS('Todo')
+  .object('5f34a24b1c2c2b0008ccba43')
+  .get()
+  .then((todo) => {
+    console.log(todo.toJSON());
+    // {
+    //   title: '工程师周会',
+    //   content: '周二两点，全体成员',
+    //   objectId: '5f34a24b1c2c2b0008ccba43',
+    //   createdAt: 2020-08-13T02:15:39.407Z,
+    //   updatedAt: 2020-08-13T02:15:39.407Z
+    // }
+  });
+```
+{% endif %}
+
+{% if platform_name === "JavaScript" %}
+#### 获取指定属性
+
+可以通过 `keys` 参数来指定要获取的属性：
+```js
+LC.CLASS('Todo')
+  .object('5f34a24b1c2c2b0008ccba43')
+  .get({ keys: ['priority', 'location'] })
+  .then((todo) => {
+    // 只有 priority 和 location 会被获取
+  });
 ```
 {% endif %}
 
@@ -948,7 +1057,11 @@ await todo.fetch(includes: ['priority','location']);
 
 ### 更新对象
 
+{% if platform_name === "JavaScript(Next)" %}
+要更新一个对象，只需将要更新的属性名和属性值传入 `update` 方法。例如：
+{% else %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}` 方法。例如：
+{% endif %}
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -962,6 +1075,13 @@ AVObject *todo = [AVObject objectWithClassName:@"Todo" objectId:@"582570f38ac247
 const todo = AV.Object.createWithoutData('Todo', '582570f38ac247004f39c24b');
 todo.set('content', '这周周会改到周三下午三点。');
 todo.save();
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo').object('5f34a24b1c2c2b0008ccba43').update({
+  content: '这周周会改到周三下午三点。',
+});
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -1012,7 +1132,11 @@ await todo.save();
 ```
 {% endif %}
 
+{% if platform_name === "JavaScript(Next)" %}
+SDK 会将指定的属性发往云端，未更新的属性会保持原样。
+{% else %}
 LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+{% endif %}
 
 {% if platform_name === "JavaScript" %}
 如果想要查看哪些属性有尚未保存的修改，可以调用 `dirtyKeys` 方法：
@@ -1030,7 +1154,7 @@ todo.revert(['content'])
 ```
 {% endif %}
 
-{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Android / Java" or platform_name === "Swift" %}
+{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "JavaScript(Next)" or platform_name === "Python" or platform_name === "Android / Java" or platform_name === "Swift" %}
 #### 有条件更新对象
 
 通过传入 `query` 选项，可以按照指定条件去更新对象——当条件满足时，执行更新；条件不满足时，不执行更新并返回 `305` 错误。
@@ -1082,6 +1206,33 @@ account.save(null, {
     console.error('余额不足，操作失败！');
   }
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const Account = LC.CLASS('Account');
+
+Account.object('5f35055e63edfb00097e96e2')
+  .update(
+    {
+      // 将 balance 原子减少 100
+      balance: LC.Op.decrement(100),
+    },
+    {
+      // 设置条件
+      query: Account.where('balance', '>=', 100),
+      // 操作结束后，返回被更新的数据。
+      fetch: true,
+    }
+  )
+  .then((account) => {
+    console.log(`当前余额为：${account.data.balance}`);
+  })
+  .catch((error) => {
+    if (error.code === 305) {
+      console.error('余额不足，操作失败！');
+    }
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -1190,7 +1341,9 @@ try {
 {% endif %}
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Android / Java" or platform_name === "Swift" %}
 **`query` 选项只对已存在的对象有效**，不适用于尚未存入云端的对象。
+{% endif %}
 
+{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "JavaScript(Next)" or platform_name === "Python" or platform_name === "Android / Java" or platform_name === "Swift" %}
 `query` 选项在有多个客户端需要更新同一属性的时候非常有用。相比于通过 `{{ baseQueryClassName }}` 查询 `{{ baseObjectName }}` 再对其进行更新的方法，这样做更加简洁，并且能够避免出现差错。
 {% endif %}
 
@@ -1206,6 +1359,11 @@ try {
 {% if platform_name === "JavaScript" %}
 ```js
 post.increment('likes', 1);
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+post.update({ likes: LC.Op.increment(1) });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -1253,6 +1411,11 @@ post.increment('likes',1);
 - `AV.Object.add('arrayKey', value)`<br/>将指定对象附加到数组末尾。
 - `AV.Object.addUnique('arrayKey', value)`<br/>如果数组中不包含指定对象，则将该对象加入数组。对象的插入位置是随机的。
 - `AV.Object.remove('arrayKey', value)`<br/>从数组字段中删除指定对象的所有实例。
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+- `Op.add(value)`<br/>将指定对象附加到数组末尾。
+- `Op.addUnique(value)`<br/>如果数组中不包含指定对象，则将该对象加入数组。对象的插入位置是随机的。
+- `Op.remove(value)`<br/>从数组字段中删除指定对象的所有实例。
 {% endif %}
 {% if platform_name === "Python" %}
 - `add()`<br/>将指定对象附加到数组末尾。
@@ -1319,6 +1482,17 @@ const alarms = [alarm1, alarm2, alarm3];
 const todo = new AV.Object('Todo');
 todo.addUnique('alarms', alarms);
 todo.save();
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const alarm1 = new Date('2018-04-30T07:10:00');
+const alarm2 = new Date('2018-04-30T07:20:00');
+const alarm3 = new Date('2018-04-30T07:30:00');
+
+LC.CLASS('Todo').add({
+  alarms: LC.Op.addUnique([alarm1, alarm2, alarm3]),
+});
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -1440,6 +1614,11 @@ const todo = AV.Object.createWithoutData('Todo', '582570f38ac247004f39c24b');
 todo.destroy();
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo').object('582570f38ac247004f39c24b').delete();
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 Todo = leancloud.Object.extend('Todo')
@@ -1491,6 +1670,33 @@ todo.unset('priority');
 todo.save();
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+如果只需删除对象的一个属性，可以用 `Op.unset`：
+
+```js
+LC.CLASS('Todo').object('582570f38ac247004f39c24b').update({
+  // priority 属性会被删除
+  priority: LC.Op.unset(),
+});
+```
+
+**注意：**如果要删除嵌套在对象中的对象的属性，必须使用 [点号](dot-notation.html#在查询对象时使用点号)：
+
+```
+LC.CLASS('Matrioska').object('5f156b24875c5500083e1041').update({
+  'large.medium.small': LC.Op.unset(),
+});
+
+// **不要**这样操作
+LC.CLASS('Matrioska').object('5f156b24875c5500083e1041').update({
+  large: {
+    medium: {
+      small: LC.Op.unset(),
+    },
+  },
+});
+```
+{% endif %}
 {% if platform_name === "Flutter" %}
 如果只需删除对象的一个属性，可以用 `unset`：
 ```dart
@@ -1509,6 +1715,7 @@ await todo.save();
 删除对象是一个较为敏感的操作，我们建议你阅读 [ACL 权限管理开发指南](acl-guide.html) 来了解潜在的风险。熟悉 class 级别、对象级别和字段级别的权限可以帮助你有效阻止未经授权的操作。
 {% endcall %}
 
+{% if platform_name !== "JavaScript(Next)" %}
 ### 批量操作
 
 可以在一次请求中包含多个构建、保存、删除和同步对象的操作：
@@ -1751,6 +1958,7 @@ await LCObject.saveAll(results);
 {% endif %}
 
 虽然上述方法可以在一次请求中包含多个操作，每一个分别的保存或同步操作在计费时依然会被算作一次请求，而所有的删除操作则会被合并为一次请求。
+{% endif %}{# 批量操作 #}
 
 {% if platform_name === "Objective-C" or platform_name === "Android / Java" or platform_name === "Swift" %}
 ### 后台运行
@@ -1827,6 +2035,24 @@ comment.set('parent', post);
 
 // 保存 comment 会同时保存 post
 comment.save();
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 创建 post
+LC.CLASS('Post')
+  .add({
+    title: '饿了……',
+    content: '中午去哪吃呢？',
+  })
+  .then((post) => {
+    // 创建 comment
+    LC.CLASS('Comment').add({
+      // 将 post 设为 comment 的一个属性值
+      parent: post,
+      content: '当然是肯德基啦！',
+    });
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -1940,6 +2166,13 @@ const post = AV.Object.createWithoutData('Post', '57328ca079bc44005c2472d0');
 comment.set('post', post);
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Comment').add({
+  parent: LC.CLASS('Post').object('5f351727ce8117000605e195'),
+});
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 Post = leancloud.Object.extend('Post')
@@ -1984,7 +2217,7 @@ comment['post'] = post;
 我们知道设计数据模型并不容易，所以我们专门写了一篇 [数据模型设计指南](relation-guide.html) 来详细介绍这部分内容，推荐你去看一下。
 {% endcall %}
 
-{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Swift" or platform_name === "Flutter" %}
+{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "JavaScript(Next)" or platform_name === "Android / Java" or platform_name === "Swift" or platform_name === "Flutter" %}
 ### 序列化和反序列化
 
 在实际的开发中，把 `{{ baseObjectName }}` 当作参数传递的时候，会涉及到复杂对象的拷贝的问题，因此 `{{ baseObjectName }}` 也提供了序列化和反序列化的方法。
@@ -2020,6 +2253,23 @@ const serializedString = JSON.stringify(json);
 
 {% call docs.noteWrap() %}
 `AV.Object` 还提供了另一个方法 `toJSON()`。它们的区别是 `toJSON()` 得到的对象仅包含对象的 payload，一般用于展示，而 `toFullJSON()` 得到的对象包含了元数据，一般用于传输。在使用时请注意区分。
+{% endcall %}
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .object('5f34a24b1c2c2b0008ccba43')
+  .get()
+  .then((todo) => {
+    // 将 {{ baseObjectName }} 序列化成 JSON 对象
+    const json = todo.toFullJSON();
+    // 将 JSON 对象序列化成字符串
+    const serializedString = JSON.stringify(json);
+  });
+```
+
+{% call docs.noteWrap() %}
+`{{ baseObjectName }}` 还提供了另一个方法 `toJSON()`。它们的区别是 `toJSON()` 得到的对象仅包含对象的 `data`，一般用于展示，而 `toFullJSON` 得到的对象包含了元数据，一般用于传输。在使用时请注意区分。
 {% endcall %}
 {% endif %}
 {% if platform_name === "Android / Java" %}
@@ -2081,6 +2331,14 @@ AVObject *todo = [AVObject objectWithDictionary:objectDictionary]; // 由 NSMuta
 const json = JSON.parse(serializedString);
 // 将 JSON 对象反序列化成 AV.Object 对象
 const todo = AV.parseJSON(json);
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 将字符串反序列化为 JSON 对象
+const json = JSON.parse(serializedString);
+// 将 JSON 对象反序列化成 {{ baseObjectName }}
+const todo = LC.App.default.decode(json);
 ```
 {% endif %}
 {% if platform_name === "Android / Java" %}
@@ -2159,6 +2417,28 @@ query.find().then((students) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Student')
+  .where('lastName', '==', 'Smith')
+  .find()
+  .then((students) => {
+    // students 是包含满足条件的 Student 对象的数组
+  });
+```
+
+**注意：**每次添加查询条件时都会返回一个新的 `{{ baseQueryClassName }}` 。在分多次添加查询条件时，需要覆盖存储 `{{ baseQueryClassName }}` 的变量：
+```js
+let query = LC.CLASS('Student').where('lastName', '==', 'Smith');
+
+query.where('firstName', '==', 'Jack');
+// 此时 query 中不包含新添加的查询条件
+
+// 将返回的新的 Query 重新赋值给 query
+query = query.where('firstName', '==', 'Jack');
+// 此时 query 中包含了新添加的查询条件
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 Student = leancloud.Object.extend('Student')
@@ -2229,6 +2509,11 @@ List<LCObject> students = await query.find();
 query.notEqualTo('firstName', 'Jack');
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+query.where('firstName', '!=', 'Jack');
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 query.not_equal_to("firstName", 'Jack')
@@ -2284,6 +2569,21 @@ query.greaterThan('age', 18);
 
 // 限制 age >= 18
 query.greaterThanOrEqualTo('age', 18);
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 限制 age < 18
+query.where('age', '<', 18);
+
+// 限制 age <= 18
+query.where('age', '<=', 18);
+
+// 限制 age > 18
+query.where('age', '>', 18);
+
+// 限制 age >= 18
+query.where('age', '>=', 18);
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -2376,6 +2676,11 @@ query.equalTo('firstName', 'Jack');
 query.greaterThan('age', 18);
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+query.where('firstName', '==', 'Jack').where('age', '>=', 18);
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 query.equal_to("firstName", 'Jack')
@@ -2421,6 +2726,12 @@ query.limit = 10;
 query.limit(10);
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 最多获取 10 条结果
+query.limit(10);
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 # 最多获取 10 条结果
@@ -2456,7 +2767,7 @@ query.limit(10);
 由于性能原因，`limit` 最大只能设为 `1000`。即使将其设为大于 `1000` 的数，云端也只会返回 1,000 条结果。
 {% endcall %}
 
-如果只需要一条结果，可以直接用 `{% if platform_name === "Objective-C" %}getFirstObject{% endif %}{% if platform_name === "JavaScript" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Android / Java" %}getFirst{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}{% if platform_name === "Flutter" %}first{% endif %}`：
+如果只需要一条结果，可以直接用 `{% if platform_name === "Objective-C" %}getFirstObject{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(Next)" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Android / Java" %}getFirst{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}{% if platform_name === "Flutter" %}first{% endif %}`：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -2474,6 +2785,16 @@ query.equalTo('priority', 2);
 query.first().then((todo) => {
   // todo 是第一个满足条件的 Todo 对象
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .where('priority', '==', 2)
+  .first()
+  .then((todo) => {
+    // todo 是第一个满足条件的 Todo 对象
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -2542,6 +2863,12 @@ query.skip = 20;
 query.skip(20);
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 跳过前 20 条结果
+query.skip(20);
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 # 跳过前 20 条结果
@@ -2588,6 +2915,11 @@ const query = new AV.Query('Todo');
 query.equalTo('priority', 2);
 query.limit(10);
 query.skip(20);
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+query.where('priority', '==', 2).limit(10).skip(20);
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -2656,6 +2988,15 @@ query.ascending('createdAt');
 query.descending('createdAt');
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 按 createdAt 升序排列
+query.orderBy('createdAt');
+
+// 按 createdAt 降序排列
+query.orderBy('createdAt', 'desc');
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 # 按 createdAt 升序排列
@@ -2716,6 +3057,11 @@ query.addAscending('priority');
 query.addDescending('createdAt');
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+query.orderBy('priority').orderBy('createdAt', 'desc');
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 query.add_ascending('createdAt')
@@ -2765,6 +3111,15 @@ query.exists('images');
 
 // 查找不包含 'images' 的对象
 query.doesNotExist('images');
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 查找包含 'images' 的对象
+query.where('images', 'exists');
+
+// 查找不包含 'images' 的对象
+query.where('images', 'not-exists');
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -2844,8 +3199,42 @@ studentQuery.find().then((students) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+可以通过查询条件 `in` 查找某一属性值为另一查询返回结果的对象。
 
-可以通过 `{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}` 指定需要返回的属性。下面的代码只获取每个对象的 `title` 和 `content`（包括内置属性 `objectId`、`createdAt` 和 `updatedAt`）：
+比如说，你有一个用于存储国家和语言对应关系的 `Country` class，还有一个用于存储学生国籍的 `Student` class：
+
+name | language
+--- | ---
+US | English
+UK | English
+China | Chinese
+
+fullName | nationality
+--- | ---
+John Doe | US
+Tom Sawyer | UK
+Ming Li | China
+
+下面的代码可以找到所有来自英语国家的学生：
+
+```js
+// 构造获取所有英语国家的 name 的查询
+const countryNamesQuery = LC.CLASS('Country')
+  .select('name')
+  .where('language', '==', 'English');
+
+// 查询所有 nationality 在 countryNamesQuery 中的 Student
+LC.CLASS('Student')
+  .where('nationality', 'in', countryNamesQuery)
+  .find()
+  .then((students) => {
+    // students 包含 John Doe 和 Tom Sawyer
+  });
+```
+{% endif %}
+
+可以通过 `{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(Next)" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}` 指定需要返回的属性。下面的代码只获取每个对象的 `title` 和 `content`（包括内置属性 `objectId`、`createdAt` 和 `updatedAt`）：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -2867,6 +3256,18 @@ query.first().then((todo) => {
   const content = todo.get('content'); // √
   const notes = todo.get('notes'); // undefined
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .select('title', 'content')
+  .first()
+  .then((todo) => {
+    const title = todo.data.title;     // ok
+    const content = todo.data.content; // ok
+    const notes = todo.data.notes;     // undefined
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -2938,19 +3339,22 @@ String notes = todo['notes']; // null
 ```
 {% endif %}
 
-`{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}`
+`{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "JavaScript(Next)" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}`
 支持点号（`author.firstName`），详见 [点号使用指南](dot-notation.html#在查询对象时使用点号)。
 另外，字段名前添加减号前缀表示反向选择，例如 `-author` 表示不返回 `author` 字段。
 反向选择同样适用于内置字段，比如 `-objectId`，也可以和点号组合使用，比如 `-pubUser.createdAt`。
-
 
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Java" or platform_name === "Swift" %}
 对于未获取的属性，可以通过对结果中的对象进行 `{% if platform_name === "Objective-C" %}fetchInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}fetch{% endif %}{% if platform_name === "Python" %}fetch{% endif %}{% if platform_name === "Android / Java" %}fetchInBackground{% endif %}{% if platform_name === "Swift" %}fetch{% endif %}` 操作来获取。参见 [同步对象](#同步对象)。
 {% endif %}
 
+{% if platform_name === "JavaScript(Next)" %}
+对于未获取的属性，可以通过对结果中的对象进行 `get` 操作来获取。参见 [获取指定属性](#获取指定属性)。
+{% endif %}
+
 ### 字符串查询
 
-可以用 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}` 来查找某一属性值以特定字符串开头的对象。和 SQL 中的 `LIKE` 一样，你可以利用索引带来的优势：
+可以用 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "JavaScript(Next)" %}starts-with{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}` 来查找某一属性值以特定字符串开头的对象。和 SQL 中的 `LIKE` 一样，你可以利用索引带来的优势：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -2964,6 +3368,12 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 const query = new AV.Query('Todo');
 // 相当于 SQL 中的 title LIKE 'lunch%'
 query.startsWith('title', 'lunch');
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 相当于 SQL 中的 title LIKE 'lunch%'
+LC.CLASS('Todo').where('title', 'starts-with', 'lunch');
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3003,7 +3413,7 @@ query.whereStartsWith('title', 'lunch');
 ```
 {% endif %}
 
-可以用 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}` 来查找某一属性值包含特定字符串的对象：
+可以用 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(Next)" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}` 来查找某一属性值包含特定字符串的对象：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -3017,6 +3427,12 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 const query = new AV.Query('Todo');
 // 相当于 SQL 中的 title LIKE '%lunch%'
 query.contains('title', 'lunch');
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 相当于 SQL 中的 title LIKE '%lunch%'
+LC.CLASS('Todo').where('title', 'contains', 'lunch');
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3056,13 +3472,13 @@ query.whereContains('title', 'lunch');
 ```
 {% endif %}
 
-和 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}` 不同，`{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}` 无法利用索引，因此不建议用于大型数据集。
+和 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "JavaScript(Next)" %}starts-with{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}` 不同，`{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "JavaScript(Next)" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}` 无法利用索引，因此不建议用于大型数据集。
 
 {% call docs.noteWrap() %}
-注意 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}` 和 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}` 都是 **区分大小写** 的，所以上述查询会忽略 `Lunch`、`LUNCH` 等字符串。
+注意 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "JavaScript(Next)" %}starts-with{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}` 和 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "JavaScript(Next)" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}` 都是 **区分大小写** 的，所以上述查询会忽略 `Lunch`、`LUNCH` 等字符串。
 {% endcall %}
 
-如果想查找某一属性值不包含特定字符串的对象，可以使用 `{% if platform_name === "Objective-C" %}matchesRegex{% endif %}{% if platform_name === "JavaScript" %}matches{% endif %}{% if platform_name === "Python" %}matched{% endif %}{% if platform_name === "PHP" %}matches{% endif %}{% if platform_name === "Android / Java" %}whereMatches{% endif %}{% if platform_name === "Swift" %}.matchedPattern{% endif %}{% if platform_name === "Flutter" %}whereMatches{% endif %}` 进行基于正则表达式的查询：
+如果想查找某一属性值不包含特定字符串的对象，可以使用 `{% if platform_name === "Objective-C" %}matchesRegex{% endif %}{% if platform_name === "JavaScript" %}matches{% endif %}{% if platform_name === "JavaScript(Next)" %}matches{% endif %}{% if platform_name === "Python" %}matched{% endif %}{% if platform_name === "PHP" %}matches{% endif %}{% if platform_name === "Android / Java" %}whereMatches{% endif %}{% if platform_name === "Swift" %}.matchedPattern{% endif %}{% if platform_name === "Flutter" %}whereMatches{% endif %}` 进行基于正则表达式的查询：
 
 {% if platform_name === "Objective-C" %}
 <pre><code class="lang-objc">AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
@@ -3075,6 +3491,12 @@ query.whereContains('title', 'lunch');
 // 'title' 不包含 'ticket'（不区分大小写）
 const regExp = new RegExp('{{ regex(true) | safe }}, 'i');
 query.matches('title', regExp);
+</code></pre>
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+<pre><code class="lang-js">// 'title' 不包含 'ticket'（不区分大小写）
+const regExp = new RegExp('{{ regex(true) | safe }}, 'i');
+LC.CLASS('Todo').where('title', 'matches', regExp);
 </code></pre>
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3131,6 +3553,11 @@ query.whereMatches('title', '{{ regexFlutter() | safe }}', modifiers: 'i');
 query.equalTo('tags', '工作');
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+query.where('tags', '==', '工作');
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 query.equal_to('tags', '工作')
@@ -3167,6 +3594,11 @@ query.whereEqualTo('tags', '工作');
 {% if platform_name === "JavaScript" %}
 ```js
 query.sizeEqualTo('tags', 3);
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+query.where('tags', 'size-is', 3);
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3207,6 +3639,11 @@ query.whereSizeEqualTo('tags', 3);
 query.containsAll('tags', ['工作', '销售', '会议']);
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+query.where('tags', 'contains', ['工作', '销售', '会议']);
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 query.contains_all('tags', ['工作', '销售', '会议'])
@@ -3233,7 +3670,7 @@ query.whereContainsAll('tags', ['工作', '销售', '会议']);
 ```
 {% endif %}
 
-如需获取某一属性值包含一列值中任意一个值的对象，可以直接用 `{% if platform_name === "Objective-C" %}containedIn{% endif %}{% if platform_name === "JavaScript" %}containedIn{% endif %}{% if platform_name === "Python" %}contained_in{% endif %}{% if platform_name === "PHP" %}containedIn{% endif %}{% if platform_name === "Android / Java" %}whereContainedIn{% endif %}{% if platform_name === "Swift" %}.containedIn{% endif %}` 而无需执行多次查询。下面的代码构建的查询会查找所有 `priority` 为 `1` **或** `2` 的 todo 对象：
+如需获取某一属性值包含一列值中任意一个值的对象，可以直接用 `{% if platform_name === "Objective-C" %}containedIn{% endif %}{% if platform_name === "JavaScript" %}containedIn{% endif %}{% if platform_name === "JavaScript(Next)" %}contained-in{% endif %}{% if platform_name === "Python" %}contained_in{% endif %}{% if platform_name === "PHP" %}containedIn{% endif %}{% if platform_name === "Android / Java" %}whereContainedIn{% endif %}{% if platform_name === "Swift" %}.containedIn{% endif %}` 而无需执行多次查询。下面的代码构建的查询会查找所有 `priority` 为 `1` **或** `2` 的 todo 对象：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -3276,6 +3713,17 @@ const priorityTwo = new AV.Query('Todo');
 priorityTwo.equalTo('priority', 2);
 
 const priorityOneOrTwo = AV.Query.or(priorityOne, priorityTwo);
+// 好像有些繁琐 :(
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// 单个查询
+LC.CLASS('Todo').where('priority', 'contained-in', [1, 2]);
+// 这样就可以了 :)
+
+// 多个查询
+LC.CLASS('Todo').where('priority', '==', 1).or.where('priority', '==', 2);
 // 好像有些繁琐 :(
 ```
 {% endif %}
@@ -3394,11 +3842,11 @@ List<LCObject> results = await priorityOneOrTwo.find();
 ```
 {% endif %}
 
-反过来，还可以用 `{% if platform_name === "Objective-C" %}notContainedIn{% endif %}{% if platform_name === "JavaScript" %}notContainedIn{% endif %}{% if platform_name === "Python" %}not_contained_in{% endif %}{% if platform_name === "PHP" %}notContainedIn{% endif %}{% if platform_name === "Android / Java" %}whereNotContainedIn{% endif %}{% if platform_name === "Swift" %}.notContainedIn{% endif %}{% if platform_name === "Flutter" %}whereNotContainedIn{% endif %}` 来获取某一属性值不包含一列值中任何一个的对象。
+反过来，还可以用 `{% if platform_name === "Objective-C" %}notContainedIn{% endif %}{% if platform_name === "JavaScript" %}notContainedIn{% endif %}{% if platform_name === "JavaScript(Next)" %}not-contained-in{% endif %}{% if platform_name === "Python" %}not_contained_in{% endif %}{% if platform_name === "PHP" %}notContainedIn{% endif %}{% if platform_name === "Android / Java" %}whereNotContainedIn{% endif %}{% if platform_name === "Swift" %}.notContainedIn{% endif %}{% if platform_name === "Flutter" %}whereNotContainedIn{% endif %}` 来获取某一属性值不包含一列值中任何一个的对象。
 
 ### 关系查询
 
-查询关联数据有很多种方式，常见的一种是查询某一属性值为特定 `{{ baseObjectName }}` 的对象，这时可以像其他查询一样直接用 `{% if platform_name === "Objective-C" %}equalTo{% endif %}{% if platform_name === "JavaScript" %}equalTo{% endif %}{% if platform_name === "Python" %}equal_to{% endif %}{% if platform_name === "PHP" %}equalTo{% endif %}{% if platform_name === "Android / Java" %}whereEqualTo{% endif %}{% if platform_name === "Swift" %}.equalTo{% endif %}`。比如说，如果每一条博客评论 `Comment` 都有一个 `post` 属性用来存放原文 `Post`，则可以用下面的方法获取所有与某一 `Post` 相关联的评论：
+查询关联数据有很多种方式，常见的一种是查询某一属性值为特定 `{{ baseObjectName }}` 的对象，这时可以像其他查询一样直接用 `{% if platform_name === "Objective-C" %}equalTo{% endif %}{% if platform_name === "JavaScript" %}equalTo{% endif %}{% if platform_name === "JavaScript(Next)" %}=={% endif %}{% if platform_name === "Python" %}equal_to{% endif %}{% if platform_name === "PHP" %}equalTo{% endif %}{% if platform_name === "Android / Java" %}whereEqualTo{% endif %}{% if platform_name === "Swift" %}.equalTo{% endif %}`。比如说，如果每一条博客评论 `Comment` 都有一个 `post` 属性用来存放原文 `Post`，则可以用下面的方法获取所有与某一 `Post` 相关联的评论：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -3418,6 +3866,17 @@ query.equalTo('post', post);
 query.find().then((comments) => {
   // comments 包含与 post 相关联的评论
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const post = LC.CLASS('Post').object('5f351727ce8117000605e195');
+LC.CLASS('Comment')
+  .where('post', '==', post)
+  .find()
+  .then((comments) => {
+    // comments 包含与 post 相关联的评论
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3478,7 +3937,7 @@ List<LCObject> comments = await query.find();
 ```
 {% endif %}
 
-如需获取某一属性值为另一查询结果中任一 `{{ baseObjectName }}` 的对象，可以用 `{% if platform_name === "Objective-C" %}matchesQuery{% endif %}{% if platform_name === "JavaScript" %}matchesQuery{% endif %}{% if platform_name === "Python" %}matches_query{% endif %}{% if platform_name === "PHP" %}matchesInQuery{% endif %}{% if platform_name === "Android / Java" %}whereMatchesQuery{% endif %}{% if platform_name === "Swift" %}.matchedQuery{% endif %}`。下面的代码构建的查询可以找到所有包含图片的博客文章的评论：
+如需获取某一属性值为另一查询结果中任一 `{{ baseObjectName }}` 的对象，可以用 `{% if platform_name === "Objective-C" %}matchesQuery{% endif %}{% if platform_name === "JavaScript" %}matchesQuery{% endif %}{% if platform_name === "JavaScript(Next)" %}in{% endif %}{% if platform_name === "Python" %}matches_query{% endif %}{% if platform_name === "PHP" %}matchesInQuery{% endif %}{% if platform_name === "Android / Java" %}whereMatchesQuery{% endif %}{% if platform_name === "Swift" %}.matchedQuery{% endif %}`。下面的代码构建的查询可以找到所有包含图片的博客文章的评论：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -3496,6 +3955,18 @@ innerQuery.exists('image');
 
 const query = new AV.Query('Comment');
 query.matchesQuery('post', innerQuery);
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+{% call docs.noteWrap() %}
+与「查找某一属性值为另一查询返回结果」相同，两者都使用条件 `in` ，区在于子查询中是否包含 `select` 限定。
+{% endcall %}
+```js
+LC.CLASS('Comment').where(
+  'post',
+  'in',
+  LC.CLASS('Post').where('image', 'exists')
+);
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3544,9 +4015,9 @@ query.whereMatchesQuery('post', innerQuery);
 ```
 {% endif %}
 
-如需获取某一属性值不是另一查询结果中任一 `{{ baseObjectName }}` 的对象，则使用 `{% if platform_name === "Objective-C" %}doesNotMatchQuery{% endif %}{% if platform_name === "JavaScript" %}doesNotMatchQuery{% endif %}{% if platform_name === "Python" %}does_not_match_query{% endif %}{% if platform_name === "PHP" %}notMatchInQuery{% endif %}{% if platform_name === "Android / Java" %}whereDoesNotMatchQuery{% endif %}{% if platform_name === "Swift" %}.notMatchedQuery{% endif %}{% if platform_name === "Flutter" %}whereDoesNotMatchQuery{% endif %}`。
+如需获取某一属性值不是另一查询结果中任一 `{{ baseObjectName }}` 的对象，则使用 `{% if platform_name === "Objective-C" %}doesNotMatchQuery{% endif %}{% if platform_name === "JavaScript" %}doesNotMatchQuery{% endif %}{% if platform_name === "JavaScript(Next)" %}not-in{% endif %}{% if platform_name === "Python" %}does_not_match_query{% endif %}{% if platform_name === "PHP" %}notMatchInQuery{% endif %}{% if platform_name === "Android / Java" %}whereDoesNotMatchQuery{% endif %}{% if platform_name === "Swift" %}.notMatchedQuery{% endif %}{% if platform_name === "Flutter" %}whereDoesNotMatchQuery{% endif %}`。
 
-有时候可能需要获取来自另一个 class 的数据而不想进行额外的查询，此时可以在同一个查询上使用 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Android / Java" %}include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}{% if platform_name === "Flutter" %}include{% endif %}`。下面的代码查找最新发布的 10 条评论，并包含各自对应的博客文章：
+有时候可能需要获取来自另一个 class 的数据而不想进行额外的查询，此时可以在同一个查询上使用 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "JavaScript(Next)" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Android / Java" %}include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}{% if platform_name === "Flutter" %}include{% endif %}`。下面的代码查找最新发布的 10 条评论，并包含各自对应的博客文章：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -3590,6 +4061,21 @@ query.find().then((comments) => {
     const post = comment.get('post');
   });
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Comment')
+  .orderBy('createdAt', 'desc') // 获取最新发布的
+  .limit(10)                    // 只获取 10 条
+  .include('post')              // 同时包含博客文章
+  .find()
+  .then((comments) => {
+    // comments 包含最新发布的 10 条评论，同时包含各自对应的博客文章
+    comments.forEach((comment) => {
+      const { post } = comment.data;
+    });
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3709,10 +4195,14 @@ for (LCObject comment in comments) {
 
 可以用 dot 符号（`.`）来获取多级关系，例如 `post.author`，详见 [点号使用指南](dot-notation.html#在查询对象时使用点号)。
 
+{% if platform_name === "JavaScript(Next)" %}
+可以向 `include` 方法传入多个参数以包含多个属性，多次调用 `include` 会覆盖之前设置的属性。
+{% else %}
 可以在同一查询上应用多次 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Android / Java" %}include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}` 以包含多个属性。通过这种方法获取到的对象同样接受 `{% if platform_name === "Objective-C" %}getFirstObject{% endif %}{% if platform_name === "JavaScript" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Android / Java" %}getFirst{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}`{% if platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Swift" %}、`get`{% endif %} 等 `{{ baseQueryClassName }}` 辅助方法。
+{% endif %}
 
 {% call docs.noteWrap() %}
-通过 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Android / Java" %}include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}` 进行多级查询的方式不适用于数组属性内部的 `{{ baseObjectName }}`，只能包含到数组本身。
+通过 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "JavaScript(Next)" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Android / Java" %}include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}` 进行多级查询的方式不适用于数组属性内部的 `{{ baseObjectName }}`，只能包含到数组本身。
 {% endcall %}
 
 #### 关系查询的注意事项
@@ -3727,7 +4217,7 @@ LeanCloud 云端使用的并非关系型数据库，无法做到真正的联表�
 
 ### 统计总数量
 
-如果只需知道有多少对象匹配查询条件而无需获取对象本身，可使用 `{% if platform_name === "Objective-C" %}countObjectsInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}count{% endif %}{% if platform_name === "Python" %}count{% endif %}{% if platform_name === "PHP" %}count{% endif %}{% if platform_name === "Android / Java" %}count{% endif %}{% if platform_name === "Swift" %}count{% endif %}` 来代替 `{% if platform_name === "Objective-C" %}findObjectsInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}find{% endif %}{% if platform_name === "Python" %}find{% endif %}{% if platform_name === "PHP" %}find{% endif %}{% if platform_name === "Android / Java" %}findInBackground{% endif %}{% if platform_name === "Swift" %}find{% endif %}`。比如说，查询有多少个已完成的 todo：
+如果只需知道有多少对象匹配查询条件而无需获取对象本身，可使用 `{% if platform_name === "Objective-C" %}countObjectsInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}count{% endif %}{% if platform_name === "JavaScript(Next)" %}count{% endif %}{% if platform_name === "Python" %}count{% endif %}{% if platform_name === "PHP" %}count{% endif %}{% if platform_name === "Android / Java" %}count{% endif %}{% if platform_name === "Swift" %}count{% endif %}` 来代替 `{% if platform_name === "Objective-C" %}findObjectsInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}find{% endif %}{% if platform_name === "JavaScript(Next)" %}find{% endif %}{% if platform_name === "Python" %}find{% endif %}{% if platform_name === "PHP" %}find{% endif %}{% if platform_name === "Android / Java" %}findInBackground{% endif %}{% if platform_name === "Swift" %}find{% endif %}`。比如说，查询有多少个已完成的 todo：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -3745,6 +4235,16 @@ query.equalTo('isComplete', true);
 query.count().then((count) => {
   console.log(`${count} 个 todo 已完成。`);
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .where('isComplete', '==', true)
+  .count()
+  .then((count) => {
+    console.log(`${count} 个 todo 已完成。`);
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3797,7 +4297,11 @@ print('$count 个 todo 已完成');
 组合查询就是把诸多查询条件用一定逻辑合并到一起（`OR` 或 `AND`）再交给云端去查询。
 
 {% call docs.noteWrap() %}
+{% if platform_name === "JavaScript(Next)" %}
+组合查询不支持在子查询中包含 `GeoPoint` 或其他非过滤性的限制（例如 `near`、`within`、`limit`、`skip`、`orderBy`、`include`）。
+{% else %}
 组合查询不支持在子查询中包含 `GeoPoint` 或其他非过滤性的限制（例如 `near`、`withinGeoBox`、`limit`、`skip`、`ascending`、`descending`、`include`）。
+{% endif %}
 {% endcall %}
 
 #### OR 查询
@@ -3824,6 +4328,16 @@ const isCompleteQuery = new AV.Query('Todo');
 isCompleteQuery.equalTo('isComplete', true);
 
 const query = AV.Query.or(priorityQuery, isCompleteQuery);
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo').where('priority', '==', 3).or.where('isComplete', '==', true);
+
+// 也可以使用 Query.or
+const priorityQuery = LC.CLASS('Todo').where('priority', '==', 3);
+const isCompleteQuery = LC.CLASS('Todo').where('isComplete', '==', true);
+LC.Query.or(priorityQuery, isCompleteQuery);
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3919,6 +4433,18 @@ const endDateQuery = new AV.Query('Todo');
 endDateQuery.lessThan('createdAt', new Date('2016-12-03 00:00:00'));
 
 const query = AV.Query.and(startDateQuery, endDateQuery);
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .where('createdAt', '>=', new Date('2016-11-13 00:00:00'))
+  .where('createdAt', '<', new Date('2016-12-03 00:00:00'));
+
+// 也可以使用 Query.and
+const startDateQuery = LC.CLASS('Todo').where('createdAt', '>=', new Date('2016-11-13 00:00:00'));
+const endDateQuery = LC.CLASS('Todo').where('createdAt', '<', new Date('2016-12-03 00:00:00'));
+LC.Query.and(startDateQuery, endDateQuery);
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -4046,6 +4572,24 @@ const timeLocationQuery = AV.Query.or(locationQuery, createdAtQuery);
 const query = AV.Query.and(priorityQuery, timeLocationQuery);
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const Todo = LC.CLASS('Todo');
+
+const createdAtQuery = Todo.where('createdAt', '>=', new Date('2018-04-30'))
+  .where('createdAt', '<', new Date('2018-05-01'));
+
+const locationQuery = Todo.where('location', 'not-exists');
+
+const priority2Query = Todo.where('priority', '==', 2);
+
+const priority3Query = Todo.where('priority', '==', 3);
+
+const priorityQuery = LC.Query.or(priority2Query, priority3Query);
+const timeLocationQuery = LC.Query.or(locationQuery, createdAtQuery);
+LC.Query.and(priorityQuery, timeLocationQuery);
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 from datetime import datetime
@@ -4160,7 +4704,7 @@ LCQuery<LCObject> priority3Query = LCQuery('Todo');
 priorityQuery.whereEqualTo('priority', 3);
 
 LCQuery<LCObject> priorityQuery = LCQuery.or([priority2Query, priority3Query]);
-LCQuery<LCObject> timeLocationQuery = LCQuery.or([locationQuery, createdAtQuery]); 
+LCQuery<LCObject> timeLocationQuery = LCQuery.or([locationQuery, createdAtQuery]);
 LCQuery<LCObject> query = LCQuery.and([priorityQuery, timeLocationQuery]);
 ```
 {% endif %}
@@ -4301,7 +4845,7 @@ LCApplication.default.configuration.HTTPURLCache?.removeAllCachedResponses()
 - 无索引的排序（另外除非复合索引同时覆盖了查询和排序，否则只有其中一个能使用索引）
 - 无索引的查询（另外除非复合索引同时覆盖了所有条件，否则未覆盖到的条件无法使用索引，如果未覆盖的条件区分度较低将会扫描较多的数据）
 
-{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Swift" %}
+{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "JavaScript(Next)" or platform_name === "Android / Java" or platform_name === "Swift" %}
 ## LiveQuery
 
 LiveQuery 衍生于 [`{{ baseQueryClassName }}`](#查询)，并为其带来了更强大的功能。它可以让你无需编写复杂的逻辑便可在客户端之间同步数据，这对于有实时数据同步需求的应用来说很有帮助。
@@ -4314,7 +4858,7 @@ LiveQuery 使用 WebSocket 在客户端和云端之间建立连接。WebSocket �
 
 ### 启用 LiveQuery
 
-进入 **控制台 > 存储 > 设置**，在 **其他** 里面勾选 **启用 LiveQuery**{% if platform_name === "Objective-C" %}，然后将下面的 pod 添加到项目根目录下的 `Podfile` 即可：{% endif %}{% if platform_name === "Swift" %}，然后导入 LeanCloud Swift SDK：{% endif %}{% if platform_name === "JavaScript" %}，然后将下面的 npm 模块添加到项目中即可：{% endif %}{% if platform_name === "Android / Java" %}即可。确保即时通信模块已被添加到 `AndroidManifest.xml`：{% endif %}
+进入 **控制台 > 存储 > 设置**，在 **其他** 里面勾选 **启用 LiveQuery**{% if platform_name === "Objective-C" %}，然后将下面的 pod 添加到项目根目录下的 `Podfile` 即可：{% endif %}{% if platform_name === "Swift" %}，然后导入 LeanCloud Swift SDK：{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(Next)" %}，然后将下面的 npm 模块添加到项目中即可：{% endif %}{% if platform_name === "Android / Java" %}即可。确保即时通信模块已被添加到 `AndroidManifest.xml`：{% endif %}
 
 {% if platform_name === "Objective-C" %}
 ```ruby
@@ -4339,6 +4883,22 @@ const AV = require('leancloud-storage/live-query');
 ```html
 <!-- 无需加载 av-min.js -->
 <script src="//cdn.jsdelivr.net/npm/leancloud-storage@{{jssdkversion}}/dist/av-live-query-min.js"></script>
+```
+
+可以在 [SDK 安装与初始化](#SDK-安装与初始化) 中找到完整设置方法。
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+import { LiveQuery } from 'leancloud-storage/live-query';
+// 使用 LiveQuery 模块
+LC.use(LiveQuery);
+```
+
+或者使用 `script` 标签：
+
+```html
+<!-- 自动加载, 无需调用 LC.use -->
+<script src="//cdn.jsdelivr.net/npm/leancloud-storage/live-query/dist/live-query.min.js"></script>
 ```
 
 可以在 [SDK 安装与初始化](#SDK-安装与初始化) 中找到完整设置方法。
@@ -4422,6 +4982,15 @@ query.subscribe().then((liveQuery) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .subscribe()
+  .then((liveQuery) => {
+    // 订阅成功
+  });
+```
+{% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
 AVQuery<AVObject> query = new AVQuery<>("Todo");
@@ -4485,6 +5054,17 @@ query.subscribe().then((liveQuery) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .subscribe()
+  .then((liveQuery) => {
+    liveQuery.on('create', (newTodo) => {
+      newTodo.data.title; // 更新作品集
+    });
+  });
+```
+{% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
 AVQuery<AVObject> query = new AVQuery<>("Todo");
@@ -4541,6 +5121,13 @@ liveQuery.on('update', (updatedTodo, updatedKeys) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+liveQuery.on('update', (updatedTodo, updatedKeys) => {
+  updatedTodo.data.content; // 把我最近画的插画放上去
+});
+```
+{% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
 liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
@@ -4594,6 +5181,13 @@ liveQuery.on('create', (object) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+liveQuery.on('create', (object) => {
+  console.log('对象被创建。');
+});
+```
+{% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
 liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
@@ -4637,6 +5231,13 @@ liveQuery.on('update', (object, updatedKeys) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+liveQuery.on('update', (object, updatedKeys) => {
+  console.log('对象被更新。');
+});
+```
+{% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
 liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
@@ -4674,6 +5275,13 @@ self.liveQuery = try LiveQuery(query: query, eventHandler: { (liveQuery, event) 
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
+```js
+liveQuery.on('enter', (object, updatedKeys) => {
+  console.log('对象进入。');
+});
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
 ```js
 liveQuery.on('enter', (object, updatedKeys) => {
   console.log('对象进入。');
@@ -4727,6 +5335,13 @@ liveQuery.on('leave', (object, updatedKeys) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+liveQuery.on('leave', (object, updatedKeys) => {
+  console.log('对象离开。');
+});
+```
+{% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
 liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
@@ -4764,6 +5379,13 @@ self.liveQuery = try LiveQuery(query: query, eventHandler: { (liveQuery, event) 
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
+```js
+liveQuery.on('delete', (object) => {
+  console.log('对象被删除。');
+});
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
 ```js
 liveQuery.on('delete', (object) => {
   console.log('对象被删除。');
@@ -4817,6 +5439,13 @@ liveQuery.unsubscribe().then(() => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+liveQuery.unsubscribe().then(() => {
+  // 成功取消订阅
+});
+```
+{% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
 liveQuery.unsubscribeInBackground(new AVLiveQuerySubscribeCallback() {
@@ -4859,7 +5488,11 @@ PushService.startIfRequired(android.content.Context context);
 
 有时候应用需要存储尺寸较大或结构较为复杂的数据，这类数据不适合用 `{{ baseObjectName }}` 保存，此时文件对象 `{{ fileObjectName }}` 便成为了更好的选择。文件对象最常见的用途是保存图片，不过也可以用来保存文档、视频、音乐等其他二进制数据。
 
+{% if platform_name === "JavaScript(Next)" %}
+### 上传文件
+{% else %}
 ### 构建文件
+{% endif %}
 
 {% if platform_name === "Objective-C" %}
 可以通过字符串构建文件：
@@ -4893,6 +5526,31 @@ React Native 环境下，可以通过本地路径构建文件：
 ```js
 const data = { blob: { uri: localFileUri } }
 const file = new AV.File('resume.txt', data)
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+可以通过 base64 编码的字符串构建文件：
+
+```js
+const data = { base64: 'TGVhbkNsb3Vk' };
+// resume.txt 是文件名
+LC.File.upload('resume.txt', data);
+```
+
+还可以通过字节数组构建文件：
+
+```js
+const data = [0x4c, 0x65, 0x61, 0x6e, 0x43, 0x6c, 0x6f, 0x75, 0x64];
+LC.File.upload('resume.txt', data);
+```
+
+此外，浏览器环境下还可以通过 Blob 构建文件，Node.js 环境下还可以通过 Buffer、Stream 构建文件。
+
+React Native 环境下，可以通过本地路径构建文件：
+
+```js
+const data = { blob: { uri: localFileUri } }
+LC.File.upload('resume.txt', data);
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -4960,6 +5618,14 @@ const file = AV.File.withURL(
 );
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.File.uploadWithURL(
+  'logo.png',
+  'https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png'
+);
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 file = leancloud.File.create_with_url('logo.png', 'https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png')
@@ -4996,13 +5662,20 @@ LCFile file = LCFile.fromUrl('logo.png', 'https://leancloud.cn/assets/imgs/press
 通过 URL 构建文件时，SDK 并不会将原本的文件转储到云端，而是会将文件的物理地址存储为字符串，这样也就不会产生任何文件上传流量。使用其他方式构建的文件会被保存在云端。
 {% endcall %}
 
-{% if platform_name === "JavaScript" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Android / Java" or platform_name === "Swift" or platform_name === "Flutter" %}
+{% if platform_name === "JavaScript" or platform_name === "JavaScript(Next)" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Android / Java" or platform_name === "Swift" or platform_name === "Flutter" %}
 LeanCloud 会根据文件扩展名自动检测文件类型。如果需要的话，也可以手动指定 `Content-Type`（一般称为 MIME 类型）：
 {% endif %}
 
 {% if platform_name === "JavaScript" %}
 ```js
 const file = new AV.File('resume.txt', data, 'application/json');
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.File.upload('resume.txt', data, {
+  mime: 'application/json',
+});
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -5037,7 +5710,7 @@ file.mimeType = 'application/json';
 ```
 {% endif %}
 
-与前面提到的方式相比，一个更常见的文件构建方式是从本地路径上传{{ "。如果开发的是 web 应用，可以先在页面上放一个按钮：" if platform_name === "JavaScript" else "：" }}
+与前面提到的方式相比，一个更常见的文件构建方式是从本地路径上传{{ "。如果开发的是 web 应用，可以先在页面上放一个按钮：" if platform_name === "JavaScript" or platform_name === "JavaScript(Next)" else "：" }}
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -5060,6 +5733,21 @@ const avatarUpload = document.getElementById('avatar-upload');
 if (avatarUpload.files.length) {
   const localFile = avatarUpload.files[0];
   const file = new AV.File('avatar.jpg', localFile);
+}
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```html
+<input type="file" id="avatar-upload" />
+```
+
+然后在一个点击事件处理函数中获取这个文件：
+
+```js
+const avatarUpload = document.getElementById('avatar-upload');
+if (avatarUpload.files.length) {
+  const localFile = avatarUpload.files[0];
+  LC.File.upload('avatar.jpg', localFile);
 }
 ```
 {% endif %}
@@ -5098,7 +5786,9 @@ LCFile file = await LCFile.fromPath('avatar.jpg', './avatar.jpg');
 - 文件必须有扩展名才能被云端正确地识别出类型。比如说要用 `{{ fileObjectName }}` 保存一个 PNG 格式的图像，那么扩展名应为 `.png`。
 - 如果文件没有扩展名，且没有手动指定类型，那么 LeanCloud 将默认使用 `application/octet-stream`。
 
+{% if platform_name !== "JavaScript(Next)" %}
 ### 保存文件
+{% endif %}
 
 将文件保存到云端后，便可获得一个永久指向该文件的 URL：
 
@@ -5120,6 +5810,17 @@ file.save().then((file) => {
 }, (error) => {
   // 保存失败，可能是文件无法被读取，或者上传过程中出现问题
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.File.upload(filename, data)
+  .then((file) => {
+    console.log(`文件保存完成。objectId：${file.objectId}, url：${file.url}`);
+  })
+  .catch((error) => {
+    // 保存失败，可能是文件无法被读取，或者上传过程中出现问题
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -5224,6 +5925,15 @@ todo.add('attachments', file);
 todo.save();
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo').add({
+  title: '买蛋糕',
+  // attachments 是一个 Array 属性
+  attachments: LC.Op.add(file),
+});
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 Todo = leancloud.Object.extend('Todo')
@@ -5282,8 +5992,8 @@ await todo.save();
 ```
 {% endif %}
 
-{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Flutter"  %}
-注意，如果文件被保存到了 `{{ baseObjectName }}` 的一个数组属性中，那么在查询 `{{ baseObjectName }}` 时如果需要包含文件，则要用到 `{{ baseQueryClassName }}` 的 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Android / Java"%}include{% endif %}` 方法。比如说，在获取所有标题为 `买蛋糕` 的 todo 的同时获取附件中的文件：
+{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "JavaScript(Next)" or platform_name === "Android / Java" or platform_name === "Flutter"  %}
+注意，如果文件被保存到了 `{{ baseObjectName }}` 的一个数组属性中，那么在查询 `{{ baseObjectName }}` 时如果需要包含文件，则要用到 `{{ baseQueryClassName }}` 的 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "JavaScript(Next)" %}include{% endif %}{% if platform_name === "Android / Java"%}include{% endif %}` 方法。比如说，在获取所有标题为 `买蛋糕` 的 todo 的同时获取附件中的文件：
 {% endif %}
 
 {% if platform_name === "Objective-C" %}
@@ -5326,6 +6036,25 @@ query.find().then((todos) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .where('title', '==', '买蛋糕')  // 获取同一标题
+  .where('attachments', 'exists') // 且包含附件的 todo
+  .include('attachments')         // 同时获取附件中的文件
+  .find()
+  .then((todos) => {
+    todos.forEach((todo) => {
+      // 获取每个 todo 的 attachments 数组
+      const { attachments } = todo.data;
+      attachments.forEach((attachment) => {
+        // 每个附件都是一个 {{ fileObjectName }} 实例
+        console.log(`附件 URL：${attachment.url}`);
+      });
+    });
+  });
+```
+{% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
 // 获取同一标题且包含附件的 todo
@@ -5366,7 +6095,7 @@ for (LCObject todo in todos) {
 ```
 {% endif %}
 
-{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Swift" or platform_name === "Flutter" %}
+{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "JavaScript(Next)" or platform_name === "Android / Java" or platform_name === "Swift" or platform_name === "Flutter" %}
 ### 上传进度监听
 
 上传过程中可以实时向用户展示进度：
@@ -5384,6 +6113,22 @@ for (LCObject todo in todos) {
 {% if platform_name === "JavaScript" %}
 ```js
 file.save({
+  onprogress: (progress) => {
+    console.log(progress);
+    // {
+    //   loaded:  1024,
+    //   total:   2048,
+    //   percent: 50
+    // }
+  }
+}).then((file) => {
+  // 保存后的操作
+});
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.File.upload('resume.txt', data, {
   onprogress: (progress) => {
     console.log(progress);
     // {
@@ -5466,6 +6211,24 @@ file.save().then((file) => {
   const fileName = file.get('name');
   // 获取大小（不适用于通过 base64 编码的字符串或者 URL 保存的文件）
   const size = file.size();
+});
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.File.upload(filename, data, {
+  metaData: {
+    author: 'LeanCloud',
+  },
+}).then((file) => {
+  // 获取全部元数据
+  const { metaData } = file.data;
+  // 获取 author 属性
+  const { author } = metaData;
+  // 获取文件名
+  const { name } = file;
+  // 获取大小（不适用于通过 URL 保存的文件）
+  const { size } = file;
 });
 ```
 {% endif %}
@@ -5570,7 +6333,7 @@ await file.save();
 {% endif %}
 
 {% if node !== "qcloud" %}
-{% if platform_name === "Objective-C" or platform_name === "Swift" or platform_name === "JavaScript" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Android / Java" %}
+{% if platform_name === "Objective-C" or platform_name === "Swift" or platform_name === "JavaScript" or platform_name === "JavaScript(Next)" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Android / Java" %}
 ### 图像缩略图
 
 成功保存图像后，除了可以获取指向该文件的 URL 外，还可以获取图像的缩略图 URL，并且可以指定缩略图的宽度和高度：
@@ -5592,6 +6355,12 @@ let sizedURL = file.thumbnailURL(.size(width: 100, height: 200))
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
+```js
+// 获得宽度为 100 像素，高度 200 像素的缩略图
+const url = file.thumbnailURL(100, 200);
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
 ```js
 // 获得宽度为 100 像素，高度 200 像素的缩略图
 const url = file.thumbnailURL(100, 200);
@@ -5718,6 +6487,11 @@ const file = AV.File.createWithoutData('552e0a27e4b0643b709e891e');
 file.destroy();
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.File.object('552e0a27e4b0643b709e891e').delete();
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 file = leancloud.File.create_without_data('552e0a27e4b0643b709e891e')
@@ -5799,11 +6573,12 @@ LeanCloud 即时通讯组件也使用 `{{ fileObjectName }}` 来保存消息的�
 
 {{ data.cdn(true, fileObjectName) }}
 
-{% if platform_name === "JavaScript" %}
+{% if platform_name === "JavaScript" or platform_name === "JavaScript(Next)" %}
 ## Promise
 
-每一个在 LeanCloud JavaScript SDK 中的异步方法都会返回一个 `Promise`，可以用于处理该异步方法的完成与异常。下面的示例代码在查询到一个 `AV.Object` 后对其进行更新：
+每一个在 LeanCloud JavaScript SDK 中的异步方法都会返回一个 `Promise`，可以用于处理该异步方法的完成与异常。下面的示例代码在查询到一个 `{{ baseObjectName }}` 后对其进行更新：
 
+{% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
 query.equalTo('priority', 1);
@@ -5822,11 +6597,33 @@ query.find().then((todos) => {
   console.error(error);
 });
 ```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo')
+  .where('priority', '==', 1)
+  // first 方法是一个异步方法，会返回一个 Promise，之后可以使用 then 方法
+  .first()
+  .then((todo) => {
+    // update 方法也是一个异步方法，会返回一个 Promise，此处将其返回，后续操作就可以支持链式 Promise 调用
+    return todo.update({ notes: '今天需要完成。' });
+  })
+  .then(() => {
+    // 这里是 update 方法返回的 Promise
+    console.log('成功更新 todo。');
+  })
+  .catch((error) => {
+    // catch 方法写在 Promise 链式的最后，可以捕捉到全部 error
+    console.error(error);
+  });
+```
+{% endif %}
 
 ### `then` 方法
 
 每一个 `Promise` 都有一个叫 `then` 的方法，这个方法接受一对 callback。第一个 callback 在 `Promise` 被解决（`resolved`，也就是正常运行）的时候调用，第二个会在 `Promise` 被拒绝（`rejected`，也就是遇到错误）的时候调用：
 
+{% if platform_name === "JavaScript" %}
 ```js
 todo.save().then((todo) => {
   console.log('成功更新 todo。');
@@ -5834,11 +6631,21 @@ todo.save().then((todo) => {
   console.error(error);
 });
 ```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+todo.update({/* ... */}).then(
+  (todo) => console.log('成功更新 todo。'),
+  (error) => console.error(error)
+);
+```
+{% endif %}
 
 其中第二个参数是可选的。
 
 你还可以使用 `catch` 方法，将逻辑写成：
 
+{% if platform_name === "JavaScript" %}
 ```js
 todo.save().then((todo) => {
   console.log('成功更新 todo。');
@@ -5846,11 +6653,21 @@ todo.save().then((todo) => {
   console.error(error);
 });
 ```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+todo
+  .update({/* ... */})
+  .then((todo) => console.log('成功更新 todo。'))
+  .catch((error) => console.error(error));
+```
+{% endif %}
 
 ### 将 `Promise` 组织在一起
 
 Promise 比较神奇，可以代替多层嵌套方式来解决发送异步请求代码的调用顺序问题。如果一个 `Promise` 的回调会返回一个 `Promise`，那么第二个 `then` 里的 callback 在第一个 `then` 的 callback 没有解决前是不会解决的，也就是所谓 **Promise Chain**。
 
+{% if platform_name === "JavaScript" %}
 ```js
 // 将内容按章节顺序添加到页面上
 const chapterIds = [
@@ -5872,6 +6689,37 @@ new AV.Query('Chapter').get(chapterIds[0]).then((chapterOne) => {
   // 完成
 });
 ```
+{% endif %}
+
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const Chapter = LC.CLASS('Chapter');
+
+// 将内容按章节顺序添加到页面上
+const chapterIds = [
+  '584e1c408e450a006c676162', // 第一章
+  '584e1c43128fe10058b01cf5', // 第二章
+  '581aff915bbb500059ca8d0b', // 第三章
+];
+
+Chapter.object(chapterIds[0])
+  .get()
+  .then((chapterOne) => {
+    // 向页面添加内容
+    addHtmlToPage(chapterOne.data.content);
+    // 返回新的 Promise
+    return Chapter.object(chapterIds[1]).get();
+  })
+  .then((chapterTwo) => {
+    addHtmlToPage(chapterTwo.data.content);
+    return Chapter.object(chapterIds[2]).get();
+  })
+  .then((chapterThree) => {
+    addHtmlToPage(chapterThree.data.content);
+    // 完成
+  });
+```
+{% endif %}
 
 ### 错误处理
 
@@ -5881,6 +6729,7 @@ new AV.Query('Chapter').get(chapterIds[0]).then((chapterOne) => {
 
 利用 `catch` 方法可以将上述代码改写为：
 
+{% if platform_name === "JavaScript" %}
 ```js
 new AV.Query('Chapter').get(chapterIds[0]).then((chapterOne) => {
   addHtmlToPage(chapterOne.get('content'));
@@ -5899,11 +6748,37 @@ new AV.Query('Chapter').get(chapterIds[0]).then((chapterOne) => {
   console.error(error.message);
 });
 ```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+Chapter.object(chapterIds[0])
+  .get()
+  .then((chapterOne) => {
+    addHtmlToPage(chapterOne.data.content);
+    // 强制失败
+    throw new Error('出错啦');
+  })
+  .then((chapterTwo) => {
+    // 这里的代码将被忽略
+    addHtmlToPage(chapterTwo.data.content);
+    return Chapter.object(chapterIds[2]).get();
+  })
+  .then((chapterThree) => {
+    // 这里的代码将被忽略
+    addHtmlToPage(chapterThree.data.content);
+  })
+  .catch((error) => {
+    // 这个错误处理函数将被调用，错误信息是 '出错啦'
+    console.error(error.message);
+  });
+```
+{% endif %}
 
 ### `async` 和 `await`
 
 `async` 和 `await` 能让你以更接近同步代码的方式使用 Promise：
 
+{% if platform_name === "JavaScript" %}
 ```js
 async function example() {
   try {
@@ -5918,6 +6793,20 @@ async function example() {
   }
 }
 ```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+async function example() {
+  try {
+    const query = LC.CLASS('Todo').where('priority', '==', 1);
+    const todo = await query.first();
+    await todo.update({ notes: '今天需要完成。' });
+  } catch (error) {
+    console.error(error);
+  }
+}
+```
+{% endif %}
 
 如果你想更深入地了解和学习 Promise，包括如何对并行的异步操作进行控制，我们推荐阅读 [JavaScript Promise迷你书（中文版）](http://liubin.github.io/promises-book/)这本书。
 {% endif %}
@@ -5940,6 +6829,14 @@ const point = new AV.GeoPoint(39.9, 116.4);
 // 其他构建 AV.GeoPoint 的方式
 const point = new AV.GeoPoint([39.9, 116.4]);
 const point = new AV.GeoPoint({ latitude: 39.9, longitude: 116.4 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const point = new LC.GeoPoint(39.9, 116.4);
+
+// 其他构建 {{ geoPointObjectName }} 的方式
+const point = new LC.GeoPoint({ latitude: 39.9, longitude: 116.4 });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -5980,6 +6877,11 @@ LCGeoPoint point = LCGeoPoint(39.9, 116.4);
 todo.set('location', point);
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+todo.update({ location: point });
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 todo.set('location', point)
@@ -6008,7 +6910,7 @@ todo['location'] = point;
 
 ### 地理位置查询
 
-给定一些含有地理位置的对象，可以从中找出离某一点最近的几个，或者处于某一范围内的几个。要执行这样的查询，可以向普通的 `{{ baseQueryClassName }}` 添加 `{% if platform_name === "Objective-C" %}nearGeoPoint{% endif %}{% if platform_name === "JavaScript" %}near{% endif %}{% if platform_name === "Python" %}near{% endif %}{% if platform_name === "PHP" %}near{% endif %}{% if platform_name === "Android / Java" %}whereNear{% endif %}{% if platform_name === "Swift" %}.locatedNear{% endif %}` 条件。下面的代码查找 `location` 属性值离某一点最近的 `Todo` 对象：
+给定一些含有地理位置的对象，可以从中找出离某一点最近的几个，或者处于某一范围内的几个。要执行这样的查询，可以向普通的 `{{ baseQueryClassName }}` 添加 `{% if platform_name === "Objective-C" %}nearGeoPoint{% endif %}{% if platform_name === "JavaScript" %}near{% endif %}{% if platform_name === "JavaScript(Next)" %}near{% endif %}{% if platform_name === "Python" %}near{% endif %}{% if platform_name === "PHP" %}near{% endif %}{% if platform_name === "Android / Java" %}whereNear{% endif %}{% if platform_name === "Swift" %}.locatedNear{% endif %}` 条件。下面的代码查找 `location` 属性值离某一点最近的 `Todo` 对象：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -6034,6 +6936,18 @@ query.limit(10);
 query.find().then((todos) => {
   // todos 是包含满足条件的 Todo 对象的数组
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const point = new LC.GeoPoint(39.9, 116.4);
+LC.CLASS('todo')
+  .where('location', 'near', point)
+  .limit(10) // 限制为 10 条结果
+  .find()
+  .then((todos) => {
+    // todos 是包含满足条件的 Todo 对象的数组
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -6109,12 +7023,12 @@ List<LCObject> todos = await query.find();
 {% endif %}
 
 {% call docs.noteWrap() %}
-像 `{% if platform_name === "Objective-C" %}orderByAscending{% endif %}{% if platform_name === "JavaScript" %}ascending{% endif %}{% if platform_name === "Python" %}ascending{% endif %}{% if platform_name === "PHP" %}ascend{% endif %}{% if platform_name === "Android / Java" %}orderByAscending{% endif %}{% if platform_name === "Swift" %}.ascending{% endif %}{% if platform_name === "Flutter" %}orderByAscending{% endif %}` 和 `{% if platform_name === "Objective-C" %}orderByDescending{% endif %}{% if platform_name === "JavaScript" %}descending{% endif %}{% if platform_name === "Python" %}descending{% endif %}{% if platform_name === "PHP" %}descend{% endif %}{% if platform_name === "Android / Java" %}orderByDescending{% endif %}{% if platform_name === "Swift" %}.descending{% endif %}{% if platform_name === "Flutter" %}orderByDescending{% endif %}` 这样额外的排序条件会获得比默认的距离排序更高的优先级。
+像 `{% if platform_name === "Objective-C" %}orderByAscending{% endif %}{% if platform_name === "JavaScript" %}ascending{% endif %}{% if platform_name === "JavaScript(Next)" %}orderBy` 方法的 `asc{% endif %}{% if platform_name === "Python" %}ascending{% endif %}{% if platform_name === "PHP" %}ascend{% endif %}{% if platform_name === "Android / Java" %}orderByAscending{% endif %}{% if platform_name === "Swift" %}.ascending{% endif %}{% if platform_name === "Flutter" %}orderByAscending{% endif %}` 和 `{% if platform_name === "Objective-C" %}orderByDescending{% endif %}{% if platform_name === "JavaScript" %}descending{% endif %}{% if platform_name === "JavaScript(Next)" %}desc{% endif %}{% if platform_name === "Python" %}descending{% endif %}{% if platform_name === "PHP" %}descend{% endif %}{% if platform_name === "Android / Java" %}orderByDescending{% endif %}{% if platform_name === "Swift" %}.descending{% endif %}{% if platform_name === "Flutter" %}orderByDescending{% endif %}` 这样额外的排序条件会获得比默认的距离排序更高的优先级。
 {% endcall %}
 
-若要限制结果和给定地点之间的距离，可以参考 API 文档中的 {% if platform_name === "Objective-C" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "JavaScript" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Python" %}`within_kilometers`、`within_miles` 和 `within_radians`{% endif %}{% if platform_name === "PHP" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinKilometers`、`whereWithinMiles` 和 `whereWithinRadians`{% endif %}{% if platform_name === "Swift" %} `kilometersTo`、`milesTo` 和 `radiansTo`{% endif %} 参数。
+若要限制结果和给定地点之间的距离，可以参考 API 文档中的 {% if platform_name === "Objective-C" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "JavaScript" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "JavaScript(Next)" %}`within-kilometers`、`within-miles` 和 `within-radians`{% endif %}{% if platform_name === "Python" %}`within_kilometers`、`within_miles` 和 `within_radians`{% endif %}{% if platform_name === "PHP" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinKilometers`、`whereWithinMiles` 和 `whereWithinRadians`{% endif %}{% if platform_name === "Swift" %} `kilometersTo`、`milesTo` 和 `radiansTo`{% endif %} 参数。
 
-若要查询在某一矩形范围内的对象，可以用 {% if platform_name === "Objective-C" %}`withinGeoBoxFromSouthwest` 和 `toNortheast`{% endif %}{% if platform_name === "JavaScript" %}`withinGeoBox`{% endif %}{% if platform_name === "Python" %}`within_geo_box`{% endif %}{% if platform_name === "PHP" %}`withinBox`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinGeoBox`{% endif %}{% if platform_name === "Swift" %}`.locatedWithin`{% endif %}{% if platform_name === "Flutter" %}`whereWithinGeoBox`{% endif %}：
+若要查询在某一矩形范围内的对象，可以用 {% if platform_name === "Objective-C" %}`withinGeoBoxFromSouthwest` 和 `toNortheast`{% endif %}{% if platform_name === "JavaScript" %}`withinGeoBox`{% endif %}{% if platform_name === "JavaScript(Next)" %}`within`{% endif %}{% if platform_name === "Python" %}`within_geo_box`{% endif %}{% if platform_name === "PHP" %}`withinBox`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinGeoBox`{% endif %}{% if platform_name === "Swift" %}`.locatedWithin`{% endif %}{% if platform_name === "Flutter" %}`whereWithinGeoBox`{% endif %}：
 
 <img width="300" height="200" src="images/geopoint-withingeobox.svg" />
 
@@ -6132,6 +7046,14 @@ const query = new AV.Query('Todo');
 const southwest = new AV.GeoPoint(30, 115);
 const northeast = new AV.GeoPoint(40, 118);
 query.withinGeoBox('location', southwest, northeast);
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.CLASS('Todo').where('location', 'within', {
+  southwest: new LC.GeoPoint(30, 115),
+  northeast: new LC.GeoPoint(40, 118),
+});
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -6188,7 +7110,7 @@ query.whereWithinGeoBox('location', southwest, northeast);
 
 ## 用户
 
-用户系统几乎是每款应用都要加入的功能，我们为此专门提供了一个 `{{ userObjectName }}` 类来方便应用使用各项用户管理的功能。
+用户系统几乎是每款应用都要加入的功能，我们为此专门提供了一个 {% if platform_name === "JavaScript(Next)" %}`User`{% else %}`{{ userObjectName }}`{% endif %} 类来方便应用使用各项用户管理的功能。
 
 `{{ userObjectName }}` 是 `{{ baseObjectName }}` 的子类，这意味着任何 `{{ baseObjectName }}` 提供的方法也适用于 `{{ userObjectName }}`，唯一的区别就是 `{{ userObjectName }}` 提供一些额外的用户管理相关的功能。每个应用都有一个专门的 `_User` class 用于存放所有的 `{{ userObjectName }}`。
 
@@ -6257,6 +7179,24 @@ user.signUp().then((user) => {
 }, (error) => {
   // 注册失败（通常是因为用户名已被使用）
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.signUp({
+  username: 'Tom',                     // 必选
+  password: 'cat!@#123',               // 必选
+  email: 'tom@leancloud.rocks',        // 可选
+  mobilePhoneNumber: '+8618200008888', // 可选
+  gender: 'secret',                    // 其他属性
+})
+  .then((user) => {
+    // 注册成功
+    console.log(`注册成功。objectId：${user.objectId}`);
+  })
+  .catch((error) => {
+    // 注册失败（通常是因为用户名已被使用）
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -6376,7 +7316,7 @@ await user.signUp();
 {% endif %}
 
 {% call docs.noteWrap() %}
-新建 `{{ userObjectName }}` 的操作应使用 `{% if platform_name === "Objective-C" %}signUpInBackground{% endif %}{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Android / Java" %}signUpInBackground{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}{% if platform_name === "Flutter" %}signUp{% endif %}` 而不是 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}`，但以后的更新操作就可以用 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}` 了。
+新建 `{{ userObjectName }}` 的操作应使用 `{% if platform_name === "Objective-C" %}signUpInBackground{% endif %}{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "JavaScript(Next)" %}User` 的 `signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Android / Java" %}signUpInBackground{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}{% if platform_name === "Flutter" %}signUp{% endif %}` 而不是 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "JavaScript(Next)" %}add{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}`，但以后的更新操作就可以用 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "JavaScript(Next)" %}UserObject` 的 `update{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}` 了。
 {% endcall %}
 
 如果收到 `202` 错误码，意味着 `_User` 表里已经存在使用同一 `username` 的账号，此时应提示用户换一个用户名。除此之外，每个用户的 `email` 和 `mobilePhoneNumber` 也需要保持唯一性，否则会收到 `203` 或 `214` 错误。可以考虑在注册时把用户的 `username` 设为与 `email` 相同，这样用户可以直接 [用邮箱重置密码](#重置密码)。
@@ -6407,6 +7347,11 @@ options.signatureName = @"sign_name";     // 控制台预设的短信签名
 {% if platform_name === "JavaScript" %}
 ```js
 AV.Cloud.requestSmsCode('+8618200008888');
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.Cloud.requestSMSCode('+8618200008888');
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -6484,6 +7429,22 @@ AV.User.signUpOrlogInWithMobilePhone('+8618200008888', '123456').then((user) => 
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.signUpOrLoginWithMobilePhone({
+  mobilePhoneNumber: '+8618200008888',
+  smsCode: '123456',
+})
+  .then((user) => {
+    // 注册成功
+    console.log(`注册成功，objectId：${user.objectId}`);
+  })
+  .catch((error) => {
+    console.error(error);
+    // 验证码不正确
+  });
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 user = leancloud.User.signup_or_login_with_mobile_phone('+8618200008888', '123456')
@@ -6530,7 +7491,7 @@ _ = LCUser.signUpOrLogIn(mobilePhoneNumber: "+8618200008888", verificationCode: 
 {% call docs.noteWrap() %}
 `username` 将与 `mobilePhoneNumber` 相同，`password` 会由云端随机生成。
 如果希望让用户指定密码，可以在客户端让用户填写手机号和密码，然后按照上一小节使用用户名和密码注册的流程，将用户填写的手机号作为 `username` 和 `mobilePhoneNumber` 的值同时提交。
-同时根据业务需求，在「控制台 > 存储 > 用户 > 设置」勾选「未验证手机号码的用户，禁止登录」、「已验证手机号码的用户，允许以短信验证码登录」。 
+同时根据业务需求，在「控制台 > 存储 > 用户 > 设置」勾选「未验证手机号码的用户，禁止登录」、「已验证手机号码的用户，允许以短信验证码登录」。
 {% endcall %}
 
 #### 手机号格式
@@ -6562,6 +7523,17 @@ AV.User.logIn('Tom', 'cat!@#123').then((user) => {
 }, (error) => {
   // 登录失败（可能是密码错误）
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.login('Tom', 'cat!@#123')
+  .then((user) => {
+    // 登录成功
+  })
+  .catch((error) => {
+    // 登录失败（可能是密码错误）
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -6635,6 +7607,17 @@ AV.User.loginWithEmail('tom@leancloud.rocks', 'cat!@#123').then((user) => {
 }, (error) => {
   // 登录失败（可能是密码错误）
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.loginWithEmail('tom@leancloud.rocks', 'cat!@#123')
+  .then((user) => {
+    // 登录成功
+  })
+  .catch((error) => {
+    // 登录失败（可能是密码错误）
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -6711,6 +7694,17 @@ AV.User.logInWithMobilePhone('+8618200008888', 'cat!@#123').then((user) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.loginWithMobilePhone('+8618200008888', 'cat!@#123')
+  .then((user) => {
+    // 登录成功
+  })
+  .catch((error) => {
+    // 登录失败（可能是密码错误）
+  });
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 user = leancloud.User.login_with_mobile_phone('+8618200008888', 'cat!@#123')
@@ -6775,6 +7769,11 @@ try {
 AV.User.requestLoginSmsCode('+8618200008888');
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.requestLoginSMSCode('+8618200008888');
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 leancloud.User.request_login_sms_code('+8618200008888')
@@ -6828,6 +7827,17 @@ AV.User.logInWithMobilePhoneSmsCode('+8618200008888', '123456').then((user) => {
 }, (error) => {
   // 验证码不正确
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.loginWithMobilePhoneSMSCode('+8618200008888', '123456')
+  .then((user) => {
+    // 登录成功
+  })
+  .catch((error) => {
+    // 验证码不正确
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -6919,6 +7929,11 @@ try {
 AV.User.requestEmailVerify('tom@leancloud.rocks');
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.requestEmailVerify('tom@leancloud.rocks');
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 leancloud.User.request_email_verify('tom@leancloud.rocks')
@@ -6959,7 +7974,7 @@ await LCUser.requestEmailVerify('tom@leancloud.rocks');
 和 [验证邮箱](#验证邮箱) 类似，应用还可以要求用户在登录或使用特定功能之前验证手机号。默认情况下，当用户注册或变更手机号后，`mobilePhoneVerified` 会被设为 `false`。
 在应用的「控制台 > 存储 > 用户 > 设置」中，可以开启阻止未验证手机号的用户登录的选项。
 
-可以用下面的代码发送一条新的验证码：（如果相应用户的 `mobilePhoneVerified` 已经为 `true`，那么验证短信不会发送） 
+可以用下面的代码发送一条新的验证码：（如果相应用户的 `mobilePhoneVerified` 已经为 `true`，那么验证短信不会发送）
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -6975,6 +7990,11 @@ await LCUser.requestEmailVerify('tom@leancloud.rocks');
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.requestMobilePhoneVerify('+8618200008888');
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.requestMobilePhoneVerify('+8618200008888');
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -7030,6 +8050,17 @@ AV.User.verifyMobilePhone('123456').then(() => {
 }, (error) => {
   // 验证码不正确
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.verifyMobilePhone('123456')
+  .then(() => {
+    // mobilePhoneVerified 将变为 true
+  })
+  .catch((error) => {
+    // 验证码不正确
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -7092,6 +8123,19 @@ AV.User.changePhoneNumber('+8618200008888', '123456').then(() => {
 }, (error) => {
     // 验证码不正确
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.requestChangePhoneNumber('+8618200008888');
+
+LC.User.changePhoneNumber('+8618200008888', '123456')
+  .then(() => {
+    // 手机号更新成功
+  })
+  .catch((error) => {
+    // 验证码不正确
+  });
 ```
 {% endif %}
 {% if platform_name === "Objective-C" %}
@@ -7220,6 +8264,16 @@ if (currentUser) {
 }
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const currentUser = LC.User.current();
+if (currentUser) {
+  // 跳到首页
+} else {
+  // 显示注册或登录页面
+}
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 current_user = leancloud.User.get_current()
@@ -7288,6 +8342,14 @@ AV.User.logOut();
 const currentUser = AV.User.current();
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.logOut();
+
+// currentUser 变为 null
+const currentUser = LC.User.current();
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 user.logout()
@@ -7326,7 +8388,7 @@ LCUser currentUser = await LCUser.getCurrent();
 
 以下是一些应用可能需要用到 session token 的场景：
 
-- 应用根据以前缓存的 session token 登录（可以用 `{% if platform_name === "Objective-C" %}[AVUser currentUser].sessionToken{% endif %}{% if platform_name === "JavaScript" %}AV.User.current().getSessionToken(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current().get_session_token(){% endif %}{% if platform_name === "PHP" %}User::getCurrentSessionToken(){% endif %}{% if platform_name === "Android / Java" %}AVUser.getCurrentUser().getSessionToken(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser?.sessionToken?.value{% endif %}` 获取到当前用户的 session token）。
+- 应用根据以前缓存的 session token 登录（可以用 `{% if platform_name === "Objective-C" %}[AVUser currentUser].sessionToken{% endif %}{% if platform_name === "JavaScript" %}AV.User.current().getSessionToken(){% endif %}{% if platform_name === "JavaScript(Next)" %}User.current().sessionToken{% endif %}{% if platform_name === "Python" %}leancloud.User.get_current().get_session_token(){% endif %}{% if platform_name === "PHP" %}User::getCurrentSessionToken(){% endif %}{% if platform_name === "Android / Java" %}AVUser.getCurrentUser().getSessionToken(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser?.sessionToken?.value{% endif %}` 获取到当前用户的 session token）。
 - 应用内的某个 WebView 需要知道当前登录的用户。
 - 在服务端登录后，返回 session token 给客户端，客户端根据返回的 session token 登录。
 
@@ -7364,6 +8426,17 @@ AV.User.become('anmlwi96s381m6ca7o7266pzf').then((user) => {
 }, (error) => {
   // session token 无效
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.become('anmlwi96s381m6ca7o7266pzf')
+  .then((user) => {
+    // 登录成功
+  })
+  .catch((error) => {
+    // session token 无效
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -7444,6 +8517,17 @@ currentUser.isAuthenticated().then((authenticated) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.current().isAuthenticated().then((authenticated) => {
+  if (authenticated) {
+    // session token 有效
+  } else {
+    // session token 无效
+  }
+});
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 authenticated = leancloud.User.get_current().is_authenticated()
@@ -7510,6 +8594,11 @@ if (isAuthenticated) {
 AV.User.requestPasswordReset('tom@leancloud.rocks');
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.requestPasswordReset('tom@leancloud.rocks');
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 leancloud.User.request_password_reset('tom@leancloud.rocks')
@@ -7566,6 +8655,11 @@ await LCUser.requestPasswordReset('tom@leancloud.rocks');
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.requestPasswordResetBySmsCode('+8618200008888');
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.requestPasswordResetBySMSCode('+8618200008888');
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -7629,6 +8723,17 @@ AV.User.resetPasswordBySmsCode('123456', 'cat!@#123').then(() => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.resetPasswordBySMSCode('123456', 'cat!@#123')
+  .then(() => {
+    // 密码重置成功
+  })
+  .catch((error) => {
+    // 验证码不正确
+  });
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 leancloud.User.reset_password_by_sms_code('123456', 'cat!@#123')
@@ -7688,6 +8793,11 @@ AVQuery *userQuery = [AVUser query];
 {% if platform_name === "JavaScript" %}
 ```js
 const userQuery = new AV.Query('_User');
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const userQuery = LC.User.where(key, condition, value);
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -7754,6 +8864,23 @@ book.save().then((book) => {
   query.find().then((books) => {
     // books 是包含同一作者所有 Book 对象的数组
   });
+});
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const Book = LC.CLASS('Book');
+const author = User.current();
+Book.add({
+  title: '我的第五本书',
+  author: author,
+}).then((book) => {
+  // 获取所有该作者写的书
+  Book.where('author', '==', author)
+    .find()
+    .then((books) => {
+      // books 是包含同一作者所有 Book 对象的数组
+    });
 });
 ```
 {% endif %}
@@ -7862,7 +8989,7 @@ List<LCObject> books = await query.find();
 
 ### 用户对象的安全
 
-`{{ userObjectName }}` 类自带安全保障，只有通过 `{% if platform_name === "Objective-C" %}logInWithUsername{% endif %}{% if platform_name === "JavaScript" %}logIn{% endif %}{% if platform_name === "Python" %}login{% endif %}{% if platform_name === "PHP" %}logIn{% endif %}{% if platform_name === "Android / Java" %}logIn{% endif %}{% if platform_name === "Swift" %}logIn{% endif %}` 或者 `{% if platform_name === "Objective-C" %}signUpInBackground{% endif %}{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Android / Java" %}signUpInBackground{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}` 这种经过鉴权的方法获取到的 `{{ userObjectName }}` 才能进行保存或删除相关的操作，保证每个用户只能修改自己的数据。
+`{{ userObjectName }}` 类自带安全保障，只有通过 `{% if platform_name === "Objective-C" %}logInWithUsername{% endif %}{% if platform_name === "JavaScript" %}logIn{% endif %}{% if platform_name === "JavaScript(Next)" %}login{% endif %}{% if platform_name === "Python" %}login{% endif %}{% if platform_name === "PHP" %}logIn{% endif %}{% if platform_name === "Android / Java" %}logIn{% endif %}{% if platform_name === "Swift" %}logIn{% endif %}` 或者 `{% if platform_name === "Objective-C" %}signUpInBackground{% endif %}{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "JavaScript(Next)" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Android / Java" %}signUpInBackground{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}` 这种经过鉴权的方法获取到的 `{{ userObjectName }}` 才能进行保存或删除相关的操作，保证每个用户只能修改自己的数据。
 
 这样设计是因为 `{{ userObjectName }}` 中存储的大多数数据都比较敏感，包括手机号、社交网络账号等等。为了用户的隐私安全，即使是应用的开发者也应避免直接接触这些数据。
 
@@ -7924,6 +9051,25 @@ const user = AV.User.logIn('Tom', 'cat!@#123').then((user) => {
     });
   });
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.login('Tom', 'cat!@#123').then((user) => {
+  // 密码不会返回，这样做会获取到 undefined
+  const password = user.data.password;
+  // 修改用户名
+  user.update({ username: 'Jerry' }).then((user) => {
+    // 可以执行，因为用户已鉴权
+  });
+});
+
+// 绕过鉴权直接操作用户
+LC.User.object(anotherUserId)
+  .update({ username: 'Toodle' })
+  .catch((error) => {
+    // 会出错，因为用户未鉴权
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -8056,15 +9202,15 @@ try {
 ```
 {% endif %}
 
-通过 `{% if platform_name === "Objective-C" %}[AVUser currentUser]{% endif %}{% if platform_name === "JavaScript" %}AV.User.current(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current(){% endif %}{% if platform_name === "PHP" %}User::getCurrentUser(){% endif %}{% if platform_name === "Android / Java" %}AVUser.getCurrentUser(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser{% endif %}{% if platform_name === "Flutter" %}LCUser.getCurrent(){% endif %}` 获取的 `{{ userObjectName }}` 总是经过鉴权的。
+通过 `{% if platform_name === "Objective-C" %}[AVUser currentUser]{% endif %}{% if platform_name === "JavaScript" %}AV.User.current(){% endif %}{% if platform_name === "JavaScript(Next)" %}User.current(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current(){% endif %}{% if platform_name === "PHP" %}User::getCurrentUser(){% endif %}{% if platform_name === "Android / Java" %}AVUser.getCurrentUser(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser{% endif %}{% if platform_name === "Flutter" %}LCUser.getCurrent(){% endif %}` 获取的 `{{ userObjectName }}` 总是经过鉴权的。
 
-要查看一个 `{{ userObjectName }}` 是否经过鉴权，可以调用 `{% if platform_name === "Objective-C" %}isAuthenticatedWithSessionToken{% endif %}{% if platform_name === "JavaScript" %}isAuthenticated{% endif %}{% if platform_name === "Python" %}is_authenticated{% endif %}{% if platform_name === "PHP" %}isAuthenticated{% endif %}{% if platform_name === "Android / Java" %}isAuthenticated{% endif %}{% if platform_name === "Swift" %}{# TODO #}{% endif %}` 方法。通过经过鉴权的方法获取到的 `{{ userObjectName }}` 无需进行该检查。
+要查看一个 `{{ userObjectName }}` 是否经过鉴权，可以调用 `{% if platform_name === "Objective-C" %}isAuthenticatedWithSessionToken{% endif %}{% if platform_name === "JavaScript" %}isAuthenticated{% endif %}{% if platform_name === "JavaScript(Next)" %}isAuthenticated{% endif %}{% if platform_name === "Python" %}is_authenticated{% endif %}{% if platform_name === "PHP" %}isAuthenticated{% endif %}{% if platform_name === "Android / Java" %}isAuthenticated{% endif %}{% if platform_name === "Swift" %}{# TODO #}{% endif %}` 方法。通过经过鉴权的方法获取到的 `{{ userObjectName }}` 无需进行该检查。
 
-注意，用户的密码只能在注册的时候进行设置，日后如需修改，只能通过 [重置密码](#重置密码) 的方式进行。密码不会被缓存在本地。如果尝试直接获取已登录用户的密码，会得到 `null`。
+注意，用户的密码只能在注册的时候进行设置，日后如需修改，只能通过 [重置密码](#重置密码) 的方式进行。密码不会被缓存在本地。如果尝试直接获取已登录用户的密码，会得到 `{% if platform_name === "JavaScript(Next)" %}undefined{% else %}null{% endif %}`。
 
 ### 其他对象的安全
 
-对于给定的一个对象，可以指定哪些用户有权限读取或修改它。为实现该功能，每个对象都有一个由 `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}AVACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}` 对象组成的访问控制表。请参阅 [ACL 权限管理开发指南](acl-guide.html)。
+对于给定的一个对象，可以指定哪些用户有权限读取或修改它。为实现该功能，每个对象都有一个由 `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "JavaScript(Next)" %}{{ aclObjectName }}{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}AVACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}` 对象组成的访问控制表。请参阅 [ACL 权限管理开发指南](acl-guide.html)。
 
 ### 第三方账户登录
 
@@ -8114,6 +9260,28 @@ AV.User.loginWithAuthData(thirdPartyData, 'weixin').then((user) => {
 }, (error) => {
   // 登录失败
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const thirdPartyData = {
+  // 必须
+  openid:        'OPENID',
+  access_token:  'ACCESS_TOKEN',
+  expires_in:    7200,
+
+  // 可选
+  refresh_token: 'REFRESH_TOKEN',
+  scope:         'SCOPE'
+};
+
+LC.User.loginWithAuthData('weixin', thirdPartyData)
+  .then((user) => {
+    // 登录成功
+  })
+  .catch((error) => {
+    // 登录失败
+  });
 ```
 {% endif %}
 
@@ -8413,6 +9581,18 @@ AV.User.dissociateAuthData('weixin').then((s) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.current()
+  .dissociateAuthData('weixin')
+  .then((user) => {
+    // 解除关联成功
+  })
+  .catch((error) => {
+    // 解除关联失败
+  });
+```
+{% endif %}
 
 {% if platform_name === "Python" %}
 ```python
@@ -8473,7 +9653,7 @@ await currentUser.disassociateWithAuthData('weixin');
 
 有些产品，新用户在使用第三方账号授权拿到相关信息后，仍然需要补充设置用户名、手机号、密码等重要信息后，才被允许登录成功。
 
-这时要使用 `loginWithauthData` 登录接口的 `failOnNotExist` 参数并将其设置为 `true`。服务端会判断是否已存在能匹配上的 `authData`，如果不存在则会返回 `211` 错误码和 `Could not find user` 报错信息。开发者根据这个 `211` 错误码，跳转到要求输入用户名、密码、手机号等信息的页面，实例化一个 `{{ userObjectName }}` 对象，保存上述补充数据，再次调用 `loginWithauthData` 接口进行登录，并 **不再传入 `failOnNotExist` 参数**。示例代码如下：
+这时要使用 `loginWithAuthData` 登录接口的 `failOnNotExist` 参数并将其设置为 `true`。服务端会判断是否已存在能匹配上的 `authData`，如果不存在则会返回 `211` 错误码和 `Could not find user` 报错信息。开发者根据这个 `211` 错误码，跳转到要求输入用户名、密码、手机号等信息的页面，实例化一个 `{{ userObjectName }}` 对象，保存上述补充数据，再次调用 `loginWithauthData` 接口进行登录，并 **不再传入 `failOnNotExist` 参数**。示例代码如下：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -8539,6 +9719,38 @@ user.setEmail('tom@leancloud.rocks');
 user.loginWithAuthData(thirdPartyData, 'weixin').then((loggedInUser) => {
   console.log(loggedInUser);
 }, (error) => {
+});
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const thirdPartyData = {
+  access_token:  'ACCESS_TOKEN',
+  expires_in:    7200,
+  refresh_token: 'REFRESH_TOKEN',
+  openid:        'OPENID',
+  scope:         'SCOPE',
+};
+
+LC.User.loginWithAuthData('weixin', thirdPartyData, { failOnNotExist: true })
+  .then((user) => {
+    // 登录成功
+  })
+  .catch((error) => {
+    // 登录失败
+    // 检查 error.code == 211，跳转到用户名、手机号等资料的输入页面
+  });
+
+LC.User.loginWithData({
+  username: 'Tom',                     // 设置用户名
+  password: 'cat!@#123',               // 设置密码
+  email: 'tom@leancloud.rocks',        // 设置邮箱
+  mobilePhoneNumber: '+8618200008888', // 设置手机号
+  authData: {
+    weixin: thirdPartyData,
+  },
+}).then((loggedInUser) => {
+  console.log(loggedInUser);
 });
 ```
 {% endif %}
@@ -8688,7 +9900,7 @@ try {
 
 其他平台，如 QQ 和微博，与微信的设计也基本一致。
 
-LeanCloud 支持 `UnionID` 体系。你只需要给 `loginWithauthData` 和 `associateWithauthData` 接口传入更多的第三方鉴权信息，即可完成新 UnionID 体系的集成。新增加的第三方鉴权登录选项包括：
+LeanCloud 支持 `UnionID` 体系。你只需要给 `loginWithAuthData` 和 `associateWithAuthData` 接口传入更多的第三方鉴权信息，即可完成新 UnionID 体系的集成。新增加的第三方鉴权登录选项包括：
 - unionId，指第三方平台返回的 UnionId 字符串。
 - unionId platform，指 unionId 对应的 platform 字符串，由应用层自己指定，[后面](#该如何指定-unionIdPlatform)会详述。
 - asMainAccount，指示是否把当前平台的鉴权信息作为主账号来使用。如果作为主账号，那么就由当前用户唯一占有该 unionId，以后其他平台使用同样的 unionId 登录的话，会绑定到当前的用户记录上来；否则，当前应用的鉴权信息会被绑定到其他账号上去。
@@ -8759,6 +9971,32 @@ AV.User.loginWithAuthDataAndUnionId(
 }, (error) => {
   // 绑定失败
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const thirdPartyData = {
+  access_token: 'officetoken',
+  expires_in:   1384686496,
+  uid:          'officeopenid',
+  scope:        'SCOPE',
+};
+
+LC.User.loginWithAuthDataAndUnionId(
+  'wxleanoffice',
+  thirdPartyData,
+  'unionid4a', // unionId
+  {
+    unionIdPlatform: 'weixin', // 这里指定 UnionIdPlatform，使用「weixin」来指代微信平台。
+    asMainAccount: true,
+  }
+)
+  .then((user) => {
+    // 绑定成功
+  })
+  .catch((error) => {
+    // 绑定失败
+  });
 ```
 {% endif %}
 
@@ -8913,6 +10151,27 @@ AV.User.loginWithAuthDataAndUnionId(
 }, (error) => {
   // 绑定失败
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const thirdPartyData = {
+  access_token: 'supporttoken',
+  expires_in:   1384686496,
+  uid:          'supportopenid',
+  scope:        'SCOPE',
+};
+
+LC.User.loginWithAuthDataAndUnionId('wxleansupport', thirdPartyData, 'unionid4a', {
+  unionIdPlatform: 'weixin', // 这里指定 unionIdPlatform，使用「weixin」来指代微信平台。
+  asMainAccount: false,
+})
+  .then((user) => {
+    // 绑定成功
+  })
+  .catch((error) => {
+    // 绑定失败
+  });
 ```
 {% endif %}
 
@@ -9154,6 +10413,13 @@ AV.User.loginAnonymously().then((user) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.User.loginAnonymously().then((user) => {
+  // user 是新的匿名用户
+});
+```
+{% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
 AVUser.logInAnonymously().subscribe(new Observer<AVUser>() {
@@ -9212,6 +10478,24 @@ user.signUp().then((user) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+// currentUser 是个匿名用户
+const currentUser = LC.User.current();
+
+currentUser
+  .signUp({
+    username: 'Tom',
+    password: 'cat!@#123',
+  })
+  .then((user) => {
+    // currentUser 已经转化为普通用户
+  })
+  .catch((error) => {
+    // 注册失败（通常是因为用户名已被使用）
+  });
+```
+{% endif %}
 
 {% if platform_name === "Android / Java" %}
 ```java
@@ -9259,6 +10543,16 @@ if (currentUser.isAnonymous) {
 {% if platform_name === "JavaScript" %}
 ```js
 const currentUser = AV.User.current();
+if (currentUser.isAnonymous()) {
+  // currentUser 是匿名用户
+} else {
+  // currentUser 不是匿名用户
+}
+```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const currentUser = LC.User.current();
 if (currentUser.isAnonymous()) {
   // currentUser 是匿名用户
 } else {
@@ -9782,13 +11076,14 @@ assert(student.save().isSuccess)
 应用内社交，又称「事件流」，在应用开发中出现的场景非常多，包括用户间关注（好友）、朋友圈（时间线）、状态、互动（点赞）、私信等常用功能，请参考 [应用内社交模块](status_system.html)。
 {% endif %}
 
-{% if platform_name === "JavaScript" %}
+{% if platform_name === "JavaScript" or platform_name === "JavaScript(Next)" %}
 ## Push 通知
 
 通过 JavaScript SDK 也可以向移动设备推送消息。
 
 一个简单例子推送给所有订阅了 `public` 频道的设备：
 
+{% if platform_name === "JavaScript" %}
 ```js
 AV.Push.send({
   channels: [ 'public' ],
@@ -9797,11 +11092,23 @@ AV.Push.send({
   }
 });
 ```
+{% endif %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+LC.Push.send({
+  channels: ['public'],
+  data: {
+    alert: 'public message',
+  },
+});
+```
+{% endif %}
 
 这就向订阅了 `public` 频道的设备发送了一条内容为 `public message` 的消息。
 
-如果希望按照某个 `_Installation` 表的查询条件来推送，例如推送给某个 `installationId` 的 Android 设备，可以传入一个 `AV.Query` 对象作为 `where` 条件：
+如果希望按照某个 `_Installation` 表的查询条件来推送，例如推送给某个 `installationId` 的 Android 设备，可以传入一个 `{{ baseQueryClassName }}` 对象作为 `{% if platform_name === "JavaScript" %}where{% endif %}{% if platform_name === "JavaScript(Next)" %}query{% endif %}` 条件：
 
+{% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('_Installation');
 query.equalTo('installationId', installationId);
@@ -9813,10 +11120,26 @@ AV.Push.send({
 });
 ```
 
-`AV.Push` 的更多使用信息参考 API 文档 [AV.Push](https://leancloud.github.io/javascript-sdk/docs/AV.Push.html)。更多推送的查询条件和格式，请查阅 [消息推送指南](push_guide.html)。
+`{{ pushObjectName }}` 的更多使用信息参考 API 文档 [{{ pushObjectName }}](https://leancloud.github.io/javascript-sdk/docs/AV.Push.html)。更多推送的查询条件和格式，请查阅 [消息推送指南](push_guide.html)。
 {% endif %}
 
-{% if platform_name === "JavaScript" %}
+{% if platform_name === "JavaScript(Next)" %}
+```js
+const query = LC.CLASS('_Installation').where('installationId', '==', installationId);
+Push.send({
+  query: query,
+  data: {
+    alert: 'Public message',
+  },
+});
+```
+
+`{{ pushObjectName }}` 的更多使用信息参考 API 文档 [{{ pushObjectName }}](https://doc.leanapp.cn/classes/push)。更多推送的查询条件和格式，请查阅 [消息推送指南](push_guide.html)。
+{% endif %}
+
+{% endif %}
+
+{% if platform_name === "JavaScript" or platform_name === "JavaScript(Next)" %}
 ## WebView
 
 JS SDK 支持在各种 WebView 中使用，包括 PhoneGap、Cordova、微信 WebView 等。

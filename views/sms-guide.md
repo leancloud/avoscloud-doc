@@ -97,6 +97,19 @@ AV.Cloud.requestSmsCode({
   // 调用失败
 });
 ```
+```JavaScript(Next)
+// 往 18200008888 这个手机号码发送短信，使用预设的模板和签名
+LC.Cloud.requestSMSCode('18200008888', {
+  template: 'Register_Notice', // 控制台预设的模板名称
+  sign: 'LeanCloud',           // 控制台预设的短信签名
+})
+  .then(() => {
+    // 调用成功
+  })
+  .catch((error) => {
+    // 调用失败
+  });
+```
 ```cs
 // 往 18200008888 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
 AVCloud.RequestSMSCodeAsync("18200008888","Register_Notice",null,"LeanCloud").ContinueWith(t =>
@@ -176,10 +189,10 @@ try {
 
 通过短信进行注册、登录或重要操作的验证，是一种非常常见的需求。这里我们以一个购物应用为例，说明如何使用 LeanCloud 短信服务完成操作认证：
 
-1. **用户点击支付订单**  
+1. **用户点击支付订单**
   发起敏感操作。
-  
-2. **调用接口发送验证短信**  
+
+2. **调用接口发送验证短信**
   注意，在这一步之前，我们假设开发者已经完成了前面章节提及的所有短信服务设置。
 
   ```objc
@@ -247,6 +260,19 @@ try {
       // 调用失败
   });
   ```
+  ```JavaScript(Next)
+  LC.Cloud.requestSMSCode('18200008888', {
+    name: '应用名称',
+    op: '某种操作',
+    ttl: 10, // 验证码有效时间为 10 分钟
+  })
+    .then(function () {
+      // 调用成功
+    })
+    .catch(function (err) {
+      // 调用失败
+    });
+  ```
   ```cs
   // 下面参数中的 10 表示验证码有效时间为 10 分钟
   AVCloud.RequestSMSCodeAsync("18200008888","应用名称","某种操作",10).ContinueWith(t =>
@@ -282,10 +308,10 @@ try {
   print(e.message);
 }
 ```
-3. **用户收到短信，并且输入了验证码**  
+3. **用户收到短信，并且输入了验证码**
   在进行下一步之前，我们建议先进行客户端验证（对有效性进行基本验证，例如长度、特殊字符等），这样就避免了错误的验证码被服务端驳回而产生的流量，以及与服务端沟通的时间，有助于提升用户体验。
-  
-4. **调用接口验证用户输入的验证码是否有效**  
+
+4. **调用接口验证用户输入的验证码是否有效**
   注意，调用时需要确保验证码和手机号的参数顺序，我们假设验证码数字是「123456」：
 
   ```objc
@@ -305,7 +331,7 @@ try {
       }
   }
   ```
-  ```java 
+  ```java
   AVSMS.verifySMSCodeInBackground("123456","18200008888").subscribe(new Observer<AVNull>() {
       @Override
       public void onSubscribe(Disposable d) {
@@ -330,9 +356,18 @@ try {
       // 验证失败
   });
   ```
+  ```JavaScript(Next)
+  LC.Cloud.verifySMSCode('18200008888', '123456')
+    .then(() => {
+      // 验证成功
+    })
+    .catch((error) => {
+      // 验证失败
+    });
+  ```
   ```cs
   AVCloud.VerifySmsCodeAsync("123456","18200008888").ContinueWith(t =>{
-      if(t.Result) 
+      if(t.Result)
       {
           // 验证成功
       }
@@ -412,6 +447,15 @@ AV.Cloud.requestSmsCode({
   // 处理异常
 });
 ```
+```JavaScript(Next)
+LC.Cloud.requestSMSCode('18200008888', { smsType: 'voice' })
+  .then(function () {
+    // 发送成功
+  })
+  .catch((error) => {
+    // 处理异常
+  });
+```
 ```cs
 AVCloud.RequestVoiceCodeAsync ("18200008888").ContinueWith(t =>{
     // 发送成功
@@ -479,9 +523,18 @@ AV.Cloud.verifySmsCode('123456', '18200008888').then(function(){
     // 验证失败
 });
 ```
+```JavaScript(Next)
+LC.Cloud.verifySMSCode('18200008888', '123456')
+  .then(() => {
+    // 验证成功
+  })
+  .catch((error) => {
+    // 验证失败
+  });
+```
 ```cs
 AVCloud.VerifySmsCodeAsync("123456","18200008888").ContinueWith(t =>{
-    if(t.Result) 
+    if(t.Result)
     {
         // 验证成功
     }
@@ -622,6 +675,21 @@ order_id: '7623432424540'}).then(function(){
       // 调用失败
 });
 ```
+```JavaScript(Next)
+LC.Cloud.requestSMSCode('18200008888', {
+  template: 'Order_Notice',
+  sign: 'sign_BuyBuyBuy',
+  variables: {
+    order_id: '7623432424540',
+  },
+})
+  .then(function () {
+    // 调用成功
+  })
+  .catch((error) => {
+    // 调用失败
+  });
+```
 ```cs
 var env = new Dictionary<string,object>()
 {
@@ -707,7 +775,7 @@ XX房东您好，租客{{ docs.mustache("{guest_name}") }}（手机号码：{{ d
 但是 URL 中可以包含变量，比如：
 
 {% call docs.bubbleWrap() -%}
-亲，您的宝贝已上路，快递信息可以通过以下链接查询：http://www.sf-express.com/cn/#search/{{ docs.mustache("{bill_number}") }} 
+亲，您的宝贝已上路，快递信息可以通过以下链接查询：http://www.sf-express.com/cn/#search/{{ docs.mustache("{bill_number}") }}
 {% endcall %}
 
 #### 通知类模板
@@ -797,16 +865,15 @@ LeanCloud 提供的图形验证码服务仅提供基本的防范，如有必要�
 初始化图形验证码组件：
 
 ```js
-AV.Captcha.request().then(function (captcha) {
+LC.Captcha.request().then((captcha) => {
   captcha.bind({
-    textInput: 'captcha-code', // The id for textInput
-    image: 'captcha-image',    // The id for image element
-    verifyButton: 'verify'     // The id for verify button
-  }, {
-    success: function (validateCode) {
+    textInput: 'captcha-code', // The id of textInput
+    image: 'captcha-image',    // The id of image element
+    verifyButton: 'verify',    // The id of verify button
+    success: (validateToken) => {
       console.log('验证成功，下一步');
     },
-    error: function (error) {
+    error: (error) => {
       console.error(error.message);
     }
   });
@@ -815,14 +882,14 @@ AV.Captcha.request().then(function (captcha) {
 
 #### 配置参数说明
 
-`AV.Captcha.request()` 在生成 `AV.Captcha` 实例的时候，可以指定如下参数：
+`LC.Captcha.request()` 在生成 `LC.Captcha` 实例的时候，可以指定如下参数：
 
 {{ sms.paramsRequestCaptcha() }}
 
 例如可以这样初始化一个展示高度为 30px、宽度为 80px 的 `captcha` 实例：
 
 ```js
-AV.Captcha.request({ width: 80, height: 30 });
+LC.Captcha.request({ width: 80, height: 30 });
 ```
 
 `captcha.bind()` 方法可以将 `captcha` 实例与界面元素绑定起来，它支持如下参数：
@@ -848,53 +915,53 @@ AV.Captcha.request({ width: 80, height: 30 });
 </head>
 
 <body>
-  <label>手机号
+  <div>
+    <label>手机号</label>
     <input type="text" id="phone" />
-  </label>
-  <br />
-  <label>校验码
+  </div>
+  <div>
+    <label>校验码</label>
     <input type="text" id="captcha-code" />
-  </label>
-  <img id="captcha-image" />
-  <br />
+  </div>
+  <div><img id="captcha-image" /></div>
   <button id="verify">发送验证码</button>
   <!-- 引入 LeanCloud SDK -->
-  <script src="//cdn.jsdelivr.net/npm/leancloud-storage@{{jssdkversion}}/dist/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/leancloud-storage/dist/browser/lc.min.js"></script>
   <script>
-    var appId = '{{appid}}';  // 你的 appId
-    var appKey = '{{appkey}}'; // 你的 appKey
-    AV.init({ appId, appKey });
-    // AV.Captcha.request() 默认生成一个 85px x 30px 的 AV.Captcha 实例
-    AV.Captcha.request().then(function (captcha) {
-      // 在浏览器中，可以直接使用 captcha.bind 方法将验证码与 DOM 元素绑定
+    const appId = '{{appid}}'; // 你的 appId
+    const appKey = '{{appkey}}'; // 你的 appKey
+    const serverURL = ''; // 你的 serverURL
+    LC.init({ appId, appKey, serverURL });
+
+    // Captcha.request() 默认生成一个 85px x 30px 的 Captcha 实例
+    LC.Captcha.request().then((captcha) => {
       captcha.bind({
-        textInput: 'captcha-code', // The id for textInput
-        image: 'captcha-image',    // The id for image element
-        verifyButton: 'verify'     // The id for verify button
-      }, {
-        success: function (validateCode) {
-          var phoneNumber = document.getElementById('phone').value;
+        textInput: 'captcha-code', // The id of textInput
+        image: 'captcha-image',    // The id of image element
+        verifyButton: 'verify',    // The id of verify button
+        success: (validateToken) => {
+          const phoneNumber = document.getElementById('phone').value;
           console.log('验证成功，下一步发送验证码短信至：' + phoneNumber);
-          AV.Cloud.requestSmsCode({
-            mobilePhoneNumber: phoneNumber,
+          LC.Cloud.requestSMSCode(phoneNumber, {
             name: '应用名称',
-            validate_token: validateCode,
+            validateToken,
             op: '某种操作',
-            ttl: 10
-          }).then(function () {
-            console.log('发送成功。');
-          }, function (err) {
-            console.error('发送失败。', err.message);
-          });
+            ttl: 10,
+          })
+            .then () => {
+              console.log('发送成功。');
+            })
+            .catch((error) => {
+              console.error('发送失败。', error.message);
+            });
         },
-        error: function (error) {
+        error: (error) => {
           console.error(error.message);
         }
       });
     });
   </script>
 </body>
-
 </html>
 ```
 
@@ -955,6 +1022,14 @@ AV.Captcha.request({
   width:100, // 图片的宽度
   height:50, // 图片的高度
 }).then(function(captcha) {
+  console.log(captcha.url); // 图片的 URL，客户端用来展现
+});
+```
+```JavaScript(Next)
+LC.Captcha.request({
+  width: 100, // 图片的宽度
+  height: 50, // 图片的高度
+}).then((captcha) => {
   console.log(captcha.url); // 图片的 URL，客户端用来展现
 });
 ```
@@ -1028,6 +1103,10 @@ AVCaptcha.verifyCaptchaCodeInBackground("123456",avCaptchaDigest).subscribe(new 
 ```javascript
 // captcha 是上一步得到的验证码实例对象
 captcha.verify('这里填写用户输入的图形验证码，例如 AM8N').then(function(validateToken) {});
+```
+```JavaScript(Next)
+// captcha 是上一步得到的验证码实例对象
+captcha.verify('这里填写用户输入的图形验证码，例如 AM8N').then((validateToken) => {});
 ```
 ```cs
 AVCloud.VerifyCaptchaAsync("这里填写用户输入的图形验证码，例如 AM8N",'这里填写上一步返回的 captchaToken').CotinuteWith(t =>{
@@ -1110,7 +1189,7 @@ AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<A
 ```javascript
 // mobilePhoneNumber：手机号
 // template：模板名称
-// sign：签名 
+// sign：签名
 AV.Cloud.requestSmsCode({
     mobilePhoneNumber: '18200008888',
     template: 'New_Series',
@@ -1123,10 +1202,23 @@ AV.Cloud.requestSmsCode({
     // 调用失败
 });
 ```
+```JavaScript(Next)
+LC.Cloud.requestSMSCode('18200008888', {
+  template: 'New_Series',  // 模板名称
+  sign: 'sign_BuyBuyBuy',  // 签名
+  validateToken: '上一步返回的 validateToken',
+})
+  .then(() => {
+    // 调用成功
+  })
+  .catch((error) => {
+    // 调用失败
+  });
+```
 ```cs
 // 18200008888：手机号
 // New_Series：模板名称
-// sign_BuyBuyBuy：签名 
+// sign_BuyBuyBuy：签名
 AVCloud.RequestSMSCodeAsync("18200008888","New_Series",null,"sign_BuyBuyBuy","上一步返回的 validate_token").ContinueWith(t =>
 {
     var result = t.Result;
@@ -1179,7 +1271,7 @@ LeanCloud 提供了内建的 [账户系统](leanstorage_guide-js.html#用户) �
 - 开启：未验证手机号的 `AVUser` 不能使用「手机号 + 密码」以及「手机号 + 短信验证码」的方式登录，但是<u>用户名搭配密码的登录方式不会失败</u>。
 - 关闭：不会对登录接口造成任何影响。
 
-{{ include.checkbox() }}**未验证手机号码的用户，允许以短信重置密码** 
+{{ include.checkbox() }}**未验证手机号码的用户，允许以短信重置密码**
 - 开启：允许尚未验证过手机号的 `AVUser` 通过短信验证码实现重置密码的功能。
 - 关闭：`AVUser` 必须在使用短信重置密码之前，先行验证手机号，也就是 `mobilePhoneVerified` 字段必须是 `true` 的前提下，才能使用短信重置密码。
 

@@ -5,3 +5,5 @@
 {% set fileObjectName = "AV.File" %}
 {% set geoPointObjectName = "AV.GeoPoint" %}
 {% set userObjectName = "AV.User" %}
+{% set aclObjectName = "AV.ACL" %}
+{% set pushObjectName = "AV.Push" %}
