@@ -240,6 +240,8 @@ AV.Cloud.define('querySomething', function(req, res) {
 });
 ```
 
+Python SDK 也存在类似的问题，只会返回 Pointer 元信息，因此也需要额外进行一次查询并手动进行序列化。 
+
 ## RPC 调用云函数时，为什么会返回预期之外的空对象？
 
 使用 Node SDK 定义的云函数，如果返回一个不是 AVObject 的值，比如字符串、数字，RPC 调用得到的是空对象（`{}`）。
