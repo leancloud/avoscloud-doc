@@ -32,7 +32,7 @@ Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 �
 
 基于 Debian 的发行版可以从 {{release}} 下载 deb 包安装。
 
-其他发行版可以从 {{release}} 下载预编译好的二进制文件 `lean-linux-x64`，重命名为 `lean` 并放到已经在 PATH 环境变量中声明的任意目录中即可。
+其他发行版可以从 {{release}} 下载预编译好的二进制文件 `lean-linux-x64`，赋予可执行权限（`chmod a+x lean-linux-x64`），重命名为 `lean` 并放到已经在 PATH 环境变量中声明的任意目录中即可。
 
 #### Arch Linux
 
