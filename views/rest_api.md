@@ -2689,57 +2689,11 @@ curl -X PUT \
 
 ### 上传文件
 
-{{ docs.alert("北美和华东节点不支持通过 REST API 上传文件，请使用 SDK 提供的文件相关接口上传文件。") }}
-
-对于文件上传，我们推荐使用各个客户端的 SDK 进行操作，或者使用[命令行工具](./leanengine_cli.html)。
-
-**通过 REST API 上传文件受到三个限制**：
-
-* 上传最大文件大小有 10 M 的限制
-* 每个应用每秒最多上传 1 个文件
-* 每个应用每分钟最多上传 30 个文件
-
-**而使用 SDK 或者命令行上传没有这些限制**。
-
-上传文件到  LeanCloud  通过 POST 请求，注意必须指定文件的 content-type，例如上传一个文本文件 hello.txt 包含一行字符串：
-
-```sh
-curl -X POST \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: text/plain" \
-  -d 'Hello, World!' \
-  https://{{host}}/1.1/files/hello.txt
-```
-
-文件上传成功后，返回 **201 Created** 的应答和创建的文件对象（可以在 _File 表看到）：
-
-```json
-{  "size":13,
-   "bucket":"1qdney6b",
-   "url":"http://ac-1qdney6b.qiniudn.com/3zLG4o0d27MsCQ0qHGRg4JUKbaXU2fiE35HdhC8j.txt",
-   "name":"hello.txt",
-   "createdAt":"2014-10-14T05:55:57.455Z",
-   "objectId":"543cbaede4b07db196f50f3c"
-}
-```
-
-其中 `url` 就是文件下载链接，`objectId` 是文件的对象 id，`name` 就是上传的文件名称。
-
-也可以尝试上传一张图片，假设当前目录有一个文件 test.png：
-
-```sh
-curl -X POST \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: image/png" \
-  --data-binary '@test.png'  \
-  https://{{host}}/1.1/files/test.png
-```
+REST API 不支持文件上传，请使用 SDK 上传文件。如果已有 url ，仅需保存一条文件数据，请使用[创建对象](#创建对象)接口在 _File 表新增一条数据。
 
 ### 关联文件到对象
 
-一个文件上传后，你可以关联该文件到某个 AVObject 对象上：
+一个文件被保存到 _File 表后，你可以关联该文件到某个 AVObject 对象上：
 
 ```sh
 curl -X POST \
