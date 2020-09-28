@@ -1118,7 +1118,7 @@ int count = await chatRoom.countMembers();
 | 消息等级                 | 描述                                                               |
 | ------------------------ | ------------------------------------------------------------------ |
 | `MessagePriority.HIGH`   | 高等级，针对时效性要求较高的消息，比如直播聊天室中的礼物、打赏等。 |
-| `MessagePriority.NORMAL` | 正常等级，比如普通非重复性的文本消息。                             |
+| `MessagePriority.NORMAL` | 中等级，比如普通非重复性的文本消息。                             |
 | `MessagePriority.LOW`    | 低等级，针对时效性要求较低的消息，比如直播聊天室中的弹幕。         |
 
 消息等级默认为 `NORMAL`。
