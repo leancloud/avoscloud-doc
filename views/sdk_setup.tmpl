@@ -922,7 +922,15 @@ $ npx pod-install
 ```
 
 ```即时通讯
-$ yarn add leancloud-realtime @leancloud/platform-adapters-react-native
+# Step 1: Install
+$ yarn add leancloud-realtime @leancloud/platform-adapters-react-native @react-native-community/async-storage@1
+
+# Step 2: Link
+# For React Native 0.60+
+$ npx pod-install
+# For React Native <= 0.59
+# npx react-native link @react-native-community/async-storage
+# For Expo (SDK >= 38) 无需 link
 ```
 
 ```即时通讯（含富媒体消息）
