@@ -14,7 +14,7 @@ LeanCloud 不同版本的 SDK 可能使用不同的域名，因此需要先确�
 ### 快速诊断
 
 ```
-curl -I -w 'nslookup: %{time_namelookup}, connect: %{time_connect}, init_ssl: %{time_appconnect}, starttransfer: %{time_starttransfer}, total_time: %{time_total}, http_code: %{http_code}, remote_ip: %{remote_ip}, local_ip: %{local_ip}' https://api.leancloud.cn
+curl -I -w 'nslookup: %{time_namelookup}, connect: %{time_connect}, init_ssl: %{time_appconnect}, starttransfer: %{time_starttransfer}, total_time: %{time_total}, http_code: %{http_code}, remote_ip: %{remote_ip}, local_ip: %{local_ip}' https://api.leancloud.cn/1.1/date
 ```
 
 上述命令会给出通过 HTTP 访问 LeanCloud 服务的耗时情况，一般总耗时 1 秒以下是可以接受的：
@@ -39,9 +39,12 @@ nslookup: 0.005, connect: 0.032, init_ssl: 0.065, starttransfer: 0.074, total_ti
 - 如果输出中有打印 `curl: (35) SSL connect error`，请先进行「[DNS 诊断](#DNS_诊断)」，再进行「[SSL 诊断](#SSL_诊断)」。
 - 如果输出中有打印 `curl: (60) SSL certificate problem`，请先进行「[DNS 诊断](#DNS_诊断)」，再进行「[SSL 诊断](#SSL_诊断)」。
 
-如果命令长时间没有结束，请改用 `curl -v https://api.leancloud.cn` 来获取不完整的信息，确认请求卡在哪个步骤，再进行「[延迟和丢包诊断](#延迟和丢包诊断)」。
+如果命令长时间没有结束，请改用 `curl -v https://api.leancloud.cn/1.1/date` 来获取不完整的信息，确认请求卡在哪个步骤，再进行「[延迟和丢包诊断](#延迟和丢包诊断)」。
 
 请留意在进行诊断时是否开启了代理，否则得到的是经过了代理的访问情况，如不确认请在 curl 后添加 `--noproxy '*'`。
+
+有些开发者可能习惯用 ping 检测服务可用性，但是 LeanCloud 的服务器并不是全部支持 ping 检测，所以 ping 的结果无法反映服务可用性。
+我们建议使用 curl 等工具检测（参见本小节开头的 curl 测试命令样例）。
 
 ### DNS 诊断
 
@@ -87,77 +90,6 @@ Windows 系统下没有预装 `dig` 命令，可以使用 nslookup：
 ```
 nslookup -debug api.leancloud.cn 
 ```
-
-### 延迟和丢包诊断
-
-{{ docs.note("需要注意 LeanCloud 的服务器并不是全部支持 ping 检测，因此建议优先使用 curl 检测。") }} 
-
-可以先用 ping 进行简单的确认：
-
-```
-ping api.leancloud.cn
-```
-
-在积累一段时间数据后可以按 `Ctrl-C` 退出，会打印这样的结果：
-
-```
-PING api-ucloud.leancloud.cn (120.132.49.239): 56 data bytes
-64 bytes from 120.132.49.239: icmp_seq=0 ttl=0 time=16.123 ms
-64 bytes from 120.132.49.239: icmp_seq=1 ttl=0 time=19.765 ms
-64 bytes from 120.132.49.239: icmp_seq=2 ttl=0 time=6.789 ms
-64 bytes from 120.132.49.239: icmp_seq=3 ttl=0 time=5.286 ms
-64 bytes from 120.132.49.239: icmp_seq=4 ttl=0 time=9.722 ms
-^C
---- api-ucloud.leancloud.cn ping statistics ---
-5 packets transmitted, 5 packets received, 0.0% packet loss
-round-trip min/avg/max/stddev = 5.286/11.537/19.765/5.543 ms
-```
-
-`0.0% packet loss` 是指丢包率，一般 3% 以下是可以接受的，否则会导致数据反复重传，连接质量下降；如果丢包率为 100% 说明完全无法连通，请检查本地网络或向运营商投诉。
-
-`min/avg/max/stddev = 5.286/11.537/19.765/5.543 ms` 是指延迟的最小、平均、最大值和标准差，正常情况延迟会在 100ms 以下。
-
-如果检测到了延迟或者丢包，需要用 mtr 进一步确认发生延迟或丢包的位置：
-
-```
-sudo mtr -n api.leancloud.cn
-```
-
-mtr 会给出单独 ping 网络上每一个路由节点的延迟（Avg）和丢包（Loss%）情况，从上到下依次是由近（用户端）到远（LeanCloud 服务器）：
-
-```
-My traceroute  [v0.85]
-jysperm-macbook.local (0.0.0.0)                              Wed Jun  7 16:29:10 2017
-Keys:  Help   Display mode   Restart statistics   Order of fields   quit
-             Packets               Pings
-Host                                      Loss%   Snt   Last   Avg  Best  Wrst StDev
-1. ???
-2. 10.252.119.45                           0.0%    36    0.8   1.1   0.7   2.3   0.4
-3. 10.196.28.29                            0.0%    36    1.3   1.5   1.0   2.7   0.3
-4. 10.200.5.162                            0.0%    36    2.9   3.2   2.9   4.5   0.3
-5. 140.207.73.153                          0.0%    36    2.6   2.8   2.2   4.3   0.5
-6. 139.226.206.1                           0.0%    36    4.2   4.3   4.0   5.6   0.3
-7. 139.226.225.185                        88.6%    35    3.2   3.2   3.2   3.3   0.0
-8. 219.158.8.241                          61.8%    35   34.4  35.2  33.4  42.7   2.2
-9. 124.65.194.26                          97.1%    35   28.2  28.2  28.2  28.2   0.0
-10. 61.148.157.122                          0.0%    35   34.6  34.9  33.7  37.8   0.6
-11. ???
-12. ???
-13. ???
-14. 180.150.176.54                          0.0%    35   37.4  38.5  35.2  41.8   1.4
-15. ???
-```
-
-{{ docs.note("需要注意并不是所有运营商都允许使用 mtr，也并不是网络中的每个节点都会回应 ping 检测（所以有一部分节点是 `???`）。") }}
-
-我们应该由远至近（由下至上）去检查发生延迟或丢包的节点，会出现中间某个节点延迟或丢包较高，但如果下一个节点没有受到影响，那么说明延迟或丢包不是这个节点造成的。
-
-一旦找到导致延迟或丢包的节点，我们可以去第三方的 IP 库（例如 [ipip.net](http://www.ipip.net/)）查询这个 IP 的归属者：
-
-- 如果查询结果类似「局域网」，说明延迟或丢包发生在你的浏览器或末端运营商处，可能是 Wifi 信号差、路由器负荷过高或者达到了限速，可以尝试重启路由器或向你的运营商投诉。
-- 如果查询结果类似「中国 联通骨干网」，说明延迟或丢包发生在省市级别的线路上，需要等待电信运营商采取措施，这类故障通常会比较快地被修复。
-- 如果查询结果类似「上海市 联通」，说明延迟或丢包发生在市县一级的线路上，如果靠近用户端需要向运营商投诉，如果靠近 LeanCloud 端可以联系我们。
-- 如果查询结果类似「北京市 北京天地祥云科技有限公司联通数据中心」，说明延迟或丢包发生在靠近 LeanCloud 机房的线路上，可尽快与我们联系。
 
 ### SSL 诊断
 
