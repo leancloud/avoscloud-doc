@@ -14,7 +14,7 @@ LeanCloud 不同版本的 SDK 可能使用不同的域名，因此需要先确�
 ### 快速诊断
 
 ```
-curl -I -w 'nslookup: %{time_namelookup}, connect: %{time_connect}, init_ssl: %{time_appconnect}, starttransfer: %{time_starttransfer}, total_time: %{time_total}, http_code: %{http_code}, remote_ip: %{remote_ip}, local_ip: %{local_ip}' https://api.leancloud.cn
+curl -I -w 'nslookup: %{time_namelookup}, connect: %{time_connect}, init_ssl: %{time_appconnect}, starttransfer: %{time_starttransfer}, total_time: %{time_total}, http_code: %{http_code}, remote_ip: %{remote_ip}, local_ip: %{local_ip}' https://api.leancloud.cn/1.1/date
 ```
 
 上述命令会给出通过 HTTP 访问 LeanCloud 服务的耗时情况，一般总耗时 1 秒以下是可以接受的：
@@ -39,12 +39,12 @@ nslookup: 0.005, connect: 0.032, init_ssl: 0.065, starttransfer: 0.074, total_ti
 - 如果输出中有打印 `curl: (35) SSL connect error`，请先进行「[DNS 诊断](#DNS_诊断)」，再进行「[SSL 诊断](#SSL_诊断)」。
 - 如果输出中有打印 `curl: (60) SSL certificate problem`，请先进行「[DNS 诊断](#DNS_诊断)」，再进行「[SSL 诊断](#SSL_诊断)」。
 
-如果命令长时间没有结束，请改用 `curl -v https://api.leancloud.cn` 来获取不完整的信息，确认请求卡在哪个步骤，再进行「[延迟和丢包诊断](#延迟和丢包诊断)」。
+如果命令长时间没有结束，请改用 `curl -v https://api.leancloud.cn/1.1/date` 来获取不完整的信息，确认请求卡在哪个步骤，再进行「[延迟和丢包诊断](#延迟和丢包诊断)」。
 
 请留意在进行诊断时是否开启了代理，否则得到的是经过了代理的访问情况，如不确认请在 curl 后添加 `--noproxy '*'`。
 
 有些开发者可能习惯用 ping 检测服务可用性，但是 LeanCloud 的服务器并不是全部支持 ping 检测，所以 ping 的结果无法反映服务可用性。
-我们建议使用 curl 等工具检测。
+我们建议使用 curl 等工具检测（参见本小节开头的 curl 测试命令样例）。
 
 ### DNS 诊断
 
