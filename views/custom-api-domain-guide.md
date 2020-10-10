@@ -482,9 +482,10 @@ xxx.example.com.	3600	IN	CNAME	yyy.zzz.com.
 如果选择自动模式，LeanCloud 会自动申请、续期 [Let's Encrypt] 证书。
 如果选择手动模式，则需要上传自己的 SSL 证书（通常是 `.crt` 或 `.pem` 文件）和 SSL 私钥（通常是 `.key` 文件），并在证书过期前自行续期及再次上传。
 SSL 证书通常可以在你的域名服务商处购买，你也可以自行申请免费的证书。
-Let's Encrypt 之外，比较知名的免费 SSL 证书提供商有 [buypass] 和 [TrustAsia]。
+Let's Encrypt 之外，比较知名的免费 SSL 证书提供商有 [ZeroSSL]、[buypass]、[TrustAsia]。
 
 [Let's Encrypt]: https://letsencrypt.org/
+[ZeroSSL]: https://zerossl.com/
 [buypass]: https://www.buypass.com/ssl/products/acme
 [TrustAsia]: https://freessl.cn/
 
@@ -514,7 +515,7 @@ Let's Encrypt 之外，比较知名的免费 SSL 证书提供商有 [buypass] �
 
 ### 接入备案
 
-工信部规定，网站接入多个云服务商时，需要在各云服务商处接入备案：
+工信部规定，网站接入多个云服务商时，需要在各云服务商处接入备案：
 
 - 接入备案只是在备案信息中新增一个服务商，不会影响之前服务商，可以同时使用。
 - 和新增备案不同，接入备案可以在服务上线后进行，不要求关站或停止解析，不影响当前网站访问。
