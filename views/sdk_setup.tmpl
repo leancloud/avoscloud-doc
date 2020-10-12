@@ -1316,9 +1316,20 @@ AVOSCloud.initialize("{{appid}}", "{{appkey}}", "https://please-replace-with-you
 请勿调用 `setServer`，否则会变成公网访问，影响性能。
 
 LeanCloud realtime-core library 也支持在纯 Java Application 中使用，但是与 Android 的调用方式有细微差异，Java Application 中需要开发者显式建立与 LeanCloud 即时通讯云端的长链接（Android 平台是通过 PushService 自动建立的）。建立长链接的方法如下：
+
+```java
+AVConnectionManager.getInstance().startConnection(new AVCallback() {
+  @Override
+  protected void internalDone0(Object o, AVException e) {
+    if (e == null) {
+      System.out.println("成功建立 WebSocket 链接");  
+    } else {
+      System.out.println("建立 WebSocket 链接失败：" + e.getMessage());
+    }
+  }
+});
 ```
-AVConnectionManager.getInstance().startConnection(callback);
-```
+
 只有长链接成功建立之后，后续的聊天请求才能开始。
 
 {% endif %}
