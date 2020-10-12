@@ -54,11 +54,14 @@ todo.save().then((todo) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .add({
-    title: '工程师周会',
-    content: '周二两点，全体成员',
-  })
+// 声明 class
+const Todo = new LC.Class('Todo');
+
+// 将对象保存到云端
+Todo.add({
+  title: '工程师周会',
+  content: '周二两点，全体成员',
+})
   .then((todo) => {
     // 成功保存之后，执行其他逻辑
     console.log(`保存成功。objectId：${todo.objectId}`);
@@ -292,7 +295,7 @@ const array   = [string, number];
 const object  = { number, string };
 
 // 创建对象
-LC.CLASS('TestObject').add({
+new LC.Class('TestObject').add({
   testBoolean: boolean,
   testNumber:  number,
   testString:  string,
@@ -592,7 +595,11 @@ todo.save().then((todo) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo').add({
+// 声明 class
+const Todo = new LC.Class('Todo');
+
+// 将对象保存到云端
+Todo.add({
   title: '马拉松报名',
   priority: 2,
 })
@@ -770,8 +777,8 @@ query.get('582570f38ac247004f39c24b').then((todo) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .object('582570f38ac247004f39c24b')
+const Todo = new LC.Class('Todo');
+Todo.object('582570f38ac247004f39c24b')
   .get()
   .then((todo) => {
     // todo 就是 objectId 为 582570f38ac247004f39c24b 的 Todo 实例
@@ -894,29 +901,29 @@ query.get('582570f38ac247004f39c24b').then((todo) => {
 {% if platform_name === "JavaScript(Next)" %}
 如果需要获取对象以及对象内子对象的所有属性（通常用于数据绑定），可以使用 `{{ baseObjectName }}` 实例的 `toJSON` 方法：
 ```js
-LC.CLASS('Todo')
-  .object('5f34a24b1c2c2b0008ccba43')
+const Todo = new LC.Class('Todo');
+Todo.object('5f34a24b1c2c2b0008ccba43')
   .get()
   .then((todo) => {
     console.log(todo.toJSON());
     // {
-    //   title: '工程师周会',
     //   content: '周二两点，全体成员',
-    //   objectId: '5f34a24b1c2c2b0008ccba43',
     //   createdAt: 2020-08-13T02:15:39.407Z,
+    //   objectId: '5f34a24b1c2c2b0008ccba43',
+    //   title: '工程师周会',
     //   updatedAt: 2020-08-13T02:15:39.407Z
     // }
   });
 ```
 {% endif %}
 
-{% if platform_name === "JavaScript" %}
+{% if platform_name === "JavaScript(Next)" %}
 #### 获取指定属性
 
 可以通过 `keys` 参数来指定要获取的属性：
 ```js
-LC.CLASS('Todo')
-  .object('5f34a24b1c2c2b0008ccba43')
+const Todo = new LC.Class('Todo');
+Todo.object('5f34a24b1c2c2b0008ccba43')
   .get({ keys: ['priority', 'location'] })
   .then((todo) => {
     // 只有 priority 和 location 会被获取
@@ -1079,7 +1086,8 @@ todo.save();
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo').object('5f34a24b1c2c2b0008ccba43').update({
+const Todo = new LC.Class('Todo');
+Todo.object('5f34a24b1c2c2b0008ccba43').update({
   content: '这周周会改到周三下午三点。',
 });
 ```
@@ -1210,7 +1218,7 @@ account.save(null, {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-const Account = LC.CLASS('Account');
+const Account = new LC.Class('Account');
 
 Account.object('5f35055e63edfb00097e96e2')
   .update(
@@ -1490,7 +1498,8 @@ const alarm1 = new Date('2018-04-30T07:10:00');
 const alarm2 = new Date('2018-04-30T07:20:00');
 const alarm3 = new Date('2018-04-30T07:30:00');
 
-LC.CLASS('Todo').add({
+const Todo = new LC.Class('Todo');
+Todo.add({
   alarms: LC.Op.addUnique([alarm1, alarm2, alarm3]),
 });
 ```
@@ -1616,7 +1625,8 @@ todo.destroy();
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo').object('582570f38ac247004f39c24b').delete();
+const Todo = new LC.Class('Todo');
+Todo.object('582570f38ac247004f39c24b').delete();
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -1674,7 +1684,8 @@ todo.save();
 如果只需删除对象的一个属性，可以用 `Op.unset`：
 
 ```js
-LC.CLASS('Todo').object('582570f38ac247004f39c24b').update({
+const Todo = new LC.Class('Todo');
+Todo.object('582570f38ac247004f39c24b').update({
   // priority 属性会被删除
   priority: LC.Op.unset(),
 });
@@ -1683,12 +1694,14 @@ LC.CLASS('Todo').object('582570f38ac247004f39c24b').update({
 **注意：**如果要删除嵌套在对象中的对象的属性，必须使用 [点号](dot-notation.html#在查询对象时使用点号)：
 
 ```
-LC.CLASS('Matrioska').object('5f156b24875c5500083e1041').update({
+const Matrioska = new LC.Class('Matrioska');
+
+Matrioska.object('5f156b24875c5500083e1041').update({
   'large.medium.small': LC.Op.unset(),
 });
 
 // **不要**这样操作
-LC.CLASS('Matrioska').object('5f156b24875c5500083e1041').update({
+Matrioska.object('5f156b24875c5500083e1041').update({
   large: {
     medium: {
       small: LC.Op.unset(),
@@ -2040,14 +2053,16 @@ comment.save();
 {% if platform_name === "JavaScript(Next)" %}
 ```js
 // 创建 post
-LC.CLASS('Post')
-  .add({
-    title: '饿了……',
-    content: '中午去哪吃呢？',
-  })
+const Post = new LC.Class('Post');
+const Comment = new LC.Class('Comment');
+
+Post.add({
+  title: '饿了……',
+  content: '中午去哪吃呢？',
+})
   .then((post) => {
     // 创建 comment
-    LC.CLASS('Comment').add({
+    Comment.add({
       // 将 post 设为 comment 的一个属性值
       parent: post,
       content: '当然是肯德基啦！',
@@ -2168,8 +2183,10 @@ comment.set('post', post);
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Comment').add({
-  parent: LC.CLASS('Post').object('5f351727ce8117000605e195'),
+const Post = new LC.Class('Post');
+const Comment = new LC.Class('Comment');
+Comment.add({
+  parent: Post.object('5f351727ce8117000605e195'),
 });
 ```
 {% endif %}
@@ -2257,8 +2274,8 @@ const serializedString = JSON.stringify(json);
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .object('5f34a24b1c2c2b0008ccba43')
+const Todo = new LC.Class('Todo');
+Todo.object('5f34a24b1c2c2b0008ccba43')
   .get()
   .then((todo) => {
     // 将 {{ baseObjectName }} 序列化成 JSON 对象
@@ -2419,8 +2436,8 @@ query.find().then((students) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Student')
-  .where('lastName', '==', 'Smith')
+const Student = new LC.Class('Student');
+Student.where('lastName', '==', 'Smith')
   .find()
   .then((students) => {
     // students 是包含满足条件的 Student 对象的数组
@@ -2429,7 +2446,8 @@ LC.CLASS('Student')
 
 **注意：**每次添加查询条件时都会返回一个新的 `{{ baseQueryClassName }}` 。在分多次添加查询条件时，需要覆盖存储 `{{ baseQueryClassName }}` 的变量：
 ```js
-let query = LC.CLASS('Student').where('lastName', '==', 'Smith');
+const Student = new LC.Class('Student');
+let query = Student.where('lastName', '==', 'Smith');
 
 query.where('firstName', '==', 'Jack');
 // 此时 query 中不包含新添加的查询条件
@@ -2789,8 +2807,8 @@ query.first().then((todo) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .where('priority', '==', 2)
+const Todo = new LC.Class('Todo');
+Todo.where('priority', '==', 2)
   .first()
   .then((todo) => {
     // todo 是第一个满足条件的 Todo 对象
@@ -3219,14 +3237,14 @@ Ming Li | China
 下面的代码可以找到所有来自英语国家的学生：
 
 ```js
+const Country = new LC.Class('Country');
+const Student = new LC.Class('Student');
+
 // 构造获取所有英语国家的 name 的查询
-const countryNamesQuery = LC.CLASS('Country')
-  .select('name')
-  .where('language', '==', 'English');
+const countryNamesQuery = Country.select('name').where('language', '==', 'English');
 
 // 查询所有 nationality 在 countryNamesQuery 中的 Student
-LC.CLASS('Student')
-  .where('nationality', 'in', countryNamesQuery)
+Student.where('nationality', 'in', countryNamesQuery)
   .find()
   .then((students) => {
     // students 包含 John Doe 和 Tom Sawyer
@@ -3260,8 +3278,8 @@ query.first().then((todo) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .select('title', 'content')
+const Todo = new LC.Class('Todo');
+Todo.select('title', 'content')
   .first()
   .then((todo) => {
     const title = todo.data.title;     // ok
@@ -3372,8 +3390,9 @@ query.startsWith('title', 'lunch');
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
+const Todo = new LC.Class('Todo');
 // 相当于 SQL 中的 title LIKE 'lunch%'
-LC.CLASS('Todo').where('title', 'starts-with', 'lunch');
+Todo.where('title', 'starts-with', 'lunch');
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3431,8 +3450,9 @@ query.contains('title', 'lunch');
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
+const Todo = new LC.Class('Todo');
 // 相当于 SQL 中的 title LIKE '%lunch%'
-LC.CLASS('Todo').where('title', 'contains', 'lunch');
+Todo.where('title', 'contains', 'lunch');
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3494,9 +3514,10 @@ query.matches('title', regExp);
 </code></pre>
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
-<pre><code class="lang-js">// 'title' 不包含 'ticket'（不区分大小写）
+<pre><code class="lang-js">const Todo = new LC.Class('Todo');
+// 'title' 不包含 'ticket'（不区分大小写）
 const regExp = new RegExp('{{ regex(true) | safe }}, 'i');
-LC.CLASS('Todo').where('title', 'matches', regExp);
+Todo.where('title', 'matches', regExp);
 </code></pre>
 {% endif %}
 {% if platform_name === "Python" %}
@@ -3718,12 +3739,14 @@ const priorityOneOrTwo = AV.Query.or(priorityOne, priorityTwo);
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
+const Todo = new LC.Class('Todo');
+
 // 单个查询
-LC.CLASS('Todo').where('priority', 'contained-in', [1, 2]);
+Todo.where('priority', 'contained-in', [1, 2]);
 // 这样就可以了 :)
 
 // 多个查询
-LC.CLASS('Todo').where('priority', '==', 1).or.where('priority', '==', 2);
+Todo.where('priority', '==', 1).or.where('priority', '==', 2);
 // 好像有些繁琐 :(
 ```
 {% endif %}
@@ -3870,9 +3893,11 @@ query.find().then((comments) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-const post = LC.CLASS('Post').object('5f351727ce8117000605e195');
-LC.CLASS('Comment')
-  .where('post', '==', post)
+const Post = new LC.Class('Post');
+const Comment = new LC.Class('Comment');
+
+const post = Post.object('5f351727ce8117000605e195');
+Comment.where('post', '==', post)
   .find()
   .then((comments) => {
     // comments 包含与 post 相关联的评论
@@ -3962,11 +3987,10 @@ query.matchesQuery('post', innerQuery);
 与「查找某一属性值为另一查询返回结果」相同，两者都使用条件 `in` ，区在于子查询中是否包含 `select` 限定。
 {% endcall %}
 ```js
-LC.CLASS('Comment').where(
-  'post',
-  'in',
-  LC.CLASS('Post').where('image', 'exists')
-);
+const Post = new LC.Class('Post');
+const Comment = new LC.Class('Comment');
+
+Comment.where('post', 'in', Post.where('image', 'exists'));
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -4065,10 +4089,12 @@ query.find().then((comments) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Comment')
-  .orderBy('createdAt', 'desc') // 获取最新发布的
-  .limit(10)                    // 只获取 10 条
-  .include('post')              // 同时包含博客文章
+const Comment = new LC.Class('Comment');
+
+// 获取最新发布的
+Comment.orderBy('createdAt', 'desc')
+  .limit(10)       // 只获取 10 条
+  .include('post') // 同时包含博客文章
   .find()
   .then((comments) => {
     // comments 包含最新发布的 10 条评论，同时包含各自对应的博客文章
@@ -4239,8 +4265,8 @@ query.count().then((count) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .where('isComplete', '==', true)
+const Todo = new LC.Class('Todo');
+Todo.where('isComplete', '==', true)
   .count()
   .then((count) => {
     console.log(`${count} 个 todo 已完成。`);
@@ -4332,11 +4358,13 @@ const query = AV.Query.or(priorityQuery, isCompleteQuery);
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo').where('priority', '==', 3).or.where('isComplete', '==', true);
+const Todo = new LC.Class('Todo');
+
+Todo.where('priority', '==', 3).or.where('isComplete', '==', true);
 
 // 也可以使用 Query.or
-const priorityQuery = LC.CLASS('Todo').where('priority', '==', 3);
-const isCompleteQuery = LC.CLASS('Todo').where('isComplete', '==', true);
+const priorityQuery = Todo.where('priority', '==', 3);
+const isCompleteQuery = Todo.where('isComplete', '==', true);
 LC.Query.or(priorityQuery, isCompleteQuery);
 ```
 {% endif %}
@@ -4437,13 +4465,14 @@ const query = AV.Query.and(startDateQuery, endDateQuery);
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .where('createdAt', '>=', new Date('2016-11-13 00:00:00'))
+const Todo = new LC.Class('Todo');
+
+Todo.where('createdAt', '>=', new Date('2016-11-13 00:00:00'))
   .where('createdAt', '<', new Date('2016-12-03 00:00:00'));
 
 // 也可以使用 Query.and
-const startDateQuery = LC.CLASS('Todo').where('createdAt', '>=', new Date('2016-11-13 00:00:00'));
-const endDateQuery = LC.CLASS('Todo').where('createdAt', '<', new Date('2016-12-03 00:00:00'));
+const startDateQuery = Todo.where('createdAt', '>=', new Date('2016-11-13 00:00:00'));
+const endDateQuery = Todo.where('createdAt', '<', new Date('2016-12-03 00:00:00'));
 LC.Query.and(startDateQuery, endDateQuery);
 ```
 {% endif %}
@@ -4574,7 +4603,7 @@ const query = AV.Query.and(priorityQuery, timeLocationQuery);
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-const Todo = LC.CLASS('Todo');
+const Todo = new LC.Class('Todo');
 
 const createdAtQuery = Todo.where('createdAt', '>=', new Date('2018-04-30'))
   .where('createdAt', '<', new Date('2018-05-01'));
@@ -4984,11 +5013,11 @@ query.subscribe().then((liveQuery) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .subscribe()
-  .then((liveQuery) => {
-    // 订阅成功
-  });
+const Todo = new LC.Class('Todo');
+
+Todo.subscribe().then((liveQuery) => {
+  // 订阅成功
+});
 ```
 {% endif %}
 {% if platform_name === "Android / Java" %}
@@ -5056,13 +5085,12 @@ query.subscribe().then((liveQuery) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .subscribe()
-  .then((liveQuery) => {
-    liveQuery.on('create', (newTodo) => {
-      newTodo.data.title; // 更新作品集
-    });
+const Todo = new LC.Class('Todo');
+Todo.subscribe().then((liveQuery) => {
+  liveQuery.on('create', (newTodo) => {
+    console.log(newTodo.data.title); // 更新作品集
   });
+});
 ```
 {% endif %}
 {% if platform_name === "Android / Java" %}
@@ -5927,7 +5955,8 @@ todo.save();
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo').add({
+const Todo = new LC.Class('Todo');
+Todo.add({
   title: '买蛋糕',
   // attachments 是一个 Array 属性
   attachments: LC.Op.add(file),
@@ -6038,10 +6067,11 @@ query.find().then((todos) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .where('title', '==', '买蛋糕')  // 获取同一标题
-  .where('attachments', 'exists') // 且包含附件的 todo
-  .include('attachments')         // 同时获取附件中的文件
+const Todo = new LC.Class('Todo');
+
+Todo.where('title', '==', '买蛋糕') // 获取同一标题
+  .where('attachments', 'exists')  // 且包含附件的 todo
+  .include('attachments')          // 同时获取附件中的文件
   .find()
   .then((todos) => {
     todos.forEach((todo) => {
@@ -6600,8 +6630,9 @@ query.find().then((todos) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo')
-  .where('priority', '==', 1)
+const Todo = new LC.Class('Todo');
+
+Todo.where('priority', '==', 1)
   // first 方法是一个异步方法，会返回一个 Promise，之后可以使用 then 方法
   .first()
   .then((todo) => {
@@ -6693,7 +6724,7 @@ new AV.Query('Chapter').get(chapterIds[0]).then((chapterOne) => {
 
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-const Chapter = LC.CLASS('Chapter');
+const Chapter = new LC.Class('Chapter');
 
 // 将内容按章节顺序添加到页面上
 const chapterIds = [
@@ -6796,10 +6827,11 @@ async function example() {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
+const Todo = new LC.Class('Todo');
+
 async function example() {
   try {
-    const query = LC.CLASS('Todo').where('priority', '==', 1);
-    const todo = await query.first();
+    const todo = await Todo.where('priority', '==', 1).first();
     await todo.update({ notes: '今天需要完成。' });
   } catch (error) {
     console.error(error);
@@ -6940,9 +6972,9 @@ query.find().then((todos) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-const point = new LC.GeoPoint(39.9, 116.4);
-LC.CLASS('todo')
-  .where('location', 'near', point)
+const Todo = new LC.Class('Todo');
+
+Todo.where('location', 'near', new LC.GeoPoint(39.9, 116.4))
   .limit(10) // 限制为 10 条结果
   .find()
   .then((todos) => {
@@ -7050,7 +7082,8 @@ query.withinGeoBox('location', southwest, northeast);
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-LC.CLASS('Todo').where('location', 'within', {
+const Todo = new LC.Class('Todo');
+Todo.where('location', 'within', {
   southwest: new LC.GeoPoint(30, 115),
   northeast: new LC.GeoPoint(40, 118),
 });
@@ -8869,8 +8902,8 @@ book.save().then((book) => {
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-const Book = LC.CLASS('Book');
-const author = User.current();
+const Book = new LC.Class('Book');
+const author = LC.User.current();
 Book.add({
   title: '我的第五本书',
   author: author,
@@ -11125,13 +11158,16 @@ AV.Push.send({
 
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-const query = LC.CLASS('_Installation').where('installationId', '==', installationId);
-Push.send({
-  query: query,
-  data: {
+const Installation = new LC.Class('_Installation');
+
+LC.Push.send(
+  {
     alert: 'Public message',
   },
-});
+  {
+    query: Installation.where('installationId', '==', installationId),
+  }
+);
 ```
 
 `{{ pushObjectName }}` 的更多使用信息参考 API 文档 [{{ pushObjectName }}](https://doc.leanapp.cn/classes/push)。更多推送的查询条件和格式，请查阅 [消息推送指南](push_guide.html)。

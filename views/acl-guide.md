@@ -194,7 +194,9 @@ acl.setPublicReadAccess(true);
 acl.setWriteAccess(LC.User.current(), true);
 acl.setWriteAccess(LC.User.object('55f1572460b2ce30e8b7afde'), true);
 
-LC.CLASS('Post').add({
+const Post = new LC.Class('Post');
+
+Post.add({
   title: '这是我的第二条发言，谢谢大家！',
   content: '我最近喜欢看足球和篮球了。',
   // 将 ACL 实例赋予 Post 对象
@@ -733,7 +735,8 @@ var query = new AV.Query('Todo');
 query.includeACL(true);
 ```
 ```JavaScript(Next)
-const query = LC.CLASS('Todo').returnACL(true);
+const Todo = new LC.Class('Todo');
+const query = Todo.returnACL(true);
 ```
 ```python
 query = leancloud.Object.extend('Todo').query.include_acl(True)

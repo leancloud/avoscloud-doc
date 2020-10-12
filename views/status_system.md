@@ -309,8 +309,9 @@ LC.User.current()
 关注后，可以查询自己关注的用户列表：
 
 ```javascript
-LC.CLASS('_Followee')
-  .where('user', '==', LC.User.current())
+const Followee = new LC.Class('_Followee');
+
+Followee.where('user', '==', LC.User.current())
   .include('followee')
   .find()
   .then((results) => {
@@ -324,8 +325,9 @@ followee 是一个 Pointer 类型，通过 `include()` 将它的所有信息查�
 查询自己的粉丝（他人关注了我，他人就是我的粉丝），可以通过：
 
 ```javascript
-LC.CLASS('_Follower')
-  .where('user', '==', LC.User.current()).
+const Follower = new LC.Class('_Follower');
+
+Follower.where('user', '==', LC.User.current())
   .include('follower')
   .find()
   .then((results) => {
