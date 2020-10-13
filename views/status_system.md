@@ -474,7 +474,7 @@ AVUser.getCurrentUser().followInBackground(userObjectId).subscribe(new Observer<
 });
 
 //取消关注
-AVUser.getCurrentUser().unfollowInBackground("the user object id").subscribe(new Observer<JSONObject>() {
+AVUser.getCurrentUser().unfollowInBackground(userObjectId).subscribe(new Observer<JSONObject>() {
   @Override
   public void onSubscribe(Disposable disposable) {
   }
@@ -501,7 +501,7 @@ AVUser.getCurrentUser().unfollowInBackground("the user object id").subscribe(new
 
 ```java
 Map<String, Object> attributes = ......
-AVUser.getCurrentUser().followInBackground("target user objectId", attributes).subscribe(new Observer<JSONObject>() {
+AVUser.getCurrentUser().followInBackground(userObjectId, attributes).subscribe(new Observer<JSONObject>() {
   @Override
   public void onSubscribe(Disposable disposable) {
 
@@ -537,11 +537,11 @@ followerQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
   }
 
   @Override
-  public void onNext(List<AVObject> o) {
+  public void onNext(List<AVObject> avObjects) {
     // avObjects 包含了 userA 的粉丝列表。
     // 遍历数组，对每一个 object 获取`follower` 属性值即为 User 实例。
-    for (AVObject tmp: o) {
-      System.out.println("result User:" + tmp.getAVObject("follower"));
+    for (AVObject tmp: avObjects) {
+      System.out.println("result user:" + tmp.getAVObject("follower"));
     }
   }
 
@@ -558,17 +558,17 @@ followerQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
 
 
 // 查询关注者
-AVQuery<AVObject> followeeQuery = userB.followeeQuery();
+AVQuery<AVObject> followeeQuery = userA.followeeQuery();
 followeeQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
   @Override
   public void onSubscribe(Disposable disposable) {
   }
 
   @Override
-  public void onNext(List<AVObject> o) {
-    // avObjects 包含了 userA 的粉丝列表。
+  public void onNext(List<AVObject> avObjects) {
+    // avObjects 包含了 userA 的关注列表。
     // 遍历数组，对每一个 object 获取`followee` 属性值即为 User 实例。
-    for (AVObject tmp: o) {
+    for (AVObject tmp: avObjects) {
       System.out.println("result User:" + tmp.getAVObject("followee"));
     }
   }
@@ -597,7 +597,12 @@ followerSkipQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
   }
 
   @Override
-  public void onNext(List<AVObject> o) {
+  public void onNext(List<AVObject> avObjects) {
+    // avObjects 包含了 userA 的粉丝列表。
+    // 遍历数组，对每一个 object 获取`follower` 属性值即为 User 实例。
+    for (AVObject tmp: avObjects) {
+      System.out.println("result User:" + tmp.getAVObject("follower"));
+    }
   }
 
   @Override
