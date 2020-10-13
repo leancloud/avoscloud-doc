@@ -4561,7 +4561,6 @@ liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
 - `enter`
 - `leave`
 - `delete`
-- `login`
 
 #### `create` 事件
 
@@ -4782,48 +4781,7 @@ liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
 ```
 {% endif %}
 
-#### `login` 事件
 
-当一个用户成功登录应用，`login` 事件会被触发。下面的 `user` 就是登录的 `{{ userObjectName }}`：
-
-{% if platform_name === "Objective-C" %}
-```objc
-- (void)liveQuery:(AVLiveQuery *)liveQuery userDidLogin:(AVUser *)user {
-    if (liveQuery == self.liveQuery) {
-        NSLog(@"用户登录。");
-    }
-}
-```
-{% endif %}
-{% if platform_name === "Swift" %}
-```swift
-self.liveQuery = try LiveQuery(query: query, eventHandler: { (liveQuery, event) in
-    switch event {
-    case .login(user: let user):
-        print("用户登录。")
-    default:
-        break
-    }
-})
-```
-{% endif %}
-{% if platform_name === "JavaScript" %}
-```js
-liveQuery.on('login', (user) => {
-  console.log('用户登录。');
-});
-```
-{% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
-    @Override
-    public void onUserLogin(AVUser user) {
-        System.out.println("用户登录。");
-    }
-});
-```
-{% endif %}
 
 ### 取消订阅
 
