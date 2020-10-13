@@ -364,3 +364,11 @@ AV.Cloud.CookieSession({sameSite: 'none'})
 
 0. `SameSite` 要求与 `Secure` 标记一同发送，因此请确保你的客户端是通过 HTTPS 协议访问云引擎的。
 1. 请仅在有必要的时候设置 `SameSite` 为 `none`，以免平白增加 CSRF 风险。
+
+## 国际版云引擎必须绑定自定义域名吗？
+
+国际版可以在「控制台 > 云引擎 > 设置」配置 `avosapps.us` 子域名，也可以绑定云引擎自定义域名（不要求备案）。
+
+## 国际版云引擎可以绑定裸域名吗？
+
+如果希望在国际版云引擎绑定裸域名，我们建议选择支持 ANAME 或 CNAME Flattening 记录的域名服务商。
