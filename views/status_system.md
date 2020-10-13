@@ -449,32 +449,50 @@ SDK 的安装参考 [Android 安装指南](sdk_setup-android.html)。
 
 #### 关注和取消关注
 
-登录的用户可以关注其他用户，成为他们的粉丝，例如：
+登录的用户可以关注其他用户，成为其「粉丝」，例如：
 
 ```java
 //关注
-AVUser.getCurrentUser().followInBackground(userObjectId, new FollowCallback() {
-        @Override
-        public void done(AVObject object, AVException e) {
-            if (e == null) {
-                Log.i(TAG, "follow succeeded.");
-            } else if (e.getCode() == AVException.DUPLICATE_VALUE) {
-                Log.w(TAG, "Already followed.");
-            }
-        }
-    });
+AVUser.getCurrentUser().followInBackground(userObjectId).subscribe(new Observer<JSONObject>() {
+  @Override
+  public void onSubscribe(Disposable disposable) {
+  }
+
+  @Override
+  public void onNext(JSONObject object) {
+    System.out.println("succeed follow. " + object.toString());
+  }
+
+  @Override
+  public void onError(Throwable throwable) {
+    throwable.printStackTrace();
+  }
+
+  @Override
+  public void onComplete() {
+  }
+});
 
 //取消关注
-AVUser.getCurrentUser().unfollowInBackground("the user object id", new FollowCallback() {
-        @Override
-        public void done(AVObject object, AVException e) {
-            if (e == null) {
-                Log.i(TAG, "unfollow succeeded.");
-            } else {
-                Log.w(TAG, "unfollow failed.");
-            }
-        }
-    });
+AVUser.getCurrentUser().unfollowInBackground("the user object id").subscribe(new Observer<JSONObject>() {
+  @Override
+  public void onSubscribe(Disposable disposable) {
+  }
+
+  @Override
+  public void onNext(JSONObject object) {
+    System.out.println("succeed unfollow. " + object.toString());
+  }
+
+  @Override
+  public void onError(Throwable throwable) {
+    throwable.printStackTrace();
+  }
+
+  @Override
+  public void onComplete() {
+  }
+});
 ```
 
 如果在 {{ autoFollowFolloweeOptionLink }}，那么在当前用户关注某个人，那个人也会自动关注当前用户。
@@ -483,61 +501,120 @@ AVUser.getCurrentUser().unfollowInBackground("the user object id", new FollowCal
 
 ```java
 Map<String, Object> attributes = ......
-AVUser.getCurrentUser().followInBackground("target user objectId", attributes, new FollowCallback{
-            @Override
-            public void done(AVObject object, AVException e) {
-                  //处理结果
-            }
+AVUser.getCurrentUser().followInBackground("target user objectId", attributes).subscribe(new Observer<JSONObject>() {
+  @Override
+  public void onSubscribe(Disposable disposable) {
+
+  }
+
+  @Override
+  public void onNext(JSONObject object) {
+    System.out.println("succeed follow. " + object.toString());
+  }
+
+  @Override
+  public void onError(Throwable throwable) {
+    throwable.printStackTrace();
+  }
+
+  @Override
+  public void onComplete() {
+  }
 });
 ```
 
 #### 获取粉丝和关注列表
 
-你可以使用 `followerQuery` 或 `followeeQuery` 来查询你的粉丝或关注列表，这样可以设置更多的查询条件，比如：
+你可以使用 `followerQuery` 或 `followeeQuery` 来查询用户的粉丝（关注用户的人）或关注（用户关注的人）列表，这样可以设置更多的查询条件，比如：
 
 ```java
 // 其中 userA 是 AVUser 对象，你也可以使用 AVUser 的子类化对象进行查询
-// vhaxun 粉丝
-AVQuery<AVUser> followerQuery = userA.followerQuery(AVUser.class);
-// AVQuery<AVUser> followerQuery = AVUser.followerQuery(userA.getObjectId(),AVUser.class); 也可以使用这个静态方法来获取非登录用户的好友关系
-followerQuery.findInBackground(new FindCallback<AVUser>() {
-    @Override
-    public void done(List<AVUser> avObjects, AVException avException) {
-        // avObjects 包含了 userA 的粉丝列表
+// 查询粉丝
+AVQuery<AVObject> followerQuery = userA.followerQuery();
+followerQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
+  @Override
+  public void onSubscribe(Disposable disposable) {
+  }
+
+  @Override
+  public void onNext(List<AVObject> o) {
+    // avObjects 包含了 userA 的粉丝列表。
+    // 遍历数组，对每一个 object 获取`follower` 属性值即为 User 实例。
+    for (AVObject tmp: o) {
+      System.out.println("result User:" + tmp.getAVObject("follower"));
     }
+  }
+
+  @Override
+  public void onError(Throwable throwable) {
+    throwable.printStackTrace();
+  }
+
+  @Override
+  public void onComplete() {
+
+  }
 });
 
-//查询关注者
-AVQuery<AVUser> followeeQuery = AVUser.followeeQuery(userB.getObjectId(), AVUser.class);
-//AVQuery<AVUser> followeeQuery = userB.followeeQuery(AVUser.class);
-followeeQuery.findInBackground(new FindCallback<AVUser>() {
-    @Override
-    public void done(List<AVUser> avObjects, AVException avException) {
-        //avObjects 就是用户的关注用户列表
 
+// 查询关注者
+AVQuery<AVObject> followeeQuery = userB.followeeQuery();
+followeeQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
+  @Override
+  public void onSubscribe(Disposable disposable) {
+  }
+
+  @Override
+  public void onNext(List<AVObject> o) {
+    // avObjects 包含了 userA 的粉丝列表。
+    // 遍历数组，对每一个 object 获取`followee` 属性值即为 User 实例。
+    for (AVObject tmp: o) {
+      System.out.println("result User:" + tmp.getAVObject("followee"));
     }
+  }
+
+  @Override
+  public void onError(Throwable throwable) {
+    throwable.printStackTrace();
+  }
+
+  @Override
+  public void onComplete() {
+
+  }
 });
 ```
 
 通过 AVQuery，你也可以增加 `skip` 或者 `limit` 操作来分页查询，比如：
 
 ```java
-    AVQuery<AVUser> followerSkipQuery = AVUser.followerQuery(userA.getObjectId(), AVUser.class);
-    followerSkipQuery.setLimit(50);
-    followerSkipQuery.skip(100);
-    followerSkipQuery.findInBackground(new FindCallback<AVUser>() {
-        @Override
-        public void done(List<AVUser> avObjects, AVException avException) {
-            // avObjects.size() == 1
-        }
-    });
-}
+AVQuery<AVObject> followerSkipQuery = userA.followerQuery();
+followerSkipQuery.setLimit(50);
+followerSkipQuery.skip(100);
+followerSkipQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
+  @Override
+  public void onSubscribe(Disposable disposable) {
+  }
+
+  @Override
+  public void onNext(List<AVObject> o) {
+  }
+
+  @Override
+  public void onError(Throwable throwable) {
+    throwable.printStackTrace();
+  }
+
+  @Override
+  public void onComplete() {
+  }
+});
 ```
 
 你也可以查找某个特定的粉丝，比如：
 
 ```java
-AVQuery<AVUser> followerNameQuery = userA.followerQuery(userA.getObjectId(), AVUser.class);
+AVQuery<AVObject> followerNameQuery = userA.followerQuery();
 followerNameQuery.whereEqualTo("follower", userC);
 followerNameQuery.findInBackground(new FindCallback<AVUser>() {
     @Override
@@ -549,16 +626,6 @@ followerNameQuery.findInBackground(new FindCallback<AVUser>() {
 
 总之 `followerQuery` 和 `followeeQuery` 返回的 AVQuery 可以增加其他查询条件，只要在 `_Followee` 和 `_Follower` 表里存在的属性都可以作为查询或者排序条件。
 
-
-默认的得到的 AVUser 对象仅仅有 ObjectId 数据，如果需要整个 AVUser 对象所有属性，则需要调用 include方法。例如：
-
-```java
-AVQuery<AVUser> followerNameQuery = AVUser.followerQuery(userA.getObjectId(), AVUser.class);
-followerNameQuery.include("follower");
-
-AVQuery<AVUser> followeeNameQuery = AVUser.followeeQuery(userA.getObjectId(), AVUser.class);
-followerNameQuery.include("followee");
-```
 
 ##### 一次性获取粉丝和关注列表
 
