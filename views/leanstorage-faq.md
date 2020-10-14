@@ -87,12 +87,6 @@ REST API 文档使用 curl 作为示范，其中 `--data-urlencode` 表示要对
 
 提示：数据表的默认四个字段 `objectId`、`ACL`、`createdAt`、`updatedAt` 是自带索引的，但是在勾选时，可以作为联合索引来使用。
 
-{{
-  docs.note(
-    data.limitationsOnCreatingClassIndex()
-  )
-}}
-
 ### LeanCloud 查询支持 `Sum`、`Group By`、`Distinct` 这种函数吗？
 LeanCloud 数据存储的查询接口不支持这些函数，可以查询到客户端后，在客户端中自己写逻辑进行这些操作。
 

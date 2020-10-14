@@ -2147,12 +2147,6 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
 
 LeanCloud 会自动为 `authData.第三方平台名称.uid` 创建唯一索引，以确保一个第三方账号只绑定到一个 LeanCloud 应用内用户上。
 
-{{
-  docs.note(
-    data.limitationsOnCreatingClassIndex()
-  )
-}}
-
 #### 注册和登录
 
 使用一个连接服务来注册用户并登录，同样使用 POST 请求 users，只是需要提供 `authData` 字段。例如，使用 QQ 账户注册或者登录用户：
