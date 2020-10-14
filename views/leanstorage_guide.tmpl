@@ -3662,7 +3662,7 @@ query.containsAll('tags', ['工作', '销售', '会议']);
 {% endif %}
 {% if platform_name === "JavaScript(Next)" %}
 ```js
-query.where('tags', 'contains', ['工作', '销售', '会议']);
+query.where('tags', 'contains-all', ['工作', '销售', '会议']);
 ```
 {% endif %}
 {% if platform_name === "Python" %}
