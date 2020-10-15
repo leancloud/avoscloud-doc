@@ -2917,9 +2917,9 @@ https://{{feedback_host}}/1.1/feedback/<:feedback_objectId>/threads
 
 请参考 [事件流 REST API](status_system.html#REST_API)。
 {% endif %}
-## 应用内搜索 API
+## 全文搜索 API
 
-请参考 [应用内搜索  REST API](search-rest-api.html)。
+请参考 [全文搜索  REST API](search-rest-api.html)。
 
 ## 数据导出 API
 

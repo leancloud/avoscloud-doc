@@ -3111,7 +3111,7 @@ query.whereMatches('title', '{{ regexFlutter() | safe }}', modifiers: 'i');
 
 {# 2016-12-29 DO NOT USE markdown to rewrite the previous block #}
 
-不过我们并不推荐大量使用这类查询，尤其是对于包含超过 100,000 个对象的 class，{# LeanCloud restricts how many such operations can be run on a particular app at any given time. #}因为这类查询无法利用索引，实际操作中云端会遍历所有对象来获取结果。如果有进行全文搜索的需求，可以了解一下 [应用内搜索](app_search_guide.html) 功能。
+不过我们并不推荐大量使用这类查询，尤其是对于包含超过 100,000 个对象的 class，{# LeanCloud restricts how many such operations can be run on a particular app at any given time. #}因为这类查询无法利用索引，实际操作中云端会遍历所有对象来获取结果。如果有进行全文搜索的需求，可以了解一下 [全文搜索](app_search_guide.html) 功能。
 
 {% call docs.noteWrap() %}
 使用查询时如果遇到性能问题，可参阅 [查询性能优化](#查询性能优化)。
@@ -9772,9 +9772,9 @@ assert(student.save().isSuccess)
 {% endif %}
 {% endif %}
 
-## 应用内搜索
+## 全文搜索
 
-应用内搜索是一个针对应用数据进行全局搜索的接口，它基于搜索引擎构建，提供更强大的搜索功能。要深入了解其用法和阅读示例代码，请阅读 [应用内搜索指南](app_search_guide.html)。
+全文搜索是一个针对应用数据进行全局搜索的接口，它基于搜索引擎构建，提供更强大的搜索功能。要深入了解其用法和阅读示例代码，请阅读 [全文搜索指南](app_search_guide.html)。
 
 {% if node !== "qcloud" %}
 ## 应用内社交

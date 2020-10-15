@@ -1,17 +1,17 @@
-# 应用内搜索 REST API 指南
+# 全文搜索 REST API 指南
 
-[应用内搜索](app_search_guide.html)提供以下 REST API 接口：
+[全文搜索](app_search_guide.html)提供以下 REST API 接口：
 
 | URL | HTTP | 功能 |
 | - | - | - |
-| /1.1/search/select | GET | 全文搜索 |
+| /1.1/search/select | GET | 条件查询 |
 | /1.1/search/mlt | GET | moreLikeThis 相关性查询 |
 | /1.1/search/analyze | GET | 分词结果查询 |
 
-在调用应用内搜索的 REST API 接口前，需要首先[为相应的 Class 启用搜索](app_search_guide.html#为_Class_启用搜索)。
-另外也请参考 REST API 指南中关于 [API Base URL](rest_api.html#api-base-url)、[请求格式](rest_api.html#请求格式)、[响应格式](rest_api.html#响应格式)的说明，以及应用内搜索开发指南的[自定义分词](app_search_guide.html#自定义分词)章节。
+在调用全文搜索的 REST API 接口前，需要首先[为相应的 Class 启用搜索](app_search_guide.html#为_Class_启用搜索)。
+另外也请参考 REST API 指南中关于 [API Base URL](rest_api.html#api-base-url)、[请求格式](rest_api.html#请求格式)、[响应格式](rest_api.html#响应格式)的说明，以及全文搜索开发指南的[自定义分词](app_search_guide.html#自定义分词)章节。
 
-## 全文搜索
+## 条件查询
 
 LeanCloud 提供了 `/1.1/search/select` REST API 接口来做全文搜索。
 
@@ -55,7 +55,7 @@ curl -X GET \
 `sid`|可选|之前查询结果中返回的 sid 值，用于分页，对应于 elasticsearch 中的 [scroll id]。
 `fields`|可选|逗号隔开的字段列表，查询的字段列表
 <code class="text-nowrap">highlights</code>|可选|高亮字段，可以是通配符 `*`，也可以是字段列表逗号隔开的字符串。
-`clazz`|可选|类名，如果没有指定或者为空字符串，则搜索所有启用了应用内搜索的 class。
+`clazz`|可选|类名，如果没有指定或者为空字符串，则搜索所有启用了全文搜索的 class。
 `include`|可选|关联查询内联的 Pointer 字段列表，逗号隔开，形如 `user,comment` 的字符串。**仅支持 include Pointer 类型**。
 `order`|可选|排序字段，形如 `-score,createdAt` 逗号隔开的字段，负号表示倒序，可以多个字段组合排序。
 `sort`|可选|复杂排序字段，例如地理位置信息排序，见下文描述。
@@ -68,10 +68,10 @@ curl -X GET \
 - `hits`：符合查询条件的文档总数
 - `sid`：标记本次查询结果，下次查询继续传入这个 sid 用于查找后续的数据，用来支持翻页查询。
 
-返回结果 results 列表里是一个一个的对象，字段是你在应用内搜索设置里启用的字段列表，并且有三个特殊字段：
+返回结果 results 列表里是一个一个的对象，字段是你在全文搜索设置里启用的字段列表，并且有三个特殊字段：
 
-- `_app_url`：应用内搜索结果在网站上的链接。
-- `_deeplink`：应用内搜索的程序调用 URL，也就是 deeplink。
+- `_app_url`：全文搜索结果在网站上的链接。
+- `_deeplink`：全文搜索的程序调用 URL，也就是 deeplink。
 - `_highlight`: 高亮的搜索结果内容，关键字用 `em` 标签括起来。如果搜索时未传入 `highlights`　参数，则该字段为 null。 
 
 最外层的 `sid` 用来标记本次查询结果，下次查询继续传入这个 sid 将翻页查找后 200 条数据：
@@ -89,7 +89,7 @@ curl -X GET \
 
 q 的查询走的是 elasticsearch 的 [query string 语法](https://www.elastic.co/guide/en/elasticsearch/reference/7.4/query-dsl-query-string-query.html#query-string-syntax)。建议详细阅读这个文档。这里简单做个举例说明。
 
-如果你非常熟悉 elasticsearch 的 query string 语法，那么可以跳至[地理位置信息查询](#地理位置信息查询)一节（地理位置查询是 LeanCloud 应用内搜索在 elasticsearch 上添加的扩展功能）。
+如果你非常熟悉 elasticsearch 的 query string 语法，那么可以跳至[地理位置信息查询](#地理位置信息查询)一节（地理位置查询是 LeanCloud 全文搜索在 elasticsearch 上添加的扩展功能）。
 
 查询的关键字保留字符包括： `+ - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /`，当出现这些字符的时候，请对这些保留字符做 URL Escape 转义。
 
@@ -105,7 +105,7 @@ q 的查询走的是 elasticsearch 的 [query string 语法](https://www.elastic
 - 查询没有 title 的对象： `_missing_:title`。
 - 查询有 title 字段并且不是 null 的对象：`_exists_:title`。
 
-**上面举例根据字段查询，前提是这些字段在 class 的应用内搜索设置里启用了索引。**
+**上面举例根据字段查询，前提是这些字段在 class 的全文搜索设置里启用了索引。**
 
 #### 通配符和正则查询
 
@@ -159,10 +159,10 @@ age:<=10
 
 #### 特殊类型字段说明
 
-- objectId 在应用内搜索的类型为 string，因此可以按照字符串查询： `objectId: 558e20cbe4b060308e3eb36c`，不过这个没有特别必要了，你可以直接走 SDK 查询，效率更好。
+- objectId 在全文搜索的类型为 string，因此可以按照字符串查询： `objectId: 558e20cbe4b060308e3eb36c`，不过这个没有特别必要了，你可以直接走 SDK 查询，效率更好。
 - createdAt 和 updatedAt 映射为 date 类型，例如 `createdAt:["2015-07-30T00:00:00.000Z" TO "2015-08-15T00:00:00.000Z"]` 或者 `updatedAt: [2012-01-01 TO 2012-12-31]`
 - 除了createdAt 和 updatedAt之外的 Date 字段类型，需要加上 `.iso` 后缀做查询： `birthday.iso: [2012-01-01 TO 2012-12-31]`
-- Pointer 类型，可以采用 `字段名.objectId` 的方式来查询： `player.objectId: 558e20cbe4b060308e3eb36c and player.className: Player`，pointer 只有这两个属性，应用内搜索不会 include 其他属性。
+- Pointer 类型，可以采用 `字段名.objectId` 的方式来查询： `player.objectId: 558e20cbe4b060308e3eb36c and player.className: Player`，pointer 只有这两个属性，全文搜索不会 include 其他属性。
 - Relation 字段的查询不支持。
 - File 字段，可以根据 url 或者 id 来查询：`avartar.url: "https://leancloud.cn/docs/app_search_guide.html#搜索_API"`，无法根据文件内容做全文搜索。
 
@@ -284,7 +284,7 @@ curl -X GET \
 
 ## 分词结果查询
 
-应用内搜索会对 String 类型的字段自动进行分词处理。
+全文搜索会对 String 类型的字段自动进行分词处理。
 如果发现搜索结果不符合预期，推荐先通过 `analyze` API 检查分词结果（要求使用 master key）。
 `analyze` API 也用于验证[自定义词库](app_search_guide.html#自定义分词)是否生效。
 

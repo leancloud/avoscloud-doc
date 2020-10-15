@@ -4,32 +4,32 @@
 {{ docs.defaultLang('js') }}
 {{ docs.useSearchLangSpec() }}
 
-# 应用内搜索开发指南
+# 全文搜索开发指南
 
 在应用内使用全文搜索是一个很常见的需求。例如一个阅读类的应用，里面有很多有价值的文章，开发者会提供一个搜索框，让用户键入关键字后就能查找到应用内相关的文章，并按照相关度排序，就好像我们打开浏览器用 Google 搜索关键字一样。
-虽然使用[正则查询](rest_api.html#正则查询)也可以实现全文搜索功能，但数据量较大的时候正则查询会有性能问题，因此 LeanCloud 提供了专门的应用内搜索功能。
+虽然使用[正则查询](rest_api.html#正则查询)也可以实现全文搜索功能，但数据量较大的时候正则查询会有性能问题，因此 LeanCloud 提供了专门的全文搜索功能。
 
-LeanCloud 也提供了与应用内搜索搭配使用的 [DeepLink](deeplink.html) 功能，让应用可以响应外部调用链接。
+LeanCloud 也提供了与全文搜索搭配使用的 [DeepLink](deeplink.html) 功能，让应用可以响应外部调用链接。
 
 ## 为 Class 启用搜索
 
-你需要选择至少一个 Class 为它开启应用内搜索。开启后，该 Class 的数据将被 LeanCloud 自动建立索引，并且可以调用我们的搜索组件或者 [API](#搜索_API) 搜索到内容。
+你需要选择至少一个 Class 为它开启全文搜索。开启后，该 Class 的数据将被 LeanCloud 自动建立索引，并且可以调用我们的搜索组件或者 [API](#搜索_API) 搜索到内容。
 
 **请注意，启用了搜索的 Class 数据，其搜索结果仍然遵循 ACL。如果你为 Class 里的 Object 设定了合理的 ACL，那么搜索结果也将遵循这些 ACL 值，保护你的数据安全。**
 
-你可以在「控制台 > 存储 > 应用内搜索」为 Class 启用搜索，点击「添加 Class」：
+你可以在「控制台 > 存储 > 全文搜索」为 Class 启用搜索，点击「添加 Class」：
 
-- **Class**：选择需要启用搜索的 Class。开发版应用最多允许 5 个 Class 启用应用内搜索，商用版应用最多允许 10 个 Class 启用应用内搜索。
+- **Class**：选择需要启用搜索的 Class。开发版应用最多允许 5 个 Class 启用全文搜索，商用版应用最多允许 10 个 Class 启用全文搜索。
 - **开放的列**：你可以选择将哪些字段加入搜索索引。默认情况下，`objectId`、`createdAt`、`updatedAt` 三个字段将无条件加入开放字段列表。除了这三个字段外，开发版应用每个 Class 最多允许索引 5 个字段，商用版应用每个 Class 最多允许索引 10 个字段。请仔细挑选要索引的字段。
 
-**如果一个 Class 启用了应用内搜索，但是超过两周没有任何搜索调用，我们将自动禁用该 Class 的搜索功能。**
+**如果一个 Class 启用了全文搜索，但是超过两周没有任何搜索调用，我们将自动禁用该 Class 的搜索功能。**
 
 ## 搜索 API
 
-LeanCloud 提供了 [应用内搜索的 REST API 接口](search-rest-api.html)。
+LeanCloud 提供了 [全文搜索的 REST API 接口](search-rest-api.html)。
 JavaScript SDK、Objective C SDK、Java SDK 封装了这一接口。
 
-假设你对 GameScore 类[启用了应用内搜索](#为_Class_启用搜索)，你就可以尝试传入关键字来搜索：
+假设你对 GameScore 类[启用了全文搜索](#为_Class_启用搜索)，你就可以尝试传入关键字来搜索：
 
 ```js
 const query = new AV.SearchQuery('GameScore');
@@ -130,10 +130,11 @@ searchQuery.setSortBuilder(builder);
 - [AVSearchSortBuilder](https://leancloud.cn/api-docs/android/index.html)
 {{ docs.langSpecEnd('java') }}
 
-{{ docs.langSpecStart('java') }}
+<!-- {{ docs.langSpecStart('java') }}
+
 ## SearchActivity
 
-上面介绍的是 storage-core library 中包含的应用内搜索与 UI 无关的接口。
+上面介绍的是 storage-core library 中包含的全文搜索与 UI 无关的接口。
 除此以外，在 leancloud-search library 中还有一个 SearchActivity UI 类，主要是用来演示搜索结果的展示。
 
 ### 添加依赖
@@ -164,9 +165,9 @@ implementation("cn.leancloud:storage-core:{{ version.unified }}")
     </application>
 ```
 
-注：由于一些 UI 的原因，**应用内搜索的最低 API level 要求是 12**，如你需要更低的版本支持，请参照文档中的[高级定制部分](#高级定制指南)进行开发。
+注：由于一些 UI 的原因，**全文搜索的最低 API level 要求是 12**，如你需要更低的版本支持，请参照文档中的[高级定制部分](#高级定制指南)进行开发。
 
-### 添加代码实现基础的应用内搜索功能
+### 添加代码实现基础的全文搜索功能
 
 ``` java
 AVSearchQuery searchQuery = new AVSearchQuery("keyword");
@@ -204,11 +205,12 @@ public void setHightLights(String hightlights);
 
 也可以参考 [我们的 `SearchActivity`](https://github.com/leancloud/java-unified-sdk/blob/master/android-sdk/leancloud-search/src/main/java/cn/leancloud/search/SearchActivity.java) 来更好的指定你自己的搜索结果页面。
 
-{{ docs.langSpecEnd('java') }}
+{{ docs.langSpecEnd('java') }} -->
+
 
 ## 自定义分词
 
-默认情况下， String 类型的字段都将被自动执行分词处理，我们使用的分词组件是 [mmseg](https://github.com/medcl/elasticsearch-analysis-mmseg)，词库来自搜狗。但是很多用户由于行业或者专业的特殊性，一般都有自定义词库的需求，因此我们提供了自定义词库的功能。应用创建者可以通过 **LeanCloud 控制台 > 存储 > 应用内搜索 > 自定义词库** 上传词库文件。
+默认情况下， String 类型的字段都将被自动执行分词处理，我们使用的分词组件是 [mmseg](https://github.com/medcl/elasticsearch-analysis-mmseg)，词库来自搜狗。但是很多用户由于行业或者专业的特殊性，一般都有自定义词库的需求，因此我们提供了自定义词库的功能。应用创建者可以通过 **LeanCloud 控制台 > 存储 > 全文搜索 > 自定义词库** 上传词库文件。
 
 词库文件要求为 UTF-8 编码，每个词单独一行，文件大小不能超过 512 K，例如：
 
@@ -221,5 +223,5 @@ public void setHightLights(String hightlights);
 
 将其保存为文本文件，如 `words.txt`，上传即可。上传后，分词将于 3 分钟后生效。开发者可以通过 [`analyze` API](search-rest-api.html#分词结果查询)（要求使用 master key）来测试。
 
-自定义词库生效后，**仅对新添加或者更新的文档/记录才有效**，如果需要对原有的文档也生效的话，需要在 **存储** > **应用内搜索** 点击「强制重建索引」按钮，重建原有索引。
+自定义词库生效后，**仅对新添加或者更新的文档/记录才有效**，如果需要对原有的文档也生效的话，需要在 **存储** > **全文搜索** 点击「强制重建索引」按钮，重建原有索引。
 同样，如果更新了自定义词库（包括删除自定义词库），也需要重建索引。
