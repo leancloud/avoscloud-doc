@@ -21,7 +21,7 @@ LeanCloud 提供了与[全文搜索](app_search_guide.html)搭配使用的 [Deep
 ```
 {URL Scheme}://{ URL Host }/{ Resource Path }
 ```
-进入 **控制台 > 存储 > 全文搜索 > 基本设置**，注意以下几个关键的属性：
+进入 **控制台 > 存储 > 全文搜索 > DeepLink 设置**，注意以下几个关键的属性：
 
 - **应用名称**：你的应用名称（必须）
 - **应用 URL Scheme**：支持外部调用的 URL scheme，我们强制要求采用**域名反转**的方式，类似 Java 语言的 package 命名机制。假设你的应用的域名为 `myapp.company.com`，那么我们要求的 scheme 就是形如 `com.company.myapp` 的字符串。例如我们的 Todo Demo 设置的 scheme 为 `com.leancloud.todo`。如果你没有域名，那么我们推荐你使用 `com.leancloud.{appId的前8位}` 来作为 Scheme。我们会在保存的时候检测 scheme 是否冲突。
