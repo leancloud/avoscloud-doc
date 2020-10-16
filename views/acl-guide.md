@@ -73,7 +73,7 @@ LeanCloud 云端对客户端发过来的每一个请求都要进行用户身份�
 
 ```objc
 AVQuery *query = [AVUser query];
-[query getObjectInBackgroundWithId:@"55f1572460b2ce30e8b7afde" block:^(AVUser *otherUser, NSError *error) {
+[query getObjectInBackgroundWithId:@"55f1572460b2ce30e8b7afde" block:^(AVObject * _Nullable object, NSError * _Nullable error) {
     if (error == nil) {
         // 新建一个帖子对象
         AVObject *post = [AVObject objectWithClassName:@"Post"];
