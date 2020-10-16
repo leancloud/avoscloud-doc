@@ -2,7 +2,7 @@
 
 # DeepLink 开发指南
 
-LeanCloud 提供了与[应用内搜索](app_search_guide.html)搭配使用的 [DeepLink](#deeplink) 功能，让应用可以响应外部调用链接。
+LeanCloud 提供了与[全文搜索](app_search_guide.html)搭配使用的 [DeepLink](#deeplink) 功能，让应用可以响应外部调用链接。
 
 这样，当用户在移动端网页搜索关键字之后：
 
@@ -14,14 +14,14 @@ LeanCloud 提供了与[应用内搜索](app_search_guide.html)搭配使用的 [D
 
 ![image](images/deeplink_tododemo.png)
 
-## 设置应用内搜索选项
+## 设置全文搜索选项
 
 为了能够让用户直接在搜索结果中打开相关的应用，开发者需要让自己的应用支持外部调用。我们使用 AppURL 来指向一个可以在应用里展现的 Class 数据，格式如下：
 
 ```
 {URL Scheme}://{ URL Host }/{ Resource Path }
 ```
-进入 **控制台 > 存储 > 应用内搜索 > 基本设置**，注意以下几个关键的属性：
+进入 **控制台 > 存储 > 全文搜索 > DeepLink 设置**，注意以下几个关键的属性：
 
 - **应用名称**：你的应用名称（必须）
 - **应用 URL Scheme**：支持外部调用的 URL scheme，我们强制要求采用**域名反转**的方式，类似 Java 语言的 package 命名机制。假设你的应用的域名为 `myapp.company.com`，那么我们要求的 scheme 就是形如 `com.company.myapp` 的字符串。例如我们的 Todo Demo 设置的 scheme 为 `com.leancloud.todo`。如果你没有域名，那么我们推荐你使用 `com.leancloud.{appId的前8位}` 来作为 Scheme。我们会在保存的时候检测 scheme 是否冲突。
@@ -60,7 +60,7 @@ https://{{host}}/1.1/go/com.leancloud.todo
 
 - **app_uri** (String) 打开应用的 URL，就是前面提到的 `{URL Scheme} : // {URL Host} / {Resource Path}`。
 
-- **applinks** (Object) 应用内搜索配置对象，包括：
+- **applinks** (Object) 全文搜索配置对象，包括：
   
   - app_name
   - android_phone_link
@@ -74,7 +74,7 @@ https://{{host}}/1.1/go/com.leancloud.todo
 
 - **object** (Object) 查询出来的 object 对象，默认至少包括：`objectId`、`createdAt`、`updatedAt` 三个属性。其他是你在选择开放的列。
 
-以我们的 Todo Demo 为例，我们启用了 Todo 的应用内搜索功能，选择了开放字段`content`，设定数据模板（省略了css）为：
+以我们的 Todo Demo 为例，我们启用了 Todo 的全文搜索功能，选择了开放字段`content`，设定数据模板（省略了css）为：
 
 <pre><code class="lang-html">&lt;div class=&quot;wrap&quot;&gt;
   &lt;div class=&quot;section section-open&quot;&gt;
