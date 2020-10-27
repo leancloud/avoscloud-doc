@@ -500,21 +500,20 @@ AVClient.Initialize(new AVClient.Configuration {
 独立 IP 与账户绑定，不会随应用的转移而发生变化。为了避免影响服务，转移的应用如果不改变自定义域名的解析配置，那么还可以继续使用原来的独立 IP。
 
 
-## CNAME 设置
+## 域名解析
 
-未配置独立 IP 的情况下，绑定域名需要设置 CNAME，因此这里我们简单解释下如何设置 CNAME。
+绑定域名需要设置域名解析，因此这里我们简单解释下如何设置。
 
-绑定域名过程中，需要设置域名的 CNAME。控制台会提示 CNAME 的地址，按照控制台的提示到域名注册商或域名解析服务提供商处设置（如果自己架设域名解析服务器的话，请根据域名解析服务器文档配置）。
+绑定域名过程中，控制台会提示相应的 DNS 配置，请按照控制台的提示到域名注册商或域名解析服务提供商处设置（如果自己架设域名解析服务器的话，请根据域名解析服务器文档配置）A 记录或 CNAME 记录。
 
-例如，按控制台提示输入待绑定域名 `xxx.example.com` 后，控制台会首先检查备案，检查通过后， 会显示「等待配置 CNAME」及 CNAME 值。
-假设控制台显示「CNAME: yyy.zzz.com」：
+例如，按控制台提示输入待绑定域名 `xxx.example.com` 后，控制台会首先检查备案，检查通过后，控制台会显示预期的 DNS 配置。
 
 ![控制台域名绑定界面](images/dashboard-domain-setup.png)
 
-那么对应的 DNS Zone 记录为：
+以 CNAME 为例，假定控制台显示的 CNAME 目标值为 `yyy.zzz.example`，那么对应的 DNS Zone 记录为：
 
 ```
-xxx.example.com.	3600	IN	CNAME	yyy.zzz.com.
+xxx.example.com.	3600	IN	CNAME	yyy.zzz.example.
 ```
 
 其中 3600 为 TTL，可根据自己的需要设置。
@@ -524,9 +523,11 @@ xxx.example.com.	3600	IN	CNAME	yyy.zzz.com.
 
 设置完成后，需要等待一段时间（一般在半小时以内），CNAME 记录生效后，LeanCloud 控制台会显示「已绑定」。
 
-如果长时间卡在「等待配置 CNAME 阶段」，那么请点击「等待配置 CNAME 阶段」后的问号图标，依其提示运行相应的 dig 命令检查 CNAME 记录是否生效。
-如 dig 命令查不到相应的 CNAME 记录，请返回域名商控制台检查配置是否正确，如仍有疑问，请联系域名商客服。
-如 dig 命令能查到预期的 CNAME 记录，但控制台仍显示「等待配置 CNAME 阶段」，请通过工单或 <support@leancloud.rocks> 联系我们。
+A 记录的设置同理。
+
+如果长时间卡在「等待配置 DNS」阶段，那么请点击「等待配置 DNS」后的问号图标，依其提示运行相应的 dig 命令检查域名解析记录是否生效。
+如 dig 命令查不到相应的域名解析记录，请返回域名商控制台检查配置是否正确，如仍有疑问，请联系域名商客服。
+如 dig 命令能查到预期的 CNAME 记录，但控制台仍显示「等待配置 DNS」，请通过工单或 <support@leancloud.rocks> 联系我们。
 
 ## SSL 证书
 
