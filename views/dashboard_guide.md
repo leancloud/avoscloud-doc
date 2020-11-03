@@ -135,10 +135,10 @@ JSON 格式要求是一个符合我们 REST 格式的 JSON 对象数组：
 
 导入数据后，LeanCloud 会自动创建 `objectId`、`createdAt`、`updatedAt` 字段。
 
-或者是一个包含了键名为 results、值为对象数组的 JSON 对象。例如：
+这里，导入数据中已经包括了 `objectId`、`createdAt`、`updatedAt` 字段，LeanCloud 将沿用这些字段，例如：
 
 ```json
-{ "results": [
+[
   {
     "likes": 2333,
     "title": "讲讲明朝的那些事儿",
@@ -155,11 +155,9 @@ JSON 格式要求是一个符合我们 REST 格式的 JSON 对象数组：
       "iso": "2015-11-27T19:05:21.377Z"
     },
     "objectId": "fchpZwSuGG"
-  }]
-}
+  }
+]
 ```
-
-这里，导入数据中已经包括了 `objectId`、`createdAt`、`updatedAt` 字段，LeanCloud 将沿用这些字段。
 
 【日期】示例中，`publishedAt` 是一个日期型字段，其格式要求请参考 [REST API &middot; 数据类型](rest_api.html#datatype_date)。
 
