@@ -142,7 +142,7 @@ tom.open(new AVIMClientCallback() {
       // 成功打开连接
     }
   }
-}
+});
 ```
 ```cs
 var realtime = new AVRealtime('your-app-id','your-app-key');
@@ -835,9 +835,9 @@ AVIMConversationQuery *query = [self.client conversationQuery];
 // 首先根据 ID 获取 Conversation 实例
 final AVIMConversation conv = client.getConversation("CONVERSATION_ID");
 // 邀请 Mary 加入对话
-conv.addMembers(Arrays.asList("Mary"), new AVIMConversationCallback() {
+conv.addMembers(Arrays.asList("Mary"), new AVIMOperationPartiallySucceededCallback() {
     @Override
-    public void done(AVIMException e) {
+    public void done(AVIMException e, List<String> successfulClientIds, List<AVIMOperationFailure> failures) {
       // 添加成功
     }
 });
@@ -1141,9 +1141,9 @@ do {
 }];
 ```
 ```java
-conv.kickMembers(Arrays.asList("Mary"),new AVIMConversationCallback(){
+conv.kickMembers(Arrays.asList("Mary"), new AVIMOperationPartiallySucceededCallback() {
     @Override
-    public void done(AVIMException e){
+    public void done(AVIMException e, List<String> successfulClientIds, List<AVIMOperationFailure> failures) {
     }
 });
 ```
