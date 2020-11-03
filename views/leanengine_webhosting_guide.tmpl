@@ -1719,7 +1719,7 @@ leancloud:request request(0) +0ms GET https://{{host}}/1.1/classes/Todo?&where=%
 leancloud:request response(0) +220ms 200 {"results":[{"content":"1","createdAt":"2016-08-09T06:18:13.028Z","updatedAt":"2016-08-09T06:18:13.028Z","objectId":"57a975a55bbb5000643fb690"}]}
 ```
 
-我们不建议在线上生产环境开启这个日志，否则将会打印大量的日志。
+我们不建议在线上生产环境开启这个日志，否则将会打印大量的日志。如有必要，可以指定 `DEBUG=leancloud:request:error`，只打印出错的网络请求。
 {% endif %}
 
 云引擎的访问日志（Access Log）可在 **控制台 > 云引擎 > 访问日志** 中导出，通过控制台下载经过打包的日志。
