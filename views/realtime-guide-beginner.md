@@ -1,5 +1,8 @@
 {% import "views/_helper.njk" as docs %}
 {% import "views/_im.njk" as im %}
+{% from 'views/_parts.html' import
+  supportEmail
+%}
 
 {{ docs.defaultLang('js') }}
 
@@ -3851,7 +3854,7 @@ Flutter SDK 暂不支持缓存功能。
 
 ## 聊天记录查询
 
-消息记录默认会在云端保存 **180** 天， 开发者可以通过额外付费来延长这一期限（有需要的用户请联系 support@leancloud.rocks），也可以通过 REST API 将聊天记录同步到自己的服务器上。
+消息记录默认会在云端保存 **180** 天， 开发者可以通过额外付费来延长这一期限（有需要的用户请联系 {{ supportEmail() }}），也可以通过 REST API 将聊天记录同步到自己的服务器上。
 
 SDK 提供了多种方式来拉取历史记录，iOS 和 Android SDK 还提供了内置的消息缓存机制，以减少客户端对云端消息记录的查询次数，并且在设备离线情况下，也能展示出部分数据保障产品体验不会中断。
 

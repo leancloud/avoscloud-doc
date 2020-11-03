@@ -1,3 +1,7 @@
+{% from 'views/_parts.html' import
+  supportEmail
+%}
+
 # 多人对战 Server 服务总览
 
 在查看本文档前，请先查看[多人在线对战服务总览](multiplayer.html)了解相关概念及客户端的使用方法。
@@ -36,7 +40,7 @@
 * [多人对战 Server 开发指南 &middot; Java](multiplayer-server-guide-java.html)。详细介绍了如何使用 Plugin 撰写自己的游戏逻辑。
 
 ## 价格及试用
-目前仅在**华东节点**提供多人对战 Server 服务。公测期间免费使用，开发版最大可使用 100% CPU，商用版最大可使用 200% CPU，如果您需要更高额度，请联系 support@leancloud.rocks。
+目前仅在**华东节点**提供多人对战 Server 服务。公测期间免费使用，开发版最大可使用 100% CPU，商用版最大可使用 200% CPU，如果您需要更高额度，请联系 {{ supportEmail() }}。
 
 未来收费方案如下：
 
@@ -49,7 +53,7 @@
 
 
 ## 私有化部署
-如果您希望将多人对战 Server 部署在自己的服务器中，请联系 support@leancloud.rocks。
+如果您希望将多人对战 Server 部署在自己的服务器中，请联系 {{ supportEmail() }}。
 
 ## 在线交流
 为了能及时解答大家的疑问，进一步了解游戏开发者的需求和使用场景，我们建立了游戏开发群，欢迎各位游戏开发者加入。[详情 >>>](https://forum.leancloud.cn/t/leancloud-qq/19389)
