@@ -1664,6 +1664,21 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
+### 文件查询
+
+查询文件和查询一般对象基本一致。
+例如，以下命令可以获取所有文件（和查询一般对象一样，默认最多返回 100 条结果）：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  https://{{host}}/1.1/classes/files
+```
+
+{{ data.file_url_query() }}
+
 ### 对象计数
 
 如果你在使用 `limit`，或者如果返回的结果很多，你可能想要知道到底有多少对象应该返回，而不用把它们全部获得以后再计数，此时你可以使用 `count` 参数。举个例子，如果你仅仅是关心一个某个用户发布了多少条微博：
@@ -2681,13 +2696,26 @@ curl -X PUT \
 
 ## 文件
 
-### 上传文件
+### 创建文件
 
-REST API 不支持文件上传，请使用 SDK 或[命令行工具](leanengine_cli.html#上传文件)上传文件。如果已有 url ，仅需保存一条文件数据，请使用[创建对象](#创建对象)接口在 _File 表新增一条数据。
+REST API 不支持文件上传，请使用 SDK 或[命令行工具](leanengine_cli.html#上传文件)上传并创建文件。
+
+如果已有 URL，可以使用以下命令创建文件（在 `_File` 表新增一条数据）：
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com/foo.jpg", "name": "foo.jpg", "mime_type": "image/jpeg"}' \
+  https://{{host}}/1.1/files
+```
+
+响应和返回值请参考[创建对象](#创建对象)一节。
 
 ### 关联文件到对象
 
-一个文件被保存到 _File 表后，你可以关联该文件到某个 AVObject 对象上：
+一个文件被保存到 `_File` 表后，你可以关联该文件到某个 AVObject 对象上：
 
 ```sh
 curl -X POST \

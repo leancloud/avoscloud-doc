@@ -133,5 +133,10 @@ public class MyLeanCloudApp extends Application {
 `< a` 需改查 `< a + e`，`> a` 需改查 `> a - e`，`== a` 需改查 `> a - e` 且 `< a + e`，其中 `e` 为误差范围，据所需精度取值，比如 `0.0001`。
 {% endmacro %}
 
+{% macro file_url_query() %}
+需要注意的是，内部文件（上传到 LeanCloud 文件服务的文件）的 `url` 字段是由云端动态生成的，其中涉及切换自定义域名的相关处理逻辑。
+因此，通过 url 字段查询文件仅适用于外部文件（直接保存外部 URL 到 `_File` 表创建的文件），内部文件请改用 key 字段（URL 中的路径）查询。
+{% endmacro %}
+
 {% set channel_naming = "频道名称只能包含大小写英文字母、数字、下划线（`_`）、连字符（`-`）、等号（`=`）、汉字（中日韩统一表意文字）。" %}
 
