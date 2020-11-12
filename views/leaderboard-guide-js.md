@@ -89,7 +89,7 @@ AV.Leaderboard.updateStatistics(AV.User.current(), { score: 0 }, {
 AV.User.logIn('playerA', 'passwordA').then((loggedInUser) => {
   // 查询另一个玩家在排行榜中的成绩
   var otherUser = AV.Object.createWithoutData(AV.User, '5cee072ac8959c0069f62ca8');
-  return AV.Leaderboard.getStatistics(otherUser)
+  return AV.Leaderboard.getStatistics(otherUser, {statisticNames: ['score', 'kills']});
 }).then(function(statistics) {
   // statistics 是查询的成绩结果
 }).catch(function (error) {
@@ -105,7 +105,7 @@ AV.User.logIn('playerA', 'passwordA').then((loggedInUser) => {
 AV.User.logIn('playerA', 'passwordA').then((loggedInUser) => {
   // 查询另一个玩家在排行榜中的成绩
   var otherUser = AV.Object.createWithoutData(AV.User, '5cee072ac8959c0069f62ca8');
-  return AV.Leaderboard.getStatistics(otherUser,  {statisticNames: ['score', 'kills']});
+  return AV.Leaderboard.getStatistics(otherUser)
 }).then(function(statistics) {
   // statistics 是查询的成绩结果
 }).catch(function (error) {
