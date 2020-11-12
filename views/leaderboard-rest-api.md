@@ -101,14 +101,14 @@ curl -X GET \
   "expiredAt": {"__type": "Date", "iso": "2018-05-02T16:00:00.000Z"},
   "activatedAt": {"__type": "Date", "iso": "2018-05-01T16:00:00.000Z"},
   "createdAt": "2018-04-28T05:46:58.579Z",
-  "updatedAt": "2018-05-01T01:00:00.000Z" 
+  "updatedAt": "2018-05-01T01:00:00.000Z"
 }
 ```
 
 
 #### 修改排行榜属性
 
-这个接口可以用来修改排行榜的 `order`、`updateStrategy` 及 `versionChangeInterval` 属性。可以只更新某一个属性，例如只修改 versionChangeInterval：
+这个接口可以用来修改排行榜的 `updateStrategy` 和 `versionChangeInterval` 属性。可以只更新某一个属性，例如只修改 versionChangeInterval：
 
 ```sh
 curl -X PUT \
