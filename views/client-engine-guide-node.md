@@ -53,12 +53,11 @@ export default class SampleGameManager<T extends Game> extends GameManager<T> {
 ```js
 import PRSGame from "./rps-game";
 const gameManager = new SampleGameManager(
-  PRSGame,
-  APP_ID,
-  APP_KEY,
-  {
-    concurrency: 2,
-  },
+  gameConstructor: PRSGame,
+  appId: {{appid}},
+  appKey: {{appkey}},
+  playServer: "https://please-replace-with-your-customized.domain.com",
+  concurrency: 2,
 );
 ```
 
@@ -82,7 +81,7 @@ const loadBalancer = loadBalancerFactory.bind(gameManager, ["createGameAndGetNam
 
 `loadBalancerFactory` 的 `bind()` 方法中，第一个参数是 `gameManager` 对象，第二个参数是一个数组，传入需要进行负载均衡的方法名 `["createGameAndGetName"]`。
 
-到这里，`gameManager` 的配置就完成了，您可以在自己定义的 Web API 处这样调用相关方法： `gameManager.createGameAndGetName()`。 
+到这里，`gameManager` 的配置就完成了，您可以在自己定义的 Web API 处这样调用相关方法： `gameManager.createGameAndGetName()`。
 
 #### 创建房间
 在 [GameManager 实例化](#GameManager 实例化)这一节中，我们在子类中使用了 `GameManager` 的 `createGame()` 来创建房间。
@@ -98,7 +97,7 @@ const loadBalancer = loadBalancerFactory.bind(gameManager, ["createGameAndGetNam
 例如创建一个带有匹配条件的新房间时，可以这样调用 `createGame()`：
 
 ```js
-// 您可以从客户端发来的请求中获得 playerId 和 createGameOptions 
+// 您可以从客户端发来的请求中获得 playerId 和 createGameOptions
 const props = {
     level: 2,
 };
@@ -188,7 +187,7 @@ play.on(Event.ROOM_JOIN_FAILED, (error) => {
 
 #### Game 生命周期
 1. **创建：** `Game` 由 SDK 中的 `GameManager` 管理，`GameManager` 会在收到创建房间的请求时根据情况创建 `Game`。
-2. **运行：** 创建后，`Game` 的控制权从 SDK 中 `GameManager` 移交给 `Game` 本身。从这个时刻开始，会有玩家陆续加入游戏房间。 
+2. **运行：** 创建后，`Game` 的控制权从 SDK 中 `GameManager` 移交给 `Game` 本身。从这个时刻开始，会有玩家陆续加入游戏房间。
 3. **销毁：** 所有玩家离开房间后，意味着游戏结束，`Game` 将控制权交回 `GameManager`，`GameManager` 做最后的清理工作，包括断开并销毁该房间的 masterClient、将 `Game` 从管理的游戏列表中删除等。
 
 #### Game 通用属性
@@ -223,7 +222,7 @@ export default class SampleGame extends Game {
 
 ```js
 export default class SampleGame extends Game {
-  public static defaultSeatCount = 3; // 最大不能超过 9 
+  public static defaultSeatCount = 3; // 最大不能超过 9
 }
 ```
 
@@ -232,7 +231,7 @@ export default class SampleGame extends Game {
 ```js
 export default class SampleGame extends Game {
   public static minSeatCount = 2;
-  public static maxSeatCount = 8; // 最大不能超过 9 
+  public static maxSeatCount = 8; // 最大不能超过 9
   public static defaultSeatCount = 5;
 }
 ```
