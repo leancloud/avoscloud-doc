@@ -54,9 +54,9 @@ export default class SampleGameManager<T extends Game> extends GameManager<T> {
 import PRSGame from "./rps-game";
 const gameManager = new SampleGameManager(
   gameConstructor: PRSGame,
-  appId: APP_ID,
-  appKey: APP_KEY,
-  playServer: API_SERVER,
+  appId: {{appid}},
+  appKey: {{appkey}},
+  playServer: "https://please-replace-with-your-customized.domain.com",
   concurrency: 2,
 );
 ```
