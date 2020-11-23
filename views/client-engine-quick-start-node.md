@@ -64,7 +64,7 @@ lean up
 
 服务端项目启动完成后，如果希望体验 Demo 游戏，需要额外同时打开两个[客户端示例 Demo](https://client-engine-app.{{engineDomain}}/)页面，在这两个页面中做如下配置：
 
-点击 Configs，APP_ID 和 APP_KEY 填入之前选择的应用的 App ID 及 App Key：
+点击 Configs，APP_ID 、APP_KEY 和 PLAY_SERVER 填入之前选择的应用的 App ID 、App Key 及服务器地址：
 
 ```sh
 # 如果您的浏览器已经登录 LeanCloud，请在下方选择相关应用，复制粘贴相关信息到 Configs 中：
