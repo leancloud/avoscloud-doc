@@ -9822,7 +9822,8 @@ assert(student.save().isSuccess)
 {% if node !== "qcloud" %}
 ## 应用内社交
 
-应用内社交，又称「事件流」，在应用开发中出现的场景非常多，包括用户间关注（好友）、朋友圈（时间线）、状态、互动（点赞）、私信等常用功能，请参考 [应用内社交模块](status_system.html)。
+应用内社交包含「好友关系」及「信息流」，例如陌生人的关注、好友申请、朋友圈、状态等，请参考[好友关系开发指南](leanstorage_friendship_guide.html)及[社交信息流开发指南](status_system.html)。
+
 {% endif %}
 
 {% if platform_name === "JavaScript" %}

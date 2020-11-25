@@ -1309,7 +1309,7 @@ curl -X GET \
   https://{{host}}/1.1/classes/Post
 ```
 
-微博有用户互相关注的功能，如果我们用 `_Followee`（用户关注的人） 和 `_Follower`（用户的粉丝） 这两个类来存储用户之间的关注关系{% if node != 'qcloud' %}（我们的 [应用内社交组件](./status_system.html) 已经实现了这样的模型）{% endif %}，我们可以创建一个查询来找到某个用户关注的人发布的微博（`Post` 表中有一个字段 `author` 指向发布者）：
+微博有用户互相关注的功能，如果我们用 `_Followee`（用户关注的人） 和 `_Follower`（用户的粉丝） 这两个类来存储用户之间的关注关系{% if node != 'qcloud' %}（我们的 [好友关系开发指南](leanstorage_friendship_guide.html) 已经实现了这样的模型）{% endif %}，我们可以创建一个查询来找到某个用户关注的人发布的微博（`Post` 表中有一个字段 `author` 指向发布者）：
 
 ```sh
 curl -X GET \
