@@ -1,6 +1,8 @@
 {% import "views/_helper.njk" as docs %}
 {{ docs.defaultLang('js') }}
 
+{% set autoFollowFolloweeOptionLink = "如果在 **控制台 > 存储 > 设置 > 其他** 勾选了 **应用内社交模块，关注用户时自动反向关注**" %}
+
 # 好友关系开发指南
 
 阅读此文档前请先阅读[数据存储开发指南](leanstorage_guide-js.html)，了解数据存储的基础。
