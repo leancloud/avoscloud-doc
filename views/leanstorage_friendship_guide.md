@@ -20,7 +20,7 @@ LeanCloud 将好友关系分为两种。一种是单向关注，例如微博里�
 好友关系接口向 `_Follower` 及 `_Followee` 表存储数据时默认使用 `friendshipACL`，更改其中一个表的 `friendshipACL`，另一张表的 `friendshipACL` 也会随之更改。在应用控制台 -「存储」-「结构化数据」-「_Followee 或 _Follower 表」- 「权限」中可以看到默认的 `friendshipACL` 设置。其中包含三个选项：
 
 * 请求中的 User 和目标 Friend。**默认选项**，只有发起请求的用户以及自己关注的人，可以查看或修改自己的数据。如果需要所有人都能互相看到粉丝，可以将 read 权限修改为「所有用户」。
-* 所有用户。所有用户都可以查询或修改当前用户的关注及其粉丝，相当于没有任何权限。
+* 所有用户。所有用户都可以查询或修改当前用户的关注及其粉丝。
 * 请求中的 User。只有发起请求的用户可以查看或修改自己的数据，其他所有用户均不可对数据进行操作。
 
 
@@ -67,7 +67,7 @@ AVUser.getCurrentUser().followInBackground(userObjectId).subscribe(new Observer<
 });
 ```
 
-我们允许在 follow 的时候同时传入一个 attribute 列表，用于设置关系的属性，这些属性都将在 `_Follower` 和 `_Followee` 表同时存在：
+我们允许在 follow 的时候同时传入一个 attributes 字典，用于设置关系的属性，这些属性都将在 `_Follower` 和 `_Followee` 表同时存在：
 
 ```javascript
 AV.User.current().follow({
@@ -152,7 +152,7 @@ AVUser.getCurrentUser().unfollowInBackground(userObjectId).subscribe(new Observe
 
 #### 查询我关注的人
 
-我们使用 `FollowerQuery` 和 `FolloweeQuery` 对关注关系进行查询。`FollowerQuery` 和 `FolloweeQuery` 返回的 `AVQuery` 对象可以象普通的 `AVQuery` 对象那样使用，它们本质上都是查询数据管理平台中的 `_Follower` 和 `_Followee`表，你可以添加 order、skip、limit 以及其他 where 条件等信息。
+我们使用 `FollowerQuery` 和 `FolloweeQuery` 对关注关系进行查询。`FollowerQuery` 和 `FolloweeQuery` 返回的 `AVQuery` 对象可以像普通的 `AVQuery` 对象那样使用，它们本质上都是查询数据管理平台中的 `_Follower` 和 `_Followee`表，你可以添加 order、skip、limit 以及其他 where 条件等信息。
 
 ```javascript
 var query = AV.User.current().followeeQuery();
@@ -474,7 +474,7 @@ curl -X GET \
 
 ### 权限管理
 
-好友关系接口向 `_FriendshipRequest` 及 `_Followee` 表存储数据时默认使用 `friendshipACL`，更改其中一个表的 `friendshipACL`，另一张表的 `friendshipACL` 也会随之更改。在应用控制台 -「存储」-「结构化数据」-「_Followee 或 _FriendshipRequest 表」- 「权限」中可以看到默认的 `friendshipACL` 设置。其中包含三个选项：
+好友关系接口向 `_FriendshipRequest` 及 `_Followee` 表存储数据时默认使用 `friendshipACL`，更改其中一个表的 `friendshipACL`，另一张表的 `friendshipACL` 也会随之更改。在「应用控制台 > 存储 > 结构化数据 > `_Followee` 或 `_FriendshipRequest` 表 > 权限」中可以看到默认的 `friendshipACL` 设置。其中包含三个选项：
 
 * 请求中的 User 和目标 Friend。**默认选项**，只有发起请求的用户以及自己关注的人，可以查看或修改自己的数据。
 * 所有用户。所有用户都可以查询或修改当前用户的关注及其粉丝，相当于没有任何权限。
@@ -486,7 +486,7 @@ curl -X GET \
 申请加某人为好友之前，需要当前用户先登录。登录后申请好友的代码如下：
 
 ```javascript
-AV.Friendship.request("tom's objectId")
+AV.Friendship.request('user_object_id')
   .then(() => {
     console.log('好友请求发送成功');
   })
@@ -501,7 +501,7 @@ AV.Friendship.request("tom's objectId")
 
 ```javascript
 AV.Friendship.request({
-  friend: "tom's objectId",
+  friend: 'user_object_id',
   attributes: {
     group: 'sport',
   },
@@ -516,11 +516,11 @@ AV.Friendship.request({
 
 ```javascript
 const query = new AV.Query('_FriendshipRequest');
-// 未处理的申请，其在 _FriendshipRequest 表的 status 的值为 pending
 query.equalTo('friend', AV.User.current());
+// 未处理的申请，其在 _FriendshipRequest 表的 status 的值为 pending
 query.equalTo('status', 'pending');
 query.find().then((requests) => {
-  // requests(AV.Object[]) 是所有申请加 Tom 为好友的请求
+  // requests 是所有申请添加当前用户为好友的请求
 });
 ```
 
@@ -543,7 +543,7 @@ query.find().then((requests) => {
 });
 ```
 
-B 在接受 A 的好友请求时，同样可以添加属性，这些属性会被存储到 `Followee` 表的相应的列中，例如下方的代码会向 B 的数据中的 `group` 列中存入值 `nobody`。
+B 在接受 A 的好友请求时，同样可以添加属性，这些属性会被存储到 `_Followee` 表的相应的列中，例如下方的代码会向 B 的数据中的 `group` 列中存入值 `nobody`。
 
 ```javascript
 const query = new AV.Query('_FriendshipRequest');
@@ -571,7 +571,7 @@ query.equalTo('friend', AV.User.current());
 query.equalTo('status', 'pending');
 query.find().then((requests) => {
   requests.forEach(request => {
-    AV.Friendship.declineRequest(request).then(() => console.log("接受好友请求成功"));
+    AV.Friendship.declineRequest(request).then(() => console.log('拒绝好友请求成功'));
   });
 });
 ```
@@ -584,14 +584,14 @@ query.equalTo('friend', AV.User.current());
 query.equalTo('status', 'declined');
 query.find().then((requests) => {
   requests.forEach(request => {
-    AV.Friendship.declineRequest(request).then(() => console.log("接受好友请求成功"));
+    AV.Friendship.acceptRequest(request).then(() => console.log("接受好友请求成功"));
   });
 });
 ```
 
 #### 查询好友列表
 
-直接使用 `AVQuery` 查询好友列表，还可以使用 skip、limit、include 等，非常方便。
+直接使用 `AVQuery` 查询好友列表，设定 `friendStatus=true` 即可以查询双向好友。同时还可以使用 skip、limit、include 等，非常方便。
 
 ```javascript
 const query = new AV.Query('_Followee');
@@ -728,7 +728,7 @@ curl -X GET \
   -H "X-LC-Session: <logged-in-user-sessionToken>" \
   -G \
   --data-urlencode 'where={"friendStatus": true}' \
-  https://{{host}}/1.1/classes/_Followee
+  https://{{host}}/1.1/users/<user_id>/followees
 ```
 
 #### 修改好友属性
@@ -741,7 +741,7 @@ curl -X PUT \
   -H "X-LC-Key: {{appkey}}" \
   -H "X-LC-Session: <logged-in-user-sessionToken>" \
   -d '{"friendship": {"group" : "nobody"}}' \
-  https://{{host}}/1.1/classes/_Followee/<followee_id>
+  https://{{host}}/1.1/users/<user_id>/friendship/<friend_id>
 ```
 
 #### 删除好友
@@ -795,4 +795,3 @@ query.subscribe().then((subscription) => {
 });
 
 ```
-
