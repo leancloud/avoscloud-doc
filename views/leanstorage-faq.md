@@ -33,7 +33,7 @@
 调用一次 `saveAll` 或 `fetchAll` 来保存或获取 array 里面 100 个 对象，算 100 次 API 请求。
 
 {% if node != 'qcloud' %}
-对于 [应用内社交](status_system.html)，`create` 和 `update` 按照 Status 和 Follower/Followee 的对象数量来计费。
+对于 [社交信息流](status_system.html)，`create` 和 `update` 按照 Status 和 Follower/Followee 的对象数量来计费。
 {% endif %}
 
 对于 query 则是按照请求数来计费，与结果的大小无关。`query.count` 算 1 次 API 请求。collection fetch 也是按照请求次数来计费。

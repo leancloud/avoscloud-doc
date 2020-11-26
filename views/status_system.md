@@ -1,45 +1,25 @@
-{% set autoFollowFolloweeOptionLink = "如果在 **控制台 > 存储 > 设置 > 其他** 勾选了 **应用内社交模块，关注用户时自动反向关注**" %}
-# 应用内社交组件
-应用内社交，包含「好友关系」和「信息流」两部分。好友关系指用户间通过「关注」或「加好友」形成的社交关系，信息流则是「好友」发布的状态信息汇集而成的「时间线」或者「朋友圈」内容。
+# 社交信息流开发指南
 
-很多产品中都存在这种社交场景，例如用户间关注（好友）、朋友圈（时间线）、状态、互动（点赞）、私信等常用功能，LeanCloud 应用内社交组件对这些需求进行了提炼，给出了一套统一的方案，以帮助开发者快速实现社交需求。
+查看此篇文档前，请先查看并了解好友关系文档中的[单向关注](leanstorage_friendship_guide.html#单向关注)关系。信息流是关注关系中，被关注者发布的状态信息汇集而成的「时间线」或者「朋友圈」内容。
 
+## 基本概念
 
-## 功能概述
-
-### 基本概念
-
-首先说明几个基本概念。
-
-#### 用户关系（Follower/Followee）
-
-指社交应用中用户关注/加粉等行为构建成的群体关系，例如微博里面的「关注者」和微信中的「好友」关系，本文会统一按照关注关系来描述。假设一个用户 A 有 ta 关注的用户群体，也有关注 ta 的用户群体存在。
-在社交组件内，我们分为了 `Follower` 和 `Followee` 两种类型，分别表示用户的粉丝和用户的关注，在控制台中对应着两张表 `_Follower` 和 `_Followee`。
-
-#### 状态（Status）
+### 状态（Status）
 
 指用户发出来的即时状态，例如微博中的一个帖子，微信朋友圈中的一段文字，就是这里所说的「状态」，我们用 `Status` 表示。
 
 社交组件中的 `Status` 是指一条广义上的「状态」，它不仅可以表示某个用户更新了状态，还可以表示任意的一个事件，比如某人发布了一篇文章，对某张图片点赞等等。在控制台中对应的表名称为 `_Status`。
 
-#### 时间线
+### 时间线
 
 在社交类产品中，用户 A 关注了一些人之后，他就可以按照时间顺序查看到那些人发布的各种「状态」信息（这里我们暂且把这些信息称为「时间线」）；同样，A 发布了某一条「状态」之后，一般就会马上被关注 ta 的其他人看到，但是也有例外（就是接下来的「私信」）。
 
-#### 私信
+### 私信
 
 是状态中的一类特殊信息，只发给特定的用户，不会进入关注者的时间线来公开展示，例如微博里面的「私信」即是如此。
 
-### 功能概述
 
-#### 用户关系 API
-我们的用户关系 API 主要提供以下功能：
-
-- 用户 A 主动关注/取消关注用户 B；
-- 用户 A 查询自己的粉丝列表；
-- 用户 A 查询自己的关注列表；
-
-#### 信息流 API
+## 信息流 API
 
 我们的信息流 API 主要提供以下功能：
 
@@ -63,57 +43,6 @@
 > 发了一条状态，并不代表会自动发送了一条推送消息，开发者可以自由控制是否使用推送。更多信息请参考 [消息推送开发指南](./push_guide.html)。
 
 ## JavaScript SDK
-
-### 用户关系
-
-AV.User 新增两个方法 `follow` 和 `unfollow` 来建立用户关系，你可以关注某个用户：
-
-```javascript
-AV.User.current().follow('52f9be45e4b035debf88b6e2').then(function(){
-  //关注成功
-}, function(err){
-  //关注失败
-  console.dir(err);
-});
-```
-
-`follow` 方法接收一个 AV.User 对象或者 User 对象的 objectId（通过 user.id 拿到）。
-
-取消关注使用 `unfollow` 方法：
-
-```javascript
-AV.User.current().unfollow('52f9be45e4b035debf88b6e2').then(function(){
-  //取消关注成功
-}, function(err){
-  //取消关注失败
-  console.dir(err);
-});
-```
-
-关注后，可以查询自己关注的用户列表，使用 `AV.User#followeeQuery` 得到一个 `AV.Query`对象来查询关注的用户列表：
-
-```javascript
-var query = AV.User.current().followeeQuery();
-query.include('followee');
-query.find().then(function(followees){
-  //关注的用户列表 followees
-});
-```
-
-followee 是一个 Pointer 类型，通过 `include` 将它的所有信息查询包括进来，否则只会返回用户的 id。当查询计数的时候（使用 `AV.Query#count` 方法）不建议 `include`。
-
-查询自己的粉丝（他人关注了我，他人就是我的粉丝），可以通过 `followerQuery` 方法：
-
-```javascript
-var query = AV.User.current().followerQuery();
-query.include('follower');
-query.find().then(function(followers){
-  //粉丝列表 followers
-});
-```
-
-`followerQuery` 和 `followeeQuery` 返回的 AV.Query 对象可以象普通的 [AV.Query](https://leancloud.github.io/javascript-sdk/docs/AV.Query.html) 对象那样使用，它们本质上都是查询数据管理平台中的 `_Follower` 和 `_Followee`表，你可以添加 order、skip、limit 以及其他 where 条件等信息。
-
 
 ### 状态
 
@@ -278,63 +207,6 @@ query.find().then(function(statuses){
 
 SDK 的安装参考 [Objective-C 安装指南](sdk_setup-objc.html)。
 
-### 用户关系
-
-#### 关注/取消关注
-
-当前登录用户可以关注某人：
-
-```
-NSString *userObjectId = @"XXXXXX";
-//关注
-[[AVUser currentUser] follow:userObjectId andCallback:^(BOOL succeeded, NSError *error) {
-}];
-//取消关注
-[[AVUser currentUser] unfollow:userObjectId andCallback:^(BOOL succeeded, NSError *error) {
-}];
-```
-
-如果在 {{ autoFollowFolloweeOptionLink }}，那么在当前用户关注某个人，那个人也会自动关注当前用户。
-
-从 2.6.7 版本开始，我们允许在 follow 的时候同时传入一个 attribute 列表，用于设置关系的属性，这些属性都将在 `_Follower` 和 `_Followee` 表同时存在：
-
-```objc
-   NSDictionary * attrs = ……
-   [[AVUser currentUser] follow:userObjectId userDictionary:attrs andCallback:^(BOOL succeeded, NSError *error) {
-	    //处理结果
-    }];
-```
-
-#### 获取粉丝/关注列表
-
-有两个特殊的 `AVQuery`：
-
-```objc
-//粉丝列表查询
-AVQuery *query= [AVUser followerQuery:@"USER_OBJECT_ID"];
-
-//关注列表查询
-AVQuery *query= [AVUser followeeQuery:@"USER_OBJECT_ID"];
-```
-
-`followerQuery` 和 `followeeQuery` 返回的 AVQuery 可以增加其他查询条件，只要在 `_Followee` 和 `_Follower` 表里存在的属性都可以作为查询或者排序条件。
-
-默认的查询得到的 AVUser 对象仅仅有 ObjectId 数据，如果需要**整个 AVUser 对象所有属性，则需要调用 include 方法**。例如：
-
-```objc
-AVQuery *query= [AVUser followeeQuery:@"USER_OBJECT_ID"];
-[query includeKey:@"followee"];
-```
-
-分别获得某个用户的粉丝和关注，我们也可以同时取得这两种：
-
-```objc
-[[AVUser currentUser] getFollowersAndFollowees:^(NSDictionary *dict, NSError *error) {
-    NSArray *followers=dict[@"followers"];
-    NSArray *followees=dict[@"followees"];
-}];
-```
-
 ### 状态
 
 #### 发布状态
@@ -444,222 +316,6 @@ query.inboxType=kAVStatusTypeTimeline;
 ## Android SDK
 
 SDK 的安装参考 [Android 安装指南](sdk_setup-android.html)。
-
-### 用户关系
-
-#### 关注和取消关注
-
-登录的用户可以关注其他用户，成为其「粉丝」，例如：
-
-```java
-//关注
-AVUser.getCurrentUser().followInBackground(userObjectId).subscribe(new Observer<JSONObject>() {
-  @Override
-  public void onSubscribe(Disposable disposable) {
-  }
-
-  @Override
-  public void onNext(JSONObject object) {
-    System.out.println("succeed follow. " + object.toString());
-  }
-
-  @Override
-  public void onError(Throwable throwable) {
-    throwable.printStackTrace();
-  }
-
-  @Override
-  public void onComplete() {
-  }
-});
-
-//取消关注
-AVUser.getCurrentUser().unfollowInBackground(userObjectId).subscribe(new Observer<JSONObject>() {
-  @Override
-  public void onSubscribe(Disposable disposable) {
-  }
-
-  @Override
-  public void onNext(JSONObject object) {
-    System.out.println("succeed unfollow. " + object.toString());
-  }
-
-  @Override
-  public void onError(Throwable throwable) {
-    throwable.printStackTrace();
-  }
-
-  @Override
-  public void onComplete() {
-  }
-});
-```
-
-如果在 {{ autoFollowFolloweeOptionLink }}，那么在当前用户关注某个人，那个人也会自动关注当前用户。
-
-从 2.6.7 版本开始，我们允许在 follow 的时候同时传入一个 attribute 列表，用于设置关系的属性，这些属性都将在 `_Follower` 和 `_Followee` 表同时存在：
-
-```java
-Map<String, Object> attributes = ......
-AVUser.getCurrentUser().followInBackground(userObjectId, attributes).subscribe(new Observer<JSONObject>() {
-  @Override
-  public void onSubscribe(Disposable disposable) {
-
-  }
-
-  @Override
-  public void onNext(JSONObject object) {
-    System.out.println("succeed follow. " + object.toString());
-  }
-
-  @Override
-  public void onError(Throwable throwable) {
-    throwable.printStackTrace();
-  }
-
-  @Override
-  public void onComplete() {
-  }
-});
-```
-
-#### 获取粉丝和关注列表
-
-你可以使用 `followerQuery` 或 `followeeQuery` 来查询用户的粉丝（关注用户的人）或关注（用户关注的人）列表，这样可以设置更多的查询条件，比如：
-
-```java
-// 其中 userA 是 AVUser 对象，你也可以使用 AVUser 的子类化对象进行查询
-// 查询粉丝
-AVQuery<AVObject> followerQuery = userA.followerQuery();
-followerQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
-  @Override
-  public void onSubscribe(Disposable disposable) {
-  }
-
-  @Override
-  public void onNext(List<AVObject> avObjects) {
-    // avObjects 包含了 userA 的粉丝列表。
-    // 遍历数组，对每一个 object 获取`follower` 属性值即为 User 实例。
-    for (AVObject tmp: avObjects) {
-      System.out.println("result user:" + tmp.getAVObject("follower"));
-    }
-  }
-
-  @Override
-  public void onError(Throwable throwable) {
-    throwable.printStackTrace();
-  }
-
-  @Override
-  public void onComplete() {
-
-  }
-});
-
-
-// 查询关注者
-AVQuery<AVObject> followeeQuery = userA.followeeQuery();
-followeeQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
-  @Override
-  public void onSubscribe(Disposable disposable) {
-  }
-
-  @Override
-  public void onNext(List<AVObject> avObjects) {
-    // avObjects 包含了 userA 的关注列表。
-    // 遍历数组，对每一个 object 获取`followee` 属性值即为 User 实例。
-    for (AVObject tmp: avObjects) {
-      System.out.println("result User:" + tmp.getAVObject("followee"));
-    }
-  }
-
-  @Override
-  public void onError(Throwable throwable) {
-    throwable.printStackTrace();
-  }
-
-  @Override
-  public void onComplete() {
-
-  }
-});
-```
-
-通过 AVQuery，你也可以增加 `skip` 或者 `limit` 操作来分页查询，比如：
-
-```java
-AVQuery<AVObject> followerSkipQuery = userA.followerQuery();
-followerSkipQuery.setLimit(50);
-followerSkipQuery.skip(100);
-followerSkipQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
-  @Override
-  public void onSubscribe(Disposable disposable) {
-  }
-
-  @Override
-  public void onNext(List<AVObject> avObjects) {
-    // avObjects 包含了 userA 的粉丝列表。
-    // 遍历数组，对每一个 object 获取`follower` 属性值即为 User 实例。
-    for (AVObject tmp: avObjects) {
-      System.out.println("result User:" + tmp.getAVObject("follower"));
-    }
-  }
-
-  @Override
-  public void onError(Throwable throwable) {
-    throwable.printStackTrace();
-  }
-
-  @Override
-  public void onComplete() {
-  }
-});
-```
-
-你也可以查找某个特定的粉丝，比如：
-
-```java
-AVQuery<AVObject> followerNameQuery = userA.followerQuery();
-followerNameQuery.whereEqualTo("follower", userC);
-followerNameQuery.findInBackground(new FindCallback<AVUser>() {
-    @Override
-    public void done(List<AVUser> avObjects, AVException avException) {
-        // avObjects 中应当只包含 userC
-    }
-});
-```
-
-总之 `followerQuery` 和 `followeeQuery` 返回的 AVQuery 可以增加其他查询条件，只要在 `_Followee` 和 `_Follower` 表里存在的属性都可以作为查询或者排序条件。
-
-
-##### 一次性获取粉丝和关注列表
-
-下面的方法实现了一次获取粉丝和关注用户列表的功能，当然，你也可以用上面的方法通过两次调用来获取这些数据，特别是用户列表很长需要翻页的时候，下面的方法就失效了。
-
-```java
-AVUser.currentUser().getFollowersAndFolloweesInBackground(new FollowersAndFolloweesCallback() {
-  @Override
-  public void done(Map avObjects, AVException avException) {
-    if (null == avObjects || null != avException) {
-      return;
-    }
-    try {
-      List<AVUser> followerArray = (List<AVUser>)avObjects.get("follower");
-      List<AVUser> followeeArray = (List<AVUser>)avObjects.get("followee");
-    
-      System.out.println("followers=" + followerArray);
-      System.out.println("followees=" + followeeArray);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  @Override
-  protected void internalDone0(Object o, AVException avException) {
-
-  }
-});
-```
 
 ### 信息流 API
 
@@ -1054,126 +710,6 @@ target.deleteInBackground()
 
 
 ## REST API
-
-本节介绍应用内社交的 REST API。
-
-### 用户关系 API
-
-使用这里的 API 来建立用户关系，你可以关注、取消关注某个用户。
-
-* 这里的三个查询 API 都遵循我们的 REST API 规范，支持 `where`、`order`、`skip`、`limit`、`count`、`include` 等。如果没有特殊说明，返回的结果都是 `{results: [数组结果]}`，跟其他查询 API 保持一致。
-* 用户在 `_Follower` 和 `_Followee` 表中都存储为 Pointer 类型，因此如果要查询出用户信息，应该加上 include 指定字段。
-
-#### 关注和取消关注用户 API
-
-通过操作 `/users/:user_id/friendship/:target_id` 资源可以关注或者取消关注某个用户，其中：
-
-* `:user_id` 表示发起关注动作的用户的 objectId。如果设置了 `X-LC-Session` 头，则 `self` 表示当前登录用户。
-* `:target_id` 表示想要关注的目标用户的 objectId。
-
-例如，让当前用户 `51fa6886e4b0cc0b5a3792e9` 关注目标用户 `51e3a334e4b0b3eb44adbe1a`：
-
-```sh
-curl -X POST \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: application/json" \
-  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
-```
-
-关注后，`_Follower` 和 `_Followee` 都会多出一条记录，{{ autoFollowFolloweeOptionLink }}，会各多出两条记录。
-
-取消关注通过：
-
-```sh
-curl -X DELETE \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: application/json" \
-  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
-```
-
-关注还可以增加一些属性：
-
-```sh
-curl -X POST \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: application/json" \
-  -d '{"score": 100}' \
-  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/friendship/51e3a334e4b0b3eb44adbe1a
-```
-
-那么 `score` 字段将同时出现在 `_Follower` 和 `_Followee` 表，可以作为查询或者排序条件。
-
-#### 查询粉丝或者关注者列表 API
-
-查询粉丝列表（也就是关注我的人），可以通过：
-
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: application/json" \
-  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followers
-```
-
-返回的用户列表是 Pointer 类型，如果想要将用户信息也返回，需要 include:
-
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: application/json" \
-  -G \
-  --data-urlencode 'include=follower' \
-  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followers
-```
-
-查询关注的用户列表：
-
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: application/json" \
-  -G \
-  --data-urlencode 'include=followee' \
-  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followees
-```
-
-同时查询粉丝和关注的人：
-
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: application/json" \
-  -G \
-  --data-urlencode 'include=followee' \
-  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followersAndFollowees
-```
-
-结果返回：
-
-```json
-{followers: [粉丝列表], followees: [关注用户列表]}
-```
-
-如果指定 count=1，则返回结果里加上 followers_count 和 followees_count 表示粉丝数目和关注者数目：
-
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{appkey}}" \
-  -H "Content-Type: application/json" \
-  -G \
-  --data-urlencode 'include=followee' \
-  --data-urlencode 'count=1' \
-  https://{{host}}/1.1/users/51fa6886e4b0cc0b5a3792e9/followersAndFollowees
-```
-
-### 状态 API
 
 再次解释下术语定义：
 
