@@ -262,7 +262,7 @@ curl -X POST \
   https://{{host}}/1.1/requestMobilePhoneVerify
 ```
 
-如果成功，LeanCloud 将返回一个空的 JSON 对象（`{}`），并向用户发送验证码。
+如果成功，LeanCloud 将返回状态码 `200 OK`，并向用户发送验证码。
 
 开发者可以提供一个输入框让用户输入这个验证短信中附带的验证码，之后调用下列 API 来确认验证码的有效性：
 

@@ -1944,7 +1944,7 @@ curl -X POST \
   https://{{host}}/1.1/requestPasswordReset
 ```
 
-如果成功的话，返回的值是一个空 JSON 对象（`{}`）。
+如果成功的话，将返回状态码 `200 OK`。
 
 关于自定义邮件模板和验证链接请看[自定义邮件验证和重设密码页面](custom-reset-verify-page.html)。
 
