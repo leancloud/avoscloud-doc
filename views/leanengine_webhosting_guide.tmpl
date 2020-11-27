@@ -214,6 +214,8 @@ Java 云引擎默认使用 Java 8 运行环境，如果希望使用其他版本�
 java.runtime.version=11
 ```
 
+注意，Spring Boot 项目暂不支持指定 Java 版本，只能使用云引擎默认的 Java 版本，请勿在项目根目录创建 `system.properties`。 
+
 ### 打包成 WAR 文件的项目
 
 首先确认项目 `pom.xml` 中配置了 [Jetty plugin](https://www.eclipse.org/jetty/documentation/9.4.x/jetty-maven-plugin.html)，并且 web server 的端口通过环境变量 `LEANCLOUD_APP_PORT` 获取，具体配置可以参考我们的 [示例代码](https://github.com/leancloud/java-war-getting-started/blob/master/pom.xml)。
