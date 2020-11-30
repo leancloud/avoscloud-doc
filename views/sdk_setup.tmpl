@@ -1409,6 +1409,18 @@ LeanCloud.initialize(
 
 {{ requireServerURL() }}
 
+##### Android 权限设置
+
+别忘了在 `AndroidManifest.xml` 里声明所需的 Android 权限：
+
+```xml
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+```
+
 #### 即时通信
 
 使用 SDK 时添加下列导入语句到头部：
@@ -1417,7 +1429,7 @@ LeanCloud.initialize(
 import 'package:leancloud_official_plugin/leancloud_plugin.dart';
 ```
 
-**使用Flutter 即时通信插件需要在 Android 和 iOS 平台分别初始化。**
+**使用 Flutter 即时通信插件需要在 Android 和 iOS 平台分别初始化。**
 
 ##### Android 平台初始化
 
