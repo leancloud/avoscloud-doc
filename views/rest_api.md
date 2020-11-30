@@ -2085,12 +2085,10 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
 
 ```json
 {
-  "authData": {
-    "weibo": {
-      "uid": "123456789",
-      "access_token": "2.00vs3XtCI5FevCff4981adb5jj1lXE",
-      "expiration_in": "36000"
-    }
+  "weibo": {
+    "uid": "123456789",
+    "access_token": "2.00vs3XtCI5FevCff4981adb5jj1lXE",
+    "expiration_in": "36000"
   }
 }
 ```
@@ -2099,12 +2097,10 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
 
 ```json
 {
-  "authData": {
-    "qq": {
-      "openid": "0395BA18A5CD6255E5BA185E7BEBA242",
-      "access_token": "12345678-SaMpLeTuo3m2avZxh5cjJmIrAfx4ZYyamdofM7IjU",
-      "expires_in": 1382686496
-    }
+  "qq": {
+    "openid": "0395BA18A5CD6255E5BA185E7BEBA242",
+    "access_token": "12345678-SaMpLeTuo3m2avZxh5cjJmIrAfx4ZYyamdofM7IjU",
+    "expires_in": 1382686496
   }
 }
 ```
@@ -2113,12 +2109,10 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
 
 ```json
 {
-  "authData": {
-    "weixin": {
-      "openid": "0395BA18A5CD6255E5BA185E7BEBA242",
-      "access_token": "12345678-SaMpLeTuo3m2avZxh5cjJmIrAfx4ZYyamdofM7IjU",
-      "expires_in": 1382686496
-    }
+  "weixin": {
+    "openid": "0395BA18A5CD6255E5BA185E7BEBA242",
+    "access_token": "12345678-SaMpLeTuo3m2avZxh5cjJmIrAfx4ZYyamdofM7IjU",
+    "expires_in": 1382686496
   }
 }
 ```
@@ -2127,12 +2121,10 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
 
 ```json
 {
-  "authData": {
-    "lc_apple": {
-      "uid": "从 Apple 获取到的 User Identifier",
-      "identity_token": "从苹果获取到的 identity Token",
-      "code": "从苹果获取到的 Authorization Code"
-    }
+  "lc_apple": {
+    "uid": "从 Apple 获取到的 User Identifier",
+    "identity_token": "从苹果获取到的 identity Token",
+    "code": "从苹果获取到的 Authorization Code"
   }
 }
 ```
@@ -2150,14 +2142,13 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
 其他任意第三方平台（其他第三方将不支持校验 access token 选项）：
 
 ```json
-  {
-     "第三方平台名称，例如facebook":
-     {
-       "uid": "在第三方平台上的唯一用户id字符串",
-       "access_token": "在第三方平台的 access token",
-       // ……其他可选属性
-     }
+{
+  "第三方平台名称，例如facebook": {
+    "uid": "在第三方平台上的唯一用户id字符串",
+    "access_token": "在第三方平台的 access token",
+    // ……其他可选属性
   }
+}
 ```
 
 LeanCloud 会自动为 `authData.第三方平台名称.uid` 创建唯一索引，以确保一个第三方账号只绑定到一个 LeanCloud 应用内用户上。
