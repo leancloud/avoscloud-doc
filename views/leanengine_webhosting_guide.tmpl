@@ -1646,6 +1646,13 @@ print(MY_CUSTOM_VARIABLE)
 云引擎运行环境默认提供的环境变量{% if platformName === "Node.js" %}（以及 Node.js 环境变量 `NODE_ENV`）{% endif %}无法被自定义环境变量覆盖（覆盖无效）。
 {% endcall %}
 
+默认情况下，应用在运行阶段才能够读取到内置环境变量和自定义环境变量。
+如果希望在安装依赖阶段就能读取到这些环境变量，需要在 `leanengine.yaml` 里设置：
+
+```yaml
+exposeEnvironmentsOnBuild: true
+```
+
 ### 负载均衡和边缘节点
 
 在云引擎上，用户的请求会先经过负载均衡组件，然后到达你的应用。
