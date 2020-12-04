@@ -1104,7 +1104,7 @@ PM> Install-Package LeanCloud.Realtime
 ```
 {% endif %}
 
-{% if platform_name === ".NET-Standard" %}
+{% if platform_name === ".NET Standard" %}
 
 通过 GitHub 仓库 [Releases](https://github.com/leancloud/csharp-sdk/releases) 下载最新版本 SDK。
 （XXX 指 LeanCloud 服务，包括存储 Storage，即时通讯 Realtime，LiveQuery）
@@ -1413,7 +1413,7 @@ const realtime = new AVRealtime(new AVRealtime.Configuration
 {{ requireServerURL() }}
 {% endif %}
 
-{% if platform_name === ".NET-Standard" %}
+{% if platform_name === ".NET Standard" %}
 
 ### 导入模块
 
@@ -1684,7 +1684,7 @@ AVRealtime.WebSocketLog(Debug.Log);
 ```
 {% endif %}
 
-{% if platform_name === ".NET-Standard" %}
+{% if platform_name === ".NET Standard" %}
 ```cs
 LCLogger.LogDelegate = (LCLogLevel level, string info) => {
     switch (level) {
@@ -1850,7 +1850,7 @@ await saveTask;
 保存后运行程序。
 {% endif %}
 
-{% if platform_name === ".NET-Standard" %}
+{% if platform_name === ".NET Standard" %}
 然后在项目中编写如下测试代码：
 
 ```cs
