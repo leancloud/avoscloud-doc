@@ -52,6 +52,17 @@ fastify.listen(parseInt(process.env.LEANCLOUD_APP_PORT || '3000', 10), '0.0.0.0'
 
 [Micro]: https://github.com/zeit/micro
 
+同理，`lean up` 本地调试功能要求服务监听 3000 端口，框架以调试模式启动时如果默认监听的不是 3000 端口，也需要修改。
+例如，[egg.js]调试模式默认监听 7001 端口，需要在 `package.json` 的 `scripts.dev` 中指定监听 3000 端口：
+
+```json
+"dev": "egg-bin dev --port=3000",
+```
+
+[egg.js]: https://github.com/weakish/eat-eggs-get-lean
+
+或者，你也可以在设置云引擎相关的环境变量后，[在本地原生地启动项目](leanengine_cli.html#本地运行)，这样就无需专门修改调试模式的启动参数。
+
 指定 Node.js 版本、监听地址后，大部分 Node 框架都可以在云引擎上成功运行。
 少数框架还需要进一步调整。
 
