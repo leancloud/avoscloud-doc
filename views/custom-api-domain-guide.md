@@ -506,6 +506,21 @@ AVClient.Initialize(new AVClient.Configuration {
 
 华东节点暂不支持在控制台自助绑定独立 IP，如有需求，可提交工单联系我们处理。
 
+如果你有多个独立 IP，在通过修改域名解析切换独立 IP 前，可能希望验证通过新 IP 可以成功访问服务。
+这种场景下可以使用 curl 的 `--resolve` 参数指定域名解析到特定的 IP（效果类似修改 `/etc/hosts` 文件）。
+比如，验证 API 独立 IP：
+
+```sh
+curl --resolve 'api.example.com:443:YOUR-API-IP' https://api.example.com/1.1/date
+```
+
+正常情况下会返回包含当前时间的 JSON 格式数据。
+验证云引擎独立 IP 同理：
+
+```sh
+curl --resolve 'engine.example.com:443:YOUR-ENGINE-IP' https://engine.example.com/
+```
+
 ## 域名解析
 
 绑定域名需要设置域名解析，因此这里我们简单解释下如何设置。
