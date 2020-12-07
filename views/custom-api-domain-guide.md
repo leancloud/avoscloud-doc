@@ -514,6 +514,7 @@ AVClient.Initialize(new AVClient.Configuration {
 curl --resolve 'api.example.com:443:YOUR-API-IP' https://api.example.com/1.1/date
 ```
 
+正常情况下会返回包含当前时间的 JSON 格式数据。
 验证云引擎独立 IP 同理：
 
 ```sh
