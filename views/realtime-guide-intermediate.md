@@ -86,11 +86,10 @@ imConversation.sendMessage(message, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var textMessage = new AVIMTextMessage("@Tom 早点回家")
-{
-    MentionList = new List<string>() { "Tom" }
+LCIMTextMessage textMessage = new LCIMTextMessage("@Tom 早点回家") {
+  MentionIdList = new string[] { "Tom" }
 };
-await conversation.SendMessageAsync(textMessage);
+await conversation.SendMessage(textMessage);
 ```
 ```dart
 try {
@@ -149,8 +148,7 @@ imConversation.sendMessage(message, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var textMessage = new AVIMTextMessage("@all")
-{
+LCIMTextMessage textMessage = new LCIMTextMessage("@all") {
     MentionAll = true
 };
 await conv.SendMessageAsync(textMessage);
@@ -208,13 +206,9 @@ public void onMessage(AVIMAudioMessage msg, AVIMConversation conv, AVIMClient cl
 }
 ```
 ```cs
-private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
-{
-    if (e.Message is AVIMImageMessage imageMessage)
-    {
-        var mentionedList = e.Message.MentionList;
-    }
-}
+jerry.onMessage = (conv, msg) => {
+  List<string> mentionList = msg.MentionIdList;
+};
 ```
 ```dart
 jerry.onMessage = ({
@@ -273,15 +267,9 @@ public void onMessage(AVIMAudioMessage msg, AVIMConversation conv, AVIMClient cl
 }
 ```
 ```cs
-private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
-{
-    if (e.Message is AVIMImageMessage imageMessage)
-    {
-         var mentionedAll = e.Message.MentionAll;
-         // 判断当前用户是否被 @，.NET SDK 还需要自己计算
-         var mentioned = e.Message.MentionAll || e.Message.MentionList.Contains("Tom");
-    }
-}
+client.OnMessage = (conv, msg) => {
+  bool mentioned = msg.MentionAll || msg.MentionList.Contains("Tom");
+};
 ```
 ```dart
 //暂不支持
@@ -341,7 +329,7 @@ imConversation.updateMessage(oldMessage, textMessage, new AVIMMessageUpdatedCall
 });
 ```
 ```cs
-var newMessage = new AVIMTextMessage("修改后的消息内容");
+LCIMTextMessage newMessage = new LCIMTextMessage("修改后的消息内容");
 await conversation.UpdateAsync(oldMessage, newMessage);
 ```
 ```dart
@@ -406,9 +394,10 @@ void onMessageUpdated(AVIMClient client, AVIMConversation conversation, AVIMMess
 }
 ```
 ```cs
-tom.OnMessageUpdated += (sender, e) => {
-  var message = (AVIMTextMessage) e.Message; // e.Messages 是一个集合，SDK 可能会合并多次消息修改统一分发
-  Debug.Log(string.Format("内容 {0}, 消息 ID {1}", message.TextContent, message.Id));
+tom.OnMessageUpdated = (conv, msg) => {
+  if (msg is LCIMTextMessage textMessage) {
+    Debug.Log(string.Format("内容 {0}, 消息 ID {1}", textMessage.Text, textMessage.Id));
+  }
 };
 ```
 ```dart
@@ -476,7 +465,7 @@ conversation.recallMessage(message, new AVIMMessageRecalledCallback() {
 });
 ```
 ```cs
-await conversation.RecallAsync(message);
+await conversation.RecallMessage(message);
 ```
 ```dart
 try {
@@ -536,11 +525,9 @@ void onMessageRecalled(AVIMClient client, AVIMConversation conversation, AVIMMes
 }
 ```
 ```cs
-tom.OnMessageRecalled += Tom_OnMessageRecalled;
-private void Tom_OnMessageRecalled(object sender, AVIMMessagePatchEventArgs e)
-{
-    // e.Messages 为被修改的消息，它是一个集合，SDK 可能会合并多次的消息撤回统一分发
-}
+tom.OnMessageRecalled = (conv, recalledMsg) => {
+
+};
 ```
 ```dart
 tom.onMessageRecalled = ({
@@ -602,8 +589,7 @@ public func send(message: IMMessage, options: MessageSendOptions = .default, pri
 public void sendMessage(AVIMMessage message, final AVIMConversationCallback callback)
 ```
 ```cs
-public static Task<T> SendAsync<T>(this AVIMConversation conversation, T message)
-            where T : IAVIMMessage
+public async Task<LCIMMessage> Send(LCIMMessage message, LCIMMessageSendOptions options = null);
 ```
 ```dart
 Future<Message> send({
@@ -674,12 +660,11 @@ public void sendMessage(final AVIMMessage message, final AVIMMessageOption messa
 ```
 ```cs
 /// <summary>
-/// 发送消息
+/// Sends a message in this conversation.
 /// </summary>
-/// <param name="avMessage">消息体</param>
-/// <param name="options">消息的发送选项，包含了一些特殊的标记<see cref="AVIMSendOptions"/></param>
+/// <param name="message">The message to send.</param>
 /// <returns></returns>
-public Task<IAVIMMessage> SendMessageAsync(IAVIMMessage avMessage, AVIMSendOptions options);
+public async Task<LCIMMessage> Send(LCIMMessage message, LCIMMessageSendOptions options = null);
 ```
 ```dart
 Future<Message> send({
@@ -743,12 +728,11 @@ imConversation.sendMessage(message, option, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var textMessage = new AVIMTextMessage("Tom 正在输入…")
-{
-    MentionAll = true
+LCIMTextMessage textMessage = new LCIMTextMessage("Tom 正在输入…");
+LCIMMessageSendOptions option = new LCIMMessageSendOptions() { 
+  Transient = true 
 };
-var option = new AVIMSendOptions(){Transient = true};
-await conv.SendAsync(textMessage, option);
+await conversation.Send(textMessage, option);
 ```
 ```dart
 try {
@@ -809,9 +793,11 @@ imConversation.sendMessage(message, messageOption, new AVIMConversationCallback(
 });
 ```
 ```cs
-var textMessage = new AVIMTextMessage("一条非常重要的消息。");
-var option = new AVIMSendOptions(){Receipt = true};
-await conv.SendAsync(textMessage, option);
+LCIMTextMessage textMessage = new LCIMTextMessage("一条非常重要的消息。");
+LCIMMessageSendOptions option = new LCIMMessageSendOptions {
+  Receipt = true
+};
+await conversation.Send(textMessage, option);
 ```
 ```dart
 try {
@@ -876,19 +862,18 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
 AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
 ```
 ```cs
-// Tom 用自己的名字作为 clientId 建立了一个 AVIMClient
-AVIMClient client = new AVIMClient("Tom");
-
+// Tom 用自己的名字作为 clientId 建立了一个 LCIMClient
+LCIMClient client = new LCIMClient("Tom");
 // Tom 登录到系统
-await client.ConnectAsync();
+await client.Open();
 
 // 设置送达回执
-conversaion.OnMessageDeliverd += (s, e) =>
-{
-// 在这里可以书写消息送达之后的业务逻辑代码
+client.OnMessageDelivered = (conv, msgId) => {
+  // 在这里可以书写消息送达之后的业务逻辑代码
 };
 // 发送消息
-await conversaion.SendTextMessageAsync("夜访蛋糕店，约吗？");
+LCIMTextMessage textMessage = new LCIMTextMessage("夜访蛋糕店，约吗？");
+await conversaion.Send(textMessage);
 ```
 ```dart
 tom.onMessageDelivered = ({
@@ -942,7 +927,7 @@ public func read(message: IMMessage? = nil)
 public void read();
 ```
 ```cs
-// 暂不支持
+await conversation.Read();
 ```
 ```dart
 await conversation.read();
@@ -1007,7 +992,11 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     });
     ```
     ```cs
-    // 暂不支持
+    LCIMTextMessage textMessage = new LCIMTextMessage("一条非常重要的消息。");
+    LCIMMessageSendOptions options = new LCIMMessageSendOptions {
+      Receipt = true
+    };
+    await conversation.Send(textMessage);
     ```
     ```dart
     try {
@@ -1036,7 +1025,7 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     conversation.read();
     ```
     ```cs
-    // 暂不支持
+    await conversation.Read();
     ```
     ```dart
     await conversation.read();
@@ -1170,15 +1159,11 @@ conversation.sendMessage(message, option, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var message = new AVIMTextMessage()
-{
-    TextContent = "我是一条遗愿消息，当发送者意外下线的时候，我会被下发给对话里面的其他成员。"
-};
-var sendOptions = new AVIMSendOptions()
-{
+LCIMTextMessage message = new LCIMTextMessage("我是一条遗愿消息，当发送者意外下线的时候，我会被下发给对话里面的其他成员。");
+LCIMMessageSendOptions options = new LCIMMessageSendOptions {
     Will = true
 };
-await conversation.SendAsync(message, sendOptions);
+await conversation.Send(message, options);
 ```
 ```dart
 try {
@@ -1364,15 +1349,9 @@ LeanCloud 本就提供完善的消息推送服务，现在将推送与即时通�
   });
   ```
   ```cs
-  var message = new AVIMTextMessage()
-  {
-      TextContent = "Jerry，今晚有比赛，我约了 Kate，咱们仨一起去酒吧看比赛啊？！"
-  };
-
-  AVIMSendOptions sendOptions = new AVIMSendOptions()
-  {
-      PushData = new Dictionary<string, object>()
-      {
+  LCIMTextMessage message = new LCIMTextMessage("Jerry，今晚有比赛，我约了 Kate，咱们仨一起去酒吧看比赛啊？！");
+  LCIMMessageSendOptions sendOptions = new LCIMMessageSendOptions {
+      PushData = new Dictionary<string, object> {
           { "alert", "您有一条未读的消息"},
           { "category", "消息"},
           { "badge", 1},
@@ -1546,7 +1525,11 @@ onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
 }
 ```
 ```cs
-// 暂不支持
+tom.OnUnreadMessagesCountUpdated = (convs) => {
+  foreach (LCIMConversation conv in convs) {
+    // conv.Unread 即该 conversation 的未读消息数量
+  }
+};
 ```
 ```dart
 tom.onUnreadMessageCountUpdated = ({
@@ -1626,7 +1609,7 @@ currentClient.open(new AVIMClientCallback() {
 });
 ```
 ```cs
-AVIMClient tom = await realtime.CreateClientAsync("Tom", tag: "Mobile", deviceId: "your-device-id");
+LCIMClient client = new LCIMClient(clientId, "Mobile", "your-device-id");
 ```
 ```dart
 try {
@@ -1690,10 +1673,9 @@ public class AVImClientManager extends AVIMClientEventHandler {
 AVIMClient.setClientEventHandler(new AVImClientManager());
 ```
 ```cs
-tom.OnSessionClosed += Tom_OnSessionClosed;
-private void Tom_OnSessionClosed(object sender, AVIMSessionClosedEventArgs e)
-{
-}
+tom.OnClose = (code, detail) => {
+
+};
 ```
 ```dart
 tom.onClosed = ({
@@ -1812,7 +1794,7 @@ attr.put("city", "北京");
 messageWithCity.setAttrs(attr);
 ```
 ```cs
-var messageWithCity = new AVIMTextMessage("天气太冷了");
+LCIMTextMessage messageWithCity = new LCIMTextMessage("天气太冷了");
 messageWithCity["city"] = "北京";
 ```
 ```dart
@@ -1873,9 +1855,9 @@ message.attributes = {'city': '北京'};
 
 {{ docs.langSpecStart('cs') }}
 
-继承于 `AVIMTypedMessage`，开发者也可以扩展自己的富媒体消息。其要求和步骤是：
+继承于 `LCIMTypedMessage`，开发者也可以扩展自己的富媒体消息。其要求和步骤是：
 
-* 首先定义一个自定义的子类继承自 `AVIMTypedMessage`。
+* 首先定义一个自定义的子类继承自 `LCIMTypedMessage`。
 * 然后在初始化的时候注册这个子类。
 
 {{ docs.langSpecEnd('cs') }}
@@ -1979,20 +1961,22 @@ public class CustomMessage extends AVIMTypedMessage {
 AVIMMessageManager.registerAVIMMessageType(CustomMessage.class); 
 ```
 ```cs
-// 定义自定义消息类名
-[AVIMMessageClassName("InputtingMessage")]
-// 标记消息类型，仅允许使用正整数，LeanCloud 保留负数内部使用
-[AVIMTypedMessageTypeIntAttribute(2)]
-public class InputtingMessage : AVIMTypedMessage
-{
-    public InputtingMessage() { }
-    // 我们在发送消息时可以附带一个 Emoji 表情，这里用 Ecode 来表示表情编码
-    [AVIMMessageFieldName("Ecode")]
-    public string Ecode { get; set; }
+class EmojiMessage : LCIMTypedMessage {
+  public const int EmojiMessageType = 1;
+
+  public override int MessageType => EmojiMessageType;
+
+  public string Ecode {
+    get {
+      return data["ecode"] as string;
+    } set {
+      data["ecode"] = value;
+    }
+  }
 }
 
 // 注册子类
-realtime.RegisterMessageType<InputtingMessage>();
+LCIMTypedMessage.Register(EmojiMessage.EmojiMessageType, () => new EmojiMessage());
 ```
 ```dart
 // 自定义消息类型 CustomMessage

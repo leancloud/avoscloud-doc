@@ -310,73 +310,95 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
 AVIMOptions.getGlobalOptions().setSignatureFactory(new KeepAliveSignatureFactory());
 ```
 ```cs
-// 基于云引擎完成签名的 ISignatureFactory 接口实现
-public class LeanEngineSignatureFactory : ISignatureFactory
-{
-    public Task<AVIMSignature> CreateConnectSignature(string clientId)
-    {
-        var data = new Dictionary<string, object>();
-        data.Add("client_id", clientId);
-        return AVCloud.CallFunctionAsync<IDictionary<string,object>>("sign2", data).OnSuccess(_ => 
-        {
-            var jsonData = _.Result;
-            var s = jsonData["signature"].ToString();
-            var n = jsonData["nonce"].ToString();
-            var t = long.Parse(jsonData["timestamp"].ToString());
-            var signature = new AVIMSignature(s,t,n);
-            return signature;
+public class LocalSignatureFactory : ILCIMSignatureFactory {
+    const string MasterKey = "pyvbNSh5jXsuFQ3C8EgnIdhw";
+
+    public Task<LCIMSignature> CreateConnectSignature(string clientId) {
+        long timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        string nonce = NewNonce();
+        string signature = GenerateSignature(LCApplication.AppId, clientId, string.Empty, timestamp.ToString(), nonce);
+        return Task.FromResult(new LCIMSignature {
+            Signature = signature,
+            Timestamp = timestamp,
+            Nonce = nonce
         });
     }
 
-    public Task<AVIMSignature> CreateConversationSignature(string conversationId, string clientId, IEnumerable<string> targetIds, ConversationSignatureAction action)
-    {
-        var actionList = new string[] { "invite", "kick" };
-        var data = new Dictionary<string, object>();
-        data.Add("client_id", clientId);
-        data.Add("conv_id", conversationId);
-        data.Add("members", targetIds.ToList());
-        data.Add("action", actionList[(int)action]);
-        return AVCloud.CallFunctionAsync<IDictionary<string, object>>("sign2", data).OnSuccess(_ =>
-        {
-            var jsonData = _.Result;
-            var s = jsonData["signature"].ToString();
-            var n = jsonData["nonce"].ToString();
-            var t = long.Parse(jsonData["timestamp"].ToString());
-            var signature = new AVIMSignature(s, t, n);
-            return signature;
+    public Task<LCIMSignature> CreateStartConversationSignature(string clientId, IEnumerable<string> memberIds) {
+        string sortedMemberIds = string.Empty;
+        if (memberIds != null) {
+            List<string> sortedMemberList = memberIds.ToList();
+            sortedMemberList.Sort();
+            sortedMemberIds = string.Join(":", sortedMemberList);
+        }
+        long timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        string nonce = NewNonce();
+        string signature = GenerateSignature(LCApplication.AppId, clientId, sortedMemberIds, timestamp.ToString(), nonce);
+        return Task.FromResult(new LCIMSignature {
+            Signature = signature,
+            Timestamp = timestamp,
+            Nonce = nonce
         });
     }
 
-    public Task<AVIMSignature> CreateQueryHistorySignature(string clientId, string conversationId)
-    {
-        return Task.FromResult<AVIMSignature>(null);
+    public Task<LCIMSignature> CreateConversationSignature(string conversationId, string clientId, IEnumerable<string> memberIds, string action) {
+        string sortedMemberIds = string.Empty;
+        if (memberIds != null) {
+            List<string> sortedMemberList = memberIds.ToList();
+            sortedMemberList.Sort();
+            sortedMemberIds = string.Join(":", sortedMemberList);
+        }
+        long timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        string nonce = NewNonce();
+        string signature = GenerateSignature(LCApplication.AppId, clientId, conversationId, sortedMemberIds, timestamp.ToString(), nonce, action);
+        return Task.FromResult(new LCIMSignature {
+            Signature = signature,
+            Timestamp = timestamp,
+            Nonce = nonce
+        });
     }
 
-    public Task<AVIMSignature> CreateStartConversationSignature(string clientId, IEnumerable<string> targetIds)
-    {
-        var data = new Dictionary<string, object>();
-        data.Add("client_id", clientId);
-        data.Add("members", targetIds.ToList());
-        return AVCloud.CallFunctionAsync<IDictionary<string, object>>("sign2", data).OnSuccess(_ =>
-        {
-            var jsonData = _.Result;
-            var s = jsonData["signature"].ToString();
-            var n = jsonData["nonce"].ToString();
-            var t = long.Parse(jsonData["timestamp"].ToString());
-            var signature = new AVIMSignature(s, t, n);
-            return signature;
+    public Task<LCIMSignature> CreateBlacklistSignature(string conversationId, string clientId, IEnumerable<string> memberIds, string action) {
+        string sortedMemberIds = string.Empty;
+        if (memberIds != null) {
+            List<string> sortedMemberList = memberIds.ToList();
+            sortedMemberList.Sort();
+            sortedMemberIds = string.Join(":", sortedMemberList);
+        }
+        long timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        string nonce = NewNonce();
+        string signature = GenerateSignature(LCApplication.AppId, clientId, conversationId, sortedMemberIds, timestamp.ToString(), nonce, action);
+        return Task.FromResult(new LCIMSignature {
+            Signature = signature,
+            Timestamp = timestamp,
+            Nonce = nonce
         });
+    }
+
+    private static string SignSHA1(string key, string text) {
+        HMACSHA1 hmac = new HMACSHA1(Encoding.UTF8.GetBytes(key));
+        byte[] bytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(text));
+        string signature = BitConverter.ToString(bytes).Replace("-", string.Empty);
+        return signature;
+    }
+
+    private static string NewNonce() {
+        byte[] bytes = new byte[10];
+        using (RandomNumberGenerator generator = RandomNumberGenerator.Create()) {
+            generator.GetBytes(bytes);
+        }
+        return Convert.ToBase64String(bytes);
+    }
+
+    private static string GenerateSignature(params string[] args) {
+        string text = string.Join(":", args);
+        string signature = SignSHA1(MasterKey, text);
+        return signature;
     }
 }
 
-// 即时通讯服务初始化的时候，设置这一签名工厂的实例。
-var config = new AVRealtime.Configuration()
-{
-    ApplicationId = "",
-    ApplicationKey = "",
-    SignatureFactory = new LeanEngineSignatureFactory()
-};
-var realtime = new AVRealtime(config);
+// 设置签名工程
+LCIMClient tom = new LCIMClient("tom", signatureFactory: new LocalSignatureFactory());
 ```
 ```dart
 <!-- Todo -->
@@ -446,7 +468,9 @@ AVUser.logInInBackground("username", "password", new LogInCallback<AVUser>() {
 });
 ```
 ```cs
-// 暂不支持
+LCUser user = await LCUser.Login("username", "password");
+CIMClient client = new LCIMClient(user);
+await client.Open();
 ```
 ```dart
 // 暂不支持
@@ -518,7 +542,13 @@ public func update(role: MemberRole, ofMember memberID: String, completion: @esc
 public void updateMemberRole(final String memberId, final ConversationMemberRole role, final AVIMConversationCallback callback);
 ```
 ```cs
-// 暂不支持
+/// <summary>
+/// Updates the role of a member of this conversation.
+/// </summary>
+/// <param name="memberId">The member to update.</param>
+/// <param name="role">The new role of the member.</param>
+/// <returns></returns>
+public async Task UpdateMemberRole(string memberId, string role);
 ```
 ```dart
 // 暂不支持
@@ -575,7 +605,11 @@ public void updateMemberRole(final String memberId, final ConversationMemberRole
   public void getAllMemberInfo(int offset, int limit, final AVIMConversationMemberQueryCallback callback);
   ```
   ```cs
-  // 暂不支持
+  /// <summary>
+  /// Gets all member roles.
+  /// </summary>
+  /// <returns></returns>
+  public async Task<ReadOnlyCollection<LCIMConversationMemberInfo>> GetAllMemberInfo();
   ```
   ```dart
   // 暂不支持
@@ -619,7 +653,12 @@ public void updateMemberRole(final String memberId, final ConversationMemberRole
   public void getMemberInfo(final String memberId, final AVIMConversationMemberQueryCallback callback);
   ```
   ```cs
-  // 暂不支持
+  /// <summary>
+  /// Gets the role of a specific member.
+  /// </summary>
+  /// <param name="memberId">The member to query.</param>
+  /// <returns></returns>
+  public async Task<LCIMConversationMemberInfo> GetMemberInfo(string memberId)
   ```
   ```dart
   // 暂不支持
@@ -740,7 +779,25 @@ public void unmuteMembers(final List<String> memberIds, final AVIMOperationParti
 public void queryMutedMembers(int offset, int limit, final AVIMConversationSimpleResultCallback callback);
 ```
 ```cs
-// 暂不支持
+/// <summary>
+/// Mutes members of this conversation.
+/// </summary>
+/// <param name="clientIds">Member list.</param>
+/// <returns></returns>
+public async Task<LCIMPartiallySuccessResult> MuteMembers(IEnumerable<string> clientIds);
+/// <summary>
+/// Unmutes members of this conversation.
+/// </summary>
+/// <param name="clientIdList">Member list.</param>
+/// <returns></returns>
+public async Task<LCIMPartiallySuccessResult> UnmuteMembers(IEnumerable<string> clientIds);
+/// <summary>
+/// Queries muted members.
+/// </summary>
+/// <param name="limit">Limits the number of returned results.</param>
+/// <param name="next">Can be used for pagination with the limit parameter.</param>
+/// <returns></returns>
+public async Task<LCIMPageResult> QueryMutedMembers(int limit = 10, string next = null);
 ```
 ```dart
 // 暂不支持
@@ -876,7 +933,25 @@ public void unblockMembers(final List<String> memberIds, final AVIMOperationPart
 public void queryBlockedMembers(int offset, int limit, final AVIMConversationSimpleResultCallback callback);
 ```
 ```cs
-// 暂不支持
+/// <summary>
+/// Adds members to the blocklist of this conversation.
+/// </summary>
+/// <param name="clientIds">Member list.</param>
+/// <returns></returns>
+public async Task<LCIMPartiallySuccessResult> BlockMembers(IEnumerable<string> clientIds);
+/// <summary>
+/// Removes members from the blocklist of this conversation. 
+/// </summary>
+/// <param name="clientIds">Member list.</param>
+/// <returns></returns>
+public async Task<LCIMPartiallySuccessResult> UnblockMembers(IEnumerable<string> clientIds);
+/// <summary>
+/// Queries blocked members.
+/// </summary>
+/// <param name="limit">Limits the number of returned results.</param>
+/// <param name="next">Can be used for pagination with the limit parameter.</param>
+/// <returns></returns>
+public async Task<LCIMPageResult> QueryBlockedMembers(int limit = 10, string next = null);
 ```
 ```dart
 // 暂不支持
@@ -944,7 +1019,7 @@ tom.createChatRoom("聊天室", null,
 ```
 ```cs
 // 最直接的方式，传入 name 即可
-tom.CreateChatRoomAsync("聊天室");
+tom.CreateChatRoom("聊天室");
 ```
 ```dart
 ChatRoom chatRoom = await jerry.createChatRoom(name: '聊天室');
@@ -1003,7 +1078,8 @@ query.findInBackground(new AVIMConversationQueryCallback() {
 });
 ```
 ```cs
-var query = tom.GetChatRoomQuery();
+LCIMConversationQuery query = new LCIMConversationQuery(tome);
+query.WhereEqualTo("tr", true);
 ```
 ```dart
 try {
@@ -1097,15 +1173,7 @@ private void TomQueryWithLimit() {
 }
 ```
 ```cs
-// AVIMConversation.CountMembersAsync 这个方法返回的是实时数据
-public async void CountMembers_SampleCode()
-{
-    AVIMClient client = new AVIMClient("Tom");
-    await client.ConnectAsync(); // Tom 登录客户端
-
-    AVIMConversation conversation = (await client.GetQuery().FindAsync()).FirstOrDefault(); // 获取对话列表，找到第一个对话
-    int membersCount = await conversation.CountMembersAsync();
-}
+int membersCount = await conversation.GetMembersCount();
 ```
 ```dart
 int count = await chatRoom.countMembers();
@@ -1210,7 +1278,11 @@ AVIMClient tom = AVIMClient.getInstance("Tom");
     });
 ```
 ```cs
-// 暂不支持
+LCIMTextMessage message = new LCIMTextMessage("现在比分是 0:0，下半场中国队肯定要做出人员调整");
+LCIMMessageSendOptions options = new LCIMMessageSendOptions {
+  Priority = LCIMMessagePriority.High
+};
+await chatRoom.Send(message, options);
 ```
 ```dart
 try {
@@ -1292,7 +1364,7 @@ tom.open(new AVIMClientCallback(){
 });
 ```
 ```cs
-// 暂不支持
+await chatRoom.Mute();
 ```
 ```dart
 await chatRoom.mute();
@@ -1388,7 +1460,7 @@ tom.createTemporaryConversation(Arrays.asList(members), 3600, new AVIMConversati
 });
 ```
 ```cs
-var temporaryConversation = await tom.CreateTemporaryConversationAsync();
+LCIMTemporaryConversation temporaryConversation = await tom.CreateTemporaryConversation(new string[] { "Jerry", "William" });
 ```
 ```dart
 TemporaryConversation temporaryConversation;
@@ -1485,7 +1557,8 @@ client.open(new AVIMClientCallback() {
 });
 ```
 ```cs
-var temporaryConversation = await tom.CreateTemporaryConversationAsync();
+LCIMTemporaryConversation temporaryConversation = await tom.CreateTemporaryConversation(new string[] { "Jerry", "William" },
+  ttl: 3600);
 ```
 ```dart
 TemporaryConversation temporaryConversation;
