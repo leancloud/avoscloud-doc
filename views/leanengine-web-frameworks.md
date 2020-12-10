@@ -143,7 +143,9 @@ fastify.use(AV.express())
 ## 示例
 
 - [micro-getting-started] -  在云引擎上部署 [Micro] 框架的模板项目，支持网站托管功能。
+- [eat-eggs-get-lean] - 在云引擎上部署 [egg.js] 框架的模板项目，支持网站托管功能。
 - [fastify-getting-started] - 在云引擎上部署 [Fastify] 框架的模板项目，支持网站托管和云函数功能。
 
 [micro-getting-started]: https://github.com/weakish/micro-getting-started
+[eat-eggs-get-lean]: https://github.com/weakish/eat-eggs-get-lean
 [fastify-getting-started]: https://github.com/weakish/fastify-getting-started
