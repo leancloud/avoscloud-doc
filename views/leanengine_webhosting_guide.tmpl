@@ -1036,33 +1036,29 @@ public class ProfileServlet extends HttpServlet {
 {% endif %}
 
 {% if platformName === "Node.js" %}
-推荐使用 [`request`](https://www.npmjs.com/package/request) 这个第三方模块来完成 HTTP 请求。
+你可以使用 [superagent](https://www.npmjs.com/package/superagent) 等第三方模块来完成 HTTP 请求。
 
-安装 `request`：
+安装 `superagent`：
 
 ```sh
-npm install request --save
+npm install superagent --save
 ```
 
 代码示例：
 
 ```js
-var request = require('request');
+const superagent = require('superagent');
 
-request({
-  method: 'POST',
-  url: 'http://www.example.com/create_post',
-  json: {
-    title: 'Some Amazing Title',
-    body: 'Some awesome content.'
-  }
-}, function (err, res, body) {
-  if (err) {
-    console.error('Request failed with response code ' + res.statusCode);
-  } else {
-    console.log(body);
-  }
-});
+// 假定以下网址会返回包含当前日期时间的 JSON 数据
+//
+//    {"__type":"Date","iso":"2020-12-11T07:58:23.087Z"}
+
+const url = "https://api.example.com/1.1/date";
+
+superagent.get(url)
+    .then((resp) => console.log(resp.body.iso))
+    .catch(console.error);
+// 打印日志：2020-12-11T07:58:23.087Z
 ```
 {% endif %}
 {% if platformName === "Python" %}
