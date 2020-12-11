@@ -1591,8 +1591,6 @@ curl -X GET \
 ### 地理查询
 
 之前我们简要介绍过 GeoPoint。
-目前 GeoPoint 有一个限制：每一个 AVObject 类只能包含一个 AVGeoPoint 对象的键值。
-另外，Points 不应该等于或者超出它的界. 纬度不应该是 -90.0 或者 90.0，经度不应该是 -180.0 或者 180.0。试图在 GeoPoint 上使用超出范围内的经度和纬度会导致问题。
 
 假如在发布微博的时候，我们也支持用户加上当时的位置信息（新增一个 `location` 字段），如果想看看指定的地点附近发生的事情，可以通过 GeoPoint 数据类型加上在查询中使用 `$nearSphere` 做到。获取离当前用户最近的 10 条微博应该看起来像下面这个样子:
 
@@ -1663,6 +1661,8 @@ curl -X GET \
       }' \
   https://{{host}}/1.1/classes/Post
 ```
+
+{{ data.geopoint_requirements() }}
 
 ### 文件查询
 
