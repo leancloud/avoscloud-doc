@@ -1063,8 +1063,9 @@ superagent.get(url)
 {% endif %}
 {% if platformName === "Python" %}
 你可以使用任意 Python 的模块来发送 HTTP 请求，比如内置的 `urllib`。不过我们推荐 [`requests`](http://www.python-requests.org/) 这个第三方模块。
-
-在 `requirements.txt` 中新增一行 `requests>=2.11.0`，然后在此目录重新执行 `pip install -r requirements.txt` 就可以安装这个模块。
+LeanCloud Python SDK 就使用 requests 调用 LeanCloud 的 REST API 接口。
+因此，如果你的项目已经依赖了 LeanCloud Python SDK，那么你无需在 `requirements.txt` 中另外指定 requests 这个依赖。
+否则，你可以在 `requirements.txt` 中新增一行 `requests`，然后在此目录重新执行 `pip install -r requirements.txt` 安装 requests 模块。
 
 ```python
 import requests
