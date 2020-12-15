@@ -39,9 +39,9 @@
 
 ```objc
 AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
-options.templateName = @"Register_Notice"; // 控制台预设的模板名称
-options.signatureName = @"LeanCloud";      // 控制台预设的短信签名
-// 往 18200008888 这个手机号码发送短信，使用预设的模板和签名
+options.templateName = @"Register_Notice"; // 控制台配置好的模板名称
+options.signatureName = @"LeanCloud";      // 控制台配置好的短信签名
+// 往 18200008888 这个手机号码发送短信，使用预先配置的模板和签名
 [AVSMS requestShortMessageForPhoneNumber:@"18200008888"
                                 options:options
                                 callback:^(BOOL succeeded, NSError * _Nullable error) {
@@ -55,8 +55,8 @@ options.signatureName = @"LeanCloud";      // 控制台预设的短信签名
 ```swift
 _ = LCSMSClient.requestShortMessage(
     mobilePhoneNumber: "18200008888",
-    templateName: "Register_Notice", // 控制台预设的模板名称
-    signatureName: "LeanCloud")      // 控制台预设的短信签名
+    templateName: "Register_Notice", // 控制台配置好的模板名称
+    signatureName: "LeanCloud")      // 控制台配置好的短信签名
 { (result) in
     switch result {
     case .success:
@@ -68,9 +68,9 @@ _ = LCSMSClient.requestShortMessage(
 ```
 ```java
 AVSMSOption option = new AVSMSOption();
-option.setTemplateName("Register_Notice"); // 控制台预设的模板名称
-option.setSignatureName("LeanCloud");      // 控制台预设的短信签名
-// 往 18200008888 这个手机号码发送短信，使用预设的模板和签名
+option.setTemplateName("Register_Notice"); // 控制台配置好的模板名称
+option.setSignatureName("LeanCloud");      // 控制台配置好的短信签名
+// 往 18200008888 这个手机号码发送短信，使用预先配置的模板和签名
 AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
     @Override
     public void onSubscribe(Disposable disposable) {
@@ -89,11 +89,11 @@ AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<A
 });
 ```
 ```javascript
-// 往 18200008888 这个手机号码发送短信，使用预设的模板和签名
+// 往 18200008888 这个手机号码发送短信，使用预先配置的模板和签名
 AV.Cloud.requestSmsCode({
   mobilePhoneNumber: '18200008888', // 目标手机号
-  template: 'Register_Notice',      // 控制台预设的模板名称
-  sign:'LeanCloud'                  // 控制台预设的短信签名
+  template: 'Register_Notice',      // 控制台配置好的模板名称
+  sign:'LeanCloud'                  // 控制台配置好的短信签名
 }).then(function(){
   // 调用成功
 }, function(err){
@@ -101,7 +101,7 @@ AV.Cloud.requestSmsCode({
 });
 ```
 ```cs
-// 往 18200008888 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
+// 往 18200008888 这个手机号码发送短信，使用预先配置的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
 AVCloud.RequestSMSCodeAsync("18200008888","Register_Notice",null,"LeanCloud").ContinueWith(t =>
 {
     var result = t.Result;
@@ -109,7 +109,7 @@ AVCloud.RequestSMSCodeAsync("18200008888","Register_Notice",null,"LeanCloud").Co
 });
 ```
 ```php
-// 往 18200008888 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
+// 往 18200008888 这个手机号码发送短信，使用预先配置的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
 $options = [
   "template" => "Register_Notice",
   "name" => "LeanCloud",
@@ -122,10 +122,10 @@ cloud.request_sms_code("18200008888", template="Register_Notice", sign="LeanClou
 ```
 ```dart
 try {
-// 往 18200008888 这个手机号码发送短信，使用预设的模板和签名
+// 往 18200008888 这个手机号码发送短信，使用预先配置的模板和签名
   await LCSMSClient.requestSMSCode('18200008888',
-      template: 'Register_Notice', // 控制台预设的模板名称
-      signature: 'LeanCloud'); // 控制台预设的短信签名
+      template: 'Register_Notice', // 控制台配置好的模板名称
+      signature: 'LeanCloud'); // 控制台配置好的短信签名
 } on LCException catch (e) {
   print(e.message);
 }

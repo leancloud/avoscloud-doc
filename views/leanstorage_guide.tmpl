@@ -6433,8 +6433,8 @@ await user.signUp();
 {% if platform_name === "Objective-C" %}
 ```objc
 AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
-options.templateName = @"template_name";// 控制台预设的模板名称
-options.signatureName = @"sign_name";     // 控制台预设的短信签名
+options.templateName = @"template_name";// 控制台配置好的模板名称
+options.signatureName = @"sign_name";     // 控制台配置好的短信签名
 [AVSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx" options:options callback:^(BOOL succeeded, NSError * _Nullable error) {
     if (succeeded) {
         /* 请求成功 */
