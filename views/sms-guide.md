@@ -101,7 +101,7 @@ AV.Cloud.requestSmsCode({
 });
 ```
 ```cs
-// 往 18200008888 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
+// 往 18200008888 这个手机号码发送短信，使用预先配置的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
 AVCloud.RequestSMSCodeAsync("18200008888","Register_Notice",null,"LeanCloud").ContinueWith(t =>
 {
     var result = t.Result;
@@ -109,7 +109,7 @@ AVCloud.RequestSMSCodeAsync("18200008888","Register_Notice",null,"LeanCloud").Co
 });
 ```
 ```php
-// 往 18200008888 这个手机号码发送短信，使用预设的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
+// 往 18200008888 这个手机号码发送短信，使用预先配置的模板（「Register_Notice」参数）和签名（「LeanCloud」参数）
 $options = [
   "template" => "Register_Notice",
   "name" => "LeanCloud",
