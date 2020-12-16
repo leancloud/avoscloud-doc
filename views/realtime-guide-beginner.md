@@ -4360,7 +4360,7 @@ avimClient.messageQueryCacheEnabled = false;
 ```
 ```java
 // 需要在调用 AVIMClient.open(callback) 函数之前设置，关闭历史消息缓存开关。
-AVIMClient.setMessageQueryCacheEnable(false);
+AVIMOptions.getGlobalOptions().setMessageQueryCacheEnabled(false);
 ```
 ```cs
 // 暂不支持
