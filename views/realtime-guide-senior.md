@@ -658,7 +658,7 @@ public async Task UpdateMemberRole(string memberId, string role);
   /// </summary>
   /// <param name="memberId">The member to query.</param>
   /// <returns></returns>
-  public async Task<LCIMConversationMemberInfo> GetMemberInfo(string memberId)
+  public async Task<LCIMConversationMemberInfo> GetMemberInfo(string memberId);
   ```
   ```dart
   // 暂不支持
@@ -1280,7 +1280,7 @@ AVIMClient tom = AVIMClient.getInstance("Tom");
 ```cs
 LCIMTextMessage message = new LCIMTextMessage("现在比分是 0:0，下半场中国队肯定要做出人员调整");
 LCIMMessageSendOptions options = new LCIMMessageSendOptions {
-  Priority = LCIMMessagePriority.High
+    Priority = LCIMMessagePriority.High
 };
 await chatRoom.Send(message, options);
 ```
@@ -1558,7 +1558,7 @@ client.open(new AVIMClientCallback() {
 ```
 ```cs
 LCIMTemporaryConversation temporaryConversation = await tom.CreateTemporaryConversation(new string[] { "Jerry", "William" },
-  ttl: 3600);
+    ttl: 3600);
 ```
 ```dart
 TemporaryConversation temporaryConversation;

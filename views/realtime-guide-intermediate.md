@@ -87,9 +87,9 @@ imConversation.sendMessage(message, new AVIMConversationCallback() {
 ```
 ```cs
 LCIMTextMessage textMessage = new LCIMTextMessage("@Tom 早点回家") {
-  MentionIdList = new string[] { "Tom" }
+    MentionIdList = new string[] { "Tom" }
 };
-await conversation.SendMessage(textMessage);
+await conversation.Send(textMessage);
 ```
 ```dart
 try {
@@ -151,7 +151,7 @@ imConversation.sendMessage(message, new AVIMConversationCallback() {
 LCIMTextMessage textMessage = new LCIMTextMessage("@all") {
     MentionAll = true
 };
-await conv.SendMessageAsync(textMessage);
+await conv.Send(textMessage);
 ```
 ```dart
 try {
@@ -207,7 +207,7 @@ public void onMessage(AVIMAudioMessage msg, AVIMConversation conv, AVIMClient cl
 ```
 ```cs
 jerry.onMessage = (conv, msg) => {
-  List<string> mentionList = msg.MentionIdList;
+    List<string> mentionIds = msg.MentionIdList;
 };
 ```
 ```dart
@@ -268,7 +268,7 @@ public void onMessage(AVIMAudioMessage msg, AVIMConversation conv, AVIMClient cl
 ```
 ```cs
 client.OnMessage = (conv, msg) => {
-  bool mentioned = msg.MentionAll || msg.MentionList.Contains("Tom");
+    bool mentioned = msg.MentionAll || msg.MentionList.Contains("Tom");
 };
 ```
 ```dart
@@ -330,7 +330,7 @@ imConversation.updateMessage(oldMessage, textMessage, new AVIMMessageUpdatedCall
 ```
 ```cs
 LCIMTextMessage newMessage = new LCIMTextMessage("修改后的消息内容");
-await conversation.UpdateAsync(oldMessage, newMessage);
+await conversation.UpdateMessage(oldMessage, newMessage);
 ```
 ```dart
 try {
@@ -395,9 +395,9 @@ void onMessageUpdated(AVIMClient client, AVIMConversation conversation, AVIMMess
 ```
 ```cs
 tom.OnMessageUpdated = (conv, msg) => {
-  if (msg is LCIMTextMessage textMessage) {
-    Debug.Log(string.Format("内容 {0}, 消息 ID {1}", textMessage.Text, textMessage.Id));
-  }
+    if (msg is LCIMTextMessage textMessage) {
+        WriteLine($"内容 {textMessage.Text}, 消息 ID {textMessage.Id}");
+    }
 };
 ```
 ```dart
@@ -526,7 +526,7 @@ void onMessageRecalled(AVIMClient client, AVIMConversation conversation, AVIMMes
 ```
 ```cs
 tom.OnMessageRecalled = (conv, recalledMsg) => {
-
+    // recalledMsg 即为被撤回的消息
 };
 ```
 ```dart
@@ -730,7 +730,7 @@ imConversation.sendMessage(message, option, new AVIMConversationCallback() {
 ```cs
 LCIMTextMessage textMessage = new LCIMTextMessage("Tom 正在输入…");
 LCIMMessageSendOptions option = new LCIMMessageSendOptions() { 
-  Transient = true 
+    Transient = true 
 };
 await conversation.Send(textMessage, option);
 ```
@@ -795,7 +795,7 @@ imConversation.sendMessage(message, messageOption, new AVIMConversationCallback(
 ```cs
 LCIMTextMessage textMessage = new LCIMTextMessage("一条非常重要的消息。");
 LCIMMessageSendOptions option = new LCIMMessageSendOptions {
-  Receipt = true
+    Receipt = true
 };
 await conversation.Send(textMessage, option);
 ```
@@ -927,7 +927,11 @@ public func read(message: IMMessage? = nil)
 public void read();
 ```
 ```cs
-await conversation.Read();
+/// <summary>
+/// Mark the last message of this conversation as read.
+/// </summary>
+/// <returns></returns>
+public Task Read();
 ```
 ```dart
 await conversation.read();
@@ -994,7 +998,7 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     ```cs
     LCIMTextMessage textMessage = new LCIMTextMessage("一条非常重要的消息。");
     LCIMMessageSendOptions options = new LCIMMessageSendOptions {
-      Receipt = true
+        Receipt = true
     };
     await conversation.Send(textMessage);
     ```
@@ -1080,7 +1084,9 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
     ```
     ```cs
-    // 暂不支持
+    tom.OnLastReadAtUpdated = (conv) => {
+        // Jerry 阅读了你的消息。可以通过调用 conversation.LastReadAt 来获得对方已经读取到的时间
+    };
     ```
     ```dart
     jerry.onLastReadAtUpdated = ({
@@ -1474,7 +1480,7 @@ do {
 AVIMOptions.getGlobalOptions().setUnreadNotificationEnabled(true);
 ```
 ```cs
-// 暂不支持
+// 默认支持，无需额外设置
 ```
 ```dart
 // Flutter 配置方式同 Swift SDK 与 Java SDK 
@@ -1526,9 +1532,9 @@ onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
 ```
 ```cs
 tom.OnUnreadMessagesCountUpdated = (convs) => {
-  foreach (LCIMConversation conv in convs) {
-    // conv.Unread 即该 conversation 的未读消息数量
-  }
+    foreach (LCIMConversation conv in convs) {
+        // conv.Unread 即该 conversation 的未读消息数量
+    }
 };
 ```
 ```dart
@@ -1745,7 +1751,7 @@ currentClient.open(openOption, new AVIMClientCallback() {
 });
 ```
 ```cs
-// 暂不支持
+await tom.Open(false);
 ```
 ```dart
 try {
@@ -1962,17 +1968,17 @@ AVIMMessageManager.registerAVIMMessageType(CustomMessage.class);
 ```
 ```cs
 class EmojiMessage : LCIMTypedMessage {
-  public const int EmojiMessageType = 1;
+    public const int EmojiMessageType = 1;
 
-  public override int MessageType => EmojiMessageType;
+    public override int MessageType => EmojiMessageType;
 
-  public string Ecode {
-    get {
-      return data["ecode"] as string;
-    } set {
-      data["ecode"] = value;
+    public string Ecode {
+        get {
+            return data["ecode"] as string;
+        } set {
+            data["ecode"] = value;
+        }
     }
-  }
 }
 
 // 注册子类
