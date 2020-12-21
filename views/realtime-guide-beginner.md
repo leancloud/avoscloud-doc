@@ -78,8 +78,7 @@ if (error) {
 AVIMClient tom = AVIMClient.getInstance("Tom");
 ```
 ```cs
-var realtime = new AVRealtime('your-app-id','your-app-key');
-var tom = await realtime.CreateClientAsync('Tom');
+LCIMClient tom = new LCIMClient("Tom");
 ```
 ```dart
 // clientId 为 Tom
@@ -148,8 +147,7 @@ tom.open(new AVIMClientCallback() {
 });
 ```
 ```cs
-var realtime = new AVRealtime('your-app-id','your-app-key');
-var tom = await realtime.CreateClientAsync('Tom');
+await tom.Open();
 ```
 ```dart
 // Tom 创建了一个 client，用自己的名字作为 clientId 登录
@@ -229,7 +227,8 @@ AVUser.logIn("Tom", "cat!@#123").subscribe(new Observer<AVUser>() {
 });
 ```
 ```cs
-// 暂不支持
+var user = await LCUser.Login("USER_NAME", "PASSWORD");
+var client = new LCIMClient(user);
 ```
 ```dart
 // 暂不支持
@@ -286,8 +285,7 @@ tom.createConversation(Arrays.asList("Jerry"), "Tom & Jerry", null, false, true,
 });
 ```
 ```cs
-var tom = await realtime.CreateClientAsync('Tom');
-var conversation = await tom.CreateConversationAsync("Jerry", name:"Tom & Jerry", isUnique:true);
+var conversation = await tom.CreateConversation(new string[] { "Jerry" }, name: "Tom & Jerry", unique: true);
 ```
 ```dart
 try {
@@ -429,23 +427,25 @@ public void createConversation(final List<String> conversationMembers,
 ```
 ```cs
 /// <summary>
-/// 创建与目标成员的对话
+/// Creates a conversation
 /// </summary>
-/// <returns>返回对话实例</returns>
-/// <param name="member">目标成员</param>
-/// <param name="members">目标成员列表</param>
-/// <param name="name">对话名称</param>
-/// <param name="isSystem">是否是系统对话。注意：在客户端无法创建系统对话，所以这里设置为 true 会导致创建失败。</param>
-/// <param name="isTransient">是否为聊天室</param>
-/// <param name="isUnique">是否是唯一对话</param>
-/// <param name="options">自定义属性</param>
-public Task<AVIMConversation> CreateConversationAsync(string member = null,
-    IEnumerable<string> members = null,
-    string name = "",
-    bool isSystem = false,
-    bool isTransient = false,
-    bool isUnique = true,
-    IDictionary<string, object> options = null);
+/// <param name="members">The list of clientIds of participants in this conversation (except the creator)</param>
+/// <param name="name">The name of this conversation</param>
+/// <param name="unique">Whether this conversation is unique;
+/// if it is true and an existing conversation contains the same composition of members,
+/// the existing conversation will be reused, otherwise a new conversation will be created.</param>
+/// <param name="properties">Custom attributes of this conversation</param>
+/// <returns></returns>
+public async Task<LCIMConversation> CreateConversation(
+    IEnumerable<string> members,
+    string name = null,
+    bool unique = true,
+    Dictionary<string, object> properties = null) {
+    return await ConversationController.CreateConv(members: members,
+        name: name,
+        unique: unique,
+        properties: properties);
+}
 ```
 ```dart
 /// To create a normal [Conversation].
@@ -551,8 +551,8 @@ conversation.sendMessage(msg, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var textMessage = new AVIMTextMessage("Jerry，起床了！");
-await conversation.SendMessageAsync(textMessage);
+var textMessage = new LCIMTextMessage("Jerry，起床了！");
+await conversation.Send(textMessage);
 ```
 ```dart
 try {
@@ -612,8 +612,7 @@ jerry.open(new AVIMClientCallback(){
 });
 ```
 ```cs
-var realtime = new AVRealtime('your-app-id','your-app-key');
-var jerry = await realtime.CreateClientAsync('Jerry');
+var jerry = new LCIMClient("Jerry");
 ```
 ```dart
 Client jerry = Client(id: 'Jerry');
@@ -721,25 +720,16 @@ public static class CustomMessageHandler extends AVIMMessageHandler{
 AVIMMessageManager.registerDefaultMessageHandler(new CustomMessageHandler());
 ```
 ```cs
-// SDK 通过在 IMClient 实例上监听事件回调来响应服务端通知
-var jerry = await realtime.CreateClientAsync("Jerry");
-jerry.OnInvited += (sender, args) =>
-{
-  var invitedBy = args.InvitedBy;
-  var conversationId = args.ConversationId;
+jerry.OnInvited = (conv, initBy) => {
+    WriteLine($"{initBy} 邀请 jerry 加入 {conv.Id} 对话");
 };
-
-private void Jerry_OnMessageReceived(object sender, AVIMMessageEventArgs e)
-{
-    if (e.Message is AVIMTextMessage)
-    {
-        var textMessage = (AVIMTextMessage)e.Message;
+m2.OnMessage = (conv, msg) => {
+    if (msg is LCIMTextMessage textMessage) {
         // textMessage.ConversationId 是该条消息所属于的对话 ID
-        // textMessage.TextContent 是该文本消息的文本内容
+        // textMessage.Text 是该文本消息的文本内容
         // textMessage.FromClientId 是消息发送者的 clientId
     }
-}
-jerry.OnMessageReceived += Jerry_OnMessageReceived;
+};
 ```
 ```dart
 jerry.onMessage = ({
@@ -847,9 +837,9 @@ conv.addMembers(Arrays.asList("Mary"), new AVIMOperationPartiallySucceededCallba
 ```
 ```cs
 // 首先根据 ID 获取 Conversation 实例
-var conversation = await tom.GetConversationAsync("CONVERSATION_ID");
+var conversation = await tom.GetConversation("CONVERSATION_ID");
 // 邀请 Mary 加入对话
-await tom.InviteAsync(conversation, "Mary");
+await conversation.AddMembers(new string[] { "Mary" });
 ```
 ```dart
 List<Conversation> conversations;
@@ -935,12 +925,9 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
 AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
 ```
 ```cs
-private void OnMembersJoined(object sender, AVIMOnInvitedEventArgs e)
-{
-    // e.InvitedBy 是该项操作的发起人，e.ConversationId 是该项操作针对的对话 ID
-    Debug.Log(string.Format("{0} 邀请了 {1} 加入了 {2} 对话", e.InvitedBy,e.JoinedMembers, e.ConversationId));
+jerry.OnMembersJoined = (conv, memberList, initBy) => {
+    WriteLine($"{initBy} 邀请了 {memberList} 加入了 {conv.Id} 对话");
 }
-jerry.OnMembersJoined += OnMembersJoined;
 ```
 ```dart
 //加入成员通知
@@ -1033,7 +1020,7 @@ tom.createConversation(Arrays.asList("Jerry","Mary"), "Tom & Jerry & friends", n
    });
 ```
 ```cs
-var conversation = await tom.CreateConversationAsync(new string[]{ "Jerry","Mary" }, name:"Tom & Jerry & friends", isUnique:true);
+var conversation = await tom.CreateConversation(new string[] { "Jerry","Mary" }, name: "Tom & Jerry & friends", unique: true);
 ```
 ```dart
 try {
@@ -1090,8 +1077,8 @@ conversation.sendMessage(msg, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var textMessage = new AVIMTextMessage("大家好，欢迎来到我们的群聊对话！");
-await conversation.SendMessageAsync(textMessage);
+var textMessage = new LCIMTextMessage("大家好，欢迎来到我们的群聊对话！");
+await conversation.Send(textMessage);
 ```
 ```dart
 try {
@@ -1151,7 +1138,7 @@ conv.kickMembers(Arrays.asList("Mary"), new AVIMOperationPartiallySucceededCallb
 });
 ```
 ```cs
-await conversation.RemoveMembersAsync("Mary");
+await conversation.RemoveMembers(new string[] { "Mary" });
 ```
 ```dart
 try {
@@ -1258,16 +1245,12 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
 AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
 ```
 ```cs
-private void OnMembersLeft(object sender, AVIMOnInvitedEventArgs e)
-{
-    Debug.Log(string.Format("{0} 把 {1} 移出了 {2} 对话", e.KickedBy, e.JoinedMembers, e.ConversationId));
-}
-private void OnKicked(object sender, AVIMOnInvitedEventArgs e)
-{
-    Debug.Log(string.Format("你被 {1} 移出了 {2} 对话", e.KickedBy, e.ConversationId));
-}
-jerry.OnMembersLeft += OnMembersLeft;
-jerry.OnKicked += OnKicked;
+jerry.OnMembersLeft = (conv, leftIds, kickedBy) => {
+    WriteLine($"{leftIds} 离开对话 {conv.Id}；操作者为：{kickedBy}");
+} 
+jerry.OnKicked = (conv, initBy) => {
+    WriteLine($"你已经离开对话 {conv.Id}；操作者为：{initBy}");
+};
 ```
 ```dart
 // 有成员被从某个对话中移除
@@ -1350,7 +1333,8 @@ conv.join(new AVIMConversationCallback(){
 });
 ```
 ```cs
-await william.JoinAsync("CONVERSATION_ID");
+var conv = await william.GetConversation("CONVERSATION_ID");
+await conv.Join();
 ```
 ```dart
 List<Conversation> conversations;
@@ -1416,12 +1400,9 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
 }
 ```
 ```cs
-private void OnMembersJoined(object sender, AVIMOnInvitedEventArgs e)
-{
-    // e.InvitedBy 是该项操作的发起人，e.ConversationId 是该项操作针对的对话 ID
-    Debug.Log(string.Format("{0} 加入了 {1} 对话，操作者是 {2}",e.JoinedMembers, e.ConversationId, e.InvitedBy));
+jerry.OnMembersJoined = (conv, memberList, initBy) => {
+    WriteLine($"{memberList} 加入了 {conv.Id} 对话；操作者为：{initBy}");
 }
-jerry.OnMembersJoined += OnMembersJoined;
 ```
 ```dart
 jerry.onMembersJoined = ({
@@ -1475,7 +1456,7 @@ conversation.quit(new AVIMConversationCallback(){
 });
 ```
 ```cs
-await jerry.LeaveAsync(conversation);
+await conversation.Quit();
 ```
 ```dart
 try {
@@ -1528,11 +1509,8 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
 }
 ```
 ```cs
-mary.OnMembersLeft += OnMembersLeft;
-private void OnMembersLeft(object sender, AVIMOnMembersLeftEventArgs e)
-{
-    // e.KickedBy 是该项操作的发起人，e.ConversationId 是该项操作针对的对话 ID
-    Debug.Log(string.Format("{0} 离开了 {1} 对话，操作者是 {2}",e.JoinedMembers, e.ConversationId, e.KickedBy));
+mary.OnMembersLeft = (conv, members, initBy) => {
+    WriteLine($"{members} 离开了 {conv.Id} 对话；操作者为：{initBy}");
 }
 ```
 ```dart
@@ -1754,13 +1732,10 @@ conv.sendMessage(m, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var image = new AVFile("screenshot.png", "https://p.ssl.qhimg.com/dmfd/400_300_/t0120b2f23b554b8402.jpg");
-// 需要先保存为 AVFile 对象
-await image.SaveAsync();
-var imageMessage = new AVIMImageMessage();
-imageMessage.File = image;
-imageMessage.TextContent = "发自我的 Windows";
-await conversation.SendMessageAsync(imageMessage);
+var image = new LCFile("screenshot.png", new Uri("https://p.ssl.qhimg.com/dmfd/400_300_/t0120b2f23b554b8402.jpg"));
+var imageMessage = new LCIMImageMessage(image);
+imageMessage.Text = "发自我的 Windows";
+await conversation.Send(imageMessage);
 ```
 ```dart
 import 'package:flutter/services.dart' show rootBundle;
@@ -1839,11 +1814,10 @@ conv.sendMessage(m, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var image = new AVFile("Satomi_Ishihara.gif", "http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif");
-var imageMessage = new AVIMImageMessage();
-imageMessage.File = image;
-imageMessage.TextContent = "发自我的 Windows";
-await conversation.SendMessageAsync(imageMessage);
+var image = new LCFile("Satomi_Ishihara.gif", new Uri("http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"));
+var imageMessage = new LCIMImageMessage(image);
+imageMessage.Text = "发自我的 Windows";
+await conversation.Send(imageMessage);
 ```
 ```dart
 ImageMessage imageMessage = ImageMessage.from(
@@ -1936,12 +1910,9 @@ AVIMMessageManager.registerMessageHandler(AVIMImageMessage.class,
 });
 ```
 ```cs
-private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
-{
-    if (e.Message is AVIMImageMessage imageMessage)
-    {
-        AVFile file = imageMessage.File;
-        Debug.Log(file.Url);
+client.OnMessage = (conv, msg) => {
+    if (e.Message is LCIMImageMessage imageMessage) {
+        WriteLine(imageMessage.Url);
     }
 }
 ```
@@ -2036,11 +2007,10 @@ conv.sendMessage(m, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var audio = new AVFile("tante.mp3", Path.Combine(Application.persistentDataPath, "tante.mp3"));
-var audioMessage = new AVIMAudioMessage();
-audioMessage.File = audio;
-audioMessage.TextContent = "听听人类的神曲";
-await conversation.SendMessageAsync(audioMessage);
+var audio = new LCFile("tante.mp3", Path.Combine(Application.persistentDataPath, "tante.mp3"));
+var audioMessage = new LCIMAudioMessage(audio);
+audioMessage.Text = "听听人类的神曲";
+await conversation.Send(audioMessage);
 ```
 ```dart
 import 'package:flutter/services.dart' show rootBundle;
@@ -2114,11 +2084,10 @@ conv.sendMessage(m, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var audio = new AVFile("apple.aac", "https://some.website.com/apple.aac");
-var audioMessage = new AVIMAudioMessage();
-audioMessage.File = audio;
-audioMessage.TextContent = "来自苹果发布会现场的录音";
-await conversation.SendMessageAsync(audioMessage);
+var audio = new LCFile("apple.aac", new Uri("https://some.website.com/apple.aac"));
+var audioMessage = new LCIMAudioMessage(audio);
+audioMessage.Text = "来自苹果发布会现场的录音";
+await conversation.Send(audioMessage);
 ```
 ```dart
 AudioMessage audioMessage = AudioMessage.from(
@@ -2187,9 +2156,9 @@ conversation.sendMessage(locationMessage, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var locationMessage = new AVIMLocationMessage();
-locationMessage.Location = new AVGeoPoint(31.3753285, 120.9664658);
-await conversation.SendMessageAsync(locationMessage);
+var location = new LCGeoPoint(31.3753285, 120.9664658);
+var locationMessage = new LCIMLocationMessage(location);
+await conversation.Send(locationMessage);
 ```
 ```dart
 LocationMessage locationMessage = LocationMessage.from(
@@ -2297,68 +2266,7 @@ public static void unregisterMessageHandler(Class<? extends AVIMMessage> clazz, 
 
 {{ docs.langSpecStart('cs') }}
 
-C# SDK 也是通过类似 `OnMessageReceived` 事件回调来通知新消息的，但是消息接收分为 **两个层级**：
-
-* 第一层在 `AVIMClient` 上，它是为了帮助开发者实现被动接收消息，尤其是在本地并没有加载任何对话的时候，类似于刚登录，本地并没有任何 `AVIMConversation` 的时候，如果某个对话产生新的消息，当前 `AVIMClient.OnMessageReceived` 负责接收这类消息，但是它并没有针对消息的类型做区分。
-* 第二层在 `AVIMConversation` 上，负责接收对话的全部信息，并且针对不同的消息类型有不同的事件类型做响应。
-
-以上两个层级的消息接收策略可以用下表进行描述，假如正在接收的是 `AVIMTextMessage`：
-
-`AVIMClient` 接收端 | 条件 1 | 条件 2 | 条件 3 | 条件 4 | 条件 5
---- | --- | --- | --- | --- | ---
-`AVIMClient.OnMessageReceived` | × | √ | √ | √ | √
-`AVIMConversation.OnMessageReceived` | × | × | √ | × | ×
-`AVIMConversation.OnTypedMessageReceived` | × | × | × | √ | ×
-`AVIMConversation.OnTextMessageReceived` | × | × | × | × | √
-
-对应条件如下：
-
-条件 1：
-
-```cs
-AVIMClient.Status != Online
-``` 
-
-条件 2：
-
-```cs
-   AVIMClient.Status == Online 
-&& AVIMClient.OnMessageReceived != null
-```
-
-条件 3：
-
-```cs
-   AVIMClient.Status == Online 
-&& AVIMClient.OnMessageReceived != null 
-&& AVIMConversation.OnMessageReceived != null
-```
-
-条件 4：
-
-```cs
-   AVIMClient.Status == Online 
-&& AVIMClient.OnMessageReceived != null 
-&& AVIMConversation.OnMessageReceived != null
-&& AVIMConversation.OnTypedMessageReceived != null
-&& AVIMConversation.OnTextMessageReceived == null
-```
-
-条件 5：
-
-```cs
-   AVIMClient.Status == Online 
-&& AVIMClient.OnMessageReceived != null 
-&& AVIMConversation.OnMessageReceived != null
-&& AVIMConversation.OnTypedMessageReceived != null
-&& AVIMConversation.OnTextMessageReceived != null
-```
-
-在 `AVIMConversation` 内，接收消息的顺序为：
-
-`OnTextMessageReceived` > `OnTypedMessageReceived` > `OnMessageReceived`
-
-这是为了方便开发者在接收消息的时候有一个分层操作的空间，这一特性也适用于其他富媒体消息。
+C# SDK 也是通过类似 `OnMessage` 事件回调来通知新消息的：
 
 {{ docs.langSpecEnd('cs') }}
 
@@ -2534,34 +2442,20 @@ AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new AVIMTypedM
 });
 ```
 ```cs
-// 这里使用的是简单的演示，推荐使用 switch/case 搭配模式匹配来判断类型
-private void OnMessageReceived(object sender, AVIMMessageEventArgs e)
-{
-    if (e.Message is AVIMImageMessage imageMessage)
-    {
+jerry.OnMessage = (conv, msg) => {
+    if (msg is LCIMImageMessage imageMessage) {
 
-    }
-    else if (e.Message is AVIMAudioMessage audioMessage)
-    {
+    } else if (msg is LCIMAudioMessage audioMessage) {
 
-    }
-    else if (e.Message is AVIMVideoMessage videoMessage)
-    {
+    } else if (msg is LCIMVideoMessage videoMessage) {
 
-    }
-    else if (e.Message is AVIMFileMessage fileMessage)
-    {
+    } else if (msg is LCIMFileMessage fileMessage) {
 
-    }
-    else if (e.Message is AVIMLocationMessage locationMessage)
-    {
+    } else if (msg is AVIMLocationMessage locationMessage) {
 
+    } else if (msg is InputtingMessage) {
+        WriteLine($"收到自定义消息 {inputtingMessage.TextContent} {inputtingMessage.Ecode}");
     }
-    else if (e.Message is InputtingMessage)
-    {
-        Debug.Log(string.Format("收到自定义消息 {0} {1}", inputtingMessage.TextContent, inputtingMessage.Ecode));
-    }
-    // C# SDK 会直接丢弃未知类型的消息
 }
 ```
 ```dart
@@ -2816,10 +2710,11 @@ client.createConversation(Arrays.asList("Jerry"),"猫和老鼠", attr, false, tr
     });
 ```
 ```cs
-vars options = new Dictionary<string, object>();
-options.Add("type", "private");
-options.Add("pinned",true);
-var conversation = await tom.CreateConversationAsync("Jerry", name:"Tom & Jerry", isUnique:true, options:options);
+var properties = new Dictionary<string, object> {
+    { "type", "private" },
+    { "pinned", true }
+};
+var conversation = await tom.CreateConversation("Jerry", name: "Tom & Jerry", unique: true, properties: properties);
 ```
 ```dart
 try {
@@ -2882,8 +2777,8 @@ conversation.updateInfoInBackground(new AVIMConversationCallback(){
 });
 ```
 ```cs
-conversation.Name = "聪明的喵星人";
-await conversation.SaveAsync();
+conversation["name"] = "聪明的喵星人";
+await conversation.Save();
 ```
 ```dart
 try {
@@ -2948,11 +2843,11 @@ conversation.updateInfoInBackground(new AVIMConversationCallback(){
 ```
 ```cs
 // 获取自定义属性
-var type = conversation["attr.type"];
+var type = conversation["type"];
 // 为 pinned 属性设置新的值
-conversation["attr.pinned"] = false;
+conversation["pinned"] = false;
 // 保存
-await conversation.SaveAsync();
+await conversation.Save();
 ```
 ```dart
 try {
@@ -3026,7 +2921,9 @@ public void onInfoChanged(AVIMClient client, AVIMConversation conversation, JSON
                           String operator)
 ```
 ```cs
-// 暂不支持
+jerry.OnConversationInfoUpdated = (conv, attrs, initBy) => {
+    WriteLine($"对话：${conv.Id} 被更新");
+};
 ```
 ```dart
 jerry.onInfoUpdated = ({
@@ -3090,7 +2987,7 @@ conversation.fetchInfoInBackground(new AVIMConversationCallback() {
 });
 ```
 ```cs
-// 暂不支持
+await conversation.Fetch();
 ```
 ```dart
 //暂不支持
@@ -3151,7 +3048,7 @@ query.findInBackground(new AVIMConversationQueryCallback(){
 ```
 ```cs
 var query = tom.GetQuery();
-var conversation = await query.GetAsync("551260efe4b01608686c3e0f");
+var conversation = await query.Get("551260efe4b01608686c3e0f");
 ```
 ```dart
 try {
@@ -3214,16 +3111,9 @@ query.findInBackground(new AVIMConversationQueryCallback(){
 });
 ```
 ```cs
-// 由于 WhereXXX 设置条件的接口每次都是返回一个新的 Query 实例，所以下面这样组合查询条件是无效的：
-//   var query = tom.GetQuery();
-//   query.WhereEqualTo("attr.type","private");
-// 您可以这样写：
-//   var query = tom.GetQuery();
-//   query = query.WhereEqualTo("attr.type","private");
-// 我们更建议采用这样的方式：
-//   var query = tom.GetQuery().WhereEqualTo("attr.type","private");
-var query = tom.GetQuery().WhereEqualTo("attr.type","private");
-await query.FindAsync();
+var query = tom.GetQuery()
+    .WhereEqualTo("type", "private");
+await query.Find();
 ```
 ```dart
 try {
@@ -3330,7 +3220,7 @@ try conversationQuery.where("language", .matchedRegularExpression("[\\u4e00-\\u9
 query.whereMatches("language","[\\u4e00-\\u9fa5]"); // language 是中文字符
 ```
 ```cs
-query.WhereMatches("language","[\\u4e00-\\u9fa5]"); // language 是中文字符
+query.WhereMatches("language", "[\\u4e00-\\u9fa5]"); // language 是中文字符
 ```
 ```dart
 //暂不支持
@@ -3352,7 +3242,7 @@ try conversationQuery.where("name", .prefixedBy("教育"))
 query.whereStartsWith("name","教育");
 ```
 ```cs
-query.WhereStartsWith("name","教育");
+query.WhereStartsWith("name", "教育");
 ```
 ```dart
 //暂不支持
@@ -3372,7 +3262,7 @@ try conversationQuery.where("name", .matchedSubstring("教育"))
 query.whereContains("name","教育");
 ```
 ```cs
-query.WhereContains("name","教育");
+query.WhereContains("name", "教育");
 ```
 ```dart
 //暂不支持
@@ -3394,7 +3284,7 @@ try conversationQuery.where("name", .matchedRegularExpression("^((?!教育).)* $
 query.whereMatches("name","^((?!教育).)* $ ");
 ```
 ```cs
-query.WhereMatches("name","^((?!教育).)* $ ");
+query.WhereMatches("name", "^((?!教育).)* $ ");
 ```
 ```dart
 //暂不支持
@@ -3416,8 +3306,7 @@ try conversationQuery.where("m", .containedIn(["Tom"]))
 query.whereContainedIn("m", Arrays.asList("Tom"));
 ```
 ```cs
-List<string> members = new List<string>();
-members.Add("Tom");
+var members = new List<string> { "Tom" };
 query.WhereContainedIn("m", members);
 ```
 ```dart
@@ -3486,7 +3375,8 @@ query.whereContains("keywords", "教育");
 query.whereLessThan("age", 18);
 ```
 ```cs
-query.WhereContains("keywords", "教育").WhereLessThan("age", 18);
+query.WhereContains("keywords", "教育")
+    .WhereLessThan("age", 18);
 ```
 ```dart
 //暂不支持
@@ -3530,11 +3420,7 @@ keywordsQuery.whereContains('keywords', '教育');
 AVIMConversationsQuery query = AVIMConversationsQuery.or(Arrays.asList(priorityQuery, statusQuery));
 ```
 ```cs
-var ageQuery = tom.GetQuery().WhereLessThan('age', 18);
-
-var keywordsQuery = tom.GetQuery().WhereContains('keywords', '教育').
-
-var query = AVIMConversationQuery.or(new AVIMConversationQuery[] { ageQuery, keywordsQuery});
+//暂不支持
 ```
 ```dart
 //暂不支持
@@ -3581,7 +3467,7 @@ tom.open(new AVIMClientCallback() {
 });
 ```
 ```cs
-// 暂不支持
+query.OrderByDescending("createdAt");
 ```
 ```dart
 //暂不支持
@@ -3624,7 +3510,7 @@ public void queryConversationCompact() {
 }
 ```
 ```cs
-// 暂不支持
+query.Compact = true;
 ```
 ```dart
 query.excludeMembers = true;
@@ -3668,7 +3554,7 @@ public void queryConversationWithLastMessage() {
 }
 ```
 ```cs
-// 暂不支持
+query.WithLastMessageRefreshed = true;
 ```
 ```dart
 query.includeLastMessage = true;
@@ -3903,13 +3789,11 @@ conv.queryMessages(limit, new AVIMMessagesQueryCallback() {
 ```
 ```cs
 // limit 取值范围 1~100，默认 20
-var messages = await conversation.QueryMessageAsync(limit: 10);
-foreach (var message in messages)
-{
-  if (message is AVIMTextMessage)
-  {
-    var textMessage = (AVIMTextMessage)message;
-  }
+var messages = await conversation.QueryMessages(limit: 10);
+foreach (var message in messages) {
+    if (message is LCIMTextMessage textMessage) {
+      
+    }
 }
 ```
 ```dart
@@ -4001,9 +3885,13 @@ conv.queryMessages(10, new AVIMMessagesQueryCallback() {
 ```
 ```cs
 // limit 取值范围 1~1000，默认 100
-var messages = await conversation.QueryMessageAsync(limit: 10);
-var oldestMessage = messages.ToList()[0];
-var messagesInPage = await conversation.QueryMessageAsync(beforeMessageId: oldestMessage.Id, beforeTimeStamp: oldestMessage.ServerTimestamp); 
+var messages = await conversation.QueryMessages(limit: 10);
+var oldestMessage = messages[0];
+var start = new LCIMMessageQueryEndpoint {
+    MessageId = oldestMessage.Id,
+    SentTimestamp = oldestMessage.SentTimestamp
+};
+var messagesInPage = await conversation.QueryMessages(start: start); 
 ```
 ```dart
 List<Message> messages;
@@ -4072,7 +3960,7 @@ conversation.queryMessagesByType(msgType, limit, new AVIMMessagesQueryCallback()
 ```
 ```cs
 // 传入泛型参数，SDK 会自动读取类型的信息发送给服务端，用作筛选目标类型的消息
-var imageMessages = await conversation.QueryMessageAsync<AVIMImageMessage>();
+var imageMessages = await conversation.QueryMessages(messageType: -2);
 ```
 ```dart
 try {
@@ -4129,7 +4017,7 @@ conversation.queryMessages(interval, AVIMMessageQueryDirectionFromOldToNew, limi
 });
 ```
 ```cs
-var earliestMessages = await conversation.QueryMessageAsync(direction: 0);
+var earliestMessages = await conversation.QueryMessages(direction: LCIMMessageQueryDirection.OldToNew);
 ```
 ```dart
 try {
@@ -4204,9 +4092,12 @@ conversation.queryMessages(interval, direction, limit,
 });
 ```
 ```cs
-var earliestMessages = await conversation.QueryMessageAsync(direction: 0, limit: 1);
+var earliestMessages = await conversation.QueryMessages(direction: LCIMMessageQueryDirection.OldToNew, limit: 1);
 // 获取 earliestMessages.Last() 之后的消息
-var nextPageMessages = await conversation.QueryMessageAfterAsync(earliestMessages.Last());
+var start = new LCIMMessageQueryEndpoint {
+    MessageId = earliestMessages.Last().Id
+};
+var nextPageMessages = await conversation.QueryMessages(start: start);
 ```
 ```dart
 try {
@@ -4287,10 +4178,16 @@ conversation.queryMessages(interval, direction, limit,
 });
 ```
 ```cs
-var earliestMessage = await conversation.QueryMessageAsync(direction: 0, limit: 1);
-var latestMessage = await conversation.QueryMessageAsync(limit: 1);
+var earliestMessage = await conversation.QueryMessages(direction: LCIMMessageQueryDirection.OldToNew, limit: 1);
+var latestMessage = await conversation.QueryMessages(limit: 1);
+var start = new LCIMMessageQueryEndpoint {
+    MessageId = earliestMessage[0].Id
+};
+var end = new LCIMMessageQueryEndpoint {
+    MessageId = latestMessage[0].Id
+};
 // messagesInInterval 最多可包含 100 条消息
-var messagesInInterval = await conversation.QueryMessageInIntervalAsync(earliestMessage.FirstOrDefault(), latestMessage.FirstOrDefault());
+var messagesInInterval = await conversation.QueryMessages(start: start, end: end);
 ```
 ```dart
 try {
@@ -4408,7 +4305,7 @@ tom.close(new AVIMClientCallback(){
 });
 ```
 ```cs
-await tom.CloseAsync();
+await tom.Close();
 ```
 ```dart
 await tom.close();
