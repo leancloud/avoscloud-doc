@@ -1732,7 +1732,7 @@ conv.sendMessage(m, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var image = new LCFile("screenshot.png", new Uri("https://p.ssl.qhimg.com/dmfd/400_300_/t0120b2f23b554b8402.jpg"));
+var image = new LCFile("screenshot.png", new Uri("http://example.com/screenshot.png"));
 var imageMessage = new LCIMImageMessage(image);
 imageMessage.Text = "发自我的 Windows";
 await conversation.Send(imageMessage);
@@ -1814,7 +1814,7 @@ conv.sendMessage(m, new AVIMConversationCallback() {
 });
 ```
 ```cs
-var image = new LCFile("Satomi_Ishihara.gif", new Uri("http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"));
+var image = new LCFile("girl.gif", new Uri("http://example.com/girl.gif"));
 var imageMessage = new LCIMImageMessage(image);
 imageMessage.Text = "发自我的 Windows";
 await conversation.Send(imageMessage);
