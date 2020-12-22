@@ -723,7 +723,7 @@ AVIMMessageManager.registerDefaultMessageHandler(new CustomMessageHandler());
 jerry.OnInvited = (conv, initBy) => {
     WriteLine($"{initBy} 邀请 jerry 加入 {conv.Id} 对话");
 };
-m2.OnMessage = (conv, msg) => {
+jerry.OnMessage = (conv, msg) => {
     if (msg is LCIMTextMessage textMessage) {
         // textMessage.ConversationId 是该条消息所属于的对话 ID
         // textMessage.Text 是该文本消息的文本内容
