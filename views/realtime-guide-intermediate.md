@@ -730,7 +730,7 @@ imConversation.sendMessage(message, option, new AVIMConversationCallback() {
 ```cs
 LCIMTextMessage textMessage = new LCIMTextMessage("Tom 正在输入…");
 LCIMMessageSendOptions option = new LCIMMessageSendOptions() { 
-    Transient = true 
+    Transient = true
 };
 await conversation.Send(textMessage, option);
 ```
