@@ -1078,7 +1078,7 @@ query.findInBackground(new AVIMConversationQueryCallback() {
 });
 ```
 ```cs
-LCIMConversationQuery query = new LCIMConversationQuery(tome);
+LCIMConversationQuery query = new LCIMConversationQuery(tom);
 query.WhereEqualTo("tr", true);
 ```
 ```dart
