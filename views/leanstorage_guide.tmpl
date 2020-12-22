@@ -7961,7 +7961,7 @@ await LCUser.RequestSMSCodeForUpdatingPhoneNumber("+8618200008888");
 await LCUser.VerifyCodeForUpdatingPhoneNumber("+8618200008888", "123456");
 // 更新本地数据
 LCUser currentUser = await LCUser.GetCurrent();
-user.mobile = "+8618200008888";
+user.Mobile = "+8618200008888";
 ```
 {% endif %}
 {% if platform_name === "Python" %}
