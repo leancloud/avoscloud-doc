@@ -91,7 +91,7 @@ lean up
 lean deploy
 ```
 
-在浏览器中登录 LeanCloud 控制台，绑定[云引擎域名](custom-api-domain-guide.html#云引擎域名)（`stg-` 开头的自定义域名会被自动地绑定到预备环境），访问相应网址可以看到 Client Engine 服务端正在运行的文本。
+在浏览器中登录 LeanCloud 控制台，绑定[云引擎域名](custom-api-domain-guide.html#云引擎域名)（`stg-` 开头的自定义域名会被自动地绑定到预备环境），然后访问相应网址可以看到 Client Engine 服务端正在运行的文本。
 
 其他详细的部署方式请参考命令行工具文档中的[部署](leanengine_cli.html#部署)及[发布到生产环境](leanengine_cli.html#发布到生产环境)。
 
