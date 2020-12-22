@@ -4988,7 +4988,7 @@ liveQuery.subscribeInBackground(new AVLiveQuerySubscribeCallback() {
 {% if platform_name === ".Net" %}
 ```cs
 LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-LCLiveQuery liveQuery = query.Subscribe();
+LCLiveQuery liveQuery = await query.Subscribe();
 liveQuery.OnCreate = (obj) => {
   print(obj["title"]); // 更新作品集
 };
