@@ -6274,14 +6274,14 @@ file.getThumbnailUrl(true, 100, 100);
 {% endif %}
 {% if platform_name === "Flutter" %}
 ```dart
- // 获得宽度为 100 像素，100 像素的缩略图 url
- String url = file.getThumbnailUrl(100, 100);
+ // 获得宽度为 100 像素，高度为 200 像素的缩略图 url
+ String url = file.getThumbnailUrl(100, 200);
 ```
 {% endif %}
 {% if platform_name === ".Net" %}
 ```cs
-// 获得宽度为 100 像素，100 像素的缩略图 url
-string url = file.GetThumbnailUrl(100, 100);
+// 获得宽度为 100 像素，高度为 200 像素的缩略图 url
+string url = file.GetThumbnailUrl(100, 200);
 ```
 {% endif %}
 
@@ -8699,11 +8699,11 @@ do {
 {% endif %}
 {% if platform_name === "Flutter" %}
 ```dart
-LCObject todo = LCObject('Book');
+LCObject book = LCObject('Book');
 LCUser author = await LCUser.getCurrent();
-todo['title'] = '我的第五本书';
-todo['author'] = author;
-await todo.save();
+book['title'] = '我的第五本书';
+book['author'] = author;
+await book.save();
 
 LCQuery<LCObject> query = LCQuery('Book');
 query.whereEqualTo('author', author);
@@ -8713,11 +8713,11 @@ List<LCObject> books = await query.find();
 {% endif %}
 {% if platform_name === ".Net" %}
 ```cs
-LCObject todo = new LCObject("Book");
+LCObject book = new LCObject("Book");
 LCUser author = await LCUser.GetCurrent();
-todo["title"] = "我的第五本书";
-todo["author"] = author;
-await todo.Save();
+book["title"] = "我的第五本书";
+book["author"] = author;
+await book.Save();
 
 LCQuery<LCObject> query = new LCQuery<LCObject>("Book");
 query.WhereEqualTo("author", author);
