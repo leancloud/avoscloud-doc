@@ -59,6 +59,12 @@ Java SDK 一共包含如下几个模块：
 
 {% endif %}
 
+{% if platform_name === ".NET" %}
+
+我们于 2020 年 5 月推出了基于 .Net Standard 2.0 接口实现的新的 [.Net SDK](https://github.com/leancloud/csharp-sdk)。
+
+{% endif %}
+
 ## 获取 SDK
 
 {% if platform_name === "Objective-C" or platform_name === "Swift" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Android / Java" or platform_name === "Flutter" %}
@@ -1105,6 +1111,15 @@ PM> Install-Package LeanCloud.Realtime
 {% endif %}
 
 {% if platform_name === ".NET Standard" %}
+
+.Net SDK 基于 .Net Standard 2.0 接口标准实现，支持框架如下：
+
+- Unity 2018.1+
+- .NET Core 2.0+
+- .NET Framework 4.6.1+
+- Mono 5.4+
+
+更多支持框架可参考：https://docs.microsoft.com/en-us/dotnet/standard/net-standard
 
 通过 GitHub 仓库 [Releases](https://github.com/leancloud/csharp-sdk/releases) 下载最新版本 SDK。
 
