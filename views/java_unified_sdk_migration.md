@@ -2,6 +2,13 @@
 
 如果你还在在使用我们老版本 Android SDK（所有版本号低于 `5.0.0`，`groupId` 为 `cn.leancloud.android` 的 libraries），要迁移到最新的 Java Unified SDK，请阅读以下指南。如果你使用的已经是新版本 SDK（版本号高于 `5.0.0`），那么可以忽略本文档。
 
+新版本 Java Unified SDK 根据底层依赖的 JSON 解析库的不同，有两个不同分支：
+
+- 6.x 分支依赖 [fastjson](https://github.com/alibaba/fastjson) 来进行 JSON 解析；
+- 7.x 分支使用 [Gson](https://github.com/google/gson) 来进行 JSON 解析；
+
+两个版本的对外接口完全一致，开发者可以根据自己的需求选择合适的版本（考虑到平台兼容性和稳定性，我们推荐大家使用 7.x 的分支来进行开发）。
+
 ## 新老版本的差异说明
 
 与老版本 SDK 相比，新版 SDK 的主要改进有两点：
@@ -54,7 +61,7 @@ Java SDK 一共包含如下几个模块：
 ./android-sdk/leancloud-fcm | Firebase Cloud Messaging library | Android | realtime-android
 
 
-## 迁移要点
+## 从老版本 SDK 迁移到 6.x 版本的操作要点
 
 新版 SDK 的函数接口尽可能沿用了老版 SDK 的命名方式，所以要做的改动主要是 `Callback` 回调机制的修改。
 
@@ -128,4 +135,49 @@ todo.saveInBackground().subscribe(ObserverBuilder.buildSingleObserver(new SaveCa
 
 在新版 SDK 中我们统一将包名的 root 目录由 `com.avos.avoscloud` 改成了 `cn.leancloud`，也需要大家做一个全局替换。
 
+## 从 6.x 迁移到 7.x 版本的操作要点
 
+这两个版本的对外接口完全一致，他们之间的差异仅仅在于底层依赖的 JSON 解析库不同，所以从 6.x 到 7.x 的迁移是比较简单的。
+
+7.x 分支当前最新的版本是 `7.0.9`，从 6.x 升级到最新版本的具体步骤如下所示。
+
+### 三种不同的迁移场景
+
+开发者在业务层使用 Java Unified SDK 与 JSON 解析库，主要有如下三种情形：
+
+1. 业务层并没有特别使用 JSON 解析库，JSON 解析属于 Java Unified SDK 的内部实现细节，一般情况下开发者感知不到这一改变，所以这时候应用层可以无缝切换。
+2. 业务代码中因 Java Unified SDK 的原因顺带使用了部分 fastjson 核心类型（例如 JSONObject 和 JSONArray），要切换到最新版就需要去掉这些 fastjson 核心类的使用。出于兼容目的 Java Unified SDK 也提供了完全相同的 API 接口，所以开发者在升级的时候只需要将引用的包名由 `com.alibaba.fastjson` 替换成 `cn.leancloud.json` 即可，例如：
+
+```java
+//import com.alibaba.fastjson.JSON
+//import com.alibaba.fastjson.JSONObject
+//import com.alibaba.fastjson.JSONArray
+
+import cn.leancloud.json.JSON
+import cn.leancloud.json.JSONObject
+import cn.leancloud.json.JSONArray
+```
+3. 业务层自主使用了 fastjson 解析库，例如访问了 LeanCloud 之外的 REST API Server，强依赖 fastjson 进行了数据解析，此时最好不要升级到 7.x 版本（除非能容忍同时引入 fastjson 和 Gson 两套解析框架）。
+
+### 参考 demo：
+开发者可以参考我们如下的 demo 来完成版本升级：
+
+- 使用存储服务的用户，可以参考 [storage sample app(branch: feat/gson)](https://github.com/leancloud/java-unified-sdk/tree/feat/gson/android-sdk/storage-sample-app);
+- 使用即时通讯/推送服务的用户，可以参考 [chatkit-android(branch: feat/gson)](https://github.com/leancloud/LeanCloudChatKit-Android/tree/feat/gson);
+
+
+### 其他问题：
+
+1. 升级到 `7.x` 之后，Android Studio 打包时出现 RuntimeException，出错信息如下：
+
+```
+java.lang.RuntimeException
+        at org.objectweb.asm.ClassVisitor.visitModule(ClassVisitor.java:148)
+        at org.objectweb.asm.ClassReader.readModule(ClassReader.java:731)
+        at org.objectweb.asm.ClassReader.accept(ClassReader.java:632)
+        at com.google.firebase.perf.plugin.instrumentation.Instrument.instrument(Instrument.java:151)
+        at com.google.firebase.perf.plugin.instrumentation.Instrument.instrumentClassesInJar(Instrument.java:100)
+```
+
+按照[这里](https://github.com/google/gson/issues/1641)的解释，可以通过升级 `Android Gradle plugin -> 3.5.3, Gradle -> v5.5` 解决。
+新版 SDK 的函数接口尽可能沿用了老版 SDK 的命名方式，所以要做的改动主要是 `Callback` 回调机制的修改。
