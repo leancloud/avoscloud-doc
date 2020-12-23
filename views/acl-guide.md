@@ -651,6 +651,9 @@ LCQuery subroleQuery = moderator.roles.query();
 
 因为用户相关信息比较敏感，所以 `_User` 表会忽略 ACL 的设置，任何用户都无法修改其他用户的属性，比如当前登录的用户是 A，而他想通过请求去修改 B 用户的用户名、密码或者其他自定义属性，是不会生效的，即使 B 用户的 ACL 中赋予了 A 写权限也不行。
 
+因为 LiveQuery 设计的使用场景是客户端，而客户端不应使用 MasterKey，否则会有极大的安全隐患。
+所以，LiveQuery 订阅事件时会忽略 MasterKey。换言之，LiveQuery 订阅事件时不应使用 MasterKey，即使使用也不会跳过 ACL 等权限检查。
+
 ## 获取对象的 ACL 值
 
 查询数据时，SDK 默认不会返回对象的 ACL 值。如果想在获取对象的同时返回对象的 ACL 值，需要同时满足下面两个条件：
