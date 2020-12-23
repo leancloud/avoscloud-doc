@@ -1036,39 +1036,36 @@ public class ProfileServlet extends HttpServlet {
 {% endif %}
 
 {% if platformName === "Node.js" %}
-推荐使用 [`request`](https://www.npmjs.com/package/request) 这个第三方模块来完成 HTTP 请求。
+你可以使用 [superagent](https://www.npmjs.com/package/superagent) 等第三方模块来完成 HTTP 请求。
 
-安装 `request`：
+安装 `superagent`：
 
 ```sh
-npm install request --save
+npm install superagent --save
 ```
 
 代码示例：
 
 ```js
-var request = require('request');
+const superagent = require('superagent');
 
-request({
-  method: 'POST',
-  url: 'http://www.example.com/create_post',
-  json: {
-    title: 'Some Amazing Title',
-    body: 'Some awesome content.'
-  }
-}, function (err, res, body) {
-  if (err) {
-    console.error('Request failed with response code ' + res.statusCode);
-  } else {
-    console.log(body);
-  }
-});
+// 假定以下网址会返回包含当前日期时间的 JSON 数据
+//
+//    {"__type":"Date","iso":"2020-12-11T07:58:23.087Z"}
+
+const url = "https://api.example.com/1.1/date";
+
+superagent.get(url)
+    .then((resp) => console.log(resp.body.iso))
+    .catch(console.error);
+// 打印日志：2020-12-11T07:58:23.087Z
 ```
 {% endif %}
 {% if platformName === "Python" %}
 你可以使用任意 Python 的模块来发送 HTTP 请求，比如内置的 `urllib`。不过我们推荐 [`requests`](http://www.python-requests.org/) 这个第三方模块。
-
-在 `requirements.txt` 中新增一行 `requests>=2.11.0`，然后在此目录重新执行 `pip install -r requirements.txt` 就可以安装这个模块。
+LeanCloud Python SDK 就使用 requests 调用 LeanCloud 的 REST API 接口。
+因此，如果你的项目已经依赖了 LeanCloud Python SDK，那么你无需在 `requirements.txt` 中另外指定 requests 这个依赖。
+否则，你可以在 `requirements.txt` 中新增一行 `requests`，然后在此目录重新执行 `pip install -r requirements.txt` 安装 requests 模块。
 
 ```python
 import requests
@@ -1082,7 +1079,9 @@ print(response.json())
 ```
 {% endif %}
 {% if platformName === "PHP" %}
-云引擎 PHP 环境可以使用内置的 `curl` 模块，不过我们推荐使用 `guzzle` 等第三方库来处理 HTTP 请求。
+云引擎 PHP 环境可以使用内置的 `curl` 模块，不过我们推荐使用 [guzzle] 等第三方库来处理 HTTP 请求。
+
+[guzzle]: https://docs.guzzlephp.org/en/stable/
 
 安装 `guzzle`：
 
