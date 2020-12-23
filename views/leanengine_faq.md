@@ -1,3 +1,5 @@
+{% set release = "[GitHub releases 页面](https://releases.leanapp.cn/#/leancloud/lean-cli/releases)" %}
+
 # 云引擎常见问题和解答
 
 ## 云引擎都支持哪些语言
