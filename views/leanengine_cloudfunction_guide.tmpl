@@ -595,7 +595,18 @@ try {
 }
 ```
 
-云引擎中默认会直接进行一次本地的函数调用，而不是像客户端一样发起一个 HTTP 请求。PHP 云引擎暂不支持发起 HTTP 请求来调用云函数。
+云引擎中默认会直接进行一次本地的函数调用，而不是像客户端一样发起一个 HTTP 请求。
+
+如果想要通过 HTTP 调用，可以使用 `runRemote` 方法：
+
+```php
+try {
+    $token = User::getCurrentSessionToken(); // 以特定的 `sessionToken` 调用云函数，可选
+    $result = Cloud::runRemote("averageStars", array("movie" => "夏洛特烦恼"), $token);
+} catch (\Exception $ex) {
+    // 云函数错误
+}
+```
 {% endif %}
 {% if platformName === "Java" %}
 ```java
