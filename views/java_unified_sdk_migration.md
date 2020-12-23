@@ -137,9 +137,7 @@ todo.saveInBackground().subscribe(ObserverBuilder.buildSingleObserver(new SaveCa
 
 ## 从 6.x 迁移到 7.x 版本的操作要点
 
-这两个版本的对外接口完全一致，他们之间的差异仅仅在于底层依赖的 JSON 解析库不同，所以从 6.x 到 7.x 的迁移是比较简单的。
-
-7.x 分支当前最新的版本是 `7.0.9`，从 6.x 升级到最新版本的具体步骤如下所示。
+7.x 分支当前最新的版本是 `7.0.9`，它与 6.x 版本的对外接口完全一致，差异仅仅在于底层依赖的 JSON 解析库不同，所以从 6.x 到 7.x 的迁移是比较简单的。
 
 ### 三种不同的迁移场景
 
@@ -160,7 +158,7 @@ import cn.leancloud.json.JSONArray
 3. 业务层自主使用了 fastjson 解析库，例如访问了 LeanCloud 之外的 REST API Server，强依赖 fastjson 进行了数据解析，此时最好不要升级到 7.x 版本（除非能容忍同时引入 fastjson 和 Gson 两套解析框架）。
 
 ### 参考 demo：
-开发者可以参考我们如下的 demo 来完成版本升级：
+开发者可以参考如下的 demo 来完成版本升级：
 
 - 使用存储服务的用户，可以参考 [storage sample app(branch: feat/gson)](https://github.com/leancloud/java-unified-sdk/tree/feat/gson/android-sdk/storage-sample-app);
 - 使用即时通讯/推送服务的用户，可以参考 [chatkit-android(branch: feat/gson)](https://github.com/leancloud/LeanCloudChatKit-Android/tree/feat/gson);
@@ -180,4 +178,3 @@ java.lang.RuntimeException
 ```
 
 按照[这里](https://github.com/google/gson/issues/1641)的解释，可以通过升级 `Android Gradle plugin -> 3.5.3, Gradle -> v5.5` 解决。
-新版 SDK 的函数接口尽可能沿用了老版 SDK 的命名方式，所以要做的改动主要是 `Callback` 回调机制的修改。
