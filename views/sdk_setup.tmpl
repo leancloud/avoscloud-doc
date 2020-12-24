@@ -67,6 +67,12 @@ Java SDK 一共包含如下几个模块：
 
 {% endif %}
 
+{% if platform_name === ".NET" %}
+
+我们于 2020 年 5 月推出了基于 .Net Standard 2.0 接口实现的新的 [.Net SDK](https://github.com/leancloud/csharp-sdk)。
+
+{% endif %}
+
 ## 获取 SDK
 
 {% if platform_name === "Objective-C" or platform_name === "Swift" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Android / Java" or platform_name === "Flutter" %}
@@ -1112,6 +1118,39 @@ PM> Install-Package LeanCloud.Realtime
 ```
 {% endif %}
 
+{% if platform_name === ".NET Standard" %}
+
+[旧版 .Net SDK](https://leancloud.cn/docs/sdk_setup-dotnet.html) 已不再更新。新版 .Net SDK 基于 .Net Standard 2.0 接口标准实现，支持框架如下：
+
+- Unity 2018.1+
+- .NET Core 2.0+
+- .NET Framework 4.6.1+
+- Mono 5.4+
+
+更多支持框架可参考：https://docs.microsoft.com/en-us/dotnet/standard/net-standard
+
+通过 GitHub 仓库 [Releases](https://github.com/leancloud/csharp-sdk/releases) 下载最新版本 SDK。
+
+### 安装
+
+- .NET Core 或其他支持 .NET Standard 2.0 的项目请下载 LeanCloud-SDK-XXX-Standard.zip，解压后设置依赖即可。
+（XXX 指 LeanCloud 服务，包括存储 Storage，即时通讯 Realtime，LiveQuery）
+
+- Unity 请下载 LeanCloud-SDK-XXX-Unity.zip，解压后为 Plugins 文件夹，拖拽至 Unity 即可。
+（注意：仅支持 Unity 2018+，即 Unity Api Compatibility Level 支持 .NET Standard 2.0 的版本）
+
+### 模块及依赖关系
+
+名称|模块描述
+--|---
+`LeanCloud-SDK-Storage`|存储服务。
+`LeanCloud-SDK-Realtime`|即时通信服务，依赖于存储服务。
+`LeanCloud-SDK-LiveQuery`|LiveQuery 服务，依赖于存储，即时通信服务。
+
+如只需使用某种服务，可下载最小依赖包，减小程序体积。
+
+{% endif %}
+
 ## 初始化
 
 首先进入 **控制台 > 设置 > 应用 Key** 来获取 **App ID**，**App Key** 以及**服务器地址**。
@@ -1397,6 +1436,31 @@ const realtime = new AVRealtime(new AVRealtime.Configuration
 {{ requireServerURL() }}
 {% endif %}
 
+{% if platform_name === ".NET Standard" %}
+
+### 导入模块
+
+```cs
+// 导入基础模块
+using LeanCloud;
+// 导入存储模块
+using LeanCloud.Storage;
+// 如有需要，导入即时通讯模块
+using LeanCloud.Realtime;
+// 如有需要，导入 LiveQuery 模块
+using LeanCloud.LiveQuery;
+```
+
+### 初始化
+
+在使用服务前，先调用如下代码：
+
+```cs
+LCApplication.Initialize("{{appid}}", "{{appkey}}", "https://please-replace-with-your-customized.domain.com");
+```
+
+{% endif %}
+
 {% if platform_name === "Flutter" %}
 
 #### 数据存储
@@ -1643,6 +1707,28 @@ AVRealtime.WebSocketLog(Debug.Log);
 ```
 {% endif %}
 
+{% if platform_name === ".NET Standard" %}
+```cs
+LCLogger.LogDelegate = (LCLogLevel level, string info) => {
+    switch (level) {
+        case LCLogLevel.Debug:
+            TestContext.Out.WriteLine($"[DEBUG] {DateTime.Now} {info}\n");
+            break;
+        case LCLogLevel.Warn:
+            TestContext.Out.WriteLine($"[WARNING] {DateTime.Now} {info}\n");
+            break;
+        case LCLogLevel.Error:
+            TestContext.Out.WriteLine($"[ERROR] {DateTime.Now} {info}\n");
+            break;
+        default:
+            TestContext.Out.WriteLine(info);
+            break;
+    }
+}
+```
+如果是 Unity 平台，可以重定向到 Debug。
+{% endif %}
+
 {% if platform_name === "Objective-C" or platform_name === "Swift" %}
 ### 关闭调试日志
 
@@ -1785,6 +1871,18 @@ await saveTask;
 ```
 
 保存后运行程序。
+{% endif %}
+
+{% if platform_name === ".NET Standard" %}
+然后在项目中编写如下测试代码：
+
+```cs
+LCObject testObject = new LCObject("TestObject");
+testObject["words"] = "Hello world!";
+await testObject.Save();
+```
+
+保存后运行程序
 {% endif %}
 
 {% if platform_name === "Flutter" %}

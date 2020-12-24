@@ -9,7 +9,7 @@
 - [Swift SDK 安装指南](sdk_setup-swift.html)
 - [Android/Java SDK 安装指南](sdk_setup-java.html)
 - [Flutter SDK 安装指南](sdk_setup-flutter.html)
-- [.Net SDK 安装指南](sdk_setup-dotnet.html)
+- [.Net SDK 安装指南](sdk_setup-dotnet-standard.html)
 
 ## 服务端 SDK
 
