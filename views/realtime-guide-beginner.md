@@ -3004,6 +3004,12 @@ await conversation.Fetch();
 
 ID 对应就是 `_Conversation` 表中的 `objectId` 的字段值，这是一种最简单也最高效的查询（因为云端会对 ID 建立索引）：
 
+
+
+{{ docs.langSpecStart('dart') }}
+我们建议开发者首先尝试从内存中获取对话，以减少不必要的网络请求。
+{{ docs.langSpecEnd('dart') }}
+
 ```js
 tom.getConversation('551260efe4b01608686c3e0f').then(function(conversation) {
   console.log(conversation.id);
@@ -3051,15 +3057,18 @@ var query = tom.GetQuery();
 var conversation = await query.Get("551260efe4b01608686c3e0f");
 ```
 ```dart
-try {
-  ConversationQuery query = tom.conversationQuery();
-  query.whereEqualTo('objectId', '551260efe4b01608686c3e0f');
-  await query.find();
-} catch (e) {
-  print(e);
+String convID = '551260efe4b01608686c3e0f';
+Conversation conversation = tom.conversationMap[convID];
+if (conversation == null) {
+  try {
+    ConversationQuery query = tom.conversationQuery();
+    query.whereEqualTo('objectId', convID);
+    conversation = await query.find();
+  } catch (e) {
+    print(e);
+  }
 }
 ```
-
 ### 基础的条件查询
 
 即时通讯 SDK 提供了丰富的条件查询方式，可以满足各种复杂的业务需求。
