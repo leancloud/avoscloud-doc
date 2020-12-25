@@ -8208,7 +8208,7 @@ AVUser.becomeWithSessionTokenInBackground("anmlwi96s381m6ca7o7266pzf").subscribe
     public void onSubscribe(Disposable disposable) {}
     public void onNext(AVUser user) {
         // 修改 AVUser.currentUser
-        AVUser.changeCurrentUser(user, true)
+        AVUser.changeCurrentUser(user, true);
     }
     public void onError(Throwable throwable) {
         // session token 无效
