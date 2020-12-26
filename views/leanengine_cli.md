@@ -20,8 +20,6 @@ brew install lean-cli
 
 如果通过 Homebrew 安装遇到问题，可以参考[这个 FAQ](leanengine_faq.html#使用_Homebrew_安装命令行工具失败)。
 
-
-
 ### Windows
 
 Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 位 或 64 位 **msi** 安装包进行安装，安装成功之后在 Windows 命令提示符（或 PowerShell）下直接输入 `lean` 命令即可使用。
@@ -33,6 +31,12 @@ Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 �
 基于 Debian 的发行版可以从 {{release}} 下载 deb 包安装。
 
 其他发行版可以从 {{release}} 下载预编译好的二进制文件 `lean-linux-x64`，赋予可执行权限（`chmod a+x lean-linux-x64`），重命名为 `lean` 并放到已经在 PATH 环境变量中声明的任意目录中即可。
+
+如果你使用 Linux 版的 Homebrew，同样可以通过 Homebrew 安装：
+
+```sh
+brew install lean-cli
+```
 
 #### Arch Linux
 
