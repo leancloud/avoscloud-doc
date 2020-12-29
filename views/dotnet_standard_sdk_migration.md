@@ -31,7 +31,7 @@
 
 ### 简化初始化
 
-旧版 SDK 在 Unity 下需要挂载 `AVInitializeBehavior` 脚本，即时通讯还要挂载 AVRealtimeBehavior，经常由于 SDK 升级等原因，导致挂载脚本缺失。所以在新版 SDK 中只要统一初始化即可：
+旧版 SDK 在 Unity 下需要挂载 AVInitializeBehavior 脚本，即时通讯还要挂载 AVRealtimeBehavior，经常由于 SDK 升级等原因，导致挂载脚本缺失。而在新版 SDK 中只要统一初始化即可：
 
 ```csharp
 LCApplication.Initialize("APP_ID", "APP_KEY", "SERVER_URL");
@@ -135,4 +135,3 @@ liveQuery = await query.Subscribe();
 - 旧版 SDK 「连接状态回调」由 AVRealtime 调整为 LCClient：
   - AVRealtime#OnDisconnected 调整为 LCClient.OnPaused。
   - AVRealtime#OnReconnected 调整为 LCClient.OnResume。
-
