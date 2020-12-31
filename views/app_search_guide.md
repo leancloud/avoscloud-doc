@@ -34,7 +34,8 @@ JavaScript SDK、Objective C SDK、Java SDK 封装了这一接口。
 ```js
 const query = new AV.SearchQuery('GameScore');
 query.queryString('dennis');
-query.highlights(['player', 'counterpart']); // 高亮玩家、对手字段中匹配到的 dennis 字符串
+// 高亮玩家字段中匹配到的 dennis 字符串，如有多个字段，可传入一个列表
+query.highlights('player'); 
 query.find().then(function(results) {
   console.log("Find " + query.hits() + " docs.");
   // 打印输出：Find 4 docs.
