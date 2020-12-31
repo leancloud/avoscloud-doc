@@ -254,6 +254,9 @@ require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../src/cloud.php'; // 其中包含云函数定义
 Cloud::start();
 ```
+
+如上所述，`Cloud::start` 只适用于专门提供云函数服务的项目。
+如果项目同时用到了云函数和网站托管，请勿使用 `Cloud::start`。
 {% endif %}
 {% if platformName === "Java" %}
 ```java
