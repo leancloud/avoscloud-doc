@@ -171,7 +171,8 @@
 ## 142
 
 * 信息 - `Cloud Code validation failed.`
-* 含义 - 云引擎校验错误，通常是因为 `beforeSave`、`beforeDelete` 等 hook 函数返回 error。
+* 含义 - 云引擎校验错误，通常是因为 `beforeSave`、`beforeDelete` 等 hook 函数返回 error。错误信息中的 `Error detail` 会包括具体的原因，比如 `Application not found` 通常是因为云引擎实例[休眠](leanengine_plan.html#休眠策略)而导致 hook 调用失败。
+
 
 ## 145
 
