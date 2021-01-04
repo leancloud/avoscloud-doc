@@ -7554,7 +7554,16 @@ SMS::requestSmsCode("+8618200008888");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestLoginSmsCodeInBackground("+8618200008888").blockingSubscribe();
+AVUser.requestLoginSmsCodeInBackground("+8618200008888").subscribe(new Observer<AVNull>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(AVNull null) {
+        // 成功调用
+    }
+    public void onError(Throwable throwable) {
+        // 调用出错
+    }
+    public void onComplete() {}
+});
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -7714,7 +7723,16 @@ User::requestEmailVerify("tom@leancloud.rocks");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestEmailVerifyInBackground("tom@leancloud.rocks").blockingSubscribe();
+AVUser.requestEmailVerifyInBackground("tom@leancloud.rocks").subscribe(new Observer<AVNull>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(AVNull null) {
+        // 成功调用
+    }
+    public void onError(Throwable throwable) {
+        // 调用出错
+    }
+    public void onComplete() {}
+});
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -7777,7 +7795,16 @@ User::requestMobilePhoneVerify("+8618200008888");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestMobilePhoneVerifyInBackground("+8618200008888").blockingSubscribe();
+AVUser.requestMobilePhoneVerifyInBackground("+8618200008888").subscribe(new Observer<AVNull>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(AVNull null) {
+        // 成功调用
+    }
+    public void onError(Throwable throwable) {
+        // 调用出错
+    }
+    public void onComplete() {}
+});
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -7938,7 +7965,16 @@ _ = LCUser.verifyVerificationCode("123456", toUpdateMobilePhoneNumber:"+86182000
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestSMSCodeForUpdatingPhoneNumberInBackground("+8618200008888").blockingSubscribe();
+AVUser.requestSMSCodeForUpdatingPhoneNumberInBackground("+8618200008888").subscribe(new Observer<AVNull>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(AVNull null) {
+        // 成功调用
+    }
+    public void onError(Throwable throwable) {
+        // 调用出错
+    }
+    public void onComplete() {}
+});
 
 AVUser.verifySMSCodeForUpdatingPhoneNumberInBackground("123456", "+8618200008888").subscribe(new Observer<AVNull>() {
     public void onSubscribe(Disposable disposable) {}
@@ -8365,7 +8401,16 @@ User::requestPasswordReset("tom@leancloud.rocks");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestPasswordResetInBackground("tom@leancloud.rocks").blockingSubscribe();
+AVUser.requestPasswordResetInBackground("tom@leancloud.rocks").subscribe(new Observer<AVNull>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(AVNull null) {
+        // 成功调用
+    }
+    public void onError(Throwable throwable) {
+        // 调用出错
+    }
+    public void onComplete() {}
+});
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -8428,7 +8473,16 @@ User::requestPasswordResetBySmsCode("+8618200008888");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestPasswordResetBySmsCodeInBackground("+8618200008888").blockingSubscribe();
+AVUser.requestPasswordResetBySmsCodeInBackground("+8618200008888").subscribe(new Observer<AVNull>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(AVNull null) {
+        // 成功调用
+    }
+    public void onError(Throwable throwable) {
+        // 调用出错
+    }
+    public void onComplete() {}
+});
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
