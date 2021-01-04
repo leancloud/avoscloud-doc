@@ -11,7 +11,7 @@
 
 
 {% block installSDK %}
-排行榜是存储 SDK 中的一个模块，需要安装存储 SDK，请参考《[ C# SDK 安装指南](sdk_setup-dotnet-standard.html)》。
+排行榜是存储 SDK 中的一个模块，需要安装存储 SDK，请参考《[C# SDK 安装指南](sdk_setup-dotnet-standard.html)》。
 {% endblock %}
 
 {% block leaderboardClass %}
