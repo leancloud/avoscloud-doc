@@ -216,13 +216,6 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         qcloudShow: true
       }],
       'node': [{
-        name: '微信机器人',
-        desc: '演示了如何利用云引擎，快速接入微信，搭建微信服务号的后端。',
-        downPath: '',
-        mdPath: 'https://github.com/leancloud/LeanEngine-WechatBot',
-        type: 'node',
-        qcloudShow: true
-      },{
         name: '云引擎 Node.js Demo 汇总',
         desc: '该项目包括了推荐的最佳实践和常用的代码片段，每个文件中都有较为详细的注释，适合云引擎的开发者来阅读和参考，所涉及的代码片段也可以直接复制到项目中使用。',
         downPath: '',
