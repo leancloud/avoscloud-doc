@@ -90,7 +90,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         qcloudShow: true
       },{
         name: 'ChatKit 聊天 UI 组件',
-        desc: '一个免费开源的 UI 聊天组件，基于 LeanCloud 实时通信 IM 服务，支持 iOS 7+。它将聊天的常用功能和 UI 一起提供给开发者进行二次开发。',
+        desc: '一个免费开源的 Android UI 聊天组件，基于 LeanCloud 实时通信 IM 服务。它将聊天的常用功能和 UI 一起提供给开发者进行二次开发。',
         downPath: '',
         mdPath: 'https://github.com/leancloud/LeanCloudChatKit-Android',
         type: 'android',
@@ -120,7 +120,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         name: '短信验证码',
         desc: '使用 LeanCloud 发送和验证短信验证码。',
         downPath: '',
-        mdPath: 'https://github.com/leancloud/unified_sdk_simple_demo',
+        mdPath: 'https://github.com/leancloud/android-sms-demo',
         type: 'android',
         qcloudShow: true
       },{
