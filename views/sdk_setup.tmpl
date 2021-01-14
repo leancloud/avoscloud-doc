@@ -19,11 +19,9 @@
 Java Unified SDK 根据底层依赖的 JSON 解析库的不同，有两个不同分支：
 
 - 6.x 分支依赖 [fastjson](https://github.com/alibaba/fastjson) 来进行 JSON 解析；
-- 7.x 分支使用 [Gson](https://github.com/google/gson) 来进行 JSON 解析；
+- 7.x 分支使用 [Gson](https://github.com/google/gson) 来进行 JSON 解析（最新版本）；
 
-两个版本的对外接口完全一致，开发者可以根据自己的需求选择合适的版本（考虑到平台兼容性和稳定性，我们推荐大家使用 7.x 的分支来进行开发）。
-
-下面的流程都是基于 6.x 版本的 SDK 书写的，切换到 7.x 的改动非常小，具体可参考[Java Unified SDK 迁移指南](java_unified_sdk_migration.html)中「从 6.x 迁移到 7.x 版本的操作要点」一节的说明。
+两个版本的对外接口完全一致，开发者可以根据自己的需求选择合适的版本。但是考虑到平台兼容性和稳定性，我们推荐大家使用 7.x 的分支来进行开发。下面的流程都是基于 7.x 版本的 SDK 书写的，切换到 7.x 的改动非常小，原来使用 6.x 版本的开发者可以参考[Java Unified SDK 迁移指南](java_unified_sdk_migration.html)中「从 6.x 迁移到 7.x 版本的操作要点」一节的说明进行升级。
 
 ## 平台与 SDK 对应关系
 Java SDK 主要包含以下几个 library，其层次结构以及平台对应关系如下：

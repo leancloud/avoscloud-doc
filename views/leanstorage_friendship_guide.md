@@ -506,6 +506,25 @@ AV.Friendship.request('user_object_id')
   });
 ```
 
+```java
+AVUser friend = AVUser.createWithoutData(AVUser.class, testUserObjectId);
+user.applyFriendshipInBackground(friend, null).subscribe(new Observer<AVFriendshipRequest>() {
+  @Override
+  public void onSubscribe(@NotNull Disposable disposable) {
+  }
+
+  @Override
+  public void onNext(@NotNull final AVFriendshipRequest friendshipRequest) {
+  }
+
+  public void onError(Throwable throwable) {
+  }
+
+  public void onComplete() {
+  }
+});
+```
+
 发送申请成功后，我们可以发现 `_FriendshipRequest` 新增了一条数据，并且其 `status` 字段的值为 `pending`，表示这是一个正在进行中的好友申请。
 
 在发起好友请求时，可以提前为朋友设置一些属性。属性字段可以任意指定自己需要的 key 和 value，例如分组为「sport」：
@@ -516,6 +535,27 @@ AV.Friendship.request({
   attributes: {
     group: 'sport',
   },
+});
+```
+
+```java
+AVUser friend = AVUser.createWithoutData(AVUser.class, testUserObjectId);
+Map<String, Object> attributes = new HashMap<>();
+attributes.put("group", "sport");
+user.applyFriendshipInBackground(friend, attributes).subscribe(new Observer<AVFriendshipRequest>() {
+  @Override
+  public void onSubscribe(@NotNull Disposable disposable) {
+  }
+
+  @Override
+  public void onNext(@NotNull final AVFriendshipRequest friendshipRequest) {
+  }
+
+  public void onError(Throwable throwable) {
+  }
+
+  public void onComplete() {
+  }
 });
 ```
 
@@ -533,6 +573,25 @@ query.equalTo('status', 'pending');
 query.find().then((requests) => {
   // requests 是所有申请添加当前用户为好友的请求
 });
+```
+
+```java
+currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, true)
+  .subscribe(new Observer<List<AVFriendshipRequest>>() {
+      @Override
+      public void onSubscribe(@NotNull Disposable disposable) {
+      }
+
+      @Override
+      public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
+      }
+
+      public void onError(Throwable throwable) {
+      }
+
+      public void onComplete() {
+      }
+  });
 ```
 
 #### 接受好友申请
@@ -554,6 +613,28 @@ query.find().then((requests) => {
 });
 ```
 
+```java
+currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, true)
+  .subscribe(new Observer<List<AVFriendshipRequest>>() {
+      @Override
+      public void onSubscribe(@NotNull Disposable disposable) {
+      }
+
+      @Override
+      public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
+        for (AVFriendshipRequest req: avFriendshipRequests) {
+          currentUser.acceptFriendshipRequest(req, null).blockingSubscribe();
+        }
+      }
+
+      public void onError(Throwable throwable) {
+      }
+
+      public void onComplete() {
+      }
+  });
+```
+
 B 在接受 A 的好友请求时，同样可以添加属性，这些属性会被存储到 `_Followee` 表的相应的列中，例如下方的代码会向 B 的数据中的 `group` 列中存入值 `music`。
 
 ```javascript
@@ -572,6 +653,30 @@ query.find().then((requests) => {
 });
 ```
 
+```java
+currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, true)
+  .subscribe(new Observer<List<AVFriendshipRequest>>() {
+      @Override
+      public void onSubscribe(@NotNull Disposable disposable) {
+      }
+
+      @Override
+      public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("group", "fans");
+        for (AVFriendshipRequest req: avFriendshipRequests) {
+          currentUser.acceptFriendshipRequest(req, attributes).blockingSubscribe();
+        }
+      }
+
+      public void onError(Throwable throwable) {
+      }
+
+      public void onComplete() {
+      }
+  });
+```
+
 #### 拒绝好友申请
 
 拒绝好友请求后，`_FriendshipRequest` 表中该条申请数据的 `status` 的值会被更新为 `declined`。
@@ -587,6 +692,27 @@ query.find().then((requests) => {
 });
 ```
 
+```java
+currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, true).findInBackground().subscribe(new Observer<List<AVFriendshipRequest>>() {
+      @Override
+      public void onSubscribe(@NotNull Disposable disposable) {
+      }
+
+      @Override
+      public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
+        for (AVFriendshipRequest req: avFriendshipRequests) {
+          currentUser.declineFriendshipRequest(req, null).blockingSubscribe();
+        }
+      }
+
+      public void onError(Throwable throwable) {
+      }
+
+      public void onComplete() {
+      }
+  });
+```
+
 注意，当用户 B 拒绝 A 的好友申请后，**用户 A 无法再次发起好友申请**。如果两人重新希望成为好友，用户 B 需要找到之前被拒绝的好友申请，改为接受：
 
 ```javascript
@@ -600,6 +726,27 @@ query.find().then((requests) => {
 });
 ```
 
+```java
+currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_DECLINED, true, true).findInBackground().subscribe(new Observer<List<AVFriendshipRequest>>() {
+      @Override
+      public void onSubscribe(@NotNull Disposable disposable) {
+      }
+
+      @Override
+      public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
+        for (AVFriendshipRequest req: avFriendshipRequests) {
+          currentUser.acceptFriendshipRequest(req, null).blockingSubscribe();
+        }
+      }
+
+      public void onError(Throwable throwable) {
+      }
+
+      public void onComplete() {
+      }
+  });
+```
+
 #### 查询好友列表
 
 直接使用 `AVQuery` 查询好友列表，设定 `friendStatus=true` 即可以查询双向好友。同时还可以使用 skip、limit、include 等，非常方便。
@@ -611,6 +758,13 @@ query.equalTo('friendStatus', true);
 query.find().then((results) => {
   const friends = results.map(result => result.get('followee'));
 });
+```
+
+```java
+AVQuery<AVFriendship> query = secondUser.friendshipQuery(false);
+query.whereEqualTo(AVFriendship.ATTR_FRIEND_STATUS, true);
+query.addDescendingOrder(AVObject.KEY_UPDATED_AT);
+List<AVFriendship> followees = query.find();
 ```
 
 #### 修改好友属性
@@ -629,6 +783,15 @@ followee.save().then((followee) => {
 })
 ```
 
+```java
+AVQuery<AVFriendship> query = secondUser.friendshipQuery(false);
+query.whereEqualTo(AVFriendship.ATTR_FRIEND_STATUS, true);
+query.addDescendingOrder(AVObject.KEY_UPDATED_AT);
+List<AVFriendship> followees = query.find();
+AVFriendship friendship = followees.get(0);
+friendship.put("remark", "丐帮帮主");
+secondUser.updateFriendship(friendship).blockingSubscribe();
+```
 
 #### 删除好友
 
@@ -640,6 +803,10 @@ AV.User.current().unfollow("Tom's objectId").then(() => {
 });;
 ```
 
+```java
+String targetUserObjectId;
+currentUser.unfollowInBackground(targetUserObjectId).blockingSubscribe();
+```
 
 ### REST API
 
