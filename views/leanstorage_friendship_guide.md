@@ -624,6 +624,8 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, tru
       public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
         for (AVFriendshipRequest req: avFriendshipRequests) {
           currentUser.acceptFriendshipRequest(req, null).blockingSubscribe();
+          // you can also call #accept on FriendshipRequest instance as following:
+          // req.accept(null).blockingSubscribe();
         }
       }
 
@@ -701,7 +703,9 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, tru
       @Override
       public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
         for (AVFriendshipRequest req: avFriendshipRequests) {
-          currentUser.declineFriendshipRequest(req, null).blockingSubscribe();
+          currentUser.declineFriendshipRequest(req).blockingSubscribe();
+          // you can also call #decline on FriendshipRequest instance as following:
+          // req.decline().blockingSubscribe();
         }
       }
 
