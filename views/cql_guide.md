@@ -246,6 +246,7 @@ select * from Player where location near geopoint(116.4, 39.9) min 0.5 km max 1 
 select * from Player where location within [116.33, 39.97] and [116.37, 39.99]
 ```
 
+CQL 地理位置查询不支持 `count`。
 
 ### count
 
