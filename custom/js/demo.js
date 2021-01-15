@@ -214,6 +214,13 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         mdPath: 'https://github.com/SXiaoXu/FlutterLeaveDemo',
         type: 'flutter',
         qcloudShow: true
+      },{
+        name: 'LeanMessage',
+        desc: '演示即时通信 Flutter SDK 主要功能的聊天应用，支持文字、语音、图片消息。',
+        downPath: 'https://apps.apple.com/cn/app/leanmessage/id1529417244',
+        mdPath: 'https://github.com/SXiaoXu/FlutterRealtimeDemo/',
+        type: 'flutter',
+        qcloudShow: true
       }],
       'node': [{
         name: '云引擎 Node.js Demo 汇总',
