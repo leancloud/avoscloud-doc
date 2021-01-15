@@ -510,11 +510,11 @@ AV.Friendship.request('user_object_id')
 AVUser friend = AVUser.createWithoutData(AVUser.class, testUserObjectId);
 user.applyFriendshipInBackground(friend, null).subscribe(new Observer<AVFriendshipRequest>() {
   @Override
-  public void onSubscribe(@NotNull Disposable disposable) {
+  public void onSubscribe(Disposable disposable) {
   }
 
   @Override
-  public void onNext(@NotNull final AVFriendshipRequest friendshipRequest) {
+  public void onNext(final AVFriendshipRequest friendshipRequest) {
   }
 
   public void onError(Throwable throwable) {
@@ -544,11 +544,11 @@ Map<String, Object> attributes = new HashMap<>();
 attributes.put("group", "sport");
 user.applyFriendshipInBackground(friend, attributes).subscribe(new Observer<AVFriendshipRequest>() {
   @Override
-  public void onSubscribe(@NotNull Disposable disposable) {
+  public void onSubscribe(Disposable disposable) {
   }
 
   @Override
-  public void onNext(@NotNull final AVFriendshipRequest friendshipRequest) {
+  public void onNext(final AVFriendshipRequest friendshipRequest) {
   }
 
   public void onError(Throwable throwable) {
@@ -576,21 +576,24 @@ query.find().then((requests) => {
 ```
 
 ```java
+// first `true` means that results will contain entire user info.
+// second `true` indicates that all requests are sent to current user.
+// you can look at the method signature for more details.
 currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, true)
   .subscribe(new Observer<List<AVFriendshipRequest>>() {
-      @Override
-      public void onSubscribe(@NotNull Disposable disposable) {
-      }
+    @Override
+    public void onSubscribe(@NotNull Disposable disposable) {
+    }
 
-      @Override
-      public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
-      }
+    @Override
+    public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
+    }
 
-      public void onError(Throwable throwable) {
-      }
+    public void onError(Throwable throwable) {
+    }
 
-      public void onComplete() {
-      }
+    public void onComplete() {
+    }
   });
 ```
 
@@ -614,7 +617,7 @@ query.find().then((requests) => {
 ```
 
 ```java
-currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, true)
+currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, false, true)
   .subscribe(new Observer<List<AVFriendshipRequest>>() {
       @Override
       public void onSubscribe(@NotNull Disposable disposable) {
@@ -623,9 +626,17 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, tru
       @Override
       public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
         for (AVFriendshipRequest req: avFriendshipRequests) {
-          currentUser.acceptFriendshipRequest(req, null).blockingSubscribe();
+          currentUser.acceptFriendshipRequest(req, null).subscribe(new Observer<AVFriendshipRequest>() {
+              @Override
+              public void onSubscribe(Disposable disposable) {}
+              @Override
+              public void onNext(AVFriendshipRequest avFriendshipRequest) {}
+              public void onError(Throwable throwable) {}
+              public void onComplete() {}
+            }
+          );
           // you can also call #accept on FriendshipRequest instance as following:
-          // req.accept(null).blockingSubscribe();
+          // req.accept(null).subscribe(...);
         }
       }
 
@@ -656,7 +667,7 @@ query.find().then((requests) => {
 ```
 
 ```java
-currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, true)
+currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, false, true)
   .subscribe(new Observer<List<AVFriendshipRequest>>() {
       @Override
       public void onSubscribe(@NotNull Disposable disposable) {
@@ -667,7 +678,14 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, tru
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("group", "fans");
         for (AVFriendshipRequest req: avFriendshipRequests) {
-          currentUser.acceptFriendshipRequest(req, attributes).blockingSubscribe();
+          currentUser.acceptFriendshipRequest(req, attributes).subscribe(new Observer<AVFriendshipRequest>() {
+              @Override
+              public void onSubscribe(Disposable disposable) {}
+              @Override
+              public void onNext(AVFriendshipRequest avFriendshipRequest) {}
+              public void onError(Throwable throwable) {}
+              public void onComplete() {}
+            });
         }
       }
 
@@ -695,7 +713,7 @@ query.find().then((requests) => {
 ```
 
 ```java
-currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, true).findInBackground().subscribe(new Observer<List<AVFriendshipRequest>>() {
+currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, false, true).findInBackground().subscribe(new Observer<List<AVFriendshipRequest>>() {
       @Override
       public void onSubscribe(@NotNull Disposable disposable) {
       }
@@ -703,9 +721,16 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, tru
       @Override
       public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
         for (AVFriendshipRequest req: avFriendshipRequests) {
-          currentUser.declineFriendshipRequest(req).blockingSubscribe();
+          currentUser.declineFriendshipRequest(req).subscribe(new Observer<AVFriendshipRequest>() {
+              @Override
+              public void onSubscribe(Disposable disposable) {}
+              @Override
+              public void onNext(AVFriendshipRequest avFriendshipRequest) {}
+              public void onError(Throwable throwable) {}
+              public void onComplete() {}
+          });
           // you can also call #decline on FriendshipRequest instance as following:
-          // req.decline().blockingSubscribe();
+          // req.decline().subscribe(...);
         }
       }
 
@@ -739,7 +764,14 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_DECLINED, true, tr
       @Override
       public void onNext(@NotNull List<AVFriendshipRequest> avFriendshipRequests) {
         for (AVFriendshipRequest req: avFriendshipRequests) {
-          currentUser.acceptFriendshipRequest(req, null).blockingSubscribe();
+          currentUser.acceptFriendshipRequest(req, null).subscribe(new Observer<AVFriendshipRequest>() {
+              @Override
+              public void onSubscribe(Disposable disposable) {}
+              @Override
+              public void onNext(AVFriendshipRequest avFriendshipRequest) {}
+              public void onError(Throwable throwable) {}
+              public void onComplete() {}
+          });
         }
       }
 
@@ -765,10 +797,20 @@ query.find().then((results) => {
 ```
 
 ```java
-AVQuery<AVFriendship> query = secondUser.friendshipQuery(false);
+// parameter `isFollowerDirection` indicates following direction:
+// true - query follower of current user, in other words users which followed current user.
+// false - query followee of current user, in other words users which current user followed.
+AVQuery<AVFriendship> query = currentUser.friendshipQuery(false);
 query.whereEqualTo(AVFriendship.ATTR_FRIEND_STATUS, true);
-query.addDescendingOrder(AVObject.KEY_UPDATED_AT);
-List<AVFriendship> followees = query.find();
+query.addDescendingOrder(AVObject.KEY_UPDATED_AT); // you can add more ordering attrubite.
+query.findInBackground().subscribe(new Observer<List<AVFriendship>>() {
+  @Override
+  public void onSubscribe(Disposable disposable) {}
+  @Override
+  public void onNext(List<AVFriendship> avFriendships) {}
+  public void onError(Throwable throwable) {}
+  public void onComplete() {}
+});
 ```
 
 #### 修改好友属性
@@ -788,13 +830,18 @@ followee.save().then((followee) => {
 ```
 
 ```java
-AVQuery<AVFriendship> query = secondUser.friendshipQuery(false);
-query.whereEqualTo(AVFriendship.ATTR_FRIEND_STATUS, true);
-query.addDescendingOrder(AVObject.KEY_UPDATED_AT);
-List<AVFriendship> followees = query.find();
-AVFriendship friendship = followees.get(0);
+AVFriendship friendship = null;  // get friendship by query.
 friendship.put("remark", "丐帮帮主");
-secondUser.updateFriendship(friendship).blockingSubscribe();
+friendship.put("group", "friend");
+friendship.remove("nickname");
+currentUser.updateFriendship(friendship).subscribe(new Observer<AVFriendship>() {
+  @Override
+  public void onSubscribe(Disposable disposable) {}
+  @Override
+  public void onNext(AVFriendship> avFriendship) {}
+  public void onError(Throwable throwable) {}
+  public void onComplete() {}
+});
 ```
 
 #### 删除好友
@@ -808,8 +855,15 @@ AV.User.current().unfollow("Tom's objectId").then(() => {
 ```
 
 ```java
-String targetUserObjectId;
-currentUser.unfollowInBackground(targetUserObjectId).blockingSubscribe();
+String targetUserObjectId = "Tom's objectId";
+currentUser.unfollowInBackground(targetUserObjectId).subscribe(new Observer<JSONObject>() {
+  @Override
+  public void onSubscribe(Disposable disposable) {}
+  @Override
+  public void onNext(JSONObject> result) {}
+  public void onError(Throwable throwable) {}
+  public void onComplete() {}
+});
 ```
 
 ### REST API
