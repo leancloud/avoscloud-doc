@@ -5656,15 +5656,20 @@ LCFile file = new LCFile("avatar.jpg", "./avatar.jpg");
 - 文件必须有扩展名才能被云端正确地识别出类型。比如说要用 `{{ fileObjectName }}` 保存一个 PNG 格式的图像，那么扩展名应为 `.png`。
 - 如果文件没有扩展名，且没有手动指定类型，那么 LeanCloud 将默认使用 `application/octet-stream`。
 
-{% if platform_name in ["Python", "PHP"] %}
+{% if platform_name in ["Python", "PHP", "JavaScript"] %}
 如果希望指定文件上传后在云端的路径，可以设置文件的 `key` 属性。
 例如，上传 robots.txt 文件，限制搜索引擎抓取自定义文件域名下的 URL：
 {% endif %}
 
+{% if platform_name == "JavaScript" %}
+```js
+file.save({ key: 'robots.txt' });
+```
+{% endif %}
 {% if platform_name == "Python" %}
 ```python
 with open('/tmp/robots.txt', 'rb') as f:
-    file = leancloud.File('avatar.jpg', f)
+    file = leancloud.File('robots.txt', f)
     file.key = 'robots.txt'
 ```
 {% endif %}
