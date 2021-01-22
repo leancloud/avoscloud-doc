@@ -1312,8 +1312,12 @@ client := leancloud.NewEnvClient()
 在其他环境中，你也可以手动传入应用信息：
 
 ```go
-client := leancloud.NewClient("{{appid}}", "{{appkey}}", "{{masterkey}}")
-client.SetServerUrl("https://please-replace-with-your-customized.domain.com")
+client := leancloud.NewClient(&leancloud.ClientOptions{
+  AppID:     "{{appid}}",
+  AppKey:    "{{appkey}}",
+  MasterKey: "{{masterkey}}",
+  ServerURL: "https://please-replace-with-your-customized.domain.com",
+})
 ```
 
 {% endif %}
