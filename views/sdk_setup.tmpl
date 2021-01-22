@@ -73,7 +73,7 @@ Java SDK 一共包含如下几个模块：
 
 ## 获取 SDK
 
-{% if platform_name === "Objective-C" or platform_name === "Swift" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Android / Java" or platform_name === "Flutter" %}
+{% if platform_name === "Objective-C" or platform_name === "Swift" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Go" or platform_name === "Android / Java" or platform_name === "Flutter" %}
 获取 SDK 有多种方式，较为推荐的方式是通过包依赖管理工具下载最新版本。
 
 ### 包依赖管理工具安装
@@ -173,6 +173,24 @@ composer require leancloud/leancloud-sdk
 
 - `leancloud-sdk` 依赖 PHP 的 curl 扩展（常见 Linux 系统下一般需要安装 `php-curl` 这个包）。
 - 如果 composer 访问 packagist 仓库有问题，需要 [设置镜像](https://mirrors.aliyun.com/composer/) 或者通过代理（设置 `http_proxy` 环境变量）访问。
+
+{% endif %}
+{% if platform_name === "Go" %}
+#### Go Modules
+Go SDK 支持使用官方推荐的 Go Modules 进行安装和管理，如果你的项目没有使用过 Go Modules 的话需要先用 `go mod init` 来进行初始化。
+
+你可以先在代码中引用 Go SDK:
+
+```go
+import "github.com/leancloud/go-sdk/leancloud"
+```
+
+之后运行 `go build` 的时候就会自动下载安装 Go SDK 了。
+
+注意：
+
+- 如果你希望创建一个新的云引擎项目的话，推荐基于我们的 [示例项目](https://github.com/leancloud/golang-getting-started) 进行开发。
+- 如果依赖下载速度较慢，可以 [配置镜像](https://goproxy.cn) 或者通过代理（设置 `http_proxy` 环境变量）访问。
 
 {% endif %}
 {% if platform_name === "Python" %}
@@ -384,7 +402,7 @@ $ pod update # 或者 $ pod install --repo-update
 ```
 {% endif %}
 
-{% if platform_name === "Objective-C" or platform_name === "Swift" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Android / Java" %}
+{% if platform_name === "Objective-C" or platform_name === "Swift" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Go" or platform_name === "Android / Java" %}
 ### 手动安装
 {% endif %}
 
@@ -392,6 +410,8 @@ $ pod update # 或者 $ pod install --repo-update
 <a class="btn btn-default" target="_blank" href="https://releases.leanapp.cn/#/leancloud/python-sdk/releases">下载 SDK</a>
 {% elif platform_name === "PHP" %}
 <a class="btn btn-default" target="_blank" href="https://releases.leanapp.cn/#/leancloud/php-sdk/releases">下载 SDK</a>
+{% elif platform_name === "Go" %}
+<a class="btn btn-default" target="_blank" href="https://releases.leanapp.cn/#/leancloud/go-sdk/releases">下载 SDK</a>
 {% elif platform_name === "Android / Java" or platform_name === "Objective-C" %}
 <a class="btn btn-default" target="_blank" href="sdk_down.html">下载 SDK</a>
 {% endif %}
@@ -1282,6 +1302,25 @@ Client::initialize("{{appid}}", "{{appkey}}", "{{masterkey}}");
 ```
 
 {% endif %}
+{% if platform_name === "Go" %}
+如果是部署到云引擎的项目，或在本地使用 `lean up` 启动项目时会自动注入环境变量，只需从环境变量创建客户端即可：
+
+```go
+client := leancloud.NewEnvClient()
+```
+
+在其他环境中，你也可以手动传入应用信息：
+
+```go
+client := leancloud.NewClient(&leancloud.ClientOptions{
+  AppID:     "{{appid}}",
+  AppKey:    "{{appkey}}",
+  MasterKey: "{{masterkey}}",
+  ServerURL: "https://please-replace-with-your-customized.domain.com",
+})
+```
+
+{% endif %}
 {% if platform_name === "Android / Java" %}
 
 ### Android 平台初始化
@@ -1689,6 +1728,13 @@ logging.basicConfig(level=logging.DEBUG)
 Client::setDebug(true);
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+在启动程序前设置环境变量 `LEANCLOUD_DEBUG`：
+
+```
+LEANCLOUD_DEBUG=true lean up
+```
+{% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
 // 在 AVOSCloud.initialize() 之前调用
@@ -1846,6 +1892,30 @@ try {
     echo "保存成功。";
 } catch (Exception $ex) {
     echo "保存失败。";
+}
+```
+
+保存后运行程序。
+{% endif %}
+{% if platform_name === "Go" %}
+然后在项目中编写如下测试代码：
+
+```go
+type TestObject struct {
+  leancloud.Object
+  Words        string    `json:"words"`
+}
+
+client := leancloud.NewENVClient()
+
+testObject := TestObject{
+  Words: "Hello world!",
+}
+
+ref, err := client.Class("TestObject").Create(&testObject)
+
+if err != nil {
+  panic(err)
 }
 ```
 

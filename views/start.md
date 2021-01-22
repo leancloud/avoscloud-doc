@@ -24,4 +24,5 @@
 - [Java SDK 安装指南](sdk_setup-java.html)
 - [Python SDK 安装指南](sdk_setup-python.html)
 - [PHP SDK 安装指南](sdk_setup-php.html)
+- [Go SDK 安装指南](sdk_setup-go.html)
 - [.Net SDK 安装指南](sdk_setup-dotnet.html)
