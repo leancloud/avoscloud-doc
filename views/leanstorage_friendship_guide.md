@@ -67,6 +67,16 @@ AVUser.getCurrentUser().followInBackground(userObjectId).subscribe(new Observer<
 });
 ```
 
+```csharp
+// 关注
+try {
+  await user.Follow("user_object_id");
+  //关注成功
+} catch (Exception e) {
+  // 关注失败
+}
+```
+
 我们允许在 follow 的时候同时传入一个 attributes 字典，用于设置关系的属性，这些属性都将在 `_Follower` 和 `_Followee` 表同时存在：
 
 ```javascript
@@ -109,6 +119,19 @@ AVUser.getCurrentUser().followInBackground(userObjectId, attributes).subscribe(n
 });
 ```
 
+```csharp
+// 关注
+try {
+  Dictionary<string, object> attrs = new Dictionary<string, object> {
+    { "score", 100 }
+  };
+  await user.Follow("user_object_id", attrs);
+  // 关注成功
+} catch (Exception e) {
+  // 关注失败
+}
+```
+
 #### 取消关注某个用户
 
 ```javascript
@@ -148,6 +171,15 @@ AVUser.getCurrentUser().unfollowInBackground(userObjectId).subscribe(new Observe
   public void onComplete() {
   }
 });
+```
+
+```csharp
+try {
+  await user2.Unfollow("user_object_id");
+  // 关注成功
+} catch (Exception e) {
+  // 关注失败
+}
 ```
 
 #### 查询我关注的人
@@ -198,6 +230,11 @@ followeeQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
 });
 ```
 
+```csharp
+LCQuery<LCObject> query = user.FolloweeQuery();
+ReadOnlyCollection<LCObject> followees = await query.Find();
+```
+
 #### 查询我的粉丝
 
 他人关注了我，他人就是我的粉丝，查询粉丝的方法如下：
@@ -245,6 +282,10 @@ followerQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
 });
 ```
 
+```csharp
+LCQuery<LCObject> query = user.FollowerQuery();
+ReadOnlyCollection<LCObject> results = await query.Find();
+```
 
 {{ docs.langSpecStart('java') }} 
 
@@ -346,6 +387,17 @@ AVUser.currentUser().getFollowersAndFolloweesInBackground(new FollowersAndFollow
 
 {{ docs.langSpecEnd('objc') }} 
 
+{{ docs.langSpecStart('csharp') }} 
+
+#### 一次性获取粉丝和关注列表
+
+下面的方法实现了一次获取粉丝和关注用户列表的功能，当然，你也可以用上面的方法通过两次调用来获取这些数据，特别是用户列表很长需要翻页的时候，下面的方法就失效了。
+
+```csharp
+LCFollowersAndFollowees followersAndFollowees = await user.GetFollowersAndFollowees();
+```
+
+{{ docs.langSpecEnd('csharp') }} 
 
 #### 向粉丝展示动态
 
@@ -525,6 +577,15 @@ user.applyFriendshipInBackground(friend, null).subscribe(new Observer<AVFriendsh
 });
 ```
 
+```csharp
+try {
+  await LCFriendship.Request("user_object_id");
+  // 好友请求发送成功
+} catch (Exception e) {
+  // 好友请求发送失败
+}
+```
+
 发送申请成功后，我们可以发现 `_FriendshipRequest` 新增了一条数据，并且其 `status` 字段的值为 `pending`，表示这是一个正在进行中的好友申请。
 
 在发起好友请求时，可以提前为朋友设置一些属性。属性字段可以任意指定自己需要的 key 和 value，例如分组为「sport」：
@@ -557,6 +618,13 @@ user.applyFriendshipInBackground(friend, attributes).subscribe(new Observer<AVFr
   public void onComplete() {
   }
 });
+```
+
+```csharp
+Dictionary<string, object> attrs = new Dictionary<string, object> {
+  { "group", "sport" }
+};
+await LCFriendship.Request("user_object_id", attrs);
 ```
 
 如果在申请好友时增加了属性，在申请发送成功后，`_Followee` 表中也会增加一条数据，代表着发起申请的 A 的好友为 B，其 `user` 列为用户 A，`followee` 列为用户 B， `friendStatus` 列的值为 `false`，代表着 B 没有接受过 A 的好友申请。属性值会被存储到相应的列中，例如上方的代码会在 `_Followee` 表中新增 `group` 列，其值为 `sport`。
@@ -595,6 +663,13 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, tru
     public void onComplete() {
     }
   });
+```
+
+```csharp
+LCQuery<LCFriendshipRequest> query = new LCQuery<LCFriendshipRequest>("_FriendshipRequest")
+  .WhereEqualTo("friend", user)
+  .WhereEqualTo("status", "pending");
+ReadOnlyCollection<LCFriendshipRequest> requests = await query.Find();
 ```
 
 #### 接受好友申请
@@ -648,6 +723,17 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, false, tr
   });
 ```
 
+```csharp
+LCQuery<LCFriendshipRequest> query = new LCQuery<LCFriendshipRequest>("_FriendshipRequest")
+  .WhereEqualTo("friend", user)
+  .WhereEqualTo("status", "pending");
+ReadOnlyCollection<LCFriendshipRequest> requests = await query.Find();
+foreach (LCFriendshipRequest request in requests) {
+  // 接受
+  await LCFriendship.AcceptRequest(request);
+}
+```
+
 B 在接受 A 的好友请求时，同样可以添加属性，这些属性会被存储到 `_Followee` 表的相应的列中，例如下方的代码会向 B 的数据中的 `group` 列中存入值 `music`。
 
 ```javascript
@@ -697,6 +783,20 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, false, tr
   });
 ```
 
+```csharp
+LCQuery<LCFriendshipRequest> query = new LCQuery<LCFriendshipRequest>("_FriendshipRequest")
+  .WhereEqualTo("friend", user)
+  .WhereEqualTo("status", "pending");
+ReadOnlyCollection<LCFriendshipRequest> requests = await query.Find();
+foreach (LCFriendshipRequest request in requests) {
+  // 接受
+  Dictionary<string, object> attrs = new Dictionary<string, object> {
+    { "group", "sport" }
+  };
+  await LCFriendship.AcceptRequest(request, attrs);
+}
+```
+
 #### 拒绝好友申请
 
 拒绝好友请求后，`_FriendshipRequest` 表中该条申请数据的 `status` 的值会被更新为 `declined`。
@@ -742,6 +842,17 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, false, tr
   });
 ```
 
+```csharp
+LCQuery<LCFriendshipRequest> query = new LCQuery<LCFriendshipRequest>("_FriendshipRequest")
+  .WhereEqualTo("friend", user)
+  .WhereEqualTo("status", "pending");
+ReadOnlyCollection<LCFriendshipRequest> requests = await query.Find();
+foreach (LCFriendshipRequest request in requests) {
+  // 拒绝
+  await LCFriendship.DeclineRequest(request);
+}
+```
+
 注意，当用户 B 拒绝 A 的好友申请后，**用户 A 无法再次发起好友申请**。如果两人重新希望成为好友，用户 B 需要找到之前被拒绝的好友申请，改为接受：
 
 ```javascript
@@ -783,6 +894,17 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_DECLINED, true, tr
   });
 ```
 
+```csharp
+LCQuery<LCFriendshipRequest> query = new LCQuery<LCFriendshipRequest>("_FriendshipRequest")
+  .WhereEqualTo("friend", user)
+  .WhereEqualTo("status", "declined");
+ReadOnlyCollection<LCFriendshipRequest> requests = await query.Find();
+foreach (LCFriendshipRequest request in requests) {
+  // 接受
+  await LCFriendship.AcceptRequest(request);
+}
+```
+
 #### 查询好友列表
 
 直接使用 `AVQuery` 查询好友列表，设定 `friendStatus=true` 即可以查询双向好友。同时还可以使用 skip、limit、include 等，非常方便。
@@ -811,6 +933,13 @@ query.findInBackground().subscribe(new Observer<List<AVFriendship>>() {
   public void onError(Throwable throwable) {}
   public void onComplete() {}
 });
+```
+
+```csharp
+LCQuery<LCObject> query = new LCQuery<LCObject>("_Followee")
+  .WhereEqualTo("user", user)
+  .WhereEqualTo("friendStatus", true);
+ReadOnlyCollection<LCObject> friends = await query.Find();
 ```
 
 #### 修改好友属性
@@ -844,6 +973,17 @@ currentUser.updateFriendship(friendship).subscribe(new Observer<AVFriendship>() 
 });
 ```
 
+```csharp
+LCObject followee = LCObject.CreateWithoutData("_Followee", "followee objectId");
+// 添加新属性
+followee["remark"] = "丐帮帮主";
+// 更新已有属性
+followee["group"] = "friend";
+// 删除已有属性
+followee.Unset("nickname");
+await followee.Save();
+```
+
 #### 删除好友
 
 当 A 不再希望和 B 是朋友，可以删除好友。注意：删除好友只会删掉 `_Followee` 表中用户 A 的好友数据，而用户 B 的好友数据依然保留。也就是说 A 不再视 B 为好友，而在 B 的好友列表中依然有 A。
@@ -864,6 +1004,10 @@ currentUser.unfollowInBackground(targetUserObjectId).subscribe(new Observer<JSON
   public void onError(Throwable throwable) {}
   public void onComplete() {}
 });
+```
+
+```csharp
+await user1.Unfollow("Tom's objectId");
 ```
 
 ### REST API
