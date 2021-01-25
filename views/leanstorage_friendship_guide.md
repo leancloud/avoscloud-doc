@@ -67,7 +67,7 @@ AVUser.getCurrentUser().followInBackground(userObjectId).subscribe(new Observer<
 });
 ```
 
-```csharp
+```cs
 // 关注
 try {
   await user.Follow("user_object_id");
@@ -119,7 +119,7 @@ AVUser.getCurrentUser().followInBackground(userObjectId, attributes).subscribe(n
 });
 ```
 
-```csharp
+```cs
 // 关注
 try {
   Dictionary<string, object> attrs = new Dictionary<string, object> {
@@ -173,7 +173,7 @@ AVUser.getCurrentUser().unfollowInBackground(userObjectId).subscribe(new Observe
 });
 ```
 
-```csharp
+```cs
 try {
   await user2.Unfollow("user_object_id");
   // 关注成功
@@ -230,7 +230,7 @@ followeeQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
 });
 ```
 
-```csharp
+```cs
 LCQuery<LCObject> query = user.FolloweeQuery();
 ReadOnlyCollection<LCObject> followees = await query.Find();
 ```
@@ -282,7 +282,7 @@ followerQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
 });
 ```
 
-```csharp
+```cs
 LCQuery<LCObject> query = user.FollowerQuery();
 ReadOnlyCollection<LCObject> results = await query.Find();
 ```
@@ -387,17 +387,17 @@ AVUser.currentUser().getFollowersAndFolloweesInBackground(new FollowersAndFollow
 
 {{ docs.langSpecEnd('objc') }} 
 
-{{ docs.langSpecStart('csharp') }} 
+{{ docs.langSpecStart('cs') }} 
 
 #### 一次性获取粉丝和关注列表
 
 下面的方法实现了一次获取粉丝和关注用户列表的功能，当然，你也可以用上面的方法通过两次调用来获取这些数据，特别是用户列表很长需要翻页的时候，下面的方法就失效了。
 
-```csharp
+```cs
 LCFollowersAndFollowees followersAndFollowees = await user.GetFollowersAndFollowees();
 ```
 
-{{ docs.langSpecEnd('csharp') }} 
+{{ docs.langSpecEnd('cs') }} 
 
 #### 向粉丝展示动态
 
@@ -577,7 +577,7 @@ user.applyFriendshipInBackground(friend, null).subscribe(new Observer<AVFriendsh
 });
 ```
 
-```csharp
+```cs
 try {
   await LCFriendship.Request("user_object_id");
   // 好友请求发送成功
@@ -620,7 +620,7 @@ user.applyFriendshipInBackground(friend, attributes).subscribe(new Observer<AVFr
 });
 ```
 
-```csharp
+```cs
 Dictionary<string, object> attrs = new Dictionary<string, object> {
   { "group", "sport" }
 };
@@ -665,7 +665,7 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, true, tru
   });
 ```
 
-```csharp
+```cs
 LCQuery<LCFriendshipRequest> query = new LCQuery<LCFriendshipRequest>("_FriendshipRequest")
   .WhereEqualTo("friend", user)
   .WhereEqualTo("status", "pending");
@@ -723,7 +723,7 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, false, tr
   });
 ```
 
-```csharp
+```cs
 LCQuery<LCFriendshipRequest> query = new LCQuery<LCFriendshipRequest>("_FriendshipRequest")
   .WhereEqualTo("friend", user)
   .WhereEqualTo("status", "pending");
@@ -783,7 +783,7 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, false, tr
   });
 ```
 
-```csharp
+```cs
 LCQuery<LCFriendshipRequest> query = new LCQuery<LCFriendshipRequest>("_FriendshipRequest")
   .WhereEqualTo("friend", user)
   .WhereEqualTo("status", "pending");
@@ -842,7 +842,7 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_PENDING, false, tr
   });
 ```
 
-```csharp
+```cs
 LCQuery<LCFriendshipRequest> query = new LCQuery<LCFriendshipRequest>("_FriendshipRequest")
   .WhereEqualTo("friend", user)
   .WhereEqualTo("status", "pending");
@@ -894,7 +894,7 @@ currentUser.friendshipRequestQuery(AVFriendshipRequest.STATUS_DECLINED, true, tr
   });
 ```
 
-```csharp
+```cs
 LCQuery<LCFriendshipRequest> query = new LCQuery<LCFriendshipRequest>("_FriendshipRequest")
   .WhereEqualTo("friend", user)
   .WhereEqualTo("status", "declined");
@@ -935,7 +935,7 @@ query.findInBackground().subscribe(new Observer<List<AVFriendship>>() {
 });
 ```
 
-```csharp
+```cs
 LCQuery<LCObject> query = new LCQuery<LCObject>("_Followee")
   .WhereEqualTo("user", user)
   .WhereEqualTo("friendStatus", true);
@@ -973,7 +973,7 @@ currentUser.updateFriendship(friendship).subscribe(new Observer<AVFriendship>() 
 });
 ```
 
-```csharp
+```cs
 LCObject followee = LCObject.CreateWithoutData("_Followee", "followee objectId");
 // 添加新属性
 followee["remark"] = "丐帮帮主";
@@ -1006,7 +1006,7 @@ currentUser.unfollowInBackground(targetUserObjectId).subscribe(new Observer<JSON
 });
 ```
 
-```csharp
+```cs
 await user1.Unfollow("Tom's objectId");
 ```
 
