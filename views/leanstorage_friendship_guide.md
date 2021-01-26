@@ -71,7 +71,7 @@ AVUser.getCurrentUser().followInBackground(userObjectId).subscribe(new Observer<
 // 关注
 try {
   await user.Follow("user_object_id");
-  //关注成功
+  // 关注成功
 } catch (Exception e) {
   // 关注失败
 }
