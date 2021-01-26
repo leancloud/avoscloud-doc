@@ -178,7 +178,7 @@ try {
   await user2.Unfollow("user_object_id");
   // 取关成功
 } catch (Exception e) {
-  // 关注失败
+  // 取关失败
 }
 ```
 
