@@ -7,13 +7,13 @@ LeanDB 是 LeanCloud 推出的数据库托管方案，开发者可以在「控�
 ## 实例规格
 
 - LeanDB MongoDB 提供 MongoDB 4.2 版本。
-- LeanDB MongoDB 的规格分为 `256`、`1024`、`2048`、`4096`、`8192` 几种，代表不同的运算能力。
+- LeanDB MongoDB 的规格分为 `512`、`1024`、`2048`、`4096`、`8192` 几种，代表不同的运算能力。
 - 每种规格有固定的连接数和存储空间限制，如需要更多连接数或存储空间需要升级到更高的规格。
 - 具体的价格可以在控制台上点击「创建 LeanDB 实例」来查看。
 
 ## 在云引擎中使用
 
-LeanDB 所在的应用的云引擎在部署时，会被注入包含 MongoDB 连接字符串的环境变量 `MONGODB_URL_<NAME>`，其中 `<NAME>` 是你在创建 LeanDB 时为它指定的名字，如果你的 LeanDB 名为 `MYRDB` 的话，就会有名为 `MONGODB_URL_MYRDB` 的环境变量。
+LeanDB 所在的应用的云引擎在部署时，会被注入包含 MongoDB 连接字符串的环境变量 `MONGODB_URL_<NAME>`，其中 `<NAME>` 是你在创建 LeanDB 时为它指定的名字，如果你的 LeanDB 名为 `MYDB` 的话，就会有名为 `MONGODB_URL_MYDB` 的环境变量。
 
 ### Node.js
 
