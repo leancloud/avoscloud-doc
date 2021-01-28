@@ -6062,7 +6062,7 @@ file.save({
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-Observable<AVFile> result = file.saveInBackground(new ProgressCallback() {
+file.saveInBackground(new ProgressCallback() {
     @Override
     public void done(Integer percent) {
         // percent 是一个 0 到 100 之间的整数，表示上传进度
