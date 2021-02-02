@@ -220,7 +220,7 @@ Java 云引擎默认使用 Java 8 运行环境，如果希望使用其他版本�
 java.runtime.version=11
 ```
 
-注意，Spring Boot 模板项目目前只支持 Java 8，请勿在 `system.properties` 指定 Java 8 以外的版本。 
+注意，Spring Boot 模板项目目前只支持 Java 8，请勿在 `system.properties` 指定 Java 8 以外的版本。
 
 ### 打包成 WAR 文件的项目
 
@@ -932,7 +932,15 @@ $app->get('/logout', function($req, $res) {
 ```
 {% endif %}
 {% if platformName === "Java" %}
-云引擎提供了一个 `EngineSessionCookie` 组件，用 Cookie 来维护用户（`AVUser`）的登录状态，要使用这个组件可以在初始化时添加下列代码：
+
+云引擎 SDK(engine-core) 是供云引擎程序访问 LeanCloud API 的模块，它内部依赖于 storage-core SDK. 但和在客户端应用中不同，云引擎是一个「多用户」的环境，作为服务器端程序需要同时处理来自不同用户的请求。而 storage-core 中的 `AVUser#currentUser()` 默认是用一个全局变量来标记当前登录用户的，其设计初衷只是为单用户登录场景提供访问的便利，如果在云引擎环境下使用则可能会出现问题。所以从 7.2.0 版本之后我们不再支持在云引擎中通过 `AVUser#currentUser()` 获取登录用户的信息。
+
+开发者可以通过如下两种方式获取用户登录信息：
+
+1. 如果登录过程是客户端直接调用 `AVUser#login()` 进行的，那么客户端 SDK 后续所有请求都会在 http 头中带上当前用户的 sessionToken，开发者在云引擎中可以通过 `EngineRequestContext#getSessionToken()` 获得当前请求用户的 sessionToken，然后调用 `AVUser#becomeWithSessionToken()` 得到具体的 `AVUser` 实例。这种方式在云函数的代码中比较常见。
+2. 如果登录过程发生在云引擎代码之中（例如云引擎中自定义了 login/logout servlet），那么可以通过 session/cookie 机制来保存用户的登录状态。这会在接下来的部分进行详细描述。
+
+云引擎 SDK 提供了一个 `EngineSessionCookie` 组件，用 Cookie 来维护用户（`AVUser`）的登录状态，要使用这个组件可以在初始化时添加下列代码：
 
 ```java
 LeanEngine.addSessionCookie(new EngineSessionCookie("my secret", 3600, true));
@@ -942,9 +950,11 @@ LeanEngine.addSessionCookie(new EngineSessionCookie("my secret", 3600, true));
 
 - **secret**：一个只保存在服务端的字符串，可以设置为任意值。但每次修改之后，所有已有的 cookie 都会失效，也就是所有用户的登录 session 都将过期。
 - **maxAge**：设置 Cookie 的过期时间。单为位秒。
-- **fetchUser**：是否自动 `fetch` 当前登录的 `AVUser` 对象。默认为 `false`。如果设置为 `true`，每个 HTTP 请求都将发起一次 LeanCloud API 调用来 `fetch` 用户对象。如果设置为 `false`，默认只可以访问 `AVUser.getCurrentUser()` 的 `id`（`_User` 表记录的 `objectId`）和 `sessionToken` 属性，你可以在需要时再手动 `fetch` 整个用户。
+- **fetchUser**：是否自动 `fetch` 当前登录的 `AVUser` 对象。默认为 `false`。如果设置为 `true`，每个 HTTP 请求都将发起一次 LeanCloud API 调用来 `fetch` 用户对象。如果设置为 `false`，默认只可以访问 `AVUser` 的 `id`（`_User` 表记录的 `objectId`）和 `sessionToken` 属性，你可以在需要时再手动 `fetch` 整个用户。
 
-你可以这样简单地实现一个具有登录功能的站点：
+你可以按照下面的流程来简单实现一个具有登录功能的站点：
+
+> 以下代码可以直接在我们的[示例项目](https://github.com/leancloud/java-war-getting-started)中查看。
 
 ### 登录
 
@@ -957,21 +967,50 @@ public class LoginServlet extends HttpServlet {
     req.getRequestDispatcher("/login.jsp").forward(req, resp);
   }
 
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+  protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
     String username = req.getParameter("username");
     String passwd = req.getParameter("password");
-    try {
-      AVUser.logIn(username, passwd);
-      resp.sendRedirect("/profile");
-    } catch (AVException e) {
-      resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-      resp.setContentType("application/json; charset=UTF-8");
-      JSONObject result = new JSONObject();
-      result.put("code", e.getCode());
-      result.put("error", e.getMessage());
-      resp.getWriter().write(result.toJSONString());
-      e.printStackTrace();
-    }
+    AVUser.logIn(username, passwd).subscribe(new Observer<AVUser>() {
+      @Override
+      public void onSubscribe(Disposable disposable) {
+
+      }
+
+      @Override
+      public void onNext(AVUser avUser) {
+        try {
+          // save user info to cookie and local session.
+          EngineRequestContext.setAuthenticatedUser(avUser);
+          EngineSessionCookie sessionCookie = LeanEngine.getSessionCookie();
+          if (null != sessionCookie) {
+            sessionCookie.wrapCookie(true);
+          }
+
+          resp.sendRedirect("/profile");
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
+      }
+
+      @Override
+      public void onError(Throwable throwable) {
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        resp.setContentType("application/json; charset=UTF-8");
+        Map<String, Object> result = new HashMap<>();
+        result.put("error", throwable.getMessage());
+        try {
+          resp.getWriter().write(JSON.toJSONString(result));
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
+      }
+
+      @Override
+      public void onComplete() {
+
+      }
+    });
+
   }
 
 }
@@ -989,12 +1028,19 @@ public class LogoutServlet extends HttpServlet {
   }
 
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-      IOException {
-    AVUser user = AVUser.getCurrentUser();
+          IOException {
+    // get authenticated user from request cookie.
+    AVUser user = EngineRequestContext.getAuthenticatedUser();
     if (user != null) {
       user.logOut();
     }
-    resp.sendRedirect("/profile");
+    // delete cookie/session for next login.
+    EngineRequestContext.setAuthenticatedUser(null);
+    EngineSessionCookie sessionCookie = LeanEngine.getSessionCookie();
+    if (null != sessionCookie) {
+      sessionCookie.wrapCookie(true);
+    }
+    resp.sendRedirect("/login");
   }
 
 }
@@ -1007,13 +1053,19 @@ public class LogoutServlet extends HttpServlet {
 public class ProfileServlet extends HttpServlet {
 
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
-      IOException {
-    resp.setContentType("application/json; charset=UTF-8");
-    JSONObject result = new JSONObject();
-    if (AVUser.getCurrentUser() != null) {
-      result.put("currentUser", AVUser.getCurrentUser());
+          IOException {
+    // get authenticated user from request cookie.
+    AVUser currentUser = EngineRequestContext.getAuthenticatedUser();
+    if (null != currentUser) {
+      req.setAttribute("currentUser", currentUser);
+    } else {
+      System.out.println("current User is empty.");
     }
-    resp.getWriter().write(result.toJSONString());
+    try {
+      req.getRequestDispatcher("/profile.jsp").forward(req, resp);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
   }
 
 }
@@ -1023,7 +1075,7 @@ public class ProfileServlet extends HttpServlet {
 
 ```html
 <html>
-  <head></head>
+  <head>Login - LeanEngine Demo</head>
   <body>
     <form method="post" action="/login">
       <label>Username</label>
@@ -1035,6 +1087,22 @@ public class ProfileServlet extends HttpServlet {
   </body>
 </html>
 ```
+
+同样的，用户 profile 页面可以简单构造如下：
+
+```html
+<html>
+  <head>Profile - LeanEngine Demo</head>
+  <body>
+    <p>Current User Profile: ${currentUser}</p>
+
+    <form action="/logout" method="post">
+       <input class="button" type="submit" value="登出"/>
+    </form>
+  </body>
+</html>
+```
+
 {% endif %}
 
 ## 实现常见的网站功能
