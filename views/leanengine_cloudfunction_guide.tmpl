@@ -162,6 +162,9 @@ AVCloud.setProductionMode(false); // 调用预备环境
 ```dart
 LCCloud.setProduction(false); // 调用预备环境
 ```
+```cs
+LCCloud.IsProduction = false; // 调用预备环境
+```
 
 [免费版云引擎](leanengine_plan.html#体验实例) 应用只有「生产环境」，因此请不要切换到预备环境。
 
@@ -543,6 +546,16 @@ try {
   // 处理异常
 }
 ```
+```cs
+try {
+  Dictionary<string, object> response = await LCCloud.Run("averageStars", parameters: new Dictionary<string, object> {
+    { "movie", "夏洛特烦恼" }
+  });
+  // 处理结果
+} catch (LCException e) {
+  // 处理异常
+}
+```
 
 ### 通过 REST API 调用云函数
 
@@ -742,6 +755,16 @@ try {
   LCObject response = await LCCloud.rpc('averageStars', params: { 'movie': '夏洛特烦恼' });
   // 处理结果
 } on LCException catch (e) {
+  // 处理异常
+}
+```
+```cs
+try {
+  double response = (double)(await LCCloud.RPC("averageStars", parameters: new Dictionary<string, object> {
+    { "movie", "夏洛特烦恼" }
+  }));
+  // 处理结果
+} catch (LCException e) {
   // 处理异常
 }
 ```
