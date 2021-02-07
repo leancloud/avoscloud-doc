@@ -1732,6 +1732,12 @@ where={"$and":[{"price": {"$ne":199}},{"price":{"$exists":true}}]}
 where=[{"price": {"$ne":199}},{"price":{"$exists":true}}]
 ```
 
+实际上，由于这两个查询条件都是针对同一个字段（`price`）的查询，还可以进一步简化为：
+
+```
+where={"price": {"$ne":199, "$exists":true}}
+```
+
 不过，如果查询条件包含不止一个 or 查询，那就必须使用 `$and` 了：
 
 ```
