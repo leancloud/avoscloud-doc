@@ -145,7 +145,7 @@ do {
 }
 ```
 ```java
-    AVObject studentTom = new AVObject("Student");// 学生 Tom
+    AVObject studentTom = new AVObject("Student");
     studentTom.put("name", "Tom");
     HashMap<Object, Object> addr = new HashMap<>();
     addr.put("city", "北京");
@@ -385,10 +385,10 @@ await guangZhou.save();
     dongGuan["name"] = "东莞";
 ```
 ```dart
-LCObject GuangDong = LCObject.createWithoutData('Province', '56545c5b00b09f857a603632');
+LCObject guangDong = LCObject.createWithoutData('Province', '56545c5b00b09f857a603632');
 LCObject DongGuan = LCObject('City');
 DongGuan['name'] = '东莞';
-DongGuan['dependent'] = 'GuangDong';
+DongGuan['dependent'] = guangDong;
 ```
 
 注意，为了节约篇幅，以上代码中省略了保存对象的代码。
@@ -535,7 +535,7 @@ LCObject province = city['dependent'];
     ReadOnlyCollection<LCObject> cities = await query.Find();
 ```
 ```dart
-LCObject GuangDong = LCObject.createWithoutData('Province', '56545c5b00b09f857a603632');
+LCObject guangDong = LCObject.createWithoutData('Province', '56545c5b00b09f857a603632');
 LCQuery<LCObject> query = LCQuery('City');
 query.whereEqualTo('dependent', guangDong);
 // cities 为广东省下辖的所有城市
