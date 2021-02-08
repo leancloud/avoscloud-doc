@@ -175,6 +175,11 @@ await todo.Save();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 请阅读 [Android / Java 安装指南](sdk_setup-java.html)。
+
+> Android SDK 老版本迁移
+>
+> 如果你还在在使用我们老版本 Android SDK（所有版本号低于 `5.0.0`，`groupId` 为 `cn.leancloud.android` 的 libraries），要迁移到新版的 Unified SDK，具体迁移方法详见 [Java Unified SDK 迁移指南](java_unified_sdk_migration.html)。
+
 {% endif %}
 {% if platform_name === "Swift" %}
 请阅读 [Swift 安装指南](sdk_setup-swift.html)。
@@ -184,13 +189,10 @@ await todo.Save();
 {% endif %}
 {% if platform_name === ".Net" %}
 请阅读 [.Net 安装指南](sdk_setup-dotnet-standard.html)。
-{% endif %}
-{% if platform_name === "Android / Java" %}
 
-> Android SDK 老版本迁移
+> C#/.Net/Unity SDK 老版本迁移
 >
-> 如果你还在在使用我们老版本 Android SDK（所有版本号低于 `5.0.0`，`groupId` 为 `cn.leancloud.android` 的 libraries），要迁移到新版的 Unified SDK，具体迁移方法详见 [Java Unified SDK 迁移指南](java_unified_sdk_migration.html)。
-
+> 如果你还在在使用我们老版本的 C#/.Net/Unity SDK（版本号为 `YYYYMMDD.N` 格式，类名以 `AV` 开头），请参考 [.Net SDK 迁移指南](dotnet_standard_sdk_migration.html) 迁移到新版 SDK。
 {% endif %}
 
 {% if platform_name === "JavaScript" %}
