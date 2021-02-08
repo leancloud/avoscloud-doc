@@ -60,21 +60,24 @@ vendor | 厂商
 
 ### 环境配置
 
-1. **注册华为账号**：在 [华为开发者联盟](http://developer.huawei.com/cn/consumer/) 注册华为开发者账号（[详细流程](https://developer.huawei.com/consumer/cn/devservice/doc/20300)）。
-2. **开发前准备**：接入华为 PUSH 之前，需要创建应用并配置应用签名，具体可参考华为官方文档：[开发准备](https://developer.huawei.com/consumer/cn/service/hms/catalog/huaweipush_v3.html?page=hmssdk_huaweipush_devprepare_v3)。
-3. **打开推送服务开关**：登录 [华为开发者联盟](http://developer.huawei.com/cn/consumer/)，按照华为官方文档提示[开通推送服务](https://developer.huawei.com/consumer/cn/service/hms/catalog/AGCHelp.html?page=AGC_appGalleryConnect_associated_service)。
+1. **注册华为账号**：在 [华为开发者联盟](http://developer.huawei.com/cn/consumer/) 注册华为开发者账号。
+2. **开发前准备**：接入华为 PUSH 之前，需要创建应用并配置应用签名，具体可参考华为官方文档：[开发准备](https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/android-config-agc-0000001050170137)。
+3. **打开推送服务开关**：登录华为开发者联盟，按照开发准备一文中的提示开通推送服务。
 4. **将华为 App 信息保存到 LeanCloud 控制台**：将上面创建的华为 App 信息（主要有 AppId 和 AppSecret），通过  **LeanCloud 控制台 > 消息 > 推送 > 设置 > 混合推送** 与 LeanCloud 应用关联。
 
 ### 接入 SDK
 
 #### 获取 HMS SDK
-从 6.4.4 版本开始，LeanCloud 混合推送已经升级到华为 PushKit V3 版本，开发者可以参考[华为官方文档](https://developer.huawei.com/consumer/cn/service/hms/catalog/huaweipush_v3.html?page=hmssdk_huaweipush_devprepare_v3)完成 HMS SDK 的接入。其主要步骤有：
+从 6.4.4 版本开始，LeanCloud 混合推送已经升级到华为 PushKit V3 版本，开发者可以参考[华为官方文档](https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/android-integrating-sdk-0000001050040084)完成 HMS SDK 的接入。其主要步骤有：
 
 - 在 AndroidStudio 开发环境中添加当前应用的 AppGallery Connect 配置文件，如下图所示：
-![image](https://obs.cn-north-2.myhwclouds.com/hms-ds-wf/b/3d9b4319cc364362ab910dfd20957fe38198369731757579184.PNG)
+
+![image](./images/hms_appgallery_connect.png)
+
 - 配置 HMS SDK 的 maven 仓库地址。
   - 在项目级 build.gradle 文件的 `allprojects/repositories` 和 `buildscript/repositories` 中增加仓库地址：
-`maven {url 'http://developer.huawei.com/repo/'}`
+
+  `maven {url 'http://developer.huawei.com/repo/'}`
   - 在项目级 build.gradle 的 buildscript/dependencies 里面增加配置：
 ```
 dependencies {
@@ -88,7 +91,8 @@ dependencies {
 apply plugin: 'com.huawei.agconnect'
 ```
 如下图所示：
-![applyImage](https://obs.cn-north-2.myhwclouds.com/hms-ds-wf/b/b757df517a3a49ca8254d551957902ca7924390658280237088.PNG)
+
+![applyImage](./images/hms_build_plugin_agconnect.png)
 
   - 在应用级的 build.gradle 中增加如下编译依赖：
 ```
@@ -97,6 +101,7 @@ dependencies {
   implementation 'com.huawei.hms:push:4.0.2.300'
 }
 ```
+
 - 在 android 中配置签名
 将生成签名证书指纹步骤中生成的签名文件拷贝到工程的 app 目录下，在 build.gradle 文件中配置签名：
 ```
