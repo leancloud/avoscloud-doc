@@ -181,10 +181,17 @@ do {
     student_tom = leancloud.Object.extend("Student")()
     student_tom.set('name', 'Tom')
 
-    addr = { "city": "北京", "address": "西城区西长安街 1 号", "":"100017" };
+    addr = { "city": "北京", "address": "西城区西长安街 1 号", "postcode":"100017" }
     student_tom.set('address', addr)
 
     student_tom.save()
+```
+```php
+$studentTom = new LeanObject("Student");
+$studentTom->set("name", "Tom");
+$addr = array("city" => "北京", "address" => "西城区西长安街 1 号", "postcode" => "100017");
+$studentTom->set("address", $addr);
+$studentTom->save();
 ```
 ```cs
     LCObject studentTom = new LCObject("Student");
@@ -307,16 +314,28 @@ guangZhou.saveInBackground().subscribe(new Observer<AVObject>() {
     });
 ```
 ```python
-    guangZhou = leancloud.Object.extend('City')()
-    guangZhou.set('name', '广州')
+    guang_zhou = leancloud.Object.extend('City')()
+    guang_zhou.set('name', '广州')
 
-    guangDong = leancloud.Object.extend('Province')()
-    guangDong.set('name', '广东')
+    guang_dong = leancloud.Object.extend('Province')()
+    guang_dong.set('name', '广东')
 
-    guangZhou.set('dependent', guangDong)
+    guang_zhou.set('dependent', guang_dong)
 
     # 广东无需单独保存，因为在保存广州时自动保存了广东
-    guangZhou.save()
+    guang_zhou.save()
+```
+```php
+$guangZhou = new LeanObject("City");
+$guangZhou->set("name", "广州");
+
+$guangDong = new LeanObject("Province");
+$guangDong->set("name", "广东");
+
+$guangZhou->set("dependent", $guangDong);
+
+// 广东无需单独保存，因为在保存广州时自动保存了广东
+$guangZhou->save(); 
 ```
 ```cs
     LCObject guangZhou = new LCObject("City");
@@ -374,10 +393,16 @@ await guangZhou.save();
 ```
 ```python
     Province = leancloud.Object.extend('Province')
-    guangDong = Province.create_without_data('574416af79bc44005c61bfa3')
-    dongGuan = leancloud.Object.extend('City')()
-    dongGuan.set('name', '东莞')
-    dongGuan.set('dependent', guangDong)
+    guang_dong = Province.create_without_data('574416af79bc44005c61bfa3')
+    dong_guan = leancloud.Object.extend('City')()
+    dong_guan.set('name', '东莞')
+    dong_guan.set('dependent', guang_dong)
+```
+```php
+$guangDong = LeanObject::create("Province", "574416af79bc44005c61bfa3");
+$dongGuan = new LeanObject("City");
+$dongGuan->set("name", "东莞");
+$dongGuan->set("dependent", $guangDong);
 ```
 ```cs
     LCObject guangDong = LCObject.CreateWithoutData("Province", "56545c5b00b09f857a603632");
@@ -447,6 +472,13 @@ query.getFirstInBackground().subscribe(new Observer<AVObject>() {
     query.include('dependent')
     city = query.first()
     province = city.get('dependent')
+```
+```php
+$query = new Query("City");
+$query->equalTo("name", "广州");
+$query->_include("dependent");
+$city = $query->first();
+$province = $city->get("dependent");
 ```
 ```cs
     LCQuery<LCObject> query = new LCQuery<LCObject>("City");
@@ -521,11 +553,18 @@ LCObject province = city['dependent'];
 ```
 ```python
     Province = leancloud.Object.extend('Province')
-    guangDong = Province.create_without_data('574416af79bc44005c61bfa3')
+    guang_dong = Province.create_without_data('574416af79bc44005c61bfa3')
     query = leancloud.Query('City')
-    query.equal_to('dependent', guangDong)
+    query.equal_to('dependent', guang_dong)
     # cities 为广东省下辖的所有城市
     cities = query.find():
+```
+```php
+$guangDong = LeanObject::create("Province", "574416af79bc44005c61bfa3");
+$query = new Query("City");
+$query->equalTo("dependent", $guangDong);
+// cities 为广东省下辖的所有城市
+$cities = $query->find();
 ```
 ```cs
     LCObject guangDong = LCObject.CreateWithoutData("Province", "56545c5b00b09f857a603632");
@@ -942,6 +981,28 @@ do {
     # 保存选课表对象
     student_course_map_tom.save()
 ```
+```php
+$studentTom = new LeanObject("Student");
+$studentTom->set("name", "Tom");
+
+$courseLinearAlgebra = new LeanObject("Course");
+$courseLinearAlgebra->set("name", "线性代数");
+
+$studentCourseMapTom = new LeanObject("StudentCourseMap");
+
+// 设置关联
+$studentCourseMapTom->set("student", $studentTom);
+$studentCourseMapTom->set("course", $courseLinearAlgebra);
+
+// 设置学习周期
+$studentCourseMapTom->set("duration", array("2016-02-19", "2016-04-12"));
+
+// 设置操作平台
+$studentCourseMapTom->set("platform", "ios");
+
+// 保存选课表对象
+$studentCourseMapTom->save(); 
+```
 ```cs
     LCObject studentTom = new LCObject("Student");
     studentTom["name"] = "Tom";
@@ -1091,6 +1152,20 @@ query.findInBackground().subscribe(new Observer<List<AVObject>>() {
         duration = student_course_map.get('duration')
         platform = student_course_map.get('platform')
 ```
+```php
+$courseLinearAlgebra = LeanObject::create("Course", "57448184c26a38006b8d4761");
+$query = new Query("Student_course_map");
+$query->equalTo("course", $courseLinearAlgebra);
+
+// 查询所有选择了线性代数的学生
+$studentCourseMaps = $query->find();
+
+foreach ($studentCourseMaps as $studentCourseMap) {
+    $student = $studentCourseMap->get("student");
+    $duration = $studentCourseMap->get("duration");
+    $platform = $studentCourseMap->get("platform");
+}
+```
 ```cs
     // 线性代数课程
     LCObject courseLinearAlgebra = LCObject.CreateWithoutData("Course", "562da3fdddb2084a8a576d49");
@@ -1155,6 +1230,10 @@ for (LCObject studentCourseMap in list) {
     Student = leancloud.Object.extend('Student')
     student_tom = Student.create_without_data("562da3fc00b0bf37b117c250")
     query.whereEqualTo("student", student_tom)
+```
+```php
+$studentTom = LeanObject::create("Student", "562da3fc00b0bf37b117c250");
+$query->equalTo("student", $studentTom);
 ```
 ```cs
     LCQuery<LCObject> query = new LCQuery<LCObject>("StudentCourseMap");
@@ -1482,6 +1561,10 @@ if(存在附加属性){
 ```python
     beckham = leancloud.Object.create('Boy')()
     beckham.set('tags', ['颜值爆表', '明星范儿']) 
+```
+```php
+$beckham = new LeanObject("Boy");
+$beckham->set("tags", array("颜值爆表", "明星范儿"));
 ```
 ```cs
     LCObject beckham = new LCObject("Boy");
