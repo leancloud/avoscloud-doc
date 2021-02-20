@@ -2763,7 +2763,7 @@ curl -X GET \
 
 - 根据业务需要设置合理的权限。例如：[Class 权限](data_security.html#Class_权限)中，`create`、`update`、`find`、`get` 可以设定为仅限登录用户，同时对所有用户关闭 `add_fields` 和 `delete` 权限。`UserFeedback` 和 `UserReply` 默认 ACL 设置为数据创建者可写，客服[角色](acl-guide.html#基于角色的权限管理)可读，`StaffReply` 的 ACL 需要就每条数据分别设置（这也是 `UserReply` 和 `StaffReply` 不并为一个 Class 的原因），数据创建者或客服角色可写，提交反馈的用户（`feedback` 字段指向的 `UserFeedback` 的 `author`）可读。
 
-**用户反馈组件 API 已弃用，以下 REST API 接口仍可调用，以便应用开发者迁移数据。**，
+**用户反馈组件 API 已弃用，以下 REST API 接口仍可调用，以便应用开发者迁移数据。**
 
 {% if node == 'qcloud' %}
 {% set feedback_host = "tab.leancloud.cn" %}
