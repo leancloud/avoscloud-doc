@@ -366,50 +366,7 @@ Postman 还支持自动生成多种语言（库）调用 REST API 的代码。
   </tbody>
 </table>
 
-### 用户反馈组件
 
-<table>
-  <thead>
-    <tr>
-      <th>URL</th>
-      <th>HTTP</th>
-      <th>功能</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>/1.1/feedback</td>
-      <td>POST</td>
-      <td>提交新的用户反馈</td>
-    </tr>
-  </tbody>
-</table>
-
-<!--
-### 短信验证 API
-
-<table>
-  <thead>
-    <tr>
-      <th>URL</th>
-      <th>HTTP</th>
-      <th>功能</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>/1.1/requestSmsCode</td>
-      <td>POST</td>
-      <td>请求发送短信验证码</td>
-    </tr>
-        <tr>
-      <td>/1.1/verifySmsCode/&lt;code&gt;</td>
-      <td>POST</td>
-      <td>验证短信验证码</td>
-    </tr>
-  </tbody>
-</table>
--->
 
 ### 即时通讯
 
@@ -2797,6 +2754,17 @@ curl -X GET \
 
 ## 用户反馈组件 API
 
+由于设计和实现上的一些不足，用户反馈组件在查询方面不够灵活（例如，难以查询某一个用户的所有反馈），权限不够严密，且应用导出数据并不包含用户反馈数据。
+因此，我们建议基于数据存储功能自行实现用户反馈功能，例如：
+
+- 使用 `UserFeedback` Class 存储用户反馈主帖。其中，`content` 字段存储反馈内容，`status` 字段存储反馈状态（处理中、关闭等等），`author` （作者）字段则可以设计为指向 `_User` 用户的 Pointer。根据业务需求，可以添加更多字段，比如设备型号、客服评分等。
+
+- 使用 `UserReply` 和 `StaffReply`  Class 分别存储用户和客服的回复。同样，`content` 字段存储反馈内容，`author` （作者）字段可以设计为指向 `_User` 用户的 Pointer，`feedback` 字段可以设计为指向 `UserFeedback` 的 Pointer 以关联反馈和回复。
+
+- 根据业务需要设置合理的权限。例如：[Class 权限](data_security.html#Class_权限)中，`create`、`update`、`find`、`get` 可以设定为仅限登录用户，同时对所有用户关闭 `add_fields` 和 `delete` 权限。`UserFeedback` 和 `UserReply` 默认 ACL 设置为数据创建者可写，客服[角色](acl-guide.html#基于角色的权限管理)可读，`StaffReply` 的 ACL 需要就每条数据分别设置（这也是 `UserReply` 和 `StaffReply` 不并为一个 Class 的原因），数据创建者或客服角色可写，提交反馈的用户（`feedback` 字段指向的 `UserFeedback` 的 `author`）可读。
+
+**用户反馈组件 API 已弃用，以下 REST API 接口仍可调用，以便应用开发者迁移数据。**，
+
 {% if node == 'qcloud' %}
 {% set feedback_host = "tab.leancloud.cn" %}
 {% elif node == 'us' %}
@@ -3041,6 +3009,7 @@ curl -X GET \
 
 如果任务还没有完成， `status` 仍然将为 `running` 状态，**请间隔一段时间后再尝试查询。**
 
+**导出应用数据中不含用户反馈数据和即时通讯聊天记录。** 如需导出这些记录，请调用相应的 REST API 接口获取。
 
 ## 其他 API
 
