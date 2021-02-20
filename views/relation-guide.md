@@ -1163,7 +1163,7 @@ $studentCourseMaps = $query->find();
 foreach ($studentCourseMaps as $studentCourseMap) {
     $student = $studentCourseMap->get("student");
     $duration = $studentCourseMap->get("duration");
-    $platform = studentCourseMap->get("platform");
+    $platform = $studentCourseMap->get("platform");
 }
 ```
 ```cs
