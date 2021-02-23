@@ -52,6 +52,23 @@ todo.save().then((todo) => {
 });
 ```
 {% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+db.class('Todo')
+  .add({
+    title: '工程师周会',
+    content: '周二两点，全体成员',
+  })
+  .then((todo) => {
+    // 成功保存之后，执行其他逻辑
+    console.log(`保存成功，objectId：${todo.id}`);
+  })
+  .catch((error) => {
+    // 异常处理
+  });
+```
+{% endif %}
+
 {% if platform_name === "Python" %}
 ```python
 # 声明 class
@@ -195,7 +212,7 @@ await todo.Save();
 > 如果你还在在使用我们老版本的 C#/.Net/Unity SDK（版本号为 `YYYYMMDD.N` 格式，类名以 `AV` 开头），请参考 [.Net SDK 迁移指南](dotnet_standard_sdk_migration.html) 迁移到新版 SDK。
 {% endif %}
 
-{% if platform_name === "JavaScript" %}
+{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}
 ## Web 安全
 
 如果在前端使用 JavaScript SDK，当你准备正式发布的时候，请务必在 **控制台 > 设置 > 安全中心** 中配置 **Web 安全域名**，这样可以防止其他人通过外网其他地址盗用你的服务器资源。
@@ -278,6 +295,23 @@ testObject.set('testDate',    date);
 testObject.set('testArray',   array);
 testObject.set('testObject',  object);
 testObject.save();
+```
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+db.class('TestObject').add({
+  bool: true,
+  number: 2021,
+  string: 'Hello world!',
+  date: new Date(),
+  array: [1, 2, 3],
+  object: {
+    year: 1780,
+    first: 'partridge',
+    second: 'turtledoves',
+    fifth: 'golden rings',
+  },
+});
 ```
 {% endif %}
 {% if platform_name === "Flutter" %}
@@ -469,6 +503,7 @@ let getNumber2: LCNumber? = object["number"] as? LCNumber
 
 若想了解 LeanCloud 是如何保护应用数据的，请阅读 [数据和安全](data_security.html)。
 
+{% if platform_name !== "JavaScript(next)" %}
 ### 构建对象
 
 下面的代码构建了一个 class 为 `Todo` 的 `{{ baseObjectName }}`：
@@ -550,6 +585,7 @@ AV.Object.register(Todo);
 
 这样你就能在 `AV.Object` 的子类中添加额外的方法和属性了。
 {% endif %}
+{% endif %}{# if platform_name !== "JavaScript(next)" #}
 
 ### 保存对象
 
@@ -594,6 +630,22 @@ todo.save().then((todo) => {
 }, (error) => {
   // 异常处理
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+db.class('Todo')
+  .add({
+    title: '马拉松报名',
+    priority: 2,
+  })
+  .then((todo) => {
+    // 成功保存之后，执行其他逻辑
+    console.log(`保存成功，objectId：${todo.id}`);
+  })
+  .catch((error) => {
+    // 异常处理
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -723,10 +775,10 @@ await todo.Save();
 
 内置属性 | 类型 | 描述
 --- | --- | ---
-`objectId` | `{% if platform_name === "Objective-C" %}NSString{% endif %}{% if platform_name === "JavaScript" %}String{% endif %}{% if platform_name === "Python" %}str{% endif %}{% if platform_name === "PHP" %}String{% endif %}{% if platform_name === "Android / Java" %}String{% endif %}{% if platform_name === "Swift" %}LCString{% endif %}{% if platform_name === "Flutter" %}String{% endif %}{% if platform_name === ".Net" %}string{% endif %}` | 该对象唯一的 ID 标识。
-`ACL` | `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}AVACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}{% if platform_name === "Flutter" %}LCACL{% endif %}{% if platform_name === ".Net" %}LCACL{% endif %}` | 该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
-`createdAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}` | 该对象被创建的时间。
-`updatedAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}` | 该对象最后一次被修改的时间。
+`objectId` | `{% if platform_name === "Objective-C" %}NSString{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}String{% endif %}{% if platform_name === "Python" %}str{% endif %}{% if platform_name === "PHP" %}String{% endif %}{% if platform_name === "Android / Java" %}String{% endif %}{% if platform_name === "Swift" %}LCString{% endif %}{% if platform_name === "Flutter" %}String{% endif %}{% if platform_name === ".Net" %}string{% endif %}` | 该对象唯一的 ID 标识。
+`ACL` | `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "JavaScript(next)" %}ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}AVACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}{% if platform_name === "Flutter" %}LCACL{% endif %}{% if platform_name === ".Net" %}LCACL{% endif %}` | 该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
+`createdAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}` | 该对象被创建的时间。
+`updatedAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}` | 该对象最后一次被修改的时间。
 
 这些属性的值会在对象被存入云端时自动填入，代码中尚未保存的 `{{ baseObjectName }}` 不存在这些属性。
 
@@ -768,6 +820,21 @@ query.get('582570f38ac247004f39c24b').then((todo) => {
   const updatedAt = todo.updatedAt;
   const createdAt = todo.createdAt;
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+db.class('Todo')
+  .object('582570f38ac247004f39c24b')
+  .get()
+  .then((todo) => {
+    // 获取属性
+    const title = todo.data.title;
+    const priority = todo.data.priority;
+    const objectId = todo.data.objectId;
+    const updatedAt = todo.data.updatedAt;
+    const createdAt = todo.data.createdAt;
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -866,9 +933,13 @@ DateTime createdAt = todo.CreatedAt;
 ```
 {% endif %}
 
-对象拿到之后，可以通过 `get` 方法来获取各个属性的值。注意 `objectId`、`updatedAt`和`createdAt` 这三个内置属性不能通过 `get` 获取或通过 `set` 修改，只能由云端自动进行填充。尚未保存的 `{{ baseObjectName }}` 不存在这些属性。
+{% if platform_name === "JavaScript(next)" %}
+对象拿到之后，可以通过 `data` 来获取各个属性的值。注意 `objectId`、`updatedAt` 和 `createdAt` 这三个内置属性不能修改，只能由云端自动进行填充。
+{% else %}
+对象拿到之后，可以通过 `get` 方法来获取各个属性的值。注意 `objectId`、`updatedAt` 和 `createdAt` 这三个内置属性不能通过 `get` 获取或通过 `set` 修改，只能由云端自动进行填充。尚未保存的 `{{ baseObjectName }}` 不存在这些属性。
+{% endif %}
 
-如果你试图获取一个不存在的属性，SDK 不会报错，而是会返回 `{% if platform_name in ["Objective-C", "Swift"] %}nil{% endif %}{% if platform_name === "JavaScript" %}undefined{% endif %}{% if platform_name === "Python" %}None{% endif %}{% if platform_name in ["Android / Java", "PHP"] %}null{% endif %}`。
+如果你试图获取一个不存在的属性，SDK 不会报错，而是会返回 `{% if platform_name in ["Objective-C", "Swift"] %}nil{% endif %}{% if platform_name in ["JavaScript", "JavaScript(next)"] %}undefined{% endif %}{% if platform_name === "Python" %}None{% endif %}{% if platform_name in ["Android / Java", "PHP"] %}null{% endif %}`。
 
 {% if platform_name === "JavaScript" %}
 如果需要一次性获取返回对象的所有属性（比如进行数据绑定）而非显式地调用 `get`，可以利用 `AV.Object` 实例的 `toJSON` 方法：
@@ -885,6 +956,25 @@ query.get('582570f38ac247004f39c24b').then((todo) => {
   //   updatedAt: "2017-03-08T11:25:07.804Z"
   // }
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+如果需要一次性获取返回对象的所有属性（比如进行数据绑定），可以利用 `{{ baseObjectName }}` 实例的 `toJSON` 方法：
+
+```js
+db.class('Todo')
+  .object('582570f38ac247004f39c24b')
+  .get()
+  .then((todo) => {
+    console.log(todo.toJSON());
+    // {
+    //   createdAt: "2017-03-08T11:25:07.804Z",
+    //   objectId: "582570f38ac247004f39c24b",
+    //   priority: 2,
+    //   title: "工程师周会",
+    //   updatedAt: "2017-03-08T11:25:07.804Z"
+    // }
+  });
 ```
 {% endif %}
 
@@ -1035,45 +1125,63 @@ await todo.Fetch(includes: new string[] { "priority", "location" });
 
 ### 更新对象
 
-要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}{% if platform_name === ".Net" %}Save{% endif %}` 方法。例如：
-
 {% if platform_name === "Objective-C" %}
+要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `saveInBackground` 方法。例如：
 ```objc
 AVObject *todo = [AVObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
 [todo setObject:@"这周周会改到周三下午三点。" forKey:@"content"];
 [todo saveInBackground];
 ```
+LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "JavaScript" %}
+要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
 ```js
 const todo = AV.Object.createWithoutData('Todo', '582570f38ac247004f39c24b');
 todo.set('content', '这周周会改到周三下午三点。');
 todo.save();
 ```
+LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+要更新一个对象，只需调用 `update` 方法并提供需要更新的属性名和属性值。例如：
+```js
+db.class('Todo').object('582570f38ac247004f39c24b').update({
+  content: '这周周会改到周三下午三点。',
+});
+```
+未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "Python" %}
+要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
 ```python
 Todo = leancloud.Object.extend('Todo')
 todo = Todo.create_without_data('582570f38ac247004f39c24b')
 todo.set('content', '这周周会改到周三下午三点。')
 todo.save()
 ```
+LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "PHP" %}
+要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
 ```php
 $todo = LeanObject::create("Todo", "582570f38ac247004f39c24b");
 $todo->set("content", '这周周会改到周三下午三点。');
 $todo->save();
 ```
+LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "Android / Java" %}
+要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
 ```java
 AVObject todo = AVObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
 todo.put("content", "这周周会改到周三下午三点。");
 todo.save();
 ```
+LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "Swift" %}
+要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
 ```swift
 do {
     let todo = LCObject(className: "Todo", objectId: "582570f38ac247004f39c24b")
@@ -1090,23 +1198,26 @@ do {
     print(error)
 }
 ```
+LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "Flutter" %}
+要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
 ```dart
 LCObject todo = LCObject.createWithoutData('Todo', '582570f38ac247004f39c24b');
 todo['content'] = '这周周会改到周三下午三点。';
 await todo.save();
 ```
+LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === ".Net" %}
+要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `Save` 方法。例如：
 ```cs
 LCObject todo = LCObject.CreateWithoutData("Todo", "582570f38ac247004f39c24b");
 todo["content"] = "这周周会改到周三下午三点。";
 await todo.Save();
 ```
-{% endif %}
-
 LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+{% endif %}
 
 {% if platform_name === "JavaScript" %}
 如果想要查看哪些属性有尚未保存的修改，可以调用 `dirtyKeys` 方法：
@@ -1124,7 +1235,7 @@ todo.revert(['content'])
 ```
 {% endif %}
 
-{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Android / Java" or platform_name === "Swift" %}
+{% if platform_name in ["Objective-C", "JavaScript", "JavaScript(next)", "Python", "Android / Java", "Swift"] %}
 #### 有条件更新对象
 
 通过传入 `query` 选项，可以按照指定条件去更新对象——当条件满足时，执行更新；条件不满足时，不执行更新并返回 `305` 错误。
@@ -1177,6 +1288,33 @@ account.save(null, {
   }
 });
 ```
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+db.class('Account')
+  .object('5745557f71cfe40068c6abe0')
+  .update(
+    {
+      // 对 balance 原子减少 100
+      balance: db.op.decrement(100),
+    },
+    {
+      // 设置条件
+      query: db.class('Account').where('balance', '>=', 100),
+      // 返回被更新的属性
+      fetchUpdatedData: true,
+    }
+  )
+  .then((account) => {
+    console.log(`当前余额为：${account.data.balance}`);
+  })
+  .catch((error) => {
+    if (error.code === 305) {
+      console.error('余额不足，操作失败！');
+    }
+  });
+```
+`query` 选项在有多个客户端需要更新同一属性的时候非常有用。
 {% endif %}
 {% if platform_name === "Python" %}
 ```python
@@ -1324,6 +1462,11 @@ try {
 post.increment('likes', 1);
 ```
 {% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+post.update({ likes: db.op.increment(1) });
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 post.increment('likes', 1)
@@ -1374,6 +1517,11 @@ post.Increment("likes", 1);
 - `AV.Object.add('arrayKey', value)`<br/>将指定对象附加到数组末尾。
 - `AV.Object.addUnique('arrayKey', value)`<br/>如果数组中不包含指定对象，则将该对象加入数组。对象的插入位置是随机的。
 - `AV.Object.remove('arrayKey', value)`<br/>从数组字段中删除指定对象的所有实例。
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+- `db.op.add`<br/>将指定对象附加到数组末尾。
+- `db.op.addUnique`<br/>如果数组中不包含指定对象，则将该对象加入数组。对象的插入位置是随机的。
+- `db.op.remove`<br/>从数组字段中删除指定对象的所有实例。
 {% endif %}
 {% if platform_name === "Python" %}
 - `add()`<br/>将指定对象附加到数组末尾。
@@ -1448,6 +1596,17 @@ const alarms = [alarm1, alarm2, alarm3];
 const todo = new AV.Object('Todo');
 todo.addUnique('alarms', alarms);
 todo.save();
+```
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+const alarm1 = new Date('2018-04-30T07:10:00');
+const alarm2 = new Date('2018-04-30T07:20:00');
+const alarm3 = new Date('2018-04-30T07:30:00');
+
+db.class('Todo').add({
+  alarms: db.op.addUnique([alarm1, alarm2, alarm3]),
+});
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -1580,6 +1739,11 @@ const todo = AV.Object.createWithoutData('Todo', '582570f38ac247004f39c24b');
 todo.destroy();
 ```
 {% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+db.class('Todo').object('582570f38ac247004f39c24b').delete();
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 Todo = leancloud.Object.extend('Todo')
@@ -1637,6 +1801,16 @@ todo.unset('priority');
 todo.save();
 ```
 {% endif %}
+{% if platform_name === "JavaScript(next)" %}
+如果只需删除对象的一个属性，可以用 `db.op.unset`：
+
+```js
+db.class('Todo').object('582570f38ac247004f39c24b').update({
+  // priority 属性会被删除
+  priority: db.op.unset(),
+});
+```
+{% endif %}
 {% if platform_name === "Flutter" %}
 如果只需删除对象的一个属性，可以用 `unset`：
 ```dart
@@ -1669,7 +1843,11 @@ await todo.Save();
 
 ### 批量操作
 
+{% if platform_name === "JavaScript(next)" %}
+可以在一次请求中包含多个创建、更新、删除对象的操作：
+{% else %}
 可以在一次请求中包含多个构建、保存、删除和同步对象的操作：
+{% endif %}
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -1702,6 +1880,21 @@ AV.Object.destroyAll(objects);
 
 // 批量同步
 AV.Object.fetchAll(objects);
+```
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+const pipeline = db.pipeline();
+
+pipeline.add('Todo', {
+  // ...
+});
+
+pipeline.delete('Todo', '5f30ef3fdadca600082ea8e2');
+
+pipeline.get('Todo', '582570f38ac247004f39c24b');
+
+pipeline.commit();
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -1828,6 +2021,19 @@ query.find().then((todos) => {
   // 批量更新
   AV.Object.saveAll(todos);
 });
+```
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+const pipeline = db.pipeline();
+db.class('Todo')
+  .find()
+  .then((todos) => {
+    todos.forEach((todo) => {
+      pipeline.update(todo, { isComplete: true });
+    });
+    return pipeline.commit();
+  });
 ```
 {% endif %}
 {% if platform_name === "Python" %}
@@ -2011,6 +2217,21 @@ comment.set('parent', post);
 comment.save();
 ```
 {% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+db.class('Post')
+  .add({
+    title: '饿了……',
+    content: '中午去哪吃呢？',
+  })
+  .then((post) => {
+    return db.class('Comment').add({
+      post, // 将 post 设为 comment 的一个属性值
+      content: '当然是肯德基啦！',
+    });
+  });
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 # 创建 post
@@ -2140,6 +2361,14 @@ const post = AV.Object.createWithoutData('Post', '57328ca079bc44005c2472d0');
 comment.set('post', post);
 ```
 {% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+db.class('Comment').add({
+  post: db.class('Post').object('57328ca079bc44005c2472d0'),
+  content: '当然是肯德基啦！',
+});
+```
+{% endif %}
 {% if platform_name === "Python" %}
 ```python
 Post = leancloud.Object.extend('Post')
@@ -2190,7 +2419,7 @@ comment["post"] = post;
 我们知道设计数据模型并不容易，所以我们专门写了一篇 [数据模型设计指南](relation-guide.html) 来详细介绍这部分内容，推荐你去看一下。
 {% endcall %}
 
-{% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Swift" or platform_name === "Flutter" or platform_name === ".Net" %}
+{% if platform_name in ["Objective-C", "JavaScript", "JavaScript(next)", "Android / Java", "Swift", "Flutter", ".Net"] %}
 ### 序列化和反序列化
 
 在实际的开发中，把 `{{ baseObjectName }}` 当作参数传递的时候，会涉及到复杂对象的拷贝的问题，因此 `{{ baseObjectName }}` 也提供了序列化和反序列化的方法。
@@ -2218,7 +2447,7 @@ todo.set('title', '马拉松报名'); // 设置名称
 todo.set('priority', 2); // 设置优先级
 todo.set('owner', AV.User.current()); // 这里就是一个 Pointer 类型，指向当前登录的用户
 
-// 将 AV.Object 对象反序列化成 JSON 对象
+// 将 AV.Object 对象序列化成 JSON 对象
 const json = todo.toFullJSON();
 // 将 JSON 对象序列化为字符串
 const serializedString = JSON.stringify(json);
@@ -2226,6 +2455,18 @@ const serializedString = JSON.stringify(json);
 
 {% call docs.noteWrap() %}
 `AV.Object` 还提供了另一个方法 `toJSON()`。它们的区别是 `toJSON()` 得到的对象仅包含对象的 payload，一般用于展示，而 `toFullJSON()` 得到的对象包含了元数据，一般用于传输。在使用时请注意区分。
+{% endcall %}
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+// 将 LCObject 对象序列化成 JSON 对象
+const json = db.encode(todo);
+// 将 JSON 对象序列化为字符串
+const serializedString = JSON.stringify(json);
+```
+
+{% call docs.noteWrap() %}
+`LCObject` 还提供了一个方法 `toJSON()`。它们的区别是 `toJSON()` 得到的对象仅包含对象的 payload，一般用于展示，而 `db.encode` 得到的对象包含了元数据，一般用于传输。在使用时请注意区分。
 {% endcall %}
 {% endif %}
 {% if platform_name === "Android / Java" %}
@@ -2296,6 +2537,14 @@ AVObject *todo = [AVObject objectWithDictionary:objectDictionary]; // 由 NSMuta
 const json = JSON.parse(serializedString);
 // 将 JSON 对象反序列化成 AV.Object 对象
 const todo = AV.parseJSON(json);
+```
+{% endif %}
+{% if platform_name === "JavaScript(next)" %}
+```js
+// 将字符串反序列化为 JSON 对象
+const json = JSON.parse(serializedString);
+// 将 JSON 对象反序列化成 LCObject 对象
+const todo = db.decode(json);
 ```
 {% endif %}
 {% if platform_name === "Android / Java" %}
