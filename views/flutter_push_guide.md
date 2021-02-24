@@ -196,7 +196,9 @@ public class MyLeanCloudApp extends FlutterApplication {
 </application>
 ```
 
-之后需要在 LeanCloud 云端注册设备（保存 Installation 信息），这样设备才能收到推送，详见 [Android 推送指南 > 保存 Installation](android_push_guide.html#保存_Installation)。
+之后需要在 LeanCloud 云端注册设备（保存 Installation 信息）并启动推送服务，这样设备才能收到推送，详见 Android 推送指南的[保存 Installation](android_push_guide.html#保存_Installation)、[启动推送服务](android_push_guide.html#启动推送服务) 。
+
+另外，还需要设置通知展示的默认 channel，否则 Android 8.0 以上设备无法展示推送。详见 [Android 推送指南 > Android 8.0 推送适配](android_push_guide.html#Android_8.0_推送适配)。
 
 ### 集成混合推送
 
