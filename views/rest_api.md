@@ -2090,7 +2090,28 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
 }
 ```
 
-匿名用户(Anonymous user)的 authData 内容：
+其他任意第三方平台：
+
+```json
+{
+  "第三方平台名称，例如facebook": {
+    "uid": "在第三方平台上的唯一用户 ID 字符串",
+    "access_token": "在第三方平台的 access token",
+    // ……其他可选属性
+  }
+}
+```
+
+LeanCloud 会自动为 `authData.第三方平台名称.uid` 创建唯一索引，以确保一个第三方账号只绑定到一个 LeanCloud 应用内用户上。
+
+注意：
+
+- 其他第三方平台不支持校验 access token。
+- 其他第三方平台不支持后面提到的 UnionID 登录功能，因此也不用设置相应的 `unionid`、`platform`、`main_account` 字段。
+- 其他第三方平台请使用 `uid` 字段储存第三方平台的唯一用户 ID 字符串，不要使用 `openid`。
+
+和第三方登录相似的一个概念是匿名登录。
+匿名用户(Anonymous user)的 authData 内容如下：
 
 ```json
 {
@@ -2099,20 +2120,6 @@ LeanCloud 允许你连接你的用户到其他服务，比如新浪微博和腾�
   }
 }
 ```
-
-其他任意第三方平台（其他第三方将不支持校验 access token 选项）：
-
-```json
-{
-  "第三方平台名称，例如facebook": {
-    "uid": "在第三方平台上的唯一用户id字符串",
-    "access_token": "在第三方平台的 access token",
-    // ……其他可选属性
-  }
-}
-```
-
-LeanCloud 会自动为 `authData.第三方平台名称.uid` 创建唯一索引，以确保一个第三方账号只绑定到一个 LeanCloud 应用内用户上。
 
 #### 注册和登录
 
