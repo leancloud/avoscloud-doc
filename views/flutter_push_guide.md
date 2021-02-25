@@ -196,16 +196,19 @@ public class MyLeanCloudApp extends FlutterApplication {
 </application>
 ```
 
+之后需要在 LeanCloud 云端注册设备（保存 Installation 信息）并启动推送服务，这样设备才能收到推送，详见 Android 推送指南的[保存 Installation](android_push_guide.html#保存_Installation)、[启动推送服务](android_push_guide.html#启动推送服务) 。
+
+另外，还需要设置通知展示的默认 channel，否则 Android 8.0 以上设备无法展示推送。详见 [Android 推送指南 > Android 8.0 推送适配](android_push_guide.html#Android_8.0_推送适配)。
+
 ### 集成混合推送
 
 如果想在用户离线的状态下，收到离线的消息推送，需要使用混合推送。混合推送的使用请参考： [Android 混合推送开发指南](android_mixpush_guide.html)。
 
 **建议 Android 设备全部集成混合推送，来保证推送的到达率。**
 
-
 ## 推送验证
 
-初始化 SDK 后，运行 Flutter 项目，_Installation 表会生成一条设备信息的数据。
+初始化 SDK 后，运行 Flutter 项目，`_Installation` 表会生成一条设备信息的数据。
 
 在控制台 > 消息 > 推送 > 在线发送可以自定义推送条件发送一条推送，测试当前设备能否正常收到推送。
 

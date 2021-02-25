@@ -118,9 +118,7 @@ public class MyLeanCloudApp extends Application {
 
 ### 保存 Installation
 
-当应用在用户设备上安装好以后，如果要使用消息推送功能，LeanCloud SDK 会自动生成一个 Installation 对象。该对象本质上是应用在设备上生成的安装信息，也包含了推送所需要的所有数据，因此要使用它来进行消息推送。
-
-你可以通过以下代码保存你的 Installation id。如果你的系统之前还没有 Installation id，系统会为你自动生成一个。
+当应用在用户设备上安装好以后，如果要使用消息推送功能，LeanCloud SDK 会自动生成一个 Installation 对象。该对象本质上是应用在设备上生成的安装信息，需要首先将它保存到云端设备才能收到推送：
 
 ```java
 AVInstallation.getCurrentInstallation().saveInBackground();
