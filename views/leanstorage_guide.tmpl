@@ -9621,6 +9621,89 @@ LeanCloud 云端首先会查找账户系统（_User 表），看看是否存在 
 
 配置平台账号的目的在于创建 `{{ userObjectName }}` 时，LeanCloud 云端会使用相关信息去校验请求参数 `thirdPartyData` 的合法性，确保 `{{ userObjectName }}` 实际对应着一个合法真实的用户，确保平台安全性。
 
+#### 绑定第三方账户
+
+用户已经有了 AVUser 并登录成功后，可以绑定新的第三方账号信息。
+绑定成功后，新的第三方账户信息会被添加到 AVUser 的 authData 字段里。
+
+例如，下面的代码可以关联微信账户：
+
+{% if platform_name === "Objective-C" %}
+```objc
+[user associateWithAuthData:weixinData platformId:LeanCloudSocialPlatformWeiXin options:nil callback:^(BOOL succeeded, NSError * _Nullable error) {
+    if (succeeded) {
+        NSLog(@"成功");
+    } else{
+        NSLog(@"失败：%@",error.localizedFailureReason);
+    }
+}];
+```
+{% endif %}
+{% if platform_name === "JavaScript" %}
+```js
+user.associateWithAuthData(weixinData, 'weixin').then(function(user) {
+  // 成功绑定
+}).catch(function(error) {
+  console.error("error: ", error);
+});
+```
+{% endif %}
+{% if platform_name === "Python" %}
+```python
+user.link_with("weixin", weixin_data)
+```
+{% endif %}
+{% if platform_name === "PHP" %}
+```php
+$user->linkWith("weixin", $weixinData);
+```
+{% endif %}
+{% if platform_name === "Android / Java" %}
+```java
+avUser.associateWithAuthData(weixinData, "weixin").subscribe(new Observer<AVUser>() {
+    @Override
+    public void onSubscribe(Disposable d) {
+    }
+    @Override
+    public void onNext(AVUser avUser) {
+        System.out.println("绑定成功");
+    }
+    @Override
+    public void onError(Throwable e) {
+        System.out.println("绑定失败：" + e.getMessage());
+    }
+    @Override
+    public void onComplete() {
+    }
+});
+```
+{% endif %}
+{% if platform_name === "Swift" %}
+```swift
+currentUser.associate(authData: weixinData, platform: .weixin) { (result) in
+    switch result {
+    case .success:
+        // 关联成功
+    case .failure(error: let error):
+        // 关联失败
+    }
+}
+```
+{% endif %}
+
+{% if platform_name === "Flutter" %}
+```dart
+await currentUser.associateAuthData(weixinData, 'weixin');
+```
+{% endif %}
+{% if platform_name === ".Net" %}
+```cs
+await currentUser.AssociateAuthData(weixinData, "weixin");
+```
+{% endif %}
+
+为节省篇幅，上面的代码示例中没有给出具体的微信平台授权信息，相关内容请参考上面的[「第三方账户登录」](#第三方账户登录)一节。
+
 #### 解除与第三方账户的关联
 
 如果将 _User 表 `authData` 中对应平台的 json 数据设为 `null`，则意味着解除与该平台的关联，SDK 层提供了 `{{ userObjectName }}#dissociateAuthData(platform)` 系列方法来完成这一操作。
@@ -9632,7 +9715,7 @@ LeanCloud 云端首先会查找账户系统（_User 表），看看是否存在 
 [user disassociateWithPlatform:LeanCloudSocialPlatformWeiXin callback:^(BOOL succeeded, NSError * _Nullable error) {
     if (succeeded) {
         NSLog(@"成功");
-    }else{
+    } else{
         NSLog(@"失败：%@",error.localizedFailureReason);
     }
 }];
@@ -9641,7 +9724,7 @@ LeanCloud 云端首先会查找账户系统（_User 表），看看是否存在 
 
 {% if platform_name === "JavaScript" %}
 ```js
-AV.User.dissociateAuthData('weixin').then((s) => {
+user.dissociateAuthData('weixin').then((s) => {
   // 解除关联成功
 }, (error) => {
   // 解除关联失败
@@ -9651,13 +9734,13 @@ AV.User.dissociateAuthData('weixin').then((s) => {
 
 {% if platform_name === "Python" %}
 ```python
-// todo
+user.unlink_from("weixin")
 ```
 {% endif %}
 
 {% if platform_name === "PHP" %}
 ```php
-// todo
+$user->unlinkWith("weixin");
 ```
 {% endif %}
 
