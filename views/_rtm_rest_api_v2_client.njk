@@ -191,10 +191,19 @@ session_token | 必选 | AV.User 的 sessionToken
 
 返回
 
+```json
+{
+  "signature":"bc884dbb617aab1efc228229210e487330abfc7d",
+  "nonce":"akywke3f28",
+  "client_id":"5fb4ff18d0deed36ea501c8a",
+  "timestamp":1614237989966
+}
 ```
-{"nonce": "", "timestamp": "", "client_id": "", "signature": ""}
-```
+
+注意，虽然这是一个 GET 请求，但并不是幂等的，每次调用返回的签名都不相同。
+
 为了方便用户进行细粒度控制，实现自定义功能（如黑名单），本接口提供了一个 hook `_rtmClientSign`，在验证 sessionToken 后去调用，传入的参数为 AV.User 构成的 JSON 对象：
+
 ```json
 {
     "email": "",
