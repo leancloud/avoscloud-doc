@@ -252,6 +252,28 @@ try {
   print('${e.code} : ${e.message}');
 }
 ```
+```cs
+try {
+  LCQuery<LCUser> userQuery = LCUser.GetQuery();
+  LCUser otherUser = await userQuery.Get("55f1572460b2ce30e8b7afde");
+  // 新建一个帖子对象
+  LCObject post = LCObject("Post");
+  post["title"] = "这是我的第二条发言，谢谢大家！";
+  post["content"] = "我最近喜欢看足球和篮球了。";
+
+  //新建一个 ACL 实例
+  LCACL acl = new LCACL();
+  acl.PublicReadAccess = true; // 设置公开的「读」权限，任何人都可阅读
+  LCUser currentUser = await LCUser.GetCurrent();
+  acl.SetUserWriteAccess(currentUser, true); // 为当前用户赋予「写」权限，有且仅有当前用户可以修改这条 Post
+  acl.SetUserWriteAccess(otherUser, true);
+  post.ACL = acl;
+
+  await post.Save();
+} catch (LCException e) {
+  print($"{e.Code} : {e.Message}");
+}
+```
 
 执行完毕上面的代码，回到控制台，可以看到，该条 Post 记录里面的 ACL 列的内容如下：
 
@@ -294,6 +316,9 @@ $acl->setReadAccess($anAdministrator, true);
 ```dart
 acl.setUserWriteAccess(anAdministrator, true);
 ```
+```cs
+acl.SetUserWriteAccess(anAdministrator, true);
+```
 
 但是，未来可能会有新的管理员加入，老的管理员也可能卸任，所以单纯基于用户进行权限管理，任何人员变动都需要批量订正数据（修改 ACL 字段），太不灵活了。
 
@@ -332,6 +357,10 @@ $acl->setRoleWriteAccess("admin", true);
 ```dart
 LCRole admin = LCRole.createWithoutData('_Role', '55fc0eb700b039e44440016c');
 acl.setRoleWriteAccess(admin, true);
+```
+```cs
+LCRole admin = LCRole.CreateWithoutData("_Role", "55fc0eb700b039e44440016c");
+acl.SetRoleReadAccess(admin, true);
 ```
 
 ### 角色的创建
@@ -414,12 +443,26 @@ try {
   LCACL acl = LCACL();
   acl.setPublicReadAccess(true);
   LCUser currentUser = await LCUser.getCurrent();
-  acl.setUserWriteAccess(currentUser);
+  acl.setUserWriteAccess(currentUser, true);
 
-  LCRole admin = LCRole.create('admin', roleACL);
+  LCRole admin = LCRole.create('admin', acl);
   await admin.save();
 } on LCException catch (e) {
   print('${e.code} : ${e.message}');
+}
+```
+```cs
+try {
+  // 角色本身的 ACL
+  LCACL acl = new LCACL();
+  acl.PublicReadAccess = true;
+  LCUser currentUser = await LCUser.GetCurrent();
+  acl.SetUserWriteAccess(currentUser, true);
+
+  LCRole admin = LCRole.Create(name, acl);
+  await admin.Save();
+} catch (LCException e) {
+  print($"{e.Code} : {e.Message}");
 }
 ```
 
@@ -456,6 +499,10 @@ $admin->getUsers().add(User::getCurrentUser());
 LCUser currentUser = await LCUser.getCurrent();
 admin.addRelation('users', currentUser);
 ```
+```cs
+LCUser currentUser = await LCUser.GetCurrent();
+admin.AddRelation("users", currentUser);
+```
 
 如果我们又想从角色中移除用户：
 
@@ -482,6 +529,10 @@ $admin->getUsers().remove(User::getCurrentUser());
 ```dart
 LCUser currentUser = await LCUser.getCurrent();
 admin.removeRelation('users', currentUser);
+```
+```cs
+LCUser currentUser = await LCUser.GetCurrent();
+admin.RemoveRelation("users", currentUser);
 ```
 
 如前所述，角色的成员可以是另一个角色。
@@ -515,6 +566,9 @@ $moderator->getRoles().add(admin);
 ```dart
 moderator.addRelation('roles', admin);
 ```
+```cs
+moderator.AddRelation("roles", admin);
+```
 
 偶尔可能想要移除子角色，比如后来我们改变了主意，管理员应该专注于全局性的管理任务，帖子编辑、删除之类的任务全部由版主负责。
 
@@ -538,6 +592,9 @@ $moderator->getRoles().remove(admin);
 ```
 ```dart
 moderator.removeRelation('roles', admin);
+```
+```cs
+moderator.RemoveRelation("roles", admin);
 ```
 
 ### 角色的查询
@@ -594,6 +651,16 @@ try {
   print('${e.code} : ${e.message}');
 }
 ```
+```cs
+try {
+  LCUser currentUser = await LCUser.GetCurrent();
+  LCQuery roleQuery = LCRole.GetQuery();
+  roleQuery.WhereEqualTo("users", currentUser);
+  ReadOnlyCollection<LCRole> roles = await roleQuery.Find();
+} catch (LCException e) {
+  print($"{e.Code} : {e.Message}");
+}
+```
 
 查询某个角色包含的用户（这里只给出构建查询的代码）：
 
@@ -617,6 +684,9 @@ $userQuery = $moderator->getUsers().getQuery();
 ```
 ```dart
 LCQuery userQuery = moderator.users.query();
+```
+```cs
+LCQuery<LCUser> userQuery = moderator.Users.Query;
 ```
 
 当然，上面的代码没有考虑子角色中包含的用户。
@@ -643,6 +713,9 @@ $subRoleQuery = $moderator->getRoles().getQuery();
 ```
 ```dart
 LCQuery subroleQuery = moderator.roles.query();
+```
+```cs
+LCQuery<LCRole> subroleQuery = moderator.Roles.Query;
 ```
 
 由于角色继承自结构化存储的对象，你也可以根据角色的其他属性执行各种查询，方式和一般的对象查询是一样的。
@@ -688,6 +761,10 @@ query = leancloud.Object.extend('Todo').query.include_acl(True)
 ```dart
 LCQuery<LCObject> query = LCQuery('Todo');
 query.includeACL(true);
+```
+```cs
+LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
+query.IncludeACL = true;
 ```
 
 ## 最佳实践
