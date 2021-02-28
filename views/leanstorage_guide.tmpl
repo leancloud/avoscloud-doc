@@ -155,6 +155,27 @@ await todo.Save();
 ```
 {% endif %}
 
+{% if platform_name === "Go" %}
+```go
+import "github.com/leancloud/go-sdk/leancloud"
+
+type Todo struct {
+  leancloud.Object
+  Title   string `json:"title"`
+  Content string `json:"content"`
+}
+
+todo := Todo{
+  Title: "工程师周会",
+  Content: "周二两点，全体成员",
+}
+
+if err := client.Class("Todo").Create(&todo); err != nil {
+  panic(err)
+}
+```
+{% endif %}
+
 {% call docs.noteWrap() %}
 我们为各个平台或者语言开发的 SDK 在底层都是通过 HTTPS 协议调用统一的 [REST API](rest_api.html)，提供完整的接口对数据进行各类操作。
 {% endcall %}
@@ -192,6 +213,9 @@ await todo.Save();
 > 如果你还在在使用我们老版本 Android SDK（所有版本号低于 `5.0.0`，`groupId` 为 `cn.leancloud.android` 的 libraries），要迁移到新版的 Unified SDK，具体迁移方法详见 [Java Unified SDK 迁移指南](java_unified_sdk_migration.html)。
 
 {% endif %}
+{% if platform_name === "Go" %}
+请阅读 [Go 安装指南](sdk_setup-go.html)
+{% endif %}
 
 {% if platform_name === "JavaScript" %}
 ## Web 安全
@@ -219,13 +243,30 @@ priority:   2,
 tags:       ["工作", "销售"]
 ```
 
+{% if platform_name === "Go" %}
+Go SDK 中 `{{ baseObjectName }}` 类型是对于复杂对象的封装，但是由于 Go 的类型系统的特性，开发者不能顺畅的使用 `map[string]interface{}`，还需要进行类型断言，所以我们强烈建议开发者自行定义对象类型，并且将 `{{ baseObjectName }}` 作为元数据嵌入到结构体中，在和 SDK 交互的过程中都使用自行定义的类型，SDK 会尽力将对象上的字段绑定到结构体的对应字段上。
+
+在定义自定义类型时，除了要嵌入 `{{ baseObjectName }}` 作为元数据外，还需要对希望使用的 **可导出** 字段加上 **JSON Tag**。
+
+对于上面 Todo 类型，可以定义新的对象类型:
+
+```go
+type Todo struct {
+  leancloud.Object
+  Title      string   `json:"title"`
+  IsComplete bool     `json:"isComplete"`
+  Priority   int      `json:"priority"`
+  Tags       []string `json:"tags"`
+}
+```
+{% endif %}
 {# Keys must be alphanumeric strings. Values can be strings, numbers, booleans, or even arrays, objects, and anything that can be JSON-encoded. #}
 
 ### 数据类型
 
 `{{ baseObjectName }}` 支持的数据类型包括 `String`、`Number`、`Boolean`、`Object`、`Array`、`Date` 等等。你可以通过嵌套的方式在 `Object` 或 `Array` 里面存储更加结构化的数据。
 
-`{{ baseObjectName }}` 还支持两种特殊的数据类型 `Pointer` 和 `File`，可以分别用来存储指向其他 `{{ baseObjectName }}` 的指针以及二进制数据。
+`{{ baseObjectName }}` 还支持两种特殊的数据类型 `Pointer` 和 `File`，可以分别用来存储指向其他 `{{ baseObjectName }}` 的指针以及二进制数据。{% if platform_name === "Go" %}Go SDK 中 `{{ baseObjectName }}` 类型可以当作 `Pointer` 使用。{% endif %}
 
 `{{ baseObjectName }}` 同时支持 `GeoPoint`，可以用来存储地理位置信息。参见 [GeoPoint](#geopoint)。
 
@@ -456,6 +497,34 @@ let getNumber1: LCNumber? = object.get("number") as? LCNumber
 let getNumber2: LCNumber? = object["number"] as? LCNumber
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+// 基本类型
+boolean := true
+number := 2021
+str := "LeanCloud"
+date := time.Now()
+slice := []byte("LeanCloud")
+
+//构建对象
+type Meeting struct {
+  leancloud.Object
+  Title      string     `json:"title"`
+  Number     int        `json:"number"`
+  Progress   float64    `json:"progress"`
+  Date       time.Time  `json:"date"`
+  Attachment []byte     `json:"attachment"`
+}
+
+meeting := Meeting{
+  Title: "Meeting",
+  Number: 1,
+  Progress: 10.0,
+  Date: time.Now(),
+  Attachment: []byte("Attachment content"),
+}
+```
+{% endif %}
 
 我们不推荐{% if platform_name === "Objective-C" %}通过 `NSData` {% endif %}{% if platform_name === "JavaScript" %}{% endif %}{% if platform_name === "Python" %}通过 `byte[]` {% endif %}{% if platform_name === "PHP" %}通过 `Bytes` {% endif %}{% if platform_name === "Android / Java" %}通过 `byte[]` {% endif %}{% if platform_name === "Swift" %}通过 `LCData` {% endif %}{% if platform_name === "Flutter" %}通过 `Uint8List` {% endif %}{% if platform_name === ".Net" %}通过 `byte[]` {% endif %}在 `{{ baseObjectName }}` 里面存储图片、文档等大型二进制数据。每个 `{{ baseObjectName }}` 的大小不应超过 **128 KB**。如需存储大型文件，可创建 `{{ fileObjectName }}` 实例并将将其关联到 `{{ baseObjectName }}` 的某个属性上。参见 [文件](#文件)。
 
@@ -467,6 +536,7 @@ let getNumber2: LCNumber? = object["number"] as? LCNumber
 
 若想了解 LeanCloud 是如何保护应用数据的，请阅读 [数据和安全](data_security.html)。
 
+{% if platform_name !== "Go" %}
 ### 构建对象
 
 下面的代码构建了一个 class 为 `Todo` 的 `{{ baseObjectName }}`：
@@ -547,6 +617,7 @@ AV.Object.register(Todo);
 ```
 
 这样你就能在 `AV.Object` 的子类中添加额外的方法和属性了。
+{% endif %}
 {% endif %}
 
 ### 保存对象
@@ -694,6 +765,35 @@ todo["priority"] = 2;
 await todo.Save();
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+Go SDK 支持 **自定义类型** 或 **hashmap** 创建对象:
+
+```go
+// 使用自定义类型
+type Todo struct {
+  leancloud.Object
+  Title    string `json:"title"`
+  Priority string `json:"priority"`
+}
+
+todo := Todo {
+  Title: "马拉松报名",
+  Priority: 2,
+}
+
+if err := client.Class("Todo").Create(&todo); err != nil {
+    panic(err)
+}
+
+// 使用 map
+if err := client.Class("Todo").Create(map[string]interface{}{
+    "title": "马拉松报名",
+    "priority": 2,
+}); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 
 为了确认对象已经保存成功，我们可以到 **控制台 > 存储 > 数据 > `Todo`** 里面看一下，应该会有一行新的数据产生。点一下这个数据的 `objectId`，应该能看到类似这样的内容：
 
@@ -721,10 +821,10 @@ await todo.Save();
 
 内置属性 | 类型 | 描述
 --- | --- | ---
-`objectId` | `{% if platform_name === "Objective-C" %}NSString{% endif %}{% if platform_name === "JavaScript" %}String{% endif %}{% if platform_name === "Python" %}str{% endif %}{% if platform_name === "PHP" %}String{% endif %}{% if platform_name === "Android / Java" %}String{% endif %}{% if platform_name === "Swift" %}LCString{% endif %}{% if platform_name === "Flutter" %}String{% endif %}{% if platform_name === ".Net" %}string{% endif %}` | 该对象唯一的 ID 标识。
-`ACL` | `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}AVACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}{% if platform_name === "Flutter" %}LCACL{% endif %}{% if platform_name === ".Net" %}LCACL{% endif %}` | 该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
-`createdAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}` | 该对象被创建的时间。
-`updatedAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}` | 该对象最后一次被修改的时间。
+`objectId` | `{% if platform_name === "Objective-C" %}NSString{% endif %}{% if platform_name === "JavaScript" %}String{% endif %}{% if platform_name === "Python" %}str{% endif %}{% if platform_name === "PHP" %}String{% endif %}{% if platform_name === "Android / Java" %}String{% endif %}{% if platform_name === "Swift" %}LCString{% endif %}{% if platform_name === "Flutter" %}String{% endif %}{% if platform_name === ".Net" %}string{% endif %}{% if platform_name === "Go"%}string{% endif %}` | 该对象唯一的 ID 标识。
+`ACL` | `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}AVACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}{% if platform_name === "Flutter" %}LCACL{% endif %}{% if platform_name === ".Net" %}LCACL{% endif %}{% if platform_name === "Go"%}ACL{% endif %}` | 该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
+`createdAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}{% if platform_name === "Go"%}time.Time{% endif %}` | 该对象被创建的时间。
+`updatedAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}{% if platform_name === "Go"%}time.Time{% endif %}` | 该对象最后一次被修改的时间。
 
 这些属性的值会在对象被存入云端时自动填入，代码中尚未保存的 `{{ baseObjectName }}` 不存在这些属性。
 
@@ -863,10 +963,32 @@ DateTime updatedAt = todo.UpdatedAt;
 DateTime createdAt = todo.CreatedAt;
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+在使用 Go SDK 获取已经保存到云端的对象时，我们推荐使用自定义类型对象；如果不想使用自定义类型的对象，也可以直接使用 `{{ baseObjectName }}`。
 
+```go
+// 使用自定义类型对象
+todo := new(Todo)
+if err := client.Class("Todo").ID("582570f38ac247004f39c24b").Get(todo); err != nil {
+  panic(err)
+}
+
+// 使用 Object
+object := new(leancloud.Object)
+if err := client.Class("Todo").ID("582570f38ac247004f39c24b").Get(object); err != nil {
+  panic(err)
+}
+```
+使用自定义类型对象时，SDK 会将对象的字段尽力绑定到自定义类型对象的导出字段上；
+
+使用 `{{ baseObjectName }}` 获取对象时，可以使用 ` {{ baseObjectName}}.Raw()` 来获取对象的 `map[string]interface{}` 原始数据；或者使用 `{{ baseObjectName }}` 提供的一系列[类型转换方法](https://pkg.go.dev/github.com/leancloud/go-sdk/leancloud#Object)来获取对象上某个属性的值。
+{% endif %}
+
+{% if platform_name !== "Go" %}
 对象拿到之后，可以通过 `get` 方法来获取各个属性的值。注意 `objectId`、`updatedAt`和`createdAt` 这三个内置属性不能通过 `get` 获取或通过 `set` 修改，只能由云端自动进行填充。尚未保存的 `{{ baseObjectName }}` 不存在这些属性。
 
 如果你试图获取一个不存在的属性，SDK 不会报错，而是会返回 `{% if platform_name in ["Objective-C", "Swift"] %}nil{% endif %}{% if platform_name === "JavaScript" %}undefined{% endif %}{% if platform_name === "Python" %}None{% endif %}{% if platform_name in ["Android / Java", "PHP"] %}null{% endif %}`。
+{% endif %}
 
 {% if platform_name === "JavaScript" %}
 如果需要一次性获取返回对象的所有属性（比如进行数据绑定）而非显式地调用 `get`，可以利用 `AV.Object` 实例的 `toJSON` 方法：
@@ -1033,8 +1155,67 @@ await todo.Fetch(includes: new string[] { "priority", "location" });
 
 ### 更新对象
 
+{% if platform_name !== "Go" %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}{% if platform_name === ".Net" %}Save{% endif %}` 方法。例如：
+{% endif %}
+{% if platform_name === "Go" %}
+在使用 Go SDK 时，更新对象和创建对象相同，可以使用自定义类型对象或者 `map`。
 
+在使用自定义类型的对象时，只需要填充想要更新的字段即可，其它字段默认会被初始化为零值，在执行更新操作时 SDK 会忽略对象中的零值字段。注意：**如果想要更新某个字段为对应类型的零值，应该将该字段声明为指针类型。**
+
+```go
+// 使用自定义类型对象更新
+diff := Todo{
+  Title: "Another Meeting",
+}
+
+if err := client.Class("Todo").ID("582570f38ac247004f39c24b").Update(diff); err != nil {
+  panic(err)
+}
+
+// 使用 map[string]interface{} 更新
+
+if err := client.Class("Todo").ID("582570f38ac247004f39c24b").Update(map[string]interface{}{
+  "title": "Another Meeting",
+}); err != nil {
+  panic(err)
+}
+```
+
+如果已经有之前保存的对象，则可以不使用 `Class().ID()` 这样的形式来指定一个对象，使用 `Object()` 来指向一个对象:
+```go
+// 使用自定义类型对象更新
+diff := Todo{
+  Title: "Another Meeting",
+}
+
+if err := client.Object(todo).Update(diff); err != nil {
+  panic(err)
+}
+
+// 使用 map[string]interface{} 更新
+if err := client.Object(todo).Update(map[string]interface{}{
+  "title": "Another Meeting",
+}); err != nil {
+  panic(err)
+}
+```
+
+#### 有条件更新对象
+
+通过传入查询参数 `Query`，可以按照指定条件去更新对象——当条件满足时，执行更新，条件不满足时，不执行更新并返回 `305` 错误。
+
+例如，用户的账户表 `Account` 有一个余额字段 `balance`。为避免余额出现负值，只有当金额小于或等于余额的时候才能接受请求：
+```go
+query := client.Class("Account").NewQuery().GreaterThanOrEqualTo("balance", 500)
+
+if err := client.Class("Account").ID("5745557f71cfe40068c6abe0").UpdateWithQuery(map[string]interface{}{
+    "balance": leancloud.OpIncrement(-100),
+}, query); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 {% if platform_name === "Objective-C" %}
 ```objc
 AVObject *todo = [AVObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
@@ -1104,7 +1285,9 @@ await todo.Save();
 ```
 {% endif %}
 
+{% if platform_name != "Go" %}
 LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+{% endif %}
 
 {% if platform_name === "JavaScript" %}
 如果想要查看哪些属性有尚未保存的修改，可以调用 `dirtyKeys` 方法：
@@ -1352,6 +1535,11 @@ post.increment('likes',1);
 post.Increment("likes", 1);
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+leancloud.OpIncrement(1);
+```
+{% endif %}
 可以指定需要增加或减少的值。若未指定，则默认使用 `1`。
 
 {{ data.inc_float_warn() }}
@@ -1412,7 +1600,11 @@ post.Increment("likes", 1);
 - `Remove(key, value)`<br/>从数组字段中删除指定对象的所有实例。
 - `RemoveAll(key, values)`<br/>从数组字段中删除指定的对象数组。
 {% endif %}
-
+{% if platform_name === "Go" %}
+- `OpAdd(value)`<br/>将指定对象附加到数组末尾。
+- `OpAddUnique(value)`<br/>将指定对象附加到数组末尾，确保对象唯一。
+- `OpRemove(value)`<br/>从数组字段中删除指定对象的所有实例。
+{% endif %}
 例如，`Todo` 用一个 `alarms` 属性保存所有闹钟的时间。下面的代码将多个时间加入这个属性：
 
 {% if platform_name === "Objective-C" %}
@@ -1559,7 +1751,21 @@ todo.AddAllUnique("alarms", new object[] { alarm1, alarm2, alarm3 });
 await todo.Save();
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+alarm1 := time.Parse("2006-01-02 15:04:05Z", "2018-04-30 07:10:00Z")
+alarm2 := time.Parse("2006-01-02 15:04:05Z", "2018-04-30 07:20:00Z")
+alarm3 := time.Parse("2006-01-02 15:04:05Z", "2018-04-30 07:30:00Z")
 
+alarms := time.Time{alarm1, alarm2, alarm3}
+
+if err := client.Class("Todo").Create(map[string]interface{}{
+    "alarms": leancloud.OpAdd(alarms),
+}); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 {# Note that it is not currently possible to atomically add and remove items from an array in the same save. You will have to call `save` in between every different kind of array operation. #}
 
 ### 删除对象
@@ -1659,12 +1865,20 @@ todo.Unset("priority");
 await todo.Save();
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+if err := client.Class("Todo").ID("582570f38ac247004f39c24b").Destroy(); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 {# Please note that use of `object.set(null)` to remove a field from an object is not recommended and will result in unexpected functionality. #}
 
 {% call docs.alertWrap() %}
 删除对象是一个较为敏感的操作，我们建议你阅读 [ACL 权限管理开发指南](acl-guide.html) 来了解潜在的风险。熟悉 class 级别、对象级别和字段级别的权限可以帮助你有效阻止未经授权的操作。
 {% endcall %}
 
+{% if platform_name !== "Go" %}
 ### 批量操作
 
 可以在一次请求中包含多个构建、保存、删除和同步对象的操作：
@@ -1931,7 +2145,7 @@ await LCObject.SaveAll(results);
 {% endif %}
 
 虽然上述方法可以在一次请求中包含多个操作，每一个分别的保存或同步操作在计费时依然会被算作一次请求，而所有的删除操作则会被合并为一次请求。
-
+{% endif %}
 {% if platform_name === "Objective-C" or platform_name === "Android / Java" or platform_name === "Swift" %}
 ### 后台运行
 
@@ -2123,8 +2337,44 @@ comment["parent"] = post;
 await comment.Save();
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+type Post struct {
+    leancloud.Object
+    Title   string `json:"title"`
+    Content string `json:"content"`
+}
 
+type Comment struct {
+    leancloud.Object
+    Parent  Post   `json:"parent"`
+    Content string `json:"content"`
+}
+
+post := Post{
+    Title: "饿了……",
+    Content: "中午去哪吃呢？",
+}
+
+if err := client.Class("Post").Create(&post); err != nil {
+    panic(err)
+}
+
+comment := Comment{
+    Parent: post,
+    Content: "当然是肯德基啦！",
+}
+
+if err := client.Class("Comment").Create(&comment); err != nil {
+    panic(err)
+}
+```
+注意：**只有已经保存到云端的对象可以嵌入。**
+{% endif %}
+
+{% if platform_name !== "Go" %}
 云端存储时，会将被指向的对象用 `Pointer` 的形式存起来。你也可以用 `objectId` 来指向一个对象：
+{% endif %}
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -2439,7 +2689,21 @@ query.WhereEqualTo("lastName", "Smith");
 ReadOnlyCollection<LCObject> students = await query.Find();
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+type Student struct {
+    leancloud.Object
+    FirstName string `json:"firstName"`
+    LastName  string `json:"lastName"`
+}
 
+results := make([]Student, 0)
+
+if err := client.Class("Student").NewQuery().EqualTo("lastName", "Smith").Find(&results); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 ### 查询条件
 
 可以给 `{{ baseObjectName }}` 添加不同的条件来改变获取到的结果。
@@ -2484,6 +2748,11 @@ query.whereNotEqualTo('firstName', 'Jack');
 {% if platform_name === ".Net" %}
 ```cs
 query.WhereNotEqualTo("firstName", "Jack");
+```
+{% endif %}
+{% if platform_name === "Go" %}
+```go
+query := client.Class("Student").NewQuery().NotEqualTo("firstName", "Jack")
 ```
 {% endif %}
 对于能够排序的属性（比如数字、字符串），可以进行比较查询：
@@ -2608,7 +2877,21 @@ query.WhereGreaterThan("age", 18);
 query.WhereGreaterThanOrEqualTo("age", 18);
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+// 限制 age < 18
+query := client.Class("Student").NewQuery().LessThan("age", 18)
 
+// 限制 age <= 18
+query := client.Class("Student").NewQuery().LessThanOrEqualTo("age", 18)
+
+// 限制 age > 18
+query := client.Class("Student").NewQuery().GreaterThan("age", 18)
+
+// 限制 age >= 18
+query := client.Class("Student").NewQuery().GreaterThanOrEqualTo("age", 18)
+```
+{% endif %}
 可以在同一个查询中设置多个条件，这样可以获取满足所有条件的结果。可以理解为所有的条件是 `AND` 的关系：
 
 {% if platform_name === "Objective-C" %}
@@ -2659,7 +2942,11 @@ query.WhereEqualTo("firstName", "Jack");
 query.WhereGreaterThan("age", 18);
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+query := client.Class("Student").NewQuery().EqualTo("firstName", "Jack").GreaterThan("age", 18)
+```
+{% endif %}
 可以通过指定 `limit` 限制返回结果的数量（默认为 `100`）：
 
 {% if platform_name === "Objective-C" %}
@@ -2710,12 +2997,17 @@ query.limit(10);
 query.Limit(10);
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+// 最多获取 10 条结果
+query := client.Class("Student").NewQuery().Limit(10)
+```
+{% endif %}
 {% call docs.noteWrap() %}
 由于性能原因，`limit` 最大只能设为 `1000`。即使将其设为大于 `1000` 的数，云端也只会返回 1,000 条结果。
 {% endcall %}
 
-如果只需要一条结果，可以直接用 `{% if platform_name === "Objective-C" %}getFirstObject{% endif %}{% if platform_name === "JavaScript" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Android / Java" %}getFirst{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}{% if platform_name === "Flutter" %}first{% endif %}{% if platform_name === ".Net" %}First{% endif %}`：
+如果只需要一条结果，可以直接用 `{% if platform_name === "Objective-C" %}getFirstObject{% endif %}{% if platform_name === "JavaScript" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Android / Java" %}getFirst{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}{% if platform_name === "Flutter" %}first{% endif %}{% if platform_name === ".Net" %}First{% endif %}{% if platform_name === "Go" %}First{% endif %}`：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -2794,7 +3086,15 @@ query.WhereEqualTo("priority", 2);
 LCObject todo = await query.First();
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+todo := new(Todo)
 
+if err := client.Class("Todo").NewQuery().EqualTo("priority", 2).First(todo); err != nil {
+    panic(err)
+} 
+```
+{% endif %}
 可以通过设置 `skip` 来跳过一定数量的结果：
 
 {% if platform_name === "Objective-C" %}
@@ -2843,7 +3143,11 @@ query.skip(20);
 query.Skip(20);
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+query := client.Class("Todo").NewQuery().Skip(20)
+```
+{% endif %}
 把 `skip` 和 `limit` 结合起来，就能实现翻页功能：
 
 {% if platform_name === "Objective-C" %}
@@ -2911,7 +3215,11 @@ query.Limit(10);
 query.Skip(20);
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+query := client.Class("Todo").NewQuery().EqualTo("priority", 2).Limit(10).Skip(20)
+```
+{% endif %}
 {% call docs.noteWrap() %}
 需要注意的是，`skip` 的值越高，查询所需的时间就越长。作为替代方案，可以通过设置 `createdAt` 或 `updatedAt` 的范围来实现更高效的翻页，因为它们都自带索引。{# , or using the last value returned from an auto-increment field along with `limit` for the purpose of pagination #}
 {% endcall %}
@@ -2990,7 +3298,15 @@ query.OrderByAscending("createdAt");
 query.OrderByDescending("createdAt");
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+// 按 createdAt 升序排列
+query := client.Class("Todo").NewQuery().Order("createdAt")
 
+// 按 createdAt 降序排列
+query := client.Class("Todo").NewQuery().Order("-createdAt")
+```
+{% endif %}
 还可以为同一个查询添加多个排序规则；
 
 {% if platform_name === "Objective-C" %}
@@ -3041,9 +3357,18 @@ query.AddAscendingOrder("priority");
 query.AddDescendingOrder("createdAt");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+query := client.Class("Todo").NewQuery().Order("priority").Order("-createdAt")
+```
+{% endif %}
 下面的代码可用于查找包含或不包含某一属性的对象：
 
+{% if platform_name === "Go" %}
+```go
+// TODO
+```
+{% endif  %}
 {% if platform_name === "Objective-C" %}
 ```objc
 // 查找包含 "images" 的对象
@@ -3149,7 +3474,7 @@ studentQuery.find().then((students) => {
 ```
 {% endif %}
 
-可以通过 `{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}` 指定需要返回的属性。下面的代码只获取每个对象的 `title` 和 `content`（包括内置属性 `objectId`、`createdAt` 和 `updatedAt`）：
+可以通过 `{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}{% if platform_name === "Go"%}Select{% endif %}` 指定需要返回的属性。下面的代码只获取每个对象的 `title` 和 `content`（包括内置属性 `objectId`、`createdAt` 和 `updatedAt`）：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -3253,20 +3578,28 @@ string content = todo["content"] as string; // √
 string notes = todo["notes"] as string; // null
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+todos := make([]Todo, 0)
 
-`{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}`
+if err := client.Class("Todo").NewQuery().Select("title", "content").Find(&todo); err != nil {
+    panic(err)
+}
+```
+{% endif %}
+`{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}{% if platform_name === "Go" %}Select{% endif %}`
 支持点号（`author.firstName`），详见 [点号使用指南](dot-notation.html#在查询对象时使用点号)。
 另外，字段名前添加减号前缀表示反向选择，例如 `-author` 表示不返回 `author` 字段。
 反向选择同样适用于内置字段，比如 `-objectId`，也可以和点号组合使用，比如 `-pubUser.createdAt`。
 
-
+{% if platform_name !== "Go" %}
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Java" or platform_name === "Swift" %}
 对于未获取的属性，可以通过对结果中的对象进行 `{% if platform_name === "Objective-C" %}fetchInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}fetch{% endif %}{% if platform_name === "Python" %}fetch{% endif %}{% if platform_name === "Android / Java" %}fetchInBackground{% endif %}{% if platform_name === "Swift" %}fetch{% endif %}` 操作来获取。参见 [同步对象](#同步对象)。
 {% endif %}
-
+{% endif %}
 ### 字符串查询
 
-可以用 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}` 来查找某一属性值以特定字符串开头的对象。和 SQL 中的 `LIKE` 一样，你可以利用索引带来的优势：
+可以用 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Go" %}Query.StartsWith{% endif %}` 来查找某一属性值以特定字符串开头的对象。和 SQL 中的 `LIKE` 一样，你可以利用索引带来的优势：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -3325,8 +3658,14 @@ LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
 query.WhereStartsWith("title", "lunch");
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+// 相当于 SQL 中的 title LIKE 'lunch%'
+query := client.Class("Todo").NewQuery().StartsWith("title", "lunch")
+```
+{% endif %}
 
-可以用 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}` 来查找某一属性值包含特定字符串的对象：
+可以用 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Go" %}Query.Contains{% endif %}` 来查找某一属性值包含特定字符串的对象：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -3385,14 +3724,20 @@ LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
 query.WhereContains("title", "lunch");
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+// 相当于 SQL 中的 title LIKE '%lunch%'
+query := client.Class("Todo").NewQuery().Contains("title", "lunch")
+```
+{% endif %}
 
-和 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}{% if platform_name === ".Net" %}WhereStartsWith{% endif %}` 不同，`{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === ".Net" %}WhereContains{% endif %}` 无法利用索引，因此不建议用于大型数据集。
+和 `{% if platform_name === "Go" %}Query.StartsWith{% endif %}{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}{% if platform_name === ".Net" %}WhereStartsWith{% endif %}` 不同，`{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === ".Net" %}WhereContains{% endif %}{% if platform_name === "Go" %}Query.Contains{% endif %}` 无法利用索引，因此不建议用于大型数据集。
 
 {% call docs.noteWrap() %}
 注意 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}{% if platform_name === ".Net" %}WhereStartsWith{% endif %}` 和 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === ".Net" %}WhereContains{% endif %}` 都是 **区分大小写** 的，所以上述查询会忽略 `Lunch`、`LUNCH` 等字符串。
 {% endcall %}
 
-如果想查找某一属性值不包含特定字符串的对象，可以使用 `{% if platform_name === "Objective-C" %}matchesRegex{% endif %}{% if platform_name === "JavaScript" %}matches{% endif %}{% if platform_name === "Python" %}matched{% endif %}{% if platform_name === "PHP" %}matches{% endif %}{% if platform_name === "Android / Java" %}whereMatches{% endif %}{% if platform_name === "Swift" %}.matchedPattern{% endif %}{% if platform_name === "Flutter" %}whereMatches{% endif %}{% if platform_name === ".Net" %}WhereMatches{% endif %}` 进行基于正则表达式的查询：
+如果想查找某一属性值不包含特定字符串的对象，可以使用 `{% if platform_name === "Go" %}Query.Regexp{% endif %}{% if platform_name === "Objective-C" %}matchesRegex{% endif %}{% if platform_name === "JavaScript" %}matches{% endif %}{% if platform_name === "Python" %}matched{% endif %}{% if platform_name === "PHP" %}matches{% endif %}{% if platform_name === "Android / Java" %}whereMatches{% endif %}{% if platform_name === "Swift" %}.matchedPattern{% endif %}{% if platform_name === "Flutter" %}whereMatches{% endif %}{% if platform_name === ".Net" %}WhereMatches{% endif %}` 进行基于正则表达式的查询：
 
 {% if platform_name === "Objective-C" %}
 <pre><code class="lang-objc">AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
@@ -3444,7 +3789,11 @@ query.whereMatches('title', '{{ regexFlutter() | safe }}', modifiers: 'i');
 query.WhereMatches("title", "{{ regexFlutter() | safe }}", modifiers: "i");
 </code></pre>
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+query := client.Class("Todo").NewQuery().Regexp("title", "^((?!ticket).)*$", "i")
+```
+{% endif %}
 {# 2016-12-29 DO NOT USE markdown to rewrite the previous block #}
 
 不过我们并不推荐大量使用这类查询，尤其是对于包含超过 100,000 个对象的 class，{# LeanCloud restricts how many such operations can be run on a particular app at any given time. #}因为这类查询无法利用索引，实际操作中云端会遍历所有对象来获取结果。如果有进行全文搜索的需求，可以了解一下 [全文搜索](app_search_guide.html) 功能。
@@ -3540,7 +3889,11 @@ query.whereSizeEqualTo('tags', 3);
 query.WhereSizeEqualTo("tags", 3);
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+query := client.Class("Todo").NewQuery().EqualTo("tags", "工作")
+```
+{% endif %}
 下面的代码查找所有数组属性 `tags` **同时包含** `工作`、`销售` 和 `会议` 的对象：
 
 {% if platform_name === "Objective-C" %}
@@ -3583,7 +3936,8 @@ query.whereContainsAll('tags', ['工作', '销售', '会议']);
 query.WhereContainsAll("tags", new string[] { "工作", "销售", "会议" });
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+{% endif %}
 如需获取某一属性值包含一列值中任意一个值的对象，可以直接用 `{% if platform_name === "Objective-C" %}containedIn{% endif %}{% if platform_name === "JavaScript" %}containedIn{% endif %}{% if platform_name === "Python" %}contained_in{% endif %}{% if platform_name === "PHP" %}containedIn{% endif %}{% if platform_name === "Android / Java" %}whereContainedIn{% endif %}{% if platform_name === "Swift" %}.containedIn{% endif %}` 而无需执行多次查询。下面的代码构建的查询会查找所有 `priority` 为 `1` **或** `2` 的 todo 对象：
 
 {% if platform_name === "Objective-C" %}
@@ -3767,7 +4121,11 @@ ReadOnlyCollection<LCObject> results = await priorityOneOrTwo.Find();
 // 好像有些繁琐 :(
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+// TODO
+```
+{% endif %}
 反过来，还可以用 `{% if platform_name === "Objective-C" %}notContainedIn{% endif %}{% if platform_name === "JavaScript" %}notContainedIn{% endif %}{% if platform_name === "Python" %}not_contained_in{% endif %}{% if platform_name === "PHP" %}notContainedIn{% endif %}{% if platform_name === "Android / Java" %}whereNotContainedIn{% endif %}{% if platform_name === "Swift" %}.notContainedIn{% endif %}{% if platform_name === "Flutter" %}whereNotContainedIn{% endif %}{% if platform_name === ".Net" %}WhereNotContainedIn{% endif %}` 来获取某一属性值不包含一列值中任何一个的对象。
 
 ### 关系查询
@@ -4140,7 +4498,7 @@ LeanCloud 云端使用的并非关系型数据库，无法做到真正的联表�
 
 ### 统计总数量
 
-如果只需知道有多少对象匹配查询条件而无需获取对象本身，可使用 `{% if platform_name === "Objective-C" %}countObjectsInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}count{% endif %}{% if platform_name === "Python" %}count{% endif %}{% if platform_name === "PHP" %}count{% endif %}{% if platform_name === "Android / Java" %}count{% endif %}{% if platform_name === "Swift" %}count{% endif %}` 来代替 `{% if platform_name === "Objective-C" %}findObjectsInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}find{% endif %}{% if platform_name === "Python" %}find{% endif %}{% if platform_name === "PHP" %}find{% endif %}{% if platform_name === "Android / Java" %}findInBackground{% endif %}{% if platform_name === "Swift" %}find{% endif %}`。比如说，查询有多少个已完成的 todo：
+如果只需知道有多少对象匹配查询条件而无需获取对象本身，可使用 `{% if platform_name === "Go" %}Query.Count(){% endif %}{% if platform_name === "Objective-C" %}countObjectsInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}count{% endif %}{% if platform_name === "Python" %}count{% endif %}{% if platform_name === "PHP" %}count{% endif %}{% if platform_name === "Android / Java" %}count{% endif %}{% if platform_name === "Swift" %}count{% endif %}` 来代替 `{% if platform_name === "Objective-C" %}findObjectsInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}find{% endif %}{% if platform_name === "Python" %}find{% endif %}{% if platform_name === "PHP" %}find{% endif %}{% if platform_name === "Android / Java" %}findInBackground{% endif %}{% if platform_name === "Swift" %}find{% endif %}{% if platform_name === "Go" %}Query.Find(){% endif %}`。比如说，查询有多少个已完成的 todo：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -4212,7 +4570,15 @@ int count = await query.Count();
 print($"{count} 个 todo 已完成");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+count, err := client.Class("Todo").NewQuery().EqualTo("isComplete", true).Count()
+if err != nil {
+  panic(err)
+}
+fmt.Printf("%d 个 todo 已完成。", count)
+```
+{% endif %}
 ### 组合查询
 
 组合查询就是把诸多查询条件用一定逻辑合并到一起（`OR` 或 `AND`）再交给云端去查询。
@@ -4317,7 +4683,13 @@ LCQuery<LCObject> priorityOneOrTwo = LCQuery.Or(new LCQuery<LCObject>[] { priori
 ReadOnlyCollection<LCObject> results = await priorityOneOrTwo.Find();
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+priorityQuery := client.Class("Todo").NewQuery().GreaterThanOrEqualTo("priority", 3)
+isCompleteQuery := client.Class("Todo").NewQuery().EqualTo("isComplete", true)
+query = client.Class("Todo").NewQuery().Or(priorityQuery, isCompleteQuery)
+```
+{% endif %}
 {% call docs.noteWrap() %}
 使用 OR 查询时，子查询中不能包含 `GeoPoint` 相关的查询。
 {% endcall %}
@@ -4440,7 +4812,13 @@ LCQuery<LCObject> query = LCQuery<LCObject>.And(new LCQuery<LCObject>[] { startD
 ReadOnlyCollection<LCObject> results = await query.Find();
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+startDateQuery := client.Class("Todo").NewQuery().GreaterThanOrEqualTo("createdAt", time.Parse("2000-01-01 00:00:00Z", "2016-11-13 00:00:00Z"))
+endDateQuery := client.Class("Todo").NewQuery().LessThan("createdAt", time.Parse("2000-01-01 00:00:00Z", "2016-12-03 00:00:00Z"))
+query := client.Class("Todo").NewQuery().And(startDateQuery, endDateQuery)
+```
+{% endif %}
 
 单独使用 AND 查询跟使用基础查询相比并没有什么不同，不过当查询条件中包含不止一个 OR 查询时，就必须使用 AND 查询：
 
@@ -5395,7 +5773,33 @@ PushService.startIfRequired(android.content.Context context);
 
 有时候应用需要存储尺寸较大或结构较为复杂的数据，这类数据不适合用 `{{ baseObjectName }}` 保存，此时文件对象 `{{ fileObjectName }}` 便成为了更好的选择。文件对象最常见的用途是保存图片，不过也可以用来保存文档、视频、音乐等其他二进制数据。
 
+{% if platform_name !== "Go" %}
 ### 构建文件
+{% endif %}
+{% if platform_name === "Go" %}
+### 上传文件
+
+可以通过传入一个实现了 `io.ReadSeeker` 的类型提供文件内容，并填充 `File` 类型的变量提供文件信息：
+```go
+// 打开文件
+filename := "/tmp/file.txt"
+fd, err := os.Open(filename)
+if err != nil {
+  panic(err)
+}
+defer fd.Close()
+
+_, name := filepath.Split(filename) // 分割路径以获取文件名
+file := &File{ // 构造 File 对象
+  Name: name,
+  MIME: mime.TypeByExtension(filepath.Ext(name)) // 通过扩展名获取 MIME 类型
+}
+
+if err := client.Files.Upload(file, fd); err != nil {
+  panic(err)
+}
+```
+{% endif %}
 
 {% if platform_name === "Objective-C" %}
 可以通过字符串构建文件：
@@ -5538,7 +5942,19 @@ LCFile file = LCFile.fromUrl('logo.png', 'https://leancloud.cn/assets/imgs/press
 LCFile file = new LCFile("logo.png", new Uri("https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png"));
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+file := &File{
+	Name: "go-sdk-file-upload.txt",
+	MIME: "text/plain",
+	URL:  "https://example.com/assets/go-sdk-file-upload.txt",
+}
 
+if err := client.Files.UploadFromURL(file); err != nil {
+  panic(err)
+}
+```
+{% endif %}
 {% call docs.noteWrap() %}
 通过 URL 构建文件时，SDK 并不会将原本的文件转储到云端，而是会将文件的物理地址存储为字符串，这样也就不会产生任何文件上传流量。使用其他方式构建的文件会被保存在云端。
 {% endcall %}
@@ -5592,6 +6008,14 @@ file.MimeType = "application/json";
 
 与前面提到的方式相比，一个更常见的文件构建方式是从本地路径上传{{ "。如果开发的是 web 应用，可以先在页面上放一个按钮：" if platform_name === "JavaScript" else "：" }}
 
+{% if platform_name === "Go" %}
+```go
+file, err := c.Files.UploadFromFile("resume.txt")
+if err != nil {
+	t.Fatal(err)
+}
+```
+{% endif %}
 {% if platform_name === "Objective-C" %}
 ```objc
 NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
@@ -5759,7 +6183,16 @@ await file.Save();
 print(file.ObjectId);
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+file, err := c.Files.UploadFromFile("resume.txt")
+if err != nil {
+    t.Fatal(err)
+}
 
+fmt.Println("The URL of file is ", file.URL)
+```
+{% endif %}
 {% call docs.noteWrap() %}
 文件上传后，可以在 `_File` class 中找到。已上传的文件无法再被修改。如果需要修改文件，只能重新上传修改过的文件并取得新的 `objectId` 和 URL。
 {% endcall %}
@@ -5882,7 +6315,23 @@ todo.Add("attachments", file);
 await todo.Save();
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+type Todo struct {
+  Title         string `json:"title"`
+  Attachment    File   `json:"attachments"`
+}
 
+todo := &Todo{
+  Title: "买蛋糕",
+  Attachment: file,
+}
+
+if err := client.Class("Todo").Create(todo); err != nil {
+  panic(err)
+}
+```
+{% endif %}
 也可以通过构建 `{{ baseQueryClassName }}` 进行[查询](#查询)：
 
 {% if platform_name === "Objective-C" %}
@@ -5926,7 +6375,11 @@ LCQuery<LCObject> query = LCQuery('_File');
 LCQuery<LCObject> query = LCFile.GetQuery();
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+query := client.Class("_File").NewQuery()
+```
+{% endif %}
 {{ data.file_url_query() }}
 
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Flutter" or platform_name === ".Net"  %}
@@ -6230,7 +6683,33 @@ file.MimeType = "image/jpg";
 await file.Save();
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+// 打开文件
+filename := "/tmp/file.txt"
+fd, err := os.Open(filename)
+if err != nil {
+  panic(err)
+}
+defer fd.Close()
 
+_, name := filepath.Split(filename) // 分割路径以获取文件名
+file := &File{ // 构造 File 对象
+  Name: name,
+  MIME: mime.TypeByExtension(filepath.Ext(name)) // 通过扩展名获取 MIME 类型
+  Metadata: map[string]interface{ // 设置 Metadata
+    "size": 1024,
+    "width": 128,
+    "height": 256,
+  }
+}
+
+if err := client.Files.Upload(file, fd); err != nil {
+  panic(err)
+}
+
+```
+{% endif %}
 {% if platform_name === "Objective-C" %}
 ### 文件下载
 
@@ -6442,7 +6921,13 @@ LCFile file = LCObject.CreateWithoutData("_File", "552e0a27e4b0643b709e891e");
 await file.Delete();
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+if err := client.File("552e0a27e4b0643b709e891e").Destroy(); err != nil {
+  panic(err)
+}
+```
+{% endif %}
 {% call docs.alertWrap() %}
 默认情况下，文件的删除权限是关闭的，需要进入 **控制台 > 存储 > 数据 > `_File`**，选择 **其他** > **权限设置** > **`delete`** 来开启。
 {% endcall %}
@@ -6666,6 +7151,14 @@ LCGeoPoint point = LCGeoPoint(39.9, 116.4);
 LCGeoPoint point = new LCGeoPoint(39.9, 116.4);
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+point := leancloud.GeoPoint{
+  Latitude: 39.9,
+  Longitude: 116.4,
+}
+```
+{% endif %}
 
 现在可以将这个地理位置存储为一个对象的属性：
 
@@ -6709,10 +7202,16 @@ todo['location'] = point;
 todo["location"] = point;
 ```
 {% endif %}
-
+{% if platform_name === "Go" %} 
+```go
+if err := client.Class("Todo").Set("location", point); err != nil {
+  panic(err)
+}
+```
+{% endif %}
 ### 地理位置查询
 
-给定一些含有地理位置的对象，可以从中找出离某一点最近的几个，或者处于某一范围内的几个。要执行这样的查询，可以向普通的 `{{ baseQueryClassName }}` 添加 `{% if platform_name === "Objective-C" %}nearGeoPoint{% endif %}{% if platform_name === "JavaScript" %}near{% endif %}{% if platform_name === "Python" %}near{% endif %}{% if platform_name === "PHP" %}near{% endif %}{% if platform_name === "Android / Java" %}whereNear{% endif %}{% if platform_name === "Swift" %}.locatedNear{% endif %}` 条件。下面的代码查找 `location` 属性值离某一点最近的 `Todo` 对象：
+给定一些含有地理位置的对象，可以从中找出离某一点最近的几个，或者处于某一范围内的几个。要执行这样的查询，可以向普通的 `{{ baseQueryClassName }}` 添加 `{% if platform_name === "Go" %}Near{% endif %}{% if platform_name === "Objective-C" %}nearGeoPoint{% endif %}{% if platform_name === "JavaScript" %}near{% endif %}{% if platform_name === "Python" %}near{% endif %}{% if platform_name === "PHP" %}near{% endif %}{% if platform_name === "Android / Java" %}whereNear{% endif %}{% if platform_name === "Swift" %}.locatedNear{% endif %}` 条件。下面的代码查找 `location` 属性值离某一点最近的 `Todo` 对象：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -6823,14 +7322,32 @@ query.Limit(10);
 ReadOnlyCollection<LCObject> todos = await query.Find();
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+point := &leancloud.GeoPoint{
+  Latitude: 39.9,
+  Longitude: 116.4,
+}
 
+todos := make([]Todo, 0)
+
+if err := client.Class("Todo").NewQuery().Near("location", point).Limit(10).Find(&todos); err != nil {
+  panic(err)
+}
+```
+{% call docs.noteWrap() %}
+像 `Order` 这样额外的排序条件会获得比默认的距离排序更高的优先级。
+{% endcall %}
+{% endif %}
+{% if platform_name !== "Go" %}
 {% call docs.noteWrap() %}
 像 `{% if platform_name === "Objective-C" %}orderByAscending{% endif %}{% if platform_name === "JavaScript" %}ascending{% endif %}{% if platform_name === "Python" %}ascending{% endif %}{% if platform_name === "PHP" %}ascend{% endif %}{% if platform_name === "Android / Java" %}orderByAscending{% endif %}{% if platform_name === "Swift" %}.ascending{% endif %}{% if platform_name === "Flutter" %}orderByAscending{% endif %}{% if platform_name === ".Net" %}OrderByAscending{% endif %}` 和 `{% if platform_name === "Objective-C" %}orderByDescending{% endif %}{% if platform_name === "JavaScript" %}descending{% endif %}{% if platform_name === "Python" %}descending{% endif %}{% if platform_name === "PHP" %}descend{% endif %}{% if platform_name === "Android / Java" %}orderByDescending{% endif %}{% if platform_name === "Swift" %}.descending{% endif %}{% if platform_name === "Flutter" %}orderByDescending{% endif %}{% if platform_name === ".Net" %}OrderByDescending{% endif %}` 这样额外的排序条件会获得比默认的距离排序更高的优先级。
 {% endcall %}
+{% endif %}
 
-若要限制结果和给定地点之间的距离，可以参考 API 文档中的 {% if platform_name === "Objective-C" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "JavaScript" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Python" %}`within_kilometers`、`within_miles` 和 `within_radians`{% endif %}{% if platform_name === "PHP" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinKilometers`、`whereWithinMiles` 和 `whereWithinRadians`{% endif %}{% if platform_name === "Swift" %} `kilometersTo`、`milesTo` 和 `radiansTo`{% endif %} 参数。
+若要限制结果和给定地点之间的距离，可以参考 API 文档中的 {% if platform_name === "Go" %}`WithinKilometers`、`WithinMiles` 和 `WithinRadians`{% endif %}{% if platform_name === "Objective-C" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "JavaScript" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Python" %}`within_kilometers`、`within_miles` 和 `within_radians`{% endif %}{% if platform_name === "PHP" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinKilometers`、`whereWithinMiles` 和 `whereWithinRadians`{% endif %}{% if platform_name === "Swift" %} `kilometersTo`、`milesTo` 和 `radiansTo`{% endif %} 参数。
 
-若要查询在某一矩形范围内的对象，可以用 {% if platform_name === "Objective-C" %}`withinGeoBoxFromSouthwest` 和 `toNortheast`{% endif %}{% if platform_name === "JavaScript" %}`withinGeoBox`{% endif %}{% if platform_name === "Python" %}`within_geo_box`{% endif %}{% if platform_name === "PHP" %}`withinBox`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinGeoBox`{% endif %}{% if platform_name === "Swift" %}`.locatedWithin`{% endif %}{% if platform_name === "Flutter" %}`whereWithinGeoBox`{% endif %}{% if platform_name === ".Net" %}`WhereWithinGeoBox`{% endif %}：
+若要查询在某一矩形范围内的对象，可以用 {% if platform_name === "Go" %}`WithinGeoBox`{% endif %}{% if platform_name === "Objective-C" %}`withinGeoBoxFromSouthwest` 和 `toNortheast`{% endif %}{% if platform_name === "JavaScript" %}`withinGeoBox`{% endif %}{% if platform_name === "Python" %}`within_geo_box`{% endif %}{% if platform_name === "PHP" %}`withinBox`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinGeoBox`{% endif %}{% if platform_name === "Swift" %}`.locatedWithin`{% endif %}{% if platform_name === "Flutter" %}`whereWithinGeoBox`{% endif %}{% if platform_name === ".Net" %}`WhereWithinGeoBox`{% endif %}：
 
 <img width="300" height="200" src="images/geopoint-withingeobox.svg" />
 
@@ -7113,11 +7630,25 @@ user["gender"] = "secret";
 await user.SignUp();
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+// 注册用户
+user, err := client.Users.SignUp("Tom", "cat!@#123")
+if err != nil {
+  panic(err)
+}
 
+// 设置其它属性
+if err := client.Users.ID(user.ID).Set("email", "tom@leancloud.rocks"); err != nil {
+  panic(err)
+}
+```
+{% endif %}
+{% if platform_name !== "Go" %}
 {% call docs.noteWrap() %}
 新建 `{{ userObjectName }}` 的操作应使用 `{% if platform_name === "Objective-C" %}signUpInBackground{% endif %}{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Android / Java" %}signUpInBackground{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}{% if platform_name === "Flutter" %}signUp{% endif %}{% if platform_name === ".Net" %}SignUp{% endif %}` 而不是 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}{% if platform_name === ".Net" %}Save{% endif %}`，但以后的更新操作就可以用 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}{% if platform_name === ".Net" %}Save{% endif %}` 了。
 {% endcall %}
-
+{% endif %}
 如果收到 `202` 错误码，意味着 `_User` 表里已经存在使用同一 `username` 的账号，此时应提示用户换一个用户名。除此之外，每个用户的 `email` 和 `mobilePhoneNumber` 也需要保持唯一性，否则会收到 `203` 或 `214` 错误。可以考虑在注册时把用户的 `username` 设为与 `email` 相同，这样用户可以直接 [用邮箱重置密码](#重置密码)。
 
 {% call docs.noteWrap() %}
@@ -7203,7 +7734,13 @@ await LCSMSClient.requestSMSCode('+8618200008888');
 await LCSMSClient.RequestSMSCode("+8618200008888");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+if err := client.Users.RequestMobilePhoneVerify("+8618200008888"); err != nil {
+  panic(err)
+}
+```
+{% endif %}
 用户填入验证码后，用下面的方法完成注册：
 
 {% if platform_name === "Objective-C" %}
@@ -7275,7 +7812,14 @@ _ = LCUser.signUpOrLogIn(mobilePhoneNumber: "+8618200008888", verificationCode: 
 await LCUser.SignUpOrLoginByMobilePhone("+8618200008888", "123456");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+user, err := client.Users.SignUpByMobilePhone("+8618200008888", "123456")
+if err != nil {
+  panic(err)
+}
+```
+{% endif %}
 {% call docs.noteWrap() %}
 `username` 将与 `mobilePhoneNumber` 相同，`password` 会由云端随机生成。
 如果希望让用户指定密码，可以在客户端让用户填写手机号和密码，然后按照上一小节使用用户名和密码注册的流程，将用户填写的手机号作为 `username` 和 `mobilePhoneNumber` 的值同时提交。
@@ -7372,7 +7916,14 @@ try {
 }
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+user, err := client.Users.LogIn("Tom", "cat!@#123")
+if err != nil {
+  panic(err)
+}
+```
+{% endif %}
 #### 邮箱登录
 
 下面的代码用邮箱和密码登录一个账户：
@@ -7456,7 +8007,11 @@ try {
 }
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+// TODO
+```
+{% endif %}
 {% if node !== "qcloud" %}
 #### 手机号登录
 
@@ -7603,7 +8158,13 @@ await LCUser.requestLoginSMSCode('+8618200008888');
 await LCUser.RequestLoginSMSCode("+8618200008888");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+if err := client.Users.RequestLoginSMSCode("+8618200008888"); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 用户填写收到的验证码后，用下面的方法完成登录：
 
 {% if platform_name === "Objective-C" %}
@@ -7684,7 +8245,14 @@ try {
 }
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+user, err := client.Users.LogInByMobilePhoneNumber("+8618200008888", "123456")
+if err != nil {
+    panic(err)
+}
+```
+{% endif %}
 #### 测试手机号和固定验证码
 
 在开发过程中，可能会因测试目的而需要频繁地用手机号注册登录，然而运营商的发送频率限制往往会导致测试过程耗费较多的时间。
@@ -7772,7 +8340,13 @@ await LCUser.requestEmailVerify('tom@leancloud.rocks');
 await LCUser.RequestEmailVerify("tom@leancloud.rocks");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+if err := client.Users.RequestEmailVerify("tom@leancloud.rocks"); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 用户点击邮件内的链接后，`emailVerified` 会变为 `true`。如果用户的 `email` 属性为空，则该属性永远不会为 `true`。
 
 ### 验证手机号
@@ -7844,7 +8418,13 @@ await LCUser.requestMobilePhoneVerify('+8618200008888');
 await LCUser.RequestMobilePhoneVerify("+8618200008888");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+if err := client.Users.RequestMobilePhoneVerify("+8618200008888"); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 用户填写验证码后，调用下面的方法来完成验证。`mobilePhoneVerified` 将变为 `true`：
 
 {% if platform_name === "Objective-C" %}
@@ -8045,7 +8625,11 @@ $currentUser = User::getCurrentUser();
 $user->setMobilePhoneNumber("+8618200008888");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+// TODO
+```
+{% endif %}
 ### 当前用户
 
 用户登录后，SDK 会自动将会话信息存储到客户端，这样用户在下次打开客户端时无需再次登录。下面的代码检查是否有已经登录的用户：
@@ -8130,7 +8714,11 @@ if (currentUser != null) {
 }
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+// TODO
+```
+{% endif %}
 会话信息会长期有效，直到用户主动登出：
 
 {% if platform_name === "Objective-C" %}
@@ -8278,7 +8866,14 @@ await LCUser.becomeWithSessionToken('anmlwi96s381m6ca7o7266pzf');
 await LCUser.BecomeWithSessionToken("anmlwi96s381m6ca7o7266pzf");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+user, err := client.Users.Become("anmlwi96s381m6ca7o7266pzf")
+if err != nil {
+    panic(err)
+}
+```
+{% endif %}
 {% call docs.alertWrap() %}
 请避免在外部浏览器使用 URL 来传递 session token，以防范信息泄露风险。
 {% endcall %}
@@ -8380,7 +8975,11 @@ if (isAuthenticated) {
 }
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+// TODO
+```
+{% endif %}
 ### 重置密码
 
 我们都知道，应用一旦加入账户密码系统，那么肯定会有用户忘记密码的情况发生。对于这种情况，我们为用户提供了多种重置密码的方法。
@@ -8450,7 +9049,13 @@ await LCUser.requestPasswordReset('tom@leancloud.rocks');
 await LCUser.RequestPasswordReset("tom@leancloud.rocks");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+if err := client.Users.RequestPasswordReset("tom@leancloud.rocks"); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 上面的代码会查询 `_User` 表中是否有对象的 `email` 属性与前面提供的邮箱匹配。如果有的话，则向该邮箱发送一封密码重置邮件。之前提到过，应用可以让 `username` 与 `email` 保持一致，也可以单独收集用户的邮箱并将其存为 `email`。
 
 {% call docs.noteWrap() %}
@@ -8522,7 +9127,13 @@ await LCUser.requestPasswordRestBySmsCode('+8618200008888');
 await LCUser.RequestPasswordRestBySmsCode("+8618200008888");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+if err := client.Users.RequestPasswordResetBySmsCode("+8618200008888"); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 上面的代码会查询 `_User` 表中是否有对象的 `mobilePhoneNumber` 属性与前面提供的手机号匹配。如果有的话，则向该号码发送验证码短信。
 
 {% call docs.noteWrap() %}
@@ -8599,7 +9210,13 @@ await LCUser.resetPasswordBySmsCode('+8618200008888', '123456', 'cat!@#123');
 await LCUser.ResetPasswordBySmsCode("+8618200008888", "123456", "cat!@#123");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+if err := client.Users.ResetPasswordBySmsCode("+8618200008888", "123456", "cat!@#123"); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 {# > Note that the messaging in either of the above flows will reference your app by the name that you specified when you created this app on LeanCloud. #}
 {% endif %}
 
@@ -8645,6 +9262,11 @@ LCQuery<LCUser> userQuery = LCUser.getQuery();
 {% if platform_name === ".Net" %}
 ```cs
 LCQuery<LCUser> userQuery = LCUser.GetQuery();
+```
+{% endif %}
+{% if platform_name === "Go" %}
+```go
+userQuery := client.Users.NewUserQuery()
 ```
 {% endif %}
 
@@ -8805,10 +9427,14 @@ query.WhereEqualTo("author", author);
 ReadOnlyCollection<LCObject> books = await query.Find();
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+// TODO
+```
+{% endif %}
 ### 用户对象的安全
 
-`{{ userObjectName }}` 类自带安全保障，只有通过 `{% if platform_name === "Objective-C" %}logInWithUsername{% endif %}{% if platform_name === "JavaScript" %}logIn{% endif %}{% if platform_name === "Python" %}login{% endif %}{% if platform_name === "PHP" %}logIn{% endif %}{% if platform_name === "Android / Java" %}logIn{% endif %}{% if platform_name === "Swift" %}logIn{% endif %}` 或者 `{% if platform_name === "Objective-C" %}signUpInBackground{% endif %}{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Android / Java" %}signUpInBackground{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}` 这种经过鉴权的方法获取到的 `{{ userObjectName }}` 才能进行保存或删除相关的操作，保证每个用户只能修改自己的数据。
+`{{ userObjectName }}` 类自带安全保障，只有通过 `{%if platform_name === "Go" %}LogIn{% endif %}{% if platform_name === "Objective-C" %}logInWithUsername{% endif %}{% if platform_name === "JavaScript" %}logIn{% endif %}{% if platform_name === "Python" %}login{% endif %}{% if platform_name === "PHP" %}logIn{% endif %}{% if platform_name === "Android / Java" %}logIn{% endif %}{% if platform_name === "Swift" %}logIn{% endif %}` 或者 `{% if platform_name === "Objective-C" %}signUpInBackground{% endif %}{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Android / Java" %}signUpInBackground{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}{%if platform_name === "Go" %}SignUp{% endif %}` 这种经过鉴权的方法获取到的 `{{ userObjectName }}` 才能进行保存或删除相关的操作，保证每个用户只能修改自己的数据。
 
 这样设计是因为 `{{ userObjectName }}` 中存储的大多数数据都比较敏感，包括手机号、社交网络账号等等。为了用户的隐私安全，即使是应用的开发者也应避免直接接触这些数据。
 
@@ -9024,7 +9650,38 @@ try {
 }
 ```
 {% endif %}
+{% if platform_name === "Go" %}
+```go
+user, err := client.Users.LogIn("Tom", "cat!@#123")
+if err != nil {
+    panic(err)
+}
 
+// 试图修改用户名，未鉴权将失败
+if err := client.User(user).Set("username", "Jerry"); err != nil {
+    panic(err)
+}
+
+// 密码已被加密，这样做会获取到空字符串
+password := user.String("password")
+
+// 可以执行，因为用户已鉴权
+if err := client.User(user).Set("username", "Jerry", UseUser(user)); err != nil {
+    panic(err)
+}
+
+// 绕过鉴权直接获取用户
+unauthenticatedUser := User{}
+if err := client.Users.NewUserQuery().EqualTo("objectId", user.ID).First(&unauthenticatedUser); err != nil {
+    panic(err)
+}
+
+// 会出错，因为用户未鉴权
+if err := client.User(unauthenticatedUser).Set("username", "Toodle"); err != nil {
+    panic(err)
+}
+```
+{% endif %}
 通过 `{% if platform_name === "Objective-C" %}[AVUser currentUser]{% endif %}{% if platform_name === "JavaScript" %}AV.User.current(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current(){% endif %}{% if platform_name === "PHP" %}User::getCurrentUser(){% endif %}{% if platform_name === "Android / Java" %}AVUser.getCurrentUser(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser{% endif %}{% if platform_name === "Flutter" %}LCUser.getCurrent(){% endif %}{% if platform_name === ".Net" %}LCUser.GetCurrent(){% endif %}` 获取的 `{{ userObjectName }}` 总是经过鉴权的。
 
 要查看一个 `{{ userObjectName }}` 是否经过鉴权，可以调用 `{% if platform_name === "Objective-C" %}isAuthenticatedWithSessionToken{% endif %}{% if platform_name === "JavaScript" %}isAuthenticated{% endif %}{% if platform_name === "Python" %}is_authenticated{% endif %}{% if platform_name === "PHP" %}isAuthenticated{% endif %}{% if platform_name === "Android / Java" %}isAuthenticated{% endif %}{% if platform_name === "Swift" %}{# TODO #}{% endif %}` 方法。通过经过鉴权的方法获取到的 `{{ userObjectName }}` 无需进行该检查。
@@ -9173,7 +9830,11 @@ Dictionary<string, object> thirdPartyData = new Dictionary<string, object> {
 LCUser currentUser = await LCUser.LoginWithAuthData(thirdPartyData, "weixin");
 ```
 {% endif %}
-
+{% if platform_name === "Go" %}
+```go
+// TODO
+```
+{% endif %}
 `{{ userObjectName }}#loginWithAuthData` 系列方法需要两个参数来唯一确定一个账户：
 
 - 第三方平台的名字，就是前例中的 `weixin`，该名字由应用层自己决定。
