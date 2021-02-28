@@ -21,6 +21,7 @@
 - [PHP](leanengine_webhosting_guide-php.html){% if platformName === "PHP" %}<span class="text-muted">（当前）</span>{% endif %}
 - [Java](leanengine_webhosting_guide-java.html){% if platformName === "Java" %}<span class="text-muted">（当前）</span>{% endif %}
 - [.NET](leanengine_webhosting_guide-dotnet.html){% if platformName === ".NET" %}<span class="text-muted">（当前）</span>{% endif %}
+- [Go](leanengine_webhosting_guide-go.html){% if platformName === "Go" %}<span class="text-muted">（当前）</span>{% endif %}
 
 ## 从示例项目开始
 
@@ -325,6 +326,44 @@ Windows 系统下需要手动设置 `lean env` 输出的环境变量。
 
 其中根目录必须拥有一个 `app.sln` 解决方案文件 和一个 `web/` 文件夹，这是必须的（这一硬性规定会将在未来取消，取消之后开发者自定义自己的项目结构）。
 {% endif %}
+{% if platformName === "Go" %}
+你的项目需要遵循一定格式才会被云引擎识别并运行。
+
+LeanEngine Go 项目必须是 Go Modules 才会正确地被云引擎识别为 Go 项目。
+
+云引擎默认提供 Go 1.14.0 的运行环境，如需指定 Go 的版本，请在 `go.mod` 中声明。
+
+LeanEngine Go 不依赖任何第三方框架，你可以使用你最熟悉的框架进行开发，或者不使用任何框架，但请正确的将 LeanCloud Go SDK 中提供的云引擎相关中间件接入。
+
+## 接入 Web 框架
+
+细心的开发者已经发现在示例项目是一个基于 [echo](https://github.com/labstack/echo) 的 Web 应用。
+
+Go SDK 以标准库 HTTP 方法的形式提供了可供任意框架接入的接口，以 **echo** 为示例：
+
+```go
+// ./adapters/echo.go
+//...
+func Echo(e *echo.Echo) {
+	e.Any("/1/*", echo.WrapHandler(leancloud.Handler(nil)), setResponseContentType)
+	e.Any("/1.1/*", echo.WrapHandler(leancloud.Handler(nil)), setResponseContentType)
+	e.Any("/__engine/*", echo.WrapHandler(leancloud.Handler(nil)), setResponseContentType)
+}
+
+func setResponseContentType(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set("Content-Type", "application/json; charset=UTF-8")
+		return next(c)
+	}
+}
+```
+
+函数 **Echo** 接收 echo 实例对象，将 Go SDK 中提供 LeanEngine 相关功能的接口绑定到 `/1/` `/1.1/` 和 `/__engine/` 开头的路由前缀上，保证 LeanEngine 相关的底层功能正常。
+
+函数 `setResponseContentType` 设置所有和 LeanEngine 相关的请求的 `Content-Type` 为 `application/json`，并且编码为 `UTF-8`。
+
+大多数 Go Web 框架均提供将标准库 HTTP Handler 转换为特有 Handler 的方法，只要保证能够在其他框架中接入以上两个部件，即可将 LeanEngine 集成入你喜爱的 Go Web 框架中。
+{% endif %}
 
 {% if platformName === "Node.js" %}
 ## 接入 Web 框架
@@ -462,7 +501,10 @@ LeanEngine Java 依赖 Servlet 3.1.0，你可以使用任何基于 Servlet 3.1.0
 {% endif %}
 
 ## 使用数据存储服务
+{% if platformName === "Go" %}
+[数据存储服务](storage_overview.html) 是 LeanCloud 提供的结构化数据存储服务，在网站开发中如果遇到需要存储一些持久化数据的时候，可以使用存储服务来保存数据，例如用户的邮箱、头像等。
 
+{% endif %}
 {% if platformName === "Node.js" %}
 [数据存储服务](storage_overview.html) 是 LeanCloud 提供的结构化数据存储服务，在网站开发中如果遇到需要存储一些持久化数据的时候，可以使用存储服务来保存数据，例如用户的邮箱、头像等。
 
@@ -645,7 +687,9 @@ leancloud.use_master_key(False)
 
 然后就可以在项目中直接使用云存储服务，详细文档请参阅：[数据存储开发指南 · .NET](dotnet_guide.html)。
 {% endif %}
-
+{% if platformName === "Go" %}
+LeanEngine 使用的 LeanCloud Go SDK 实际包含了存储 SDK，可以直接使用相关接口来存储数据。请参考 [数据存储开发指南·Go](leanstorage_guide-go.html)。
+{% endif %}
 ## 健康监测
 
 你的应用在启动时，云引擎的管理程序会每秒去检查你的应用是否启动成功，如果 **30 秒** 仍未启动成功，即认为启动失败；在之后应用正常运行的过程中，也会有定期的「健康监测」，以确保你的应用正常运行，如果健康监测失败，云引擎管理程序会自动重启你的应用。
@@ -1124,7 +1168,7 @@ try {
 ```
 {% endif %}
 
-{% if platformName === "Node.js" or platformName === "Python" or platformName === "PHP" or platformName === "Java" %}
+{% if platformName === "Node.js" or platformName === "Python" or platformName === "PHP" or platformName === "Java" or platformName === "Go" %}
 ### 获取客户端 IP
 
 如果你想获取客户端的 IP，可以直接从用户请求的 HTTP 头的 `x-real-ip` 字段获取，示例代码如下：
@@ -1179,7 +1223,17 @@ $app->get('/', function($req, $res) {
 EngineRequestContext.getRemoteAddress();
 ```
 {% endif %}
-
+{% if platformName === "Go" %}
+```go
+// 以示例项目使用 echo 作为框架
+// ...
+func fetchRealIP(c echo.Context) error {
+  realIP = c.RealIP()
+  //...
+}
+// ...
+```
+{% endif %}
 注意，国内节点的云引擎应用，如果启用了边缘节点加速功能，那么由于边缘节点的限制，无法获取客户端 IP。
 
 {% if platformName === "Node.js" or platformName === "Python" or platformName === "PHP" or platformName === "Java" %}
@@ -1410,7 +1464,11 @@ $app->add(new SlimEngine());
 LeanEngine.setHttpsRedirectEnabled(true);
 ```
 {% endif %}
-
+{% if platformName === "Go" %}
+```go
+// TODO
+```
+{% endif %}
 部署并发布到生产环境之后，访问你的 LeanEngine 网站都会强制通过 HTTPS 访问。
 
 ## 部署与发布
