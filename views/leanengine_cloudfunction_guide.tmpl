@@ -27,6 +27,7 @@
 - [PHP](leanengine_cloudfunction_guide-php.html){% if platformName === "PHP" %}<span class="text-muted">（当前）</span>{% endif %}
 - [Java](leanengine_cloudfunction_guide-java.html){% if platformName === "Java" %}<span class="text-muted">（当前）</span>{% endif %}
 - [.NET](leanengine_cloudfunction_guide-dotnet.html){% if platformName === ".NET" %}<span class="text-muted">（当前）</span>{% endif %}
+- [Go](leanengine_cloudfunction_guide-go.html){% if platformName === "Go" %}<span class="text-muted">（当前）</span>{% endif %}
 
 {% if platformName === "Python" %}
 ## 初始化
@@ -167,7 +168,7 @@ LCCloud.setProduction(false); // 调用预备环境
 
 ## 云函数
 
-[示例项目](https://github.com/leancloud/{% if platformName === "Node.js" %}node-js-getting-started{% endif %}{% if platformName === "Python" %}python-getting-started{% endif %}{% if platformName === "PHP" %}slim-getting-started{% endif %}{% if platformName === "Java" %}java-war-getting-started{% endif %}{% if platformName === ".NET" %}dotNET-getting-started{% endif %}) 中 `{% if platformName === "Node.js" %}cloud.js{% endif %}{% if platformName === "Python" %}cloud.py{% endif %}{% if platformName === "PHP" %}src/cloud.php{% endif %}{% if platformName === "Java" %}src/main/java/cn/leancloud/demo/todo/Cloud.java{% endif %}{% if platformName === ".NET" %}web/HelloSample.cs{% endif %}` 文件定义了一个很简单的 `hello` 云函数。在云端进行计算的一个重要理由是，你不需要将大量的数据发送到设备上做计算，而是将这些计算放到服务端，并返回结果这一点点信息就好。
+[示例项目](https://github.com/leancloud/{% if platformName === "Go" %}golang-getting-started{% endif %}{% if platformName === "Node.js" %}node-js-getting-started{% endif %}{% if platformName === "Python" %}python-getting-started{% endif %}{% if platformName === "PHP" %}slim-getting-started{% endif %}{% if platformName === "Java" %}java-war-getting-started{% endif %}{% if platformName === ".NET" %}dotNET-getting-started{% endif %}) 中 `{% if platformName === "Go" %}functions/hello.go{% endif %}{% if platformName === "Node.js" %}cloud.js{% endif %}{% if platformName === "Python" %}cloud.py{% endif %}{% if platformName === "PHP" %}src/cloud.php{% endif %}{% if platformName === "Java" %}src/main/java/cn/leancloud/demo/todo/Cloud.java{% endif %}{% if platformName === ".NET" %}web/HelloSample.cs{% endif %}` 文件定义了一个很简单的 `hello` 云函数。在云端进行计算的一个重要理由是，你不需要将大量的数据发送到设备上做计算，而是将这些计算放到服务端，并返回结果这一点点信息就好。
 
 现在让我们看一个较复杂的例子来展示云引擎的用途。
 
@@ -185,6 +186,30 @@ LCCloud.setProduction(false); // 调用预备环境
 
 云函数接收 JSON 格式的请求对象，我们可以用它来传入电影名称。整个 {% if platformName === "Node.js" %}[LeanStorage JavaScript SDK](leanstorage_guide-js.html){% endif %}{% if platformName === "Python" %}[LeanStorage Python SDK](leanstorage_guide-python.html){% endif %}{% if platformName === "PHP" %}[LeanStorage PHP SDK](leanstorage_guide-php.html){% endif %}{% if platformName === "Java" %}[LeanStorage Java SDK](leanstorage_guide-java.html){% endif %}{% if platformName === ".NET" %}[LeanStorage .NET SDK](leanstorage_guide-dotnet.html){% endif %} 都在云引擎运行环境上有效，可以直接使用，所以我们可以使用它来查询所有的评分。结合在一起，实现 `averageStars` 函数的代码如下：
 
+{% if platformName === "Go" %}
+```go
+type Review struct {
+  leancloud.Object
+  Movie string `json:"movie"`
+  Stars int `json:"stars"`
+  Comment string `json:"comment"`
+}
+
+leancloud.Define("averageStars", func(req *leancloud.FunctionRequest) (interface{}, error) {
+  reviews := make([]Review, 10) // 预留一小部分空间
+  if err := client.Class("Review").NewQuery().EqualTo("movie", req.Params["movie"].(string)).Find(&reviews); err != nil {
+    return nil, err
+  }
+
+  sum := 0
+  for _, v := range reviews {
+    sum += v.Stars
+  }
+
+  return sum / len(reviews), nil
+})
+```
+{% endif %}
 {% if platformName === "Node.js" %}
 ```js
 AV.Cloud.define('averageStars', function (request) {
@@ -307,7 +332,6 @@ public class Program
     }
 }
 ```
-
 ### 更多云函数定义方式
 
 #### 实例方法搭配 EngineFunction 和 EngineFunctionParameter
@@ -428,7 +452,14 @@ def my_cloud_func(foo, bar, baz, **params):
 
 此处要注意，如果函数本身是异步的（返回值是 `Task` 或者 `Task<T>`），在真正执行的时候也是会等待异步结果，然后再返回给客户端的，另外，如果在执行过程中产生了异常，请参考 [云函数错误响应码](#云函数错误响应码)。
 {% endif %}
+{% if platformName === "Go" %}
+`FunctionRequest` 会作为参数传入到云函数中，`FunctionRequest` 上的属性包括：
 
+- `Params` 包含客户端发送的参数
+- `CurrentUser` 包含客户端所关联的用户（根据客户端发送的 `X-LC-Session` 头）。可以在 `Define` 定义云函数时，在最后传入可选参数 `WithoutFetchUser()` 禁止获取当前调用的用户。
+- `SessionToken` 包含客户端发来的 `sessionToken` 根据客户端发送的 `X-LC-Session` 头）。可以在 `Define` 定义云函数时，在最后传入可选参数 `WithoutFetchUser()` 禁止获取当前调用的 `sessionToken`。
+- `Meta` 包含有关客户端的更多信息，目前只有一个 `remoteAddress` 属性表示客户端的 IP。
+{% endif %}
 ### SDK 调用云函数
 
 LeanCloud 各个语言版本的 SDK 都提供了调用云函数的接口：
@@ -543,14 +574,21 @@ try {
   // 处理异常
 }
 ```
-
+```go
+// ...
+averageStars, err := leancloud.Run("averageStars", map[string]string{"movie": "夏洛特烦恼"})
+if err != nil {
+  panic(err)
+}
+// ...
+```
 ### 通过 REST API 调用云函数
 
 请查看我们的 [云引擎 REST API 使用指南](leanengine-rest-api.html)。
 
 ### 云引擎调用云函数
 
-在云引擎中可以使用 `{% if platformName === "Node.js" %}AV.Cloud.run{% endif %}{% if platformName === "Python" %}leancloud.cloud.run{% endif %}{% if platformName === "PHP" %}LeanCloudEngineCloud::run{% endif %}{% if platformName === "Java" %}AVCloud.callFunctionInBackground{% endif %}{% if platformName === ".NET" %}AVCloud.CallFunctionAsync{% endif %}` 调用 `{% if platformName === "Node.js" %}AV.Cloud.define{% endif %}{% if platformName === "Python" %}engine.define{% endif %}{% if platformName === "PHP" %}LeanCloudEngineCloud::define{% endif %}{% if platformName === "Java" %}@EngineFunction{% endif %}{% if platformName === ".NET" %}EngineFunctionAttribute{% endif %}` 定义的云函数：
+在云引擎中可以使用 `{% if platformName === "Go" %}leancloud.Run{% endif %}{% if platformName === "Node.js" %}AV.Cloud.run{% endif %}{% if platformName === "Python" %}leancloud.cloud.run{% endif %}{% if platformName === "PHP" %}LeanCloudEngineCloud::run{% endif %}{% if platformName === "Java" %}AVCloud.callFunctionInBackground{% endif %}{% if platformName === ".NET" %}AVCloud.CallFunctionAsync{% endif %}` 调用 `{% if platformName === "Go" %}leancloud.Define{% endif %}{% if platformName === "Node.js" %}AV.Cloud.define{% endif %}{% if platformName === "Python" %}engine.define{% endif %}{% if platformName === "PHP" %}LeanCloudEngineCloud::define{% endif %}{% if platformName === "Java" %}@EngineFunction{% endif %}{% if platformName === ".NET" %}EngineFunctionAttribute{% endif %}` 定义的云函数：
 
 {% if platformName === "Node.js" %}
 ```js
@@ -629,13 +667,28 @@ await AVCloud.CallFunctionAsync<double>("averageStars", new Dictionary<string, o
     { "movie", "夏洛特烦恼" }
 });
 ```
-
 另外需要注意的是，**不推荐** 在云引擎中直接调用 `AVCloud.CallFunctionAsync`，因为 `AVCloud.CallFunctionAsync` 是从客户端发起的远程调用，会重新走一遍外网再回到云引擎。如果需要在本地调用，推荐直接在云引擎中使用 `Cloud.CallFunctionAsync`，它会直接从本地进行调用，性能更好。
 {% endif %}
+{% if platformName === "Go" %}
+```go
+// ...
+averageStars, err := leancloud.Run("averageStars", Review{Movie: "夏洛特烦恼"})
+if err != nil {
+  panic(err)
+}
+// ..
 
+此外，`Run` 还有几个可用的选项，可作为 `Run` 最后的可选参数传入:
+
+- `WithRemote()` 强制云函数远程执行
+- `WithSessionToken(token)` 为当前的调用请求传入 `sessionToken`
+- `WithUser(user)` 为当前的调用请求传入对应的用户对象
+
+```
+{% endif %}
 ### RPC 调用云函数
 
-RPC 调用云函数是指：云引擎会在这种调用方式下自动为 HTTP Response Body 做序列化，而 SDK 调用之后拿回的返回结果就是一个完整的 `{% if platformName === "Node.js" %}AV.Object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}AVObject{% endif %}{% if platformName === ".NET" %}AVObject{% endif %}` 或包含这样的对象的数据结构：
+RPC 调用云函数是指：云引擎会在这种调用方式下自动为 HTTP Response Body 做序列化，而 SDK 调用之后拿回的返回结果就是一个完整的 `{%if platformName === "Go" %}Object{% endif %}{% if platformName === "Node.js" %}AV.Object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}AVObject{% endif %}{% if platformName === ".NET" %}AVObject{% endif %}` 或包含这样的对象的数据结构：
 
 ```objc
 NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦恼"
@@ -744,6 +797,14 @@ try {
 } on LCException catch (e) {
   // 处理异常
 }
+```
+```go
+// ...
+averageStars := 0
+if err := leancloud.Run("averageStars", Review{Movie: "夏洛特烦恼"}, &averageStars); err != nil {
+  panic(err)
+}
+// ..
 ```
 
 ### 云函数错误响应码
@@ -1017,7 +1078,7 @@ B -->|afterDelete|C((done))
 
 为了认证 Hook 调用者的身份，我们的 SDK 内部会确认请求确实是从云引擎内网的云存储组件发出的，如果认证失败，可能会出现 `Hook key check failed` 的提示，如果在本地调试时出现这样的错误，请确保是通过命令行工具启动调试的。
 
-### `{% if platformName === "Node.js" %}beforeSave{% endif %}{% if platformName === "Python" %}before_save{% endif %}{% if platformName === "PHP" %}beforeSave{% endif %}{% if platformName === "Java" %}beforeSave{% endif %}{% if platformName === ".NET" %}BeforeSave{% endif %}`
+### `{% if platformName === "Go" %}BeforeSave{% endif %}{% if platformName === "Node.js" %}beforeSave{% endif %}{% if platformName === "Python" %}before_save{% endif %}{% if platformName === "PHP" %}beforeSave{% endif %}{% if platformName === "Java" %}beforeSave{% endif %}{% if platformName === ".NET" %}BeforeSave{% endif %}`
 
 在创建新对象之前，可以对数据做一些清理或验证。例如，一条电影评论不能过长，否则界面上显示不开，需要将其截断至 140 个字符：
 
@@ -1092,8 +1153,23 @@ cloud.BeforeSave("Review", review =>
 });
 ```
 {% endif %}
+{% if platformName === "Go" %}
+```go
+leancloud.BeforeSave("Review", func(req *ClassHookRequest) (interface{}, error) {
+  comment, ok := req.Object.Raw()["comment"].(string)
+  if !ok {
+    return nil, leancloud.CloudError{Code: 400, Message: "Bad Request"}
+  }
 
-### `{% if platformName === "Node.js" %}afterSave{% endif %}{% if platformName === "Python" %}after_save{% endif %}{% if platformName === "PHP" %}afterSave{% endif %}{% if platformName === "Java" %}afterSave{% endif %}{% if platformName === ".NET" %}AfterSave{% endif %}`
+  if len(comment) > 140 {
+    req.Object.Raw()["comment"] = comment[:140]
+  }
+
+  return req.Object, nil
+})
+```
+{% endif %}
+### `{% if platformName === "Go" %}AfterSave{% endif %}{% if platformName === "Node.js" %}afterSave{% endif %}{% if platformName === "Python" %}after_save{% endif %}{% if platformName === "PHP" %}afterSave{% endif %}{% if platformName === "Java" %}afterSave{% endif %}{% if platformName === ".NET" %}AfterSave{% endif %}`
 
 在创建新对象后触发指定操作，比如当一条留言创建后再更新一下所属帖子的评论总数：
 
@@ -1158,7 +1234,28 @@ cloud.AfterSave("Review", review =>
 });
 ```
 {% endif %}
+{% if platformNane === "Go" %}
+```go
+leancloud.AfterSave("Review", func(req *ClassHookRequest) error {
+  post, ok := req.Object.Raw()["post"].(map[string]interface{})
+  if !ok {
+    return leancloud.CloudError{Code: 400, Message: "Bad Request"}
+  }
+  id, ok := post["id"]
+  if !ok {
+    return leancloud.CloudError{Code: 400, Message: "Bad Request"}
+  }
+  if err := client.Class("Post").ID(id).Update(map[string]interface{}{
+    "comment": leancloud.OpIncrement(1),
+  }); err != nil {
+    return leancloud.CloudError{Code: 500, Message: err.Error()}
+  }
 
+  return nil
+})
+
+```
+{% endif %}
 再如，在用户注册成功之后，给用户增加一个新的属性 `from` 并保存：
 
 {% if platformName === "Node.js" %}
@@ -1219,8 +1316,12 @@ cloud.AfterSave("_User", async user =>
 });
 ```
 {% endif %}
-
-### `{% if platformName === "Node.js" %}beforeUpdate{% endif %}{% if platformName === "Python" %}before_update{% endif %}{% if platformName === "PHP" %}beforeUpdate{% endif %}{% if platformName === "Java" %}beforeUpdate{% endif %}{% if platformName === ".NET" %}BeforeUpdate{% endif %}`
+{% if platformName === "Go" %}
+```go
+暂不支持
+```
+{% endif %}
+### `{% if platformName === "Go" %}BeforeUpdate{% endif %}{% if platformName === "Node.js" %}beforeUpdate{% endif %}{% if platformName === "Python" %}before_update{% endif %}{% if platformName === "PHP" %}beforeUpdate{% endif %}{% if platformName === "Java" %}beforeUpdate{% endif %}{% if platformName === ".NET" %}BeforeUpdate{% endif %}`
 
 在更新已存在的对象前执行操作，这时你可以知道哪些字段已被修改，还可以在特定情况下拒绝本次修改：
 
@@ -1287,16 +1388,36 @@ cloud.BeforeUpdate("Review", (AVObject review) =>
 });
 ```
 {% endif %}
+{% if platformName === "Go" %}
+```go
+leancloud.BeforeUpdate("Review", func(req *ClassHookRequest) (interface{}, error) {
+  updatedKeys = req.UpdatedKeys()
+  for _, v := range updatedKeys {
+    if v == "comment" {
+      comment, ok := req.Object.Raw()["comment"].(string)
+      if !ok {
+        return nil, leancloud.CloudError{Code: 400, Message: "Bad Request"}
+      }
 
+      if len(comment) > 140 {
+        return leancloud.CloudError{Code: 400, Message: "Bad Request"}
+      }
+    }
+  }
+  
+  return nil
+})
+```
+{% endif %}
 {% call docs.noteWrap() %}
-对 `{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}obj{% endif %}{% if platformName === "PHP" %}$review{% endif %}{% if platformName === "Java" %}review{% endif %}{% if platformName === ".NET" %}review{% endif %}` 直接进行的修改不会被保存。如需拒绝修改，可以让函数返回一个错误。
+对 `{% if platformName === "Go" %}req.Object{% endif %}{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}obj{% endif %}{% if platformName === "PHP" %}$review{% endif %}{% if platformName === "Java" %}review{% endif %}{% if platformName === ".NET" %}review{% endif %}` 直接进行的修改不会被保存。如需拒绝修改，可以让函数返回一个错误。
 {% endcall %}
 
 {% call docs.noteWrap() %}
 传入的对象是一个尚未保存到数据库的临时对象，并不保证与最终储存到数据库的对象完全相同，这是因为修改中可能包含自增、数组增改、关系增改等原子操作。
 {% endcall %}
 
-### `{% if platformName === "Node.js" %}afterUpdate{% endif %}{% if platformName === "Python" %}after_update{% endif %}{% if platformName === "PHP" %}afterUpdate{% endif %}{% if platformName === "Java" %}afterUpdate{% endif %}{% if platformName === ".NET" %}AfterUpdate{% endif %}`
+### `{% if platformName === "Go" %}AfterSave{% endif %}{% if platformName === "Node.js" %}afterUpdate{% endif %}{% if platformName === "Python" %}after_update{% endif %}{% if platformName === "PHP" %}afterUpdate{% endif %}{% if platformName === "Java" %}afterUpdate{% endif %}{% if platformName === ".NET" %}AfterUpdate{% endif %}`
 
 {% call docs.alertWrap() %}
 本 Hook 使用不当可能会造成死循环，导致数据存储 API 的调用次数暴涨，甚至产生更多的费用。因此请仔细阅读 [防止死循环调用](#防止死循环调用) 部分，做出必要的调整和预防措施。
@@ -1361,15 +1482,35 @@ cloud.AfterUpdate("Review", (AVObject review) =>
 });
 ```
 {% endif %}
+{% if platformName === "Go" %}
+```go
+leancloud.AfterUpdate("Review", func(req *ClassHookRequest) error {
+  updatedKeys := req.UpdatedKeys()
+  for _, v := range updatedKeys {
+    if v == "comment" {
+      comment, ok := req.Object.Raw()["comment"].(string)
+      if !ok {
+        return nil, leancloud.CloudError{Code: 400, Message: "Bad Request"}
+      }
 
+      if len(comment) < 5 {
+        fmt.Println(req.Object.ID, " 看起来像灌水评论：", comment))
+      }
+    }
+  }
+
+  return nil
+})
+```
+{% endif %}
 #### 防止死循环调用
 
-你也许会好奇为什么可以在 `{% if platformName === "Node.js" %}afterUpdate{% endif %}{% if platformName === "Python" %}after_update{% endif %}{% if platformName === "PHP" %}afterUpdate{% endif %}{% if platformName === "Java" %}afterUpdate{% endif %}{% if platformName === ".NET" %}AfterUpdate{% endif %}` 中保存 `post` 而不会再次触发该 hook。这是因为云引擎对所有传入 `{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 的对象做了处理，以阻止死循环调用的产生。
+你也许会好奇为什么可以在 `{% if platformName === "Go" %}AfterUpdate{% endif %}{% if platformName === "Node.js" %}afterUpdate{% endif %}{% if platformName === "Python" %}after_update{% endif %}{% if platformName === "PHP" %}afterUpdate{% endif %}{% if platformName === "Java" %}afterUpdate{% endif %}{% if platformName === ".NET" %}AfterUpdate{% endif %}` 中保存 `post` 而不会再次触发该 hook。这是因为云引擎对所有传入 `{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 的对象做了处理，以阻止死循环调用的产生。
 
 不过请注意，以下情况还需要开发者自行处理：
 
-- 对传入的 `{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 对象进行 `fetch` 操作。
-- 重新构造传入的 `{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 对象，如使用 `{% if platformName === "Node.js" %}AV.Object.createWithoutData(){% endif %}{% if platformName === "Python" %}leancloud.Object.create_without_data(){% endif %}{% if platformName === "PHP" %}LeanObject::create(){% endif %}{% if platformName === "Java" %}AVObject.createWithoutData(String, String){% endif %}{% if platformName === ".NET" %}AVObject.CreateWithoutData(){% endif %}` 方法。
+- 对传入的 `{% if platformName === "Go" %}req.Object{% endif %}{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 对象进行 `fetch` 操作。
+- 重新构造传入的 `{% if platformName === "Go" %}req.Object{% endif %}{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 对象，如使用 `{% if platformName === "Node.js" %}AV.Object.createWithoutData(){% endif %}{% if platformName === "Python" %}leancloud.Object.create_without_data(){% endif %}{% if platformName === "PHP" %}LeanObject::create(){% endif %}{% if platformName === "Java" %}AVObject.createWithoutData(String, String){% endif %}{% if platformName === ".NET" %}AVObject.CreateWithoutData(){% endif %}` 方法。
 
 对于使用上述方式产生的对象，请根据需要自行调用 `{% if platformName === "Node.js" %}object.disableBeforeHook(){% endif %}{% if platformName === "Python" %}leancloud.Object.disable_before_hook(){% endif %}{% if platformName === "PHP" %}LeanObject->disableBeforeHook(){% endif %}{% if platformName === "Java" %}post.disableBeforeHook(){% endif %}{% if platformName === ".NET" %}post.DisableBeforeHook(){% endif %}` 或 `{% if platformName === "Node.js" %}object.disableAfterHook(){% endif %}{% if platformName === "Python" %}leancloud.Object.disable_after_hook(){% endif %}{% if platformName === "PHP" %}LeanObject->disableAfterHook(){% endif %}{% if platformName === "Java" %}post.disableAfterHook(){% endif %}{% if platformName === ".NET" %}post.DisableAfterHook(){% endif %}`：
 
@@ -1479,7 +1620,7 @@ cloud.AfterUpdate("Post", (EngineObjectHookDeltegateSynchronous)(async post =>
 ```
 {% endif %}
 
-### `{% if platformName === "Node.js" %}beforeDelete{% endif %}{% if platformName === "Python" %}before_delete{% endif %}{% if platformName === "PHP" %}beforeDelete{% endif %}{% if platformName === "Java" %}beforeDelete{% endif %}{% if platformName === ".NET" %}BeforeDelete{% endif %}`
+### `{% if platformName === "Go" %}BeforeDelete{% endif %}{% if platformName === "Node.js" %}beforeDelete{% endif %}{% if platformName === "Python" %}before_delete{% endif %}{% if platformName === "PHP" %}beforeDelete{% endif %}{% if platformName === "Java" %}beforeDelete{% endif %}{% if platformName === ".NET" %}BeforeDelete{% endif %}`
 
 在删除一个对象之前做一些检查工作，比如在删除一个相册 `Album` 前，先检查一下该相册中还有没有照片 `Photo`：
 
@@ -1569,8 +1710,27 @@ cloud.BeforeDelete("Album", async album =>
 });
 ```
 {% endif %}
+{% if platformName === "Go" %}
+```go
+leancloud.BeforeDelete("Album", func(req *ClassHookRequest) (interface{}, error) {
+  album, ok := req.Object.Raw()["album"].(string)
+  if !ok {
+    return nil, leancloud.CloudError{Code: 500, Message: "Bad Request"}
+  }
+  count, err := client.Class("Photo").NewQuery().EqualTo("album", album).Count()
+  if err != nil {
+    return nil, err
+  }
+  if count > 0 {
+    return nil, leancloud.CloudError{Code: 500, Message: "Cannot delete an album if it still has photos in it."}
+  }
 
-### `{% if platformName === "Node.js" %}afterDelete{% endif %}{% if platformName === "Python" %}after_delete{% endif %}{% if platformName === "PHP" %}afterDelete{% endif %}{% if platformName === "Java" %}afterDelete{% endif %}{% if platformName === ".NET" %}AfterDelete{% endif %}`
+  fmt.Println("Deleted.")
+  return nil, nil
+})  
+```
+{% endif %}
+### `{% if platformName === "Go" %}AfterDelete{% endif %}{% if platformName === "Node.js" %}afterDelete{% endif %}{% if platformName === "Python" %}after_delete{% endif %}{% if platformName === "PHP" %}afterDelete{% endif %}{% if platformName === "Java" %}afterDelete{% endif %}{% if platformName === ".NET" %}AfterDelete{% endif %}`
 
 在一个对象后被删执行操作，例如递减计数、删除关联对象等等。同样以相册为例，这次我们不在删除相册前检查是否还有照片，而是在删除后，同时删除相册中的照片：
 
@@ -1643,8 +1803,28 @@ cloud.AfterDelete("Album", async album =>
 });
 ```
 {% endif %}
+{% if platformName === "Go" %}
+```go
+leancloud.AfterDelete("Album", func(req *ClassHookRequest) error {
+  album, ok := req.Object.Raw()["album"].(string)
+  if !ok {
+    return nil, leancloud.CloudError{Code: 500, Message: "Bad Request"}
+  }
+  count, err := client.Class("Photo").NewQuery().EqualTo("album", album).Count()
+  if err != nil {
+    return nil, err
+  }
+  if count > 0 {
+    return nil, leancloud.CloudError{Code: 500, Message: "An error occurred with LeanEngine."}
+  }
 
-### `{% if platformName === "Node.js" %}onVerified{% endif %}{% if platformName === "Python" %}on_verified{% endif %}{% if platformName === "PHP" %}onVerified{% endif %}{% if platformName === "Java" %}onVerified{% endif %}{% if platformName === ".NET" %}OnVerified{% endif %}`
+  fmt.Println("Deleted.")
+  return nil, nil
+})  
+})
+```
+{% endif %}
+### `{% if platformName === "Go" %}OnVerified{% endif %}{% if platformName === "Node.js" %}onVerified{% endif %}{% if platformName === "Python" %}on_verified{% endif %}{% if platformName === "PHP" %}onVerified{% endif %}{% if platformName === "Java" %}onVerified{% endif %}{% if platformName === ".NET" %}OnVerified{% endif %}`
 
 当用户通过邮箱或者短信验证时，对该用户执行特定操作。比如：
 
@@ -1693,13 +1873,21 @@ cloud.OnVerifiedSMS((AVUser user) =>
 });
 ```
 {% endif %}
+{% if platformName === "Go" %}
+leancloud.OnVerified("sms", func(req *ClassHookRequest) error {
+  fmt.Println("用户 ", req.User.ID, " 已通过短信验证。")
+})
 
+leancloud.OnVerified("email", func(req *ClassHookRequest) error {
+  fmt.Println("用户 ", req.User.ID, " 已通过邮箱验证。")
+})
+{% endif %}
 {% if platformName !== "Java" %}
 函数的第一个参数是验证类型。短信验证为 `sms`，邮箱验证为 `email`。
 {% endif %}
 数据库中相关的验证字段，如 `emailVerified` 不需要修改，系统会自动更新。
 
-### `{% if platformName === "Node.js" %}onLogin{% endif %}{% if platformName === "Python" %}on_login{% endif %}{% if platformName === "PHP" %}onLogin{% endif %}{% if platformName === "Java" %}onLogin{% endif %}{% if platformName === ".NET" %}OnLogin{% endif %}`
+### `{% if platformName === "Go" %}OnLogin{% endif %}{% if platformName === "Node.js" %}onLogin{% endif %}{% if platformName === "Python" %}on_login{% endif %}{% if platformName === "PHP" %}onLogin{% endif %}{% if platformName === "Java" %}onLogin{% endif %}{% if platformName === ".NET" %}OnLogin{% endif %}`
 
 在用户登录之时执行指定操作，比如禁止在黑名单上的用户登录：
 
@@ -1758,7 +1946,13 @@ cloud.OnLogIn((AVUser user) =>
 });
 ```
 {% endif %}
-
+{% if platformName === "Go" %}
+```go
+leancloud.OnLogin(func(req *ClassHookRequest) error {
+  fmt.Println("用户 ", req.User.ID, " 已登录。")
+})
+```
+{% endif %}
 再比如校验第三方登录的 access token：
 
 假设某 Example 平台的 `authData` 如下：
@@ -1869,7 +2063,7 @@ cloud.OnLogIn(async user =>
 
 ### Hook 函数错误响应码
 
-为 `{% if platformName === "Node.js" %}beforeSave{% endif %}{% if platformName === "Python" %}before_save{% endif %}{% if platformName === "PHP" %}beforeSave{% endif %}{% if platformName === "Java" %}beforeSave{% endif %}{% if platformName === ".NET" %}BeforeSave{% endif %}` 这类的 hook 函数定义错误码，需要这样：
+为 `{% if platformName === "Go" %}BeforeSave{% endif %}{% if platformName === "Node.js" %}beforeSave{% endif %}{% if platformName === "Python" %}before_save{% endif %}{% if platformName === "PHP" %}beforeSave{% endif %}{% if platformName === "Java" %}beforeSave{% endif %}{% if platformName === ".NET" %}BeforeSave{% endif %}` 这类的 hook 函数定义错误码，需要这样：
 
 {% if platformName === "Node.js" %}
 ```js
@@ -1923,7 +2117,13 @@ cloud.BeforeSave("Review", (AVObject review) =>
 });
 ```
 {% endif %}
-
+{% if platformName === "Go" %}
+```go
+leancloud.BeforeSave("Review", func(req *ClassHookRequest) (interface{}, error) {
+  return nil, leancloud.CloudError{Code: 123, Message: "An error occurred."}
+})
+```
+{% endif %}
 客户端收到的响应为 `Cloud Code validation failed. Error detail: { "code": 123, "message": "An error occurred." }`。可通过 **截取字符串** 的方式取出错误信息，再转换成需要的对象。
 
 ### Hook 函数超时
@@ -2028,7 +2228,14 @@ public static void LogTimer()
   Console.WriteLine("This log is printed by logTimer.");
 }
 {% endif %}
-
+{% if platformName === "Go" %}
+```go
+leancloud.Define("logTimer", func(req *FunctionRequest) (interface{}, error) {
+  fmt.Println("This log is printed by logTimer.")
+  return nil, nil
+})
+```
+{% endif %}
 定时任务分为两类：
 
 - 使用 Cron 表达式安排调度
@@ -2098,7 +2305,9 @@ RequestSignImplementation.setMasterKey(appMasterKey);
 AVClient.UseMasterKey = true;
 ```
 {% endif %}
-
+{% if platformName === "Go" %}
+SDK 中每个请求都可以使用 `UseMasterKey()` 为请求带上 Master Key 来开启超级权限，只需要作为可选参数传入最后即可，例如 `Create` `Set` `Update` 等操作。
+{% endif %}
 {% if platformName === "Node.js" %}
 如果没有添加这些代码，默认是没有超级权限的，这意味着在云引擎中你也不能修改被 ACL 保护的数据，你需要在进行操作时手动指定 `sessionToken`，让操作以这个用户的权限来执行：
 
