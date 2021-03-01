@@ -1,7 +1,7 @@
 {% extends "./leanstorage_guide.tmpl" %}
 {% set platform_name = "Go" %}
-{% set baseObjectName = "Object" %}
-{% set baseQueryClassName = "Query" %}
-{% set fileObjectName = "File" %}
-{% set geoPointObjectName = "GeoPoint" %}
-{% set userObjectName = "User" %}
+{% set baseObjectName = "leancloud.Object" %}
+{% set baseQueryClassName = "leancloud.Query" %}
+{% set fileObjectName = "leancloud.File" %}
+{% set geoPointObjectName = "leancloud.GeoPoint" %}
+{% set userObjectName = "leancloud.User" %}

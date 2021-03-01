@@ -244,9 +244,9 @@ tags:       ["工作", "销售"]
 ```
 
 {% if platform_name === "Go" %}
-Go SDK 中 `{{ baseObjectName }}` 类型是对于复杂对象的封装，但是由于 Go 的类型系统的特性，开发者不能顺畅的使用 `map[string]interface{}`，还需要进行类型断言，所以我们强烈建议开发者自行定义对象类型，并且将 `{{ baseObjectName }}` 作为元数据嵌入到结构体中，在和 SDK 交互的过程中都使用自行定义的类型，SDK 会尽力将对象上的字段绑定到结构体的对应字段上。
+由于 Go 的类型系统的特性，开发者在使用 `map[string]interface{}` 时需要进行类型断言，所以我们强烈建议开发者在与 SDK 交互的过程中使用自行定义的结构体，并且将 `{{ baseObjectName }}` 作为元数据嵌入到结构体中，SDK 会尽可能将对象上的字段绑定到结构体的对应字段上。
 
-在定义自定义类型时，除了要嵌入 `{{ baseObjectName }}` 作为元数据外，还需要对希望使用的 **可导出** 字段加上 **JSON Tag**。
+在定义自定义结构体时，除了要嵌入 `{{ baseObjectName }}` 作为元数据外，还需要对希望使用的 **可导出** 字段加上 **JSON Tag**。因为 Go SDK 使用反射来对自定义结构体进行修改，而反射是无法访问结构体的 **非导出字段** 的。
 
 对于上面 Todo 类型，可以定义新的对象类型:
 
@@ -506,7 +506,7 @@ str := "LeanCloud"
 date := time.Now()
 slice := []byte("LeanCloud")
 
-//构建对象
+// 定义结构体
 type Meeting struct {
   leancloud.Object
   Title      string     `json:"title"`
@@ -516,6 +516,7 @@ type Meeting struct {
   Attachment []byte     `json:"attachment"`
 }
 
+// 构建对象
 meeting := Meeting{
   Title: "Meeting",
   Number: 1,
@@ -1182,24 +1183,7 @@ if err := client.Class("Todo").ID("582570f38ac247004f39c24b").Update(map[string]
 }
 ```
 
-如果已经有之前保存的对象，则可以不使用 `Class().ID()` 这样的形式来指定一个对象，使用 `Object()` 来指向一个对象:
-```go
-// 使用自定义类型对象更新
-diff := Todo{
-  Title: "Another Meeting",
-}
-
-if err := client.Object(todo).Update(diff); err != nil {
-  panic(err)
-}
-
-// 使用 map[string]interface{} 更新
-if err := client.Object(todo).Update(map[string]interface{}{
-  "title": "Another Meeting",
-}); err != nil {
-  panic(err)
-}
-```
+如果已经有之前保存的对象，则可以使用 client.Object(todo).Update 代替 client.Class("Todo").ID(id).Update 来更新对象。
 
 #### 有条件更新对象
 
@@ -1215,6 +1199,27 @@ if err := client.Class("Account").ID("5745557f71cfe40068c6abe0").UpdateWithQuery
     panic(err)
 }
 ```
+
+##### 关于 Go 中的零值
+
+由于 Go 的特性，所有的变量在被声明后都会被初始化为对应类型的 **零值**，例如 `int` 的零值为 `0`，`string` 的零值为 `""`等等。你可以通过嵌套的方式在
+
+那么在使用 `Update` 时传入自定义结构体就会带来一个问题：字段的零值到底是用户设置的还是被默认初始化的？
+
+想要解决这个问题只需要将字段的类型变为相应的指针类型即可:
+```go
+// 定义结构体
+type Todo struct {
+  leancloud.Object
+  Title string `json:"title"`
+  Content string `json:"content"`
+  Order *int // 可以指定一个编号，如果不指定则为空不应为 0  
+}
+```
+
+由于字段变为了指针类型，如果不对字段赋值，那么该字段为指针的零值 `nil`，而不是对应非指针类型的零值，这样就不会产生二义性问题。
+
+另一种解决方案则是则是不使用自定义结构体，转而使用 `map[string]interface{}`。对于 `map[string]interface{}` 来说，如果 `key` 不存在，则 `value` 也不存在，不会产生自定义结构体字段的零值问题。
 {% endif %}
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -1537,7 +1542,7 @@ post.Increment("likes", 1);
 {% endif %}
 {% if platform_name === "Go" %}
 ```go
-leancloud.OpIncrement(1);
+leancloud.OpIncrement(1)
 ```
 {% endif %}
 可以指定需要增加或减少的值。若未指定，则默认使用 `1`。
@@ -2347,7 +2352,7 @@ type Post struct {
 
 type Comment struct {
     leancloud.Object
-    Parent  Post   `json:"parent"`
+    Parent  Post   `json:"parent"` // 嵌入自定义结构体
     Content string `json:"content"`
 }
 
@@ -2361,7 +2366,7 @@ if err := client.Class("Post").Create(&post); err != nil {
 }
 
 comment := Comment{
-    Parent: post,
+    Parent: post, //  嵌入已有的对象
     Content: "当然是肯德基啦！",
 }
 
@@ -2703,6 +2708,9 @@ if err := client.Class("Student").NewQuery().EqualTo("lastName", "Smith").Find(&
     panic(err)
 }
 ```
+
+注意：查询条件中指定的字段为 **云端的字段名** 而不是 结构体的字段名。
+
 {% endif %}
 ### 查询条件
 
@@ -3366,7 +3374,7 @@ query := client.Class("Todo").NewQuery().Order("priority").Order("-createdAt")
 
 {% if platform_name === "Go" %}
 ```go
-// TODO
+// 暂不支持
 ```
 {% endif  %}
 {% if platform_name === "Objective-C" %}
@@ -3734,7 +3742,7 @@ query := client.Class("Todo").NewQuery().Contains("title", "lunch")
 和 `{% if platform_name === "Go" %}Query.StartsWith{% endif %}{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}{% if platform_name === ".Net" %}WhereStartsWith{% endif %}` 不同，`{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === ".Net" %}WhereContains{% endif %}{% if platform_name === "Go" %}Query.Contains{% endif %}` 无法利用索引，因此不建议用于大型数据集。
 
 {% call docs.noteWrap() %}
-注意 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}{% if platform_name === ".Net" %}WhereStartsWith{% endif %}` 和 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === ".Net" %}WhereContains{% endif %}` 都是 **区分大小写** 的，所以上述查询会忽略 `Lunch`、`LUNCH` 等字符串。
+注意 `{% if platform_name === "Go" %}Query.StartsWith{% endif %}{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}{% if platform_name === ".Net" %}WhereStartsWith{% endif %}` 和 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === ".Net" %}WhereContains{% endif %}` 都是 **区分大小写** 的，所以上述查询会忽略 `Lunch`、`LUNCH` 等字符串。
 {% endcall %}
 
 如果想查找某一属性值不包含特定字符串的对象，可以使用 `{% if platform_name === "Go" %}Query.Regexp{% endif %}{% if platform_name === "Objective-C" %}matchesRegex{% endif %}{% if platform_name === "JavaScript" %}matches{% endif %}{% if platform_name === "Python" %}matched{% endif %}{% if platform_name === "PHP" %}matches{% endif %}{% if platform_name === "Android / Java" %}whereMatches{% endif %}{% if platform_name === "Swift" %}.matchedPattern{% endif %}{% if platform_name === "Flutter" %}whereMatches{% endif %}{% if platform_name === ".Net" %}WhereMatches{% endif %}` 进行基于正则表达式的查询：
@@ -6010,7 +6018,7 @@ file.MimeType = "application/json";
 
 {% if platform_name === "Go" %}
 ```go
-file, err := c.Files.UploadFromFile("resume.txt")
+file, err := client.Files.UploadFromFile("resume.txt")
 if err != nil {
 	t.Fatal(err)
 }
@@ -6185,7 +6193,7 @@ print(file.ObjectId);
 {% endif %}
 {% if platform_name === "Go" %}
 ```go
-file, err := c.Files.UploadFromFile("resume.txt")
+file, err := client.Files.UploadFromFile("resume.txt")
 if err != nil {
     t.Fatal(err)
 }
@@ -8009,7 +8017,7 @@ try {
 {% endif %}
 {% if platform_name === "Go" %}
 ```go
-// TODO
+// 暂不支持
 ```
 {% endif %}
 {% if node !== "qcloud" %}
@@ -8627,7 +8635,7 @@ $user->setMobilePhoneNumber("+8618200008888");
 {% endif %}
 {% if platform_name === "Go" %}
 ```go
-// TODO
+// 暂不支持
 ```
 {% endif %}
 ### 当前用户
