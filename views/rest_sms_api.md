@@ -15,7 +15,7 @@
 
 ## 快速参考
 
-所有 API 访问都需要使用 HTTPS 协议。在 API 域名下，相对路径前缀 `/1.1/` 代表使用版本号为 1.1 的 API。如需在线测试 API，请在浏览器中打开 <https://leancloud.cn/dashboard/apionline/index.html>。
+所有 API 访问都需要使用 HTTPS 协议。在 API 域名下，相对路径前缀 `/1.1/` 代表使用版本号为 1.1 的 API。
 
 {{ data.baseurl() }}
 
