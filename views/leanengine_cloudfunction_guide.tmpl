@@ -677,14 +677,12 @@ if err != nil {
   panic(err)
 }
 // ..
-
+```
 此外，`Run` 还有几个可用的选项，可作为 `Run` 最后的可选参数传入:
 
 - `WithRemote()` 强制云函数远程执行
 - `WithSessionToken(token)` 为当前的调用请求传入 `sessionToken`
 - `WithUser(user)` 为当前的调用请求传入对应的用户对象
-
-```
 {% endif %}
 ### RPC 调用云函数
 
@@ -801,7 +799,7 @@ try {
 ```go
 // ...
 averageStars := 0
-if err := leancloud.Run("averageStars", Review{Movie: "夏洛特烦恼"}, &averageStars); err != nil {
+if err := leancloud.RPC("averageStars", Review{Movie: "夏洛特烦恼"}, &averageStars); err != nil {
   panic(err)
 }
 // ..

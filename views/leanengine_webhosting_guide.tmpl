@@ -1225,7 +1225,7 @@ EngineRequestContext.getRemoteAddress();
 {% endif %}
 {% if platformName === "Go" %}
 ```go
-// 以示例项目使用 echo 作为框架
+// 示例项目使用 echo 作为框架
 // ...
 func fetchRealIP(c echo.Context) error {
   realIP = c.RealIP()
@@ -1466,7 +1466,7 @@ LeanEngine.setHttpsRedirectEnabled(true);
 {% endif %}
 {% if platformName === "Go" %}
 ```go
-// TODO
+// 暂不支持
 ```
 {% endif %}
 部署并发布到生产环境之后，访问你的 LeanEngine 网站都会强制通过 HTTPS 访问。
