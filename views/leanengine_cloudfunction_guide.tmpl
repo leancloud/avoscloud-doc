@@ -1166,16 +1166,16 @@ cloud.BeforeSave("Review", review =>
 {% if platformName === "Go" %}
 ```go
 leancloud.BeforeSave("Review", func(req *ClassHookRequest) (interface{}, error) {
-  comment, ok := req.Object.Raw()["comment"].(string)
-  if !ok {
-    return nil, leancloud.CloudError{Code: 400, Message: "Bad Request"}
+  review := new(Review)
+  if err := req.Object.Clone(review); err != nil {
+    return nil, err
   }
 
-  if len(comment) > 140 {
-    req.Object.Raw()["comment"] = comment[:140]
+  if len(review.Comment) > 140 {
+    review.Comment = review.Comment[:140]
   }
 
-  return req.Object, nil
+  return review, nil
 })
 ```
 {% endif %}
@@ -1247,15 +1247,12 @@ cloud.AfterSave("Review", review =>
 {% if platformNane === "Go" %}
 ```go
 leancloud.AfterSave("Review", func(req *ClassHookRequest) error {
-  post, ok := req.Object.Raw()["post"].(map[string]interface{})
-  if !ok {
-    return leancloud.CloudError{Code: 400, Message: "Bad Request"}
+  review := new(Review)
+  if err := req.Object.Clone(review); err != nil {
+    return err
   }
-  id, ok := post["id"]
-  if !ok {
-    return leancloud.CloudError{Code: 400, Message: "Bad Request"}
-  }
-  if err := client.Class("Post").ID(id).Update(map[string]interface{}{
+  
+  if err := client.Object(review.Post).Update(map[string]interface{}{
     "comment": leancloud.OpIncrement(1),
   }); err != nil {
     return leancloud.CloudError{Code: 500, Message: err.Error()}
@@ -1730,19 +1727,22 @@ cloud.BeforeDelete("Album", async album =>
 {% if platformName === "Go" %}
 ```go
 leancloud.BeforeDelete("Album", func(req *ClassHookRequest) (interface{}, error) {
-  album, ok := req.Object.Raw()["album"].(string)
-  if !ok {
-    return nil, leancloud.CloudError{Code: 500, Message: "Bad Request"}
+  photo := new(Photo)
+  if err := req.Object.Clone(photo); err != nil {
+    return nil, err
   }
-  count, err := client.Class("Photo").NewQuery().EqualTo("album", album).Count()
+
+  count, err := client.Class("Photo").NewQuery().EqualTo("album", photo.Album).Count()
   if err != nil {
     return nil, err
   }
+
   if count > 0 {
     return nil, leancloud.CloudError{Code: 500, Message: "Cannot delete an album if it still has photos in it."}
   }
 
   fmt.Println("Deleted.")
+
   return nil, nil
 })  
 ```
@@ -1823,19 +1823,22 @@ cloud.AfterDelete("Album", async album =>
 {% if platformName === "Go" %}
 ```go
 leancloud.AfterDelete("Album", func(req *ClassHookRequest) error {
-  album, ok := req.Object.Raw()["album"].(string)
-  if !ok {
-    return nil, leancloud.CloudError{Code: 500, Message: "Bad Request"}
+  photo := new(Photo)
+  if err := req.Object.Clone(photo); err != nil {
+    return nil, err
   }
-  count, err := client.Class("Photo").NewQuery().EqualTo("album", album).Count()
+
+  count, err := client.Class("Photo").NewQuery().EqualTo("album", photo.Album).Count()
   if err != nil {
     return nil, err
   }
+
   if count > 0 {
     return nil, leancloud.CloudError{Code: 500, Message: "An error occurred with LeanEngine."}
   }
 
   fmt.Println("Deleted.")
+  
   return nil, nil
 })  
 })
