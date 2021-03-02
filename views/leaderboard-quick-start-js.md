@@ -59,7 +59,7 @@ AV.User.signUp('playerA', 'passwordA')
 const leaderboard = AV.Leaderboard.createWithoutData('world');
 leaderboard.getResults({
   limit: 10,
-  includeUserKeys: ['username'], //展示结果时同时展示玩家的用户名
+  includeUserKeys: ['username'], //展示结果时同时展示玩家的用户名，需要在云引擎中使用 masterKey 权限。
 })
 .then(function(results) {
   console.log(results);
