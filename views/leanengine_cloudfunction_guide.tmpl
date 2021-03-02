@@ -453,7 +453,7 @@ def my_cloud_func(foo, bar, baz, **params):
 此处要注意，如果函数本身是异步的（返回值是 `Task` 或者 `Task<T>`），在真正执行的时候也是会等待异步结果，然后再返回给客户端的，另外，如果在执行过程中产生了异常，请参考 [云函数错误响应码](#云函数错误响应码)。
 {% endif %}
 {% if platformName === "Go" %}
-`FunctionRequest` 会作为参数传入到云函数中，`FunctionRequest` 上的属性包括：
+`leancloud.FunctionRequest` 会作为参数传入到云函数中，`leancloud.FunctionRequest` 上的属性包括：
 
 - `Params` 包含客户端发送的参数
 - `CurrentUser` 包含客户端所关联的用户（根据客户端发送的 `X-LC-Session` 头）。可以在 `Define` 定义云函数时，在最后传入可选参数 `WithoutFetchUser()` 禁止获取当前调用的用户。
@@ -863,7 +863,13 @@ public class UserService
 }
 ```
 {% endif %}
-
+{% if platformName === "Go" %}
+```go
+leancloud.Define("errorCode", func(req *leancloud.FunctionRequest) (interface{}, error) {
+  return nil, leancloud.CloudError{123, "Could not find the user."}
+})
+```
+{% endif %}
 客户端收到的响应：`{ "code": 211, "error": "Could not find the user." }`。
 
 {% if platformName === "Node.js" %}
@@ -905,7 +911,13 @@ throw new EngineException(123, "自定义错误信息。");
 }
 ```
 {% endif %}
-
+{% if platformName === "Go" %}
+```go
+leancloud.Define("customErrorCode", func(req *leancloud.FunctionRequest) (interface{}, error) {
+  return nil, leancloud.CloudError{123, "自定义错误信息。"}
+})
+```
+{% endif %}
 客户端收到的响应：`{ "code": 123, "error": "自定义错误信息。" }`。
 
 ### 云函数超时
@@ -1316,7 +1328,14 @@ cloud.AfterSave("_User", async user =>
 {% endif %}
 {% if platformName === "Go" %}
 ```go
-暂不支持
+leancloud.AfterSave("_User", func(req *ClassHookRequest) error{
+  if req.User != nil {
+    if err := client.User(req.User).Set("from", "LeanCloud"); err != nil {
+      return err
+    }
+  }
+  return nil
+})
 ```
 {% endif %}
 ### `{% if platformName === "Go" %}BeforeUpdate{% endif %}{% if platformName === "Node.js" %}beforeUpdate{% endif %}{% if platformName === "Python" %}before_update{% endif %}{% if platformName === "PHP" %}beforeUpdate{% endif %}{% if platformName === "Java" %}beforeUpdate{% endif %}{% if platformName === ".NET" %}BeforeUpdate{% endif %}`
@@ -1415,7 +1434,7 @@ leancloud.BeforeUpdate("Review", func(req *ClassHookRequest) (interface{}, error
 传入的对象是一个尚未保存到数据库的临时对象，并不保证与最终储存到数据库的对象完全相同，这是因为修改中可能包含自增、数组增改、关系增改等原子操作。
 {% endcall %}
 
-### `{% if platformName === "Go" %}AfterSave{% endif %}{% if platformName === "Node.js" %}afterUpdate{% endif %}{% if platformName === "Python" %}after_update{% endif %}{% if platformName === "PHP" %}afterUpdate{% endif %}{% if platformName === "Java" %}afterUpdate{% endif %}{% if platformName === ".NET" %}AfterUpdate{% endif %}`
+### `{% if platformName === "Go" %}AfterUpdate{% endif %}{% if platformName === "Node.js" %}afterUpdate{% endif %}{% if platformName === "Python" %}after_update{% endif %}{% if platformName === "PHP" %}afterUpdate{% endif %}{% if platformName === "Java" %}afterUpdate{% endif %}{% if platformName === ".NET" %}AfterUpdate{% endif %}`
 
 {% call docs.alertWrap() %}
 本 Hook 使用不当可能会造成死循环，导致数据存储 API 的调用次数暴涨，甚至产生更多的费用。因此请仔细阅读 [防止死循环调用](#防止死循环调用) 部分，做出必要的调整和预防措施。
@@ -1872,6 +1891,7 @@ cloud.OnVerifiedSMS((AVUser user) =>
 ```
 {% endif %}
 {% if platformName === "Go" %}
+```go
 leancloud.OnVerified("sms", func(req *ClassHookRequest) error {
   fmt.Println("用户 ", req.User.ID, " 已通过短信验证。")
 })
@@ -1879,6 +1899,7 @@ leancloud.OnVerified("sms", func(req *ClassHookRequest) error {
 leancloud.OnVerified("email", func(req *ClassHookRequest) error {
   fmt.Println("用户 ", req.User.ID, " 已通过邮箱验证。")
 })
+```
 {% endif %}
 {% if platformName !== "Java" %}
 函数的第一个参数是验证类型。短信验证为 `sms`，邮箱验证为 `email`。
