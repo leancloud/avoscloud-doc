@@ -3378,7 +3378,11 @@ query := client.Class("Todo").NewQuery().Order("priority").Order("-createdAt")
 
 {% if platform_name === "Go" %}
 ```go
-// 暂不支持
+// 查找包含 "image" 的对象
+query := client.Class("Todo").NewQuery().Exists("image")
+
+// 查找不包含 "image" 的对象
+query := client.Class("Todo").NewQuery().NotExists("image")
 ```
 {% endif  %}
 {% if platform_name === "Objective-C" %}
@@ -8046,7 +8050,12 @@ try {
 {% endif %}
 {% if platform_name === "Go" %}
 ```go
-// 暂不支持
+user, err := client.LoginByEmail("tom@leancloud.rocks", "cat!@#123")
+if err != nil {
+  panic(err)
+}
+
+fmt.Println(user)
 ```
 {% endif %}
 {% if node !== "qcloud" %}
@@ -8664,7 +8673,13 @@ $user->setMobilePhoneNumber("+8618200008888");
 {% endif %}
 {% if platform_name === "Go" %}
 ```go
-// 暂不支持
+if err := client.Users.requestChangePhoneNumber("+8618200008888"); err != nil {
+  panic(err)
+}
+
+if err := client.Users.ChangePhoneNumber("123456", "+8618200008888"); err != nil {
+  panic(err)
+}
 ```
 {% endif %}
 ### 当前用户
