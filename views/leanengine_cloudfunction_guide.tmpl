@@ -1414,12 +1414,12 @@ leancloud.BeforeUpdate("Review", func(req *ClassHookRequest) (interface{}, error
       }
 
       if len(comment) > 140 {
-        return leancloud.CloudError{Code: 400, Message: "Bad Request"}
+        return nil, leancloud.CloudError{Code: 400, Message: "Bad Request"}
       }
     }
   }
   
-  return nil
+  return nil, nil
 })
 ```
 {% endif %}
