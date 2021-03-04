@@ -408,7 +408,7 @@ def my_cloud_func(foo, bar, baz, **params):
 
 除了调用云函数的参数之外，还可以通过 `engine.current` 对象，来获取到调用此云函数的客户端的其他信息。`engine.current` 对象上的属性包括：
 
-- `engine.current.user: leancloud.User`：客户端所关联的用户（根据客户端发送的 `LC-Session` 头）。
+- `engine.current.user: leancloud.User`：客户端所关联的用户（根据客户端发送的 `X-LC-Session` 头）。
 - `engine.current.session_token: str`：客户端发来的 `sessionToken`（`X-LC-Session` 头）。
 - `engine.current.meta: dict`：有关客户端的更多信息，目前只有一个 `remote_address` 属性表示客户端的 IP。
 {% endif %}
@@ -423,7 +423,7 @@ def my_cloud_func(foo, bar, baz, **params):
 云函数中可以获取的参数和上下文信息有：
 
 - `@EngineFunctionParam`：客户端发送的参数。
-- `EngineRequestContext`有关客户端的更多信息，其中 `EngineRequestContext.getSessionToken()` 会返回客户端所关联用户的 sessionToken（根据客户端发送的 `LC-Session` 头），`EngineRequestContext.getRemoteAddress()` 会返回客户端的实际地址。
+- `EngineRequestContext`有关客户端的更多信息，其中 `EngineRequestContext.getSessionToken()` 会返回客户端所关联用户的 sessionToken（根据客户端发送的 `X-LC-Session` 头），`EngineRequestContext.getRemoteAddress()` 会返回客户端的实际地址。
 
 {% endif %}
 {% if platformName === ".NET" %}
