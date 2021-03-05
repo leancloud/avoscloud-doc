@@ -1288,7 +1288,7 @@ LeanCloud 本就提供完善的消息推送服务，现在将推送与即时通�
   那么在有新消息到达的时候，符合条件的离线用户会收到一条「您有新的消息」的通知栏消息。
 
   注意，这里 `badge` 参数为 iOS 设备专用，且 `Increment` 大小写敏感，表示自动增加应用 badge 上的数字计数。
-  通常需要在打开或推出应用时，通过[设置 Installation 的 badge 字段](ios_push_guide.html#清除_Badge)清零 badge 计数。
+  通常需要在打开或退出应用时，通过[设置 Installation 的 badge 字段](ios_push_guide.html#清除_Badge)清零 badge 计数。
 
   
   此外，对于 iOS 设备您还可以设置声音等推送属性，具体的字段可以参考 [推送 · 消息内容 Data](push_guide.html#消息内容_Data)。
