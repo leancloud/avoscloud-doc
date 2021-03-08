@@ -102,7 +102,7 @@ RDBMS 中通过 Person_ID 域来连接 PERSON 表和 CAR 表，以此支持应�
 例如，为了记录每个学生的家庭住址，我们可以把住址信息作为一个整体嵌入 Student 类里面。
 
 ```objc
-    AVObject *studentTom = [[AVObject alloc] initWithClassName:@"Student"];// 学生 Tom
+    AVObject *studentTom = [AVObject objectWithClassName:@"Student"];
     [studentTom setObject:@"Tom" forKey:@"name"];
     NSDictionary *addr = [NSDictionary dictionaryWithObjectsAndKeys:
                           @"北京", @"city",
@@ -110,59 +110,98 @@ RDBMS 中通过 Person_ID 域来连接 PERSON 表和 CAR 表，以此支持应�
                           @"100017", @"postcode",
                           nil];
     [studentTom setObject:addr forKey:@"address"];
-    [studentTom saveInBackground];// 保存到云端
+    [studentTom saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        // 成功保存之后，执行其他逻辑
+        NSLog(@"保存成功。objectId：%@", studentTom.objectId);
+    } else {
+        // 异常处理
+    }
+}];
 ```
 ```swift
-    let studentTom = AVObject(className: "Student")
+do {
+    let studentTom = LCObject(className: "Student")
 
-    studentTom["name"] = "Tom"
-    studentTom["address"] = [
+    try studentTom.set("name", "Tom")
+    try studentTom.set("address", [
         "city" : "北京",
         "address" : "西城区西长安街 1 号",
         "postcode" : "100017"
     ]
 
-    studentTom.save()
+    _ = studentTom.save { result in
+        switch result {
+        case .success:
+            // 成功保存之后，执行其他逻辑
+            break
+        case .failure(error: let error):
+            // 异常处理
+            print(error)
+        }
+    }
+} catch {
+    print(error)
+}
 ```
 ```java
-    final AVObject studentTom = new AVObject("Student");// 学生 Tom
+    AVObject studentTom = new AVObject("Student");
     studentTom.put("name", "Tom");
     HashMap<Object, Object> addr = new HashMap<>();
     addr.put("city", "北京");
     addr.put("address", "西城区西长安街 1 号");
     addr.put("postcode", "100017");
     studentTom.put("address", addr);
-    studentTom.saveInBackground();
+    studentTom.saveInBackground().subscribe(new Observer<AVObject>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(AVObject studentTom) {
+        // 成功保存之后，执行其他逻辑
+        System.out.println("保存成功。objectId：" + studentTom.getObjectId());
+    }
+    public void onError(Throwable throwable) {
+        // 异常处理
+    }
+    public void onComplete() {}
+});
 ```
 ```js
     // 学生 Tom
-    var studentTom = new AV.Object('Student');
+    const studentTom = new AV.Object('Student');
     studentTom.set('name', 'Tom');
-    var addr = { "city": "北京", "address": "西城区西长安街 1 号", "postcode":"100017" };
+    const addr = { "city": "北京", "address": "西城区西长安街 1 号", "postcode":"100017" };
     studentTom.set('address', addr);
-    studentTom.save();
+    studentTom.save().then((studentTom) => {
+        // 成功保存之后，执行其他逻辑
+        console.log(`保存成功。objectId：${studentTom.id}`);
+    }, (error) => {
+        // 异常处理
+    });
 ```
 ```python
-    import leancloud
-
     student_tom = leancloud.Object.extend("Student")()
     student_tom.set('name', 'Tom')
 
-    addr = { "city": "北京", "address": "西城区西长安街 1 号", "":"100017" };
+    addr = { "city": "北京", "address": "西城区西长安街 1 号", "postcode":"100017" }
     student_tom.set('address', addr)
 
-    # 保存在云端
     student_tom.save()
 ```
+```php
+$studentTom = new LeanObject("Student");
+$studentTom->set("name", "Tom");
+$addr = array("city" => "北京", "address" => "西城区西长安街 1 号", "postcode" => "100017");
+$studentTom->set("address", $addr);
+$studentTom->save();
+```
 ```cs
-    var studentTom = new AVObject("Student");
+    LCObject studentTom = new LCObject("Student");
     studentTom["name"] = "Tom";
     var addr = new Dictionary<string, object>();
     addr["city"] = "北京";
     addr["address"] = "西城区西长安街 1 号";
     addr["postcode"] = "100017";
     studentTom["address"] = addr;
-    studentTom.SaveAsync();
+    await studentTom.Save();
 ```
 ```dart
 // 构建对象
@@ -202,45 +241,57 @@ await studentTom.save();
 > 为了表述方便，后文中提及城市都泛指一级行政市以及直辖市行政区，而省份也包含了北京、上海等直辖市。
 
 ```objc
-    AVObject *GuangZhou = [[AVObject alloc] initWithClassName:@"City"];// 广州
+    AVObject *GuangZhou = [AVObject objectWithClassName:@"City"];
     [GuangZhou setObject:@"广州" forKey:@"name"];
 
-    AVObject *GuangDong = [[AVObject alloc] initWithClassName:@"Province"];// 广东
+    AVObject *GuangDong = [AVObject objectWithClassName:@"Province"];
     [GuangDong setObject:@"广东" forKey:@"name"];
 
-    [GuangZhou setObject:GuangDong forKey:@"dependent"];// 为广州设置 dependent 属性为广东
+    [GuangZhou setObject:GuangDong forKey:@"dependent"];
 
     [GuangZhou saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
-          // 广州被保存成功  
+          // 广州、广东保存成功（广东无需单独保存）
         }
     }];
-    // 广东无需被单独保存，因为在保存广州的时候已经上传到云端。
 ```
 ```swift
-    let guangZhou = AVObject(className: "City")
-    guangZhou["name"] = "广州"
+do {
+    let guangZhou = LCObject(className: "City")
+    try guangZhou.set("name", value:"广州")
 
-    let guangDong = AVObject(className: "Province")
-    guangDong["name"] = "广东"
+    let guangDong = LCObject(className: "Province")
+    try guangDong.set("name", value:"广东")
 
-    guangZhou["dependent"] = guangDong
+    try guangZhou.set("dependent", guangDong)
 
-    guangZhou.save()
+    _ = guangZhou.save { result in
+        switch result {
+        case .success:
+            // 广州、广东保存成功（广东无需单独保存）
+            break
+        case .failure(error: let error):
+            // 异常处理
+            print(error)
+        }
+    }
+} catch {
+    print(error)
+}
 ```
 ```java
-AVObject guangZhou = new AVObject("City");// 广州
+AVObject guangZhou = new AVObject("City");
 guangZhou.put("name", "广州");
-AVObject guangDong = new AVObject("Province");// 广东
+AVObject guangDong = new AVObject("Province");
 guangDong.put("name", "广东");
-guangZhou.put("dependent", guangDong);// 为广州设置 dependent 属性为广东
+guangZhou.put("dependent", guangDong);
 guangZhou.saveInBackground().subscribe(new Observer<AVObject>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVObject avObject) {
-        // 广州被保存成功
+    public void onNext(AVObject guangZhou) {
+        // 广州、广东保存成功（广东无需单独保存） 
     }
     @Override
     public void onError(Throwable e) {
@@ -249,45 +300,54 @@ guangZhou.saveInBackground().subscribe(new Observer<AVObject>() {
     public void onComplete() {
     }
 });
-// 广东无需被单独保存，因为在保存广州的时候已经上传到云端。
 ```
 ```js
     // 新建一个 AV.Object
-    var GuangZhou = new AV.Object('City');// 广州
+    const GuangZhou = new AV.Object('City');
     GuangZhou.set('name', '广州');
-    var GuangDong = new AV.Object('Province');// 广东
+    const GuangDong = new AV.Object('Province');
     GuangDong.set('name', '广东');
-    GuangZhou.set('dependent', GuangDong);// 为广州设置 dependent 属性为广东
+    GuangZhou.set('dependent', GuangDong);
     GuangZhou.save().then(function (guangZhou) {
+        // 广州、广东保存成功（广东无需单独保存）
         console.log(guangZhou.id);
     });
-    // 广东无需被单独保存，因为在保存广州的时候已经上传到云端。
 ```
 ```python
-    import leancloud
+    guang_zhou = leancloud.Object.extend('City')()
+    guang_zhou.set('name', '广州')
 
-    guangZhou = leancloud.Object.extend('City')()
-    guangZhou.set('name', '广州')
+    guang_dong = leancloud.Object.extend('Province')()
+    guang_dong.set('name', '广东')
 
-    guangDong = leancloud.Object.extend('Province')()
-    guangDong.set('name', '广东')
+    guang_zhou.set('dependent', guang_dong)
 
-    # 为广州设置 dependent 属性为广东
-    guangZhou.set('dependent', guangDong)
+    # 广东无需单独保存，因为在保存广州时自动保存了广东
+    guang_zhou.save()
+```
+```php
+$guangZhou = new LeanObject("City");
+$guangZhou->set("name", "广州");
 
-    # 广东无需被单独保存，因为在保存广州的时候已经上传到服务端。
-    guangZhou.save()
+$guangDong = new LeanObject("Province");
+$guangDong->set("name", "广东");
+
+$guangZhou->set("dependent", $guangDong);
+
+// 广东无需单独保存，因为在保存广州时自动保存了广东
+$guangZhou->save(); 
 ```
 ```cs
-    var guangZhou = new AVObject("City");// 广州
+    LCObject guangZhou = new LCObject("City");
     guangZhou["name"] = "广州";
 
-    var guangDong = new AVObject("Province");// 广东
+    LCObject guangDong = new LCObject("Province");
     guangDong["name"] = "广东";
 
-    guangZhou["dependent"] = guangDong;// 为广州设置 dependent 属性为广东
+    guangZhou["dependent"] = guangDong;
 
-    guangZhou.SaveAsync();// 广东无需被单独保存，因为在保存广州的时候已经上传到服务端。
+    // 广东无需单独保存，因为在保存广州时自动保存了广东
+    await guangZhou.Save();
 ```
 ```dart
 LCObject guangZhou = LCObject('City');
@@ -297,361 +357,228 @@ LCObject guangDong = LCObject('Province');
 guangDong['name'] = '广东';
 
 guangZhou['dependent'] = guangDong;
+
+// 广东无需单独保存，因为在保存广州时自动保存了广东
 await guangZhou.save();
 ```
 
-注意：保存关联对象的同时，被关联的对象也会随之被保存到云端。
+保存关联对象的同时，被关联的对象也会随之被保存到云端。
+执行上述代码后，在应用控制台可以看到 `dependent` 字段显示为 Pointer 数据类型，而它本质上存储的是一个指向 `Province` 这张表的某个 AVObject 的指针。
 
-要关联一个已经存在于云端的对象，例如将「东莞市」添加至「广东省」，方法如下：
+要关联一个已经存在于云端的对象，例如将「东莞市」添加至「广东省」（假设广东的 objectId 为 `56545c5b00b09f857a603632`），方法如下：
 
 ```objc
-    // 假设 GuangDong 的 objectId 为 56545c5b00b09f857a603632
-    AVObject *GuangDong = [AVObject objectWithoutDataWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];    
-    AVObject *DongGuan = [[AVObject alloc] initWithClassName:@"City"];// 东莞
+    AVObject *GuangDong = [AVObject objectWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];    
+    AVObject *DongGuan = [AVObject objectWithClassName:@"City"];
     [DongGuan setObject:@"东莞" forKey:@"name"];
-
-    [DongGuan setObject:GuangDong forKey:@"dependent"];// 为东莞设置 dependent 属性为广东
+    [DongGuan setObject:GuangDong forKey:@"dependent"];
 ```
 ```swift
-    let guangDong = AVObject(className: "Province", objectId: "56545c5b00b09f857a603632")
-    let dongGuan = AVObject(className: "City")
-
-    dongGuan["name"] = "东莞"
+    let guangDong = LCObject(className: "Province", objectId: "56545c5b00b09f857a603632")
+    let dongGuan = LCObject(className: "City")
+    try dongGuan.set("name", value:"东莞")
     dongGuan["dependent"] = guangDong
 ```
 ```java
-    // 假设 GuangDong 的 objectId 为 56545c5b00b09f857a603632
     AVObject guangDong = AVObject.createWithoutData("Province", "56545c5b00b09f857a603632");
-    AVObject dongGuan = new AVObject("City");// 东莞
+    AVObject dongGuan = new AVObject("City");
     dongGuan.put("name", "东莞");
-
-    dongGuan.put("dependent", guangDong);// 为东莞设置 dependent 属性为广东
+    dongGuan.put("dependent", guangDong);
 ```
 ```js
-    // 假设 GuangDong 的 objectId 为 56545c5b00b09f857a603632
-    var GuangDong = AV.Object.createWithoutData('Province', '56545c5b00b09f857a603632');
-    var DongGuan = new AV.Object('City');
+    const GuangDong = AV.Object.createWithoutData('Province', '56545c5b00b09f857a603632');
+    const DongGuan = new AV.Object('City');
     DongGuan.set('name', '东莞');
     DongGuan.set('dependent', GuangDong);
-    DongGuan.save();
 ```
 ```python
-    import leancloud
-
-    # 用 create_without_data 关联一个已经存在的对象
     Province = leancloud.Object.extend('Province')
-    guangDong = Province.create_without_data('574416af79bc44005c61bfa3')
-
-    dongGuan = leancloud.Object.extend('City')()
-    dongGuan.set('name', '东莞')
-    # 为东莞设置 dependent 属性为广东
-    dongGuan.set('dependent', guangDong)
-
-    dongGuan.save()
+    guang_dong = Province.create_without_data('574416af79bc44005c61bfa3')
+    dong_guan = leancloud.Object.extend('City')()
+    dong_guan.set('name', '东莞')
+    dong_guan.set('dependent', guang_dong)
+```
+```php
+$guangDong = LeanObject::create("Province", "574416af79bc44005c61bfa3");
+$dongGuan = new LeanObject("City");
+$dongGuan->set("name", "东莞");
+$dongGuan->set("dependent", $guangDong);
 ```
 ```cs
-    // 假设 GuangDong 的 objectId 为 56545c5b00b09f857a603632
-    AVObject guangDong = AVObject.CreateWithoutData("Province", "56545c5b00b09f857a603632");
-    AVObject dongGuan = new AVObject("City");// 东莞
+    LCObject guangDong = LCObject.CreateWithoutData("Province", "56545c5b00b09f857a603632");
+    LCObject dongGuan = new LCObject("City");
     dongGuan["name"] = "东莞";
-
-    dongGuan["dependent"] = guangDong;// 为东莞设置 dependent 属性为广东
 ```
 ```dart
-LCObject GuangDong = LCObject.createWithoutData('Province', '56545c5b00b09f857a603632');
+LCObject guangDong = LCObject.createWithoutData('Province', '56545c5b00b09f857a603632');
 LCObject DongGuan = LCObject('City');
 DongGuan['name'] = '东莞';
-DongGuan['dependent'] = 'GuangDong';
-await DongGuan.save();
+DongGuan['dependent'] = guangDong;
 ```
-执行上述代码后，在应用控制台可以看到 `dependent` 字段显示为 Pointer 数据类型，而它本质上存储的是一个指向 `Province` 这张表的某个 AVObject 的指针。
+
+注意，为了节约篇幅，以上代码中省略了保存对象的代码。
+
 
 ### Pointers 查询
 
-假如已知一个城市，想知道它的上一级的省份：
-
-```objc
-    // 假设东莞作为 City 对象存储的时候它的 objectId 是 568e743c00b09aa22162b11f，这个  objectId 可以在控制台查看
-    AVObject *DongGuan = [AVObject objectWithoutDataWithClassName:@"City" objectId:@"568e743c00b09aa22162b11f"];
-    NSArray *keys = [NSArray arrayWithObjects:@"dependent", nil];
-    [DongGuan fetchInBackgroundWithKeys:keys block:^(AVObject *object, NSError *error) {
-         // 获取广东省
-         AVObject *province = [object objectForKey:@"dependent"];
-    }];
-```
-```swift
-    let dongGuan = AVObject(className: "City", objectId: "5b73993efe88c2005b8584e7")
-
-    dongGuan.fetchInBackground(withKeys: ["dependent"]) { object, error in
-        let province = object?["dependent"] as? AVObject
-    }
-```
-```java
-// 假设东莞作为 City 对象存储的时候它的 objectId 是 568e743c00b09aa22162b11f，这个 objectId 可以在控制台查看
-AVObject dongGuan = AVObject.createWithoutData("City", "568e743c00b09aa22162b11f");
-dongGuan.fetchInBackground("dependent").subscribe(new Observer<AVObject>() {
-    @Override
-    public void onSubscribe(Disposable d) {
-    }
-    @Override
-    public void onNext(AVObject avObject) {
-        // 获取广东省
-        AVObject province = avObject.getAVObject("dependent");
-    }
-    @Override
-    public void onError(Throwable e) {
-    }
-    @Override
-    public void onComplete() {
-    }
-});
-```
-```js
-    // 假设东莞作为 City 对象存储的时候它的 objectId 是 568e743c00b09aa22162b11f，这个  objectId 可以在控制台查看
-    var DongGuan = AV.Object.createWithoutData('City', '568e743c00b09aa22162b11f');
-    DongGuan.fetch({ include: ['dependent'] }).then(function (city) {
-        var province = city.get('dependent');
-        console.log(province.get('name'));
-    });
-```
-```python
-    import leancloud
-
-    City = leancloud.Object.extend('City')
-    guangZhou = City.create_without_data('5744189fdf0eea0063ad948b')
-    guangZhou.fetch()
-    province_id = guangZhou.get('dependent').id  # 获取广东省的 objectId
-
-    province = leancloud.Object.extend('Province')()
-    province.id = province_id
-    province.fetch()  # 根据 objectId 获取 province
-```
-```cs
-    AVObject dongGuan = AVObject.CreateWithoutData("City", "56545c5b00b09f857a603632");
-    dongGuan.FetchAsync(new string[] { "dependent" }).ContinueWith(t =>
-    {
-        var province = dongGuan.Get<AVObject>("dependent");
-        var name = province["name"];
-    });
-```
-```
-LCObject DongGuan = LCObject.createWithoutData('City', '568e743c00b09aa22162b11f');
-LCObject object = await DongGuan.fetch(includes: ['dependent']);
-// 获取广东省
-LCObject province = object['dependent'];
-```
-假如查询结果中包含了城市，并想通过一次查询同时把对应的省份也一并加载到本地：
+想知道广州属于哪个省份：
 
 ```objc
     AVQuery *query = [AVQuery queryWithClassName:@"City"];
-
-    // 查询名字是广州的城市
     [query whereKey:@"name" equalTo:@"广州"];
-
-    // 找出对应城市的省份
     [query includeKey:@"dependent"];
 
-    [query findObjectsInBackgroundWithBlock:^(NSArray *cities, NSError *error) {
-        // cities 的结果为 name 等于广州的城市的集合，当然我们知道现实中只存在一个广州市
-        for (AVObject *city in cities) {
-            // 并不需要网络访问
-            // 获取对应的省份
-            AVObject *province = [city objectForKey:@"dependent"];
-        }
+    [query getFirstObjectInBackgroundWithBlock:^(AVObject *city, NSError *error) {
+        AVObject *province = [city objectForKey:@"dependent"];
     }];
 ```
 ```swift
-    let query = AVQuery(className: "City")
-
-    query.whereKey("name", equalTo: "广州")
-    query.includeKey("dependent")
-
-    query.findObjectsInBackground { cities, error in
-        let cities = cities as? [AVObject] ?? []
-
-        for city in cities {
-            let province = city["dependent"] as? AVObject
+    let query = LCQuery(className: "City")
+    query.whereKey("name", .equalTo: "广州")
+    query.whereKey("dependent", .included)
+    _ = query.getFirst { result in
+        switch result {
+            case .success(object: let city):
+                let province = city["dependent"] as? LCObject
+            case .failure(error: let error):
+                print(error)
         }
     }
 ```
 ```java
 AVQuery<AVObject> query = new AVQuery<>("City");
-// 查询名字是广州的城市
 query.whereEqualTo("name", "广州");
-// 找出对应城市的省份
 query.include("dependent");
-query.findInBackground().subscribe(new Observer<List<AVObject>>() {
-    @Override
-    public void onSubscribe(Disposable d) {
+query.getFirstInBackground().subscribe(new Observer<AVObject>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(List<AVObject> city) {
+        AVObject province = city.getAVObject("dependent");
     }
-    @Override
-    public void onNext(List<AVObject> list) {
-        // list 的结果为 name 等于广州的城市的集合，当然我们知道现实中只存在一个广州市
-        for (AVObject city : list) {
-            // 并不需要网络访问
-            // 获取对应的省份
-            AVObject province = city.getAVObject("dependent");
-        }
-    }
-    @Override
-    public void onError(Throwable e) {
-    }
-    @Override
-    public void onComplete() {
-    }
+    public void onError(Throwable throwable) {}
+    public void onComplete() {}
 });
 ```
 ```js
-    var query = new AV.Query('City');
+    const query = new AV.Query('City');
     query.equalTo('name', '广州');
     query.include(['dependent']);
-    query.find().then(function (result) {
-        if (result.length > 0) {
-            var GuangZhou = result[0];
-            var province = GuangZhou.get('dependent');
-        }
+    query.first().then((city) => {
+        const province = city.get('dependent');
     });
 ```
 ```python
-    import leancloud
-
     query = leancloud.Query("City")
     query.equal_to('name', '广州')
-    query.include('dependent')  # 关键代码，找出对应城市的省份
-
-    for city in query.find():
-        province = city.get('dependent')
-        province_name = province.get('name')
-        # 可以获取 province 的信息
+    query.include('dependent')
+    city = query.first()
+    province = city.get('dependent')
+```
+```php
+$query = new Query("City");
+$query->equalTo("name", "广州");
+$query->_include("dependent");
+$city = $query->first();
+$province = $city->get("dependent");
 ```
 ```cs
-    var query = new AVQuery<AVObject>("City");
+    LCQuery<LCObject> query = new LCQuery<LCObject>("City");
     // 查询名字是广州的城市
     query = query.WhereEqualTo("name", "广州");
     // 告知云端还要一并获取对应城市的省份
     query = query.Include("dependent");
-    query.FindAsync().ContinueWith(t =>
-    {
-        // list 的结果为 name 等于广州的城市的集合，当然我们知道现实中只存在一个广州市
-        var list = t.Result.ToList();
-        list.ForEach((city) =>
-        {
-            // 并不需要网络访问
-            // 获取对应的省份
-            var province = city.Get<AVObject>("dependent");
-            // 获取省份的名字
-            var name = province["name"];
-        });
-    });
+    LCObject city = await query.First();
+    LCObject province = city["dependent"] as LCObject;
 ```
 ```dart
 LCQuery<LCObject> query = LCQuery('City');
-// 查询名字是广州的城市
 query.whereEqualTo('name', '广州');
-// 找出对应城市的省份
 query.include('dependent');
-// list 的结果为 name 等于广州的城市的集合，当然我们知道现实中只存在一个广州市
-List<LCObject> list = await query.find();
-for (LCObject city in list) {
-  // 该操作无需网络连接
-  // 获取对应的省份
-  LCObject province = city['dependent'];
-}
+LCObject city = await query.First();
+LCObject province = city['dependent'];
 ```
-假如已知一个省份，要找出它的所有下辖城市：
 
-{% block code_query_city_by_province %}{% endblock %}
+想知道哪些城市属于广东省（假定代表广东省的对象的 objectId 是 `56545c5b00b09f857a603632`） ？
 
 ```objc
-    // 假设 GuangDong 的 objectId 为 56545c5b00b09f857a603632
-    AVObject *GuangDong = [AVObject objectWithoutDataWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];
-
+    AVObject *GuangDong = [AVObject objectWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];    
     AVQuery *query = [AVQuery queryWithClassName:@"City"];
-
     [query whereKey:@"dependent" equalTo:GuangDong];
-
     [query findObjectsInBackgroundWithBlock:^(NSArray *cities, NSError *error) {
         for (AVObject *city in cities) {
-             // cities 的结果为广东省下辖的所有城市
+            // cities 为广东省下辖的所有城市
         }
     }];
 ```
 ```swift
-    let query = AVQuery(className: "City")
-    let guangDong = AVObject(className: "Province", objectId: "56545c5b00b09f857a603632")
-
-    query.whereKey("dependent", equalTo: guangDong)
-    query.findObjectsInBackground { cities, error in
-        let cities = cities as? [AVObject] ?? []
+    let guangDong = LCObject(className: "Province", objectId: "56545c5b00b09f857a603632")
+    let query = LCQuery(className: "City")
+    query.whereKey("dependent", .equalTo(GuangDong))
+    _ = query.find { (result) in
+        switch result {
+            case .success(objects: let cities):
+                for city in cities {
+                    // cities 为广东省下辖的所有城市
+                }
+            case .failure(error: let error):
+                print(error)
+        }
     }
 ```
 ```java
-// 假设 GuangDong 的 objectId 为 56545c5b00b09f857a603632
-AVObject guangDong = AVObject.createWithoutData("Province", "56545c5b00b09f857a603632");
-AVQuery<AVObject> query = new AVQuery<>("City");
-query.whereEqualTo("dependent", guangDong);
-query.findInBackground().subscribe(new Observer<List<AVObject>>() {
-    @Override
-    public void onSubscribe(Disposable d) {
-    }
-    @Override
-    public void onNext(List<AVObject> list) {
-        for (AVObject city : list) {
-            // list 的结果为广东省下辖的所有城市
+    AVObject guangDong = AVObject.createWithoutData("Province", "56545c5b00b09f857a603632");
+    AVQuery<AVObject> query = new AVQuery<>("City");
+    query.whereEqualTo("dependent", guangDong);
+    query.findInBackground().subscribe(new Observer<List<AVObject>>() {
+        @Override
+        public void onSubscribe(Disposable d) {}
+        @Override
+        public void onNext(List<AVObject> cities) {
+            for (AVObject city : cities) {
+                // cities 为广东省下辖的所有城市
+            }
         }
-    }
-    @Override
-    public void onError(Throwable e) {
-    }
-    @Override
-    public void onComplete() {
-    }
-});
+        @Override
+        public void onError(Throwable e) {}
+        @Override
+        public void onComplete() {}
+    });
 ```
 ```js
-    // 假设 GuangDong 的 objectId 为 56545c5b00b09f857a603632
-    var GuangDong = AV.Object.createWithoutData('Province', '56545c5b00b09f857a603632');
-    var query = new AV.Query('City');
+    const GuangDong = AV.Object.createWithoutData('Province', '56545c5b00b09f857a603632');
+    const query = new AV.Query('City');
     query.equalTo('dependent', GuangDong);
-    query.find().then(function (cities) {
-        cities.forEach(function (city, i, a) {
-            console.log(city.id);
-        });
+    query.find().then((cities) => {
+        // cities 为广东省下辖的所有城市
     });
 ```
 ```python
-    import leancloud
-
     Province = leancloud.Object.extend('Province')
-    guangDong = Province.create_without_data('574416af79bc44005c61bfa3')
-
-    query = leancloud.Query("City")
-    query.equal_to('dependent', guangDong)
-
-    for city in query.find():
-        city_name = city.get('name')
-        # 结果为广东省下辖的所有城市
+    guang_dong = Province.create_without_data('574416af79bc44005c61bfa3')
+    query = leancloud.Query('City')
+    query.equal_to('dependent', guang_dong)
+    # cities 为广东省下辖的所有城市
+    cities = query.find():
+```
+```php
+$guangDong = LeanObject::create("Province", "574416af79bc44005c61bfa3");
+$query = new Query("City");
+$query->equalTo("dependent", $guangDong);
+// cities 为广东省下辖的所有城市
+$cities = $query->find();
 ```
 ```cs
-    var guangdong = AVObject.CreateWithoutData("Province", "56545c5b00b09f857a603632");
-    var query = new AVQuery<AVObject>("City");
-    query = query.WhereEqualTo("dependent", guangdong);
-    query.FindAsync().ContinueWith(t => 
-    {
-        // list 为广东省下辖的所有城市
-        var list = t.Result.ToList();
-        list.ForEach((city) => 
-        {
-            var name = city.Get<string>("name");
-        });
-    });
+    LCObject guangDong = LCObject.CreateWithoutData("Province", "56545c5b00b09f857a603632");
+    LCQuery<LCObject> query = new LCQuery<LCObject>("City");
+    query.WhereEqualTo("dependent", guangDong);
+    // cities 为广东省下辖的所有城市
+    ReadOnlyCollection<LCObject> cities = await query.Find();
 ```
 ```dart
 LCObject guangDong = LCObject.createWithoutData('Province', '56545c5b00b09f857a603632');
 LCQuery<LCObject> query = LCQuery('City');
 query.whereEqualTo('dependent', guangDong);
-// list 的结果为广东省下辖的所有城市
-List<LCObject> list = await query.find();
+// cities 为广东省下辖的所有城市
+List<LCObject> cities = await query.find();
 ```
 
 大多数场景下，Pointers 是实现一对多关系的最好选择。
@@ -922,50 +849,67 @@ List<LCObject> list = await query.find();
 如此，实现选修功能的代码如下：
 
 ```objc
-    AVObject *studentTom = [[AVObject alloc] initWithClassName:@"Student"];// 学生 Tom
+    AVObject *studentTom = [AVObject objectWithClassName:@"Student"];
     [studentTom setObject:@"Tom" forKey:@"name"];
 
-    AVObject *courseLinearAlgebra = [[AVObject alloc] initWithClassName:@"Course"];
+    AVObject *courseLinearAlgebra = [AVObject objectWithClassName:@"Course"];
     [courseLinearAlgebra setObject:@"线性代数" forKey:@"name"];
 
-    AVObject *studentCourseMapTom= [[AVObject alloc] initWithClassName:@"StudentCourseMap"];// 选课表对象
+    AVObject *studentCourseMapTom = [AVObject objectWithClassName:@"StudentCourseMap"];
 
     // 设置关联
     [studentCourseMapTom setObject:studentTom forKey:@"student"];
     [studentCourseMapTom setObject:courseLinearAlgebra forKey:@"course"];
 
     // 设置学习周期
-    [studentCourseMapTom setObject: [NSArray arrayWithObjects:@"2016-02-19",@"2016-04-21",nil] forKey:@"duration"];
+    [studentCourseMapTom setObject:[NSArray arrayWithObjects:@"2016-02-19",@"2016-04-21", nil] forKey:@"duration"];
     // 获取操作平台
-    [studentCourseMapTom setObject: @"iOS" forKey:@"platform"];
+    [studentCourseMapTom setObject:@"iOS" forKey:@"platform"];
 
     // 保存选课表对象
-    [studentCourseMapTom saveInBackground];
+    [studentCourseMapTom saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        // 成功保存之后，执行其他逻辑
+    } else {
+        // 异常处理
+    }
+}];
 ```
 ```swift
-    let studentTom = AVObject(className: "Student")
-    studentTom["name"] = "Tom"
+do {
+    let studentTom = LCObject(className: "Student")
+    try studentTom.set("name", value: "Tom")
 
-    let courseLinearAlgebra = AVObject(className: "Course")
-    courseLinearAlgebra["name"] = "线性代数"
+    let courseLinearAlgebra = LCObject(className: "Course")
+    try courseLinearAlgebra.set("name"), value: "线性代数")
 
-    let studentCourseMapTom = AVObject(className: "StudentCourseMap")
+    let studentCourseMapTom = LCObject(className: "StudentCourseMap")
 
-    studentCourseMapTom["student"] = studentTom
-    studentCourseMapTom["course"] = courseLinearAlgebra
-    studentCourseMapTom["duration"] = ["2016-02-19", "2016-04-21"]
-    studentCourseMapTom["platform"] = "iOS"
+    try studentCourseMapTom.set("student", value: studentTom)
+    try studentCourseMapTom.set("course", value: courseLinearAlgebra)
+    try studentCourseMapTom.set("duration", value: ["2016-02-19", "2016-04-21"])
+    try studentCourseMapTom.set("platform", value: "iOS")
 
-    studentCourseMapTom.save()
+    _ = studentCourseMapTom.save { result in
+        switch result {
+            case .success:
+                break
+            case .failure(error: let error):
+                print(error)
+        }
+    }
+} catch {
+    print(error)
+}
 ```
 ```java
-    AVObject studentTom = new AVObject("Student");// 学生 Tom
+    AVObject studentTom = new AVObject("Student");
     studentTom.put("name", "Tom");
 
     AVObject courseLinearAlgebra = new AVObject("Course");
     courseLinearAlgebra.put("name", "线性代数");
 
-    AVObject studentCourseMapTom = new AVObject("StudentCourseMap");// 选课表对象
+    AVObject studentCourseMapTom = new AVObject("StudentCourseMap");
 
     // 设置关联
     studentCourseMapTom.put("student", studentTom);
@@ -977,40 +921,51 @@ List<LCObject> list = await query.find();
     studentCourseMapTom.put("platform", "iOS");
 
     // 保存选课表对象
-    studentCourseMapTom.saveInBackground();
+    studentCourseMapTom.saveInBackground().subscribe(new Observer<AVObject>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(AVObject studentCourseMapTom) {
+        // 成功保存之后，执行其他逻辑
+    }
+    public void onError(Throwable throwable) {
+        // 异常处理
+    }
+    public void onComplete() {}
+});
 ```
 ```js    
-    var studentTom = new AV.Object('Student');
-    studentTom.set('name', 'Tom');// 学生 Tom
+    const studentTom = new AV.Object('Student');
+    studentTom.set('name', 'Tom');
     
-    var courseLinearAlgebra = new AV.Object('Course');
+    const courseLinearAlgebra = new AV.Object('Course');
     courseLinearAlgebra.set('name', '线性代数');
     
-    // 选课表对象
-    var studentCourseMapTom = new AV.Object('StudentCourseMap');
+    const studentCourseMapTom = new AV.Object('StudentCourseMap');
     
     // 设置关联
     studentCourseMapTom.set('student', studentTom);
     studentCourseMapTom.set('course', courseLinearAlgebra);
     
     // 设置学习周期
-    studentCourseMapTom.set('duration', [new Date(2015, 2, 19), new Date(2015, 4, 21)]);
+    studentCourseMapTom.set('duration', ["2016-02-19", "2016-04-12"]);
     
     // 设置操作平台
     studentCourseMapTom.set('platform', 'web');
     
     // 保存选课表对象
-    studentCourseMapTom.save();
+    studentCourseMapTom.save().then((studentCourseMapTom) => {
+        // 成功保存之后，执行其他逻辑
+        console.log(`保存成功。objectId：${todo.id}`);
+    }, (error) => {
+        // 异常处理
+    });
 ```
 ```python
-    import leancloud
-
     student_tom = leancloud.Object.extend('Student')()
     student_tom.set('name', 'Tom')
 
     course_linear_algebra = leancloud.Object.extend('Course')()
     course_linear_algebra.set('name', '线性代数')
-    # 选课表对象
+
     student_course_map_tom = leancloud.Object.extend('Student_course_map')()
 
     # 设置关联
@@ -1020,32 +975,54 @@ List<LCObject> list = await query.find();
     # 设置学习周期
     student_course_map_tom.set('duration', ["2016-02-19", "2016-04-12"])
 
-    # 获取操作平台
+    # 设置操作平台
     student_course_map_tom.set('platform', 'ios')
 
     # 保存选课表对象
     student_course_map_tom.save()
 ```
+```php
+$studentTom = new LeanObject("Student");
+$studentTom->set("name", "Tom");
+
+$courseLinearAlgebra = new LeanObject("Course");
+$courseLinearAlgebra->set("name", "线性代数");
+
+$studentCourseMapTom = new LeanObject("StudentCourseMap");
+
+// 设置关联
+$studentCourseMapTom->set("student", $studentTom);
+$studentCourseMapTom->set("course", $courseLinearAlgebra);
+
+// 设置学习周期
+$studentCourseMapTom->set("duration", array("2016-02-19", "2016-04-12"));
+
+// 设置操作平台
+$studentCourseMapTom->set("platform", "ios");
+
+// 保存选课表对象
+$studentCourseMapTom->save(); 
+```
 ```cs
-    AVObject studentTom = new AVObject("Student");// 学生 Tom
-    studentTom.Add("name", "Tom");
+    LCObject studentTom = new LCObject("Student");
+    studentTom["name"] = "Tom";
 
-    AVObject courseLinearAlgebra = new AVObject("Course");
-    courseLinearAlgebra.Add("name", "线性代数");
+    LCObject courseLinearAlgebra = new LCObject("Course");
+    courseLinearAlgebra["name"] = "线性代数";
 
-    AVObject studentCourseMapTom = new AVObject("StudentCourseMap");// 选课表对象
+    LCObject studentCourseMapTom = new LCObject("StudentCourseMap");
 
     // 设置关联
-    studentCourseMapTom.Add("student", studentTom);
-    studentCourseMapTom.Add("course", courseLinearAlgebra);
+    studentCourseMapTom["student"] = studentTom;
+    studentCourseMapTom["course"] = courseLinearAlgebra;
 
     // 设置学习周期
-    studentCourseMapTom.Add("duration", new string[] { "2016-02-19", "2016-04-21" });
+    studentCourseMapTom["duration"] = new string[] { "2016-02-19", "2016-04-21" });
     // 获取操作平台
-    studentCourseMapTom.Add("platform", "iOS");
+    studentCourseMapTom["platform"] = "iOS";
 
     // 保存选课表对象
-    studentCourseMapTom.SaveAsync();
+    await studentCourseMapTom.Save();
 ```
 ```dart
 LCObject studentTom = LCObject('Student');
@@ -1066,17 +1043,18 @@ studentCourseMapTom['platform'] = 'iOS';
 // 保存选课表对象
 await studentCourseMapTom.save();
 ```
+
 查询选修了某一课程的所有学生：
 
 ```objc
-    // 微积分课程
-    AVObject *courseCalculus = [AVObject objectWithoutDataWithClassName:@"Course" objectId:@"562da3fdddb2084a8a576d49"];
+    // 线性代数课程
+    AVObject *courseLinearAlgebra = [AVObject objectWithClassName:@"Course" objectId:@"562da3fdddb2084a8a576d49"];
 
     // 构建 StudentCourseMap 的查询
     AVQuery *query = [AVQuery queryWithClassName:@"StudentCourseMap"];
 
-    // 查询所有选择了微积分的学生
-    [query whereKey:@"course" equalTo:courseCalculus];
+    // 查询所有选择了线性代数的学生
+    [query whereKey:@"course" equalTo:courseLinearAlgebra];
 
     // 执行查询
     [query findObjectsInBackgroundWithBlock:^(NSArray *studentCourseMaps, NSError *error) {
@@ -1084,38 +1062,36 @@ await studentCourseMapTom.save();
         // 然后遍历过程中可以访问每一个选课对象的 student,course,duration,platform 等属性
         for (AVObject *studentCourseMap in studentCourseMaps) {
             AVObject *student =[studentCourseMap objectForKey:@"student"];
-            AVObject *course =[studentCourseMap objectForKey:@"course"];
             NSArray *duration = [studentCourseMap objectForKey:@"duration"];
             NSLog(@"platform: %@", [studentCourseMap objectForKey:@"platform"]);
         }
     }];
 ```
 ```swift
-    let query = AVQuery(className: "StudentCourseMap")
-    let courseCalculus = AVObject(className: "Course", objectId: "562da3fdddb2084a8a576d49")
+    let query = LCQuery(className: "StudentCourseMap")
+    let courseLinearAlgebra = LCObject(className: "Course", objectId: "562da3fdddb2084a8a576d49")
 
-    query.whereKey("course", equalTo: courseCalculus)
-    query.findObjectsInBackground { studentCourseMaps, error in
-        let studentCourseMaps = studentCourseMaps as? [AVObject] ?? []
-
-        for studentCourseMap in studentCourseMaps {
-            let student = studentCourseMap["student"] as? AVObject
-            let course = studentCourseMap["course"] as? AVObject
-            let duration = studentCourseMap["duration"] as? [Any]
-
-            if let platform = studentCourseMap["platform"] {
-                print("platform: \(platform)")
-            }
+    query.whereKey("course", equalTo: courseLinearAlgebra)
+    _ = query.find { (result) in
+        switch result {
+            case .success(objects: let studentCourseMaps):
+                for studentCourseMap in studentCourseMaps {
+                    let student = studentCourseMap["student"] as? LCObject
+                    let duration = studentCourseMap["duration"] as? LCArray
+                    let platform = studentCourseMap["platform"] as? LCString
+                }
+            case .failure(error: let error):
+                print(error)
         }
     }
 ```
 ```java
-// 微积分课程
-AVObject courseCalculus = AVObject.createWithoutData("Course", "562da3fdddb2084a8a576d49");
+// 线性代数课程
+AVObject courseLinearAlgebra = AVObject.createWithoutData("Course", "562da3fdddb2084a8a576d49");
 // 构建 StudentCourseMap 的查询
 AVQuery<AVObject> query = new AVQuery<>("StudentCourseMap");
-// 查询所有选择了微积分的学生
-query.whereEqualTo("course", courseCalculus);
+// 查询所有选择了线性代数的学生
+query.whereEqualTo("course", courseLinearAlgebra);
 // 执行查询
 query.findInBackground().subscribe(new Observer<List<AVObject>>() {
     @Override
@@ -1127,7 +1103,6 @@ query.findInBackground().subscribe(new Observer<List<AVObject>>() {
         // 然后遍历过程中可以访问每一个选课对象的 student,course,duration,platform 等属性
         for (AVObject studentCourseMap : list) {
             AVObject student = studentCourseMap.getAVObject("student");
-            AVObject course = studentCourseMap.getAVObject("course");
             ArrayList duration = (ArrayList) studentCourseMap.getList("duration");
             String platform = studentCourseMap.getString("platform");
         }
@@ -1142,10 +1117,10 @@ query.findInBackground().subscribe(new Observer<List<AVObject>>() {
 ```
 ```js
     // 线性代数课程
-    var courseLinearAlgebra = AV.Object.createWithoutData('Course', '562da3fdddb2084a8a576d49');
+    const courseLinearAlgebra = AV.Object.createWithoutData('Course', '562da3fdddb2084a8a576d49');
     
     // 构建 StudentCourseMap 的查询
-    var query = new AV.Query('StudentCourseMap');
+    const query = new AV.Query('StudentCourseMap');
     
     // 查询所有选择了线性代数的学生
     query.equalTo('course', courseLinearAlgebra);
@@ -1155,62 +1130,67 @@ query.findInBackground().subscribe(new Observer<List<AVObject>>() {
         // studentCourseMaps 是所有 course 等于线性代数的选课对象
         // 然后遍历过程中可以访问每一个选课对象的 student,course,duration,platform 等属性
         studentCourseMaps.forEach(function (scm, i, a) {
-            var student = scm.get('student');
-            var duration = scm.get('duration');
-            var platform = scm.get('platform');
+            const student = scm.get('student');
+            const duration = scm.get('duration');
+            const platform = scm.get('platform');
         });
     });
 ```
 ```python
-    import leancloud
-
     Course = leancloud.Object.extend('Course')
-    course_calculus = Course.create_without_data('57448184c26a38006b8d4761')
+    course_linear_algebra = Course.create_without_data('57448184c26a38006b8d4761')
     query = leancloud.Query('Student_course_map')
-    query.equal_to('course', course_calculus)
+    query.equal_to('course', course_linear_algebra)
 
-    # 查询所有选择了微积分的学生
+    # 查询所有选择了线性代数的学生
     student_course_map_list = query.find()
 
     # list 是所有 course 等于线性代数的选课对象,
     # 然后遍历过程中可以访问每一个选课对象的 student,course,duration,platform 等属性
     for student_course_map in student_course_map_list:
         student = student_course_map.get('student')
-        course  = student_course_map.get('course')
         duration = student_course_map.get('duration')
         platform = student_course_map.get('platform')
 ```
+```php
+$courseLinearAlgebra = LeanObject::create("Course", "57448184c26a38006b8d4761");
+$query = new Query("Student_course_map");
+$query->equalTo("course", $courseLinearAlgebra);
+
+// 查询所有选择了线性代数的学生
+$studentCourseMaps = $query->find();
+
+foreach ($studentCourseMaps as $studentCourseMap) {
+    $student = $studentCourseMap->get("student");
+    $duration = $studentCourseMap->get("duration");
+    $platform = $studentCourseMap->get("platform");
+}
+```
 ```cs
-    // 微积分课程
-    AVObject courseCalculus = AVObject.CreateWithoutData("Course", "562da3fdddb2084a8a576d49");
+    // 线性代数课程
+    LCObject courseLinearAlgebra = LCObject.CreateWithoutData("Course", "562da3fdddb2084a8a576d49");
 
     // 构建 StudentCourseMap 的查询
-    AVQuery<AVObject> query = new AVQuery<AVObject>("StudentCourseMap");
+    LCQuery<LCObject> query = new LCQuery<LCObject>("StudentCourseMap");
 
-    // 查询所有选择了微积分的学生
-    query.WhereEqualTo("course", courseCalculus);
+    // 查询所有选择了线性代数的学生
+    query.WhereEqualTo("course", courseLinearAlgebra);
 
-    // 执行查询
-    query.FindAsync().ContinueWith(t =>
+    ReadOnlyCollection<LCObject> studentCourseMaps = await query.Find();
+    foreach (var studentCourseMap in studentCourseMaps)
     {
-        var list = t.Result.ToList();
-        // 然后遍历过程中可以访问每一个选课对象的 student,course,duration,platform 等属性
-        foreach (var studentCourseMap in list)
-        {
-            AVObject student = studentCourseMap.Get<AVObject>("student");
-            AVObject course = studentCourseMap.Get<AVObject>("course");
-            List<string> duration = studentCourseMap.Get<List<string>>("duration");
-            string platform = studentCourseMap.Get<string>("platform");
-        }
-    });
+        LCObject student = studentCourseMap["student"] as LCObject;
+        List<string> duration = studentCourseMap["duration"] as List<string>;
+        string platform = studentCourseMap["platform"] as string;
+    }
 ```
 ```dart
-// 微积分课程
-LCObject courseCalculus = LCObject.createWithoutData('Course', '562da3fdddb2084a8a576d49');
+// 线性代数课程
+LCObject courseLinearAlgebra = LCObject.createWithoutData('Course', '562da3fdddb2084a8a576d49');
 // 构建 StudentCourseMap 的查询
 LCQuery<LCObject> query = LCQuery('StudentCourseMap');
-// 查询所有选择了微积分的学生
-query.whereEqualTo('course', courseCalculus);
+// 查询所有选择了线性代数的学生
+query.whereEqualTo('course', courseLinearAlgebra);
 List<LCObject> list = await query.find();
 // list 是所有 course 等于线性代数的选课对象
 // 然后遍历过程中可以访问每一个选课对象的 student,course,duration,platform 等属性
@@ -1227,12 +1207,12 @@ for (LCObject studentCourseMap in list) {
 
 ```objc
     AVQuery *query = [AVQuery queryWithClassName:@"StudentCourseMap"];
-    AVObject *studentTom = [AVObject objectWithoutDataWithClassName:@"Student" objectId:@"562da3fc00b0bf37b117c250"];
+    AVObject *studentTom = [AVObject objectWithClassName:@"Student" objectId:@"562da3fc00b0bf37b117c250"];
     [query whereKey:@"student" equalTo:studentTom];
 ```
 ```swift
-    let query = AVQuery(className: "StudentCourseMap")
-    let studentTom = AVObject(className: "Student", objectId: "562da3fc00b0bf37b117c250")
+    let query = LCQuery(className: "StudentCourseMap")
+    let studentTom = LCObject(className: "Student", objectId: "562da3fc00b0bf37b117c250")
 
     query.whereKey("student", equalTo: studentTom)
 ```
@@ -1242,8 +1222,8 @@ for (LCObject studentCourseMap in list) {
     query.whereEqualTo("student", studentTom);
 ```
 ```js
-    var studentTom = AV.Object.createWithoutData('Student', '579f0441128fe10054420d49');
-    var query = new AV.Query('StudentCourseMap');
+    const studentTom = AV.Object.createWithoutData('Student', '579f0441128fe10054420d49');
+    const query = new AV.Query('StudentCourseMap');
     query.equalTo('student', studentTom);
 ```
 ```python
@@ -1251,9 +1231,13 @@ for (LCObject studentCourseMap in list) {
     student_tom = Student.create_without_data("562da3fc00b0bf37b117c250")
     query.whereEqualTo("student", student_tom)
 ```
+```php
+$studentTom = LeanObject::create("Student", "562da3fc00b0bf37b117c250");
+$query->equalTo("student", $studentTom);
+```
 ```cs
-    AVQuery<AVObject> query = new AVQuery<AVObject>("StudentCourseMap");
-    AVObject studentTom = AVObject.CreateWithoutData("Student", "562da3fc00b0bf37b117c250");
+    LCQuery<LCObject> query = new LCQuery<LCObject>("StudentCourseMap");
+    LCObject studentTom = LCObject.CreateWithoutData("Student", "562da3fc00b0bf37b117c250");
     query.WhereEqualTo("student", studentTom);
 ```
 ```dart
@@ -1261,6 +1245,8 @@ LCQuery<LCObject> query = LCQuery('StudentCourseMap');
 LCObject studentTom = LCObject.createWithoutData('Student', '562da3fc00b0bf37b117c250');
 query.whereEqualTo('student', studentTom);
 ```
+
+我们在上面的代码中省略了执行查询的语句，以节省篇幅。
 
 {#
 ### 使用 Relation 实现多对多关系
@@ -1432,7 +1418,7 @@ Relation 既可以实现一对多也可以实现多对多，但是区别在于�
 #}
 ## 一对一关系
 
-当你需要将一个对象拆分成两个对象时，一对一关系是一种重要的需求。这种需求应该很少见，但是在下面的实例中体现了这样的需求：
+当你需要将一个对象拆分成两个对象时，一对一关系是一种重要的需求，例如：
 
 * **限制部分用户数据的权限**<br/>
   在这个场景中，你可以将此对象拆分成两部分，一部分包含所有用户可见的数据，另一部分包含所有仅自己可见的数据（通过 [ACL 控制](data_security.html#Class_级别的_ACL) ）。同样你也可以实现一部分包含所有用户可修改的数据，另一部分包含所有仅自己可修改的数据。
@@ -1448,7 +1434,7 @@ Relation 既可以实现一对多也可以实现多对多，但是区别在于�
 
 在任何一个数据库系统中，索引都是优化性能的重要手段，同时它与 Schema 设计也是密不可分的。LeanCloud 也支持索引，其索引与关系数据库中基本相同。在索引的选择上，应用查询操作的模式和频率起决定性作用。
 
-同时也要注意，索引不是没有代价的。在加速查询的同时，它也会降低写入速度、消耗更多存储（磁盘和内存）资源。是否建索引，如何建索引，建多少索引，我们需要综合权衡后来下决定。
+同时也要注意，索引不是没有代价的。在加速查询的同时，它也会降低写入速度、消耗更多存储空间。是否建索引，如何建索引，建多少索引，我们需要综合权衡后来下决定。
 
 ### 索引类型
 
@@ -1557,30 +1543,36 @@ if(存在附加属性){
 当要关联的数据是简单数据并且查询多于修改的时候，用数组比较合适。比如社交类应用里给朋友加标签，就可以使用 string 数组来存储这个属性{#，一般情况下 Relation 比数组好用#}。
 
 ```objc
-    AVObject *beckham= [[AVObject alloc] initWithClassName:@"Boy"];
+    AVObject *beckham = [AVObject objectWithClassName:@"Boy"];
     [beckham setObject: [NSArray arrayWithObjects:@"颜值爆表",@"明星范儿",nil] forKey:@"tags"];
 ```
 ```swift
-    let beckham = AVObject(className: "Boy")
-    beckham["tags"] = ["颜值爆表", "明星范儿"]
+    let beckham = LCObject(className: "Boy")
+    try beckham.set("tags", value: ["颜值爆表", "明星范儿"])
 ```
 ```java
     AVObject beckham = new AVObject("Boy");
-    beckham.put("tags",Arrays.asList("颜值爆表", "明星范儿"));
+    beckham.put("tags", Arrays.asList("颜值爆表", "明星范儿"));
 ```
 ```js
-    var beckham = new AV.Object('Boy');
-    beckham.set('tags',['颜值爆表','明星范儿']);
+    const beckham = new AV.Object('Boy');
+    beckham.set('tags', ['颜值爆表','明星范儿']);
 ```
 ```python
-    beckham = leancloud.Object.create('Boy')
+    beckham = leancloud.Object.create('Boy')()
     beckham.set('tags', ['颜值爆表', '明星范儿']) 
 ```
+```php
+$beckham = new LeanObject("Boy");
+$beckham->set("tags", array("颜值爆表", "明星范儿"));
+```
 ```cs
-    AVObject beckham = new AVObject("Boy");
-    beckham.Add("tags", new string[] { "颜值爆表", "明星范儿" });
+    LCObject beckham = new LCObject("Boy");
+    beckham["tags"] = new string[] { "颜值爆表", "明星范儿" });
 ```
 ```dart
 LCObject beckham = LCObject('Boy');
 beckham['tags'] = ['颜值爆表', '明星范儿'];
 ```
+
+为节省篇幅，上面的代码省略了保存对象的语句。

@@ -121,14 +121,13 @@ function getGitHubContributors() {
   var contributors = [];
   var appendTarget = $('#content h1');
   var githubAvatarUrl = 'https://avatars.githubusercontent.com/u';
-  var githubAvatarCdn = 'https://dn-experiments.qbox.me/ghavatar';
   $.getJSON(url, function (data) {
       $.each(data, function (index, item) {
         if (item.author) {
           contributors.push({
             handle: item.author.login,
             url: item.author.html_url,
-            avatar: item.author.avatar_url.replace(githubAvatarUrl, githubAvatarCdn)
+            avatar: item.author.avatar_url
           });
         }
       });

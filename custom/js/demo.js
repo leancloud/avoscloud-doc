@@ -157,7 +157,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         name: 'LeanTodo (React Hooks)',
         desc: '使用 JavaScript 存储 SDK 与 React Hooks 实现的 LeanTodo 应用。',
         downPath: '',
-        mdPath: 'https://github.com/hjiang/react-hook-demo',
+        mdPath: 'https://github.com/leancloud/react-hook-demo',
         type: 'web',
         qcloudShow: true
 
@@ -211,7 +211,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         name: 'LeanCN',
         desc: '使用 Flutter 数据存储 SDK 开发周报请假应用',
         downPath: 'https://apps.apple.com/us/app/id1518553843',
-        mdPath: 'https://github.com/SXiaoXu/FlutterLeaveDemo',
+        mdPath: 'https://github.com/leancloud/FlutterLeaveDemo',
         type: 'flutter',
         qcloudShow: true
       }],
@@ -226,7 +226,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         name: '球球大作战',
         desc: '使用 LeanCloud 实时对战服务 + Cocos Creator 开发的模拟《球球大作战》demo',
         downPath: '',
-        mdPath: 'https://github.com/onerain88/BallBattle',
+        mdPath: 'https://github.com/leancloud/BallBattle',
         type: 'node',
         qcloudShow: true
       }],
