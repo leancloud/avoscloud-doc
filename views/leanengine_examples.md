@@ -9,6 +9,7 @@
 - [slim-getting-started](https://github.com/leancloud/slim-getting-started)（PHP）
 - [java-war-getting-started](https://github.com/leancloud/java-war-getting-started)
 - [dotNET-getting-started](https://github.com/leancloud/dotNET-getting-started)
+- [golang-getting-started](https://github.com/leancloud/golang-getting-started)
 
 ## Node.js 云引擎 Demo 仓库
 

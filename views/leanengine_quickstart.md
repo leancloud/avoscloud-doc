@@ -34,7 +34,9 @@ composer install
 ```java
 mvn package
 ```
-
+```go
+go mod tidy && go mod vendor
+```
 然后启动应用：
 
 ```
@@ -81,7 +83,15 @@ LeanEngine
 
 一个简单的「TODO 列表」示例
 ```
+```go
+LeanEngine
 
+This is a LeanEngine demo application.
+
+Current date: 2021-02-28 23:54:47.821183329 +0800 CST m=+1.093390203
+
+A simple todo demo
+```
 访问页面的路由定义如下：
 
 ```javascript
@@ -126,7 +136,19 @@ $app->get('/', function (Request $request, Response $response) {
 
 // ...
 ```
+```go
+// ./main.go
+// ...
+e.GET("/", routes.Index)
+// ...
 
+// ./routes/index.go
+// ...
+func Index(c echo.Context) error {
+  return c.Render(http.StatusOK, "index", time.Now().String())
+}
+// ...
+```
 ### 新建一个 Todo
 
 用浏览器打开 <http://localhost:3000/todos> ，然后在输入框输入 「点个外卖」并点击 「新增」，可以看到 Todo 列表新增加了一行。
@@ -181,7 +203,30 @@ public static void createTodo(@EngineFunctionParam("content") String content)
   todo.save();   
 }
 ```
+```go
+// 在云函数文件中导入 leancloud 包
+// 建议在项目的 functions 文件夹中定义云函数
+import "github.com/leancloud/go-sdk/leancloud"
 
+type Todo struct {
+  leancloud.Object
+  Content string `json:"content"`
+}
+
+func init() {
+  leancloud.Define("createdTodo", createTodo) // 注册云函数
+}
+
+func createTodo(req *leancloud.FunctionRequest) (interface{}, error) {
+  todo := &Todo{
+    Content: req.Params["content"].(string),
+  }
+  if err := client.Class("Todo").Create(todo); err != nil {
+    return nil, err
+  }
+  return nil, nil
+}
+```
 还有一类特殊的云函数是由云端系统在特定事件发生时自动触发，这类云函数称为 Hook 函数。
 想要了解 Hook 函数的详情以及如何调用我们上面定义的 `createTodo` 云函数，请参考 [云函数开发指南](leanengine_cloudfunction_guide-node.html)。
 
