@@ -173,7 +173,7 @@ dotnet add LeanCloud.Engine.Middleware.AspNetCore
 
 直接使用 [StackExchange.Redis](https://stackexchange.github.io/StackExchange.Redis/) 里面构建的方式。
 
-假设在控制台创建了一个名字叫做 `dev` 云缓存实例，如下代码将演示如何连接这个实例，并且存储、读取数据：
+假设在控制台创建了一个名字叫做 `dev` LeanCache 实例，如下代码将演示如何连接这个实例，并且存储、读取数据：
 
 ```cs
 // 获取 dev 实例
