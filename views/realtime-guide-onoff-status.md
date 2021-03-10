@@ -9,8 +9,8 @@
 在开始之前，你需要了解以下内容：
 
 * [云引擎快速入门](leanengine_quickstart.html)：了解云引擎是什么，是如何运作的。
-* [云函数（Node.js）](leanengine_cloudfunction_guide-node.html)：部署在服务端的代码。我们会使用云函数来实现 LeanCache 的查询以及即时通讯上下线 Hook 的逻辑。
-* [LeanCache](leancache_guide.html)：高性能、高可用的 Key-Value 内存存储服务。
+* [云函数（Node.js）](leanengine_cloudfunction_guide-node.html)：部署在服务端的代码。我们会使用云函数来实现 LeanDB Redis 的查询以及即时通讯上下线 Hook 的逻辑。
+* [LeanDB Redis](leancache_guide.html)：高性能、高可用的 Key-Value 内存存储服务。
 * [即时通讯 Hook 函数](realtime-guide-systemconv.html#客户端上下线 Hook)：在本篇文档中，我们使用了即时通讯客户端上下线事件的 hook 函数。
 
 ## 示例 Demo
@@ -19,28 +19,28 @@
 
 
 ## 实现步骤
-我们通过 hook 拿到 `clientId` 的在线状态，将这些状态存储到 LeanCache 中。客户端定期查询云函数来获得用户的在线状态。本篇文档在云引擎[初始项目](https://github.com/leancloud/node-js-getting-started)的基础上来实现相关功能。
+我们通过 hook 拿到 `clientId` 的在线状态，将这些状态存储到 Redis 中。客户端定期查询云函数来获得用户的在线状态。本篇文档在云引擎[初始项目](https://github.com/leancloud/node-js-getting-started)的基础上来实现相关功能。
 
-### 创建 LeanCache 实例
+### 创建 Redis 实例
 
-在应用中[创建一个 LeanCache 实例](leancache_guide.html#创建实例)，推荐使用 `volatile-lru` 删除策略。
+在应用中[创建一个 Redis 实例](leancache_guide.html#创建实例)，推荐使用 `volatile-lru` 删除策略。
 
 ### 安装依赖
 
-请参考[在云引擎中使用 LeanCache](leancache_guide.html#在云引擎中使用（Node.js 环境）)。
+请参考[在云引擎中使用 LeanDB Redis](leancache_guide.html#在云引擎中使用（Node.js 环境）)。
 
 ### 连接 Redis
 
-首先我们要和 LeanCache 中的 redis 建立连接。在[初始项目](https://github.com/leancloud/node-js-getting-started)的根目录中，我们创建一个新的文件 `redis.js` 用于创建 `Redis` 实例。代码如下：
+首先我们要和 Redis 建立连接。在[初始项目](https://github.com/leancloud/node-js-getting-started)的根目录中，我们创建一个新的文件 `redis.js` 用于创建 `Redis` 实例。代码如下：
 
 ```js
 const Redis = require('ioredis')
 
-// 创建 redis client，连接 LeanCache 实例
+// 创建 redis client，连接 Redis 实例
 function createClient() {
     // 本地环境下此环境变量为 undefined, 会链接到默认的 127.0.0.1:6379，
-    // ⚠️注意，需替换 `<LeanCache-实例名称>` 为实际创建的实例的名称。假如你的实例名是 statusCache，这里需要写 REDIS_URL_statusCache
-    const redisClient = new Redis(process.env['REDIS_URL_<LeanCache-实例名称>'])
+    // ⚠️注意，需替换 `<Redis-实例名称>` 为实际创建的实例的名称。假如你的实例名是 statusCache，这里需要写 REDIS_URL_statusCache
+    const redisClient = new Redis(process.env['REDIS_URL_<Redis-实例名称>'])
 
     // 监听 redis 的 error 事件，打印错误信息
     redisClient.on('error', function(err) {
@@ -66,7 +66,7 @@ var AV = require('leanengine')
 const {redisClient} = require('../redis')
 ```
 
-在 `onIMClientOffline` 中拿到下线的 `clientId`，将 `clientId` 和下线状态存储到 `LeanCache` 中。代码如下：
+在 `onIMClientOffline` 中拿到下线的 `clientId`，将 `clientId` 和下线状态存储到 Redis 中。代码如下：
 
 ```js
 AV.Cloud.onIMClientOffline(async (request) => {
@@ -76,7 +76,7 @@ AV.Cloud.onIMClientOffline(async (request) => {
 })
 ```
 
-在 `onIMClientOnline` 中拿到上线的 `clientId`，将 `clientId` 和上线状态存储到 `LeanCache` 中。代码如下：
+在 `onIMClientOnline` 中拿到上线的 `clientId`，将 `clientId` 和上线状态存储到 Redis 中。代码如下：
 
 ```js
 AV.Cloud.onIMClientOnline(async (request) => {

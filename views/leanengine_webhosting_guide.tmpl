@@ -10,7 +10,7 @@
 
  - [云引擎服务概览](leanengine_overview.html)（全部功能的概述）
  - [命令行工具使用指南](leanengine_cli.html)
- - [LeanCache 使用指南](leancache_guide.html)（使用内存缓存服务来提升性能）
+ - [LeanDB Redis 使用指南](leancache_guide.html)（使用内存缓存服务来提升性能）
  - [云引擎项目示例](leanengine_examples.html)
  - [云引擎常见问题和解答](leanengine_faq.html)
 
@@ -1456,55 +1456,6 @@ PHP 默认的 `$_SESSION` 在我们云引擎中是无法正常工作的，因为
 
 {% if platformName === "Node.js" %}
 Express 中可以使用 [csurf](https://github.com/expressjs/csurf) 这个库来实现 CSRF Token。
-{% endif %}
-
-{% if platformName === "Node.js" or platformName === "Python" or platformName === ".NET" %}
-### LeanCache
-
-[LeanCache](leancache_guide.html) 是 LeanCloud 为大流量站点提供的一项缓存服务。
-
-{% if platformName === "Node.js" %}
-要使用 LeanCache，首先将 `redis` 依赖添加到 `package.json` 中：
-
-```json
-"dependencies": {
-  // …
-  "redis": "2.2.x",
-  // …
-}
-```
-
-然后可以使用下列代码获取 Redis 连接：
-
-```js
-var client = require('redis').createClient(process.env['REDIS_URL_<Instance Name>']);
-// 建议增加 client 的 on error 事件处理，否则可能因为网络波动或 redis server 主从切换等原因造成短暂不可用导致应用进程退出。
-client.on('error', function (err) {
-  return console.error('redis err: %s', err);
-});
-```
-{% endif %}
-{% if platformName === "Python" %}
-要使用 LeanCache，首先将 `redis` 依赖添加到 `requirements.txt` 中：
-
-```
-Flask>=1.0.0
-leancloud>=2.6.0,<3.0.0
-…
-redis>=2.10.5,<3.0.0
-```
-
-然后可以使用下列代码获取 Redis 连接：
-
-```python
-import os
-import redis
-
-r = redis.from_url(os.environ.get("REDIS_URL_<instance_name>"))
-```
-{% endif %}
-
-关于 LeanCache 的更多使用方法请看 [LeanCache 使用指南](leancache_guide.html)。
 {% endif %}
 
 ### 重定向到 HTTPS

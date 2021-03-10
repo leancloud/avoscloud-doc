@@ -342,9 +342,9 @@ phpcomposer.com 镜像已经停止服务，PHP 项目的 `composer.lock` 文件�
 云引擎的负载均衡对于幂等的请求（GET、PUT），在 HTTP 层面出错或超时的情况下是会重试的。
 可以使用正确的谓词（例如 POST）避免此类重试。
 
-## 如何在本地调试依赖 LeanCache 的应用？
+## 如何在本地调试依赖 LeanDB Redis 的应用？
 
-见 [LeanCache 使用指南](leancache_guide.html#在本地调试依赖_LeanCache_的应用)。
+见 [LeanDB Redis 使用指南](leancache_guide.html#在本地调试依赖_Redis_的应用)。
 
 ## 云引擎是否可以使用本地磁盘存储文件？
 

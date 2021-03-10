@@ -552,9 +552,9 @@ CQL > select objectId, mime_type from _File where mime_type != null limit 3;
 ]
 ```
 
-## LeanCache 管理
+## LeanDB Redis 管理
 
-LeanCache 用户可以使用命令行工具来连接线上的 LeanCache 实例，对数据进行增删改查。
+LeanDB Redis 用户可以使用命令行工具来连接线上的 Redis 实例，对数据进行增删改查。
 
 {{ leanengine.leancacheWithCli() }}
 
