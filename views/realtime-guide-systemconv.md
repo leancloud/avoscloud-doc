@@ -66,7 +66,7 @@ Hook 也可以称为「钩子」，是一种特殊的消息处理机制，与 Wi
 * **_clientOffline**<br/>
   客户端下线，客户端登出成功或意外下线后调用。
 
-开发者可以利用这两个 Hook 函数，结合云缓存来完成一组客户端实时状态查询的 endpoint，具体可以参考文档[即时通讯中的在线状态查询](realtime-guide-onoff-status.html)。
+开发者可以利用这两个 Hook 函数，结合 LeanCache 来完成一组客户端实时状态查询的 endpoint，具体可以参考文档[即时通讯中的在线状态查询](realtime-guide-onoff-status.html)。
 
 ### Hook 与云引擎的关系
 
@@ -535,7 +535,7 @@ public static Map<String, Object> onConversationStart(Map<String, Object> params
 
 这个 hook 不对返回值进行处理，只需返回 `{}` 即可。
 
-例如，创建对话后，将对话的 ID 存储到云缓存的最近创建对话列表：
+例如，创建对话后，将对话的 ID 存储到 LeanCache 的最近创建对话列表：
 
 ```js
 AV.Cloud.onIMConversationStarted((request) => {
@@ -823,7 +823,7 @@ public static void onConversationAdded(Map<String, Object> params) {
 
 这个 hook 不会对返回值进行检查。
 
-例如，如果用户自行离开了对话，那么将这个对话的 ID 存储到云缓存（应用可以利用这些数据实现展示「最近离开的对话」乃至重新加入的功能）：
+例如，如果用户自行离开了对话，那么将这个对话的 ID 存储到 LeanCache（应用可以利用这些数据实现展示「最近离开的对话」乃至重新加入的功能）：
 
 ```js
 AV.Cloud.onIMConversationRemoved((request) => {
@@ -963,7 +963,7 @@ reconnect | 标识客户端本次登录是否是自动重连，无值或值为 0
 
 这个 hook 不会对返回值进行检查。
 
-例如，客户端上线后更新云缓存，供查询客户端的实时在线状态：
+例如，客户端上线后更新 LeanCache，供查询客户端的实时在线状态：
 
 ```js
 AV.Cloud.onIMClientOnline((request) => {
@@ -1011,7 +1011,7 @@ tag | 由用户在会话创建时传递而来，无值或值为 `default` 表示
 
 这个 hook 不会对返回值进行检查。
 
-例如，客户端下线后更新云缓存，供查询客户端的实时在线状态：
+例如，客户端下线后更新 LeanCache，供查询客户端的实时在线状态：
 
 ```js
 AV.Cloud.onIMClientOffline((request) => {
@@ -1039,7 +1039,7 @@ public static void onClientOffline(Map<String, Object> params) {
 }
 ```
 
-[即时通讯中的在线状态查询](realtime-guide-onoff-status.html) 提供了完整的 Node.js 示例（包括云缓存连接，久未上线的客户端清理，配套的返回在线状态的云函数，以及如何在客户端调用），可以参考。
+[即时通讯中的在线状态查询](realtime-guide-onoff-status.html) 提供了完整的 Node.js 示例（包括 LeanCache 连接，久未上线的客户端清理，配套的返回在线状态的云函数，以及如何在客户端调用），可以参考。
 
 ## 「系统对话」的使用
 
