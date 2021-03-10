@@ -10426,7 +10426,7 @@ await currentUser.AssociateAuthData(weixinData, "weixin");
 
 #### 解除与第三方账户的关联
 
-如果将 _User 表 `authData` 中对应平台的 json 数据设为 `null`，则意味着解除与该平台的关联，SDK 层提供了 `{{ userObjectName }}#dissociateAuthData(platform)` 系列方法来完成这一操作。
+类似地，可以解绑第三方账户。
 
 例如，下面的代码可以解除用户和微信账户的关联：
 
