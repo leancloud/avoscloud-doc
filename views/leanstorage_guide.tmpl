@@ -10350,6 +10350,16 @@ LCUser currentUser = await LCUser.LoginWithAuthDataAndUnionId(
 
 这样一来，LeanCloud 后台通过识别平台性的用户唯一标识 UnionID，让来自同一个 UnionID 体系内的应用程序、小程序等不同平台的用户都绑定到了一个 `{{ userObjectName }}` 上，实现互通。
 
+##### 为 UnionID 建立索引
+
+LeanCloud 云端会为 UnionID 自动建立索引，不过因为自动创建基于请求的抽样统计，可能会滞后。
+因此，我们推荐自行创建相关索引，特别是用户量（`_User`　表记录数）很大的应用，更需要预先创建索引，否则用户使用 UnionID 账号登录时可能超时失败。
+以上面的微信 UnionID 为例，建议在控制台预先创建下列唯一索引（允许缺失值）：
+
+- `authData.wxleanoffice.uid`
+- `authData.wxleansupport.uid`
+- `authData._weixin_unionid.uid`
+
 ##### 该如何指定 unionIdPlatform
 
 从上面的例子可以看出，使用 UnionID 登录的时候，需要指定 `unionIdPlatform` 的主要目的，就是为了便于查找已经存在的唯一主账号。LeanCloud 云端会在主账号对应账户的 `authData` 属性中增加一个 `_{unionIdPlatform}_unionid` 键值对来标记唯一性，终端用户在其他应用中登录的时候，LeanCloud 云端会根据参数中提供的 `uniondId` + `unionIdPlatform` 的组合，在 `_User` 表中进行查找，这样来确定唯一的既存主账号。
