@@ -1,7 +1,7 @@
 {% from 'views/_helper.njk' import alert %}
 
 {% macro relationDeprecated() -%}
-{{ alert("Relation 类型已被弃用。请使用 [中间表](relation-guide.html#使用中间表实现多对多关系_推荐_) 来完成对关联数据的查询、排序等复杂操作。") }}
+{{ alert("`Relation` 提供了一种内建的一对多关系模型，其数据结构类似于 Pointer 数组。由于查询结果集存在总量限制，这导致了通过 `$relatedTo` 操作符无法获得超过 1000 条的结果。所以如果一对多的关系模型下，「多」端的元素数量远小于 1000，你可以使用 Relation 类型；如果接近或超过 1000，则请使用 [中间表](relation-guide.html#使用中间表实现多对多关系_推荐_) 来完成对关联数据的查询、排序等复杂操作。") }}
 {%- endmacro %}
 
 {% macro preservedWords(delimeter="、") -%}
