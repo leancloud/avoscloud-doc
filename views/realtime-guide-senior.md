@@ -551,7 +551,9 @@ public void updateMemberRole(final String memberId, final ConversationMemberRole
 public async Task UpdateMemberRole(string memberId, string role);
 ```
 ```dart
-// 暂不支持
+/// - role: The role will be updated.
+/// - memberId: The ID of the member who will be updated.
+Future<void> updateMemberRole({String role, String memberId})
 ```
 
 ### 获取成员权限
@@ -800,7 +802,19 @@ public async Task<LCIMPartiallySuccessResult> UnmuteMembers(IEnumerable<string> 
 public async Task<LCIMPageResult> QueryMutedMembers(int limit = 10, string next = null);
 ```
 ```dart
-// 暂不支持
+/// - members: The members will be muted.
+Future<MemberResult> muteMembers({Set<String> members})
+
+/// - members: The members will be unmuted.
+Future<MemberResult> unmuteMembers({Set<String> members})
+
+/// Get the muted members in the conversation.
+///
+/// [limit]'s default is `50`, should not more than `100`.
+/// [next]'s default is `null`.
+///
+/// Returns a list of members.
+Future<QueryMemberResult> queryMutedMembers({int limit = 50, String next})
 ```
 
 注意这里对用户禁言/解除禁言的结果与以往的操作结果不一样，这里是 ***部分成功结果***，里面包含三部分数据：
@@ -954,7 +968,19 @@ public async Task<LCIMPartiallySuccessResult> UnblockMembers(IEnumerable<string>
 public async Task<LCIMPageResult> QueryBlockedMembers(int limit = 10, string next = null);
 ```
 ```dart
-// 暂不支持
+/// - members: The members will be blocked.
+Future<MemberResult> blockMembers({Set<String> members})
+
+/// - members: The members will be un unblocked.
+Future<MemberResult> unblockMembers({Set<String> members})
+
+/// Get the blocked members in the conversation.
+///
+/// [limit]'s default is `50`, should not more than `100`.
+/// [next]'s default is `null`.
+///
+/// Returns a list of members.
+Future<QueryMemberResult> queryBlockedMembers({int limit = 50, String next})
 ```
 
 > 注意这里对黑名单操作的结果与禁言操作一样，是 ***部分成功结果***。
