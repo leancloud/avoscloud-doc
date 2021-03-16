@@ -155,7 +155,7 @@ AV.Cloud.onIMMessageReceived((request) => {
 def _messageReceived(**params):
     print('_messageReceived start')
     content = json.loads(params['content'])
-    text = content._lctext
+    text = content['_lctext']
     print('text:', text)
     processed_content = text.replace('XX 传奇', '**')
     print('_messageReceived end')
