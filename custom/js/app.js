@@ -10,13 +10,15 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout', '$co
         $scope.masterkey = "{{masterkey}}";
         $scope.sign_masterkey = "{{sign_masterkey}}";
         $scope.sign_appkey = "{{sign_appkey}}";
+
+        var region = $rootScope.region || 'n1'
         var service = $scope.service || 'api';
         var domains = {
           n1: 'lncld.net',
           qcloud: 'lncldapi.com',
           us: 'lncldglobal.com',
         };
-        var domain = domains[$rootScope.region] || domains['n1'];
+        var domain = domains[region];
         $scope.domain = '{{appid 前八位}}.' + service + '.' + domain;
         $rootScope.pageState = {};
         var sdkversion = 'unknown';
@@ -24,12 +26,25 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout', '$co
             sdkversion = $sdk_versions;
         }
         angular.element("body").scope().sdkversion = sdkversion;
+        var consoleDomains = {
+          'us': 'console.leancloud.app',
+          'n1': 'console.leancloud.cn',
+          'qcloud': 'console-e1.leancloud.cn'
+        };
+        var consoleDomain = consoleDomains[region];
+        $scope.consoleDomain = consoleDomain;
+        var consoleAPIDomains = {
+          'us': 'us-w1-console-api.leancloud.app',
+          'n1': 'cn-n1-console-api.leancloud.cn',
+          'qcloud': 'cn-e1-console-api.leancloud.cn'
+        };
+        var consoleAPIDomain = consoleAPIDomains[region];
 
-        $http.get('/1/clients/self').success(function (data) {
+        $http.get('https://' + consoleAPIDomain + '/1/clients/self', {withCredentials: true}).success(function (data) {
             $scope.user = data;
         });
 
-        $http.get("/1/clients/self/apps").success(
+        $http.get('https://' + consoleAPIDomain + '/1/clients/self/apps', {withCredentials: true}).success(
             function (data) {
                 if (data.length > 0) {
                     $rootScope.pageState.currentApp = data[0];
@@ -50,11 +65,6 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout', '$co
             }).error(function (data) {
 
             });
-        $scope.signout = function () {
-            $http.post('/1/signout').success(function (data) {
-                location.reload();
-            });
-        }
         // 2017-03-24 output undefined variables as is(surrounded by double curl braces)
         $scope.mustache = function (val) {
             if (typeof $scope[val] == 'undefined') {
