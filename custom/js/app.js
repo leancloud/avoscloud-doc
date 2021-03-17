@@ -40,11 +40,11 @@ angular.module("app").controller("AppCtrl", ['$scope', '$http', '$timeout', '$co
         };
         var consoleAPIDomain = consoleAPIDomains[region];
 
-        $http.get(`https://${consoleAPIDomain}/1/clients/self`, {withCredentials: true}).success(function (data) {
+        $http.get('https://' + consoleAPIDomain + '/1/clients/self', {withCredentials: true}).success(function (data) {
             $scope.user = data;
         });
 
-        $http.get(`https://${consoleAPIDomain}/1/clients/self/apps`, {withCredentials: true}).success(
+        $http.get('https://' + consoleAPIDomain + '/1/clients/self/apps', {withCredentials: true}).success(
             function (data) {
                 if (data.length > 0) {
                     $rootScope.pageState.currentApp = data[0];
