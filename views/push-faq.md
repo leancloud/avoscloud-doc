@@ -105,6 +105,31 @@ if (dataLength > 0) {
 * 当使用 Token Authentication 鉴权方式发 iOS 推送时，该参数用于设置将推送发至 APNs 的开发环境（dev）还是生产环境（prod）。
 * 当使用证书鉴权方式发 iOS 推送时，该参数用于设置使用开发证书（dev）还是生产证书（prod）。在使用证书鉴权方式下，当设备在 Installation 记录中设置了 deviceProfile 时我们优先按照 deviceProfile 指定的证书推送。
 
+### iOS 推送如何正确保存 deviceToken？
+
+iOS 系统重装、从备份恢复应用、在新设备上安装应用都会导致 device token 变化，因此 Apple 推荐 在应用每次启动时都去请求 APNs 的 device token，获取 token 后进行设置并保存 token。 除此以外，LeanCloud 后端会统计 installation 的更新时间（updatedAt），据此清理长期未更新的 installation 数据。 所以我们建议开发者遵循 Apple 的推荐方式开发应用，以免有效 installation 数据被意外清理，以及因为 device token 过期无效而推送失败。
+示例代码可以参考：[iOS 消息推送开发指南](ios_push_guide.html#保存 Token)。
+
+### 离线推送通知服务里，_Installation 是如何与 _User 里的用户 id 关联的？
+
+用户登录即时通信系统以后，服务器会将用户的 `clientId` 保存在登录设备的 `_Installation` 表的 `channels` 字段里，从而完成关联。当用户离线，有离线消息需要推送时，服务端会去 `_Installation` 表内找到 `channels` 字段包含目标 `clientId` 的设备来完成推送。
+
+### 如果同一个设备上有两个应用，如何推送到指定的应用？
+
+_Installation 表记录了设备上生成的安装信息。可以在 _Installation 表新增一个字段来区分不同的应用。在推送消息的时候，如果选择推送全部用户，则两个应用都会收到推送。如果想要针对某一个应用推送，可以参考 [发送给特定的用户](android_push_guide.html#发送给特定的用户) 这个推送文档，只发送给指定的设备。
+
+### _Installation 中的 valid 字段指的是什么，valid 为什么是 false？
+
+Valid 表示当前这条设备记录是否有效，是 false 表示这条记录失效了，比如长时间未使用或者使用 LeanCloud 平台推送但是推送设备并未登录。
+
+比如 Android 设备未执行以下代码打开[启动推送服务](android_push_guide.html#启动推送服务)，valid 的值就会一直是 false。
+
+```
+// 设置默认打开的 Activity
+PushService.setDefaultPushCallback(this, PushDemo.class);
+```
+如果某个设备不想收到推送提醒，也可以将 _Installation 表中相应安装对象的 valid 字段修改为 false。
+
 ## 推送问题排查
 
 推送因为环节较多，跟设备和网络都相关，并且调用都是异步化，因此问题比较难以查找，这里提供一些有用助于排查消息推送问题的技巧。
