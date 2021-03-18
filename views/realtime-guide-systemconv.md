@@ -1015,7 +1015,7 @@ errorMsg | 导致连接断开的错误信息，可选
 ----- | ------- | ---
 4107 | READ_TIMEOUT | 长时间未发送消息或心跳包导致连接超时
 4108 | LOGIN_TIMEOUT | 一定时间内未登录而导致超时
-4109 | FRAME_TOO_LONG | Websocket 帧过长
+4109 | FRAME_TOO_LONG | WebSocket 帧过长
 4114 | UNPARSEABLE_RAW_MSG | 消息格式错误无法解析
 4200 | INTERNAL_ERROR | 服务器内部错误
 
