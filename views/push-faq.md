@@ -120,7 +120,7 @@ _Installation 表记录了设备上生成的安装信息。可以在 _Installati
 
 ### _Installation 中的 valid 字段指的是什么，valid 为什么是 false？
 
-Valid 表示当前这条设备记录是否有效，是 false 表示这条记录失效了，比如长时间未使用或者使用 LeanCloud 平台推送但是推送设备并未登录。
+valid 表示当前这条设备记录是否有效，是 false 表示这条记录失效了，比如长时间未使用或者使用 LeanCloud 平台推送但是推送设备并未登录。
 
 比如 Android 设备未执行以下代码打开[启动推送服务](android_push_guide.html#启动推送服务)，valid 的值就会一直是 false。
 
