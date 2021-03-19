@@ -433,5 +433,5 @@ AfterUpdate 是在云引擎内执行的，执行 afetrUpdate 不算 API 请求�
 
 2020 年 10 月份云引擎已经[在所有分组上支持了云函数](https://leancloudblog.com/cloud-functions-on-all-groups/)，如果您的应用的不同分组上的云函数不存在重复定义的，客户端直接调用云函数，在云引擎这边能自动根据名称路由到正确的分组（对客户端来说是透明的）。
 
-同样，云函数不存在重复定义的前提下，如果您需要在某个云引擎实例内调用其他分组上的云函数，那么传入 remote: true 即可，详见[文档](leanengine_cloudfunction_guide-node.html#云引擎调用云函数
+同样，云函数不存在重复定义的前提下，如果您需要在某个云引擎实例内调用其他分组上的云函数，那么传入 `remote: true` 即可，详见[文档](leanengine_cloudfunction_guide-node.html#云引擎调用云函数
 )。
