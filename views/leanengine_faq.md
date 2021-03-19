@@ -429,7 +429,7 @@ AV.Cloud.CookieSession({sameSite: 'none'})
 
 AfterUpdate 是在云引擎内执行的，执行 afetrUpdate 不算 API 请求，自然也不计入 API 请求数。如果 afterUpdate 里发起了 API 请求，那么照常计算 API 请求数（和客户端请求 API 一样）。
 
-## 前端如何调用云引擎分组中的cloud.js？
+## 前端如何调用云引擎分组中的云函数？
 
 2020 年 10 月份云引擎已经[在所有分组上支持了云函数](https://leancloudblog.com/cloud-functions-on-all-groups/)，如果您的应用的不同分组上的云函数不存在重复定义的，客户端直接调用云函数，在云引擎这边能自动根据名称路由到正确的分组（对客户端来说是透明的）。
 
