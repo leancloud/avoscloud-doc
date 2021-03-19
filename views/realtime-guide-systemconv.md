@@ -189,6 +189,17 @@ Cloud::define("_messageReceived", function($params, $user) {
     return result;
   }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.MessageReceived)]
+public static object OnMessageReceived(LCCloudFunctionRequest request) {
+  Dictionary<string, object> data = request.Params;
+  string content = data["content"] as string;
+  string processedContent = content.Replace("XX 中介", "**");
+  return new Dictionary<string, object> {
+    { "content", processedContent }
+  };
+}
+```
 
 而实际上启用上述代码之后，一条消息的时序图如下：
 
@@ -322,6 +333,24 @@ Cloud::define('_receiversOffline', function($params, $user) {
     return result;
 }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ReceiversOffline)]
+public static Dictionary<string, object> OnReceiversOffline(LCCloudFunctionRequest request) {
+    string alert = request.Params["content"] as string;
+    if (alert.Length > 6) {
+        alert = alert.Substring(0, 6);
+    }
+    Dictionary<string, object> pushMessage = new Dictionary<string, object> {
+        { "badge", "Increment" },
+        { "sound", "default" },
+        { "_profile", "dev" },
+        { "alert", alert },
+    };
+    return new Dictionary<string, object> {
+        { "pushMessage", JsonSerializer.Serialize(pushMessage) }
+    };
+}
+```
 
 #### `_messageSent`
 
@@ -396,6 +425,13 @@ Cloud::define('_messageSent', function($params, $user) {
     System.out.println(params);
     Map<String, Object> result = new HashMap<String, Object>();
     return result;
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.MessageSent)]
+public static Dictionary<string, object> OnMessageSent(LCCloudFunctionRequest request) {
+    Console.WriteLine(JsonSerializer.Serialize(request.Params));
+    return default;
 }
 ```
 
@@ -520,6 +556,20 @@ public static Map<String, Object> onConversationStart(Map<String, Object> params
   return result;
 }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationStart)]
+public static object OnConversationStart(LCCloudFunctionRequest request) {
+    List<object> members = request.Params["members"] as List<object>;
+    if (members.Count < 4) {
+        return new Dictionary<string, object> {
+            { "reject", true },
+            { "code", 1234 },
+            { "detail", "至少邀请 3 人开启对话" }
+        };
+    }
+    return default;
+}
+```
 
 #### `_conversationStarted`
 
@@ -562,6 +612,14 @@ public static Map<String, Object> onConversationStarted(Map<String, Object> para
   jedis.lpush("recent_conversations", params.get("convId"));
   Map<String, Object> result = new HashMap<String, Object>(); 
   return result;
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationStarted)]
+public static object OnConversationStarted(LCCloudFunctionRequest request) {
+    string convId = request.Params["convId"] as string;
+    Console.WriteLine($"{convId} started");
+    return default;
 }
 ```
 
@@ -635,6 +693,19 @@ public static Map<String, Object> onConversationAdd(Map<String, Object> params) 
     result.put("detail", "会话已封闭，不允许新增成员。")
   }
   return result;
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationAdd)]
+public static object OnConversationAdd(LCCloudFunctionRequest request) {
+    if ("Tom".Equals(request.Params["initBy"])) {
+        return new Dictionary<string, object> {
+            { "reject", true },
+            { "code", 9890 },
+            { "detail", "会话已封闭，不允许新增成员。" }
+        };
+    }
+    return default;
 }
 ```
 
@@ -722,6 +793,23 @@ public static Map<String, Object> onConversationRemove(Map<String, Object> param
   return result;
 }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationRemove)]
+public static object OnConversationRemove(LCCloudFunctionRequest request) {
+    List<string> supporters = new List<string> { "Bast", "Hypnos", "Kthanid" };
+    List<object> members = request.Params["members"] as List<object>;
+    foreach (object member in members) {
+        if (supporters.Contains(member as string)) {
+            return new Dictionary<string, object> {
+                { "reject", true },
+                { "code", 1928 },
+                { "detail", $"不允许移除官方运营人员 {member}" }
+            };
+        }
+    }
+    return default;
+}
+```
 
 #### `_conversationAdded`
 
@@ -806,6 +894,25 @@ public static void onConversationAdded(Map<String, Object> params) {
   }
 }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationAdded)]
+public static async Task OnConversationAdded(LCCloudFunctionRequest request) {
+    List<string> members = (request.Params["members"] as List<object>)
+        .Cast<string>()
+        .ToList();
+    if (members.Count > 10) {
+        Dictionary<string, object> variables = new Dictionary<string, object> {
+            { "conv_id", request.Params["convId"] }
+        };
+        try {
+            await LCSMSClient.RequestSMSCode("18200008888", "Group_Notice", "sign_example", variables: variables);
+            Console.WriteLine("Successfully sent text message.");
+        } catch (Exception e) {
+            Console.WriteLine($"Failed to send text message. Reason: {e.Message}");
+        }
+    }
+}
+```
 
 #### `_conversationRemoved`
 
@@ -866,6 +973,18 @@ public static void onConversationRemoved(Map<String, Object> params) {
       jedis.lpush(initBy, params.get("convId"));
     }
   }
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationRemoved)]
+public static void OnConversationRemoved(LCCloudFunctionRequest request) {
+    List<string> members = (request.Params["members"] as List<object>)
+        .Cast<string>()
+        .ToList();
+    string initBy = request.Params["initBy"] as string;
+    if (members.Count == 1 && members[0].Equals(initBy)) {
+        Console.WriteLine($"{request.Params["convId"]} removed.");
+    }
 }
 ```
 
@@ -943,6 +1062,20 @@ public static Map<String, Object> onConversationUpdate(Map<String, Object> param
   return result;
 }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationUpdate)]
+public static object OnConversationUpdate(LCCloudFunctionRequest request) {
+    Dictionary<string, object> attr = request.Params["attr"] as Dictionary<string, object>;
+    if (attr != null && attr.ContainsKey("name")) {
+        return new Dictionary<string, object> {
+            { "reject", true },
+            { "code", 1949 },
+            { "detail", "对话名称不可修改" }
+        };
+    }
+    return default;
+}
+```
 
 #### `_clientOnline`
 
@@ -988,6 +1121,12 @@ Cloud::define('_clientOnline', function($params, $user) {
 public static void onClientOnline(Map<String, Object> params) {
   // 1 表示在线
   jedis.set(params.get("peerId"), 1);  
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ClientOnline)]
+public static void OnClientOnline(LCCloudFunctionRequest request) {
+    Console.WriteLine($"{request.Params["peerId"]} online.");
 }
 ```
 
@@ -1036,6 +1175,12 @@ Cloud::define('_clientOffline', function($params, $user) {
 public static void onClientOffline(Map<String, Object> params) {
   // 0 表示下线 
   jedis.set(params.get("peerId"), 0);  
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ClientOffline)]
+public static void OnClientOffline(LCCloudFunctionRequest request) {
+    Console.WriteLine($"{request.Params["peerId"]} offline");
 }
 ```
 
