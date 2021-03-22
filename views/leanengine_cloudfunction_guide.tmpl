@@ -887,21 +887,19 @@ public static AVUser getCurrentUser() throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-public class UserService
-{
-    [EngineFunction("errorCode")]
-    public async AVUser GetCurrentUser()
-    {
-        AVUser u = await AVUser.GetCurrentAsync()
-        if (u == null)
-        {
-            throw new EngineException(211, "Could not find the user.");
-        }
-        else
-        {
-            return u;
-        }
+[LCEngineFunction("ErrorCode")]
+public static async Task<LCUser> GetCurrentUser(LCCloudFunctionRequest request) {
+    string sessionToken = request.SessionToken;
+    LCUser user = null;
+    if (!string.IsNullOrEmpty(sessionToken)) {
+        user = await LCUser.BecomeWithSessionToken(sessionToken);
     }
+
+    if (user == null) {
+        throw new LCException(211, "Could not find the user.");
+    }
+
+    return user;
 }
 ```
 {% endif %}
@@ -2193,10 +2191,10 @@ public static AVObject reviewBeforeSaveHook(AVObject review) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.BeforeSave("Review", (AVObject review) =>
-{
-    throw new EngineException(123, "An error occurred.");
-});
+[LCEngineClassHook("Review", LCEngineObjectHookType.BeforeDelete)]
+public static void ReviewBeforeDelete(LCClassHookRequest request) {
+    throw new LCException(123, "An error occurred.");
+}
 ```
 {% endif %}
 {% if platformName === "Go" %}
