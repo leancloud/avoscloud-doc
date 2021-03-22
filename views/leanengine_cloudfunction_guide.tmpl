@@ -947,9 +947,9 @@ public static void customErrorCode() throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-[EngineFunction("customErrorCode")]
-public static Void CustomErrorCode(){
-throw new EngineException(123, "自定义错误信息。");
+[LCEngineFunction("ThrowLCException")]
+public static void ThrowLCException(LCCloudFunctionRequest request) {
+    throw new LCException(123, "自定义错误信息。");
 }
 ```
 {% endif %}
@@ -1021,16 +1021,15 @@ public static String hello(@EngineFunctionParam("name") String name) {
 
 {% if platformName === ".NET" %}
 ```cs
-private async static void TimeConsumingTask()
-{
-  await Task.Delay(20 * 1000);
-  Console.WriteLine("task done");
+private static async Task TimeConsumingThings() {
+    await Task.Delay(20 * 1000);
+    Console.WriteLine($"任务完成");
 }
-[EngineFunction("hello")]
-public static string Hello()
-{
-  Task.Run(() => TimeConsumingTask());
-  return "Hello World!";
+
+[LCEngineFunction("Hello")]
+public static async Task<string> Hello() {
+    await TimeConsumingThings();
+    return "Hello, world!";
 }
 ```
 {% endif %}
@@ -2305,11 +2304,12 @@ public static float logTimer throws Exception {
 ```
 {% endif %}
 {% if platformName === ".NET" %}
-[EngineFunction("logTimer")]
-public static void LogTimer()
-{
-  Console.WriteLine("This log is printed by logTimer.");
+```cs
+[LCEngineFunction("logTimer")]
+public static void LogTimer() {
+    Console.WriteLine("This log is printed by logTimer.");
 }
+```
 {% endif %}
 {% if platformName === "Go" %}
 ```go
