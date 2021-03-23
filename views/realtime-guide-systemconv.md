@@ -142,7 +142,6 @@ Hook 也可以称为「钩子」，是一种特殊的消息处理机制，与 Wi
 ```js
 AV.Cloud.onIMMessageReceived((request) => {
     let content = request.params.content;
-    console.log('content', content);
     let processedContent = content.replace('XX 传奇', '**');
     // 必须含有以下语句给服务端一个正确的返回，否则会引起异常
   return {
@@ -151,40 +150,34 @@ AV.Cloud.onIMMessageReceived((request) => {
 });
 ```
 ```python
+import json
+
 @engine.define
 def _messageReceived(**params):
-    print('_messageReceived start')
     content = json.loads(params['content'])
     text = content['_lctext']
-    print('text:', text)
-    processed_content = text.replace('XX 传奇', '**')
-    print('_messageReceived end')
+    content['_lctext'] = text.replace('XX 传奇', '**')
     # 必须含有以下语句给服务端一个正确的返回，否则会引起异常
     return {
-        'content': processed_content,
+        'content': json.dumps(content)
     }
 ```
 ```php
 Cloud::define("_messageReceived", function($params, $user) {
-    error_log('_messageReceived start');
     $content = json_decode($params["content"], true);
     $text = $content["_lctext"];
-    error_log($text);
-    $processedContent = preg_replace("XX 传奇", "**", $text);
+    $content["_lctext"] = preg_replace("XX 传奇", "**", $text);
     // 必须含有以下语句给服务端一个正确的返回，否则会引起异常
-    return array("content" => $processedContent);
+    return array("content" => json_encode($content));
 });
 ```
 ```java
 @IMHook(type = IMHookType.messageReceived)
   public static Map<String, Object> onMessageReceived(Map<String, Object> params) {
-    System.out.println(params);
     Map<String, Object> result = new HashMap<String, Object>();
     String content = (String)params.get("content");
-    Map<String,Object> contentMap = (Map<String,Object>)JSON.parse(content);
-    String text = (String)(contentMap.get("_lctext").toString());
-    String processedContent = text.replace("XX 中介", "**");
-    result.put("content",processedContent);
+    String processedContent = content.replace("XX 传奇", "**");
+    result.put("content", processedContent);
     // 必须含有以下语句给服务端一个正确的返回，否则会引起异常
     return result;
   }
