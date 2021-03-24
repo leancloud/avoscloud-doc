@@ -10335,7 +10335,7 @@ LeanCloud 云端首先会查找账户系统（_User 表），看看是否存在 
 
 为了确保账户数据的有效性，LeanCloud 云端还支持对部分平台的 access token 的有效性进行自动验证，以防止伪造账户数据。如果有效性验证不通过，云端会返回 `invalid authData` 错误，关联不会被建立。对于云端无法识别的服务，开发者需要自己去验证 access token 的有效性（可通过云引擎的 [onLogin hook 函数](leanengine_cloudfunction_guide-node.html#onLogin)来实现）。
 
-如果希望使用这一功能，则在开始使用前，需要在 **控制台 > 组件 > 社交** 配置相应平台的 **应用 ID** 和 **应用 Secret Key**。
+如果希望使用这一功能，则在开始使用前，需要在 **控制台 > 存储 > 用户 > 设置** 配置相应平台的 **应用 ID** 和 **应用 Secret Key**。
 
 如果不希望云端自动验证 access token，可以在 **控制台 > 存储 > 设置** 里面取消勾选 **第三方登录时，验证用户 AccessToken 合法性**。
 
