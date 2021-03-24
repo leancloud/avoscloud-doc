@@ -253,7 +253,7 @@ public static float getAverageStars(@EngineFunctionParam("movie") String movie)
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-[LCEngineFunction("AverageStars")]
+[LCEngineFunction("averageStars")]
 public static float AverageStars([LCEngineFunctionParam("movie")] string movie) {
     if (movie == "夏洛特烦恼") {
         return 3.8f;
@@ -359,9 +359,10 @@ def my_cloud_func(foo, bar, baz, **params):
 
 {% endif %}
 {% if platformName === ".NET" %}
-正如前面的实例代码一样，在定义云函数时使用 `EngineFunctionParameter` 来进行参数的绑定，如果使用的是 [直接使用委托](#直接使用委托)，那么传入的参数只要按照顺序即可。
+云函数中可以获取的参数和上下文信息有：
 
-此处要注意，如果函数本身是异步的（返回值是 `Task` 或者 `Task<T>`），在真正执行的时候也是会等待异步结果，然后再返回给客户端的，另外，如果在执行过程中产生了异常，请参考 [云函数错误响应码](#云函数错误响应码)。
+- `LCEngineFunctionParam`：客户端发送的参数。
+- `LCEngineRequestContext`有关客户端的更多信息，其中 `LCEngineRequestContext.SessionToken` 会返回客户端所关联用户的 sessionToken（根据客户端发送的 `X-LC-Session` 头），`LCEngineRequestContext.RemoteAddress` 会返回客户端的实际地址。
 {% endif %}
 {% if platformName === "Go" %}
 `leancloud.FunctionRequest` 会作为参数传入到云函数中，`leancloud.FunctionRequest` 上的属性包括：
@@ -1093,6 +1094,9 @@ public static AVObject reviewBeforeSaveHook(AVObject review) throws Exception {
 ```cs
 [LCEngineClassHook("Review", LCEngineObjectHookType.BeforeSave)]
 public static LCObject ReviewBeforeSave(LCObject review) {
+    if (string.IsNullOrEmpty(review["comment"])) {
+        throw new Exception("No comment provided!");
+    }
     string comment = review["comment"] as string;
     if (comment.Length > 140) {
         review["comment"] = string.Format($"{comment.Substring(0, 140)}...");
@@ -1996,8 +2000,7 @@ public static AVUser userOnLoginHook(AVUser user) throws Exception {
 {% if platformName === ".NET" %}
 ```cs
 [LCEngineUserHook(LCEngineUserHookType.OnLogin)]
-public static async Task<LCUser> OnLogin(LCUserHookRequest request) {
-    LCUser user = request.CurrentUser;
+public static async Task<LCUser> OnLogin(LCUser user) {
     Dictionary<string, object> authData = user.AuthData;
     Dictionary<string, object> examplePlatform = authData["example_platform"] as Dictionary<string, object>;
     string userId = examplePlatform["uid"] as string;
