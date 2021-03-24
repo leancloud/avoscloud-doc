@@ -191,9 +191,8 @@ Cloud::define("_messageReceived", function($params, $user) {
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.MessageReceived)]
-public static object OnMessageReceived(LCCloudFunctionRequest request) {
-  Dictionary<string, object> data = request.Params;
-  string content = data["content"] as string;
+public static object OnMessageReceived(Dictionary<string, object> parameters) {
+  string content = parameters["content"] as string;
   string processedContent = content.Replace("XX 中介", "**");
   return new Dictionary<string, object> {
     { "content", processedContent }
@@ -335,8 +334,8 @@ Cloud::define('_receiversOffline', function($params, $user) {
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ReceiversOffline)]
-public static Dictionary<string, object> OnReceiversOffline(LCCloudFunctionRequest request) {
-    string alert = request.Params["content"] as string;
+public static Dictionary<string, object> OnReceiversOffline(Dictionary<string, object> parameters) {
+    string alert = parameters["content"] as string;
     if (alert.Length > 6) {
         alert = alert.Substring(0, 6);
     }
@@ -429,8 +428,8 @@ Cloud::define('_messageSent', function($params, $user) {
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.MessageSent)]
-public static Dictionary<string, object> OnMessageSent(LCCloudFunctionRequest request) {
-    Console.WriteLine(JsonSerializer.Serialize(request.Params));
+public static Dictionary<string, object> OnMessageSent(Dictionary<string, object> parameters) {
+    Console.WriteLine(JsonSerializer.Serialize(parameters));
     return default;
 }
 ```
@@ -558,8 +557,8 @@ public static Map<String, Object> onConversationStart(Map<String, Object> params
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationStart)]
-public static object OnConversationStart(LCCloudFunctionRequest request) {
-    List<object> members = request.Params["members"] as List<object>;
+public static object OnConversationStart(Dictionary<string, object> parameters) {
+    List<object> members = parameters["members"] as List<object>;
     if (members.Count < 4) {
         return new Dictionary<string, object> {
             { "reject", true },
@@ -616,8 +615,8 @@ public static Map<String, Object> onConversationStarted(Map<String, Object> para
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationStarted)]
-public static object OnConversationStarted(LCCloudFunctionRequest request) {
-    string convId = request.Params["convId"] as string;
+public static object OnConversationStarted(Dictionary<string, object> parameters) {
+    string convId = parameters["convId"] as string;
     Console.WriteLine($"{convId} started");
     return default;
 }
@@ -697,8 +696,8 @@ public static Map<String, Object> onConversationAdd(Map<String, Object> params) 
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationAdd)]
-public static object OnConversationAdd(LCCloudFunctionRequest request) {
-    if ("Tom".Equals(request.Params["initBy"])) {
+public static object OnConversationAdd(Dictionary<string, object> parameters) {
+    if ("Tom".Equals(parameters["initBy"])) {
         return new Dictionary<string, object> {
             { "reject", true },
             { "code", 9890 },
@@ -795,9 +794,9 @@ public static Map<String, Object> onConversationRemove(Map<String, Object> param
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationRemove)]
-public static object OnConversationRemove(LCCloudFunctionRequest request) {
+public static object OnConversationRemove(Dictionary<string, object> parameters) {
     List<string> supporters = new List<string> { "Bast", "Hypnos", "Kthanid" };
-    List<object> members = request.Params["members"] as List<object>;
+    List<object> members = parameters["members"] as List<object>;
     foreach (object member in members) {
         if (supporters.Contains(member as string)) {
             return new Dictionary<string, object> {
@@ -896,8 +895,8 @@ public static void onConversationAdded(Map<String, Object> params) {
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationAdded)]
-public static async Task OnConversationAdded(LCCloudFunctionRequest request) {
-    List<string> members = (request.Params["members"] as List<object>)
+public static async Task OnConversationAdded(Dictionary<string, object> parameters) {
+    List<string> members = (parameters["members"] as List<object>)
         .Cast<string>()
         .ToList();
     if (members.Count > 10) {
@@ -977,13 +976,13 @@ public static void onConversationRemoved(Map<String, Object> params) {
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationRemoved)]
-public static void OnConversationRemoved(LCCloudFunctionRequest request) {
-    List<string> members = (request.Params["members"] as List<object>)
+public static void OnConversationRemoved(Dictionary<string, object> parameters) {
+    List<string> members = (parameters["members"] as List<object>)
         .Cast<string>()
         .ToList();
-    string initBy = request.Params["initBy"] as string;
+    string initBy = parameters["initBy"] as string;
     if (members.Count == 1 && members[0].Equals(initBy)) {
-        Console.WriteLine($"{request.Params["convId"]} removed.");
+        Console.WriteLine($"{parameters["convId"]} removed.");
     }
 }
 ```
@@ -1064,8 +1063,8 @@ public static Map<String, Object> onConversationUpdate(Map<String, Object> param
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationUpdate)]
-public static object OnConversationUpdate(LCCloudFunctionRequest request) {
-    Dictionary<string, object> attr = request.Params["attr"] as Dictionary<string, object>;
+public static object OnConversationUpdate(Dictionary<string, object> parameters) {
+    Dictionary<string, object> attr = parameters["attr"] as Dictionary<string, object>;
     if (attr != null && attr.ContainsKey("name")) {
         return new Dictionary<string, object> {
             { "reject", true },
@@ -1125,8 +1124,8 @@ public static void onClientOnline(Map<String, Object> params) {
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ClientOnline)]
-public static void OnClientOnline(LCCloudFunctionRequest request) {
-    Console.WriteLine($"{request.Params["peerId"]} online.");
+public static void OnClientOnline(Dictionary<string, object> parameters) {
+    Console.WriteLine($"{parameters["peerId"]} online.");
 }
 ```
 
@@ -1179,8 +1178,8 @@ public static void onClientOffline(Map<String, Object> params) {
 ```
 ```cs
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ClientOffline)]
-public static void OnClientOffline(LCCloudFunctionRequest request) {
-    Console.WriteLine($"{request.Params["peerId"]} offline");
+public static void OnClientOffline(Dictionary<string, object> parameters) {
+    Console.WriteLine($"{parameters["peerId"]} offline");
 }
 ```
 
