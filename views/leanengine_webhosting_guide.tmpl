@@ -1554,6 +1554,12 @@ LeanEngine.setHttpsRedirectEnabled(true);
 // 暂不支持
 ```
 {% endif %}
+{% if platformName === ".Net" %}
+```cs
+// dotnet 脚手架工程已默认开启 HTTPS 跳转。如果需要关闭，可注释此行
+app.UseHttpsRedirection();
+```
+{% endif %}
 部署并发布到生产环境之后，访问你的 LeanEngine 网站都会强制通过 HTTPS 访问。
 
 ## 部署与发布
