@@ -1095,7 +1095,11 @@ reconnect | 标识客户端本次登录是否是自动重连，无值或值为 0
 
 这个 hook 不会对返回值进行检查。
 
+{% if platformName === ".NET" %}
+例如，客户端上线后输出用户信息：
+{% else %}
 例如，客户端上线后更新 LeanCache，供查询客户端的实时在线状态：
+{% endif %}
 
 ```js
 AV.Cloud.onIMClientOnline((request) => {
@@ -1149,7 +1153,11 @@ tag | 由用户在会话创建时传递而来，无值或值为 `default` 表示
 
 这个 hook 不会对返回值进行检查。
 
+{% if platformName === ".NET" %}
 例如，客户端下线后更新 LeanCache，供查询客户端的实时在线状态：
+{% else %}
+例如，客户端下线后输出用户信息：
+{% endif %}
 
 ```js
 AV.Cloud.onIMClientOffline((request) => {
