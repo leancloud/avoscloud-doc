@@ -72,7 +72,7 @@ LeanCloud 不支持重命名 Class。
 
 ### 如何导入或者导出数据？
 
-请参考《数据与安全》文档的 [导入数据](./dashboard_guide.html#本地数据导入_LeanCloud) 和 [导出数据](./dashboard_guide.html#云端数据导出到本地) 部分。
+请参考《数据与安全》文档的 [导入数据](dashboard_guide.html#导入数据) 和 [导出数据](dashboard_guide.html#导出数据) 部分。
 
 
 ### 如何在 App 邮件内完全使用自己的品牌
