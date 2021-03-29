@@ -918,7 +918,7 @@ public static String hello(@EngineFunctionParam("name") String name) {
 ```cs
 private static async Task TimeConsumingThings() {
     await Task.Delay(20 * 1000);
-    Console.WriteLine($"任务完成");
+    Console.WriteLine("任务完成");
 }
 
 [LCEngineFunction("hello")]
