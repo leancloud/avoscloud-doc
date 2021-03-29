@@ -272,12 +272,7 @@ wx.getUserInfo({
 
 #### 一键登录时静默获取 unionid
 
-当满足以下条件时，server 端能静默地获取到用户的 unionid 并用 unionid + openid 进行匹配登录。
-
-- 微信开放平台帐号下存在同主体的公众号，并且该用户已经关注了该公众号。
-- 微信开放平台帐号下存在同主体的公众号或移动应用，并且该用户已经授权登录过该公众号或移动应用。
-
-要启用这种方式，需要在获取 `AuthInfo` 时指定参数 `preferUnionId` 为 true：
+若小程序已在微信开放平台绑定，server 端能静默地获取到用户的 unionid 并用 unionid + openid 进行匹配登录，只需在获取 `AuthInfo` 时指定参数 `preferUnionId` 为 true 即可。
 
 ```js
 adapters.getAuthInfo({
