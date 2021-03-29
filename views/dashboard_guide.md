@@ -544,11 +544,11 @@ function encrypt(password,salt) {
 - 其他各种应用配置信息
 - 已 deprecate 的用户反馈功能的数据（可以通过 [REST API](rest_api.html#用户反馈组件_API) 获取）
 
-#### 本地数据导入 LeanCloud
+### 导入数据
 
-**存储 > 导入导出 > 数据导入** 页面，可供批量导入本地数据。
+在**数据导入**标签页可以批量导入本地数据。
 
-本地文件的格式要求：
+导入文件的格式要求：
 
 - 必须是 JSON 或者 CSV 文件
 - UTF-8 文件编码（不带 BOM）
@@ -558,7 +558,7 @@ function encrypt(password,salt) {
 <div class="callout callout-info">
 <ul><li>数据文件的扩展名必须是 `.csv` 或者 `.json` 结尾，我们以此来判断导入数据的类型。</li><li>数据导入不会触发任何 [云引擎 hook 函数](leanengine_cloudfunction_guide-node.html#Hook_函数)。</li></div>
 
-##### JSON 文件格式
+#### JSON 文件格式
 
 JSON 格式要求是一个符合我们 REST 格式的 JSON 对象数组：
 
@@ -613,7 +613,25 @@ JSON 格式要求是一个符合我们 REST 格式的 JSON 对象数组：
 如有覆盖数据的需要，建议您通过控制台或 REST API 直接更新相应数据。
 如果客户端不会请求这些数据，或者在导入期间请求不到结果是可以接受的，也可以通过控制台或 REST API 删除相应数据后重新进行导入操作。
 
-##### CSV 格式文件
+注意，通过 LeanCloud 控制台导出的数据为 [JSON Lines] 格式：
+
+```jsonl
+{"updatedAt":"2020-11-04T03:29:17.441Z","ACL":{"*":{"read":true,"write":true}},"objectId":"5cc6abe117b54d7448151efc","createdAt":"2019-04-29T07:46:41.687Z","likes":123}
+{"updatedAt":"2020-11-04T03:15:32.943Z","ACL":{},"objectId":"5d1c81e76e9ba1007f89f2d2","createdAt":"2019-07-03T10:22:31.322Z","likes":456}
+```
+
+[JSON Lines]: https://jsonlines.org/
+
+需要转换一下才能导入：
+
+```
+            {"results": [
+{A}    ->    {A},
+{B}          {B}
+            ]}
+```
+
+#### CSV 格式文件
 
 导入 Class 的 CSV 文件格式必须符合我们的扩展要求：
 
@@ -656,7 +674,6 @@ playerName,player
 dMEbKFJiQo,19rUj9I0cy
 mQtjuMF5xk,xPVrHL0W4n
 ```
-
 
 #### 读懂 API 统计结果
 在使用 LeanCloud 数据存储的时候，我们应用每天的调用量如何，不同平台过来的请求量有多少，里面哪些请求比较耗时，主要是什么操作导致的，如何才能得到更好的性能提升用户体验，等等数据都离不开 API 统计结果。
