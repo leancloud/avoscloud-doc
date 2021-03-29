@@ -399,6 +399,151 @@ Class 名只能包含字母、数字、下划线，而且必须以字母开头�
 
 该功能仅向商用版应用开放。
 参见[离线数据分析指南](leaninsight_guide.html)。
+
+### 导出数据
+
+**导入导出** 下有三个标签页：**数据导出**、**数据导入**、**备份恢复**。
+
+在**数据导出**标签页点击**导出**按钮即可开始导出任务。
+导出完成之后会发送下载链接到账号绑定邮箱。
+
+导出还可以限定 Class、开始日期和结束日期（`updatedAt`）。
+你也可以只导出数据的 schema。
+
+我们还提供了数据导出的 [REST API](./rest_api.html#数据导出_API)。
+
+#### 导出用户数据的加密算法
+
+导出的 `_User` 表数据会包括加密后的密码 `password` 字段和用于加密的随机盐 `salt` 字段。 LeanCloud 不会以明文保存任何用户的密码，我们也不推荐开发者以明文方式保存应用内用户的密码，这将带来极大的安全隐患。如果你要在 LeanCloud 系统之外校验用户的密码，需要将用户的传输过来的明文密码，加上导出数据里对应用户的 `salt` 字段，使用下文描述的加密算法进行不可逆的加密运算，其结果如果与导出数据里的 `password` 字段值相同，即认为密码验证通过，否则验证失败。
+
+我们通过一个 Ruby 脚本来描述这个用户密码加密算法：
+
+1. 创建 SHA-512 加密算法 hasher
+2. 使用 salt 和 password（原始密码） 调用 hasher.update
+3. 获取加密后的值 `hv`
+4. 重复 512 次调用 `hasher.update(hv)`，每次hv都更新为最新的 `hasher.digest` 加密值
+5. 最终的 hv 值做 base64 编码，保存为 password
+
+假设：
+
+<table class="noheading">
+  <tbody>
+    <tr>
+      <td nowrap>salt</td>
+      <td><pre style="margin:0;"><code>h60d8x797d3oa0naxybxxv9bn7xpt2yiowz68mpiwou7gwr2</code></pre></td>
+    </tr>
+    <tr>
+      <td nowrap>原始密码</td>
+      <td><code>password</code></td>
+    </tr>
+    <tr>
+      <td nowrap>加密后</td>
+      <td><pre style="margin:0;"><code>tA7BLW+NK0UeARng0693gCaVnljkglCB9snqlpCSUKjx2RgYp8VZZOQt0S5iUtlDrkJXfT3gknS4rRqjYsd/Ug==</code></pre></td>
+    </tr>
+  </tbody>
+</table>
+
+实现代码：
+
+```ruby
+require 'digest/sha2'
+require "base64"
+
+hasher = Digest::SHA512.new
+hasher.reset
+hasher.update "h60d8x797d3oa0naxybxxv9bn7xpt2yiowz68mpiwou7gwr2"
+hasher.update "password"
+
+hv = hasher.digest
+
+def hashme(hasher, hv)
+  512.times do
+    hasher.reset
+    hv = hasher.digest hv
+  end
+  hv
+end
+
+result = Base64.encode64(hashme(hasher,hv))
+puts result.gsub(/\n/,'')
+```
+
+非常感谢用户「残圆」贡献了一段 C# 语言示例代码：
+
+```cs
+/// 根据数据字符串和自定义 salt 值，获取对应加密后的字符串
+/// </summary>
+/// <param name="password">数据字符串</param>
+/// <param name="salt">自定义 salt 值</param>
+/// <returns></returns>
+public static string SHA512Encrypt(string password, string salt)
+{
+    /*
+    用户密码加密算法
+    1、创建 SHA-512 加密算法 hasher
+    2、使用 salt 和 password（原始密码） 调用 hasher.update
+    3、获取加密后的值 hv
+    4、重复 512 次调用 hasher.update(hv)，每次hv都更新为最新的 hasher.digest 加密值
+    5、最终的 hv 值做 base64 编码，保存为 password
+    */
+    password = salt + password;
+    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(password);
+    byte[] result;
+    System.Security.Cryptography.SHA512 shaM = new System.Security.Cryptography.SHA512Managed();
+    result = shaM.ComputeHash(bytes);
+    int i = 0;
+    while (i++ < 512)
+    {
+        result = shaM.ComputeHash(result);
+    }
+    shaM.Clear();
+    return Convert.ToBase64String(result);
+}
+```
+非常感谢用户「snnui」贡献了一段 JavaScript（NodeJS） 语言示例代码：
+```js
+function encrypt(password,salt) {
+  var hash = crypto.createHash('sha512');
+  hash.update(salt);
+  hash.update(password);
+  var value = hash.digest();
+
+  for (var i = 0; i < 512; i++) {
+      var hash = crypto.createHash('sha512');
+      hash.update(value);
+      value = hash.digest();
+  }
+
+  var result = value.toString('base64');
+  return result;
+}
+```
+
+#### 保留字段
+
+注意，`createdAt` 和 `updatedAt` 属于保留字段，导出数据中直接编码为 UTC 时间戳字符串，和普通 Date 类型字段的编码方式不同。这一点与通过 REST API 查询这两个字段的返回结果是一致的。
+
+```json
+{
+  "normalDate": {
+    "__type": "Date",
+    "iso": "2015-06-21T18:02:52.249Z"
+  },
+  "createdAt": "2015-06-21T18:02:52.249Z",
+  "updatedAt": "2015-06-21T18:02:52.249Z"
+```
+
+#### 未包括的数据
+
+导出数据仅包括结构化数据存储中的数据，不包括其他数据。
+例如，以下数据不在导出数据的范围之内：
+
+- 即时通讯服务的聊天记录（可以通过 [REST API](realtime_rest_api_v2.html#查询应用内所有历史消息) 获取）
+- 文件服务托管的文件（导出数据仅包括文件的元信息，可以通过其中的 URL 下载）
+- 云引擎的代码（建议开发者自行使用 git 等工具管理）和环境变量（可通过 `lean env` 获取）
+- 其他各种应用配置信息
+- 已 deprecate 的用户反馈功能的数据（可以通过 [REST API](rest_api.html#用户反馈组件_API) 获取）
+
 #### 本地数据导入 LeanCloud
 
 **存储 > 导入导出 > 数据导入** 页面，可供批量导入本地数据。
@@ -512,135 +657,6 @@ dMEbKFJiQo,19rUj9I0cy
 mQtjuMF5xk,xPVrHL0W4n
 ```
 
-#### 云端数据导出到本地
-LeanCloud 不会把大家强制绑定到自己平台上，所以我们也提供渠道让大家随时把数据导出去。
-
-在控制台的 **存储 > 导入导出 > 数据导出** 页面点击导出按钮即可开始导出任务。我们会在导出完成之后发送下载链接到你的注册邮箱。
-
-导出还可以限定 Class、日期（`updatedAt`），你也可以只导出数据的 schema。
-
-我们还提供了数据导出的 [RETS API](./rest_api.html#数据导出_API)。
-
-##### 导出用户数据的加密算法
-
-导出的 `_User` 表数据会包括加密后的密码 `password` 字段和用于加密的随机盐 `salt` 字段。 LeanCloud 不会以明文保存任何用户的密码，我们也不推荐开发者以明文方式保存应用内用户的密码，这将带来极大的安全隐患。如果你要在 LeanCloud 系统之外校验用户的密码，需要将用户的传输过来的明文密码，加上导出数据里对应用户的 `salt` 字段，使用下文描述的加密算法进行不可逆的加密运算，其结果如果与导出数据里的 `password` 字段值相同，即认为密码验证通过，否则验证失败。
-
-我们通过一个 Ruby 脚本来描述这个用户密码加密算法：
-
-1. 创建 SHA-512 加密算法 hasher
-2. 使用 salt 和 password（原始密码） 调用 hasher.update
-3. 获取加密后的值 `hv`
-4. 重复 512 次调用 `hasher.update(hv)`，每次hv都更新为最新的 `hasher.digest` 加密值
-5. 最终的 hv 值做 base64 编码，保存为 password
-
-假设：
-
-<table class="noheading">
-  <tbody>
-    <tr>
-      <td nowrap>salt</td>
-      <td><pre style="margin:0;"><code>h60d8x797d3oa0naxybxxv9bn7xpt2yiowz68mpiwou7gwr2</code></pre></td>
-    </tr>
-    <tr>
-      <td nowrap>原始密码</td>
-      <td><code>password</code></td>
-    </tr>
-    <tr>
-      <td nowrap>加密后</td>
-      <td><pre style="margin:0;"><code>tA7BLW+NK0UeARng0693gCaVnljkglCB9snqlpCSUKjx2RgYp8VZZOQt0S5iUtlDrkJXfT3gknS4rRqjYsd/Ug==</code></pre></td>
-    </tr>
-  </tbody>
-</table>
-
-实现代码：
-
-```ruby
-require 'digest/sha2'
-require "base64"
-
-hasher = Digest::SHA512.new
-hasher.reset
-hasher.update "h60d8x797d3oa0naxybxxv9bn7xpt2yiowz68mpiwou7gwr2"
-hasher.update "password"
-
-hv = hasher.digest
-
-def hashme(hasher, hv)
-  512.times do
-    hasher.reset
-    hv = hasher.digest hv
-  end
-  hv
-end
-
-result = Base64.encode64(hashme(hasher,hv))
-puts result.gsub(/\n/,'')
-```
-
-非常感谢用户「残圆」贡献了一段 C# 语言示例代码：
-
-```cs
-/// 根据数据字符串和自定义 salt 值，获取对应加密后的字符串
-/// </summary>
-/// <param name="password">数据字符串</param>
-/// <param name="salt">自定义 salt 值</param>
-/// <returns></returns>
-public static string SHA512Encrypt(string password, string salt)
-{
-    /*
-    用户密码加密算法
-    1、创建 SHA-512 加密算法 hasher
-    2、使用 salt 和 password（原始密码） 调用 hasher.update
-    3、获取加密后的值 hv
-    4、重复 512 次调用 hasher.update(hv)，每次hv都更新为最新的 hasher.digest 加密值
-    5、最终的 hv 值做 base64 编码，保存为 password
-    */
-    password = salt + password;
-    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(password);
-    byte[] result;
-    System.Security.Cryptography.SHA512 shaM = new System.Security.Cryptography.SHA512Managed();
-    result = shaM.ComputeHash(bytes);
-    int i = 0;
-    while (i++ < 512)
-    {
-        result = shaM.ComputeHash(result);
-    }
-    shaM.Clear();
-    return Convert.ToBase64String(result);
-}
-```
-非常感谢用户「snnui」贡献了一段 JavaScript（NodeJS） 语言示例代码：
-```js
-function encrypt(password,salt) {
-  var hash = crypto.createHash('sha512');
-  hash.update(salt);
-  hash.update(password);
-  var value = hash.digest();
-
-  for (var i = 0; i < 512; i++) {
-      var hash = crypto.createHash('sha512');
-      hash.update(value);
-      value = hash.digest();
-  }
-
-  var result = value.toString('base64');
-  return result;
-}
-```
-
-##### 保留字段
-
-注意，`createdAt` 和 `updatedAt` 属于保留字段，导出数据中直接编码为 UTC 时间戳字符串，和普通 Date 类型字段的编码方式不同。这一点与通过 REST API 查询这两个字段的返回结果是一致的。
-
-```json
-{
-  "normalDate": {
-    "__type": "Date",
-    "iso": "2015-06-21T18:02:52.249Z"
-  },
-  "createdAt": "2015-06-21T18:02:52.249Z",
-  "updatedAt": "2015-06-21T18:02:52.249Z"
-```
 
 #### 读懂 API 统计结果
 在使用 LeanCloud 数据存储的时候，我们应用每天的调用量如何，不同平台过来的请求量有多少，里面哪些请求比较耗时，主要是什么操作导致的，如何才能得到更好的性能提升用户体验，等等数据都离不开 API 统计结果。
