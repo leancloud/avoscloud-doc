@@ -1554,19 +1554,19 @@ public static void afterUpdatePost(AVObject post) throws AVException {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-[LCEngineClassHook("Post", LCEngineObjectHookType.AfterUpdate)]
-public static async Task PostAfterUpdate(LCObject post) {
-    post["foo"] = "bar";
-    await post.Save();
+// 直接修改并保存对象不会再次触发 afterUpdate Hook 函数
+post["foo"] = "bar";
+await post.Save();
 
-    await post.Fetch();
-    post.DisableAfterHook();
-    post["foo"] = "bar";
+// 如果有 fetch 操作，则需要在新获得的对象上调用 DisableAfterHook 来确保不会再次触发 Hook 函数
+await post.Fetch();
+post.DisableAfterHook();
+post["foo"] = "bar";
 
-    post = LCObject.CreateWithoutData("Post", post.ObjectId);
-    post.DisableAfterHook();
-    await post.Save();
-}
+// 如果是其他方式构建对象，则需要在新构建的对象上调用 DisableAfterHook 来确保不会再次触发 Hook 函数
+post = LCObject.CreateWithoutData("Post", post.ObjectId);
+post.DisableAfterHook();
+await post.Save();
 ```
 {% endif %}
 
