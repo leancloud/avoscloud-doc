@@ -233,13 +233,11 @@ Java 运行环境对内存的使用较多，所以建议：
 如果云引擎 [实例规格](leanengine_plan.html#选择实例规格) **选择不当**，可能造成应用启动时因为内存溢出（OOM）导致部署失败，或运行期内存溢出导致应用频繁重启。
 {% endcall %}
 
-Java 云引擎默认使用 Java 8 运行环境，如果希望使用其他版本的 Java，可以在项目根目录创建一个名为 `system.properties` 的文件，指定 `java.runtime.version`：
+Java 云引擎默认使用 Java 11 运行环境，如果希望使用其他版本的 Java，可以在项目根目录创建一个名为 `system.properties` 的文件，指定 `java.runtime.version`：
 
 ```
-java.runtime.version=11
+java.runtime.version=8
 ```
-
-注意，Spring Boot 模板项目目前只支持 Java 8，请勿在 `system.properties` 指定 Java 8 以外的版本。
 
 ### 打包成 WAR 文件的项目
 
