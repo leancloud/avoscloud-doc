@@ -362,7 +362,7 @@ def my_cloud_func(foo, bar, baz, **params):
 云函数中可以获取的参数和上下文信息有：
 
 - `LCEngineFunctionParam`：客户端发送的参数。
-- `LCEngineRequestContext`有关客户端的更多信息，其中 `LCEngineRequestContext.SessionToken` 会返回客户端所关联用户的 sessionToken（根据客户端发送的 `X-LC-Session` 头），`LCEngineRequestContext.RemoteAddress` 会返回客户端的实际地址。
+- `LCEngineRequestContext` 有关客户端的更多信息，其中 `LCEngineRequestContext.SessionToken` 会返回客户端所关联用户的 sessionToken（根据客户端发送的 `X-LC-Session` 头），`LCEngineRequestContext.RemoteAddress` 会返回客户端的实际地址。
 {% endif %}
 {% if platformName === "Go" %}
 `leancloud.FunctionRequest` 会作为参数传入到云函数中，`leancloud.FunctionRequest` 上的属性包括：
