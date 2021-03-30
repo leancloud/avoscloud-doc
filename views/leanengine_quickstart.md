@@ -244,7 +244,5 @@ lean deploy
 lean deploy --prod 1
 ```
 
-你可以在控制台[绑定云引擎域名][engine-domain]，绑定域名后，即可通过绑定域名访问你的应用。
+你可以在控制台[绑定云引擎域名](custom-api-domain-guide.html#云引擎域名)，绑定域名后，即可通过绑定域名访问你的应用。
 例如，假定你在控制台绑定了 `web.example.com` 这个域名，即可通过 `https://web.example.com` 访问你的应用（生产环境）。
-
-[engine-domain]: custom-api-domain-guide.html#云引擎域名
