@@ -182,6 +182,16 @@ Cloud::define("_messageReceived", function($params, $user) {
     return result;
   }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.MessageReceived)]
+public static object OnMessageReceived(Dictionary<string, object> parameters) {
+  string content = parameters["content"] as string;
+  string processedContent = content.Replace("XX 中介", "**");
+  return new Dictionary<string, object> {
+    { "content", processedContent }
+  };
+}
+```
 
 而实际上启用上述代码之后，一条消息的时序图如下：
 
@@ -315,6 +325,24 @@ Cloud::define('_receiversOffline', function($params, $user) {
     return result;
 }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ReceiversOffline)]
+public static Dictionary<string, object> OnReceiversOffline(Dictionary<string, object> parameters) {
+    string alert = parameters["content"] as string;
+    if (alert.Length > 6) {
+        alert = alert.Substring(0, 6);
+    }
+    Dictionary<string, object> pushMessage = new Dictionary<string, object> {
+        { "badge", "Increment" },
+        { "sound", "default" },
+        { "_profile", "dev" },
+        { "alert", alert },
+    };
+    return new Dictionary<string, object> {
+        { "pushMessage", JsonSerializer.Serialize(pushMessage) }
+    };
+}
+```
 
 #### `_messageSent`
 
@@ -389,6 +417,13 @@ Cloud::define('_messageSent', function($params, $user) {
     System.out.println(params);
     Map<String, Object> result = new HashMap<String, Object>();
     return result;
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.MessageSent)]
+public static Dictionary<string, object> OnMessageSent(Dictionary<string, object> parameters) {
+    Console.WriteLine(JsonSerializer.Serialize(parameters));
+    return default;
 }
 ```
 
@@ -513,6 +548,20 @@ public static Map<String, Object> onConversationStart(Map<String, Object> params
   return result;
 }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationStart)]
+public static object OnConversationStart(Dictionary<string, object> parameters) {
+    List<object> members = parameters["members"] as List<object>;
+    if (members.Count < 4) {
+        return new Dictionary<string, object> {
+            { "reject", true },
+            { "code", 1234 },
+            { "detail", "至少邀请 3 人开启对话" }
+        };
+    }
+    return default;
+}
+```
 
 #### `_conversationStarted`
 
@@ -555,6 +604,14 @@ public static Map<String, Object> onConversationStarted(Map<String, Object> para
   jedis.lpush("recent_conversations", params.get("convId"));
   Map<String, Object> result = new HashMap<String, Object>(); 
   return result;
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationStarted)]
+public static object OnConversationStarted(Dictionary<string, object> parameters) {
+    string convId = parameters["convId"] as string;
+    Console.WriteLine($"{convId} started");
+    return default;
 }
 ```
 
@@ -628,6 +685,19 @@ public static Map<String, Object> onConversationAdd(Map<String, Object> params) 
     result.put("detail", "会话已封闭，不允许新增成员。")
   }
   return result;
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationAdd)]
+public static object OnConversationAdd(Dictionary<string, object> parameters) {
+    if ("Tom".Equals(parameters["initBy"])) {
+        return new Dictionary<string, object> {
+            { "reject", true },
+            { "code", 9890 },
+            { "detail", "会话已封闭，不允许新增成员。" }
+        };
+    }
+    return default;
 }
 ```
 
@@ -715,6 +785,23 @@ public static Map<String, Object> onConversationRemove(Map<String, Object> param
   return result;
 }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationRemove)]
+public static object OnConversationRemove(Dictionary<string, object> parameters) {
+    List<string> supporters = new List<string> { "Bast", "Hypnos", "Kthanid" };
+    List<object> members = parameters["members"] as List<object>;
+    foreach (object member in members) {
+        if (supporters.Contains(member as string)) {
+            return new Dictionary<string, object> {
+                { "reject", true },
+                { "code", 1928 },
+                { "detail", $"不允许移除官方运营人员 {member}" }
+            };
+        }
+    }
+    return default;
+}
+```
 
 #### `_conversationAdded`
 
@@ -799,6 +886,25 @@ public static void onConversationAdded(Map<String, Object> params) {
   }
 }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationAdded)]
+public static async Task OnConversationAdded(Dictionary<string, object> parameters) {
+    List<string> members = (parameters["members"] as List<object>)
+        .Cast<string>()
+        .ToList();
+    if (members.Count > 10) {
+        Dictionary<string, object> variables = new Dictionary<string, object> {
+            { "conv_id", request.Params["convId"] }
+        };
+        try {
+            await LCSMSClient.RequestSMSCode("18200008888", "Group_Notice", "sign_example", variables: variables);
+            Console.WriteLine("Successfully sent text message.");
+        } catch (Exception e) {
+            Console.WriteLine($"Failed to send text message. Reason: {e.Message}");
+        }
+    }
+}
+```
 
 #### `_conversationRemoved`
 
@@ -859,6 +965,18 @@ public static void onConversationRemoved(Map<String, Object> params) {
       jedis.lpush(initBy, params.get("convId"));
     }
   }
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationRemoved)]
+public static void OnConversationRemoved(Dictionary<string, object> parameters) {
+    List<string> members = (parameters["members"] as List<object>)
+        .Cast<string>()
+        .ToList();
+    string initBy = parameters["initBy"] as string;
+    if (members.Count == 1 && members[0].Equals(initBy)) {
+        Console.WriteLine($"{parameters["convId"]} removed.");
+    }
 }
 ```
 
@@ -936,6 +1054,20 @@ public static Map<String, Object> onConversationUpdate(Map<String, Object> param
   return result;
 }
 ```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ConversationUpdate)]
+public static object OnConversationUpdate(Dictionary<string, object> parameters) {
+    Dictionary<string, object> attr = parameters["attr"] as Dictionary<string, object>;
+    if (attr != null && attr.ContainsKey("name")) {
+        return new Dictionary<string, object> {
+            { "reject", true },
+            { "code", 1949 },
+            { "detail", "对话名称不可修改" }
+        };
+    }
+    return default;
+}
+```
 
 #### `_clientOnline`
 
@@ -956,7 +1088,11 @@ reconnect | 标识客户端本次登录是否是自动重连，无值或值为 0
 
 这个 hook 不会对返回值进行检查。
 
+{% if platformName === ".NET" %}
+例如，客户端上线后输出用户信息：
+{% else %}
 例如，客户端上线后更新 LeanCache，供查询客户端的实时在线状态：
+{% endif %}
 
 ```js
 AV.Cloud.onIMClientOnline((request) => {
@@ -981,6 +1117,12 @@ Cloud::define('_clientOnline', function($params, $user) {
 public static void onClientOnline(Map<String, Object> params) {
   // 1 表示在线
   jedis.set(params.get("peerId"), 1);  
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ClientOnline)]
+public static void OnClientOnline(Dictionary<string, object> parameters) {
+    Console.WriteLine($"{parameters["peerId"]} online.");
 }
 ```
 
@@ -1016,7 +1158,11 @@ errorMsg | 导致连接断开的错误信息，可选
 
 这个 hook 不会对返回值进行检查。
 
+{% if platformName === ".NET" %}
 例如，客户端下线后更新 LeanCache，供查询客户端的实时在线状态：
+{% else %}
+例如，客户端下线后输出用户信息：
+{% endif %}
 
 ```js
 AV.Cloud.onIMClientOffline((request) => {
@@ -1041,6 +1187,12 @@ Cloud::define('_clientOffline', function($params, $user) {
 public static void onClientOffline(Map<String, Object> params) {
   // 0 表示下线 
   jedis.set(params.get("peerId"), 0);  
+}
+```
+```cs
+[LCEngineRealtimeHook(LCEngineRealtimeHookType.ClientOffline)]
+public static void OnClientOffline(Dictionary<string, object> parameters) {
+    Console.WriteLine($"{parameters["peerId"]} offline");
 }
 ```
 

@@ -53,65 +53,11 @@ app = engine.wrap(app)
 更多关于 **WSGI 函数** 的内容，请参考 [WSGI 接口](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000) 或者 [PEP333](https://www.python.org/dev/peps/pep-0333/)。
 {% endif %}
 {% if platformName === ".NET" %}
-## 安装和初始化
 
-首先需要了解如下两个库：
+## 脚手架项目
 
-- [`LeanCloud.Engine`](https://www.nuget.org/packages/LeanCloud.Engine/)
-  包含了实现云函数，Class Hook 的基础组件，它不依赖任何通讯协议，它只提供了自定义云函数和 Class Hook 的注册，绑定，响应，执行的逻辑，它是个核心库。
+[dotnet-core-getting-started](https://github.com/leancloud/dotnet-core-getting-started) 是一个简单的示例项目，开发者直接在云引擎控制台中通过 git 部署就可以直接部署，开始体验。
 
-- [`LeanCloud.Engine.Middleware.AspNetCore`](https://www.nuget.org/packages/LeanCloud.Engine.Middleware.AspNetCore/)
-  提供了通讯层来帮助 [`LeanCloud.Engine`](https://www.nuget.org/packages/LeanCloud.Engine/) 与 LeanCloud 其他服务模块（比如存储服务和实时通信服务）进行内网的通讯，它基于微软的 ASP.NET Core 来实现，它只是一种实现，如果有能力或者有兴趣的开发者实际上可以自己实现一个 Middleware。
-
-因此在任何一个 .NET Core 的项目都可以在安装 [`LeanCloud.Engine.Middleware.AspNetCore`](https://www.nuget.org/packages/LeanCloud.Engine.Middleware.AspNetCore/) 之后，部署到云引擎中，这样就可以让开发者在服务端用 .NET Core 来构建自己的服务端业务逻辑了。
-
-### 示例项目
-
-[dotNET-getting-started](https://github.com/leancloud/dotNET-getting-started) 是一个简单的示例项目，开发者直接在云引擎控制台中通过 git 部署就可以直接部署，开始体验。
-
-或者也可以从 IDE 的新建项目开始：
-
-### 新建项目
-
-如下步骤和截图都来自于 Visual Studio for Mac（Visual Studio for Windows 自然更好）。
-
-使用 Visual Studio 新建项目：
-
-![leanengine-dotnet-vs-create-app-1.jpg](images/leanengine-dotnet-vs-create-app-1.png)
-
-选择 .NET Core 2.0，然后下一步输入：
-
-- **Project Name: web**
-- **Solution Name: app**
-
-![leanengine-dotnet-vs-create-app-2.jpg](images/leanengine-dotnet-vs-create-app-2.png)
-
-**以上文件命名是硬性规定。**这一步是必须的，目的为了部署脚本的便捷和可控性，在可期的未来我们可以提供自定义的方式。
-
-然后为项目添加 [`LeanCloud.Engine.Middleware.AspNetCore`](https://www.nuget.org/packages/LeanCloud.Engine.Middleware.AspNetCore/) 的依赖，可以通过 Visual Studio 提供的 GUI 界面进行操作：**Add Packages…** > 输入 LeanCloud 关键字页面上会出现相关的列表 > **LeanCloud.Engine.Middleware.AspNetCore** > **Add Package**。
-
-或者直接在 `app/web` 目录下执行：
-
-```sh
-dotnet add package LeanCloud.Engine.Middleware.AspNetCore
-```
-
-最后一步，将 `app/` 文件夹目录下面的 `web/` 和 `app.sln` 移到顶层目录下（比如您的代码仓库对应的本地文件夹叫做 `myProjects/`），然后删除 `app/` 文件夹，保证它的文件结构如 [dotNET-getting-started](https://github.com/leancloud/dotNET-getting-started) 一样。
-
-完成。
-
-只要您的项目满足如下目录结构都会被云引擎正确的识别为 .NET Core 项目：
-
-```
-├── app.sln
-├── web
-    ├── MyHookFunctions.cs
-    ├── Program.cs
-    └── web.csproj
-└── README.md
-```
-
-示例项目 [dotNET-getting-started](https://github.com/leancloud/dotNET-getting-started) 是推荐的模板。
 {% endif %}
 
 ## 切换云引擎环境
@@ -120,7 +66,7 @@ dotnet add package LeanCloud.Engine.Middleware.AspNetCore
 
 在云引擎以外的环境通过 SDK 显式或隐式调用云函数时，`X-LC-Prod` 的默认值一般为 `1`，也就是调用生产环境。但由于历史原因，各 SDK 的具体行为有一些差异：
 
-- 在 Node.js、PHP、Java 这三个 SDK 下，默认总是调用生产环境的云函数。
+- 在 Node.js、PHP、Java、C# 这三个 SDK 下，默认总是调用生产环境的云函数。
 - 在 Python SDK 下，配合 lean-cli 本地调试时，且应用存在预备环境时，默认调用预备环境的云函数，其他情况默认调用生产环境的云函数。
 - 云引擎 Java 环境的模板项目 [java-war-getting-started] 和 [spring-boot-getting-started] 做了处理，配合 lean-cli 本地调试时，且应用存在预备环境时，默认调用预备环境的云函数，其他情况默认调用生产环境的云函数（与 Python SDK 的行为一致）。
 
@@ -307,85 +253,47 @@ public static float getAverageStars(@EngineFunctionParam("movie") String movie)
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-public class StaticSampleService
-{
-    [EngineFunction("averageStars")]
-    public static double AverageStars([EngineFunctionParameter("movie")]string movieName)
-    {
-        if (movieName == "夏洛特烦恼")
-            return 3.8;
-        return 0;
+[LCEngineFunction("averageStars")]
+public static float AverageStars([LCEngineFunctionParam("movie")] string movie) {
+    if (movie == "夏洛特烦恼") {
+        return 3.8f;
     }
+    return 0;
 }
 ```
 
-而在程序启动的入口函数中添加如下代码来启用刚才编写的云函数：
+然后在程序启动的入口函数中添加如下代码来启用刚才编写的云函数：
 
 ```cs
-public class Program
-{
-    public static void Main(string[] args)
-    {
-        // 定义一个 Cloud 实例
-        var cloud = new Cloud();
-        // 将云函数注册到 cloud 实例上
-        cloud.UseFunction<StaticSampleService>();
-        // 启动实例
-        cloud.Start();
+public class Startup {
+    ...
+
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services) {
+        // 开启日志（可选）
+        LCLogger.LogDelegate = (level, log) => {
+            switch (level) {
+                case LCLogLevel.Debug:
+                    Console.WriteLine($"[DEBUG] {log}");
+                    break;
+                case LCLogLevel.Warn:
+                    Console.WriteLine($"[WARN] {log}");
+                    break;
+                case LCLogLevel.Error:
+                    Console.WriteLine($"[ERROR] {log}");
+                    break;
+                default:
+                    break;
+            }
+        };
+        // 初始化
+        LCEngine.Initialize(services);
+
+        services.AddControllersWithViews();
     }
+
+    ...
 }
-```
-### 更多云函数定义方式
-
-#### 实例方法搭配 EngineFunction 和 EngineFunctionParameter
-
-```cs
-public class MovieService
-{
-    // 可以注入一些判断变量
-    public List<string> ValidMovieNames { get; set; }
-    public MovieService(string[] someMovieNames)
-    {
-        ValidMovieNames = someMovieNames.ToList();
-    }
-
-    [EngineFunction("averageStars")]
-    public double AverageStars([EngineFunctionParameter("movieName")]string movieName)
-    {
-        // 如果要查询的电影并不在支持范围内，直接返回 0 分
-        if (!ValidMovieNames.Contains(movieName)) return 0;
-        if (movieName == "夏洛特烦恼")
-            return 3.8;
-        return 0;
-    }
-}
-
-// 定义一个 Cloud 实例
-var cloud = new Cloud();
-// 将云函数注册到 cloud 实例上
-cloud.UseFunction<MovieService>(new MovieService(new string[] { "夏洛特烦恼", "功夫", "大话西游之月光宝盒" }));
-// 如果并不想传入任何校验参数也可以直接调用如下代码
-// cloud.UseFunction<MovieService>();
-// 启动实例
-cloud.Start();
-```
-
-`MovieService` 是一个自定义的类，包含一个实例方法，并且这个实例方法可以通过类的构造函数来传入一些判断所需要的变量（依赖注入），这样可以应对一些变化的需求。
-
-#### 直接使用委托
-
-```cs
-public class SampleServices
-{
-    public static double AverageStars(string movieName)
-    {
-        if (movieName == "夏洛特烦恼")
-            return 3.8;
-        return 0;
-    }
-}
-// 然后注册
-cloud.Define<string, double>("averageStars", SampleServices.AverageStars);
 ```
 {% endif %}
 
@@ -451,9 +359,10 @@ def my_cloud_func(foo, bar, baz, **params):
 
 {% endif %}
 {% if platformName === ".NET" %}
-正如前面的实例代码一样，在定义云函数时使用 `EngineFunctionParameter` 来进行参数的绑定，如果使用的是 [直接使用委托](#直接使用委托)，那么传入的参数只要按照顺序即可。
+云函数中可以获取的参数和上下文信息有：
 
-此处要注意，如果函数本身是异步的（返回值是 `Task` 或者 `Task<T>`），在真正执行的时候也是会等待异步结果，然后再返回给客户端的，另外，如果在执行过程中产生了异常，请参考 [云函数错误响应码](#云函数错误响应码)。
+- `LCEngineFunctionParam`：客户端发送的参数。
+- `LCEngineRequestContext` 有关客户端的更多信息，其中 `LCEngineRequestContext.SessionToken` 会返回客户端所关联用户的 sessionToken（根据客户端发送的 `X-LC-Session` 头），`LCEngineRequestContext.RemoteAddress` 会返回客户端的实际地址。
 {% endif %}
 {% if platformName === "Go" %}
 `leancloud.FunctionRequest` 会作为参数传入到云函数中，`leancloud.FunctionRequest` 上的属性包括：
@@ -675,10 +584,13 @@ try {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-await AVCloud.CallFunctionAsync<double>("averageStars", new Dictionary<string, object>()
-{
-    { "movie", "夏洛特烦恼" }
-});
+try {
+  float score = await LCCloud.Run<float>("averageStars", new Dictionary<string, object> {
+      { "movie", "夏洛特烦恼" }
+  });
+} catch (LCException e) {
+  // 云函数错误
+}
 ```
 另外需要注意的是，**不推荐** 在云引擎中直接调用 `AVCloud.CallFunctionAsync`，因为 `AVCloud.CallFunctionAsync` 是从客户端发起的远程调用，会重新走一遍外网再回到云引擎。如果需要在本地调用，推荐直接在云引擎中使用 `Cloud.CallFunctionAsync`，它会直接从本地进行调用，性能更好。
 {% endif %}
@@ -819,9 +731,9 @@ if err := leancloud.RPC("averageStars", Review{Movie: "夏洛特烦恼"}, &avera
 ```
 ```cs
 try {
-  double response = (double)(await LCCloud.RPC("averageStars", parameters: new Dictionary<string, object> {
+  LCObject response = await LCCloud.RPC("averageStars", parameters: new Dictionary<string, object> {
     { "movie", "夏洛特烦恼" }
-  }));
+  });
   // 处理结果
 } catch (LCException e) {
   // 处理异常
@@ -872,21 +784,19 @@ public static AVUser getCurrentUser() throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-public class UserService
-{
-    [EngineFunction("errorCode")]
-    public async AVUser GetCurrentUser()
-    {
-        AVUser u = await AVUser.GetCurrentAsync()
-        if (u == null)
-        {
-            throw new EngineException(211, "Could not find the user.");
-        }
-        else
-        {
-            return u;
-        }
+[LCEngineFunction("errorCode")]
+public static async Task<LCUser> GetCurrentUser() {
+    string sessionToken = LCEngineRequestContext.SessionToken;
+    LCUser user = null;
+    if (!string.IsNullOrEmpty(sessionToken)) {
+        user = await LCUser.BecomeWithSessionToken(sessionToken);
     }
+
+    if (user == null) {
+        throw new LCException(211, "Could not find the user.");
+    }
+
+    return user;
 }
 ```
 {% endif %}
@@ -932,9 +842,9 @@ public static void customErrorCode() throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-[EngineFunction("customErrorCode")]
-public static Void CustomErrorCode(){
-throw new EngineException(123, "自定义错误信息。");
+[LCEngineFunction("throwLCException")]
+public static void ThrowLCException() {
+    throw new LCException(123, "自定义错误信息。");
 }
 ```
 {% endif %}
@@ -1006,16 +916,15 @@ public static String hello(@EngineFunctionParam("name") String name) {
 
 {% if platformName === ".NET" %}
 ```cs
-private async static void TimeConsumingTask()
-{
-  await Task.Delay(20 * 1000);
-  Console.WriteLine("task done");
+private static async Task TimeConsumingThings() {
+    await Task.Delay(20 * 1000);
+    Console.WriteLine("任务完成");
 }
-[EngineFunction("hello")]
-public static string Hello()
-{
-  Task.Run(() => TimeConsumingTask());
-  return "Hello World!";
+
+[LCEngineFunction("hello")]
+public static async Task<string> Hello([LCEngineFunctionParam("name")] string name) {
+    await TimeConsumingThings();
+    return $"Hello, {name}!";
 }
 ```
 {% endif %}
@@ -1183,11 +1092,17 @@ public static AVObject reviewBeforeSaveHook(AVObject review) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.BeforeSave("Review", review =>
-{
-    var comment = review.Get<string>("comment");
-    if (comment.Length > 140) review["comment"] = comment.Substring(0, 140) + "…";
-});
+[LCEngineClassHook("Review", LCEngineObjectHookType.BeforeSave)]
+public static LCObject ReviewBeforeSave(LCObject review) {
+    if (string.IsNullOrEmpty(review["comment"])) {
+        throw new Exception("No comment provided!");
+    }
+    string comment = review["comment"] as string;
+    if (comment.Length > 140) {
+        review["comment"] = string.Format($"{comment.Substring(0, 140)}...");
+    }
+    return review;
+}
 ```
 {% endif %}
 {% if platformName === "Go" %}
@@ -1262,13 +1177,13 @@ public static void reviewAfterSaveHook(AVObject review) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.AfterSave("Review", review =>
-{
-    var post = review.Get<AVObject>("post");
-    await post.FetchAsync();
-    post.Increment("comments");
-    await post.SaveAsync();
-});
+[LCEngineClassHook("Review", LCEngineObjectHookType.AfterSave)]
+public static async Task ReviewAfterSave(LCObject review) {
+    LCObject post = review["post"] as LCObject;
+    await post.Fetch();
+    post.Increment("comments", 1);
+    await post.Save();
+}
 ```
 {% endif %}
 {% if platformNane === "Go" %}
@@ -1340,14 +1255,11 @@ public static void userAfterSaveHook(AVUser user) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.AfterSave("_User", async user =>
-{
-    if (user is AVUser avUser)
-    {
-        avUser.Set("from", "LeanCloud");
-        await avUser.SaveAsync();
-    }
-});
+[LCEngineClassHook("_User", LCEngineObjectHookType.AfterSave)]
+public static async Task UserAfterSave(LCObject user) {
+    user["from"] = "LeanCloud";
+    await user.Save();
+}
 ```
 {% endif %}
 {% if platformName === "Go" %}
@@ -1417,16 +1329,17 @@ public static AVObject reviewBeforeUpdateHook(AVObject review) throws Exception 
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.BeforeUpdate("Review", (AVObject review) =>
-{
-    var updatedKeys = review.GetUpdatedKeys();
-    // 如果 comment 字段被修改了，检查该字段的长度
-    if (updatedKeys.Contains("comment"))
-    {
-        var comment = review.Get<string>("comment");
-        if (comment.Length > 140) throw new EngineException(400, "comment 长度不得超过 140 字符。");
+[LCEngineClassHook("Review", LCEngineObjectHookType.BeforeUpdate)]
+public static LCObject ReviewBeforeUpdate(LCObject review) {
+    ReadOnlyCollection<string> updatedKeys = review.GetUpdatedKeys();
+    if (updatedKeys.Contains("comment")) {
+        string comment = review["comment"] as string;
+        if (comment.Length > 140) {
+            throw new Exception("comment 长度不得超过 140 字符。");
+        }
     }
-});
+    return review;
+}
 ```
 {% endif %}
 {% if platformName === "Go" %}
@@ -1510,17 +1423,16 @@ public static void reviewAfterUpdateHook(AVObject review) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.AfterUpdate("Review", (AVObject review) =>
-{
-    var updatedKeys = review.GetUpdatedKeys();
-    if (updatedKeys.Contains("comment"))
-    {
-        var comment = review.Get<string>("comment");
-        if (comment.Length < 5 ) {
-            Console.WriteLine(review.ObjectId + " 看起来像灌水评论：" + comment);
+[LCEngineClassHook("Review", LCEngineObjectHookType.AfterUpdate)]
+public static void ReviewAfterUpdate(LCObject review) {
+    ReadOnlyCollection<string> updatedKeys = review.GetUpdatedKeys();
+    if (updatedKeys.Contains("comment")) {
+        string comment = review["comment"] as string;
+        if (comment.Length < 5) {
+            Console.WriteLine($"{review.ObjectId} 看起来像灌水评论：{comment}");
         }
     }
-});
+}
 ```
 {% endif %}
 {% if platformName === "Go" %}
@@ -1642,22 +1554,19 @@ public static void afterUpdatePost(AVObject post) throws AVException {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.AfterUpdate("Post", (EngineObjectHookDeltegateSynchronous)(async post =>
-    {
-        // 直接修改并保存对象不会再次触发 AfterUpdate Hook 函数
-        post["foo"] = "bar";
-        await post.SaveAsync();
+// 直接修改并保存对象不会再次触发 afterUpdate Hook 函数
+post["foo"] = "bar";
+await post.Save();
 
-        // 如果有 FetchAsync 操作，则需要在新获得的对象上调用 DisableAfterHook 来确保不会再次触发 Hook 函数
-        await post.FetchAsync();
-        post.DisableAfterHook();
-        post["foo"] = "bar";
+// 如果有 fetch 操作，则需要在新获得的对象上调用 DisableAfterHook 来确保不会再次触发 Hook 函数
+await post.Fetch();
+post.DisableAfterHook();
+post["foo"] = "bar";
 
-        // 如果是其他方式构建对象，则需要在新构建的对象上调用 DisableAfterHook 来确保不会再次触发 Hook 函数
-        post = AVObject.CreateWithoutData<AVObject>(post.ObjectId);
-        post.DisableAfterHook();
-        await post.SaveAsync();
-    }));
+// 如果是其他方式构建对象，则需要在新构建的对象上调用 DisableAfterHook 来确保不会再次触发 Hook 函数
+post = LCObject.CreateWithoutData("Post", post.ObjectId);
+post.DisableAfterHook();
+await post.Save();
 ```
 {% endif %}
 
@@ -1735,20 +1644,16 @@ public static AVObject albumBeforeDeleteHook(AVObject album) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.BeforeDelete("Album", async album =>
-{
-    AVQuery<AVObject> query = new AVQuery<AVObject>("Photo");
+[LCEngineClassHook("Album", LCEngineObjectHookType.BeforeDelete)]
+public static async Task<LCObject> AlbumBeforeDelete(LCObject album) {
+    LCQuery<LCObject> query = new LCQuery<LCObject>("Photo");
     query.WhereEqualTo("album", album);
-    int count = await query.CountAsync();
-    if (count > 0)
-    {
+    int count = await query.Count();
+    if (count > 0) {
         throw new Exception("Cannot delete an album if it still has photos in it.");
     }
-    else
-    {
-        Console.WriteLine("Deleted.");
-    }
-});
+    return album;
+}
 ```
 {% endif %}
 {% if platformName === "Go" %}
@@ -1835,16 +1740,15 @@ public static void albumAfterDeleteHook(AVObject album) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.AfterDelete("Album", async album =>
-{
-    AVQuery<AVObject> query = new AVQuery<AVObject>("Photo");
+[LCEngineClassHook("Album", LCEngineObjectHookType.AfterDelete)]
+public static async Task AlbumAfterDelete(LCObject album) {
+    LCQuery<LCObject> query = new LCQuery<LCObject>("Photo");
     query.WhereEqualTo("album", album);
-    var result = await query.FindAsync();
-    if (result != null && result.Count() != 0)
-    {
-        await AVObject.DeleteAllAsync(result);
+    ReadOnlyCollection<LCObject> result = await query.Find();
+    if (result != null && result.Count > 0) {
+        await LCObject.DeleteAll(result);
     }
-});
+}
 ```
 {% endif %}
 {% if platformName === "Go" %}
@@ -1914,10 +1818,15 @@ public static void userOnVerifiedHook(AVUser user) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.OnVerifiedSMS((AVUser user) =>
-{
-    Console.WriteLine("User is verified by sms.");
-});
+[LCEngineUserHook(LCEngineUserHookType.OnSMSVerified)]
+public static void OnVerifiedSMS(LCUser user) {
+    Console.WriteLine($"用户 {user.ObjectId} 已通过短信验证。");
+}
+
+[LCEngineUserHook(LCEngineUserHookType.OnEmailVerified)]
+public static void OnVerifiedEmail(LCUser user) {
+    Console.WriteLine($"用户 {user.ObjectId} 已通过邮箱验证。");
+}
 ```
 {% endif %}
 {% if platformName === "Go" %}
@@ -1989,10 +1898,13 @@ public static AVUser userOnLoginHook(AVUser user) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.OnLogIn((AVUser user) =>
-{
-    Console.WriteLine("User logged in.");
-});
+[LCEngineUserHook(LCEngineUserHookType.OnLogin)]
+public static LCUser OnLogin(LCUser user) {
+    if (user.Username == "noLogin") {
+        throw new Exception("Forbidden");
+    }
+    return user;
+}
 ```
 {% endif %}
 {% if platformName === "Go" %}
@@ -2087,18 +1999,25 @@ public static AVUser userOnLoginHook(AVUser user) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.OnLogIn(async user =>
-{
-  var authData = user.GetAuthData();
-  var examplePlatform = authData["example_platform"];
-  var userID = examplePlatform["uid"];
-  var accessToken = examplePlatform["access_token"];
-  var client = new HttpClient();
-  var response = await client.SendAsync("https://example.com/applications/" + userID + "/tokens/" + token);
-  if (response.StatusCode != 200) {
+[LCEngineUserHook(LCEngineUserHookType.OnLogin)]
+public static async Task<LCUser> OnLogin(LCUser user) {
+    Dictionary<string, object> authData = user.AuthData;
+    Dictionary<string, object> examplePlatform = authData["example_platform"] as Dictionary<string, object>;
+    string userId = examplePlatform["uid"] as string;
+    string token = examplePlatform["access_token"] as string;
+    HttpClient client = new HttpClient();
+    string url = $"https://example.com/applications/{userId}/tokens/{token}";
+    HttpRequestMessage req = new HttpRequestMessage {
+        RequestUri = new Uri(url),
+    };
+    HttpResponseMessage response = await client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead);
+    req.Dispose();
+
+    if (response.StatusCode == HttpStatusCode.OK) {
+        return user;
+    }
     throw new Exception("Example platform token invalid");
-  }
-});
+}
 ```
 {% endif %}
 
@@ -2160,10 +2079,10 @@ public static AVObject reviewBeforeSaveHook(AVObject review) throws Exception {
 {% endif %}
 {% if platformName === ".NET" %}
 ```cs
-cloud.BeforeSave("Review", (AVObject review) =>
-{
-    throw new EngineException(123, "An error occurred.");
-});
+[LCEngineClassHook("Review", LCEngineObjectHookType.BeforeDelete)]
+public static void ReviewBeforeDelete(LCObject review) {
+    throw new LCException(123, "An error occurred.");
+}
 ```
 {% endif %}
 {% if platformName === "Go" %}
@@ -2271,11 +2190,12 @@ public static float logTimer throws Exception {
 ```
 {% endif %}
 {% if platformName === ".NET" %}
-[EngineFunction("logTimer")]
-public static void LogTimer()
-{
-  Console.WriteLine("This log is printed by logTimer.");
+```cs
+[LCEngineFunction("logTimer")]
+public static void LogTimer() {
+    Console.WriteLine("This log is printed by logTimer.");
 }
+```
 {% endif %}
 {% if platformName === "Go" %}
 ```go
