@@ -1412,16 +1412,8 @@ LeanCloud 推送服务的通知过期时间是 7 天，也就是说，如果一�
 
 ### 其他推送设置
 
-iOS 环境下，基于 iOS Token Authentication 方式进行推送时，如果应用配置了多个不同 Team ID 的 Private Key，请确认目标用户设备使用的 APNs Team ID 并将其填写在 `_apns_team_id` 参数内，以保证推送正常进行，只有指定 Team ID 的设备能收到推送（Apple 不允许在一次推送请求中向多个从属于不同 Team ID 的设备发推送）。如：
-
-```json
-{
-  "alert":         "您有一条未读消息",
-  "_apns_team_id": "my_fancy_team_id"
-}
-```
-
-基于证书鉴权方式进行推送时，默认使用 **生产证书**，开发者可以在 JSON 中增加一个 `_profile` 内部属性来选择实际推送的证书，如：
+iOS 环境下，离线消息默认推送至 APNs 的生产环境。
+指定附加推送信息时使用 `"_profile": "dev"` 可以切换至 APNs 的开发环境（如果基于证书鉴权方式进行推送，此时会使用开发证书）：
 
 ```json
 {
@@ -1430,10 +1422,48 @@ iOS 环境下，基于 iOS Token Authentication 方式进行推送时，如果�
 }
 ```
 
-`_profile` 仅适用于基于证书鉴权方式推送，基于 iOS Token Authentication 方式进行推送时无效。
+基于 Apple 推荐使用的 Token Authentication 方式进行推送时，如果应用配置了多个不同 Team ID 的 Private Key，请确认目标用户设备使用的 APNs Team ID 并将其填写在 `_apns_team_id` 参数内，以保证推送正常进行，只有指定 Team ID 的设备能收到推送（Apple 不允许在一次推送请求中向多个从属于不同 Team ID 的设备发推送）。如：
 
-`_profile` 和 `_apns_team_id` 属性均不会实际推送。
-Apple 推荐使用 iOS Token Authentication 方式。 
+```json
+{
+  "alert":         "您有一条未读消息",
+  "_apns_team_id": "my_fancy_team_id"
+}
+```
+
+`_profile` 和 `_apns_team_id` 属性为推送服务内部使用，均不会实际推送。
+指定附加推送信息时，支持为不同种类的设备（比如 `ios`、`android`）附加不同的推送信息，需要特别注意的是，`_profile` 和 `_apns_team_id` 这两个内部属性不要在 `ios` 对象内部指定，否则不会生效。
+例如，这样的附加推送消息会导致离线消息被推送至 APNs 的生产环境：
+
+```json
+{
+  "ios": {
+    "badge": "Increment",
+    "category": "NEW_CHAT_MESSAGE",
+    "sound": "default",
+    "thread-id": "chat",
+    "alert": {
+      "title": "您有一条未读消息",
+      "body": "因为 _profile 内部属性的位置错误，这条消息仍然会被推送到 APNs 的生产环境"
+    },
+    "_profile": "dev"
+  },
+  "android": {
+    "title": "您有一条未读消息",
+    "alert": ""
+  }
+}
+```
+
+这样才能推送至开发环境：
+
+```json
+{
+  "_profile": "dev",
+  "ios": { /* 略 */ },
+  "android": { /* 略 */ }
+}
+```
 
 目前，**控制台 > 消息 > 即时通讯 > 设置 > 离线推送设置** 这里的推送内容也支持一些内置变量，你可以将上下文信息直接设置到推送内容中：
 
