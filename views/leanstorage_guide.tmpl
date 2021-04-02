@@ -10329,7 +10329,8 @@ user.logIn(authData: appleData, platform: .apple) { (result) in
 
 LeanCloud 云端首先会查找账户系统（_User 表），看看是否存在 authData.weixin.openid = “OPENID” 的账户，如果存在，则返回现有账户，如果不存在那么就创建一个新账户，同时将上面的鉴权信息写入新账户的 `authData` 属性中，并将新账户的数据当成结果返回。
 
-为避免出现重复数据，`_User` class 中每个用户的 `authData.<PLATFORM>.<uid>` 需要保持独一无二，这可以通过创建唯一索引来完成（通常 LeanCloud 云端会自动创建这一索引，如果不存在这一索引，开发者可联系我们人工追加此索引）。
+LeanCloud 会自动为 `_User` class 中每个用户的 `authData.<PLATFORM>.<uid>` 创建唯一索引，从而避免重复数据。
+`<uid>` 在微信等部分 LeanCloud 内建支持的第三方平台上为 `openid` 字段，在其他第三方平台（包括部分 LeanCloud 专门支持的第三方平台和所有 LeanCloud 没有专门支持的第三方平台）上为 `uid` 字段。
 
 #### 自动验证第三方平台授权信息
 
@@ -11151,6 +11152,16 @@ LCUser currentUser = await LCUser.LoginWithAuthDataAndUnionId(
 在新的登录方式中，当一个用户以「平台名为 `wxleanoffice`、uid 为 `officeopenid`、UnionID 为 `unionid4a`」的第三方鉴权信息登录得到新的 `{{ userObjectName }}` 后，接下来这个用户以「平台名为 `wxleansupport`、uid 为 `supportopenid`、UnionID 为 `unionid4a`」的第三方鉴权信息登录时，LeanCloud 判定是同样的 UnionID，就直接把来自 `wxleansupport` 的新用户数据加入到已有账户的 `authData` 里了，不会再创建新的账户。
 
 这样一来，LeanCloud 后台通过识别平台性的用户唯一标识 UnionID，让来自同一个 UnionID 体系内的应用程序、小程序等不同平台的用户都绑定到了一个 `{{ userObjectName }}` 上，实现互通。
+
+##### 为 UnionID 建立索引
+
+LeanCloud 云端会为 UnionID 自动建立索引，不过因为自动创建基于请求的抽样统计，可能会滞后。
+因此，我们推荐自行创建相关索引，特别是用户量（`_User`　表记录数）很大的应用，更需要预先创建索引，否则用户使用 UnionID 账号登录时可能超时失败。
+以上面的微信 UnionID 为例，建议在控制台预先创建下列唯一索引（允许缺失值）：
+
+- `authData.wxleanoffice.uid`
+- `authData.wxleansupport.uid`
+- `authData._weixin_unionid.uid`
 
 ##### 该如何指定 unionIdPlatform
 
