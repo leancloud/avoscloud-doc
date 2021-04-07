@@ -766,6 +766,8 @@ mQtjuMF5xk,xPVrHL0W4n
 ### LeanDB
 
 在 **LeanDB** 页面可以管理 [LeanCache（Redis）](leancache_guide.html)和 [MySQL](leandb_mysql_guide.html) 实例。
+
+{#
 ### 消息
 
 **控制台 > {应用} > 消息** 服务下，包含了三大菜单：
@@ -792,3 +794,4 @@ LeanCloud 的消息推送是可以支持多个 iOS 证书的，这一点对某�
 
 
 
+#}
