@@ -49,15 +49,7 @@ query.equalTo("occupation.profession", "Other")
     // objectId、createdAt、updatedAt
 }
 ```
-
-类似地，无需额外查询即可获取来自另一个 Class 的数据的 `include` 语句，也支持点号。
-例如，假设 `Comment` 类的 `post` 字段是一个指向 `Post` 类的 Pointer，而 `Post` 类又有一个指向 `Author` 类的 Pointer 字段 `author`，那么我们可以使用如下语句同时获取评论所属文章的作者：
-
-```js
-query.include('post.author')
-```
-
-## 在设置属性时使用点号
+## 在设置对象属性时使用点号
 
 同理，我们也可以使用点号直接设置某个对象的属性。例如：
 
@@ -84,3 +76,17 @@ member.set("occupation.profession", "Software Developer")
 const article = new AV.Object.createWithoutData('Article', '582570f38ac247004f39c24b');
 article.addUnique('section.tags', ['LeanStorage', 'JavaScript']);
 ```
+
+## Pointer 和点号
+
+无需额外查询即可获取来自另一个 Class 的数据的 `include` 语句，也支持点号。
+例如，假设 `Comment` 类的 `post` 字段是一个指向 `Post` 类的 Pointer，而 `Post` 类又有一个指向 `Author` 类的 Pointer 字段 `author`，那么我们可以使用如下语句同时获取评论所属文章的作者：
+
+```js
+query.include('post.author')
+```
+
+Pointer 中的点号看起来和前面提到的对象中的点号很相似，但两者是独立的功能。例如：
+
+- `include` 语句中的点号只是在查询到结果后，「展开」指定的 Pointer 字段，而不是在查询前就「展开」Pointer 字段。因此，无法像查询对象属性一样，通过点号对 Pointer 的属性发起查询。
+- 假设 `Comment` 类的 `post` 字段是一个指向 `Post` 类的 Pointer，而 `Post` 类又有一个指向 `Author` 类的 Pointer 字段 `author`， 然后 `Author` 类还有一个指向 `Group` 类的 Pointer 字段 `group`，那么 `query.include('post.author.group')` 可以同时获取评论所属文章的作者所属的群组。但如果 `post` 字段是一个 Pointer，它指向的 `Post` 类的 `author` 字段是一个**对象**，其中包含一个指向 `Group` 类的 `group` 字段，那么无法使用 `query.include('post.author.group')`。 
