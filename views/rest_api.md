@@ -641,7 +641,7 @@ curl -X POST \
   https://{{host}}/1.1/classes/Post?fetchWhenSave=true
 ```
 
-{{ docs.note("**每个应用最多可以创建 500 个 class**，但每个 class 中的记录数量没有限制。") }}
+{{ docs.note("**每个应用最多可以创建 500 个 class，每个 class 最多包含 300 个字段，**但每个 class 中的记录数量没有限制。") }}
 
 ### 获取对象
 
