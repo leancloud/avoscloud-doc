@@ -2100,16 +2100,41 @@ if err := client.Class("Todo").ID("582570f38ac247004f39c24b").Destroy(); err != 
 {% if platform_name === "JavaScript" %}
 ```js
 // 创建一个保存所有 AV.Object 的数组
-const objects = [];
+const object1 = new AV.Object("Todo");
+object1.set("content", "更新文档");
+const object2 = new AV.Object("Todo");
+object2.set("content", "回复论坛帖子");
+const objects = [object1, object2];
 
 // 批量构建和更新
-AV.Object.saveAll(objects);
+AV.Object.saveAll(objects).then(
+  function (savedObjects) {
+    // 成功保存所有对象时进入此 resolve 函数，savedObjects 是包含所有 AV.Object 的数组
+  },
+  function (error) {
+    // 只要有一个对象保存错误就会进入此 reject 函数
+  }
+);
 
 // 批量删除
-AV.Object.destroyAll(objects);
+AV.Object.destroyAll(objects).then(
+  function (deletedObjects) {
+    // 成功删除所有对象时进入此 resolve 函数，deletedObjects 是包含所有的 AV.Object 的数组
+  },
+  function (error) {
+    // 只要有一个对象删除错误就会进入此 reject 函数
+  }
+);
 
 // 批量同步
-AV.Object.fetchAll(objects);
+AV.Object.fetchAll(objects).then(
+  function (fetchedObjects) {
+    // 成功同步所有对象时进入此 resolve 函数，fetchedObjects 是包含所有的 AV.Object 的数组
+  },
+  function (error) {
+    // 只要有一个对象同步错误就会进入此 reject 函数
+  }
+);
 ```
 {% endif %}
 {% if platform_name === "JavaScript(next)" %}
