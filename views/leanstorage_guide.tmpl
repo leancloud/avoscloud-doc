@@ -10359,7 +10359,8 @@ LeanCloud 会自动为 `_User` class 中每个用户的 `authData.<PLATFORM>.<ui
 
 #### 自动验证第三方平台授权信息
 
-为了确保账户数据的有效性，LeanCloud 云端还支持对部分平台的 access token 的有效性进行自动验证，以防止伪造账户数据。如果有效性验证不通过，云端会返回 `invalid authData` 错误，关联不会被建立。对于云端无法识别的服务，开发者需要自己去验证 access token 的有效性（可通过云引擎的 [onLogin hook 函数](leanengine_cloudfunction_guide-node.html#onLogin)来实现）。
+为了确保账户数据的有效性，LeanCloud 云端还支持对部分平台的 access token 的有效性进行自动验证，以防止伪造账户数据。如果有效性验证不通过，云端会返回 `invalid authData` 错误，关联不会被建立。对于云端无法识别的服务，开发者需要自己去验证 access token 的有效性。
+比如，注册、登录时分别通过云引擎的 [beforeSave hook](leanengine_cloudfunction_guide-node.html#beforeSave) 、[beforeUpdate hook](leanengine_cloudfunction_guide-node.html#beforeUpdate) 来验证 access token 有效性。
 
 如果希望使用这一功能，则在开始使用前，需要在 **控制台 > 存储 > 用户 > 设置** 配置相应平台的 **应用 ID** 和 **应用 Secret Key**。
 

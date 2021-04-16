@@ -1914,6 +1914,11 @@ leancloud.OnLogin(func(req *ClassHookRequest) error {
 })
 ```
 {% endif %}
+
+{#
+
+注意：onLogin hook 并不适用这种场合，后续会加专门的 hook
+
 再比如校验第三方登录的 access token：
 
 假设某 Example 平台的 `authData` 如下：
@@ -2022,6 +2027,8 @@ public static async Task<LCUser> OnLogin(LCUser user) {
 {% endif %}
 
 注意，上面的示例片段仅为示意，为了简短省略了许多逻辑，包括 token 时效性检查、其他登录方式的处理、网络请求异常的处理等。
+
+#}
 
 {% if platformName === "Node.js" or platformName === "Python" or platformName === "PHP" or platformName === "Java" %}
 ### 即时通讯 Hook 函数
