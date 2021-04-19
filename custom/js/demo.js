@@ -160,7 +160,13 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         mdPath: 'https://github.com/leancloud/react-hook-demo',
         type: 'web',
         qcloudShow: true
-
+      }, {
+        name: 'FileUp (Svelte)',
+        desc: '使用 JavaScript 存储 SDK 与 Svelte 实现的文件上传小工具。',
+        downPath: '',
+        mdPath: 'https://github.com/leancloud/fileup/',
+        type: 'web',
+        qcloudShow: true
       }, {
         name: 'LeanMessage',
         desc: '使用 JavaScript 即时通讯 SDK 与 Angular 实现的完整功能的聊天 WebApp',
