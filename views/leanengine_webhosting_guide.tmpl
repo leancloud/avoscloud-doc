@@ -192,7 +192,7 @@ LeanEngine PHP 项目必须有 `$PROJECT_DIR/public/index.php` 文件，该文�
 
 目前云引擎支持 `5.6`、`7.0`、`7.1`、`7.2`、`7.3`、`7.4` 这几个版本，后续如果有新版本发布，也会添加支持。
 
-所有版本的 PHP 默认开启以下扩展：`fpm`、`curl`、`mysql`、`zip`、`xml`、`mbstring`、`gd`、`soap`。
+所有版本的 PHP 默认开启以下扩展：`fpm`、`curl`、`mysql`、`zip`、`xml`、`mbstring`、`gd`、`soap`、`sqlite3`。
 7.0 以上版本的 PHP 还默认开启了 `mongodb` 扩展。
 在 PHP 7.2 中官方从核心中移除了 `mcrypt` 这个拓展，云引擎以选装的方式继续提供支持，在 `composer.json` 的 `require` 中加入 `ext-mcrypt: *` 即可，使用 `mcrypt` 会增加部署耗时，如果没有用到请不要加。
 如果您需要用到其他扩展，请提交工单联系我们。
