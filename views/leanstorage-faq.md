@@ -166,69 +166,8 @@ LeanCloud iOS SDK 二进制中包含了 i386、armv7、arm64 等 5 个 CPU slice
 * 代码混淆引起的，注意在 proguard 文件中添加 [LeanCloud SDK 的混淆排除](faq.html#代码混淆怎么做)。
 
 ### Android 代码混淆怎么做
-为了保证 SDK 在代码混淆后能正常运作，需要保证部分类和第三方库不被混淆，参考下列配置：
 
-```
-# proguard.cfg
-
--keepattributes Signature
--dontwarn com.jcraft.jzlib.**
--keep class com.jcraft.jzlib.**  { *;}
-
--dontwarn sun.misc.**
--keep class sun.misc.** { *;}
-
--dontwarn com.alibaba.fastjson.**
--keep class com.alibaba.fastjson.** { *;}
-
--dontwarn org.ligboy.retrofit2.**
--keep class org.ligboy.retrofit2.** { *;}
-
--dontwarn io.reactivex.rxjava2.**
--keep class io.reactivex.rxjava2.** { *;}
-
--dontwarn sun.security.**
--keep class sun.security.** { *; }
-
--dontwarn com.google.**
--keep class com.google.** { *;}
-
--dontwarn com.avos.**
--keep class com.avos.** { *;}
-
--dontwarn cn.leancloud.**
--keep class cn.leancloud.** { *;}
-
--keep public class android.net.http.SslError
--keep public class android.webkit.WebViewClient
-
--dontwarn android.webkit.WebView
--dontwarn android.net.http.SslError
--dontwarn android.webkit.WebViewClient
-
--dontwarn android.support.**
-
--dontwarn org.apache.**
--keep class org.apache.** { *;}
-
--dontwarn org.jivesoftware.smack.**
--keep class org.jivesoftware.smack.** { *;}
-
--dontwarn com.loopj.**
--keep class com.loopj.** { *;}
-
--dontwarn com.squareup.okhttp.**
--keep class com.squareup.okhttp.** { *;}
--keep interface com.squareup.okhttp.** { *; }
-
--dontwarn okio.**
-
--dontwarn org.xbill.**
--keep class org.xbill.** { *;}
-
--keepattributes *Annotation*
-
-```
+参考 [Android 代码混淆](sdk_setup-java.html#Android_代码混淆) 文档。
 
 ### Java SDK 出现 already has one request sending 错误是什么原因
 
