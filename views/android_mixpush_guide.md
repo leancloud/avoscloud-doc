@@ -68,7 +68,7 @@ vendor | 厂商
 ### 接入 SDK
 
 #### 获取 HMS SDK
-从 6.4.4 版本开始，LeanCloud 混合推送已经升级到华为 PushKit V3 版本，开发者可以参考[华为官方文档](https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/android-integrating-sdk-0000001050040084)完成 HMS SDK 的接入。其主要步骤有：
+从 7.2.5 版本开始，LeanCloud 混合推送已经升级到华为 PushKit V5 版本，开发者可以参考[华为官方文档](https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/android-app-quickstart-0000001071490422)完成 HMS SDK 的接入。其主要步骤有：
 
 - 在 AndroidStudio 开发环境中添加当前应用的 AppGallery Connect 配置文件，如下图所示：
 
@@ -81,8 +81,8 @@ vendor | 厂商
   - 在项目级 build.gradle 的 buildscript/dependencies 里面增加配置：
 ```
 dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
-        classpath 'com.huawei.agconnect:agcp:1.2.1.301'
+        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath 'com.huawei.agconnect:agcp:1.4.2.300'
     }
 ```
 - 添加编译依赖。
@@ -98,7 +98,7 @@ apply plugin: 'com.huawei.agconnect'
 ```
 dependencies {
   //其它已存在的依赖不要删除
-  implementation 'com.huawei.hms:push:4.0.2.300'
+  implementation 'com.huawei.hms:push:5.1.1.301'
 }
 ```
 
@@ -153,24 +153,10 @@ dependencies {
 ```xml
 <!-- HMS-SDK引导升级HMS功能，访问OTA服务器需要网络权限 -->
 <uses-permission android:name="android.permission.INTERNET"/>
-<!-- HMS-SDK引导升级HMS功能，保存下载的升级包需要SD卡写权限 -->
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <!-- 检测网络状态 -->
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 <!-- 检测wifi状态 -->
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-<!-- HMS-SDK 为了获取用户手机的IMEI，用来唯一的标识用户。 -->
-<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-
-<!-- 如果是安卓8.0，应用编译配置的targetSdkVersion>=26，请务必添加以下权限 -->
-<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-
-<!-- HMS-SDK 接收PUSH TOKEN的广播以及PUSH消息需要定义该权限 ${PACKAGE_NAME} 要替换上您应用的包名 -->
-<permission
-    android:name="${PACKAGE_NAME}.permission.PROCESS_PUSH_MSG"
-    android:protectionLevel="signatureOrSystem"/>
-<!-- HMS-SDK 接收PUSH TOKEN的广播以及PUSH消息需要定义该权限 ${PACKAGE_NAME} 要替换上您应用的包名 -->
-<uses-permission android:name="${PACKAGE_NAME}.permission.PROCESS_PUSH_MSG" />
 ```
 
 集成最新的 HMS Core Push SDK 版本后要在 AndroidManifest.xml 文件的 application 节点下参照以下步骤注册 Service，用于接收华为推送的消息与令牌。
@@ -182,16 +168,6 @@ dependencies {
       <intent-filter>
             <action android:name="com.huawei.push.action.MESSAGING_EVENT" />
       </intent-filter>
-</service>
-<service
-    android:name="com.huawei.hms.support.api.push.service.HmsMsgService"
-    android:enabled="true"
-    android:exported="true"
-    android:process=":pushservice">
-    <intent-filter>
-        <action android:name="com.huawei.push.msg.NOTIFY_MSG" />
-        <action android:name="com.huawei.push.msg.PASSBY_MSG" />
-    </intent-filter>
 </service>
 ```
 
@@ -873,28 +849,72 @@ LeanCloud 混合推送目前只支持默认动作（启动应用），将来会�
 
 ### 环境要求
 
-FCM 客户端需要在运行 Android 4.0 或更高版本且安装了 Google Play 商店应用的设备上运行，或者在运行 Android 4.0 且支持 Google API 的模拟器中运行。具体要求参见 [在 Android 上设置 Firebase 云消息传递客户端应用](https://firebase.google.com/docs/cloud-messaging/android/client)。
+FCM 客户端需要在运行 Android 4.1 或更高版本且安装了 Google Play 商店应用的设备上运行，或者在运行 Android 4.1 且支持 Google API 的模拟器中运行。具体要求参见 [在 Android 上设置 Firebase 云消息传递客户端应用](https://firebase.google.com/docs/cloud-messaging/android/client)。
 
 ### 接入 SDK
-#### 首先导入 avoscloud-fcm 包
-修改 build.gradle 文件，在 dependencies 中添加依赖：
+#### 添加 Firebase 配置文件
+从 Firebase 控制台下载最新的配置文件（google-services.json），加入到应用的模块（应用级）目录中。
+
+#### 将 Google 服务插件添加到 Gradle 文件中
+首先，在根级（项目级）Gradle 文件 (build.gradle) 中添加规则，以纳入 Google 服务 Gradle 插件：
 
 ```xml
-dependencies {
-  implementation 'cn.leancloud:leancloud-fcm:{{ version.unified }}@aar'
-  //即时通信与推送需要的包
-  implementation 'cn.leancloud:realtime-android:{{ version.unified }}'
-  implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+buildscript {
 
-  implementation 'com.google.firebase:firebase-core:15.0.2'
-  implementation 'com.google.firebase:firebase-iid:15.0.2'
-  implementation 'com.google.firebase:firebase-messaging:15.0.2'
-  implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+  repositories {
+    // Check that you have the following line (if not, add it):
+    google()  // Google's Maven repository
+  }
+
+  dependencies {
+    // ...
+
+    // Add the following line:
+    classpath 'com.google.gms:google-services:4.3.5'  // Google Services plugin
+  }
+}
+
+allprojects {
+  // ...
+
+  repositories {
+    // Check that you have the following line (if not, add it):
+    google()  // Google's Maven repository
+    // ...
+  }
 }
 ```
 
-#### 下载最新的配置文件并加入项目
-从 Firebase 控制台下载最新的配置文件（google-services.json），加入 app 项目的根目录下。
+然后，在模块（应用级）Gradle 文件（通常是 app/build.gradle）中，应用 Google 服务 Gradle 插件：
+```xml
+apply plugin: 'com.android.application'
+// Add the following line:
+apply plugin: 'com.google.gms.google-services'  // Google Services plugin
+
+android {
+  // ...
+}
+```
+
+#### 导入 avoscloud-fcm 包
+
+在模块（应用级）Gradle 文件（通常是 app/build.gradle）中，在 dependencies 中添加依赖：
+
+```xml
+dependencies {
+    implementation 'cn.leancloud:leancloud-fcm:{{ version.unified }}@aar'
+    //即时通信与推送需要的包
+    implementation 'cn.leancloud:realtime-android:{{ version.unified }}'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:27.0.0')
+    // Declare the dependencies for the Firebase Cloud Messaging and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
+}
+```
 
 #### 修改应用清单
 将以下内容添加至您应用的 `AndroidManifest`文件中：
@@ -902,21 +922,13 @@ dependencies {
 ```
 <service android:name="cn.leancloud.push.PushService"/>
 ```
-- `AVFirebaseMessagingService` 的服务。如果您希望在后台进行除接收应用通知之外的消息处理，则必须添加此服务。要接收前台应用中的通知、接收数据有效负载以及发送上行消息等，您必须继承此服务。
+- `AVFirebaseMessagingService` 的服务。如果你希望在后台进行除接收应用通知之外的消息处理，则必须添加此服务。要接收前台应用中的通知、接收数据有效负载以及发送上行消息等，您必须继承此服务。
 ```
 <service
-  android:name="cn.leancloud.AVFirebaseMessagingService">
+  android:name="cn.leancloud.AVFirebaseMessagingService"
+  android:exported="false">
  <intent-filter>
   <action android:name="com.google.firebase.MESSAGING_EVENT"/>
- </intent-filter>
-</service>
-```
-- `AVFirebaseInstanceIdService` 的服务，用于处理注册令牌的创建、轮替和更新。如果要发送至特定设备或者创建设备组，则必须添加此服务。
-```
-<service
-  android:name="cn.leancloud.AVFirebaseInstanceIDService">
- <intent-filter>
-  <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
  </intent-filter>
 </service>
 ```
@@ -935,7 +947,7 @@ dependencies {
   android:name="com.google.firebase.messaging.default_notification_channel_id"
   android:value="@string/default_notification_channel_id"/>
 ```
-- 如果 FCM 对于 Android 应用的功能至关重要，请务必在应用的 `build.gradle` 中设置 `minSdkVersion 8` 或更高版本。这可确保 Android 应用无法安装在不能让其正常运行的环境中。
+- 如果 FCM 对于 Android 应用的功能至关重要，请务必在应用的 `build.gradle` 中设置 `minSdkVersion 16` 或更高版本。这可确保 Android 应用无法安装在不能让其正常运行的环境中。
 
 ### 程序初始化
 
