@@ -17,12 +17,12 @@ LeanDB 所在的应用的云引擎在部署时，会被注入包含 MongoDB 连�
 
 ### Node.js
 
-在 Node.js 中你可以这样连接到 MongoDB:
+在 Node.js 中你可以这样连接到 MongoDB（假定 LeanDB 名称为 `MYDB`）：
 
 ```javascript
 const {MongoClient} = require('mongodb')
 
-const mongoClient = new MongoClient(mongoString, {
+const mongoClient = new MongoClient(process.env['MONGODB_URL_MYDB'], {
   useUnifiedTopology: true,
   poolSize: 10
 })
