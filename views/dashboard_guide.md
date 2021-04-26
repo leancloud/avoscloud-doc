@@ -765,7 +765,7 @@ mQtjuMF5xk,xPVrHL0W4n
 
 ### LeanDB
 
-在 **LeanDB** 页面可以管理 [LeanCache（Redis）](leancache_guide.html)和 [MySQL](leandb_mysql_guide.html) 实例。
+在 **LeanDB** 页面可以管理 [LeanCache（Redis）](leancache_guide.html)、[MySQL](leandb_mysql_guide.html)、[MongoDB](leandb_mongo_guide.html) 实例。
 
 {#
 ### 消息
