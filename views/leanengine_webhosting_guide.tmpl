@@ -707,9 +707,19 @@ LeanEngine 使用的 LeanCloud Go SDK 实际包含了存储 SDK，可以直接�
 {% endif %}
 ## 健康监测
 
-你的应用在启动时，云引擎的管理程序会每秒去检查你的应用是否启动成功，如果 **30 秒** 仍未启动成功，即认为启动失败；在之后应用正常运行的过程中，也会有定期的「健康监测」，以确保你的应用正常运行，如果健康监测失败，云引擎管理程序会自动重启你的应用。
+你的应用在启动时，云引擎的管理程序会每秒去检查你的应用是否启动成功，如果超过启动时间限制仍未启动成功，即认为启动失败。
+启动时间限制默认为 30 秒，如需延长或缩短，可以在 leanengine.yaml` 文件中指定 `startupTimeout`，可设置范围为 15 – 120 秒。
+在之后应用正常运行的过程中，也会有定期的「健康监测」，以确保你的应用正常运行，如果健康监测失败，云引擎管理程序会自动重启你的应用。
 
-健康检查的 URL 包括你的应用首页（`/`）和 {{platformName}} SDK 负责处理的 `/__engine/1/ping`，只要 **两者之一** 返回了 HTTP `200` 的响应，就视作成功。因此请确保你的程序使用了 {{platformName}} SDK，或你的应用 **首页能够正常地返回 HTTP `200`** 响应。除此之外，为了支持云引擎的云函数和 Hook 功能，管理程序会使用 `/1.1/functions/_ops/metadatas` 这个 URL 和 {{platformName}} SDK 交互，请确保将这个 URL 交给 {{platformName}} SDK 处理，或 **返回一个 HTTP `404`** 表示不使用云函数和 Hook 相关的功能。
+健康检查的 URL 包括你的应用首页（`/`）和 {{platformName}} SDK 负责处理的 `/__engine/1/ping`，只要 **两者之一** 返回了 HTTP `200` 的响应，就视作成功。因此请确保你的程序使用了 {{platformName}} SDK，或你的应用 **首页能够正常地返回 HTTP `200`** 响应。
+
+除此之外，为了支持云引擎的云函数和 Hook 功能，管理程序会使用 `/1.1/functions/_ops/metadatas` 这个 URL 和 {{platformName}} SDK 交互，请确保将这个 URL 交给 {{platformName}} SDK 处理。
+默认情况下，云引擎会尝试从 `/1.1/functions/_ops/metadatas` 获取云函数和 Hook 的元信息，如果失败，则云函数和 Hook 功能不可用，但不会中断部署。
+如果希望在获取元信息失败后中断部署，可以在 `leanengine.yaml` 文件中指定 `functionsMode` 为 `strict`。
+如果应用不使用云函数和 Hook 功能，那么你可以：
+
+- 在 `leanengine.yaml` 中不指定 `functionsMode`，同时 `/1.1/functions/_ops/metadatas` **返回一个 HTTP `404`** 表示不使用云函数和 Hook 相关的功能；
+- 或者在 `leanengine.yaml` 中指定 `functionsMode` 为 `disabled`。注意，这种情况下，即使应用代码中定义了云函数和 Hook，Hook 也不会生效，云函数调用（通过 SDK 发起远程调用或通过 REST API 向 API 域名发起云函数调用）有可能因为被转发到错误的云引擎分组而失败。 
 
 {% if platformName === "Node.js" %}
 关于如何加载 Node.js 数据存储 SDK，见前一小节 [使用数据存储服务](#使用数据存储服务)。
