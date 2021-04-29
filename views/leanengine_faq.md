@@ -315,6 +315,12 @@ npm ERR! peer dep missing: graphql@^0.10.0 || ^0.11.0, required by express-graph
 
 可以参考我们的 [Demo: batch-update](https://github.com/leancloud/leanengine-nodejs-demos/blob/master/routes/batch-update.js)。
 
+## 云引擎响应时间增加怎么办
+
+响应时间的增加有很多种原因：可能因为只是单纯的请求处理的数据更加复杂导致耗时变长；也有可能是因为请求量过高实例的处理能力不足从而导致响应时间增加。
+建议分析当前的代码并参考 CPU、内存占用量找出瓶颈，确定是否需要调高实例规格或增加实例数量。
+如果需要定位具体是哪些 API 或云函数响应较慢，可以下载访问日志分析。
+
 ## 如何下载云引擎的应用日志和访问日志
 
 云引擎的应用日志（程序的标准输出和标准错误输出）可以在 **应用控制台 > 云引擎 > 云引擎分组 > 日志** 查看；并且可以使用 [命令行工具](leanengine_cli.html#查看日志) 导出最长 7 天的日志。
