@@ -4,7 +4,7 @@
 {% import "views/_im.njk" as im %}
 {% import "views/leanstorage-faq.md" as leanstorage %}
 
-# 常见问题一览
+# 测试一下常见问题一览
 
 ## 账户和控制台常见问题
 
