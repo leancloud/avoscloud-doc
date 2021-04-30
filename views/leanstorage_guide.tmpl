@@ -10205,7 +10205,7 @@ LeanCloud 云端会使用第三方平台的鉴权信息来查询是否已经存�
 
 开发者需要自己完成第三方平台的鉴权流程（一般通过 OAuth 1.0 或 2.0），以获取鉴权信息，继而到 LeanCloud 云端来登录。
 
-{% if platform_name in ["Swift", "Objective-C"] %}
+{% if platform_name in ["Swift", "Objective-C", "Flutter"] %}
 
 #### Signin With Apple
 如果你需要开发 [Sigin With Apple](https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api)，LeanCloud 可以帮你校验 `identityToken`，并获取 Apple 的 `access_token`。Apple Sign In 的 `authData` 结构如下：
@@ -10290,6 +10290,19 @@ user.logIn(authData: appleData, platform: .apple) { (result) in
 
 ```
 
+{% endif %}
+
+{% if platform_name === "Flutter" %}
+```dart
+var appleData = {
+    // 必须
+    "uid":             "USER IDENTIFIER",
+    // 可选
+    "identity_token":  "IDENTITY TOKEN",
+    "code":            "AUTHORIZATION CODE"
+};
+LCUser currentUser = await LCUser.loginWithAuthData(appleData, 'lc_apple');
+```
 {% endif %}
 
 #### 鉴权数据的保存
