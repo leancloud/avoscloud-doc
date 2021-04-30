@@ -142,6 +142,16 @@ LeanCloud 目前并不提供完整的事务功能，但提供了一些保证数�
 使用 [七牛图片处理 API](https://developer.qiniu.com/dora/manual/1279/basic-processing-images-imageview2) 执行处理，例如添加水印、裁剪等。
 {% endif %}
 
+### 文件存储支持访问控制吗？
+
+由于知道文件 URL 的任何用户都可以访问文件，因此需要为 `_File` Class 和引用文件的 Class 设置合适的 Class 权限和 ACL，限制未授权用户获取到文件 URL。
+
+如果希望能够更精细地控制文件访问权限，比如在一定时间后重新检查是否有权访问文件，建议使用支持访问权限控制的第三方文件存储服务商，然后直接在 LeanCloud 文件服务中保存一个外部的 URL。
+注意 `_File` 表是不可变的，这意味着已经写入的 URL 不能修改。
+但通常支持访问权限控制的文件存储服务商，实现访问权限的方式都是在现有的 URL，比如 `https://file.example.com/some-url` 后额外传入一个 token 参数（这个 token 通常有时效性），比如 `https://file.example.com/some-url?token=xxxxxx`。
+所以客户端需要访问文件时，可以先从 `LCFile` 获取 `url` 属性后，再加上这个 `token` 参数，拼成最终的 URL 下载文件。
+`token` 的获取需要自行在云引擎或自己的服务器上部署一个简单的生成访问 `token` 的 API 服务，客户端访问该 API 服务获取 `token`。
+
 ### iOS 项目打包后的大小
 
 创建一个全新的空白项目，使用 CocoaPod 安装了 AVOSCloud 和 AVOSCloudIM 模块，此时项目大小超过了 80 MB。打包之后体积会不会缩小？大概会有多大呢？
