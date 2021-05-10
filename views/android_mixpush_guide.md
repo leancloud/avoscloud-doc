@@ -305,6 +305,16 @@ AndroidManifest.xml 中把 AVHMSMessageService 替换为你自定义的 MyHuawei
 }
 ```
 
+### 推送消息智能分类
+
+华为推送服务会将推送消息自动分为服务与通讯、资讯营销两类，不同类别的提醒方式有所差异，因此也会影响混合推送内容中一些属性的效果。
+例如，服务与通讯分类默认使用系统铃声，资讯营销分类默认无铃声，这一设定只能由用户在手机的通知中心自行修改，`sound` 属性中指定的自定义铃声无效。
+如果想要使用自定义铃声，需要创建 Channel，在创建时设置相应的铃声，这样指定 Channel 的推送就可以使用专门的铃声了。
+不过，某些情况下，华为推送服务仍会将自定义 Channel 的推送归类为服务与通讯或资讯营销。
+
+请参考[华为的开发者文档][huawei-classification]了解服务与通讯、资讯营销两个分类的具体差异。
+
+[huawei-classification]: https://developer.huawei.com/consumer/cn/doc/development/HMSCore-Guides/message-classification-0000001102439210
 ### 参考 demo
 我们提供了一个 [最新的华为推送 demo](https://github.com/leancloud/mixpush-demos/tree/master/huawei)，可供你在接入过程中参考。
 
