@@ -145,14 +145,20 @@ $redis->ping();
 
 ### 在云引擎中使用（Java 环境）
 
-在 `pom.xml` 中添加 redis client 的依赖。
+在 `pom.xml` 中添加 redis client 的依赖：
 
 ```xml
 <dependency>
     <groupId>redis.clients</groupId>
     <artifactId>jedis</artifactId>
-    <version>2.9.0</version>
+    <version>3.2.0</version>
 </dependency>
+```
+
+并引入依赖：
+
+```java
+import redis.clients.jedis.Jedis;
 ```
 
 从环境变量中获取链接字符串，然后再创建 redis client 实例即可。（假定实例名称为 `MYCACHE`）
@@ -162,6 +168,7 @@ String redisUrl = System.getenv("REDIS_URL_MYCACHE");
 Jedis jedis = new Jedis(redisUrl);
 jedis.set("foo", "bar");
 String value = jedis.get("foo");
+jedis.close();
 ```
 
 ### 在云引擎中使用(.NET Core 环境)
