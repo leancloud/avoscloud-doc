@@ -171,6 +171,30 @@ String value = jedis.get("foo");
 jedis.close();
 ```
 
+并发请求较高的情况下可以考虑使用连接池：
+
+```java
+public class RedisHelper {
+    private final JedisPool jedisPool;
+    public RedisHelper() {
+        // 创建应用时，先创建连接池；使用默认配置
+        jedisPool = new JedisPool(System.getenv("REDIS_URL_jedis_128m"));
+    }
+
+    // 使用；从连接池取出一个 jedis 连接使用
+    // 注意，使用完了之后，要调用返回的 jedis 对象的 close 方法返还连接。`jedis.close()`
+    public Jedis getJedis() {
+        Jedis jedis = jedisPool.getResource();
+        return jedis;
+    }
+
+    public void closePool() {
+        // 关闭应用时关闭连接池
+        jedisPool.close();
+    }
+}
+```
+
 ### 在云引擎中使用(.NET Core 环境)
 
 首先在项目里面安装 nuget 依赖：
