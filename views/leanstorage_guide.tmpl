@@ -3343,7 +3343,7 @@ AVQuery<AVObject> query = new AVQuery<>("Todo");
 query.whereEqualTo("priority", 2);
 query.getFirstInBackground().subscribe(new Observer<AVObject>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<AVObject> todo) {
+    public void onNext(AVObject todo) {
         // todo 是第一个满足条件的 Todo 对象
     }
     public void onError(Throwable throwable) {}
