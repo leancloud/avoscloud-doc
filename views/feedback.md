@@ -1,5 +1,151 @@
 # 用户反馈组件开发指南
 
+## 维护状态
+
+**用户反馈组件 API 已弃用。**
+
+由于设计和实现上的一些不足，用户反馈组件在查询方面不够灵活（例如，难以查询某一个用户的所有反馈），权限不够严密，且应用导出数据并不包含用户反馈数据。
+因此，我们建议基于数据存储功能自行实现用户反馈功能，例如：
+
+- 使用 `UserFeedback` Class 存储用户反馈主帖。其中，`content` 字段存储反馈内容，`status` 字段存储反馈状态（处理中、关闭等等），`author` （作者）字段则可以设计为指向 `_User` 用户的 Pointer。根据业务需求，可以添加更多字段，比如设备型号、客服评分等。
+
+- 使用 `UserReply` 和 `StaffReply`  Class 分别存储用户和客服的回复。同样，`content` 字段存储反馈内容，`author` （作者）字段可以设计为指向 `_User` 用户的 Pointer，`feedback` 字段可以设计为指向 `UserFeedback` 的 Pointer 以关联反馈和回复。
+
+- 根据业务需要设置合理的权限。例如：[Class 权限](data_security.html#Class_权限)中，`create`、`update`、`find`、`get` 可以设定为仅限登录用户，同时对所有用户关闭 `add_fields` 和 `delete` 权限。`UserFeedback` 和 `UserReply` 默认 ACL 设置为数据创建者可写，客服[角色](acl-guide.html#基于角色的权限管理)可读，`StaffReply` 的 ACL 需要就每条数据分别设置（这也是 `UserReply` 和 `StaffReply` 不并为一个 Class 的原因），数据创建者或客服角色可写，提交反馈的用户（`feedback` 字段指向的 `UserFeedback` 的 `author`）可读。
+
+
+由于导出应用数据中不含用户反馈数据，为方便开发者迁移数据，以下用户反馈相关的 REST API 接口仍可调用：
+
+{% if node == 'qcloud' %}
+{% set feedback_host = "tab.leancloud.cn" %}
+{% elif node == 'us' %}
+{% set feedback_host = "us.leancloud.cn" %}
+{% else %}
+{% set feedback_host = "api.leancloud.cn" %}
+{% endif %}
+
+提交一条新的用户反馈：
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '{
+         "status"  : "open",
+         "content" : "反馈的文字内容",
+         "contact" : "联系方式、QQ 或者邮箱手机等"
+       }' \
+  https://{{feedback_host}}/1.1/feedback
+```
+
+获取所有的反馈：
+
+```
+curl -X GET \
+-H "X-LC-Id:{{appid}}" \
+-H "X-LC-Key:{{appkey}}" \
+-H "Content-Type: application/json" \
+https://{{feedback_host}}/1.1/feedback
+```
+
+返回的结果是反馈主帖数组：
+
+```json
+{
+  "results": [
+    {
+      "updatedAt": "2019-07-19T08:53:10.972Z",
+      "content": "经常闪退",
+      "uid": "fd99b400eaa357006ce54238",
+      "iid": "5wChmGL9G6qRoeBwt4J89ceGhp9nMOWe",
+      "objectId": "5dec3eba8a84ab00581e61f1",
+      "createdAt": "2019-07-17T07:41:43.027Z",
+      "status": "open",
+      "deviceType": "android",
+      "contact": "email@example.com"
+    },
+    // 更多结果……
+  ]
+}
+```
+
+其中，`uid` 是反馈用户（`_User`）的 objectId，`iid` 是反馈设备（`_Installation`） 的 objectId，`status` 表示反馈意见的状态（`open` 为打开，`close` 为关闭），`contact` 是反馈用户的联系方式，可以是邮箱、手机等。
+
+获取一条反馈里面的信息：
+
+```
+curl -X GET \
+-H "X-LC-Id:{{appid}}" \
+-H "X-LC-Key:{{appkey}}" \
+-H "Content-Type: application/json" \
+https://{{feedback_host}}/1.1/feedback/<:feedback_objectId>/threads
+```
+
+将 `<:feedback_objectId>` 替换为 feedback 的 objectId（可以从上述的「获取所有的反馈」这个查询中得到 objectId）。
+和其他查询类 API 一样，你可以用 `skip` 和 `limit` 分页。
+不过 `limit` 的默认值是 1000，这是针对用户反馈这一使用场景做的调整，确保绝大多数情况下一次请求即可获取整个会话。
+
+返回的结果是一个包含反馈回复的数组：
+
+```json
+{
+  "results": [
+    {
+      "type": "user",
+      "content": "有一次出现了如下图所示的报错信息",
+      "attachment": "https://file.example.com/just-an-example.png",
+      "feedback": {
+        "__type": "Pointer",
+        "className": "UserFeedback",
+        "objectId": "deb777b111460d0068b90f16"
+      },
+      "createdAt": "2019-07-07T09:58:11.057Z",
+      "updatedAt": "2019-07-07T09:58:11.057Z",
+      "objectId": "deb777b343c25700783cd635"
+    },
+    {
+      "type": "dev",
+      "content": "感谢反馈问题，我会转给研发小伙伴，有进展会回复您。",
+      "feedback": {
+        "__type": "Pointer",
+        "className": "UserFeedback",
+        "objectId": "deb777b111460d0068b90f16"
+      },
+      "createdAt": "2019-07-07T09:58:29.921Z",
+      "updatedAt": "2019-07-07T09:58:29.921Z",
+      "objectId": "deb777c543c25700683cd717"
+    }
+  ]
+}
+```
+
+其中，`feedback` 是一个指向反馈主帖（`UserFeedback`）的 Pointer，`type` 的值为 `user` （用户回复）或 `dev` （客服回复）。 
+
+客服为一条已经存在的反馈增加一条回复：
+
+```
+curl -X POST \
+-H "X-LC-Id:{{appid}}" \
+-H "X-LC-Key:{{appkey}}"\
+ -H "Content-Type: application/json" \
+-d '{"type":"dev","content":"感谢您的反馈！我们正在修复您所述的问题，修复后再通知您。", "attachment":"{{url}}"}' \
+https://{{feedback_host}}/1.1/feedback/<:feedback_objectId>/threads
+```
+
+用户为一条已经存在的反馈增加一条回复：
+
+```
+curl -X POST \
+-H "X-LC-Id:{{appid}}" \
+-H "X-LC-Key:{{appkey}}"\
+ -H "Content-Type: application/json" \
+-d '{"type":"user","content":"我刚才又试了下，现在没问题了！耶~", "attachment":"{{url}}"}' \
+https://{{feedback_host}}/1.1/feedback/<:feedback_objectId>/threads
+```
+
+## 简介
+
 LeanCloud Feedback 是一个非常轻量的模块，可以用最少两行的代码来实现一个支持文字和图片的用户反馈系统，并且能够方便地在 LeanCloud 控制台查看用户的反馈。
 
 **你可以在应用的组件菜单里看到所有的用户反馈并回复。**

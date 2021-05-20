@@ -85,6 +85,43 @@ errors| | 本次推送过程中的错误信息。
 你可以通过 REST API 在云端增加安装对象。
 使用 REST API 还可以达成一些 LeanCloud 客户端 SDK 无法完成的操作，比如查询所有的 installation 来找到一个 channel 的订阅者的集合。
 
+<table>
+  <thead>
+    <tr>
+      <th>URL</th>
+      <th>HTTP</th>
+      <th>功能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>/1.1/installations</td>
+      <td>POST</td>
+      <td>上传安装数据</td>
+    </tr>
+    <tr>
+      <td>/1.1/installations/&lt;objectId&gt;</td>
+      <td>GET</td>
+      <td>获取安装数据</td>
+    </tr>
+    <tr>
+      <td>/1.1/installations/&lt;objectId&gt;</td>
+      <td>PUT</td>
+      <td>更新安装数据</td>
+    </tr>
+    <tr>
+      <td>/1.1/installations</td>
+      <td>GET</td>
+      <td>查询安装数据</td>
+    </tr>
+    <tr>
+      <td>/1.1/installations/&lt;objectId&gt;</td>
+      <td>DELETE</td>
+      <td>删除安装数据</td>
+    </tr>
+  </tbody>
+</table>
+
 #### 增加 Installation
 
 创建一个安装对象和普通的对象差不多，只是不同平台有不同的字段。
@@ -284,6 +321,48 @@ curl -X DELETE \
 对于 iOS 设备，除了上述过期机制外还多拥有一套过期机制。当我们根据 Apple 推送服务的反馈获取到某设备的 deviceToken 已过期时，我们也会将这个设备在 `_Installation` 表中的信息删除，并标记这个已过期的 deviceToken 为无效，丢弃后续所有发送到该 deviceToken 的消息。
 
 ### 推送消息
+
+<table>
+  <thead>
+    <tr>
+      <th>URL</th>
+      <th>HTTP</th>
+      <th>功能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>/1.1/push</td>
+      <td>POST</td>
+      <td>推送通知</td>
+    </tr>
+    <tr>
+      <td>/1.1/notifications</td>
+      <td>GET</td>
+      <td>查询推送记录</td>
+    </tr>
+    <tr>
+      <td>/1.1/notifications/:notification_id</td>
+      <td>GET</td>
+      <td>根据 ID 查推送记录</td>
+    </tr>
+    <tr>
+      <td>/1.1/notifications/:notification_id</td>
+      <td>DELETE</td>
+      <td>根据 ID 删推送记录</td>
+    </tr>
+    <tr>
+      <td>/1.1/scheduledPushMessages</td>
+      <td>GET</td>
+      <td>查询应用下所有的定时推送</td>
+    </tr>
+    <tr>
+      <td>/1.1/scheduledPushMessages/:id</td>
+      <td>DELETE</td>
+      <td>根据 ID 删定时推送</td>
+    </tr>
+  </tbody>
+</table>
 
 #### master key 校验
 

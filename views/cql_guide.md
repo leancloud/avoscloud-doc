@@ -6,11 +6,36 @@
 
 # CQL 详细指南
 
-CQL 全称为 Cloud Query Language，是 LeanCloud 为查询 API 定制的一套类似 SQL 查询语法的子集和变种，其目的是让开发者可以使用传统的 SQL 语法来查询 LeanCloud 云端数据，从而减少学习 LeanCloud 查询 API 的成本。
-
 ## 维护说明
 
 CQL 相关功能目前已暂停开发，日后不会再增加新的功能。建议开发者使用各语言 SDK 提供的接口进行数据操作。
+
+## 简介
+
+CQL 全称为 Cloud Query Language，是 LeanCloud 为查询 API 定制的一套类似 SQL 查询语法的子集和变种，其目的是让开发者可以使用传统的 SQL 语法来查询 LeanCloud 云端数据，从而减少学习 LeanCloud 查询 API 的成本。
+
+例如：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -G \
+  --data-urlencode 'cql=select * from Post limit 0,100 order by pubUser' \
+  https://{{host}}/1.1/cloudQuery
+```
+
+CQL 还支持占位符查询，`where` 和 `limit` 子句的条件参数可以使用问号替换，然后通过 `pvalues` 数组传入：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -G \
+  --data-urlencode 'cql=select * from Post where pubUser=? limit ?,? order by createdAt' \
+   --data-urlencode 'pvalues=["dennis", 0, 100]'
+  https://{{host}}/1.1/cloudQuery
+```
 
 ## 与 SQL 的主要差异
 

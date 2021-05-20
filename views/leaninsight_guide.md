@@ -253,3 +253,90 @@ result 是一个 JSON 对象，形如：
 如果 `status` 是 `OK`，表示任务成功，其他状态包括 `RUNNING` 表示正在运行，以及 `ERRor` 表示本次任务失败，并将返回失败信息 message。
 
 `AV.Insight.JobQuery` 也可以设置 `skip` 和 `limit` 做分页查询。
+
+## REST API_
+
+### 创建分析 job API
+
+离线数据分析 API 可以获取一个应用的备份数据。因为应用数据的隐私敏感性，离线数据分析 API 必须使用 master key 的签名方式鉴权，请参考 [更安全的鉴权方式](#更安全的鉴权方式) 一节。
+
+创建分析 job。（注意：下面示例直接使用带 `master` 标识的 `X-LC-Key`，不过我们推荐你在实际使用中采用 [新鉴权方式](rest_api.html#更安全的鉴权方式) 加密，不要明文传递 Key。）
+
+```
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '{"jobConfig":{"sql":"select count(*) from table"}}' \
+  https://{{host}}/1.1/bigquery/jobs
+```
+
+需要特别说明的是，`jobConfig` 不仅可以提供查询分析 `sql`，还可以增加其他配置项：
+
+* 查询结果自动另存为：
+
+```json
+{
+  "jobConfig":{
+    "sql":"select count(*) as count from table",
+    "saveAs":{
+      "className":"Table1",
+      "limit":100
+    }
+  }
+}
+```
+
+* 设置依赖 job，也就是当前的查询可以使用前去查询结果：
+
+```
+{
+  "jobConfig":{
+    "sql":"select * from table inner join tempTable on table.id=tempTable.objectId",
+    "dependencyJobs":[
+      {
+        "id":"xxx",
+        "className":"tempTable"
+      } // id 为依赖 job 的 jobId,  className 则为自定义的临时表名
+    ]
+  }
+}
+```
+
+对应的输出：
+
+```
+HTTP/1.1 200 OK
+Server Tengine is not blacklisted
+Server: Tengine
+Date: Fri, 05 Jun 2015 02:45:22 GMT
+Content-Type: application/json; charset=UTF-8
+Content-Length: 100
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000
+{"id":"63f3b70b8ac3fd779de5bcb765cf121e","appId":"{{appid}}"}
+```
+
+### 获取分析 job 结果 API
+
+```
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  https://{{host}}/1.1/bigquery/jobs/:jobId
+```
+
+对应的输出：
+
+```
+HTTP/1.1 200 OK
+Server Tengine is not blacklisted
+Server: Tengine
+Date: Fri, 05 Jun 2015 03:03:51 GMT
+Content-Type: application/json; charset=UTF-8
+Content-Length: 127
+Connection: keep-alive
+Strict-Transport-Security: max-age=31536000
+{"id":"63f3b70b8ac3fd779de5bcb765cf121e","status":"OK","results":[{"_c0":6895}],"totalCount":1,"previewCount":1,"nextAnchor":1}
+```

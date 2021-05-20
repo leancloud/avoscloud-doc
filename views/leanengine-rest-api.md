@@ -14,6 +14,30 @@ LeanCloud 云端提供的统一的访问云函数的 REST API 接口，所有的
 
 {{ data.baseurl("engine") }}
 
+## 概览
+
+<table>
+  <thead>
+    <tr>
+      <th>URL</th>
+      <th>HTTP</th>
+      <th>功能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>/1.1/functions/&lt;functionName&gt;</td>
+      <td>POST</td>
+      <td>调用云函数</td>
+    </tr>
+    <tr>
+      <td>/1.1/call/&lt;functionName&gt;</td>
+      <td>POST</td>
+      <td>调用云函数，支持 AVObject 作为参数和结果</td>
+    </tr>
+  </tbody>
+</table>
+
 ## 预备环境和生产环境
 
 在客户端通过 REST API 调用云函数时，可以设置 HTTP 头 `X-LC-Prod` 来区分调用的环境。
