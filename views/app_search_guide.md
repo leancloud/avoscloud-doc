@@ -95,30 +95,34 @@ searchQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
 });
 ```
 ```dart
-LCSearchQuery<Account> query = new LCSearchQuery<Account>('Account');
-query.queryString('*');
-query.orderByDescending('balance');
-query.limit(200);
-LCSearchResponse<Account> response = await query.find();
-assert(response.hits > 0);
-for (int i = 0; i < response.results.length - 1; i++) {
-  int b1 = response.results[i].balance;
-  int b2 = response.results[i + 1].balance;
-  assert(b1 >= b2);
+LCSearchQuery<GameScore> query = new LCSearchQuery<GameScore>('GameScore');
+query.queryString('dennis');
+query.orderByDescending('score');
+query.limit(10);
+LCSearchResponse<GameScore> response = await query.find();
+// 符合查询条件的文档总数
+print(response.hits);
+// 符合查询条件的结果文档
+for (GameScore score in response.results) {
+
 }
+// 标记本次查询结果，下次查询继续传入这个 sid 用于查找后续的数据，用来支持翻页查询
+print(response.sid);
 ```
 ```cs
-LCSearchQuery<Account> query = new LCSearchQuery<Account>("Account");
-query.QueryString("*")
-    .OrderByDescending("balance")
-    .Limit(200);
-LCSearchResponse<Account> response = await query.Find();
-Assert.Greater(response.Hits, 0);
-for (int i = 0; i < response.Results.Count - 1; i++) {
-    int b1 = response.Results[i].Balance;
-    int b2 = response.Results[i + 1].Balance;
-    Assert.GreaterOrEqual(b1, b2);
+LCSearchQuery<GameScore> query = new LCSearchQuery<GameScore>("GameScore");
+query.QueryString("dennis")
+    .OrderByDescending("score")
+    .Limit(10);
+LCSearchResponse<GameScore> response = await query.Find();
+// 符合查询条件的文档总数
+Debug.Log(response.Hits);
+// 符合查询条件的结果文档
+foreach (GameScore score in response.Results) {
+
 }
+// 标记本次查询结果，下次查询继续传入这个 sid 用于查找后续的数据，用来支持翻页查询
+Debug.Log(response.Sid);
 ```
 
 有关查询语法，可以参考 [q 查询语法](search-rest-api.html#q_查询语法)。
