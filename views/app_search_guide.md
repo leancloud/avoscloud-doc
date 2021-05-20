@@ -94,6 +94,36 @@ searchQuery.findInBackground().subscribe(new Observer<List<AVObject>>() {
   public void onComplete() {}
 });
 ```
+```dart
+LCSearchQuery<GameScore> query = new LCSearchQuery<GameScore>('GameScore');
+query.queryString('dennis');
+query.orderByDescending('score');
+query.limit(10);
+LCSearchResponse<GameScore> response = await query.find();
+// 符合查询条件的文档总数
+print(response.hits);
+// 符合查询条件的结果文档
+for (GameScore score in response.results) {
+
+}
+// 标记本次查询结果，下次查询继续传入这个 sid 用于查找后续的数据，用来支持翻页查询
+print(response.sid);
+```
+```cs
+LCSearchQuery<GameScore> query = new LCSearchQuery<GameScore>("GameScore");
+query.QueryString("dennis")
+    .OrderByDescending("score")
+    .Limit(10);
+LCSearchResponse<GameScore> response = await query.Find();
+// 符合查询条件的文档总数
+Debug.Log(response.Hits);
+// 符合查询条件的结果文档
+foreach (GameScore score in response.Results) {
+
+}
+// 标记本次查询结果，下次查询继续传入这个 sid 用于查找后续的数据，用来支持翻页查询
+Debug.Log(response.Sid);
+```
 
 有关查询语法，可以参考 [q 查询语法](search-rest-api.html#q_查询语法)。
 
@@ -120,6 +150,16 @@ AVSearchSortBuilder builder = AVSearchSortBuilder.newBuilder();
 builder.orderByDescending("scores","avg","last");
 searchQuery.setSortBuilder(builder);
 ```
+```dart
+LCSearchSortBuilder sortBuilder = new LCSearchSortBuilder();
+sortBuilder.orderByAscending('scores', mode: 'avg', missing: 'last');
+searchQuery.sortBy(sortBuilder);
+```
+```cs
+LCSearchSortBuilder sortBuilder = new LCSearchSortBuilder();
+sortBuilder.OrderByAscending("balance", "avg", "last");
+searchQuery.SortBy(sortBuilder);
+```
 
 更多 API 请参考 SDK API 文档：
 
@@ -135,6 +175,16 @@ searchQuery.setSortBuilder(builder);
 - [AVSearchQuery](https://leancloud.cn/api-docs/android/index.html)
 - [AVSearchSortBuilder](https://leancloud.cn/api-docs/android/index.html)
 {{ docs.langSpecEnd('java') }}
+{{ docs.langSpecStart('dart') }}
+- [LCSearchQuery](https://pub.dev/documentation/leancloud_storage/latest/leancloud_storage/LCSearchQuery-class.html)
+- [LCSearchSortBuilder](https://pub.dev/documentation/leancloud_storage/latest/leancloud_storage/LCSearchSortBuilder-class.html)
+- [LCSearchResponse](https://pub.dev/documentation/leancloud_storage/latest/leancloud_storage/LCSearchResponse-class.html)
+{{ docs.langSpecEnd('dart') }}
+{{ docs.langSpecStart('cs') }}
+- [LCSearchQuery](https://leancloud.github.io/csharp-sdk/html/classLeanCloud_1_1Storage_1_1LCSearchQuery.html)
+- [LCSearchSortBuilder](https://leancloud.github.io/csharp-sdk/html/classLeanCloud_1_1Storage_1_1LCSearchSortBuilder.html)
+- [LCSearchResponse](https://leancloud.github.io/csharp-sdk/html/classLeanCloud_1_1Storage_1_1LCSearchResponse.html)
+{{ docs.langSpecEnd('cs') }}
 
 <!-- {{ docs.langSpecStart('java') }}
 
