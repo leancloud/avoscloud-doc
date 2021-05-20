@@ -254,7 +254,7 @@ result 是一个 JSON 对象，形如：
 
 `AV.Insight.JobQuery` 也可以设置 `skip` 和 `limit` 做分页查询。
 
-## REST API_
+## REST API
 
 ### 创建分析 job API
 
