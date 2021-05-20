@@ -2777,8 +2777,9 @@ conversation.updateInfoInBackground(new AVIMConversationCallback(){
 });
 ```
 ```cs
-conversation["name"] = "聪明的喵星人";
-await conversation.Save();
+await conversation.UpdateInfo(new Dictionary<string, object> {
+  { "name", "聪明的喵星人" }
+});
 ```
 ```dart
 try {
@@ -2845,9 +2846,9 @@ conversation.updateInfoInBackground(new AVIMConversationCallback(){
 // 获取自定义属性
 var type = conversation["type"];
 // 为 pinned 属性设置新的值
-conversation["pinned"] = false;
-// 保存
-await conversation.Save();
+await conversation.UpdateInfo(new Dictionary<string, object> {
+  { "pinned", false }
+});
 ```
 ```dart
 try {
