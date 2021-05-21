@@ -1,18 +1,12 @@
-
-{% import "views/_data.njk" as data %}
-{% import "views/_parts.html" as include %}
-
-{{ include.setService('engine') }}
-
 # 云引擎 REST API 使用指南
 
-LeanCloud 云端提供的统一的访问云函数的 REST API 接口，所有的客户端 SDK 也都是封装了这个接口从而实现对云函数的调用。
+云服务提供了统一的访问云函数的 REST API 接口，所有的客户端 SDK 也都是封装了这个接口从而实现对云函数的调用。
 
-我们推荐使用 [Postman](http://www.getpostman.com/) 来调试 REST API，我们的社区中有一篇 [使用 Postman 调试 REST API 教程](https://forum.leancloud.cn/t/postman-rest-api/8638)。
+我们推荐使用 [Postman](http://www.getpostman.com/) 来调试 REST API。
 
 ## Base URL
 
-{{ data.baseurl("engine") }}
+REST API 请求的 Base URL 可以在**云服务控制台 > 设置 > 应用 Keys > 服务器地址**查看。
 
 ## 概览
 
@@ -33,7 +27,7 @@ LeanCloud 云端提供的统一的访问云函数的 REST API 接口，所有的
     <tr>
       <td>/1.1/call/&lt;functionName&gt;</td>
       <td>POST</td>
-      <td>调用云函数，支持 AVObject 作为参数和结果</td>
+      <td>调用云函数，支持 LCObject 作为参数和结果</td>
     </tr>
   </tbody>
 </table>
@@ -45,7 +39,7 @@ LeanCloud 云端提供的统一的访问云函数的 REST API 接口，所有的
 * `X-LC-Prod: 0` 表示调用预备环境
 * `X-LC-Prod: 1` 表示调用生产环境
 
-通过 SDK 调用云函数时，SDK 会根据当前环境设置 `X-LC-Prod` HTTP 头，详见 [云函数开发指南中关于预备环境和生产环境的说明](leanengine_cloudfunction_guide-node.html#切换云引擎环境)。
+通过 SDK 调用云函数时，SDK 会根据当前环境设置 `X-LC-Prod` HTTP 头，详见《云函数开发指南》中《切换云引擎环境》一节的说明。
 
 ## 云函数
 
@@ -83,7 +77,7 @@ curl -X POST \
   https://{{host}}/1.1/functions/hello
 ```
 
-有些时候我们希望使用 AVObject 作为云函数的参数，或者希望以 AVObject 为云函数的返回值，这时我们可以使用 `POST /1.1/call/:name` 这个 RPC 调用的 API，云函数 SDK 会将参数解释为一个 AVObject，同时在返回 AVObject 时提供必要的元信息：
+有些时候我们希望使用 LCObject 作为云函数的参数，或者希望以 LCObject 为云函数的返回值，这时我们可以使用 `POST /1.1/call/:name` 这个 RPC 调用的 API，云函数 SDK 会将参数解释为一个 LCObject，同时在返回 LCObject 时提供必要的元信息：
 
 ```sh
 curl -X POST \
@@ -101,12 +95,12 @@ curl -X POST \
   "result": {
     "__type": "Object",
     "className": "Post",
-    "pubUser": "LeanCloud官方客服"
+    "pubUser": "官方客服"
   }
 }
 ```
 
-RPC 调用时，不仅可以返回单个 AVObject，还可以返回包含 AVObject 的数据结构。
+RPC 调用时，不仅可以返回单个 LCObject，还可以返回包含 LCObject 的数据结构。
 例如，假设有一个云函数返回一个数组，其中包含一个数字和一个 Todo 对象，那么 RPC 调用的结果为：
 
 ```json
@@ -135,10 +129,4 @@ RPC 调用时，不仅可以返回单个 AVObject，还可以返回包含 AVObje
 
 如果云函数超时，客户端会收到 HTTP status code 为 503、524、141 等的响应。
 
-你还可以阅读以下云函数开发指南来获取更多的信息。
-
-* [云引擎 Node.js 环境](leanengine_cloudfunction_guide-node.html)
-* [云引擎 Python 环境](leanengine_cloudfunction_guide-python.html)
-* [云引擎 PHP 环境](leanengine_cloudfunction_guide-php.html)
-* [云引擎 Java 环境](leanengine_cloudfunction_guide-java.html)
-* [云引擎 .Net 环境](leanengine_cloudfunction_guide-dotnet.html)
+你还可以阅读《云函数开发指南》来获取更多的信息。
