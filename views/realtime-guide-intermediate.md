@@ -619,10 +619,10 @@ async send(message, options)
 public struct MessageSendOptions: OptionSet {
     /// Get Receipt when other client received message or read message.
     public static let needReceipt = MessageSendOptions(rawValue: 1 << 0)
-    
+
     /// Indicates whether this message is transient.
     public static let isTransient = MessageSendOptions(rawValue: 1 << 1)
-    
+
     /// Indicates whether this message will be auto delivering to other client when this client disconnected.
     public static let isAutoDeliveringWhenOffline = MessageSendOptions(rawValue: 1 << 2)
 }
@@ -729,7 +729,7 @@ imConversation.sendMessage(message, option, new AVIMConversationCallback() {
 ```
 ```cs
 LCIMTextMessage textMessage = new LCIMTextMessage("Tom 正在输入…");
-LCIMMessageSendOptions option = new LCIMMessageSendOptions() { 
+LCIMMessageSendOptions option = new LCIMMessageSendOptions() {
     Transient = true
 };
 await conversation.Send(textMessage, option);
@@ -942,7 +942,7 @@ await conversation.read();
 Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的消息，这时候双方的处理流程是这样的：
 
 1. Tom 向 Jerry 发送一条消息，且标记为「需要回执」：
-  
+
     ```js
     var message = new TextMessage('一条非常重要的消息。');
     conversation.send(message, {
@@ -979,7 +979,7 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     ```java
     AVIMClient tom = AVIMClient.getInstance("Tom");
     AVIMConversation conv = client.getConversation("551260efe4b01608686c3e0f");
-    
+
     AVIMTextMessage textMessage = new AVIMTextMessage();
     textMessage.setText("Hello, Jerry!");
 
@@ -1013,7 +1013,7 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     ```
 
 2. Jerry 阅读 Tom 发的消息后，调用对话上的 `read` 方法把「对话中最近的消息」标记为已读：
-  
+
     ```js
     conversation.read().then(function(conversation) {
       ;
@@ -1036,7 +1036,7 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     ```
 
 3. Tom 将收到一个已读回执，对话的 `lastReadAt` 属性会更新。此时可以更新 UI，把时间戳小于 `lastReadAt` 的消息都标记为已读：
-  
+
     ```js
     var { Event } = require('leancloud-realtime');
     conversation.on(Event.LAST_READ_AT_UPDATE, function() {
@@ -1093,7 +1093,7 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     Client client,
     Conversation conversation,
     }) {
-     // 在 UI 中将早于 lastReadAt 的消息都标记为「已读」        
+     // 在 UI 中将早于 lastReadAt 的消息都标记为「已读」
     };
     ```
 
@@ -1290,13 +1290,13 @@ LeanCloud 本就提供完善的消息推送服务，现在将推送与即时通�
   注意，这里 `badge` 参数为 iOS 设备专用，且 `Increment` 大小写敏感，表示自动增加应用 badge 上的数字计数。
   通常需要在打开或退出应用时，通过[设置 Installation 的 badge 字段](ios_push_guide.html#清除_Badge)清零 badge 计数。
 
-  
+
   此外，对于 iOS 设备您还可以设置声音等推送属性，具体的字段可以参考 [推送 · 消息内容 Data](push_guide.html#消息内容_Data)。
 
 2. 客户端发送消息的时候额外指定推送信息
 
   第一种方法虽然发出去了通知，但是因为通知文本与实际消息内容完全无关，存在一些不足。有没有办法让推送消息的内容与即时通讯消息动态相关呢？
-  
+
   还记得我们发送「暂态消息」时的 `AVIMMessageOption` 参数吗？即时通讯 SDK 允许客户端在发送消息的时候，指定附加的推送信息（在 `AVIMMessageOption` 中设置 `pushData` 属性），这样在需要离线推送的时候我们就会使用这里设置的内容来发出推送通知。示例代码如下：
 
   ```js
@@ -1484,7 +1484,7 @@ LeanCloud 提供两种方式进来同步离线消息：
 
 由于历史原因，不同平台的 SDK 对两种方式的支持度是不一样的：
 1. Android、iOS SDK 同时支持这两种方式，且默认是「推」的方式
-2. JavaScript SDK 默认支持「拉」的方式
+2. JavaScript SDK 仅支持「拉」的方式
 3. .NET SDK 目前还不支持第二种方式。
 
 > 注意，请不要混合使用上面两种方式，比如在 iOS 平台使用第一种方式获取离线消息，而 Android 平台使用第二种方式获取离线消息，可能导致所有离线消息无法正常获取。
@@ -1493,10 +1493,10 @@ LeanCloud 提供两种方式进来同步离线消息：
 
 在客户端重新登录上线后，即时通讯云端会实时计算下线时间段内当前用户参与过的对话中的新消息数量。
 
-客户端只有设置了主动拉取的方式，云端才会在必要的时候下发这一通知。如前所述，对于 JavaScript SDK 来说，默认就是客户端主动拉取未读消息，所以不需要再做什么设置。对于 Android 和 iOS SDK 来说，则需要在 `AVOSCloud` 初始化语句后面加上如下语句，明确切换到「拉取」的离线消息同步方式：
+客户端只有设置了主动拉取的方式，云端才会在必要的时候下发这一通知。如前所述，对于 JavaScript SDK 来说，仅支持客户端主动拉取未读消息，所以不需要再做什么设置。对于 Android 和 iOS SDK 来说，则需要在 `AVOSCloud` 初始化语句后面加上如下语句，明确切换到「拉取」的离线消息同步方式：
 
 ```js
-// 默认支持，无需额外设置
+// 无需额外设置
 ```
 ```swift
 // 默认支持，无需额外设置
@@ -1520,7 +1520,7 @@ AVIMOptions.getGlobalOptions().setUnreadNotificationEnabled(true);
 // 默认支持，无需额外设置
 ```
 ```dart
-// Flutter 配置方式同 Swift SDK 与 Java SDK 
+// Flutter 配置方式同 Swift SDK 与 Java SDK
 ```
 
 客户端 SDK 会在 `AVIMConversation` 上维护一个 `unreadMessagesCount` 字段，来统计当前对话中存在有多少未读消息。
@@ -1591,9 +1591,9 @@ tom.onUnreadMessageCountUpdated = ({
 - 用户正在某个对话页面聊天，并在这个对话中收到了消息时
 
 > iOS 和 Android 应用层需要持久化缓存未读计数的细节说明
-> 
+>
 > 对于未读通知的下发时机和数量，iOS 和 Java/Android 两个平台的 SDK 在内部处理上稍有差异：iOS SDK（Objective-C 和 Swift 都包括）在每次登录即时通讯云端的时候，都会获得云端下发的**大量**未读通知；而 Java/Android SDK 由于内部持久化缓存了通知的时间戳（能减轻服务端压力），所以登录即时通讯云端之后客户端只会收到上次通知时间戳之后发生了变化的**部分**未读数通知。
-> 
+>
 > 因此 Java SDK 的开发者需要在应用层缓存收到的未读数通知（同一个对话的未读数采用覆盖的方式来更新），而 iOS SDK 这里收到的**大量未读通知并不等于全量数据（云端追踪的有未读消息的对话数不超过 50 个）**，所以也是一样需要在应用层面缓存收到的未读计数结果，这样才能保证对话列表超过 50 个之后未读计数值的准确性。
 
 
@@ -1702,7 +1702,7 @@ public class AVImClientManager extends AVIMClientEventHandler {
   /**
    * 实现本方法以处理当前登录被踢下线的情况
    *
-   * 
+   *
    * @param client
    * @param code 状态码说明被踢下线的具体原因
    */
@@ -1930,7 +1930,7 @@ realtime.register(OperationMessage);
 ```swift
 // 定义 CustomMessage 类
 class CustomMessage: IMCategorizedMessage {
-    
+
     // 指定 type 类型，可以根据实际换成其他正整数
     class override var messageType: MessageType {
         return 1
@@ -1939,14 +1939,14 @@ class CustomMessage: IMCategorizedMessage {
 
 // 注册消息类型
 func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    
+
     do {
         try CustomMessage.register()
     } catch {
         print(error)
         return false
     }
-    
+
     return true
 }
 ```
@@ -2003,7 +2003,7 @@ public class CustomMessage extends AVIMTypedMessage {
 }
 
 // 注册自定义类型
-AVIMMessageManager.registerAVIMMessageType(CustomMessage.class); 
+AVIMMessageManager.registerAVIMMessageType(CustomMessage.class);
 ```
 ```cs
 class EmojiMessage : LCIMTypedMessage {
