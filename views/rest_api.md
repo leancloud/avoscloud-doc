@@ -1,4 +1,4 @@
-# REST API 使用详解
+# 存储 REST API 使用指南
 
 REST API 可以让你用任何支持发送 HTTP 请求的设备来与云服务进行交互，你可以使用 REST API 做很多事情，比如：
 

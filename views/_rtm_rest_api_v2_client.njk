@@ -3,6 +3,7 @@
 ### 查询在线成员
 
 该接口要求使用 master key。
+
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
@@ -18,7 +19,7 @@ client_ids | 必选 | 要查询的 client ID 列表，最多 20 个
 
 返回在线的 ID 列表
 
-```
+```json
 {"results":["client1"]}
 ```
 
@@ -41,13 +42,14 @@ conv_id | 可选 | 对话 ID，若不传此参数，查询 client 在所有对�
 
 返回
 
-```
+```json
 {"count":1}
 ```
 
 ### 强制下线
 
 该接口要求使用 master key。
+
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
@@ -63,13 +65,14 @@ reason | 可选 | 下线原因，字符串，不超过 20 个字符
 
 返回
 
-```
+```json
 {}
 ```
 
 ### 查询订阅的服务号
 
 该接口要求使用 master key。
+
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
@@ -91,7 +94,7 @@ direction | 可选 | 字符串 | 查询结果按时间排序方式，old 表示�
 
 返回目标用户订阅系统对话的列表：
 
-```
+```json
 [{"timestamp":1482994126561,"subscriber":"XXX","conv_id":"convId1"},
  {"timestamp":1491467945277,"subscriber":"XXX","conv_id":"convId2"}, ...]
 ```
@@ -101,7 +104,8 @@ direction | 可选 | 字符串 | 查询结果按时间排序方式，old 表示�
 ### 查询用户发送消息
 
 该接口要求使用 master key。
-使用这个接口可以查询某 client_id 在单聊/群聊 与 聊天室 里发的消息。
+使用这个接口可以查询某 client_id 在单聊/群聊与聊天室里发的消息。
+
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
@@ -109,7 +113,7 @@ curl -X GET \
   https://{{host}}/1.2/rtm/clients/{client_id}/messages
 ```
 
-参数与返回值可以参考 [单聊/群聊的查询历史消息](realtime_rest_api_v2.html#查询历史消息) 接口。
+参数与返回值可以参考 `GET /1.2/rtm/conversations/{conv_id}/messages` 接口。
 
 ### 增加黑名单
 
@@ -132,7 +136,7 @@ conv_id | 必选 | 拉黑的 群聊/聊天室/服务号 ID
 
 返回
 
-```
+```json
 {}
 ```
 
@@ -146,12 +150,12 @@ curl -X DELETE \
   -d '{"conv_id": ""}' \
   https://{{host}}/1.2/rtm/clients/{client_id}/blacklists
 ```
+
 返回
 
-```
+```json
 {}
 ```
-
 
 ### 查询黑名单
 
@@ -169,14 +173,14 @@ next | 可选 | 第一次查询时返回，后面的查询带着这个参数，�
 
 返回
 
+```json
+{"conv_ids":["conv1"], "next":"1"}
 ```
-{"conv_ids"=>["conv1"], "next"=>"1"}
-```
-
 
 ### 获取登录签名
 
-本接口可以让使用了 [AV.User](rest_api.html#用户-1) 的应用方便快捷地实现登录认证。登录认证默认关闭，可以进入 **控制台 > 消息 > 即时通讯 > 设置 > 即时通讯选项**，勾选 **登录启用签名认证** 进行开启。
+本接口可以让使用了 LCUser 的应用方便快捷地实现登录认证。
+登录认证默认关闭，可以进入 **云服务控制台 > 消息 > 即时通讯 > 设置 > 即时通讯选项**，勾选 **登录启用签名认证** 进行开启。
 
 ```sh
 curl -X GET \
@@ -189,7 +193,7 @@ curl -X GET \
 
 参数 | 约束 | 说明
 ---|---|---
-session_token | 必选 | AV.User 的 sessionToken
+session_token | 必选 | LCUser 的 sessionToken
 
 返回
 
@@ -204,7 +208,7 @@ session_token | 必选 | AV.User 的 sessionToken
 
 注意，虽然这是一个 GET 请求，但并不是幂等的，每次调用返回的签名都不相同。
 
-为了方便用户进行细粒度控制，实现自定义功能（如黑名单），本接口提供了一个 hook `_rtmClientSign`，在验证 sessionToken 后去调用，传入的参数为 AV.User 构成的 JSON 对象：
+为了方便用户进行细粒度控制，实现自定义功能（如黑名单），本接口提供了一个 hook `_rtmClientSign`，在验证 sessionToken 后去调用，传入的参数为 LCUser 构成的 JSON 对象：
 
 ```json
 {
@@ -219,7 +223,9 @@ session_token | 必选 | AV.User 的 sessionToken
     "mobilePhoneVerified": true/false
 }
 ```
+
 可以返回两类结果：
+
 ```json
 {"result": true} // 允许签名
 {"result": false, "error": "error message"}  // 拒绝签名

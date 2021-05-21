@@ -134,7 +134,7 @@ LeanCloud 国内节点服务涉及以下三种自定义域名：
 
 #### REST API
 
-参考 [REST API 使用详解](rest_api.html#base-url) 配置。
+参考 [存储 REST API 使用指南](rest_api.html#base-url) 配置。
 
 #### JavaScript SDK
 

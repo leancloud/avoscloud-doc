@@ -13,11 +13,12 @@ curl -X POST \
   https://{{host}}/1.2/rtm/service-conversations
 ```
 
-对话的字段可参考即时通讯总览里面的 [对话](realtime_v2.html#对话（Conversation）)。
+对话的字段可参考《即时通讯总览》的《对话》一节。
 
 返回
-```
-{"objectId"=>"5a5d7432c3422b31ed845e75", "createdAt"=>"2018-01-16T03:40:32.814Z"}
+
+```json
+{"objectId":"5a5d7432c3422b31ed845e75", "createdAt":"2018-01-16T03:40:32.814Z"}
 ```
 
 ### 查询服务号
@@ -43,8 +44,14 @@ where | 可选 | 参考 [数据存储 - 查询](rest_api.html#查询)。
 
 
 返回
-```
-{"results"=>[{"name"=>"My First Service-conversation", "createdAt"=>"2018-01-17T04:15:33.386Z", "updatedAt"=>"2018-01-17T04:15:33.386Z", "objectId"=>"5a5ecde6c3422b738c8779d7"}]}
+
+```json
+{"results":[
+  {"name":"My First Service-conversation",
+  "createdAt":"2018-01-17T04:15:33.386Z",
+  "updatedAt":"2018-01-17T04:15:33.386Z",
+  "objectId":"5a5ecde6c3422b738c8779d7"}
+]}
 ```
 
 ### 更新服务号
@@ -61,8 +68,9 @@ curl -X PUT \
 ```
 
 返回
-```
-{"updatedAt"=>"2018-01-16T03:40:37.683Z", "objectId"=>"5a5d7433c3422b31ed845e76"}
+
+```json
+{"updatedAt":"2018-01-16T03:40:37.683Z", "objectId":"5a5d7433c3422b31ed845e76"}
 ```
 
 
@@ -78,7 +86,8 @@ curl -X DELETE \
 ```
 
 返回
-```
+
+```json
 {}
 ```
 
@@ -94,7 +103,8 @@ curl -X POST \
 ```
 
 返回
-```
+
+```json
 {}
 ```
 
@@ -108,13 +118,15 @@ curl -X DELETE \
 ```
 
 返回
-```
+
+```json
 {}
 ```
 
 ### 遍历查询订阅者
 
 该接口要求使用 master key。
+
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
@@ -129,7 +141,7 @@ client_id | 可选 | 查询起始订阅者 client id，不填则从订阅者列�
 
 返回
 
-```
+```json
 [{"timestamp":1491467841116,"subscriber":"client id 1","conv_id":"55b871"},
  {"timestamp":1491467852768,"subscriber":"client id 2","conv_id":"55b872"}, ...]
 ```
@@ -139,6 +151,7 @@ client_id | 可选 | 查询起始订阅者 client id，不填则从订阅者列�
 ### 查询订阅者数
 
 该接口要求使用 master key。
+
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
@@ -148,13 +161,14 @@ curl -X GET \
 
 返回
 
-```
+```json
 {"count": 100}
 ```
 
 ### 给所有订阅者发消息
 
 该接口要求使用 master key。
+
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
@@ -171,18 +185,18 @@ message | 必选 | 消息体
 push | 可选 | 附带的推送内容，如果设置，所有 iOS 和 Android 用户会收到这条推送通知。字符串或 JSON 对象
 
 返回：
-```
+
+```json
 {"msg-id":"qNkRkFWOeSqP65S9fDyHJw", "timestamp":1495431811151}
 ```
 
 频率限制：
 
-此接口受频率限制，[点击查看详情](#接口请求频率限制)。
+此接口受频率限制，详见后文《接口请求频率限制》一节。
 
 ### 修改给所有订阅者发送的消息
 
 该接口要求使用 master key。
-从 Objective-C SDK v6.0.0、Android SDK v4.4.0、JavaScript SDK v3.5.0 开始，我们支持了新的修改与撤回消息功能。修改或撤回消息后，即使已经收到并已缓存在客户端的消息也会被修改或撤回。对于老版本的 SDK，仅能修改或撤回服务器端的消息记录，并不能修改或撤回客户端已缓存的消息记录。
 
 ```sh
 curl -X PUT \
@@ -203,11 +217,11 @@ timestamp | 必填 | 消息的时间戳
 
 频率限制：
 
-此接口受频率限制，[点击查看详情](#接口请求频率限制)。
+此接口受频率限制，详见后文《接口请求频率限制》一节。
 
 ### 撤回给所有订阅者发送的消息
 
-该接口要求使用 master key。需要相应 SDK 的支持，具体可参考上面的「修改给所有订阅者发送的消息」接口。
+该接口要求使用 master key。
 
 ```sh
 curl -X PUT \
@@ -227,7 +241,7 @@ timestamp | 必填 | 消息的时间戳
 
 频率限制：
 
-此接口受频率限制，[点击查看详情](#接口请求频率限制)。
+此接口受频率限制，详见后文《接口请求频率限制》一节。
 
 ### 给任意用户单独发消息
 
@@ -241,9 +255,9 @@ curl -X POST \
   -d '{"from_client": "", "message": ""}' \
   https://{{host}}/1.2/rtm/service-conversations/{conv_id}/messages
 ```
-**注意**，由于这个接口的管理性质，当你通过这个接口发送消息时，我们不会检查 **from_client** 是否有权限给这个服务号发送消息，而是统统放行，请谨慎使用这个接口。
-如果你在应用中使用了我们内部定义的 [富媒体消息格式](./realtime_v2.html#消息（Message）)，在发送消息时 **message** 字段需要遵守一定的格式要求，[富媒体消息格式说明](./realtime_v2.html#富媒体消息) 中有详细说明。
 
+**注意**，由于这个接口的管理性质，当你通过这个接口发送消息时，我们不会检查 **from_client** 是否有权限给这个服务号发送消息，而是统统放行，请谨慎使用这个接口。
+如果你在应用中使用了我们内部定义的富媒体消息格式，在发送消息时 **message** 字段需要遵守相应的格式要求。
 
 参数 | 约束 | 说明
 ---|---|---
@@ -261,12 +275,11 @@ priority | 可选 | 定义消息优先级，可选值为 high、normal、low，�
 
 频率限制：
 
-此接口受频率限制，[点击查看详情](#接口请求频率限制)。
+此接口受频率限制，详见后文《接口请求频率限制》一节。
 
 ### 修改给用户单独发送的消息
 
 该接口要求使用 master key。
-从 Objective-C SDK v6.0.0、Android SDK v4.4.0、JavaScript SDK v3.5.0 开始，我们支持了新的修改与撤回消息功能。修改或撤回消息后，即使已经收到并已缓存在客户端的消息也会被修改或撤回。对于老版本的 SDK，仅能修改或撤回服务器端的消息记录，并不能修改或撤回客户端已缓存的消息记录。
 
 ```sh
 curl -X PUT \
@@ -286,14 +299,13 @@ to_clients | 必填 | 数组类型，表示接收目标消息的 client Id 列�
 
 成功则返回状态码 `200 OK`。
 
-
 频率限制：
 
-此接口受频率限制，[点击查看详情](#接口请求频率限制)。
+此接口受频率限制，详见后文《接口请求频率限制》一节。
 
 ### 撤回给用户单独发送的消息
 
-该接口要求使用 master key。需要相应 SDK 的支持，具体可参考上面的「修改给用户单独发送的消息」接口。
+该接口要求使用 master key。
 
 ```sh
 curl -X PUT \
@@ -312,15 +324,14 @@ to_clients | 必填 | 数组类型，表示接收目标消息的 client Id 列�
 
 成功则返回状态码 `200 OK`。
 
-
 频率限制：
 
-此接口受频率限制，[点击查看详情](#接口请求频率限制)。
+此接口受频率限制，详见后文《接口请求频率限制》一节。
 
 ### 删除给用户单独发送的消息
 
-本接口要求使用 master key，并且只能删除订阅消息或给用户单独发送的消息，无法删除广播消息。广播消息请使用 [删除广播消息](realtime_rest_api_v2.html#hash-1748962119) 来删除。
-
+本接口要求使用 master key，并且只能删除订阅消息或给用户单独发送的消息，无法删除广播消息。
+广播消息请调用 `DELETE /1.2/rtm/broadcasts/{message_id}` 接口删除。
 
 ```sh
 curl -X DELETE \
@@ -332,7 +343,7 @@ curl -X DELETE \
   https://{{host}}/1.2/rtm/service-conversations/{conv_id}/subscribers/{client_id}/messages/{message_id}
 ```
 
-> NOTE：该接口仅删除服务端的消息，对客户端无影响。
+注意，该接口仅删除服务端的消息，对客户端无影响。
 
 参数 | 约束 | 说明
 ---|---|---
@@ -340,7 +351,8 @@ from_client | 必填 | 消息的发件人 client ID
 timestamp | 必填 | 消息的时间戳
 
 返回：
-```
+
+```json
 {}
 ```
 
@@ -356,17 +368,18 @@ curl -X GET \
   https://{{host}}/1.2/rtm/service-conversations/{conv_id}/subscribers/{client_id}/messages
 ```
 
-参数和返回值与 [查询历史消息](#查询历史消息) 相同。
+参数和返回值与查询历史消息接口相同。
 
 ### 黑名单
 
-该功能介绍可参考总览里面的 [黑名单](realtime-guide-senior.html#黑名单)。
+该功能介绍可参考《即时通讯开发指南》第三篇中的《权限管理与黑名单》一节。
 
 #### 增加服务号黑名单
 
 该接口要求使用 master key。
 
 加入黑名单的 client 不允许再加入该服务号，如果之前在该服务号中将被移除。每个服务号最多允许添加 10,000 个黑名单。
+
 ```sh
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
@@ -382,13 +395,14 @@ client_ids | 要拉黑的 Client ID 列表，数组
 
 返回
 
-```
+```json
 {}
 ```
 
 #### 移除服务号黑名单
 
 该接口要求使用 master key。
+
 ```sh
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
@@ -399,13 +413,14 @@ curl -X DELETE \
 
 返回
 
-```
+```json
 {}
 ```
 
 #### 查询服务号黑名单
 
 该接口要求使用 master key。
+
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
@@ -421,6 +436,6 @@ next | 可选 | 第一次查询时返回，后面的查询带着这个参数，�
 
 返回
 
-```
+```json
 {"client_ids": ["client1", "client2"]}
 ```
