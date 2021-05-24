@@ -1,6 +1,6 @@
 # 全文搜索 REST API 指南
 
-[全文搜索](app_search_guide.html)提供以下 REST API 接口：
+全文搜索服务提供以下 REST API 接口：
 
 | URL | HTTP | 功能 |
 | - | - | - |
@@ -8,12 +8,12 @@
 | /1.1/search/mlt | GET | moreLikeThis 相关性查询 |
 | /1.1/search/analyze | GET | 分词结果查询 |
 
-在调用全文搜索的 REST API 接口前，需要首先[为相应的 Class 启用搜索](app_search_guide.html#为_Class_启用搜索)。
-另外也请参考 REST API 指南中关于 [API Base URL](rest_api.html#api-base-url)、[请求格式](rest_api.html#请求格式)、[响应格式](rest_api.html#响应格式)的说明，以及全文搜索开发指南的[自定义分词](app_search_guide.html#自定义分词)章节。
+在调用全文搜索的 REST API 接口前，需要首先为相应的 Class 启用搜索。
+另外也请参考《存储 REST API 使用指南》中关于 API Base URL、请求格式、响应格式的说明，以及《全文搜索开发指南》的《自定义分词》章节。
 
 ## 条件查询
 
-LeanCloud 提供了 `/1.1/search/select` REST API 接口来做全文搜索。
+`GET /1.1/search/select` REST API 接口提供全文搜索功能。
 
 
 ```sh
@@ -49,12 +49,12 @@ curl -X GET \
 
 参数|约束|说明
 ---|---|---
-`q`|必须|查询文本，支持 elasticsearch 的 query string 语法。参见 [q 查询语法](#q_查询语法)。
+`q`|必须|查询文本，支持 elasticsearch 的 query string 语法。参见 [q 查询语法](#q-查询语法)。
 `skip`|可选|跳过的文档数目，默认为 0
 `limit`|可选|返回集合大小，默认 100，最大 1000
 `sid`|可选|之前查询结果中返回的 sid 值，用于分页，对应于 elasticsearch 中的 [scroll id]。
 `fields`|可选|逗号隔开的字段列表，查询的字段列表
-<code class="text-nowrap">highlights</code>|可选|高亮字段，可以是通配符 `*`，也可以是字段列表逗号隔开的字符串。
+`highlights`|可选|高亮字段，可以是通配符 `*`，也可以是字段列表逗号隔开的字符串。
 `clazz`|可选|类名，如果没有指定或者为空字符串，则搜索所有启用了全文搜索的 class。
 `include`|可选|关联查询内联的 Pointer 字段列表，逗号隔开，形如 `user,comment` 的字符串。**仅支持 include Pointer 类型**。
 `order`|可选|排序字段，形如 `-score,createdAt` 逗号隔开的字段，负号表示倒序，可以多个字段组合排序。
@@ -87,21 +87,21 @@ curl -X GET \
 
 ### q 查询语法
 
-q 的查询走的是 elasticsearch 的 [query string 语法](https://www.elastic.co/guide/en/elasticsearch/reference/7.4/query-dsl-query-string-query.html#query-string-syntax)。建议详细阅读这个文档。这里简单做个举例说明。
+q 参数遵循 elasticsearch 的 [query string 语法](https://www.elastic.co/guide/en/elasticsearch/reference/7.4/query-dsl-query-string-query.html#query-string-syntax)。建议详细阅读这个文档。这里简单做个举例说明。
 
-如果你非常熟悉 elasticsearch 的 query string 语法，那么可以跳至[地理位置信息查询](#地理位置信息查询)一节（地理位置查询是 LeanCloud 全文搜索在 elasticsearch 上添加的扩展功能）。
+如果你非常熟悉 elasticsearch 的 query string 语法，那么可以跳至[地理位置信息查询](#地理位置信息查询)一节（地理位置查询是我们在 elasticsearch 上添加的扩展功能）。
 
 查询的关键字保留字符包括： `+ - = && || > < ! ( ) { } [ ] ^ " ~ * ? : \ /`，当出现这些字符的时候，请对这些保留字符做 URL Escape 转义。
 
 #### 基础查询语法
 
 - 查询某个关键字，例如 `可乐`。
-- 查询**多个关键字**，例如 `可口 可乐`，空格隔开，返回的结果默认按照文本相关性排序，其他排序方法请参考上文中的 [order](#搜索_API) 和下文中的 [sort](#复杂排序)。
+- 查询**多个关键字**，例如 `可口 可乐`，空格隔开，返回的结果默认按照文本相关性排序，其他排序方法请参考上文中的 [order](#搜索-API) 和下文中的 [sort](#复杂排序)。
 - 查询某个**短语**，例如 `"lady gaga"`，注意用双引号括起来，这样才能保证查询出来的相关对象里的相关内容的关键字也是按照 `lady gaga` 的顺序出现。
 - 根据**字段查询**，例如根据 nickname 字段查询：`nickename:逃跑计划`。
 - 根据字段查询，也可以是短语，记得加双引号在短语两侧： `nickename:"lady gaga"`
 - **复合查询**，AND 或者 OR，例如 `nickname:(逃跑计划 OR 夜空中最亮的星)`
-- 假设 book 字段是 object 类型，那么可以根据**内嵌字段**来查询，例如 `book.name:clojure OR book.content:clojure`，也可以用通配符简写为 `book.\*:clojure`。
+- 假设 book 字段是 object 类型，那么可以根据**内嵌字段**来查询，例如 `book.name:clojure OR book.content:clojure`，也可以用通配符简写为 `book.*:clojure`。
 - 查询没有 title 的对象： `_missing_:title`。
 - 查询有 title 字段并且不是 null 的对象：`_exists_:title`。
 
@@ -168,10 +168,10 @@ age:<=10
 
 ### 复杂排序
 
-假设你要排序的字段是一个数组，比如分数数组`scores`，你想根据平均分来倒序排序，并且没有分数的排最后，那么可以传入：
+假设你要排序的字段是一个数组，比如分数数组 `scores`，你想根据平均分来倒序排序，并且没有分数的排最后，那么可以传入：
 
 ``` sh
- --data-urlencode 'sort=[{"scores":{"order":"desc","mode":"avg","missing":"_last"}}]'
+--data-urlencode 'sort=[{"scores":{"order":"desc","mode":"avg","missing":"_last"}}]'
 ```
 
 也就是 `sort` 可以是一个 JSON 数组，其中每个数组元素是一个 JSON 对象：
@@ -218,7 +218,7 @@ age:<=10
 
 ## moreLikeThis 相关性查询
 
-除了 `/1.1/search/select` 之外，我们还提供了 `/1.1/search/mlt` 的 API 接口，用于相似文档的查询，可以用来实现相关性推荐。
+除了 `/1.1/search/select` 之外，我们还提供了 `/1.1/search/mlt` API 接口，用于相似文档的查询，可以用来实现相关性推荐。
 
 假设我们有一个 Class 叫 `Post` 是用来保存博客文章的，我们想基于它的标签字段 `tags` 做相关性推荐：
 
@@ -286,7 +286,7 @@ curl -X GET \
 
 全文搜索会对 String 类型的字段自动进行分词处理。
 如果发现搜索结果不符合预期，推荐先通过 `analyze` API 检查分词结果（要求使用 master key）。
-`analyze` API 也用于验证[自定义词库](app_search_guide.html#自定义分词)是否生效。
+`analyze` API 也用于验证自定义词库是否生效。
 
 ```sh
 curl -X GET \
