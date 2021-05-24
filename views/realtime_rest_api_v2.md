@@ -6,7 +6,6 @@
 对于 POST 和 PUT 请求，请求的主体必须是 JSON 格式，而且 HTTP Header 的 Content-Type 需要设置为 `application/json`。
 请求的鉴权是通过 HTTP Header 里面包含的键值对来进行的，详见《存储 REST API 使用指南》中《请求格式》一节的说明。
 
-
 `_Conversation` 表包含一些内置的关键字段定义了对话的属性、成员等，单聊、群聊、聊天室、服务号均在此表中，详见《即时通讯概览》的《对话》一节。
 不过为了避免出现数据不一致问题，我们不推荐调用数据存储相关的 API 直接操作 `_Conversation` 表中的数据。
 
