@@ -25,7 +25,7 @@
 {%- endmacro %}
 
 {% macro localizedDates() -%}
-注：应用控制台对 `createdAt` 和 `updatedAt` 做了在展示优化，它们会依据用户操作系统时区而显示为本地时间；客户端 SDK 获取到这些时间后也会将其转换为本地时间；而通过 REST API 获取到的则是原始的 UTC 时间，开发者可能需要根据情况做相应的时区转换。
+注：应用控制台对 `createdAt` 和 `updatedAt` 的展示做了优化，它们会依据用户操作系统时区而显示为本地时间；客户端 SDK 获取到这些时间后也会将其转换为本地时间；而通过 REST API 获取到的则是原始的 UTC 时间，开发者可能需要根据情况做相应的时区转换。
 {%- endmacro %}
 
 {% macro innerQueryLimitation(heading="", description="使用子查询可能会遇到查不到记录或查到的记录不全的情况。例如：", skip="skip") -%}

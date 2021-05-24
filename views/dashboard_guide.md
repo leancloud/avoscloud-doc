@@ -549,7 +549,7 @@ function encrypt(password,salt) {
 - 文件服务托管的文件（导出数据仅包括文件的元信息，可以通过其中的 URL 下载）
 - 云引擎的代码（建议开发者自行使用 git 等工具管理）和环境变量（可通过 `lean env` 获取）
 - 其他各种应用配置信息
-- 已 deprecate 的用户反馈功能的数据（可以通过 [REST API](rest_api.html#用户反馈组件_API) 获取）
+- 已 deprecate 的用户反馈功能的数据（可以通过 [REST API](feedback.html) 获取）
 
 ### 导入数据
 
