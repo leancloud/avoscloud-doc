@@ -4,18 +4,20 @@
 
 ## 创建项目
 
-请根据 [命令行工具使用指南 &middot; 安装](leanengine_cli.html#安装命令行工具) 安装最新版的 LeanCloud 官方命令行工具，并确保你已经在本地机器上可以成功运行命令行工具：
+请根据《命令行工具使用指南》的《安装命令行工具》一节安装最新版的 LeanCloud 官方命令行工具，并确保你已经在本地机器上可以成功运行命令行工具：
 
-```
+```sh
 lean help
 ```
+
 如果一切正常，你应该看到命令行工具的帮助信息。
 
 使用命令行工具创建项目：
 
-```
+```sh
 lean init
 ```
+
 然后根据提示输入相关信息即可。
 
 ## 本地运行
@@ -34,9 +36,13 @@ composer install
 ```java
 mvn package
 ```
+```cs
+// 需要安装 global.json 文件中指定的 .Net SDK 版本
+```
 ```go
 go mod tidy && go mod vendor
 ```
+
 然后启动应用：
 
 ```
@@ -82,6 +88,11 @@ LeanEngine
 一个简单的动态路由示例
 
 一个简单的「TODO 列表」示例
+```
+```cs
+Welcome
+
+Learn about building Web apps with ASP.NET Core.
 ```
 ```go
 LeanEngine
@@ -136,6 +147,16 @@ $app->get('/', function (Request $request, Response $response) {
 
 // ...
 ```
+```cs
+// ./web/Startup.cs
+// ...
+app.UseEndpoints(endpoints => {
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+})
+// ...
+```
 ```go
 // ./main.go
 // ...
@@ -156,6 +177,8 @@ func Index(c echo.Context) error {
 打开控制台选择对应的应用，可以看到在 Todo 表中会有一个新的记录，它的 `content` 列的值就是刚才输入的「点个外卖」。
 
 详细的实现细节请阅读源代码，里面有完整的代码以及注释帮助开发者理解如何在 LeanEngine 上编写符合自己项目需求的代码。
+
+注：.Net 模板项目暂未实现 Todo 功能演示。
 
 ### 新建一个云函数
 
@@ -203,6 +226,18 @@ public static void createTodo(@EngineFunctionParam("content") String content)
   todo.save();   
 }
 ```
+```cs
+// 在项目的 web/App.cs 文件开头导入云函数定义中用到的类
+using System.Threading.Tasks;
+using LeanCloud.Storage;
+// 在上述文件的 App 类中新增一个方法
+[LCEngineFunction("createTodo")]
+public static async Task createTodo([LCEngineFunctionParam("content")] string content) {
+    LCObject todo = new LCObject("Todo");
+    todo["content"] = content;
+    await todo.Save();
+}
+```
 ```go
 // 在云函数文件中导入 leancloud 包
 // 建议在项目的 functions 文件夹中定义云函数
@@ -227,8 +262,9 @@ func createTodo(req *leancloud.FunctionRequest) (interface{}, error) {
   return nil, nil
 }
 ```
+
 还有一类特殊的云函数是由云端系统在特定事件发生时自动触发，这类云函数称为 Hook 函数。
-想要了解 Hook 函数的详情以及如何调用我们上面定义的 `createTodo` 云函数，请参考 [云函数开发指南](leanengine_cloudfunction_guide-node.html)。
+想要了解 Hook 函数的详情以及如何调用我们上面定义的 `createTodo` 云函数，请参考《云函数开发指南》。
 
 ## 部署到云端
 
@@ -244,5 +280,5 @@ lean deploy
 lean deploy --prod 1
 ```
 
-你可以在控制台[绑定云引擎域名](custom-api-domain-guide.html#云引擎域名)，绑定域名后，即可通过绑定域名访问你的应用。
+你可以在控制台绑定云引擎域名，绑定域名后，即可通过绑定域名访问你的应用。
 例如，假定你在控制台绑定了 `web.example.com` 这个域名，即可通过 `https://web.example.com` 访问你的应用（生产环境）。
