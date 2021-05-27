@@ -56,7 +56,7 @@ client.search({
 
 ## 中文分词
 除了 elasticsearch 自带的分词器，我们还提供了 
-[Elasticsearch ik plugin](https://github.com/medcl/elasticsearch-analysis-ik) 支持中文分词。
+[Elasticsearch ik plugin](https://github.com/medcl/elasticsearch-analysis-ik) 以支持中文分词。
 我们可以通过以下途径指定使用 IK 插件进行中文分词：
 1. 在搜索时，指定分词器
 2. 在创建索引时，为特定 `field` 指定搜索分词器
@@ -79,4 +79,3 @@ client.search({
 * 目前 LeanDB Elasticsearch 只支持从云引擎中访问，在本地调试时无法访问。
 * 如账户欠费超过 3 天，LeanDB 及其中的数据会被彻底删除。
 * LeanDB 每天扣费，不足一天按照一天扣费。
-
