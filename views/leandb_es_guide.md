@@ -18,7 +18,7 @@ LeanDB 是 LeanCloud 推出的数据库托管方案，开发者可以在「控�
 
 ## 在云引擎中使用
 LeanDB 所在的应用的云引擎部署时，会被注入包含 Elasticsearch 连接信息的环境变量`ELASTICSEARCH_URL_<NAME>` ，
-其中 `NAME` 时你在创建 LeanDB 时为它指定的名字，如果你的 LeanDB 名为 `MYES` 的话，就会有名为 `ELASTICSEARCH_URL_MYES` 的环境变量。
+其中 `NAME` 是你在创建 LeanDB 时为它指定的名字，如果你的 LeanDB 名为 `MYES` 的话，就会有名为 `ELASTICSEARCH_URL_MYES` 的环境变量。
 该环境变量的格式是 `http://username:password@host:port`，其中包含了所有连接 Elasticsearch 所需的信息，包括认证信息。
 ### Node.js
 在 Node.js 中你可以这样连接到 ElasticSearch：
@@ -79,5 +79,4 @@ client.search({
 * 目前 LeanDB Elasticsearch 只支持从云引擎中访问，在本地调试时无法访问。
 * 如账户欠费超过 3 天，LeanDB 及其中的数据会被彻底删除。
 * LeanDB 每天扣费，不足一天按照一天扣费。
-
 
