@@ -2,7 +2,7 @@
 
 LeanDB 是 LeanCloud 推出的数据库托管方案，开发者可以在「控制台 => 云引擎 => LeanDB」中创建托管在 LeanCloud 的数据库实例。这篇文章主要介绍其中的 ElasticSearch 数据库。
 
-开发者可以在云引擎中连接到自己的 LeanDB 实例，通过 HTTP 或者 使用 Elasticseaarch 官方客户端类库，访问完整的 Elastcisearch 功能。
+开发者可以在云引擎中连接到自己的 LeanDB 实例，通过 HTTP 或者 使用 Elasticsearch 官方客户端类库，访问完整的 Elasticsearch 功能。
 
 ## 主要特性
 * **高可用**：多节点集群方案，可以容忍单节点故障。
@@ -79,6 +79,5 @@ client.search({
 * 目前 LeanDB Elasticsearch 只支持从云引擎中访问，在本地调试时无法访问。
 * 如账户欠费超过 3 天，LeanDB 及其中的数据会被彻底删除。
 * LeanDB 每天扣费，不足一天按照一天扣费。
-
 
 
