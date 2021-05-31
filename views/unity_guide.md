@@ -879,7 +879,7 @@ LiveQuery 使用 WebSocket 在客户端和云端之间建立连接。WebSocket �
 ### 效果示例
 下面是在使用了 LiveQuery 的网页应用和手机应用中分别操作，数据保持同步的效果：
 <div style="border:2px solid #ccc; margin-bottom:1em;">
-  <video src="https://lc-lhzo7z96.cn-n1.lcfile.com/1496988080458" controls autoplay muted preload="auto" width="100%" height="100%" >
+  <video src="https://capacity-files.lncld.net/1496988080458" controls autoplay muted preload="auto" width="100%" height="100%" >
     HTML5 Video is required for this demo, which your browser doesn't support.
   </video>
 </div>
