@@ -41,7 +41,7 @@ Android 开发者在使用 LeanCloud 服务前必须将签名证书的指纹配�
 
 新的认证方式，在客户端需要配合 LeanCloud native library 来进行请求签名。
 
-请[点击这里](http://lc-lhzo7z96.cn-n1.lcfile.com/4facc18ba5c5a2ad0baf/leancloud-jniLibs-v2.zip)下载 JNI library，将下载文件在本地解压，可以得到如下文件：
+请[点击这里](https://capacity-files.lncld.net/4facc18ba5c5a2ad0baf/leancloud-jniLibs-v2.zip)下载 JNI library，将下载文件在本地解压，可以得到如下文件：
 ```
 jniLibs
 ├── arm64-v8a
