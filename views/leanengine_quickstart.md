@@ -45,7 +45,7 @@ go mod tidy && go mod vendor
 
 然后启动应用：
 
-```
+```sh
 lean up
 ```
 
@@ -103,6 +103,7 @@ Current date: 2021-02-28 23:54:47.821183329 +0800 CST m=+1.093390203
 
 A simple todo demo
 ```
+
 访问页面的路由定义如下：
 
 ```javascript
@@ -270,13 +271,13 @@ func createTodo(req *leancloud.FunctionRequest) (interface{}, error) {
 
 使用免费版的应用可以直接部署到生产环境：
 
-```
+```sh
 lean deploy
 ```
 
 如果生产环境是标准实例，需要加上 `--prod 1` 参数，指定部署到生产环境：
 
-```
+```sh
 lean deploy --prod 1
 ```
 
