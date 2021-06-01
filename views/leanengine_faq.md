@@ -149,6 +149,21 @@ lean -p 3002
 
 **注意**：命令行工具部署时是不会上传 `node_modules` 目录，因为云引擎服务器会根据 `package.json` 的内容自动下载三方包。所以也建议将 `node_modules` 目录添加到 `.gitignore` 中，使其不加入版本控制。
 
+## Node.js 项目的 `devDependencies` 没有安装？
+
+云引擎会在部署时用 `npm ci` 为你安装项目依赖，包括 `devDependencies`。
+不过，如果项目的 Node.js 版本小于 10，则会使用 `npm install --production` 安装依赖，相应地，`devDependencies` 中列出的依赖**不会**安装。
+如需安装 `devDependencies`，请在项目的 `leanengine.yaml` 中指定 `installDevDependencies: true`。
+
+## Node.js 项目中同时包含 `package-lock.json` 和 `yarn.lock` 时，以哪个文件为准？
+
+- 如果你的应用目录中含有 `package-lock.json`，那么会根据 lock 中的描述进行安装（需要 Node.js 8.0 以上）。
+- 如果你的应用目录中含有 `yarn.lock`，那么会使用 `yarn install` 代替 `npm install` 来安装依赖（需要 Node.js 4.8 以上）。
+- 如果你的应用目录中同时包含 `package-lock.json` 和 `yarn.lock`，云引擎会使用 `yarn install`。换言之，`yarn.lock` 优先。
+
+如果不希望使用 `yarn.lock`，请将它们加入 `.gitignore`（Git 部署时）或 `.leanengineignore`（命令行工具部署时）。
+
+另外，也请注意 `yarn.lock` 中包含了下载依赖的 URL，请选择合适的源，否则可能拖慢云引擎部署。
 ## Maximum call stack size exceeded 如何解决？
 
 > 将 JavaScript SDK 和 Node SDK 升级到 1.2.2 以上版本可以彻底解决该问题。  
@@ -362,9 +377,81 @@ npm ERR! peer dep missing: graphql@^0.10.0 || ^0.11.0, required by express-graph
 
 云引擎的访问日志（Access Log）同样可以[在控制台导出](dashboard_guide.html#访问日志)。
 
+## 云引擎支持哪些 Python 版本？
+
+目前仅支持 CPython 版本，暂时不支持 PyPy、Jython、IronPython 等其他 Python 实现。
+另外建议尽量使用 3.6 或以上版本的 Python 进行开发，如果仍然在使用 Python 2 ，请使用 Python 2.7 进行开发。
+
+## 云引擎支持哪些 PHP 版本？
+
+目前云引擎支持 `5.6`、`7.0`、`7.1`、`7.2`、`7.3`、`7.4`、`8.0` 这几个版本，后续如果有新版本发布，也会添加支持。
+
+## 云引擎的 PHP 环境支持哪些扩展？
+
+所有版本的 PHP 默认开启以下扩展：`fpm`、`curl`、`mysql`、`zip`、`xml`、`mbstring`、`gd`、`soap`、`sqlite3`。
+7.0 以上版本的 PHP 还默认开启了 `mongodb` 扩展。
+在 PHP 7.2 中官方从核心中移除了 `mcrypt` 这个拓展，云引擎以选装的方式继续提供支持，在 `composer.json` 的 `require` 中加入 `ext-mcrypt: *` 即可，使用 `mcrypt` 会增加部署耗时，如果没有用到请不要加。
+如果您需要用到其他扩展，请提交工单联系我们。
+
+## 云引擎的 PHP 环境如何指定 FPM Worker 数量？
+
+对于 PHP 项目，我们默认每 64 MB 内存分配一个 PHP-FPM Worker，如果希望自定义 Worker 数量，可以在云引擎设置页面的「自定义环境变量」中添加名为 `PHP_WORKERS` 的环境变量，值是一个数字。设置过低会导致收到新请求时无可用的 Worker；过高会导致内存不足、请求处理失败，建议谨慎调整。
+
+## 是否支持 `path` 类型的 composer 本地仓库？
+
+由于构建时会复制 `composer.json` 和 `composer.lock` 到专门的目录安装依赖，因此不支持 `path` 类型的 composer 本地仓库。
+如果您的项目使用了 `path` 类型的本地仓库，我们建议改为 `vcs` 类型。
 ## 如何定制 Java 的堆内存大小？
 
-见 [网站托管开发指南 · Java](leanengine_webhosting_guide-java.html#项目骨架)。
+云引擎运行 Java 应用时，会自动将 `-Xmx` 参数设置为实例规格的 70%，剩下的 30% 留给堆外内存和其他开销。如果你的应用比较特殊（比如大量使用堆外内存）可以自己定制 `-Xmx` 参数。假设使用 2 GB 内存规格的实例运行，则可以在云引擎的设置页面增加「自定义环境变量」，名称为 `JAVA_OPTS`，值为 `-Xmx1500m`，这样会限制 JVM 堆最大为 1.5 GB，剩下 500 MB 留给持久代、堆外内存或者其他一些杂项使用。**注意：`-Xmx` 参数如果设置得过小可能会导致大量 CPU 消耗在反复的的 GC 任务上**。
+
+## 如何脱离命令行工具本地启动云引擎 Java 项目？
+
+设置云引擎运行需要的环境变量后，可以通过脱离命令行工具，直接运行相应命令或使用 IDE 本地启动 Java 项目。
+
+通过命令行启动 Jetty 项目或 JAR 项目，先设置环境变量：
+
+```sh
+eval "$(lean env)"
+```
+
+提示：命令 `lean env` 可以输出当前应用所需环境变量的设置语句，外层的 `eval` 是直接执行这些语句。
+Windows 系统下需要手动设置 `lean env` 输出的环境变量。
+
+如果是 Jetty 项目，运行：
+
+```
+mvn jetty:run
+```
+
+如果是 JAR 项目，使用 Maven 打包项目并运行：
+
+```sh
+mvn package
+java -jar target/{zipped jar file}
+```
+
+使用 Eclipse 启动应用：
+
+首先确保 Eclipse 已经安装 Maven 插件，并将项目以 **Maven Project** 方式导入 Eclipse 中。
+
+在 **Package Explorer** 视图右键点击项目：
+
+- 如果是 Jetty 项目，选择 **Run As** > **Maven build…**，将 **Main** 标签页的 **Goals** 设置为 `jetty:run`。
+- 如果是 JAR 项目，选择 **Run As** > **Run Configurations…**，选择 `Application`，设置 `Main class:`（示例项目为 `cn.leancloud.demo.todo.Application`）。
+
+最后在 **Environment** 标签页增加以下环境变量和相应的值：
+
+名称 | 值
+--- | ---
+`LEANCLOUD_APP_ENV` | `development`
+`LEANCLOUD_APP_ID` | `{{appid}}`
+`LEANCLOUD_APP_KEY` | `{{appkey}}`
+`LEANCLOUD_APP_MASTER_KEY` | `{{masterkey}}`
+`LEANCLOUD_APP_PORT` | `3000`
+
+
+配置完成后，以后只需点击 run 按钮即可启动应用。
 
 ## PHP 项目从 files.phpcomposer.com 下载文件失败，部署失败怎么办？
 
@@ -373,6 +460,403 @@ phpcomposer.com 镜像已经停止服务，PHP 项目的 `composer.lock` 文件�
 
 1. 移除 `composer.lock` 后再部署（云引擎会直接根据 `coposer.json` 安装依赖）。
 2. 在本地正确配置仓库地址后，运行 `composer update --lock` 更新 `composer.lock` 文件中的下载链接（不改变具体的版本）。
+
+## 如何接入 Go 框架？
+
+细心的开发者已经发现示例项目是一个基于 [echo](https://github.com/labstack/echo) 的 Web 应用。
+
+Go SDK 以标准库 HTTP 方法的形式提供了可供任意框架接入的接口，以 **echo** 为示例：
+
+```go
+// ./adapters/echo.go
+//...
+func Echo(e *echo.Echo) {
+	e.Any("/1/*", echo.WrapHandler(leancloud.Handler(nil)), setResponseContentType)
+	e.Any("/1.1/*", echo.WrapHandler(leancloud.Handler(nil)), setResponseContentType)
+	e.Any("/__engine/*", echo.WrapHandler(leancloud.Handler(nil)), setResponseContentType)
+}
+
+func setResponseContentType(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set("Content-Type", "application/json; charset=UTF-8")
+		return next(c)
+	}
+}
+```
+
+函数 **Echo** 接收 echo 实例对象，将 Go SDK 中提供 LeanEngine 相关功能的接口绑定到 `/1/` `/1.1/` 和 `/__engine/` 开头的路由前缀上，保证 LeanEngine 相关的底层功能正常。
+
+函数 `setResponseContentType` 设置所有和 LeanEngine 相关的请求的 `Content-Type` 为 `application/json`，并且编码为 `UTF-8`。
+
+大多数 Go Web 框架均提供将标准库 HTTP Handler 转换为特有 Handler 的方法，只要保证能够在其他框架中接入以上两个部件，即可将 LeanEngine 集成入你喜爱的 Go Web 框架中。
+## 如何接入 Node.js 框架？
+
+细心的开发者已经发现在示例项目中的 `package.json` 中引用了一个流行的 Node Web 框架 [Express](http://expressjs.com/)。
+
+Node.js SDK 为 [Express](http://expressjs.com/) 和 [Koa](http://koajs.com/) 提供了集成支持。
+
+如果你已经有了现成的项目使用的是这两个框架，只需通过下面的方式加载 Node.js SDK 提供的中间件到当前项目中即可：
+
+```sh
+npm install --save leanengine leancloud-storage
+```
+
+引用和配置的代码如下：
+
+### Express
+
+```js
+var express = require('express');
+var AV = require('leanengine');
+
+AV.init({
+  appId: process.env.LEANCLOUD_APP_ID || '{{appid}}',
+  appKey: process.env.LEANCLOUD_APP_KEY || '{{appkey}}',
+  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || '{{masterkey}}'
+});
+
+var app = express();
+app.use(AV.express());
+app.listen(process.env.LEANCLOUD_APP_PORT);
+```
+
+其中，`AV.express` 接受一个可选参数 `options`，`options` 是一个对象，目前支持以下两个可选属性：
+
+- `onError`：全局错误处理函数，云函数（包括 Hook 函数）抛出异常时会调用该函数。该函数的使用场景包括统一发送错误报告。
+- `ignoreInvalidSessionToken`：布尔值，为真时忽略客户端发来的错误的 `sessionToken`（`X-LC-session` 头），为假时抛出 `401` 错误 `{"code": 211, "error": "Verify sessionToken failed, maybe login expired: ..."}`。客户端 SDK 发送请求时会统一发送 `X-LC-session` 头（其中指定了 `sessionToken`），`sessionToken` 可能因种种原因失效，而云函数在很多情况下并不关心 `sessionToken`。因此，云引擎提供了 `ignoreInvalidSessionToken` 这个选项，设为真时忽略 `sessionToken` 错误。反之，如果该选项设为假，客户端收到相应报错时，需要重新登录。
+
+你可以使用 Express 的路由定义功能来提供自定义的 HTTP API：
+
+```js
+app.get('/', function (req, res) {
+  res.render('index', { title: 'Hello World' });
+});
+
+app.get('/time', function (req, res) {
+  res.json({
+    time: new Date()
+  });
+});
+
+app.get('/todos', function (req, res) {
+  new AV.Query('Todo').find().then(function (todos) {
+    res.json(todos);
+  }).catch(function (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  });
+});
+```
+
+更多最佳实践请参考我们的 [项目模板](https://github.com/leancloud/node-js-getting-started) 和 [云引擎 Node.js Demo 仓库](https://github.com/leancloud/leanengine-nodejs-demos)。
+
+### Koa
+
+```js
+var koa = require('koa');
+var AV = require('leanengine');
+
+AV.init({
+  appId: process.env.LEANCLOUD_APP_ID || '{{appid}}',
+  appKey: process.env.LEANCLOUD_APP_KEY || '{{appkey}}',
+  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY || '{{masterkey}}'
+});
+
+var app = koa();
+app.use(AV.koa());
+app.listen(process.env.LEANCLOUD_APP_PORT);
+```
+
+`AV.koa` 同样接受可选参数 `options`，关于 `options` 对象的具体说明，请参考上节。
+
+你可以使用 Koa 来渲染页面、提供自定义的 HTTP API：
+
+```js
+app.use(function* (next) {
+  if (this.url === '/todos') {
+    return new AV.Query('Todo').find().then(todos => {
+      this.body = todos;
+    });
+  } else {
+    yield next;
+  }
+});
+```
+
+使用 Koa 时建议将 `package.json` 中的 Node.js 的版本设置为 `4.x` 以上。
+
+### 其他 Web 框架
+
+你也可以使用其他的 Web 框架进行开发，但你需要自行去实现云引擎健康监测的逻辑。
+下面是一个使用 Node.js 内建的 [`http`](https://nodejs.org/api/http.html) 实现的最简示例，可供参考：
+
+```js
+require('http').createServer(function (req, res) {
+  if (req.url == '/') {
+    res.statusCode = 200;
+    res.end();
+  } else {
+    res.statusCode = 404;
+    res.end();
+  }
+}).listen(process.env.LEANCLOUD_APP_PORT);
+```
+
+你需要将 Web 服务监听在 `0.0.0.0` 上（Node.js 和 Express 的默认行为）而不是 `127.0.0.1`。
+
+可参考《在云引擎中使用其他 Node 框架》这篇指南。
+### 路由超时设置
+
+因为 Node.js 的异步调用容易因运行时错误或编码疏忽中断，为了减少在这种情况下对服务器内存的占用，也为了客户端能够更早地收到错误提示，所以需要添加这个设置，一旦发生超时，服务端会返回一个 HTTP 错误码给客户端。
+
+使用 Express 框架实现自定义路由的时候，请求默认的超时时间为 15 秒，该值可以在 `app.js` 中进行调整：
+
+```js
+// 设置默认超时时间
+app.use(timeout('15s'));
+```
+
+## 自行接入 Node.js 框架时如何使用云服务的数据存储功能？
+
+模板项目已经集成了 Node.js SDK，并且包含 SDK 初始化的逻辑。
+
+如果项目自行接入 Web 框架，那么需要安装 Node.js SDK （`leanengine`），另外， JavaScript SDK（`leancloud-storage`）也需要作为 peer dependency 一同安装，在升级 Node.js SDK 时也请记得升级 JavaScript SDK：
+
+```sh
+npm install --save leanengine leancloud-storage
+```
+
+同时也需要自行初始化 SDK（注意我们在云引擎中开启了 masterKey 权限，这将会跳过 ACL 和其他权限限制）：
+
+```js
+const AV = require('leanengine'); 
+
+AV.init({
+  appId: process.env.LEANCLOUD_APP_ID,
+  appKey: process.env.LEANCLOUD_APP_KEY,
+  masterKey: process.env.LEANCLOUD_APP_MASTER_KEY
+});
+
+AV.Cloud.useMasterKey();
+```
+
+## Node.js SDK 不同版本的主要差异？
+
+Node SDK 的历史版本：
+
+- `0.x`：最初的版本，对 Node.js 4.x 及以上版本兼容不佳，建议用户参考[升级到云引擎 Node.js SDK 1.0](https://leancloud.cn/docs/leanengine-node-sdk-upgrade-1.html) 来更新。
+- `1.x`：彻底废弃了全局的 `currentUser`，依赖的 JavaScript 也升级到了 1.x 分支，支持了 Koa 和 Node.js 4.x 及以上版本。
+- `2.x`：提供了对 Promise 风格的云函数、Hook 写法的支持，移除了一些被弃用的特性（`AV.Cloud.httpRequest`），不再支持 Backbone 风格的回调函数。
+- `3.x`：**推荐使用** 的版本，指定 JavaScript SDK 为 peer dependency（允许自定义 JS SDK 的版本），升级 JS SDK 到 3.x。
+
+详见 Node.js SDK 的 [更新日志](https://github.com/leancloud/leanengine-node-sdk/releases)。
+
+## 自行接入 Python WSGI 框架时如何使用云服务的数据存储功能？
+
+模板项目已经集成了 Python SDK，并且包含 SDK 初始化的逻辑。
+
+如果项目自行接入 Web 框架，那么需要将 `leancloud` 添加到 `requirements.txt` 中，部署到线上即可自动安装此依赖。在本地运行和调试项目的时候，可以在项目目录下使用如下命令进行依赖安装：
+
+```sh
+pip install -r requirements.txt
+```
+
+同时也需要自行初始化 SDK。
+因为 `wsgi.py` 是项目最先被执行的文件，推荐在此文件进行 Python SDK 的初始化工作：
+
+```python
+import os
+import leancloud
+
+APP_ID = os.environ['LEANCLOUD_APP_ID']
+APP_KEY = os.environ['LEANCLOUD_APP_KEY']
+MASTER_KEY = os.environ['LEANCLOUD_APP_MASTER_KEY']
+
+leancloud.init(APP_ID, app_key=APP_KEY, master_key=MASTER_KEY)
+
+leancloud.use_master_key(True)
+```
+
+注意我们在云引擎中开启了 masterKey 权限，这将会跳过 ACL 和其他权限限制。
+
+## PyPI 上有 `leancloud-sdk` 和 `leancloud` 两个包，该用哪一个？
+
+请使用 `leancloud`。
+
+`leancloud-sdk` 是旧版的 Python SDK，已经不再维护。
+
+不同版本的差别详见 Python SDK 的[更新日志](https://github.com/leancloud/python-sdk/blob/master/changelog)。
+
+## 自行接入 PHP 框架时如何使用云服务的数据存储功能？
+
+模板项目已经集成了 PHP SDK，并且包含 SDK 初始化的逻辑。
+
+如果自行接入 [Slim 框架](http://www.slimframework.com)，可以参考示例项目直接使用 SDK 提供的中间件。
+
+如果自行接入其他框架，则需要自己配置依赖：
+
+```sh
+composer require leancloud/leancloud-sdk
+```
+
+同时也需要自行初始化 SDK（注意我们在云引擎中开启了 masterKey 权限，这将会跳过 ACL 和其他权限限制）。
+
+```php
+use \LeanCloud\Client;
+
+Client::initialize(
+    getenv("LEANCLOUD_APP_ID"),
+    getenv("LEANCLOUD_APP_KEY"),
+    getenv("LEANCLOUD_APP_MASTER_KEY")
+);
+
+Client::useMasterKey(true);
+```
+
+## 自行接入 Java 框架时如何使用云服务的数据存储功能？
+
+模板项目已经集成了 [Java Unified SDK](https://github.com/leancloud/java-unified-sdk) 的 [engine-core](https://github.com/leancloud/java-unified-sdk/tree/master/leanengine) 模块，engine-core 又依赖于存储核心模块 storage-core，因此开发者可以直接使用云服务的数据存储功能。
+模板项目也包含了SDK 初始化的逻辑。
+
+如果自行接入其他框架，则需要在 `pom.xml` 中增加依赖配置来增加 LeanEngine Java SDK 的依赖：
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>cn.leancloud</groupId>
+    <artifactId>engine-core</artifactId>
+    <version>7.2.6</version>
+  </dependency>
+</dependencies>
+```
+
+同时也需要自行初始化 SDK（注意我们在云引擎中开启了 masterKey 权限，这将会跳过 ACL 和其他权限限制）。
+
+```java
+import cn.leancloud.AVCloud;
+import cn.leancloud.AVObject;
+import cn.leancloud.core.GeneralRequestSignature;
+import cn.leancloud.LeanEngine;
+
+
+String appId = System.getenv("LEANCLOUD_APP_ID");
+String appKey = System.getenv("LEANCLOUD_APP_KEY");
+String appMasterKey = System.getenv("LEANCLOUD_APP_MASTER_KEY");
+String hookKey = System.getenv("LEANCLOUD_APP_HOOK_KEY");
+
+LeanEngine.initialize(appId, appKey, appMasterKey);
+
+GeneralRequestSignature.setMasterKey(appMasterKey);
+```
+
+## 自行接入 .NET 框架时如何使用云服务的数据存储功能？
+
+模板项目已经集成了 .NET SDK，并且包含 SDK 初始化的逻辑。
+
+如果自行接入其他框架，则需要自己添加依赖：
+
+```sh
+dotnet add package LeanCloud.Storage
+```
+
+同时也需要自行初始化 SDK：
+
+```cs
+LCEngine.Initialize(services);
+```
+
+## 自行接入 Go 框架时如何使用云服务的
+
+模板项目已经集成了 Go SDK，并且包含 SDK 初始化的逻辑。
+
+如果自行接入其他框架，则需要自己添加依赖：
+
+```go
+import "github.com/leancloud/go-sdk/leancloud"
+```
+
+同时也需要自行初始化 SDK：
+
+```go
+client := leancloud.NewEnvClient()
+```
+
+## 云引擎的启动限制时间是多久？
+
+你的应用在启动时，云引擎的管理程序会每秒去检查你的应用是否启动成功，如果超过启动时间限制仍未启动成功，即认为启动失败。
+启动时间限制默认为 30 秒，如需延长或缩短，可以在 leanengine.yaml` 文件中指定 `startupTimeout`，可设置范围为 15 – 120 秒。
+
+## 项目部署成功了，但云函数和 Hook 不可用？
+
+为了支持云引擎的云函数和 Hook 功能，云引擎的管理程序会使用 `/1.1/functions/_ops/metadatas` 这个 URL 和 SDK 交互，请确保将这个 URL 交给 SDK 处理。
+默认情况下，云引擎会尝试从 `/1.1/functions/_ops/metadatas` 获取云函数和 Hook 的元信息，如果失败，则云函数和 Hook 功能不可用，但不会中断部署。
+如果希望在获取元信息失败后中断部署，可以在 `leanengine.yaml` 文件中指定 `functionsMode` 为 `strict`。
+如果应用不使用云函数和 Hook 功能，那么你可以：
+
+- 在 `leanengine.yaml` 中不指定 `functionsMode`，同时 `/1.1/functions/_ops/metadatas` **返回一个 HTTP `404`** 表示不使用云函数和 Hook 相关的功能；
+- 或者在 `leanengine.yaml` 中指定 `functionsMode` 为 `disabled`。注意，这种情况下，即使应用代码中定义了云函数和 Hook，Hook 也不会生效，云函数调用（通过 SDK 发起远程调用或通过 REST API 向 API 域名发起云函数调用）有可能因为被转发到错误的云引擎分组而失败。 
+
+## 不使用 SDK 的情况下，该如何实现健康监测和云函数元信息路由？
+
+不使用 SDK 的情况下，需要自行实现相关路由。
+下面给出 Java 和 PHP 的例子供参考。
+
+健康监测：
+
+```java
+// 健康监测 router
+@WebServlet(name = "LeanEngineHealthServlet", urlPatterns = {"/__engine/1/ping"})
+public class LeanEngineHealthCheckServlet extends HttpServlet {
+
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      throws ServletException, IOException {
+    resp.setHeader("content-type", "application/json; charset=UTF-8");
+    JSONObject result = new JSONObject();
+    result.put("runtime", System.getProperty("java.version"));
+    result.put("version", "custom");
+    resp.getWriter().write(result.toJSONString());
+  }
+}
+```
+
+```php
+$app->get('/__engine/1/ping', function($req, $res) {
+    // PSR-7 response is immutable
+    $response = $res->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode(array(
+        "runtime" => "php-" . phpversion(),
+        "version" => "custom"
+    )));
+    return $response;
+});
+```
+
+云函数元信息：
+
+```java
+@WebServlet(name = "LeanEngineMetadataServlet", urlPatterns = {"/1.1/functions/_ops/metadatas"})
+public class LeanEngineMetadataServlet extends HttpServlet {
+
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
+      IOException {
+    resp.setContentType("application/json; charset=UTF-8");
+    resp.getWriter().write("{\"result\":[]}");
+  }
+}
+```
+
+```php
+app.get('/1.1/_ops/functions/metadatas', function(req, res) {
+    $response = $res->withHeader("Content-Type", "application/json");
+    $response->getBody()->write(json_encode(array(
+        "result" => array()
+    )));
+    return $response;
+});
+```
 
 ## 多次部署同一个项目时镜像大小为什么差别那么大？
 
@@ -397,7 +881,431 @@ phpcomposer.com 镜像已经停止服务，PHP 项目的 `composer.lock` 文件�
 
 ## 云引擎中如何处理用户登录和 Cookie？
 
-见 [网站托管开发指南 · Node.js](leanengine_webhosting_guide-node.html#用户状态管理)。
+如果你的页面主要由服务端渲染，可以使用我们在部分 SDK 中提供的管理 Cookie 和 Session 的中间件或模块，也可以其他第三方的中间件或模块，在 Cookie 中维护用户状态。
+
+使用 Cookie 作为鉴权方式需要注意防范 [CSRF](https://github.com/pillarjs/understanding-csrf) 攻击（其他站点伪造带有正确 Cookie 的恶意请求）。
+业界通常使用 CSRF Token 来防御 CSRF 攻击，你需要传递给客户端一个随机字符串（即 CSRF Token，可通过 Cookie 传递），客户端在每个有副作用的请求中都要将 CSRF 包含在请求正文或 Header 中，服务器端需要校验这个 CSRF Token 是否正确。
+
+如果你的页面主要是由浏览器端渲染，那么建议在前端使用 SDK 登录用户，调用 SDK 的接口获取 session token，通过 HTTP Header 等方式将 session token 发送给后端。
+
+例如，在前端登录用户并通过 `user.getSessionToken()` 获取 `sessionToken` 并发送给后端：
+
+```js
+AV.User.login(user, pass).then(user => {
+  return fetch('/profile', {
+    headers: {
+      'X-LC-Session': user.getSessionToken()
+    }
+  });
+});
+```
+
+相应的后端 Node.js 代码：
+
+```js
+app.get('/profile', function (req, res) {
+  AV.User.become(req.headers['x-lc-session']).then(user => {
+    res.send(user);
+  }).catch(err => {
+    res.send({ error: err.message });
+  });
+});
+
+app.post('/todos', function (req, res) {
+  var todo = new Todo();
+  todo.save(req.body, { sessionToken: req.headers['x-lc-session'] }).then(() => {
+    res.send(todo);
+  }).catch(err => {
+    res.send({ error: err.message });
+  });
+});
+```
+
+## 如何在云引擎中使用 Node.js SDK 提供的 CookieSession 中间件？
+
+如果你的页面主要是由服务器端渲染（例如使用 EJS、Pug），在前端不需要使用 JavaScript SDK 进行数据操作，那么建议你使用我们提供的一个 `CookieSession` 中间件，在 Cookie 中维护用户状态：
+
+```js
+app.use(AV.Cloud.CookieSession({ secret: 'my secret', maxAge: 3600000, fetchUser: true }));
+```
+
+Koa 需要添加一个 `framework: 'koa'` 的参数：
+
+```js
+app.use(AV.Cloud.CookieSession({ framework: 'koa', secret: 'my secret', maxAge: 3600000, fetchUser: true }));
+```
+
+使用 `CookieSession` 的同时需要添加 CSRF Token 来防御 CSRF 攻击。
+
+你需要传入一个 `secret` 用于签名 Cookie（必须提供），这个中间件会将 `AV.User` 的登录状态信息记录到 Cookie 中，用户下次访问时自动检查用户是否已经登录，如果已经登录，可以通过 `req.currentUser` 获取当前登录用户。
+
+`AV.Cloud.CookieSession` 支持的选项包括：
+
+- **fetchUser**：是否自动 `fetch` 当前登录的 `AV.User` 对象。默认为 `false`。如果设置为 `true`，每个 HTTP 请求都将发起一次 LeanCloud API 调用来 `fetch` 用户对象。如果设置为 `false`，默认只可以访问 `req.currentUser` 的 `id`（`_User` 表记录的 `objectId`）和 `sessionToken` 属性，你可以在需要时再手动 `fetch` 整个用户。
+- **name**：Cookie 的名字，默认为 `avos.sess`。
+- **maxAge**：Cookie 的过期时间。单位为毫秒。
+
+在 Node SDK 1.x 之后我们不再允许通过 `AV.User.current()` 获取登录用户的信息，而是需要你：
+
+- 通过 `request.currentUser` 获取用户信息。
+- 在后续的方法调用显式传递 user 对象。
+
+你可以这样简单地实现一个具有登录功能的站点：
+
+```js
+app.post('/login', function (req, res) {
+  AV.User.logIn(req.body.username, req.body.password).then(function (user) {
+    res.saveCurrentUser(user); // save cookie
+    res.redirect('/profile');
+  }, function (error) {
+    res.redirect('/login');
+  });
+})
+
+app.get('/profile', function (req, res) {
+  if (req.currentUser) {
+    res.send(req.currentUser);
+  } else {
+    res.redirect('/login');
+  }
+});
+
+app.get('/logout', function (req, res) {
+  req.currentUser.logOut();
+  res.clearCurrentUser(); // clear cookie 
+  res.redirect('/profile');
+});
+```
+
+## 如何在云引擎使用 Python SDK 提供的 WSGI 中间件管理 Cookies？
+
+Python SDK 提供了一个 `leancloud.engine.CookieSessionMiddleware` 的 WSGI 中间件，使用 Cookie 来维护用户（`leancloud.User`）的登录状态。要使用这个中间件，可以在 `wsgi.py` 中将：
+
+```python
+application = engine
+```
+
+替换为：
+
+```python
+application = leancloud.engine.CookieSessionMiddleware(engine, secret=YOUR_APP_SECRET)
+```
+
+你需要传入一个 `secret` 的参数用于签名 Cookie（必须提供），这个中间件会将 `AV.User` 的登录状态信息记录到 Cookie 中，用户下次访问时自动检查用户是否已经登录，如果已经登录，可以通过 `leancloud.User.get_current()` 获取当前登录用户。
+
+`leancloud.engine.CookieSessionMiddleware` 初始化时支持的非必须选项包括：
+
+- **name**：在 cookie 中保存的 session token 的 key 的名称，默认为 `leancloud:session`。
+- **excluded_paths**：指定哪些 URL path 不处理 session token，比如在处理静态文件的 URL path 上不进行处理，防止无谓的性能浪费。接受参数类型 `list`。
+- **fetch_user**：处理请求时是否要从存储服务获取用户数据，如果为 `False` 的话，`leancloud.User.get_current()` 获取到的用户数据上除了 `session_token` 之外没有任何其他数据，需要自己调用 `fetch()` 来获取。为 `True` 的话，会自动在用户对象上调用 `fetch()`，这样将会产生一次数据存储的 API 调用。默认为 `False`。
+- **expires**：设置 cookie 的失效日期（参考 [Werkzeug Document](http://werkzeug.pocoo.org/docs/0.12/http/#werkzeug.http.dump_cookie)）。
+- **max_age**：设置 cookie 在多少秒后失效（参考 [Werkzeug Document](http://werkzeug.pocoo.org/docs/0.12/http/#werkzeug.http.dump_cookie)）。
+
+## 如何在云引擎使用 PHP SDK 提供的 CookieStorage 模块？
+
+云引擎提供了一个 `LeanCloud\Storage\CookieStorage` 模块，用 Cookie 来维护用户（`User`）的登录状态，要使用它可以在 `app.php` 中添加下列代码：
+
+```php
+use \LeanCloud\Storage\CookieStorage;
+Client::setStorage(new CookieStorage(60 * 60 * 24, "/"));
+```
+
+`CookieStorage` 支持传入秒作为过期时间，以及路径作为 cookie 的作用域。默认过期时间为 7 天。
+
+可以通过 `User::getCurrentUser()` 来获取当前登录用户。你可以这样简单地实现一个具有登录功能的站点：
+
+```php
+$app->get('/login', function($req, $res) {
+  // login page
+});
+
+$app->post('/login', function($req, $res) {
+    $params = $req->getQueryParams();
+    try {
+        User::logIn($params["username"], $params["password"]);
+        return $res->withRedirect('/profile');
+    } catch (Exception $ex) {
+        return $res->withRedirect('/login');
+    }
+});
+
+$app->get('/profile', function($req, $res) {
+    $user = User::getCurrentUser();
+    if ($user) {
+        return $res->getBody()->write($user->getUsername());
+    } else {
+        return $res->withRedirect('/login');
+    }
+});
+
+$app->get('/logout', function($req, $res) {
+    User::logOut();
+    return $res->redirect("/");
+});
+```
+
+一个简单的登录页面可以是这样：
+
+```html
+<html>
+  <head></head>
+  <body>
+    <form method="post" action="/login">
+      <label>Username</label>
+      <input name="username">
+      <label>Password</label>
+      <input name="password" type="password">
+      <input class="button" type="submit" value="login">
+    </form>
+  </body>
+</html>
+```
+
+`CookieStorage` 也支持保存其他属性：
+
+```php
+$cookieStorage = Client::getStorage();
+$cookieStorage->set("key", "val");
+```
+
+## 云引擎下 Java SDK 调用 `AVUser#currentUser()` 获取不到登录用户信息？
+
+云引擎 SDK(engine-core) 是供云引擎程序访问 LeanCloud API 的模块，它内部依赖于 storage-core SDK. 
+但和在客户端应用中不同，云引擎是一个「多用户」的环境，作为服务器端程序需要同时处理来自不同用户的请求。
+而 storage-core 中的 `AVUser#currentUser()` 默认是用一个全局变量来标记当前登录用户的，其设计初衷只是为单用户登录场景提供访问的便利，如果在云引擎环境下使用则可能会出现问题。
+所以从 7.2.0 版本之后我们不再支持在云引擎中通过 `AVUser#currentUser()` 获取登录用户的信息。
+
+开发者可以通过如下两种方式获取用户登录信息：
+
+1. 如果登录过程是客户端直接调用 `AVUser#login()` 进行的，那么客户端 SDK 后续所有请求都会在 http 头中带上当前用户的 sessionToken，开发者在云引擎中可以通过 `EngineRequestContext#getSessionToken()` 获得当前请求用户的 sessionToken，然后调用 `AVUser#becomeWithSessionToken()` 得到具体的 `AVUser` 实例。这种方式在云函数的代码中比较常见。
+2. 如果登录过程发生在云引擎代码之中（例如云引擎中自定义了 login/logout servlet），那么可以通过 session/cookie 机制来保存用户的登录状态。
+
+## 如何在云引擎中使用 Java SDK 提供的 `EngineSessionCookie` 组件？
+
+云引擎 SDK 提供了一个 `EngineSessionCookie` 组件，用 Cookie 来维护用户（`AVUser`）的登录状态，要使用这个组件可以在初始化时添加下列代码：
+
+```java
+LeanEngine.addSessionCookie(new EngineSessionCookie("my secret", 3600, true));
+```
+
+`EngineSessionCookie` 的构造函数参数包括：
+
+- **secret**：一个只保存在服务端的字符串，可以设置为任意值。但每次修改之后，所有已有的 cookie 都会失效，也就是所有用户的登录 session 都将过期。
+- **maxAge**：设置 Cookie 的过期时间。单位为秒。
+- **fetchUser**：是否自动 `fetch` 当前登录的 `AVUser` 对象。默认为 `false`。如果设置为 `true`，每个 HTTP 请求都将发起一次 LeanCloud API 调用来 `fetch` 用户对象。如果设置为 `false`，默认只可以访问 `AVUser` 的 `id`（`_User` 表记录的 `objectId`）和 `sessionToken` 属性，你可以在需要时再手动 `fetch` 整个用户。
+
+我们的[示例项目](https://github.com/leancloud/java-war-getting-started)简单实现了一个具有登录功能的站点，可供参考。
+
+- 登录：[LoginServlet.java](https://github.com/leancloud/java-war-getting-started/blob/master/src/main/java/cn/leancloud/demo/todo/LoginServlet.java)
+- 登出：[LogoutServlet.java](https://github.com/leancloud/java-war-getting-started/blob/master/src/main/java/cn/leancloud/demo/todo/LogoutServlet.java)
+- Profile：[ProfileServlet.java](https://github.com/leancloud/java-war-getting-started/blob/master/src/main/java/cn/leancloud/demo/todo/ProfileServlet.java)
+- 登录页面：[login.jsp](https://github.com/leancloud/java-war-getting-started/blob/master/src/main/webapp/login.jsp)
+- 用户 profile 页面：[profile.jsp](https://github.com/leancloud/java-war-getting-started/blob/master/src/main/webapp/profile.jsp)
+
+## 云引擎下如何管理用户会话？
+
+使用各框架自带的组件或第三方模块即可。
+
+例如：
+
+- Node.js 的 Express 框架可以使用 [cookie-session](https://github.com/expressjs/cookie-session) 组件。它和 `AV.Cloud.CookieSession` 组件可以并存。注意，Express 框架的 `express.session.MemoryStore` 在云引擎中是无法正常工作的，因为云引擎是多主机、多进程运行，因此内存型 session 是无法共享的。
+- Python 的 Flask 框架和 Django 框架都自带 session 组件。
+- PHP 可以使用 SDK 提供的 `CookieStorage` 保存会话属性。注意，PHP 默认的 `$_SESSION` 在云引擎中是无法正常工作的，因为云引擎是多主机、多进程运行，因此内存型 session 是无法共享的。
+## 云引擎下如何发送 HTTP 请求？
+
+使用各语言的标准库或社区提供的模块即可。
+
+例如：
+
+- Node.js 项目可以使用 [superagent] 等社区提供的模块。
+- Python 项目可以使用标准库中的 `urllib.request` 模块或社区的 [requests] 模块。
+- PHP 项目可以使用 PHP 内置的 `curl` 模块或 [guzzle] 等第三方库。
+- Java 项目可以使用 `URL` 或者是 `HttpClient` 等基础类或 [OkHttp] 等第三方库。
+
+[superagent]: https://www.npmjs.com/package/superagent
+[requests]: https://docs.python-requests.org/en/master/
+[guzzle]: https://docs.guzzlephp.org/en/stable/
+[OkHttp]: https://square.github.io/okhttp/
+
+## 云引擎下如何获取客户端 IP？
+
+如果你想获取客户端的 IP，可以直接从用户请求的 HTTP 头的 `x-real-ip` 字段获取。
+下面给出各语言的示例代码。
+
+Node.js（Express）：
+
+```js
+app.get('/', function (req, res) {
+  var ipAddress = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log(ipAddress);
+  res.send(ipAddress);
+});
+```
+
+Python（Flask）：
+
+```python
+from flask import Flask
+from flask import request
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    print(request.headers['x-real-ip'])
+    return 'ok'
+```
+
+Python（Django）：
+
+```python
+def index(request):
+    print(request.META['HTTP_X_REAL_IP'])
+    return render(request, 'index.html', {})
+```
+
+PHP：
+
+```php
+$app->get('/', function($req, $res) {
+  error_log($_SERVER['HTTP_X_REAL_IP]);
+  return $res;
+});
+```
+
+Java：
+
+```java
+EngineRequestContext.getRemoteAddress();
+```
+
+Go（Echo）：
+
+```go
+func fetchRealIP(c echo.Context) error {
+  realIP = c.RealIP()
+  //...
+}
+```
+
+注意，国内节点的云引擎应用，如果启用了边缘节点加速功能，由于边缘节点的限制，可能无法获取客户端 IP。
+如需获取客户端 IP，建议绑定独立 IP。
+
+## 云引擎如何上传文件？
+
+托管在云引擎的网站可以使用相应 SDK 提供的接口上传文件。
+不过，一般情况下建议在客户端 SDK 上传文件，而不是通过云引擎中转，以免增加不必要的云引擎流量。
+
+## 云引擎下如何重定向到 HTTPS？
+
+大部分 SDK 提供了重定向至 HTTPS 的中间件。
+部署并发布到生产环境之后，访问你的 LeanEngine 网站都会强制通过 HTTPS 访问。
+
+Node.js（Express）：
+
+```js
+app.enable('trust proxy');
+app.use(AV.Cloud.HttpsRedirect());
+```
+
+Node.js（Koa）：
+
+```js
+app.proxy = true;
+app.use(AV.Cloud.HttpsRedirect({ framework: 'koa' }));
+```
+
+Python：
+
+```python
+import leancloud
+
+application = get_your_wsgi_func()
+
+application = leancloud.HttpsRedirectMiddleware(application)
+```
+
+PHP（Slim）：
+
+```php
+SlimEngine::enableHttpsRedirect();
+$app->add(new SlimEngine());
+```
+
+Java：
+
+```java
+LeanEngine.setHttpsRedirectEnabled(true);
+```
+
+Go SDK 暂未提供跳转至 HTTPS 的中间件。
+
+.NET：
+
+```cs
+app.UseHttpsRedirection();
+```
+
+## 云引擎下如何自定义系统级依赖？
+
+在云引擎的线上环境中，你可以通过 `leanengine.yaml` 文件的 `systemDependencies` 部分来自定义系统级依赖：
+
+```yaml
+systemDependencies:
+  - imagemagick
+```
+
+目前支持的选项包括：
+
+- `ffmpeg` 一个音视频处理工具库。
+- `imagemagick` 一个图片处理工具库。
+- `fonts-wqy` 文泉驿点阵宋体、文泉驿微米黑，通常和 `phantomjs` 或 `chrome-headless` 配合来显示中文。
+- `fonts-noto` 思源黑体（体积较大）。
+- `phantomjs` 一个无 UI 的 WebKit 浏览器（该项目已停止维护）。
+- `chrome-headless` 一个无 UI 的 Chrome 浏览器（体积很大，会显著增加部署耗时，运行时也会消耗大量 CPU 和内存；如果使用 `puppeter` 的话，需要给 `puppeteer.launch` 传递这些参数：`{executablePath: '/usr/bin/google-chrome', args: ['--no-sandbox', '--disable-setuid-sandbox']}`；暂不支持 Java）。
+- `node-canvas` 安装 `node-canvas` 所需要的系统级依赖（你仍需要安装 `node-canvas`）。
+- `python-talib` 金融市场数据分析库。
+
+注意添加系统依赖将会拖慢部署速度，因此请不要添加未用到的依赖。
+
+## 云引擎中设置的环境变量无效？
+
+默认情况下，应用在运行阶段才能够读取到内置环境变量和自定义环境变量。
+如果希望在安装依赖或编译阶段就能读取到这些环境变量，需要在 `leanengine.yaml` 里设置：
+
+```yaml
+exposeEnvironmentsOnBuild: true
+```
+
+云引擎运行环境默认提供的环境变量（以及 Node.js 环境变量 `NODE_ENV`）无法被自定义环境变量覆盖（覆盖无效）。
+
+## 如何判断请求是通过 HTTPS 还是 HTTP 访问的？
+
+因为 HTTPS 加密是在负载均衡层面处理的，所以通常部署在云引擎上的 web 框架获取的请求 URL 总是使用 HTTP 协议，建议通过 `X-Forwarded-Proto` HTTP 头来判断原请求是通过 HTTP 还是 HTTPS 访问的。
+
+## 云引擎的请求有哪些限制？
+
+云引擎的负载均衡组件限制了请求不能超过 100 MB（包括直接上传文件到云引擎）、请求处理不得超过 60 秒，WebSocket 60 秒无数据会被断开连接。
+
+国内节点未绑定独立 IP 的云引擎默认为纯静态站点优化。请求会先经过边缘节点，再视缓存命中情况回源到负载均衡组件，最后到达你的应用。
+边缘节点额外限制了请求不能超过 60 MB、请求处理不得超过 10 秒，另外边缘节点不支持 WebSocket 请求和 HTTP PATCH 方法，也不支持获取客户端 IP。
+因此，如果您在国内节点云引擎托管动态网站，我们建议您绑定独立 IP，使用独立入口，不经过边缘节点，自然也就没有上述限制。
+
+## 云引擎运行日志大小有限制吗？
+
+日志单行最大 4096 个字符，多余部分会被丢弃；日志输出频率大于 600 行/分钟，多余的部分会被丢弃。
+
+## 云引擎使用什么时区？
+
+国内版使用北京时间（东八区），国际版使用 UTC+0 时区。
+
+## 如何查看云引擎的出入口 IP 地址？
+
+如果开发者希望在第三方服务平台（如微信开放平台）上配置 IP 白名单而需要获取云引擎的入口或出口 IP 地址，请进入 **控制台 > 云引擎 > 设置 > 出入口 IP** 来自助查询。
+
+我们会尽可能减少出入口 IP 的变化频率，但 IP 突然变换的可能性仍然存在。因此在遇到与出入口 IP 相关的问题，我们建议先进入控制台来核实一下 IP 列表是否有变化。
+
+如需保持入口 IP 不变，建议为云引擎绑定独立 IP。
 
 ## 定时任务 crontab 表达式
 
