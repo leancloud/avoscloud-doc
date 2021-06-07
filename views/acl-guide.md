@@ -351,8 +351,7 @@ acl.setAccess([.write], allowed: true, forRoleName:"admin")
 acl.setRoleWriteAccess("admin", true);
 ```
 ```js
-const admin = new AV.Role('admin');
-acl.setRoleWriteAccess(admin, true);
+acl.setRoleWriteAccess('admin', true);
 ```
 ```python
 admin = leancloud.Role('admin')
