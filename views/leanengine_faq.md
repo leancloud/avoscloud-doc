@@ -401,6 +401,22 @@ npm ERR! peer dep missing: graphql@^0.10.0 || ^0.11.0, required by express-graph
 
 由于构建时会复制 `composer.json` 和 `composer.lock` 到专门的目录安装依赖，因此不支持 `path` 类型的 composer 本地仓库。
 如果您的项目使用了 `path` 类型的本地仓库，我们建议改为 `vcs` 类型。
+
+## 何时使用 PHP SDK 的 `Cloud::start`？
+
+PHP SDK 提供了 `Cloud::start` 函数，可以方便快捷地初始化云函数服务。例如，一个专门提供云函数服务的云引擎项目的 `index.php`：
+
+```php
+<?php
+use \LeanCloud\Engine\Cloud;
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../src/cloud.php'; // 其中包含云函数定义
+Cloud::start();
+```
+
+如上所述，`Cloud::start` 只适用于专门提供云函数服务的项目。
+如果项目同时用到了云函数和网站托管，请勿使用 `Cloud::start`。
+
 ## 如何定制 Java 的堆内存大小？
 
 云引擎运行 Java 应用时，会自动将 `-Xmx` 参数设置为实例规格的 70%，剩下的 30% 留给堆外内存和其他开销。如果你的应用比较特殊（比如大量使用堆外内存）可以自己定制 `-Xmx` 参数。假设使用 2 GB 内存规格的实例运行，则可以在云引擎的设置页面增加「自定义环境变量」，名称为 `JAVA_OPTS`，值为 `-Xmx1500m`，这样会限制 JVM 堆最大为 1.5 GB，剩下 500 MB 留给持久代、堆外内存或者其他一些杂项使用。**注意：`-Xmx` 参数如果设置得过小可能会导致大量 CPU 消耗在反复的的 GC 任务上**。
@@ -1355,6 +1371,167 @@ AV.Cloud.CookieSession({sameSite: 'none'})
 当生产环境的体验实例升级到「标准实例」后会有一个额外的「预备环境」，对应域名 stg-web.example.com，两个环境所访问的都是同样的数据，你可以用预备环境测试你的云引擎代码，每次修改先部署到预备环境，测试通过后再发布到生产环境；如果你希望有一个独立数据源的测试环境，建议单独创建一个应用。
 
 另外，stg-web.example.com 域名是需要在控制台自行绑定的。
+
+## 调用云函数时，如何指定请求所发往的环境？
+
+云引擎应用有「生产环境」和「预备环境」之分。在云引擎通过 SDK 调用云函数时，包括显式调用以及隐式调用（由于触发 hook 条件导致 hook 函数被调用），SDK 会根据云引擎所属环境（预备、生产）调用相应环境的云函数。例如，假定定义了 `beforeDelete` 云函数，在预备环境通过 SDK 删除一个对象，会触发预备环境的 `beforeDelete` hook 函数。
+
+在云引擎以外的环境通过 SDK 显式或隐式调用云函数时，`X-LC-Prod` 的默认值一般为 `1`，也就是调用生产环境。但由于历史原因，各 SDK 的具体行为有一些差异：
+
+- 在 Node.js、PHP、Java、C# 这三个 SDK 下，默认总是调用生产环境的云函数。
+- 在 Python SDK 下，配合 lean-cli 本地调试时，且应用存在预备环境时，默认调用预备环境的云函数，其他情况默认调用生产环境的云函数。
+- 云引擎 Java 环境的模板项目 [java-war-getting-started] 和 [spring-boot-getting-started] 做了处理，配合 lean-cli 本地调试时，且应用存在预备环境时，默认调用预备环境的云函数，其他情况默认调用生产环境的云函数（与 Python SDK 的行为一致）。
+
+[java-war-getting-started]: https://github.com/leancloud/java-war-getting-started/
+[spring-boot-getting-started]: https://github.com/leancloud/spring-boot-getting-started/
+
+你还可以在 SDK 中指定客户端将请求所发往的环境：
+
+```cs
+LCCloud.IsProduction = true; // production (default)
+LCCloud.IsProduction = false; // stage
+```
+```java
+AVCloud.setProductionMode(true); // production
+AVCloud.setProductionMode(false); // stage
+```
+```objc
+[LCCloud setProductionMode:YES]; // production (default)
+[LCCloud setProductionMode:NO]; // stage
+```
+```swift
+// production by default
+
+// stage
+do {
+    let environment: LCApplication.Environment = [.cloudEngineDevelopment]
+    let configuration = LCApplication.Configuration(environment: environment)
+    try LCApplication.default.set(
+        id: {{appid}},
+        key: {{appkey}},
+        serverURL: "https://please-replace-with-your-customized.domain.com",
+        configuration: configuration)
+} catch {
+    print(error)
+}
+```
+```dart
+LCCloud.setProduction(true); // production (default)
+LCCloud.setProduction(false); // stage
+```
+```js
+AV.setProduction(true); // production (default)
+AV.setProduction(false); // stage
+```
+```python
+leancloud.use_production(True) # production (default)
+leancloud.use_production(False) # stage
+# 需要在 SDK 初始化语句 `leancloud.init` 之前调用
+```
+```php
+LeanClient::useProduction(true); // production (default)
+LeanClient::useProduction(false); // stage
+```
+```go
+// 暂不支持（总是使用生产环境）
+```
+
+免费版云引擎应用只有「生产环境」，因此请不要切换到预备环境。
+
+## 在云引擎 Node.js 环境下如何本地调用云函数？
+
+云引擎 Node.js 环境下，默认会直接进行一次本地的函数调用，而不会像客户端一样发起一个 HTTP 请求。
+
+```js
+AV.Cloud.run('averageStars', {
+  movie: '夏洛特烦恼'
+}).then(function (data) {
+  // 调用成功，得到成功的应答 data
+}, function (error) {
+  // 处理调用失败
+});
+```
+
+如果你希望发起 HTTP 请求来调用云函数，可以传入一个 `remote: true` 的选项。当你在云引擎之外运行 Node.js SDK（包括调用位于其他分组上的云函数）时这个选项非常有用：
+
+```js
+AV.Cloud.run('averageStars', { movie: '夏洛特烦恼' }, { remote: true }).then(function (data) {
+  // 成功
+}, function (error) {
+  // 处理调用失败
+});
+```
+
+上面的 `remote` 选项实际上是作为 `AV.Cloud.run` 的可选参数 options 对象的属性传入的。这个 `options` 对象包括以下参数：
+
+- `remote?: boolean`：上面的例子用到的 `remote` 选项，默认为假。
+- `user?: AV.User`：以特定的用户运行云函数（建议在 `remote` 为假时使用）。
+- `sessionToken?: string`：以特定的 `sessionToken` 调用云函数（建议在 `remote` 为真时使用）。
+- `req?: http.ClientRequest | express.Request`：为被调用的云函数提供 `remoteAddress` 等属性。
+
+## 在云引擎 Python 环境下如何本地调用云函数？
+
+云引擎 Python 环境下，默认会进行远程调用。
+例如，以下代码会发起一次 HTTP 请求，去请求部署在云引擎上的云函数。
+
+```python
+from leancloud import cloud
+
+cloud.run('averageStars', movie='夏洛特烦恼')
+```
+
+如果想要直接调用本地（当前进程）中的云函数，或者发起调用就是在云引擎中，想要省去一次 HTTP 调用的开销，可以使用 `leancloud.cloud.run.local` 来取代 `leanengine.cloud.run`，这样会直接在当前进程中执行一个函数调用，而不会发起 HTTP 请求来调用此云函数。
+
+## 在云引擎 PHP 环境下如何本地调用云函数？
+
+云引擎中默认会直接进行一次本地的函数调用，而不是像客户端一样发起一个 HTTP 请求。
+
+```php
+try {
+    $result = Cloud::run("averageStars", array("movie" => "夏洛特烦恼"));
+} catch (\Exception $ex) {
+    // 云函数错误
+}
+```
+
+如果想要通过 HTTP 调用，可以使用 `runRemote` 方法：
+
+```php
+try {
+    $token = User::getCurrentSessionToken(); // 以特定的 `sessionToken` 调用云函数，可选
+    $result = Cloud::runRemote("averageStars", array("movie" => "夏洛特烦恼"), $token);
+} catch (\Exception $ex) {
+    // 云函数错误
+}
+```
+
+## 在云引擎 Java 环境下如何本地调用云函数？
+
+Java SDK 不支持本地调用云函数。
+如有代码复用需求，建议将公共逻辑提取成普通函数（Java 方法），在多个云函数中调用。
+
+## 在云引擎 .NET 环境下如何本地调用云函数？
+
+.NET SDK 不支持本地调用云函数。
+如有代码复用需求，建议将公共逻辑提取成普通函数，在多个云函数中调用。
+
+## 在云引擎 Go 环境下如何本地调用云函数？
+
+云引擎下默认会在本地调用：
+
+```go
+averageStars, err := leancloud.Run("averageStars", Review{Movie: "夏洛特烦恼"})
+if err != nil {
+  panic(err)
+}
+```
+
+如果你希望发起 HTTP 请求来调用云函数，可以传入 `WithRemote()` 参考。
+`Run` 的可选参数如下：
+
+- `WithRemote()` 强制云函数远程执行
+- `WithSessionToken(token)` 为当前的调用请求传入 `sessionToken`
+- `WithUser(user)` 为当前的调用请求传入对应的用户对象
 
 ## 云引擎创建的新的分组，可以调试云函数吗？
 

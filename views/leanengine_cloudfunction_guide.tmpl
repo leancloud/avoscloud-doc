@@ -1,125 +1,26 @@
-{% import "views/_helper.njk" as docs %}
-{% from "views/_data.njk" import libVersion as version %}
-
 # 云函数开发指南 · {{platformName}}
-
-云函数是云引擎（LeanEngine）的一个子模块，请确保在阅读本文档之前已经阅读了 [云引擎服务概览](leanengine_overview.html)。
 
 当你开发移动端应用时，可能会有下列需求：
 
 - 应用在多平台客户端（Android、iOS、浏览器等）中很多逻辑都是一样的，希望将这部分逻辑抽取出来只维护一份。
 - 有些逻辑希望能够较灵活的调整（比如某些个性化列表的排序规则），但又不希望频繁的更新和发布移动客户端。
 - 有些逻辑需要的数据量很大，或者运算成本高（比如某些统计汇总需求），不希望在移动客户端进行运算，因为这样会消耗大量的网络流量和手机运算能力。
-- 当应用执行特定操作时，由云端系统自动触发一段逻辑（称为 [Hook 函数](#Hook_函数)），例如用户注册后对该用户增加一些信息记录用于统计；或某业务数据发生变化后希望做一些别的业务操作。
+- 当应用执行特定操作时，由云端系统自动触发一段逻辑（称为 [Hook 函数](#Hook-函数)），例如用户注册后对该用户增加一些信息记录用于统计；或某业务数据发生变化后希望做一些别的业务操作。
 - 客户端提供能够越过 ACL 或表权限的限制，对数据进行操作。
-- 需要定时任务，比如每天凌晨清理垃圾注册账号等。
+- 需要定时运行任务，比如每天凌晨清理垃圾注册账号等。
 
-这时，你可以使用云引擎的云函数，云函数是一段部署在服务端的代码，编写 JavaScript、Python、PHP 或 Java 代码，并部署到我们的平台上，可以很好地完成上述需求。
+这时，你可以使用云引擎的云函数。
+云函数是一段部署在服务端的 JavaScript、Python、PHP、C#、Go 代码，可以很好地完成上述需求。
 
-如果还不知道如何创建云引擎项目、本地调试并部署到云端，请阅读 [云引擎快速入门](leanengine_quickstart.html)。
+如果还不知道如何创建云引擎项目、本地调试并部署到云端，请阅读《云引擎快速入门》。
 
-## 多语言支持
-
-云引擎支持多种语言的运行环境，你可以选择自己熟悉的语言开发应用：
-
-- [Node.js](leanengine_cloudfunction_guide-node.html){% if platformName === "Node.js" %}<span class="text-muted">（当前）</span>{% endif %}
-- [Python](leanengine_cloudfunction_guide-python.html){% if platformName === "Python" %}<span class="text-muted">（当前）</span>{% endif %}
-- [PHP](leanengine_cloudfunction_guide-php.html){% if platformName === "PHP" %}<span class="text-muted">（当前）</span>{% endif %}
-- [Java](leanengine_cloudfunction_guide-java.html){% if platformName === "Java" %}<span class="text-muted">（当前）</span>{% endif %}
-- [.NET](leanengine_cloudfunction_guide-dotnet.html){% if platformName === ".NET" %}<span class="text-muted">（当前）</span>{% endif %}
-- [Go](leanengine_cloudfunction_guide-go.html){% if platformName === "Go" %}<span class="text-muted">（当前）</span>{% endif %}
-
-{% if platformName === "Python" %}
-## 初始化
-
-定义云函数 / Hook 函数都需要一个 `leancloud.Engine` 实例，你需要在项目中自己初始化此实例。
-
-```python
-# cloud.py
-import leancloud
-
-engine = leancloud.Engine()
-```
-
-```python
-# wsgi.py
-import leancloud
-from app import app
-from cloud import engine
-
-app = engine.wrap(app)
-```
-
-更多关于 **WSGI 函数** 的内容，请参考 [WSGI 接口](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001432012393132788f71e0edad4676a3f76ac7776f3a16000) 或者 [PEP333](https://www.python.org/dev/peps/pep-0333/)。
-{% endif %}
-{% if platformName === ".NET" %}
-
-## 脚手架项目
-
-[dotnet-core-getting-started](https://github.com/leancloud/dotnet-core-getting-started) 是一个简单的示例项目，开发者直接在云引擎控制台中通过 git 部署就可以直接部署，开始体验。
-
-{% endif %}
-
-## 切换云引擎环境
-
-云引擎应用有「生产环境」和「预备环境」之分。在云引擎通过 SDK 调用云函数时，包括显式调用以及隐式调用（由于触发 hook 条件导致 hook 函数被调用），SDK 会根据云引擎所属环境（预备、生产）调用相应环境的云函数。例如，假定定义了 `beforeDelete` 云函数，在预备环境通过 SDK 删除一个对象，会触发预备环境的 `beforeDelete` hook 函数。
-
-在云引擎以外的环境通过 SDK 显式或隐式调用云函数时，`X-LC-Prod` 的默认值一般为 `1`，也就是调用生产环境。但由于历史原因，各 SDK 的具体行为有一些差异：
-
-- 在 Node.js、PHP、Java、C# 这三个 SDK 下，默认总是调用生产环境的云函数。
-- 在 Python SDK 下，配合 lean-cli 本地调试时，且应用存在预备环境时，默认调用预备环境的云函数，其他情况默认调用生产环境的云函数。
-- 云引擎 Java 环境的模板项目 [java-war-getting-started] 和 [spring-boot-getting-started] 做了处理，配合 lean-cli 本地调试时，且应用存在预备环境时，默认调用预备环境的云函数，其他情况默认调用生产环境的云函数（与 Python SDK 的行为一致）。
-
-[java-war-getting-started]: https://github.com/leancloud/java-war-getting-started/
-[spring-boot-getting-started]: https://github.com/leancloud/spring-boot-getting-started/
-
-你还可以在 SDK 中指定客户端将请求所发往的环境：
-
-```objc
-[AVCloud setProductionMode:NO]; // 调用预备环境
-```
-```swift
-// 调用预备环境
-do {
-    let environment: LCApplication.Environment = [.cloudEngineDevelopment]
-    let configuration = LCApplication.Configuration(environment: environment)
-    try LCApplication.default.set(
-        id: {{appid}},
-        key: {{appkey}},
-        // 请将 xxx.example.com 替换为你的应用绑定的自定义 API 域名
-        serverURL: "https://xxx.example.com",
-        configuration: configuration)
-} catch {
-    print(error)
-}
-```
-```js
-AV.setProduction(false); // 调用预备环境
-```
-```python
-leancloud.use_production(False) # 调用预备环境
-# 需要在 SDK 初始化语句 `leancloud.init` 之前调用
-```
-```php
-LeanClient::useProduction(false); // 调用预备环境
-```
-```java
-LCCloud.setProductionMode(false); // 调用预备环境
-```
-```dart
-LCCloud.setProduction(false); // 调用预备环境
-```
-```cs
-LCCloud.IsProduction = false; // 调用预备环境
-```
-
-[免费版云引擎](leanengine_plan.html#体验实例) 应用只有「生产环境」，因此请不要切换到预备环境。
 
 ## 云函数
 
-[示例项目](https://github.com/leancloud/{% if platformName === "Go" %}golang-getting-started{% endif %}{% if platformName === "Node.js" %}node-js-getting-started{% endif %}{% if platformName === "Python" %}python-getting-started{% endif %}{% if platformName === "PHP" %}slim-getting-started{% endif %}{% if platformName === "Java" %}java-war-getting-started{% endif %}{% if platformName === ".NET" %}dotNET-getting-started{% endif %}) 中 `{% if platformName === "Go" %}functions/hello.go{% endif %}{% if platformName === "Node.js" %}cloud.js{% endif %}{% if platformName === "Python" %}cloud.py{% endif %}{% if platformName === "PHP" %}src/cloud.php{% endif %}{% if platformName === "Java" %}src/main/java/cn/leancloud/demo/todo/Cloud.java{% endif %}{% if platformName === ".NET" %}web/HelloSample.cs{% endif %}` 文件定义了一个很简单的 `hello` 云函数。在云端进行计算的一个重要理由是，你不需要将大量的数据发送到设备上做计算，而是将这些计算放到服务端，并返回结果这一点点信息就好。
+示例项目中文件定义了一个很简单的 `hello` 云函数。
+在云端进行计算的一个重要理由是，你不需要将大量的数据发送到设备上做计算，而是将这些计算放到服务端，并返回结果这一点点信息就好。
 
-现在让我们看一个较复杂的例子来展示云引擎的用途。
+现在让我们看一个较复杂的例子来展示云函数的用途。
 
 例如，你写了一个应用，让用户对电影评分，一个评分对象大概是这样：
 
@@ -133,32 +34,10 @@ LCCloud.IsProduction = false; // 调用预备环境
 
 `stars` 表示评分，1-5。如果你想查找《夏洛特烦恼》这部电影的平均分，你可以找出这部电影的所有评分，并在设备上根据这个查询结果计算平均分。但是这样一来，尽管你只是需要平均分这样一个数字，却不得不耗费大量的带宽来传输所有的评分。通过云引擎，我们可以简单地传入电影名称，然后返回电影的平均分。
 
-云函数接收 JSON 格式的请求对象，我们可以用它来传入电影名称。整个 {% if platformName === "Node.js" %}[LeanStorage JavaScript SDK](leanstorage_guide-js.html){% endif %}{% if platformName === "Python" %}[LeanStorage Python SDK](leanstorage_guide-python.html){% endif %}{% if platformName === "PHP" %}[LeanStorage PHP SDK](leanstorage_guide-php.html){% endif %}{% if platformName === "Java" %}[LeanStorage Java SDK](leanstorage_guide-java.html){% endif %}{% if platformName === ".NET" %}[LeanStorage .NET SDK](leanstorage_guide-dotnet.html){% endif %} 都在云引擎运行环境上有效，可以直接使用，所以我们可以使用它来查询所有的评分。结合在一起，实现 `averageStars` 函数的代码如下：
+云函数接收 JSON 格式的请求对象，我们可以用它来传入电影名称。
+各语言的 SDK 都在云引擎运行环境上有效，可以直接使用，所以我们可以使用它来查询所有的评分。
+结合在一起，实现 `averageStars` 函数的代码如下：
 
-{% if platformName === "Go" %}
-```go
-type Review struct {
-  leancloud.Object
-  Movie string `json:"movie"`
-  Stars int `json:"stars"`
-  Comment string `json:"comment"`
-}
-
-leancloud.Define("averageStars", func(req *leancloud.FunctionRequest) (interface{}, error) {
-  reviews := make([]Review, 10) // 预留一小部分空间
-  if err := client.Class("Review").NewQuery().EqualTo("movie", req.Params["movie"].(string)).Find(&reviews); err != nil {
-    return nil, err
-  }
-
-  sum := 0
-  for _, v := range reviews {
-    sum += v.Stars
-  }
-
-  return sum / len(reviews), nil
-})
-```
-{% endif %}
 {% if platformName === "Node.js" %}
 ```js
 AV.Cloud.define('averageStars', function (request) {
@@ -218,19 +97,6 @@ Cloud::define("averageStars", function($params, $user) {
     }
 });
 ```
-
-PHP SDK 提供了 `Cloud::start` 函数，可以方便快捷地初始化云函数服务。例如，一个专门提供云函数服务的云引擎项目的 `index.php`：
-
-```php
-<?php
-use \LeanCloud\Engine\Cloud;
-require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../src/cloud.php'; // 其中包含云函数定义
-Cloud::start();
-```
-
-如上所述，`Cloud::start` 只适用于专门提供云函数服务的项目。
-如果项目同时用到了云函数和网站托管，请勿使用 `Cloud::start`。
 {% endif %}
 {% if platformName === "Java" %}
 ```java
@@ -296,6 +162,30 @@ public class Startup {
 }
 ```
 {% endif %}
+{% if platformName === "Go" %}
+```go
+type Review struct {
+  leancloud.Object
+  Movie string `json:"movie"`
+  Stars int `json:"stars"`
+  Comment string `json:"comment"`
+}
+
+leancloud.Define("averageStars", func(req *leancloud.FunctionRequest) (interface{}, error) {
+  reviews := make([]Review, 10) // 预留一小部分空间
+  if err := client.Class("Review").NewQuery().EqualTo("movie", req.Params["movie"].(string)).Find(&reviews); err != nil {
+    return nil, err
+  }
+
+  sum := 0
+  for _, v := range reviews {
+    sum += v.Stars
+  }
+
+  return sum / len(reviews), nil
+})
+```
+{% endif %}
 
 ### 参数和返回值
 
@@ -325,9 +215,7 @@ AV.Cloud.define('averageStars', { fetchUser: false, internal: true }, function (
 
 我们推荐大家使用链式的 Promise 写法来完成业务逻辑，这样会极大地方便异步任务的处理和异常处理，**请注意一定要将 Promise 串联起来并在云函数中 return** 以保证上述逻辑正确工作，推荐阅读 [JavaScript Promise 迷你书](http://liubin.org/promises-book/) 来深入地了解 Promise。
 
-{% call docs.alertWrap() %}
 在 2.0 之前的早期版本中，云函数接受 `request` 和 `response` 两个参数，我们会继续兼容这种用法到下一个大版本，希望开发者尽快迁移到 Promise 风格的云函数上。之前版本的文档见《[Node SDK v1 API 文档](https://github.com/leancloud/leanengine-node-sdk/blob/v1/API.md)》。
-{% endcall %}
 {% endif %}
 {% if platformName === "Python" %}
 调用云函数时的参数会直接传递给云函数，因此直接声明这些参数即可。另外调用云函数时可能会根据不同情况传递不同的参数，这时如果定义云函数时没有声明这些参数，会触发 Python 异常，因此建议声明一个额外的关键字参数（关于关键字参数，请参考 [此篇文档](http://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/001431752945034eb82ac80a3e64b9bb4929b16eeed1eb9000) 中「关键字参数」一节）来保存多余的参数。
@@ -372,57 +260,20 @@ def my_cloud_func(foo, bar, baz, **params):
 - `SessionToken` 包含客户端发来的 `sessionToken` 根据客户端发送的 `X-LC-Session` 头）。可以在 `Define` 定义云函数时，在最后传入可选参数 `WithoutFetchUser()` 禁止获取当前调用的 `sessionToken`。
 - `Meta` 包含有关客户端的更多信息，目前只有一个 `remoteAddress` 属性表示客户端的 IP。
 {% endif %}
+
 ### SDK 调用云函数
 
 LeanCloud 各个语言版本的 SDK 都提供了调用云函数的接口：
 
-```objc
-// 构建传递给服务端的参数字典
-NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦恼"
-                                                          forKey:@"movie"];
-
-// 调用指定名称的云函数 averageStars，并且传递参数
-[AVCloud callFunctionInBackground:@"averageStars"
-                   withParameters:dicParameters
-                   block:^(id object, NSError *error) {
-                   if(error == nil){
-                     // 处理结果
-                   } else {
-                     // 处理报错
-                   }
-}];
-```
-```swift
-LCEngine.run("averageStars", parameters: ["movie": "夏洛特烦恼"]) { (result) in
-    switch result {
-    case .success(value: let resultValue):
-        print(resultValue)
-    case .failure(error: let error):
-        print(error)
-    }
-}
-```
-```js
-var paramsJson = {
-  movie: "夏洛特烦恼"
-};
-AV.Cloud.run('averageStars', paramsJson).then(function (data) {
+```cs
+try {
+  Dictionary<string, object> response = await LCCloud.Run("averageStars", parameters: new Dictionary<string, object> {
+    { "movie", "夏洛特烦恼" }
+  });
   // 处理结果
-}, function (err) {
-  // 处理报错
-});
-```
-```python
-from leancloud import cloud
-
-cloud.run('averageStars', movie='夏洛特烦恼')
-```
-```php
-use \LeanCloud\Engine\Cloud;
-$params = array(
-    "movie" => "夏洛特烦恼"
-);
-Cloud::run("averageStars", $params);
+} catch (LCException e) {
+  // 处理异常
+}
 ```
 ```java
 // 构建传递给服务端的参数字典
@@ -478,6 +329,32 @@ LCCloud.callFunctionWithCacheInBackground("averageStars", dicParameters, LCQuery
   }
 });
 ```
+```objc
+// 构建传递给服务端的参数字典
+NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦恼"
+                                                          forKey:@"movie"];
+
+// 调用指定名称的云函数 averageStars，并且传递参数
+[LCCloud callFunctionInBackground:@"averageStars"
+                   withParameters:dicParameters
+                   block:^(id object, NSError *error) {
+                   if(error == nil){
+                     // 处理结果
+                   } else {
+                     // 处理报错
+                   }
+}];
+```
+```swift
+LCEngine.run("averageStars", parameters: ["movie": "夏洛特烦恼"]) { (result) in
+    switch result {
+    case .success(value: let resultValue):
+        print(resultValue)
+    case .failure(error: let error):
+        print(error)
+    }
+}
+```
 ```dart
 try {
   Map response = await LCCloud.run('averageStars', params: { 'movie': '夏洛特烦恼' });
@@ -485,6 +362,28 @@ try {
 } on LCException catch (e) {
   // 处理异常
 }
+```
+```js
+var paramsJson = {
+  movie: "夏洛特烦恼"
+};
+AV.Cloud.run('averageStars', paramsJson).then(function (data) {
+  // 处理结果
+}, function (err) {
+  // 处理报错
+});
+```
+```python
+from leancloud import cloud
+
+cloud.run('averageStars', movie='夏洛特烦恼')
+```
+```php
+use \LeanCloud\Engine\Cloud;
+$params = array(
+    "movie" => "夏洛特烦恼"
+);
+Cloud::run("averageStars", $params);
 ```
 ```go
 // ...
@@ -494,9 +393,15 @@ if err != nil {
 }
 // ...
 ```
+
+### RPC 调用云函数
+
+在这种调用方式下，云引擎会自动为 HTTP Response Body 做序列化，
+而 SDK 调用之后拿回的返回结果就是一个完整的 LCObject 或包含这样的对象的数据结构：
+
 ```cs
 try {
-  Dictionary<string, object> response = await LCCloud.Run("averageStars", parameters: new Dictionary<string, object> {
+  LCObject response = await LCCloud.RPC("averageStars", parameters: new Dictionary<string, object> {
     { "movie", "夏洛特烦恼" }
   });
   // 处理结果
@@ -504,167 +409,12 @@ try {
   // 处理异常
 }
 ```
-### 通过 REST API 调用云函数
-
-请查看我们的 [云引擎 REST API 使用指南](leanengine-rest-api.html)。
-
-### 云引擎调用云函数
-
-在云引擎中可以使用 `{% if platformName === "Go" %}leancloud.Run{% endif %}{% if platformName === "Node.js" %}AV.Cloud.run{% endif %}{% if platformName === "Python" %}leancloud.cloud.run{% endif %}{% if platformName === "PHP" %}LeanCloudEngineCloud::run{% endif %}{% if platformName === "Java" %}LCCloud.callFunctionInBackground{% endif %}{% if platformName === ".NET" %}AVCloud.CallFunctionAsync{% endif %}` 调用 `{% if platformName === "Go" %}leancloud.Define{% endif %}{% if platformName === "Node.js" %}AV.Cloud.define{% endif %}{% if platformName === "Python" %}engine.define{% endif %}{% if platformName === "PHP" %}LeanCloudEngineCloud::define{% endif %}{% if platformName === "Java" %}@EngineFunction{% endif %}{% if platformName === ".NET" %}EngineFunctionAttribute{% endif %}` 定义的云函数：
-
-{% if platformName === "Node.js" %}
-```js
-AV.Cloud.run('averageStars', {
-  movie: '夏洛特烦恼'
-}).then(function (data) {
-  // 调用成功，得到成功的应答 data
-}, function (error) {
-  // 处理调用失败
-});
-```
-
-云引擎中默认会直接进行一次本地的函数调用，而不会像客户端一样发起一个 HTTP 请求。如果你希望发起 HTTP 请求来调用云函数，可以传入一个 `remote: true` 的选项。当你在云引擎之外运行 Node.js SDK（包括调用位于其他分组上的云函数）时这个选项非常有用：
-
-```js
-AV.Cloud.run('averageStars', { movie: '夏洛特烦恼' }, { remote: true }).then(function (data) {
-  // 成功
-}, function (error) {
-  // 处理调用失败
-});
-```
-
-上面的 `remote` 选项实际上是作为 `AV.Cloud.run` 的可选参数 options 对象的属性传入的。这个 `options` 对象包括以下参数：
-
-- `remote?: boolean`：上面的例子用到的 `remote` 选项，默认为假。
-- `user?: AV.User`：以特定的用户运行云函数（建议在 `remote` 为假时使用）。
-- `sessionToken?: string`：以特定的 `sessionToken` 调用云函数（建议在 `remote` 为真时使用）。
-- `req?: http.ClientRequest | express.Request`：为被调用的云函数提供 `remoteAddress` 等属性。
-{% endif %}
-{% if platformName === "Python" %}
-```python
-from leancloud import cloud
-
-cloud.run('averageStars', movie='夏洛特烦恼')
-```
-
-但是这样调用会真的发起一次 HTTP 请求，去请求部署在云引擎上的云函数。如果想要直接调用本地（当前进程）中的云函数，或者发起调用就是在云引擎中，想要省去一次 HTTP 调用的开销，可以使用 `leancloud.cloud.run.local` 来取代 `leanengine.cloud.run`，这样会直接在当前进程中执行一个函数调用，而不会发起 HTTP 请求来调用此云函数。
-{% endif %}
-{% if platformName === "PHP" %}
-```php
-try {
-    $result = Cloud::run("averageStars", array("movie" => "夏洛特烦恼"));
-} catch (\Exception $ex) {
-    // 云函数错误
-}
-```
-
-云引擎中默认会直接进行一次本地的函数调用，而不是像客户端一样发起一个 HTTP 请求。
-
-如果想要通过 HTTP 调用，可以使用 `runRemote` 方法：
-
-```php
-try {
-    $token = User::getCurrentSessionToken(); // 以特定的 `sessionToken` 调用云函数，可选
-    $result = Cloud::runRemote("averageStars", array("movie" => "夏洛特烦恼"), $token);
-} catch (\Exception $ex) {
-    // 云函数错误
-}
-```
-{% endif %}
-{% if platformName === "Java" %}
-```java
-Map<String, Object> params = new HashMap<String, Object>();
-params.put("movie", "夏洛特烦恼");
-try {
-  float result = LCCloud.callFunctionInBackground("averageStars", params).blockingFirst();
-} catch (LCException e) {
-  e.printStackTrace();
-}
-```
-{% endif %}
-{% if platformName === ".NET" %}
-```cs
-try {
-  float score = await LCCloud.Run<float>("averageStars", new Dictionary<string, object> {
-      { "movie", "夏洛特烦恼" }
-  });
-} catch (LCException e) {
-  // 云函数错误
-}
-```
-另外需要注意的是，**不推荐** 在云引擎中直接调用 `AVCloud.CallFunctionAsync`，因为 `AVCloud.CallFunctionAsync` 是从客户端发起的远程调用，会重新走一遍外网再回到云引擎。如果需要在本地调用，推荐直接在云引擎中使用 `Cloud.CallFunctionAsync`，它会直接从本地进行调用，性能更好。
-{% endif %}
-{% if platformName === "Go" %}
-```go
-// ...
-averageStars, err := leancloud.Run("averageStars", Review{Movie: "夏洛特烦恼"})
-if err != nil {
-  panic(err)
-}
-// ..
-```
-此外，`Run` 还有几个可用的选项，可作为 `Run` 最后的可选参数传入:
-
-- `WithRemote()` 强制云函数远程执行
-- `WithSessionToken(token)` 为当前的调用请求传入 `sessionToken`
-- `WithUser(user)` 为当前的调用请求传入对应的用户对象
-{% endif %}
-### RPC 调用云函数
-
-RPC 调用云函数是指：云引擎会在这种调用方式下自动为 HTTP Response Body 做序列化，而 SDK 调用之后拿回的返回结果就是一个完整的 `{%if platformName === "Go" %}Object{% endif %}{% if platformName === "Node.js" %}AV.Object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}LCObject{% endif %}{% if platformName === ".NET" %}AVObject{% endif %}` 或包含这样的对象的数据结构：
-
-```objc
-NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦恼"
-                                                          forKey:@"movie"];
-
-[AVCloud rpcFunctionInBackground:@"averageStars"
-                  withParameters:parameters
-                  block:^(id object, NSError *error) {
-                  if(error == nil){
-                    // 处理结果
-                  }
-                  else {
-                    // 处理报错
-                  }
-}];
-```
-```swift
-LCEngine.call("averageStars", parameters: ["movie": "夏洛特烦恼"]) { (result) in
-    switch result {
-    case .success(object: let object):
-        if let object = object {
-            print(object)
-        }
-    case .failure(error: let error):
-        print(error)
-    }
-}
-```
-```js
-var paramsJson = {
-  movie: "夏洛特烦恼"
-};
-
-AV.Cloud.rpc('averageStars', paramsJson).then(function (object) {
-  // 处理结果
-}, function (error) {
-  // 处理报错
-});
-```
-```python
-from leancloud import cloud
-
-cloud.rpc('averageStars', movie='夏洛特烦恼')
-```
-```php
-// 暂不支持
-```
 ```java
 // 构建参数
 Map<String, Object> dicParameters = new HashMap<>();
 dicParameters.put("movie", "夏洛特烦恼");
 
-LCCloud.callRPCInBackground<LCObject>("averageStars", dicParameters).subscribe(new Observer<LCObject>() {
+LCCloud.<LCObject>callRPCInBackground("averageStars", dicParameters).subscribe(new Observer<LCObject>() {
   @Override
   public void onSubscribe(Disposable disposable) {
 
@@ -689,7 +439,7 @@ LCCloud.callRPCInBackground<LCObject>("averageStars", dicParameters).subscribe(n
 // Java SDK 还提供了一个支持缓存的版本，和 LCQuery 一样，开发者在请求的时候，可以指定 CachePolicy 以及缓存的
 // 最长期限，这样可以避免短时间一直直接请求云端服务器。
 // 下面的请求表示优先使用上次缓存的结果，缓存有效期为 30 秒（30000 毫秒）。
-LCCloud.callRPCWithCacheInBackground<LCObject>("averageStars", dicParameters, LCQuery.CachePolicy.CACHE_ELSE_NETWORK, 30000)
+LCCloud.<LCObject>callRPCWithCacheInBackground("averageStars", dicParameters, LCQuery.CachePolicy.CACHE_ELSE_NETWORK, 30000)
 .subscribe(new Observer<LCObject>() {
   @Override
   public void onSubscribe(Disposable disposable) {
@@ -711,7 +461,33 @@ LCCloud.callRPCWithCacheInBackground<LCObject>("averageStars", dicParameters, LC
 
   }
 });
+```
+```objc
+NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦恼"
+                                                          forKey:@"movie"];
 
+[LCCloud rpcFunctionInBackground:@"averageStars"
+                  withParameters:parameters
+                  block:^(id object, NSError *error) {
+                  if(error == nil){
+                    // 处理结果
+                  }
+                  else {
+                    // 处理报错
+                  }
+}];
+```
+```swift
+LCEngine.call("averageStars", parameters: ["movie": "夏洛特烦恼"]) { (result) in
+    switch result {
+    case .success(object: let object):
+        if let object = object {
+            print(object)
+        }
+    case .failure(error: let error):
+        print(error)
+    }
+}
 ```
 ```dart
 try {
@@ -721,6 +497,25 @@ try {
   // 处理异常
 }
 ```
+```js
+var paramsJson = {
+  movie: "夏洛特烦恼"
+};
+
+AV.Cloud.rpc('averageStars', paramsJson).then(function (object) {
+  // 处理结果
+}, function (error) {
+  // 处理报错
+});
+```
+```python
+from leancloud import cloud
+
+cloud.rpc('averageStars', movie='夏洛特烦恼')
+```
+```php
+// 暂不支持
+```
 ```go
 // ...
 averageStars := 0
@@ -729,85 +524,10 @@ if err := leancloud.RPC("averageStars", Review{Movie: "夏洛特烦恼"}, &avera
 }
 // ..
 ```
-```cs
-try {
-  LCObject response = await LCCloud.RPC("averageStars", parameters: new Dictionary<string, object> {
-    { "movie", "夏洛特烦恼" }
-  });
-  // 处理结果
-} catch (LCException e) {
-  // 处理异常
-}
-```
 
 ### 云函数错误响应码
 
 可以根据 [HTTP status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes) 自定义错误响应码。
-
-{% if platformName === "Node.js" %}
-```js
-AV.Cloud.define('errorCode', function (request) {
-  return AV.User.logIn('NotThisUser', 'P@ssword');
-});
-```
-{% endif %}
-{% if platformName === "Python" %}
-```python
-@engine.define
-def error_code(**params):
-    leancloud.User.login('not_this_user', 'P@ssword')
-```
-{% endif %}
-{% if platformName === "PHP" %}
-```php
-Cloud::define("errorCode", function($params, $user) {
-    User::logIn("not_this_user", "P@ssword");
-});
-```
-{% endif %}
-{% if platformName === "Java" %}
-```java
-@EngineFunction("errorCode")
-public static LCUser getCurrentUser() throws Exception {
-  String sessionToken = EngineRequestContext.getSessionToken();
-  LCUser u = null;
-  if (!StringUtil.isEmpty(sessionToken)) {
-    u = LCUser.becomeWithSessionToken(sessionToken);
-  }
-  if (u == null) {
-    throw new LCException(211, "Could not find the user.");
-  } else {
-    return u;
-  }
-}
-```
-{% endif %}
-{% if platformName === ".NET" %}
-```cs
-[LCEngineFunction("errorCode")]
-public static async Task<LCUser> GetCurrentUser() {
-    string sessionToken = LCEngineRequestContext.SessionToken;
-    LCUser user = null;
-    if (!string.IsNullOrEmpty(sessionToken)) {
-        user = await LCUser.BecomeWithSessionToken(sessionToken);
-    }
-
-    if (user == null) {
-        throw new LCException(211, "Could not find the user.");
-    }
-
-    return user;
-}
-```
-{% endif %}
-{% if platformName === "Go" %}
-```go
-leancloud.Define("errorCode", func(req *leancloud.FunctionRequest) (interface{}, error) {
-  return nil, leancloud.CloudError{123, "Could not find the user."}
-})
-```
-{% endif %}
-客户端收到的响应：`{ "code": 211, "error": "Could not find the user." }`。
 
 {% if platformName === "Node.js" %}
 ```js
@@ -855,6 +575,7 @@ leancloud.Define("customErrorCode", func(req *leancloud.FunctionRequest) (interf
 })
 ```
 {% endif %}
+
 客户端收到的响应：`{ "code": 123, "error": "自定义错误信息。" }`。
 
 ### 云函数超时
@@ -863,136 +584,34 @@ leancloud.Define("customErrorCode", func(req *leancloud.FunctionRequest) (interf
 除了 `503` 错误外，有些情况下客户端也可能收到其他报错，如 `524` 或 `141`。
 
 {# PHP 没有靠谱的异步处理方案 #}
-{% if platformName !== "PHP" %}
 #### 超时的处理方案
 
 我们建议将代码中的任务转化为异步队列处理，以优化运行时间，避免云函数或定时任务发生超时。
-{% endif %}
 
-{% if platformName === "Node.js" %}
 例如：
 
 1. 在存储服务中创建一个队列表，包含 `status` 列；
-2. 接到任务后，向队列表保存一条记录，`status` 值设置为 `处理中`，然后将请求结束掉，将队列对象的 `id` 发给客户端（旧版本的 SDK 使用 `response.success(id)`）：
-   ```js
-   return new Promise((resolve, reject) => {
-     resolve(id);
-   });
-   ```
+2. 接到任务后，向队列表保存一条记录，`status` 值设置为 `处理中`，然后将请求结束掉，将队列对象的 `id` 发给客户端。
 3. 当业务处理完毕，根据处理结果更新刚才的队列对象状态，将 `status` 字段设置为 `完成` 或者 `失败`；
 4. 在任何时候，在控制台通过队列 `id` 可以获取某个任务的执行结果，判断任务状态。
-{% endif %}
 
-{% if platformName === "Python" %}
-Python 运行环境使用了 `gevent` 作为 event loop，所以你可以根据情况自己 `gevent.spawn` 一个 `greenlet` 来处理异步逻辑。例如：
-
-```python
-def handle(req):
-    data = do_some_stuff()
-
-    @gevent.spawn
-    def stuff_should_be_executed_asynchronously():
-        resp = requests.get('http://time.consuming.api.com/foo', data=data)
-        do_more_stuff(resp.json)
-
-    return # 上面的函数会异步地执行，这里会直接返回
-```
-{% endif %}
-
-{% if platformName === "Java" %}
-```java
-@EngineFunction("hello")
-public static String hello(@EngineFunctionParam("name") String name) {
-  new Thread(() -> {
-    doSomeTimeConsumingThings();
-  }).start();
-  if (name == null) {
-    return "Hello World!";
-  }
-  return String.format("Hello %s!", name);
-}
-```
-{% endif %}
-
-{% if platformName === ".NET" %}
-```cs
-private static async Task TimeConsumingThings() {
-    await Task.Delay(20 * 1000);
-    Console.WriteLine("任务完成");
-}
-
-[LCEngineFunction("hello")]
-public static async Task<string> Hello([LCEngineFunctionParam("name")] string name) {
-    await TimeConsumingThings();
-    return $"Hello, {name}!";
-}
-```
-{% endif %}
-
-{% if platformName !== "PHP" %}
-注意，对于 before 类 hook 函数，改为异步处理通常没有意义。
+不过，对于 before 类 hook 函数，改为异步处理通常没有意义。
 虽然改为异步后能保证 before 类函数能够运行完成，不会因超时而报错。
 但是，只要 before 类 hook 函数不能及时抛出异常，就无法起到中断操作执行的作用。
 对于超时的 before 类 hook 函数，如果无法优化代码，压缩执行时间的话，那只能改为 after 类函数。
 例如，假设某个 beforeSave 函数需要调用耗时较久的第三方的自然语言处理接口判断用户提交的评论是否来自真实用户，导致超时，
 那么可以改为 afterSave 函数，在保存评论后再调用第三方接口，如果判断是水军评论，那么再行删除。
-{% endif %}
-
-{% if platformName === "Python" %}
-### 分离云函数
-
-有时候可能需要将处理不同 class 的函数放到不同的文件中，方便管理：
-
-```python
-# Post.py
-import leancloud
-
-post_engine = leancloud.Engine()
-
-@post_engine.define
-def post_func():
-    pass
-```
-```python
-# Comment.py
-import leancloud
-
-comment_engine = leancloud.Engine()
-
-@comment_engine.define
-def comment_func():
-    pass
-```
-
-在 `cloud.py` 中引入它们：
-
-```python
-# cloud.py
-import leancloud
-from Post import post_engine
-from Comment import comment_engine
-
-engine = leancloud.Engine()
-
-# 将 post_engine 和 comment_engine 中的函数加载到 engine 里
-# 等同于在 cloud.py 这里注册 post_func 和 comment_func
-engine.register(post_engine)
-engine.register(comment_engine)
-```
-
-在使用 `engine.register` 函数过程中，请务必不要注册相同的函数名称。
-{% endif %}
 
 ## Hook 函数
 
 Hook 函数本质上是云函数，但它有固定的名称，定义之后会 **由系统** 在特定事件或操作（如数据保存前、保存后，数据更新前、更新后等等）发生时 **自动触发**，而不是由开发者来控制其触发时机。需要注意：
 
-- 通过控制台进行 [数据导入](dashboard_guide.html#本地数据导入_LeanCloud) 不会触发以下任何 hook 函数。
+- 通过控制台进行数据导入时不会触发任何 hook 函数。
 - 使用 Hook 函数需要 [防止死循环调用](#防止死循环调用)。
 - `_Installation` 表暂不支持 Hook 函数。
-- Hook 函数只对当前应用的 Class 生效，[对绑定后的目标 Class 无效](app_data_share.html#云引擎_Hook_函数)。
+- Hook 函数只对当前应用的 Class 生效，对绑定后的目标 Class 无效。
 
-对于 `before` 类的 Hook（也包括 `{% if platformName === "Node.js" %}onLogin{% endif %}{% if platformName === "Python" %}on_login{% endif %}{% if platformName === "PHP" %}onLogin{% endif %}{% if platformName === "Java" %}onLogin{% endif %}{% if platformName === ".NET" %}OnLogin{% endif %}`），如果返回了一个错误的话，这个操作就会被中断，你可以在这些 Hook 中主动抛出一个错误来拒绝掉某些操作。对于 `after` 类的 Hook（也包括 `{% if platformName === "Node.js" %}onVerified{% endif %}{% if platformName === "Python" %}on_verified{% endif %}{% if platformName === "PHP" %}onVerified{% endif %}{% if platformName === "Java" %}onVerified{% endif %}{% if platformName === ".NET" %}OnVerified{% endif %}`），返回错误并不会影响操作的执行（因为其实操作已经执行完了）。
+对于 `before` 类的 Hook，如果返回了一个错误的话，这个操作就会被中断，因此你可以在这些 Hook 中主动抛出一个错误来拒绝掉某些操作。对于 `after` 类的 Hook，返回错误并不会影响操作的执行（因为其实操作已经执行完了）。
 
 ```mermaid
 graph LR
@@ -1024,7 +643,7 @@ B -->|afterDelete|C((done))
 
 为了认证 Hook 调用者的身份，我们的 SDK 内部会确认请求确实是从云引擎内网的云存储组件发出的，如果认证失败，可能会出现 `Hook key check failed` 的提示，如果在本地调试时出现这样的错误，请确保是通过命令行工具启动调试的。
 
-### `{% if platformName === "Go" %}BeforeSave{% endif %}{% if platformName === "Node.js" %}beforeSave{% endif %}{% if platformName === "Python" %}before_save{% endif %}{% if platformName === "PHP" %}beforeSave{% endif %}{% if platformName === "Java" %}beforeSave{% endif %}{% if platformName === ".NET" %}BeforeSave{% endif %}`
+### BeforeSave
 
 在创建新对象之前，可以对数据做一些清理或验证。例如，一条电影评论不能过长，否则界面上显示不开，需要将其截断至 140 个字符：
 
@@ -1121,7 +740,8 @@ leancloud.BeforeSave("Review", func(req *ClassHookRequest) (interface{}, error) 
 })
 ```
 {% endif %}
-### `{% if platformName === "Go" %}AfterSave{% endif %}{% if platformName === "Node.js" %}afterSave{% endif %}{% if platformName === "Python" %}after_save{% endif %}{% if platformName === "PHP" %}afterSave{% endif %}{% if platformName === "Java" %}afterSave{% endif %}{% if platformName === ".NET" %}AfterSave{% endif %}`
+
+### AfterSave
 
 在创建新对象后触发指定操作，比如当一条留言创建后再更新一下所属帖子的评论总数：
 
@@ -1205,6 +825,7 @@ leancloud.AfterSave("Review", func(req *ClassHookRequest) error {
 
 ```
 {% endif %}
+
 再如，在用户注册成功之后，给用户增加一个新的属性 `from` 并保存：
 
 {% if platformName === "Node.js" %}
@@ -1219,6 +840,7 @@ AV.Cloud.afterSave('_User', function (request) {
 ```
 
 虽然对于 `after` 类的 Hook 我们并不关心返回值，但我们仍建议你返回一个 Promise，这样如果发生了非预期的错误，会自动在标准输出中打印异常信息和调用栈。
+
 {% endif %}
 {% if platformName === "Python" %}
 ```python
@@ -1274,7 +896,8 @@ leancloud.AfterSave("_User", func(req *ClassHookRequest) error{
 })
 ```
 {% endif %}
-### `{% if platformName === "Go" %}BeforeUpdate{% endif %}{% if platformName === "Node.js" %}beforeUpdate{% endif %}{% if platformName === "Python" %}before_update{% endif %}{% if platformName === "PHP" %}beforeUpdate{% endif %}{% if platformName === "Java" %}beforeUpdate{% endif %}{% if platformName === ".NET" %}BeforeUpdate{% endif %}`
+
+### BeforeUpdate
 
 在更新已存在的对象前执行操作，这时你可以知道哪些字段已被修改，还可以在特定情况下拒绝本次修改：
 
@@ -1363,21 +986,18 @@ leancloud.BeforeUpdate("Review", func(req *ClassHookRequest) (interface{}, error
 })
 ```
 {% endif %}
-{% call docs.noteWrap() %}
-对 `{% if platformName === "Go" %}req.Object{% endif %}{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}obj{% endif %}{% if platformName === "PHP" %}$review{% endif %}{% if platformName === "Java" %}review{% endif %}{% if platformName === ".NET" %}review{% endif %}` 直接进行的修改不会被保存。如需拒绝修改，可以让函数返回一个错误。
-{% endcall %}
 
-{% call docs.noteWrap() %}
+对传入对象直接进行的修改不会被保存。如需拒绝修改，可以让函数返回一个错误。
+
 传入的对象是一个尚未保存到数据库的临时对象，并不保证与最终储存到数据库的对象完全相同，这是因为修改中可能包含自增、数组增改、关系增改等原子操作。
-{% endcall %}
 
-### `{% if platformName === "Go" %}AfterUpdate{% endif %}{% if platformName === "Node.js" %}afterUpdate{% endif %}{% if platformName === "Python" %}after_update{% endif %}{% if platformName === "PHP" %}afterUpdate{% endif %}{% if platformName === "Java" %}afterUpdate{% endif %}{% if platformName === ".NET" %}AfterUpdate{% endif %}`
+### AfterUpdate
 
-{% call docs.alertWrap() %}
+
 本 Hook 使用不当可能会造成死循环，导致数据存储 API 的调用次数暴涨，甚至产生更多的费用。因此请仔细阅读 [防止死循环调用](#防止死循环调用) 部分，做出必要的调整和预防措施。
-{% endcall %}
 
-在更新已存在的对象后执行特定的动作。和 `{% if platformName === "Node.js" %}beforeUpdate{% endif %}{% if platformName === "Python" %}before_update{% endif %}{% if platformName === "PHP" %}beforeUpdate{% endif %}{% if platformName === "Java" %}beforeUpdate{% endif %}{% if platformName === ".NET" %}BeforeUpdate{% endif %}` 一样，你可以知道哪些字段已被修改。
+
+在更新已存在的对象后执行特定的动作。和 BeforeUpdate 一样，你可以知道哪些字段已被修改。
 
 {% if platformName === "Node.js" %}
 ```js
@@ -1456,16 +1076,18 @@ leancloud.AfterUpdate("Review", func(req *ClassHookRequest) error {
 })
 ```
 {% endif %}
+
 #### 防止死循环调用
 
-你也许会好奇为什么可以在 `{% if platformName === "Go" %}AfterUpdate{% endif %}{% if platformName === "Node.js" %}afterUpdate{% endif %}{% if platformName === "Python" %}after_update{% endif %}{% if platformName === "PHP" %}afterUpdate{% endif %}{% if platformName === "Java" %}afterUpdate{% endif %}{% if platformName === ".NET" %}AfterUpdate{% endif %}` 中保存 `post` 而不会再次触发该 hook。这是因为云引擎对所有传入 `{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 的对象做了处理，以阻止死循环调用的产生。
+你也许会好奇为什么可以在 AfterUpdate 中保存 `post` 而不会再次触发该 hook。
+这是因为云引擎对所有传入对象做了处理，以阻止死循环调用的产生。
 
 不过请注意，以下情况还需要开发者自行处理：
 
-- 对传入的 `{% if platformName === "Go" %}req.Object{% endif %}{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 对象进行 `fetch` 操作。
-- 重新构造传入的 `{% if platformName === "Go" %}req.Object{% endif %}{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 对象，如使用 `{% if platformName === "Node.js" %}AV.Object.createWithoutData(){% endif %}{% if platformName === "Python" %}leancloud.Object.create_without_data(){% endif %}{% if platformName === "PHP" %}LeanObject::create(){% endif %}{% if platformName === "Java" %}LCObject.createWithoutData(String, String){% endif %}{% if platformName === ".NET" %}AVObject.CreateWithoutData(){% endif %}` 方法。
+- 对传入对象进行 `fetch` 操作。
+- 重新构造传入的对象。
 
-对于使用上述方式产生的对象，请根据需要自行调用 `{% if platformName === "Node.js" %}object.disableBeforeHook(){% endif %}{% if platformName === "Python" %}leancloud.Object.disable_before_hook(){% endif %}{% if platformName === "PHP" %}LeanObject->disableBeforeHook(){% endif %}{% if platformName === "Java" %}post.disableBeforeHook(){% endif %}{% if platformName === ".NET" %}post.DisableBeforeHook(){% endif %}` 或 `{% if platformName === "Node.js" %}object.disableAfterHook(){% endif %}{% if platformName === "Python" %}leancloud.Object.disable_after_hook(){% endif %}{% if platformName === "PHP" %}LeanObject->disableAfterHook(){% endif %}{% if platformName === "Java" %}post.disableAfterHook(){% endif %}{% if platformName === ".NET" %}post.DisableAfterHook(){% endif %}`：
+对于使用上述方式产生的对象，请根据需要自行调用禁用 hook 的接口：
 
 {% if platformName === "Node.js" %}
 ```js
@@ -1569,8 +1191,11 @@ post.DisableAfterHook();
 await post.Save();
 ```
 {% endif %}
+{% if platformName === "Go" %}
+Go SDK 目前尚未提供 DisableAfterHook 接口。 
+{% endif %}
 
-### `{% if platformName === "Go" %}BeforeDelete{% endif %}{% if platformName === "Node.js" %}beforeDelete{% endif %}{% if platformName === "Python" %}before_delete{% endif %}{% if platformName === "PHP" %}beforeDelete{% endif %}{% if platformName === "Java" %}beforeDelete{% endif %}{% if platformName === ".NET" %}BeforeDelete{% endif %}`
+### BeforeDelete
 
 在删除一个对象之前做一些检查工作，比如在删除一个相册 `Album` 前，先检查一下该相册中还有没有照片 `Photo`：
 
@@ -1679,7 +1304,8 @@ leancloud.BeforeDelete("Album", func(req *ClassHookRequest) (interface{}, error)
 })  
 ```
 {% endif %}
-### `{% if platformName === "Go" %}AfterDelete{% endif %}{% if platformName === "Node.js" %}afterDelete{% endif %}{% if platformName === "Python" %}after_delete{% endif %}{% if platformName === "PHP" %}afterDelete{% endif %}{% if platformName === "Java" %}afterDelete{% endif %}{% if platformName === ".NET" %}AfterDelete{% endif %}`
+
+### AfterDelete
 
 在一个对象后被删执行操作，例如递减计数、删除关联对象等等。同样以相册为例，这次我们不在删除相册前检查是否还有照片，而是在删除后，同时删除相册中的照片：
 
@@ -1775,7 +1401,8 @@ leancloud.AfterDelete("Album", func(req *ClassHookRequest) error {
 })
 ```
 {% endif %}
-### `{% if platformName === "Go" %}OnVerified{% endif %}{% if platformName === "Node.js" %}onVerified{% endif %}{% if platformName === "Python" %}on_verified{% endif %}{% if platformName === "PHP" %}onVerified{% endif %}{% if platformName === "Java" %}onVerified{% endif %}{% if platformName === ".NET" %}OnVerified{% endif %}`
+
+### OnVerified
 
 当用户通过邮箱或者短信验证时，对该用户执行特定操作。比如：
 
@@ -1840,12 +1467,12 @@ leancloud.OnVerified("email", func(req *ClassHookRequest) error {
 })
 ```
 {% endif %}
-{% if platformName !== "Java" %}
-函数的第一个参数是验证类型。短信验证为 `sms`，邮箱验证为 `email`。
-{% endif %}
+
 数据库中相关的验证字段，如 `emailVerified` 不需要修改，系统会自动更新。
 
-### `{% if platformName === "Go" %}OnLogin{% endif %}{% if platformName === "Node.js" %}onLogin{% endif %}{% if platformName === "Python" %}on_login{% endif %}{% if platformName === "PHP" %}onLogin{% endif %}{% if platformName === "Java" %}onLogin{% endif %}{% if platformName === ".NET" %}OnLogin{% endif %}`
+该 hook 属于 after 类 hook.
+
+### OnLogin
 
 在用户登录之时执行指定操作，比如禁止在黑名单上的用户登录：
 
@@ -1915,130 +1542,16 @@ leancloud.OnLogin(func(req *ClassHookRequest) error {
 ```
 {% endif %}
 
-{#
+该 hook 属于 before 类 hook.
 
-注意：onLogin hook 并不适用这种场合，后续会加专门的 hook
-
-再比如校验第三方登录的 access token：
-
-假设某 Example 平台的 `authData` 如下：
-
-```json
-{
-    "uid": "42",
-    "access_token": "access token string",
-}
-```
-
-平台名称为 `example_platform`。
-那么我们可以定义如下 `onLogin` 函数：
-
-{% if platformName === "Node.js" %}
-```js
-AV.Cloud.onLogin(function (request) {
-  const authData = request.object.get("authData");
-  const userID = authData.example_platform.uid;
-  const token = authData.example_platform.access_token;
-
-  https.get(`https://example.com/applications/${userID}/tokens/${token}`, (res) => {
-    if (res.statusCode !== 200) {
-      throw new AV.Cloud.Error('Example platform token invalid');
-    }
-  }).on('error', (e) => {
-    console.error(e);
-    throw new AV.Cloud.Error('Failed to verify Example platform token');
-  });
-});
-```
-{% endif %}
-{% if platformName === "Python" %}
-```python
-@engine.on_login
-def on_login(user):
-  auth_data = user.get("authData")
-  user_id = auth_data["example_platform"]["uid"]
-  token = auth_data["example_platform"]["access_token"]
-
-  conn = http.client.HTTPSConnection("example.com")
-  conn.request("GET", f"/applications/{user_id}/tokens/{token}")
-  response = conn.getresponse()
-  if response.status != 200:
-    raise LeanEngineError("Example platform token invalid")
-```
-{% endif %}
-{% if platformName === "PHP" %}
-```php
-Cloud::onLogin(function($user) {
-  $authData = $user->get("authData");
-  $userID = $authData["example_platform"]["uid"];
-  $token = $authData["example_platform"]["access_token"];
-
-  $headers = get_headers("https://example.com/applications/${userID}/tokens/${token}");
-  $statusCode = $header[0];
-  if (strpos($statusCode, "200") === false) {
-    throw new FunctionError("Example platform token invalid");
-  }
-});
-```
-{% endif %}
-{% if platformName === "Java" %}
-```java
-@EngineHook(className = "_User", type = EngineHookType.onLogin)
-public static LCUser userOnLoginHook(LCUser user) throws Exception {
-  JSONObject authData = user.getJSONObject("authData");
-  JSONObject examplePlatform = (JSONObject) authData.get("example_platform");
-  String userID = (String) examplePlatform.get("uid");
-  String token = (String) examplePlatform.get("access_token");
-  OkHttpClient client = new OkHttpClient();
-  String url = "https://example.com/applications/" + userID + "/tokens/" + token;
-  Request request = new Request.Builder().url(url).build();
-  Response response = client.newCall(request).execute();
-  int statusCode = response.code();
-  if (statusCode == 200) {
-    return user;
-  } else {
-    throw new Exception("Example platform token invalid");
-  }
-}
-```
-{% endif %}
-{% if platformName === ".NET" %}
-```cs
-[LCEngineUserHook(LCEngineUserHookType.OnLogin)]
-public static async Task<LCUser> OnLogin(LCUser user) {
-    Dictionary<string, object> authData = user.AuthData;
-    Dictionary<string, object> examplePlatform = authData["example_platform"] as Dictionary<string, object>;
-    string userId = examplePlatform["uid"] as string;
-    string token = examplePlatform["access_token"] as string;
-    HttpClient client = new HttpClient();
-    string url = $"https://example.com/applications/{userId}/tokens/{token}";
-    HttpRequestMessage req = new HttpRequestMessage {
-        RequestUri = new Uri(url),
-    };
-    HttpResponseMessage response = await client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead);
-    req.Dispose();
-
-    if (response.StatusCode == HttpStatusCode.OK) {
-        return user;
-    }
-    throw new Exception("Example platform token invalid");
-}
-```
-{% endif %}
-
-注意，上面的示例片段仅为示意，为了简短省略了许多逻辑，包括 token 时效性检查、其他登录方式的处理、网络请求异常的处理等。
-
-#}
-
-{% if platformName === "Node.js" or platformName === "Python" or platformName === "PHP" or platformName === "Java" %}
 ### 即时通讯 Hook 函数
 
-参见[即时通讯概览 · 云引擎 Hook](realtime-guide-systemconv.html#万能的 Hook 机制) 章节。
-{% endif %}
+参见《即时通讯概览第四篇》的《万能的 Hook 机制》章节。
+
 
 ### Hook 函数错误响应码
 
-为 `{% if platformName === "Go" %}BeforeSave{% endif %}{% if platformName === "Node.js" %}beforeSave{% endif %}{% if platformName === "Python" %}before_save{% endif %}{% if platformName === "PHP" %}beforeSave{% endif %}{% if platformName === "Java" %}beforeSave{% endif %}{% if platformName === ".NET" %}BeforeSave{% endif %}` 这类的 hook 函数定义错误码，需要这样：
+为 `BeforeSave` 这类的 hook 函数定义错误码，需要这样：
 
 {% if platformName === "Node.js" %}
 ```js
@@ -2099,20 +1612,21 @@ leancloud.BeforeSave("Review", func(req *ClassHookRequest) (interface{}, error) 
 })
 ```
 {% endif %}
+
 客户端收到的响应为 `Cloud Code validation failed. Error detail: { "code": 123, "message": "An error occurred." }`。可通过 **截取字符串** 的方式取出错误信息，再转换成需要的对象。
 
 ### Hook 函数超时
 
-Before 类 Hook 函数的超时时间为 10 秒，其他类 Hook 函数的超时时间为 3 秒。如果 Hook 函数被其他的云函数调用（比如因为保存对象而触发 `{% if platformName === "Node.js" %}beforeSave{% endif %}{% if platformName === "Python" %}before_save{% endif %}{% if platformName === "PHP" %}beforeSave{% endif %}{% if platformName === "Java" %}beforeSave{% endif %}{% if platformName === ".NET" %}BeforeSave{% endif %}` 和 `{% if platformName === "Node.js" %}afterSave{% endif %}{% if platformName === "Python" %}after_save{% endif %}{% if platformName === "PHP" %}afterSave{% endif %}{% if platformName === "Java" %}afterSave{% endif %}{% if platformName === ".NET" %}AeforeSave{% endif %}`），那么它们的超时时间会进一步被其他云函数调用的剩余时间限制。
+Before 类 Hook 函数的超时时间为 10 秒，其他类 Hook 函数的超时时间为 3 秒。如果 Hook 函数被其他的云函数调用（比如因为保存对象而触发 `BeforeSave` 和 `AeforeSave`），那么它们的超时时间会进一步被其他云函数调用的剩余时间限制。
 
-例如，如果一个 `{% if platformName === "Node.js" %}beforeSave{% endif %}{% if platformName === "Python" %}before_save{% endif %}{% if platformName === "PHP" %}beforeSave{% endif %}{% if platformName === "Java" %}beforeSave{% endif %}{% if platformName === ".NET" %}BeforeSave{% endif %}` 函数是被一个已经运行了 13 秒的云函数触发，那么 `{% if platformName === "Node.js" %}beforeSave{% endif %}{% if platformName === "Python" %}before_save{% endif %}{% if platformName === "PHP" %}beforeSave{% endif %}{% if platformName === "Java" %}beforeSave{% endif %}{% if platformName === ".NET" %}BeforeSave{% endif %}` 函数就只剩下 2 秒的时间来运行。同时请参考 [云函数超时及处理方案](#云函数超时)。
+例如，如果一个 `BeforeSave` 函数是被一个已经运行了 13 秒的云函数触发，那么它就只剩下 2 秒的时间来运行。同时请参考 [云函数超时及处理方案](#云函数超时)。
 
 {% if platformName === "Node.js" %}
 ## 在线编写云函数
 
 很多人使用云引擎是为了在服务端提供一些个性化的方法供各终端调用，而不希望关心诸如代码托管、npm 依赖管理等问题。为此我们提供了在线维护云函数的功能。使用此功能需要注意：
 
-- 在定义的函数会覆盖你之前用 Git 或命令行部署的项目。
+- 在线定义的函数会覆盖你之前用 Git 或命令行部署的项目。
 - 目前只能在线编写云函数和 Hook，不支持托管静态网页、编写动态路由。
 - 只能使用 SDK 和一些内置的模块（详见下节表格），无法引入其他模块作为依赖。
 
@@ -2123,9 +1637,7 @@ Before 类 Hook 函数的超时时间为 10 秒，其他类 Hook 函数的超时
 - **预览**：会将所有函数汇总并生成一个完整的代码段，可以确认代码，或者将其保存为 `cloud.js` 覆盖项目模板的同名文件，即可快速的转换为使用项目部署。
 - **维护云函数**：可以编辑已有云函数，查看保存历史，以及删除云函数。
 
-{% call docs.alertWrap() %}
 云函数编辑之后需要点击 **部署** 才能生效。
-{% endcall %}
 
 ### 在线编写的 SDK 版本
 
@@ -2157,7 +1669,7 @@ v3|3.x|3.x|8|需要使用 Promise 写法|async, bluebird, crypto, debug, ejs, ja
 
 ## 查看和运行云函数
 
-**控制台 > 云引擎 > 云函数**页面以表格的形式展示了应用所属各分组上定义的云函数（包括 Hook）的基本信息，包括云函数名称、所属分组、QPM（每分钟请求数）。
+**云服务控制台 > 云引擎 > 云函数**页面以表格的形式展示了应用所属各分组上定义的云函数（包括 Hook）的基本信息，包括云函数名称、所属分组、QPM（每分钟请求数）。
 在云函数表格中，点击**运行**按钮可以通过控制台调用云函数。
 通过左上角的控制按钮则可以刷新页面、切换预备环境和生产环境。
 
@@ -2167,11 +1679,9 @@ v3|3.x|3.x|8|需要使用 Promise 写法|async, bluebird, crypto, debug, ejs, ja
 
 定时任务是普通的云函数，也会遇到 [超时问题](#云函数超时)，具体请参考 [超时处理方案](#超时的处理方案)。
 
-{% call docs.noteWrap() %}
-一个定时任务如果在 24 小时内收到了超过 30 次的 `400`（Bad Request）或 `502`（Bad Gateway）的应答，它将会被云引擎禁用，同时系统会向开发者发出相关的禁用通知邮件。在控制台的日志中，对应的错误信息为 [`timerAction short-circuited and no fallback available`](#错误信息)。
-{% endcall %}
+一个定时任务如果在 24 小时内收到了超过 30 次的 `400`（Bad Request）或 `502`（Bad Gateway）的应答，它将会被云引擎禁用，同时系统会向开发者发出相关的禁用通知邮件。在控制台的日志中，对应的错误信息为 `timerAction short-circuited and no fallback available`。
 
-部署云引擎之后，进入 **控制台 > 云引擎 > 定时任务**，点击 **创建定时任务**，然后设定执行的函数名称、执行环境等等。例如定义一个打印循环打印日志的任务 `logTimer`：
+部署云引擎之后，进入 **云服务控制台 > 云引擎 > 定时任务**，点击 **创建定时任务**，然后设定执行的函数名称、执行环境等等。例如定义一个打印循环打印日志的任务 `logTimer`：
 
 {% if platformName === "Node.js" %}
 ```js
@@ -2184,7 +1694,7 @@ AV.Cloud.define('logTimer', function (request) {
 ```python
 @engine.define
 def logTimer(movie, **params):
-    print 'This log is printed by logTimer.'
+    print('This log is printed by logTimer.')
 ```
 {% endif %}
 {% if platformName === "PHP" %}
@@ -2218,6 +1728,7 @@ leancloud.Define("logTimer", func(req *FunctionRequest) (interface{}, error) {
 })
 ```
 {% endif %}
+
 定时任务分为两类：
 
 - 使用 Cron 表达式安排调度
@@ -2225,7 +1736,7 @@ leancloud.Define("logTimer", func(req *FunctionRequest) (interface{}, error) {
 
 以 Cron 表达式为例，比如每周一早上 8 点打印日志（运行之前定义的 `logTimer` 函数），创建定时任务的时候，选择 **Cron 表达式** 并填入 `0 0 8 ? * MON`。
 
-Cron 表达式的语法可以参考 [云队列使用指南的 Cron 表达式一节](leanengine_cloudqueue.html#CRON_表达式)。
+Cron 表达式的语法可以参考《云队列使用指南》的《Cron 表达式》一节。
 
 点击「非必填」会展开更多选项：
 
@@ -2243,7 +1754,7 @@ Cron 表达式的语法可以参考 [云队列使用指南的 Cron 表达式一�
 - `error` 错误提示（仅限失败任务）
 - `retryAt` 下次重试时间（仅限失败任务）
 
-具体的执行日志可以在**控制台 > 云引擎 > 日志** 查看。
+具体的执行日志可以在**云服务控制台 > 云引擎 > 日志** 查看。
 例如：
 
 ```
@@ -2263,6 +1774,27 @@ CloudQueue 运行失败 24e1b480-aeb5-4222-ab7d-7d4b8ee170b9: hello !! {"error":
 // 通常位于 server.js
 AV.Cloud.useMasterKey();
 ```
+
+如果没有添加这些代码，默认是没有超级权限的，这意味着在云引擎中你也不能修改被 ACL 保护的数据，你需要在进行操作时手动指定 `sessionToken`，让操作以这个用户的权限来执行：
+
+```js
+const post = new Post();
+post.save(
+  { author: user },
+  // 或者使用 request.sessionToken（网站托管中需启用 `Cloud.CookieSession`）
+  // {
+  //  sessionToken: user.getSessionToken()
+  // }
+);
+```
+
+或者你也可单独对某一个操作使用 Master Key，跳过权限检查：
+
+```js
+post.destroy({ useMasterKey: true });
+```
+
+当然你也可以在启用了超级权限的情况下使用 `useMasterKey: false` 来对单个操作关掉超级权限。
 {% endif %}
 {% if platformName === "Python" %}
 ```python
@@ -2290,32 +1822,10 @@ RequestSignImplementation.setMasterKey(appMasterKey);
 {% if platformName === "Go" %}
 SDK 中每个请求都可以使用 `UseMasterKey()` 为请求带上 Master Key 来开启超级权限，只需要作为可选参数传入最后即可，例如 `Create` `Set` `Update` 等操作。
 {% endif %}
-{% if platformName === "Node.js" %}
-如果没有添加这些代码，默认是没有超级权限的，这意味着在云引擎中你也不能修改被 ACL 保护的数据，你需要在进行操作时手动指定 `sessionToken`，让操作以这个用户的权限来执行：
-
-```js
-var post = new Post();
-post.save(
-  { author: user },
-  {
-    // 或者使用 request.sessionToken（网站托管中需启用 `Cloud.CookieSession`）
-    sessionToken: user.getSessionToken()
-  }
-);
-```
-
-或者你也可单独对某一个操作使用 Master Key，跳过权限检查：
-
-```js
-post.destroy({ useMasterKey: true });
-```
-
-当然你也可以在启用了超级权限的情况下使用 `useMasterKey: false` 来对单个操作关掉超级权限。
 
 那么究竟是否应该使用超级权限呢，我们的建议如下：
 
 - 如果你的云引擎代码中特权操作比较多、操作不属于用户的全局数据比较多，那么建议全局开启 Master Key，并自行做好对于用户请求的权限检查。
-- 如果你的云引擎代码中的请求通常和单个用户自己的数据相关、需要遵守 ACL，那么建议不开启 Master Key，将用户请求的 `sessionToken` 传入数据修改的相关操作（如 `save`）。
-{% endif %}
+- 如果你的云引擎代码中的请求通常和单个用户自己的数据相关、需要遵守 ACL，那么建议不开启 Master Key，将用户请求的 `sessionToken` 传入数据修改的相关操作。
 
-关于云引擎上的权限问题，还可以参考 [ACL 权限管理开发指南](acl-guide.html) 和 [在云引擎中使用 ACL](acl_guide_leanengine.html)。
+关于云引擎上的权限问题，还可以参考《ACL 权限管理开发指南》和《在云引擎中使用 ACL》。

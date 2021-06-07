@@ -322,52 +322,8 @@ git push -u origin master
 Node.js 项目可以通过检查环境变量 `NODE_ENV` 的值来判断：值为 `development` 意味着当前环境为「开发环境」，是由命令行工具启动的；值为 `production` 意味着当前环境为「生产环境」，是线上正式运行的环境；值为 `staging` 意味着当前环境为「预备环境」。
 其他语言的项目可以通过检查环境变量 `LEANCLOUD_APP_ENV` 的值来判断：值为 `development` 意味着当前环境为「开发环境」，是由命令行工具启动的；值为 `production` 意味着当前环境为「生产环境」，是线上正式运行的环境；值为 `stage` 意味着当前环境为「预备环境」。
 
-你还可以在 SDK 中指定客户端将请求所发往的环境：
 
-```cs
-LCCloud.IsProduction = true; // production (default)
-LCCloud.IsProduction = false; // stage
-```
-```java
-AVCloud.setProductionMode(true); // production
-AVCloud.setProductionMode(false); // stage
-```
-```objc
-[LCCloud setProductionMode:YES]; // production (default)
-[LCCloud setProductionMode:NO]; // stage
-```
-```js
-AV.setProduction(true); // production (default)
-AV.setProduction(false); // stage
-```
-```python
-leancloud.use_production(True) # production (default)
-leancloud.use_production(False) # stage
-# 需要在 SDK 初始化语句 `leancloud.init` 之前调用
-```
-```php
-LeanClient::useProduction(true); // production (default)
-LeanClient::useProduction(false); // stage
-```
-```go
-// 暂不支持（总是使用生产环境）
-```
-```swift
-// production by default
 
-// stage
-do {
-    let environment: LCApplication.Environment = [.cloudEngineDevelopment]
-    let configuration = LCApplication.Configuration(environment: environment)
-    try LCApplication.default.set(
-        id: {{appid}},
-        key: {{appkey}},
-        serverURL: "https://please-replace-with-your-customized.domain.com",
-        configuration: configuration)
-} catch {
-    print(error)
-}
-```
 
 ### 部署历史
 
