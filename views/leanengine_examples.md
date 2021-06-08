@@ -13,6 +13,6 @@
 
 ## Node.js 云引擎 Demo 仓库
 
-[leanengine-nodejs-demos]() 是 LeanEngine Node.js 项目的常用功能和示例仓库。包括了推荐的最佳实践和常用的代码片段，每个文件中都有较为详细的注释，适合云引擎的开发者阅读、参考，也可以将代码片段复制到你的项目中使用。
+[leanengine-nodejs-demos](https://github.com/leancloud/leanengine-nodejs-demos) 是 LeanEngine Node.js 项目的常用功能和示例仓库。包括了推荐的最佳实践和常用的代码片段，每个文件中都有较为详细的注释，适合云引擎的开发者阅读、参考，也可以将代码片段复制到你的项目中使用。
 
 在这个仓库的 README 中有详细的功能列表和介绍。

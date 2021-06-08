@@ -505,6 +505,7 @@ func setResponseContentType(next echo.HandlerFunc) echo.HandlerFunc {
 函数 `setResponseContentType` 设置所有和 LeanEngine 相关的请求的 `Content-Type` 为 `application/json`，并且编码为 `UTF-8`。
 
 大多数 Go Web 框架均提供将标准库 HTTP Handler 转换为特有 Handler 的方法，只要保证能够在其他框架中接入以上两个部件，即可将 LeanEngine 集成入你喜爱的 Go Web 框架中。
+
 ## 如何接入 Node.js 框架？
 
 细心的开发者已经发现在示例项目中的 `package.json` 中引用了一个流行的 Node Web 框架 [Express](http://expressjs.com/)。
@@ -622,6 +623,7 @@ require('http').createServer(function (req, res) {
 你需要将 Web 服务监听在 `0.0.0.0` 上（Node.js 和 Express 的默认行为）而不是 `127.0.0.1`。
 
 可参考《在云引擎中使用其他 Node 框架》这篇指南。
+
 ### 路由超时设置
 
 因为 Node.js 的异步调用容易因运行时错误或编码疏忽中断，为了减少在这种情况下对服务器内存的占用，也为了客户端能够更早地收到错误提示，所以需要添加这个设置，一旦发生超时，服务端会返回一个 HTTP 错误码给客户端。
