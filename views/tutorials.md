@@ -18,43 +18,6 @@
 
 <a href="https://zhuanlan.zhihu.com/p/21399155" class="btn btn-default" target="_blank">阅读</a>
 
-## 第三方教程
-
-### 为聊天接入表情云
-
-<p class="text-muted">快速为聊天应用加入丰富有趣的表情功能，让用户们爽聊到爆。</p>
-
-![emoji](images/emoji-mm.png)
-
-[表情云™](http://www.biaoqingmm.com/) 为 LeanCloud 即时通讯 SDK 开发了相兼容的「表情 mm SDK」，所有接入 LeanCloud 的用户均可轻松接入表情云服务，在一分钟内拥有一个免费、海量、正版的表情商店。
-
-<div class="row">
-  <div class="col-sm-6">
-    <div class="doc-hero-links">
-      <a href="https://github.com/siyanhui/bqmm-leanchat-demo-ios/tree/master/leanchat" class="doc-quick-start-btn">
-            <!-- <i class="icon icon-apple"></i> -->
-            iOS SDK
-      </a>
-    </div>
-  </div>
-  <div class="col-sm-6">
-      <div class="doc-hero-links">
-        <a href="https://github.com/siyanhui/bqmm-leanchat-demo-android" class="doc-quick-start-btn">
-           Android SDK
-        </a>
-      </div>
-  </div>
-</div>
-
-### 为网站加入收款功能
-
-<p class="text-muted">快速接入各类支付平台，轻松收款。</p>
-
-使用 BeeCloud 支付 SDK，在 LeanCloud 云引擎上轻松搞定收款功能。
-
-![BeeCloud 支付平台](images/beecloud-payplatforms.png)
-
-<a href="pay-beecloud.html" class="btn btn-default">阅读</a>
 
 <!-- shared links, DO NOT REMOVE -->
 <!-- [云引擎]: leanengine_overview.html -->
