@@ -60,13 +60,6 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         type: 'ios',
         qcloudShow: true
       },{
-        name: '用户反馈 Feedback',
-        desc: '演示了 LeanCloud 反馈模块的用法。',
-        downPath: '',
-        mdPath: 'https://github.com/leancloud/feedback-demo',
-        type: 'ios',
-        qcloudShow: false
-      },{
         name: 'LeanCloud 短信',
         desc: 'LeanCloud 开源的短信演示程序，功能包括发送简单的文本验证码、按照自定义模版发送复杂的文本短信、发送语音验证码、使用手机号进行账号注册登录和重置密码等。',
         downPath: '',
