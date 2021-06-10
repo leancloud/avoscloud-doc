@@ -74,14 +74,14 @@ message.mentionList = @[@"Tom"];
 ```
 ```java
 String content = "@Tom 早点回家";
-AVIMTextMessage  message = new AVIMTextMessage();
+LCIMTextMessage  message = new LCIMTextMessage();
 message.setText(content);
 List<String> list = new ArrayList<>(); // 部分用户的 mention list，你可以像下面代码这样来填充
 list.add("Tom");
 message.setMentionList(list);
-imConversation.sendMessage(message, new AVIMConversationCallback() {
+imConversation.sendMessage(message, new LCIMConversationCallback() {
    @Override
-   public void done(AVIMException e) {
+   public void done(LCIMException e) {
    }
 });
 ```
@@ -135,15 +135,15 @@ message.mentionAll = YES;
 ```
 ```java
 String content = "@all";
-AVIMTextMessage  message = new AVIMTextMessage();
+LCIMTextMessage  message = new LCIMTextMessage();
 message.setText(content);
 
 boolean mentionAll = true; // 指示是否提及了所有人
 message.mentionAll(mentionAll);
 
-imConversation.sendMessage(message, new AVIMConversationCallback() {
+imConversation.sendMessage(message, new LCIMConversationCallback() {
    @Override
-   public void done(AVIMException e) {
+   public void done(LCIMException e) {
    }
 });
 ```
@@ -200,7 +200,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 ```
 ```java
 @Override
-public void onMessage(AVIMAudioMessage msg, AVIMConversation conv, AVIMClient client) {
+public void onMessage(LCIMAudioMessage msg, LCIMConversation conv, LCIMClient client) {
   // 读取消息 @ 的 clientId 列表
   List<String> currentMsgMentionUserList = message.getMentionList();
 }
@@ -259,7 +259,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 ```
 ```java
 @Override
-public void onMessage(AVIMAudioMessage msg, AVIMConversation conv, AVIMClient client) {
+public void onMessage(LCIMAudioMessage msg, LCIMConversation conv, LCIMClient client) {
   // 读取消息是否 @ 了对话的所有成员
   boolean currentMsgMentionAllUsers = message.isMentionAll();
   // 读取消息是否 @ 了当前用户
@@ -317,11 +317,11 @@ AVIMMessage *newMessage = [AVIMTextMessage messageWithText:@"Just a new message"
 }];
 ```
 ```java
-AVIMTextMessage textMessage = new AVIMTextMessage();
+LCIMTextMessage textMessage = new LCIMTextMessage();
 textMessage.setContent("修改后的消息");
-imConversation.updateMessage(oldMessage, textMessage, new AVIMMessageUpdatedCallback() {
+imConversation.updateMessage(oldMessage, textMessage, new LCIMMessageUpdatedCallback() {
   @Override
-  public void done(AVIMMessage avimMessage, AVException e) {
+  public void done(LCIMMessage avimMessage, LCException e) {
     if (null == e) {
       // 消息修改成功，avimMessage 即为被修改后的最新的消息
     }
@@ -389,7 +389,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```java
-void onMessageUpdated(AVIMClient client, AVIMConversation conversation, AVIMMessage message) {
+void onMessageUpdated(LCIMClient client, LCIMConversation conversation, LCIMMessage message) {
   // message 即为被修改的消息
 }
 ```
@@ -455,9 +455,9 @@ AVIMMessage *oldMessage = <#MessageYouWantToRecall#>;
 }];
 ```
 ```java
-conversation.recallMessage(message, new AVIMMessageRecalledCallback() {
+conversation.recallMessage(message, new LCIMMessageRecalledCallback() {
     @Override
-    public void done(AVIMRecalledMessage recalledMessage, AVException e) {
+    public void done(LCIMRecalledMessage recalledMessage, LCException e) {
         if (null == e) {
             // 消息撤回成功，可以更新 UI
         }
@@ -520,7 +520,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```java
-void onMessageRecalled(AVIMClient client, AVIMConversation conversation, AVIMMessage message) {
+void onMessageRecalled(LCIMClient client, LCIMConversation conversation, LCIMMessage message) {
   // message 即为被撤回的消息
 }
 ```
@@ -586,7 +586,7 @@ public func send(message: IMMessage, options: MessageSendOptions = .default, pri
 /**
  * 发送一条消息
  */
-public void sendMessage(AVIMMessage message, final AVIMConversationCallback callback)
+public void sendMessage(LCIMMessage message, final LCIMConversationCallback callback)
 ```
 ```cs
 public async Task<LCIMMessage> Send(LCIMMessage message, LCIMMessageSendOptions options = null);
@@ -656,7 +656,7 @@ public func send(message: IMMessage, options: MessageSendOptions = .default, pri
  * @param messageOption
  * @param callback
  */
-public void sendMessage(final AVIMMessage message, final AVIMMessageOption messageOption, final AVIMConversationCallback callback)；
+public void sendMessage(final LCIMMessage message, final LCIMMessageOption messageOption, final LCIMConversationCallback callback)；
 ```
 ```cs
 /// <summary>
@@ -715,15 +715,15 @@ option.transient = true;
 ```
 ```java
 String content = "Tom 正在输入…";
-AVIMTextMessage  message = new AVIMTextMessage();
+LCIMTextMessage  message = new LCIMTextMessage();
 message.setText(content);
 
-AVIMMessageOption option = new AVIMMessageOption();
+LCIMMessageOption option = new LCIMMessageOption();
 option.setTransient(true);
 
-imConversation.sendMessage(message, option, new AVIMConversationCallback() {
+imConversation.sendMessage(message, option, new LCIMConversationCallback() {
    @Override
-   public void done(AVIMException e) {
+   public void done(LCIMException e) {
    }
 });
 ```
@@ -784,11 +784,11 @@ do {
 }];
 ```
 ```java
-AVIMMessageOption messageOption = new AVIMMessageOption();
+LCIMMessageOption messageOption = new LCIMMessageOption();
 messageOption.setReceipt(true);
-imConversation.sendMessage(message, messageOption, new AVIMConversationCallback() {
+imConversation.sendMessage(message, messageOption, new LCIMConversationCallback() {
    @Override
-   public void done(AVIMException e) {
+   public void done(LCIMException e) {
    }
 });
 ```
@@ -849,17 +849,17 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```java
-public class CustomConversationEventHandler extends AVIMConversationEventHandler {
+public class CustomConversationEventHandler extends LCIMConversationEventHandler {
   /**
    * 实现本地方法来处理对方已经接收消息的通知
    */
-  public void onLastDeliveredAtUpdated(AVIMClient client, AVIMConversation conversation) {
+  public void onLastDeliveredAtUpdated(LCIMClient client, LCIMConversation conversation) {
     ;
   }
 }
 
 // 设置全局的对话事件处理 handler
-AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
+LCIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
 ```
 ```cs
 // Tom 用自己的名字作为 clientId 建立了一个 LCIMClient
@@ -977,18 +977,18 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     }];
     ```
     ```java
-    AVIMClient tom = AVIMClient.getInstance("Tom");
-    AVIMConversation conv = client.getConversation("551260efe4b01608686c3e0f");
+    LCIMClient tom = LCIMClient.getInstance("Tom");
+    LCIMConversation conv = client.getConversation("551260efe4b01608686c3e0f");
 
-    AVIMTextMessage textMessage = new AVIMTextMessage();
+    LCIMTextMessage textMessage = new LCIMTextMessage();
     textMessage.setText("Hello, Jerry!");
 
-    AVIMMessageOption option = new AVIMMessageOption();
+    LCIMMessageOption option = new LCIMMessageOption();
     option.setReceipt(true); /* 将消息设置为需要回执。 */
 
-    conv.sendMessage(textMessage, option, new AVIMConversationCallback() {
+    conv.sendMessage(textMessage, option, new LCIMConversationCallback() {
       @Override
-      public void done(AVIMException e) {
+      public void done(LCIMException e) {
         if (e == null) {
           /* 发送成功 */
         }
@@ -1071,17 +1071,17 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     }
     ```
     ```java
-    public class CustomConversationEventHandler extends AVIMConversationEventHandler {
+    public class CustomConversationEventHandler extends LCIMConversationEventHandler {
       /**
        * 实现本地方法来处理对方已经阅读消息的通知
        */
-      public void onLastReadAtUpdated(AVIMClient client, AVIMConversation conversation) {
+      public void onLastReadAtUpdated(LCIMClient client, LCIMConversation conversation) {
         /* Jerry 阅读了你的消息。可以通过调用 conversation.getLastReadAt() 来获得对方已经读取到的时间点 */
       }
     }
 
     // 设置全局的对话事件处理 handler
-    AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
+    LCIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
     ```
     ```cs
     tom.OnLastReadAtUpdated = (conv) => {
@@ -1149,15 +1149,15 @@ AVIMMessage *willMessage = [AVIMTextMessage messageWithText:@"我是一条遗愿
 }];
 ```
 ```java
-AVIMTextMessage message = new AVIMTextMessage();
+LCIMTextMessage message = new LCIMTextMessage();
 message.setText("我是一条遗愿消息，当发送者意外下线的时候，我会被下发给对话里面的其他成员。");
 
-AVIMMessageOption option = new AVIMMessageOption();
+LCIMMessageOption option = new LCIMMessageOption();
 option.setWill(true);
 
-conversation.sendMessage(message, option, new AVIMConversationCallback() {
+conversation.sendMessage(message, option, new LCIMConversationCallback() {
   @Override
-  public void done(AVIMException e) {
+  public void done(LCIMException e) {
     if (e == null) {
       // 发送成功
     }
@@ -1341,17 +1341,17 @@ LeanCloud 本就提供完善的消息推送服务，现在将推送与即时通�
   }];
   ```
   ```java
-  AVIMTextMessage msg = new AVIMTextMessage();
+  LCIMTextMessage msg = new LCIMTextMessage();
   msg.setText("Jerry，今晚有比赛，我约了 Kate，咱们仨一起去酒吧看比赛啊？！");
 
-  AVIMMessageOption messageOption = new AVIMMessageOption();
+  LCIMMessageOption messageOption = new LCIMMessageOption();
   String pushMessage = "{\"alert\":\"您有一条未读的消息\", \"category\":\"消息\","
                      + "\"badge\":1,\"sound\":\"message.mp3\","
                      + "\"custom-key\":\"由用户添加的自定义属性，custom-key 仅是举例，可随意替换\"}";
   messageOption.setPushData(pushMessage);
-  conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
+  conv.sendMessage(msg, messageOption, new LCIMConversationCallback() {
       @Override
-      public void done(AVIMException e) {
+      public void done(LCIMException e) {
           if (e == null) {
               // 发送成功
           }
@@ -1514,7 +1514,7 @@ do {
 [AVIMClient setUnreadNotificationEnabled:YES];
 ```
 ```java
-AVIMOptions.getGlobalOptions().setUnreadNotificationEnabled(true);
+LCIMOptions.getGlobalOptions().setUnreadNotificationEnabled(true);
 ```
 ```cs
 // 默认支持，无需额外设置
@@ -1562,8 +1562,8 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```java
-// 实现 AVIMConversationEventHandler 的代理方法 onUnreadMessagesCountUpdated 来得到未读消息的数量变更的通知
-onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
+// 实现 LCIMConversationEventHandler 的代理方法 onUnreadMessagesCountUpdated 来得到未读消息的数量变更的通知
+onUnreadMessagesCountUpdated(LCIMClient client, LCIMConversation conversation) {
     // conversation.getUnreadMessagesCount() 即该 conversation 的未读消息数量
 }
 ```
@@ -1643,10 +1643,10 @@ AVIMClient *currentClient = [[AVIMClient alloc] initWithClientId:@"Tom" tag:@"Mo
 ```
 ```java
 // 第二个参数：登录标记 tag
-AVIMClient currentClient = AVIMClient.getInstance(clientId, "Mobile");
-currentClient.open(new AVIMClientCallback() {
+LCIMClient currentClient = LCIMClient.getInstance(clientId, "Mobile");
+currentClient.open(new LCIMClientCallback() {
   @Override
-  public void done(AVIMClient avimClient, AVIMException e) {
+  public void done(LCIMClient avimClient, LCIMException e) {
     if(e == null){
       // 与云端建立连接成功
     }
@@ -1698,7 +1698,7 @@ func client(_ client: IMClient, event: IMClientEvent) {
 }
 ```
 ```java
-public class AVImClientManager extends AVIMClientEventHandler {
+public class AVImClientManager extends LCIMClientEventHandler {
   /**
    * 实现本方法以处理当前登录被踢下线的情况
    *
@@ -1707,15 +1707,15 @@ public class AVImClientManager extends AVIMClientEventHandler {
    * @param code 状态码说明被踢下线的具体原因
    */
   @Override
-  public void onClientOffline(AVIMClient avimClient, int i) {
+  public void onClientOffline(LCIMClient avimClient, int i) {
     if(i == 4111){
       // 适当地弹出友好提示，告知当前用户的 clientId 在其他设备上登录了
     }
   }
 }
 
-// 自定义实现的 AVIMClientEventHandler 需要注册到 SDK 后，SDK 才会通过回调 onClientOffline 来通知开发者
-AVIMClient.setClientEventHandler(new AVImClientManager());
+// 自定义实现的 LCIMClientEventHandler 需要注册到 SDK 后，SDK 才会通过回调 onClientOffline 来通知开发者
+LCIMClient.setClientEventHandler(new AVImClientManager());
 ```
 ```cs
 tom.OnClose = (code, detail) => {
@@ -1777,12 +1777,12 @@ if (err) {
 }
 ```
 ```java
-AVIMClientOpenOption openOption = new AVIMClientOpenOption();
+LCIMClientOpenOption openOption = new LCIMClientOpenOption();
 openOption.setReconnect(true);
-AVIMClient currentClient = AVIMClient.getInstance(clientId, "Mobile");
-currentClient.open(openOption, new AVIMClientCallback() {
+LCIMClient currentClient = LCIMClient.getInstance(clientId, "Mobile");
+currentClient.open(openOption, new LCIMClientCallback() {
   @Override
-  public void done(AVIMClient avimClient, AVIMException e) {
+  public void done(LCIMClient avimClient, LCIMException e) {
     if(e == null){
       // 与云端建立连接成功
     }
@@ -1832,7 +1832,7 @@ NSDictionary *attributes = @{ @"city": @"北京" };
 AVIMTextMessage *messageWithCity = [AVIMTextMessage messageWithText:@"天气太冷了" attributes:attributes];
 ```
 ```java
-AVIMTextMessage messageWithCity = new AVIMTextMessage();
+LCIMTextMessage messageWithCity = new LCIMTextMessage();
 messageWithCity.setText("天气太冷了");
 HashMap<String,Object> attr = new HashMap<String,Object>();
 attr.put("city", "北京");
@@ -1885,16 +1885,16 @@ message.attributes = {'city': '北京'};
 
 {{ docs.langSpecStart('java') }}
 
-继承于 `AVIMTypedMessage`，开发者也可以扩展自己的富媒体消息。其要求和步骤是：
+继承于 `LCIMTypedMessage`，开发者也可以扩展自己的富媒体消息。其要求和步骤是：
 
-* 实现新的消息类型，继承自 `AVIMTypedMessage`。这里需要注意：
-  * 在 class 上增加一个 `@AVIMMessageType(type=123)` 的 Annotation<br/>具体消息类型的值（这里是 `123`）由开发者自己决定。LeanCloud 内建的消息类型使用负数，所有正数都预留给开发者扩展使用。
-  * 在消息内部声明字段属性时，要增加 `@AVIMMessageField(name="")` 的 Annotation<br/>`name` 为可选字段，同时自定义的字段要有对应的 getter/setter 方法。
+* 实现新的消息类型，继承自 `LCIMTypedMessage`。这里需要注意：
+  * 在 class 上增加一个 `@LCIMMessageType(type=123)` 的 Annotation<br/>具体消息类型的值（这里是 `123`）由开发者自己决定。LeanCloud 内建的消息类型使用负数，所有正数都预留给开发者扩展使用。
+  * 在消息内部声明字段属性时，要增加 `@LCIMMessageField(name="")` 的 Annotation<br/>`name` 为可选字段，同时自定义的字段要有对应的 getter/setter 方法。
   * **请不要遗漏空的构造方法**（参考下面的示例代码），否则会造成类型转换失败。
-* 调用 `AVIMMessageManager.registerAVIMMessageType()` 函数进行类型注册。
-* 调用 `AVIMMessageManager.registerMessageHandler()` 函数进行消息处理 handler 注册。
+* 调用 `AVIMMessageManager.registerLCIMMessageType()` 函数进行类型注册。
+* 调用 `LCIMMessageManager.registerMessageHandler()` 函数进行消息处理 handler 注册。
 
-> 注意：如果你是使用 Kotlin 来开发，由于 Kotlin 对反射的处理方式与 Java 有细微差异，导致 `AVIMMessageField` 注释不能产生作用，所以 SDK 实际发送的自定义消息数据不全。我们已经在 `6.4.4` 版本的 SDK 中对这一问题进行了优化，请 Kotlin 开发者升级到 6.4.4 及其后续版本来定制子类化消息。
+> 注意：如果你是使用 Kotlin 来开发，由于 Kotlin 对反射的处理方式与 Java 有细微差异，导致 `LCIMMessageField` 注释不能产生作用，所以 SDK 实际发送的自定义消息数据不全。我们已经在 `6.4.4` 版本的 SDK 中对这一问题进行了优化，请 Kotlin 开发者升级到 6.4.4 及其后续版本来定制子类化消息。
 
 {{ docs.langSpecEnd('java') }}
 
@@ -1973,16 +1973,16 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 }
 ```
 ```java
-@AVIMMessageType(type = 123)
-public class CustomMessage extends AVIMTypedMessage {
+@LCIMMessageType(type = 123)
+public class CustomMessage extends LCIMTypedMessage {
   // 空的构造方法，不可遗漏
   public CustomMessage() {
 
   }
 
-  @AVIMMessageField(name = "_lctext")
+  @LCIMMessageField(name = "_lctext")
   String text;
-  @AVIMMessageField(name = "_lcattrs")
+  @LCIMMessageField(name = "_lcattrs")
   Map<String, Object> attrs;
 
   public String getText() {
@@ -2003,7 +2003,7 @@ public class CustomMessage extends AVIMTypedMessage {
 }
 
 // 注册自定义类型
-AVIMMessageManager.registerAVIMMessageType(CustomMessage.class);
+LCIMMessageManager.registerLCIMMessageType(CustomMessage.class);
 ```
 ```cs
 class EmojiMessage : LCIMTypedMessage {

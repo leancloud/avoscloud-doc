@@ -202,7 +202,7 @@ String name = "getOnOffStatus";
 Map<String, Object> param = new HashMap<String, Object>();
 List<String> userIds = Arrays.asList("your_user_id_1", "your_user_id_2");
 param.put("peerIds", userIds);
-AVCloud.callFunctionInBackground(name, param).subscribe(results -> {
+LCCloud.callFunctionInBackground(name, param).subscribe(results -> {
     System.out.println("结果 = " + results);
     for (String t: results) {
         if (null == t) {

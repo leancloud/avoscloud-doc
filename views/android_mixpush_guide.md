@@ -167,7 +167,7 @@ dependencies {
 
 ```xml
 <service
-      android:name="cn.leancloud.AVHMSMessageService"
+      android:name="cn.leancloud.LCHMSMessageService"
       android:exported="false">
       <intent-filter>
             <action android:name="com.huawei.push.action.MESSAGING_EVENT" />
@@ -177,14 +177,14 @@ dependencies {
 
 ### 具体使用
 
-1. 在 application 的 onCreate 方法中调用 `AVOSCloud.initialize` 完成初始化之后，进行混合推送 library 的初始化：
-  - 使用 `mixpush-android` 的开发者，调用 `cn.leancloud.AVMixPushManager.registerHMSPush(context, profile)` 完成 HMS 推送的初始化。
-  - 使用 `mixpush-hms` 的开发者，调用 `cn.leancloud.hms.AVMixPushManager.registerHMSPush(context, profile)` 完成 HMS 推送的初始化。
+1. 在 application 的 onCreate 方法中调用 `LeanCloud.initialize` 完成初始化之后，进行混合推送 library 的初始化：
+  - 使用 `mixpush-android` 的开发者，调用 `cn.leancloud.LCMixPushManager.registerHMSPush(context, profile)` 完成 HMS 推送的初始化。
+  - 使用 `mixpush-hms` 的开发者，调用 `cn.leancloud.hms.LCMixPushManager.registerHMSPush(context, profile)` 完成 HMS 推送的初始化。
 
 这里参数 `profile` 的用法可以参考 [Android 混合推送多配置区分](push_guide.html#Android_混合推送多配置区分)。
 
-2. 务必在应用启动的首个 activity 的 `onCreate` 方法中调用 `AVMixPushManager.connectHMS(activity)` ，确保 HMS SDK 连接成功。
-如果开发者不通过 AppGallery Connect 配置文件来集成，我们也提供了 `AVMixPushManager.connectHMS(activity, huaweiAppId)` 来显式指定华为应用 id 完成连接。
+2. 务必在应用启动的首个 activity 的 `onCreate` 方法中调用 `LCMixPushManager.connectHMS(activity)` ，确保 HMS SDK 连接成功。
+如果开发者不通过 AppGallery Connect 配置文件来集成，我们也提供了 `LCMixPushManager.connectHMS(activity, huaweiAppId)` 来显式指定华为应用 id 完成连接。
 
 LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华为推送：
 
@@ -265,11 +265,11 @@ LeanCloud 云端最终发送给 HMS Server 的请求中 payload 字段为（其�
 到目前为止，我们只支持一种 intentUri 格式，所以所有的推送请求都会被同一个 activity 响应。如果开发者需要最终显示不同的页面，可以由这个接收 activity 进行一次转发。
 
 ### 华为推送自定义 Receiver
-如果你想推送消息，但不显示在 Android 系统的通知栏中，而是执行应用程序预定义的逻辑，可以 [自定义 Receiver](android_push_guide.html#自定义_Receiver)。华为混合推送自定义 Receiver 需要继承 AVHMSMessageService，在收到透传消息的回调方法 `onMessageReceived` 获取推送消息数据。
+如果你想推送消息，但不显示在 Android 系统的通知栏中，而是执行应用程序预定义的逻辑，可以 [自定义 Receiver](android_push_guide.html#自定义_Receiver)。华为混合推送自定义 Receiver 需要继承 LCHMSMessageService，在收到透传消息的回调方法 `onMessageReceived` 获取推送消息数据。
 你的 Receiver 可以按照如下方式实现：
 
 ```java
-public class MyHuaweiReceiver extends AVHMSMessageService {
+public class MyHuaweiReceiver extends LCHMSMessageService {
     @Override
     public boolean onMessageReceived(RemoteMessage remoteMessage) {
         try {
@@ -284,7 +284,7 @@ public class MyHuaweiReceiver extends AVHMSMessageService {
 }
 ```
 
-AndroidManifest.xml 中把 AVHMSMessageService 替换为你自定义的 MyHuaweiReceiver。
+AndroidManifest.xml 中把 LCHMSMessageService 替换为你自定义的 MyHuaweiReceiver。
  		
 ```xml
 <service
@@ -296,7 +296,7 @@ AndroidManifest.xml 中把 AVHMSMessageService 替换为你自定义的 MyHuawei
 </service>
 ```
 
-修改 HMS 推送注册函数。特别注意一点，使用自定义 Receiver 的时候，需要调用 `AVMixPushManager.registerHMSPush(context, profile, receiverClazz)` 或者 `AVMixPushManager.registerHMSPush(context, receiverClazz)` 来完成 HMS 推送的初始化，否则会导致 `AVMixPushManager.registerHMSPush` 调用失败。
+修改 HMS 推送注册函数。特别注意一点，使用自定义 Receiver 的时候，需要调用 `LCMixPushManager.registerHMSPush(context, profile, receiverClazz)` 或者 `LCMixPushManager.registerHMSPush(context, receiverClazz)` 来完成 HMS 推送的初始化，否则会导致 `LCMixPushManager.registerHMSPush` 调用失败。
 
 推送的内容示例如下：
 
@@ -408,7 +408,7 @@ dependencies {
 </receiver>
 
 <receiver
-  android:name="cn.leancloud.AVMiPushMessageReceiver"
+  android:name="cn.leancloud.LCMiPushMessageReceiver"
   android:exported="true">
   <intent-filter>
       <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE"/>
@@ -424,10 +424,10 @@ dependencies {
 
 ### 具体使用
 
-在 `AVOSCloud.initialize` 之后调用以下函数进行混合推送 library 的初始化：
+在 `LeanCloud.initialize` 之后调用以下函数进行混合推送 library 的初始化：
 
-  - 使用 `mixpush-android` 的开发者，调用 `cn.leancloud.AVMixPushManager.registerXiaomiPush(context, miAppId, miAppKey, profile)` 。
-  - 使用 `mixpush-xiaomi` 的开发者，调用 `cn.leancloud.mi.AVMixPushManager.registerXiaomiPush(context, miAppId, miAppKey, profile)` 。
+  - 使用 `mixpush-android` 的开发者，调用 `cn.leancloud.LCMixPushManager.registerXiaomiPush(context, miAppId, miAppKey, profile)` 。
+  - 使用 `mixpush-xiaomi` 的开发者，调用 `cn.leancloud.mi.LCMixPushManager.registerXiaomiPush(context, miAppId, miAppKey, profile)` 。
 
 这里：
 
@@ -446,10 +446,10 @@ LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用小
 
 ### 小米推送国际版的使用
 
-MIUI 国际版也可以使用小米推送，LeanCloud 混合推送也进行了支持。与国内版不同的是，国际版的开发者，在 `AVOSCloud.initialize` 时需要调用以下函数：
+MIUI 国际版也可以使用小米推送，LeanCloud 混合推送也进行了支持。与国内版不同的是，国际版的开发者，在 `LeanCloud.initialize` 时需要调用以下函数：
 
 ```java
-AVMixPushManager.registerXiaomiPush(context, miAppId, miAppKey, profile, true);
+LCMixPushManager.registerXiaomiPush(context, miAppId, miAppKey, profile, true);
 ```
 
 之后的使用就和国内版本一样了。
@@ -501,7 +501,7 @@ dependencies {
 添加 service 与 receiver。开发者要将其中的 `<包名>` 替换为自己的应用对应的 package：
 
 ```xml
-<receiver android:name="cn.leancloud.AVFlymePushMessageReceiver">
+<receiver android:name="cn.leancloud.LCFlymePushMessageReceiver">
     <intent-filter>
         <!-- 接收push消息 -->
         <action android:name="com.meizu.flyme.push.intent.MESSAGE" />
@@ -519,10 +519,10 @@ dependencies {
 
 ### 具体使用
 
-在 `AVOSCloud.initialize` 之后调用以下函数进行混合推送 library 的初始化：
+在 `LeanCloud.initialize` 之后调用以下函数进行混合推送 library 的初始化：
 
-  - 使用 `mixpush-android` 的开发者，调用 `cn.leancloud.AVMixPushManager.registerFlymePush(context, flymeId, flymeKey, profile)` 。
-  - 使用 `mixpush-meizu` 的开发者，调用 `cn.leancloud.flyme.AVMixPushManager.registerFlymePush(context, flymeId, flymeKey, profile)` 。
+  - 使用 `mixpush-android` 的开发者，调用 `cn.leancloud.LCMixPushManager.registerFlymePush(context, flymeId, flymeKey, profile)` 。
+  - 使用 `mixpush-meizu` 的开发者，调用 `cn.leancloud.flyme.LCMixPushManager.registerFlymePush(context, flymeId, flymeKey, profile)` 。
 
 这里参数 `profile` 的用法可以参考 [Android 混合推送多配置区分](push_guide.html#Android_混合推送多配置区分)。
 
@@ -610,9 +610,9 @@ dependencies {
 与其他推送的初始化方法一样，我们在 `Application#onCreate` 方法中进行 vivo 推送的初始化：
 
 ```java
-import cn.leancloud.AVOSCloud;
-import cn.leancloud.AVMixPushManager;      // 使用 mixpush-android 的场合
-//import cn.leancloud.vivo.AVMixPushManager; // 使用 mixpush-vivo 的场合
+import cn.leancloud.LeanCloud;
+import cn.leancloud.LCMixPushManager;      // 使用 mixpush-android 的场合
+//import cn.leancloud.vivo.LCMixPushManager; // 使用 mixpush-vivo 的场合
 
 public class MyApp extends Application {
   // 请替换成您自己的 appId 和 appKey
@@ -624,18 +624,18 @@ public class MyApp extends Application {
     super.onCreate();
 
     //开启调试日志
-    AVOSCloud.setLogLevel(AVLogger.Level.DEBUG);
+    LeanCloud.setLogLevel(LCLogger.Level.DEBUG);
 
-    // AVOSCloud SDK 初始化
-    AVOSCloud.initialize(this,LC_APP_ID,LC_APP_KEY);
+    // LeanCloud SDK 初始化
+    LeanCloud.initialize(this,LC_APP_ID,LC_APP_KEY);
 
     // vivo 推送初始化
-    // 使用 mixpush-android 的场合，引用 cn.leancloud.AVMixPushManager
-    // 使用 mixpush-vivo 的场合，引用 cn.leancloud.vivo.AVMixPushManager
-    AVMixPushManager.registerVIVOPush(this);
-    AVMixPushManager.turnOnVIVOPush(new AVCallback<Boolean>() {
+    // 使用 mixpush-android 的场合，引用 cn.leancloud.LCMixPushManager
+    // 使用 mixpush-vivo 的场合，引用 cn.leancloud.vivo.LCMixPushManager
+    LCMixPushManager.registerVIVOPush(this);
+    LCMixPushManager.turnOnVIVOPush(new LCCallback<Boolean>() {
       @Override
-      protected void internalDone0(Boolean aBoolean, AVException e) {
+      protected void internalDone0(Boolean aBoolean, LCException e) {
         if (null != e) {
           System.out.println("failed to turn on vivo push. cause:");
           e.printStackTrace();
@@ -648,25 +648,25 @@ public class MyApp extends Application {
 }
 ```
 
-开发者也可以在 `onCreate` 方法中调用 AVMixPushManager 的其他方法，以使用 vivo 推送的全部客户端功能：
+开发者也可以在 `onCreate` 方法中调用 LCMixPushManager 的其他方法，以使用 vivo 推送的全部客户端功能：
 
 ```java
-public class AVMixPushManager {
+public class LCMixPushManager {
   // 判断当前设备是否支持 vivo 推送
   public static boolean isSupportVIVOPush(Context context);
 
   // 关闭 vivo 推送
-  public static void turnOffVIVOPush(final AVCallback<Boolean> callback);
+  public static void turnOffVIVOPush(final LCCallback<Boolean> callback);
 
-  public static void bindVIVOAlias(Context context, String alias, final AVCallback<Boolean> callback)；
+  public static void bindVIVOAlias(Context context, String alias, final LCCallback<Boolean> callback)；
 
-  public static void unbindVIVOAlias(Context context, String alias, final AVCallback<Boolean> callback);
+  public static void unbindVIVOAlias(Context context, String alias, final LCCallback<Boolean> callback);
 
   public static String getVIVOAlias(Context context);
 
-  public static void setVIVOTopic(Context context, String topic, final AVCallback<Boolean> callback);
+  public static void setVIVOTopic(Context context, String topic, final LCCallback<Boolean> callback);
 
-  public static void delVIVOTopic(Context context, String topic, final AVCallback<Boolean> callback);
+  public static void delVIVOTopic(Context context, String topic, final LCCallback<Boolean> callback);
 
   public static List<String> getVIVOTopics(Context context);  
 }
@@ -690,19 +690,19 @@ public class AVMixPushManager {
 - 手机端操作系统将消息展示在通知栏；
 - 用户点击通知栏消息。此时 vivo 系统会调用应用 AndroidManifest 里定义的响应 `com.vivo.pushclient.action.RECEIVE` action 的接收器（如前面 AndroidManifest 里定义的 `MyPushMessageReceiver` 类）。
 
-应用需要从混合推送 SDK 中的 `AVVIVOPushMessageReceiver` 类派生出自己的实现类，在 `void onNotificationMessageClicked(Context var1, UPSNotificationMessage var2)` 方法中响应点击事件，以动态改变展示内容。
+应用需要从混合推送 SDK 中的 `LCVIVOPushMessageReceiver` 类派生出自己的实现类，在 `void onNotificationMessageClicked(Context var1, UPSNotificationMessage var2)` 方法中响应点击事件，以动态改变展示内容。
 下面的例子展示了 `MyPushMessageReceiver` 类的简单示例：
 
 ```java
 import android.content.Context;
 
-import cn.leancloud.AVVIVOPushMessageReceiver;
+import cn.leancloud.LCVIVOPushMessageReceiver;
 import com.vivo.push.model.UPSNotificationMessage;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MyPushMessageReceiver extends AVVIVOPushMessageReceiver {
+public class MyPushMessageReceiver extends LCVIVOPushMessageReceiver {
   private static final Logger logger = Logger.getLogger(MyPushMessageReceiver.class.getSimpleName());
 
   public void onNotificationMessageClicked(Context var1, UPSNotificationMessage var2) {
@@ -797,10 +797,10 @@ android:permission="com.heytap.mcs.permission.SEND_PUSH_MESSAGE">
 与其他推送的初始化方法一样，我们在 `Application#onCreate` 方法中进行 oppo 推送的初始化：
 
 ```java
-import cn.leancloud.AVOSCloud;
-import cn.leancloud.AVOPPOPushAdapter;
-import cn.leancloud.oppo.AVMixPushManager;     // 使用 mixpush-oppo 的场合
-//import cn.leancloud.AVMixPushManager;        // 使用 mixpush-android 的场合
+import cn.leancloud.LeanCloud;
+import cn.leancloud.LCOPPOPushAdapter;
+import cn.leancloud.oppo.LCMixPushManager;     // 使用 mixpush-oppo 的场合
+//import cn.leancloud.LCMixPushManager;        // 使用 mixpush-android 的场合
 
 // Customized Application.
 public class MyApp extends Application {
@@ -815,20 +815,20 @@ public class MyApp extends Application {
     super.onCreate();
 
     //开启调试日志
-    AVOSCloud.setLogLevel(AVLogger.Level.DEBUG);
+    LeanCloud.setLogLevel(LCLogger.Level.DEBUG);
 
-    // AVOSCloud SDK 初始化
-    AVOSCloud.initialize(this,LC_APP_ID,LC_APP_KEY);
+    // LeanCloud SDK 初始化
+    LeanCloud.initialize(this,LC_APP_ID,LC_APP_KEY);
 
     // oppo 推送初始化
-    // 使用 mixpush-android 的场合，引用 cn.leancloud.AVMixPushManager
-    // 使用 mixpush-oppo 的场合，引用 cn.leancloud.oppo.AVMixPushManager
-    AVMixPushManager.registerOppoPush(this, OPPO_APPKEY, OPPO_APPSECRET, new AVOPPOPushAdapter());
+    // 使用 mixpush-android 的场合，引用 cn.leancloud.LCMixPushManager
+    // 使用 mixpush-oppo 的场合，引用 cn.leancloud.oppo.LCMixPushManager
+    LCMixPushManager.registerOppoPush(this, OPPO_APPKEY, OPPO_APPSECRET, new LCOPPOPushAdapter());
   }
 }
 ```
 
-开发者也可以在 `onCreate` 方法中调用 AVMixPushManager 的其他方法，以使用 oppo 推送的全部客户端功能，具体可以参看 AVMixPushManager 的接口文档，或参考[官方文档-详细 API 说明](https://open.oppomobile.com/wiki/doc#id=10704) 来了解具体信息。
+开发者也可以在 `onCreate` 方法中调用 LCMixPushManager 的其他方法，以使用 oppo 推送的全部客户端功能，具体可以参看 LCMixPushManager 的接口文档，或参考[官方文档-详细 API 说明](https://open.oppomobile.com/wiki/doc#id=10704) 来了解具体信息。
 
 
 #### 添加 oppo 推送配置
@@ -910,7 +910,7 @@ android {
 }
 ```
 
-#### 导入 avoscloud-fcm 包
+#### 导入 leancloud-fcm 包
 
 在模块（应用级）Gradle 文件（通常是 app/build.gradle）中，在 dependencies 中添加依赖：
 
@@ -936,10 +936,10 @@ dependencies {
 ```
 <service android:name="cn.leancloud.push.PushService"/>
 ```
-- `AVFirebaseMessagingService` 的服务。如果你希望在后台进行除接收应用通知之外的消息处理，则必须添加此服务。要接收前台应用中的通知、接收数据有效负载以及发送上行消息等，您必须继承此服务。
+- `LCFirebaseMessagingService` 的服务。如果你希望在后台进行除接收应用通知之外的消息处理，则必须添加此服务。要接收前台应用中的通知、接收数据有效负载以及发送上行消息等，您必须继承此服务。
 ```
 <service
-  android:name="cn.leancloud.AVFirebaseMessagingService"
+  android:name="cn.leancloud.LCFirebaseMessagingService"
   android:exported="false">
  <intent-filter>
   <action android:name="com.google.firebase.MESSAGING_EVENT"/>
@@ -977,7 +977,7 @@ dependencies {
 对于已经注册了混合推送的用户，如果想取消混合推送的注册而改走 LeanCloud 自有的 WebSocket 的话，可以调用如下函数：
 
 ```java
-AVMixPushManager.unRegisterMixPush();
+LCMixPushManager.unRegisterMixPush();
 ```
 
 此函数为异步函数，如果取消成功会有「Registration canceled successfully」的日志输出，万一取消注册失败的话会有类似「unRegisterMixPush error」的日志输出。
@@ -987,100 +987,3 @@ AVMixPushManager.unRegisterMixPush();
 - 只要注册时有条件不符合，SDK 会在日志中输出导致注册失败的原因，例如「register error, mainifest is incomplete」代表 manifest 未正确填写。如果注册成功，`_Installation` 表中的相关记录应该具有 **vendor** 这个字段并且不为空值。
 - 查看魅族机型的设置，并打开「信任此应用」、「开机自启动」、「自启动管理」和「权限管理」等相关选项。
 - 如果注册一直失败的话，请去论坛发帖，提供相关日志、具体机型以及系统版本号，我们会跟进协助来排查。
-
-## 华为推送-老版本（deprecated）
-
-{{ docs.alert("华为已经不再支持老版本的推送服务，请大家尽快切换到 HMS 推送。") }}
-
-### 环境配置
-
-1. **注册华为账号**：在 [华为开发者联盟](http://developer.huawei.com/cn/consumer/)注册华为开发者账号（[详细流程](http://developer.huawei.com/cn/consumer/wiki/index.php?title=%E6%B3%A8%E5%86%8C%E7%99%BB%E5%BD%95)）。
-2. **创建华为应用**：实名认证通过后，需要创建华为移动应用并配置 Push 权益（[详细流程](http://developer.huawei.com/cn/consumer/wiki/index.php?title=%E6%8E%A5%E5%85%A5%E8%AF%B4%E6%98%8E#2.1_.E6.B3.A8.E5.86.8C)）。
-3. **设置华为的 AppId 及 AppKey**：在 [华为开发者联盟控制中心](http://developer.huawei.com/cn/consumer/devunion/openPlatform/html/memberCenter.html#appManage#) > **应用管理** > **移动应用详情**  可以查到具体的华为推送服务应用的 AppId 及 AppSecret，将此 AppId 及 AppSecret 通过  **LeanCloud 控制台 > 消息 > 推送 > 设置 > 混合推送** 与 LeanCloud 应用关联。
-
-### 接入 SDK
-
-首先导入 `avoscloud-mixpush` 包，修改 `build.gradle` 文件，在 `dependencies` 中添加依赖：
-
-```
-dependencies {
-    compile ('cn.leancloud.android:avoscloud-mixpush:{{ version.leancloud }}@aar')
-}
-```
-
-注：如果是通过 jar 包导入，则需要手动下载 jar 包：[华为 Push SDK](http://developer.huawei.com/cn/consumer/wiki/index.php?title=PushSDK%E4%B8%8B%E8%BD%BD)。
-
-然后配置相关 AndroidManifest，添加 Permission：
-
-```xml
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-<uses-permission android:name="android.permission.WAKE_LOCK" />
-```
-
-再添加 service 与 receiver。开发者要将其中的 `<包名>` 替换为自己的应用的 package：
-
-```xml
-<!-- 必须，用于华为 Android 6.0 系统的动态权限页面-->
-<activity android:name="com.huawei.android.pushselfshow.permission.RequestPermissionsActivity"/>
-
-<receiver android:name="com.avos.avoscloud.AVHwPushMessageReceiver" >
-  <intent-filter>
-      <!-- 必须，用于接收 token -->
-      <action android:name="com.huawei.android.push.intent.REGISTRATION" />
-      <!-- 必须，用于接收消息 -->
-      <action android:name="com.huawei.android.push.intent.RECEIVE" />
-      <!-- 可选，用于点击通知栏或通知栏上的按钮后触发 onEvent 回调 -->
-      <action android:name="com.huawei.android.push.intent.CLICK" />
-      <!-- 可选，查看 push 通道是否连接，不查看则不需要 -->
-      <action android:name="com.huawei.intent.action.PUSH_STATE" />
-  </intent-filter>
-</receiver>
-
-<receiver
-  android:name="com.huawei.android.pushagent.PushEventReceiver"
-  android:process=":pushservice" >
-  <intent-filter>
-      <action android:name="com.huawei.android.push.intent.REFRESH_PUSH_CHANNEL" />
-      <action android:name="com.huawei.intent.action.PUSH" />
-      <action android:name="com.huawei.intent.action.PUSH_ON" />
-      <action android:name="com.huawei.android.push.PLUGIN" />
-  </intent-filter>
-  <intent-filter>
-      <action android:name="android.intent.action.PACKAGE_ADDED" />
-      <action android:name="android.intent.action.PACKAGE_REMOVED" />
-      <data android:scheme="<包名>" />
-  </intent-filter>
-</receiver>
-<receiver
-  android:name="com.huawei.android.pushagent.PushBootReceiver"
-  android:process=":pushservice" >
-  <intent-filter>
-      <action android:name="com.huawei.android.push.intent.REGISTER" />
-      <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-  </intent-filter>
-  <meta-data
-      android:name="CS_cloud_version"
-      android:value="\u0032\u0037\u0030\u0035" />
-</receiver>
-
-<service
-  android:name="com.huawei.android.pushagent.PushService"
-  android:process=":pushservice" >
-</service>
-```
-
-### 具体使用
-
-在 `AVOSCloud.initialize` 时调用 `registerHuaweiPush(context, profile)` 即可。参数 `profile` 的用法可以参考 [Android 混合推送多配置区分](push_guide.html#Android_混合推送多配置区分)。
-
-LeanCloud 云端只有在**满足以下全部条件**的情况下才会使用华为推送：
-
-- EMUI 系统
-- manifest 正确填写
-
-### 提升透传消息到达率
-
-当使用华为推送发透传消息时，如果目标设备上 App 进程被杀，会出现推送消息无法接收的情况。这个是华为 ROM 对透传消息广播的限制导致的，需要引导用户在华为 「权限设置」中对 App 开启自启动权限来避免。

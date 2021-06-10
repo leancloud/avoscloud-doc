@@ -101,16 +101,16 @@ $todo->save();
 {% if platform_name === "Android / Java" %}
 ```java
 // 构建对象
-AVObject todo = new AVObject("Todo");
+LCObject todo = new LCObject("Todo");
 
 // 为属性赋值
 todo.put("title",   "工程师周会");
 todo.put("content", "周二两点，全体成员");
 
 // 将对象保存到云端
-todo.saveInBackground().subscribe(new Observer<AVObject>() {
+todo.saveInBackground().subscribe(new Observer<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVObject todo) {
+    public void onNext(LCObject todo) {
         // 成功保存之后，执行其他逻辑
         System.out.println("保存成功。objectId：" + todo.getObjectId());
     }
@@ -469,7 +469,7 @@ hashMap.put("number", number);
 hashMap.put("string", string);
 
 // 构建对象
-AVObject testObject = new AVObject("TestObject");
+LCObject testObject = new LCObject("TestObject");
 testObject.put("testBoolean",   bool);
 testObject.put("testInteger",   number);
 testObject.put("testDate",      date);
@@ -622,7 +622,7 @@ $todo = LeanObject::create("Todo");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject todo = new AVObject("Todo");
+LCObject todo = new LCObject("Todo");
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -756,16 +756,16 @@ $todo->save();
 {% if platform_name === "Android / Java" %}
 ```java
 // 构建对象
-AVObject todo = new AVObject("Todo");
+LCObject todo = new LCObject("Todo");
 
 // 为属性赋值
 todo.put("title", "马拉松报名");
 todo.put("priority", 2);
 
 // 将对象保存到云端
-todo.saveInBackground().subscribe(new Observer<AVObject>() {
+todo.saveInBackground().subscribe(new Observer<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVObject todo) {
+    public void onNext(LCObject todo) {
         // 成功保存之后，执行其他逻辑
         System.out.println("保存成功。objectId：" + todo.getObjectId());
     }
@@ -881,7 +881,7 @@ if err := client.Class("Todo").Create(map[string]interface{}{
 内置属性 | 类型 | 描述
 --- | --- | ---
 `objectId` | `{% if platform_name === "Objective-C" %}NSString{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}String{% endif %}{% if platform_name === "Python" %}str{% endif %}{% if platform_name === "PHP" %}String{% endif %}{% if platform_name === "Android / Java" %}String{% endif %}{% if platform_name === "Swift" %}LCString{% endif %}{% if platform_name === "Flutter" %}String{% endif %}{% if platform_name === ".Net" %}string{% endif %}{% if platform_name === "Go"%}string{% endif %}` | 该对象唯一的 ID 标识。
-`ACL` | `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "JavaScript(next)" %}ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}AVACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}{% if platform_name === "Flutter" %}LCACL{% endif %}{% if platform_name === ".Net" %}LCACL{% endif %}{% if platform_name === "Go"%}ACL{% endif %}` | 该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
+`ACL` | `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "JavaScript(next)" %}ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}LCACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}{% if platform_name === "Flutter" %}LCACL{% endif %}{% if platform_name === ".Net" %}LCACL{% endif %}{% if platform_name === "Go"%}ACL{% endif %}` | 该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
 `createdAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}{% if platform_name === "Go"%}time.Time{% endif %}` | 该对象被创建的时间。
 `updatedAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}{% if platform_name === "Go"%}time.Time{% endif %}` | 该对象最后一次被修改的时间。
 
@@ -972,10 +972,10 @@ $createdAt = $todo->getCreatedAt();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
-query.getInBackground("582570f38ac247004f39c24b").subscribe(new Observer<AVObject>() {
+LCQuery<LCObject> query = new LCQuery<>("Todo");
+query.getInBackground("582570f38ac247004f39c24b").subscribe(new Observer<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVObject todo) {
+    public void onNext(LCObject todo) {
         // todo 就是 objectId 为 582570f38ac247004f39c24b 的 Todo 实例
         String title    = todo.getString("title");
         int priority    = todo.getInt("priority");
@@ -1138,10 +1138,10 @@ todo.fetch()
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject todo = AVObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
-todo.fetchInBackground().subscribe(new Observable<AVObject>() {
+LCObject todo = LCObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
+todo.fetchInBackground().subscribe(new Observable<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVObject todo) {
+    public void onNext(LCObject todo) {
         // todo 已刷新
     }
     public void onError(Throwable throwable) {}
@@ -1203,11 +1203,11 @@ todo.fetch({
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject todo = AVObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
+LCObject todo = LCObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
 String keys = "priority, location";
-todo.fetchInBackground(keys).subscribe(new Observable<AVObject>() {
+todo.fetchInBackground(keys).subscribe(new Observable<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVObject todo) {
+    public void onNext(LCObject todo) {
         // 只有 priority 和 location 会被获取和刷新
     }
     public void onError(Throwable throwable) {}
@@ -1369,7 +1369,7 @@ LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端�
 {% if platform_name === "Android / Java" %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
 ```java
-AVObject todo = AVObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
+LCObject todo = LCObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
 todo.put("content", "这周周会改到周三下午三点。");
 todo.save();
 ```
@@ -1540,20 +1540,20 @@ except leancloud.LeanCloudError as e:
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject account = AVObject.createWithoutData("Account", "5745557f71cfe40068c6abe0");
+LCObject account = LCObject.createWithoutData("Account", "5745557f71cfe40068c6abe0");
 // 对 balance 原子减少 100
 final int amount = -100;
 account.increment("balance", amount);
 // 设置条件
-AVSaveOption option = new AVSaveOption();
-option.query(new AVQuery<>("Account").whereGreaterThanOrEqualTo("balance", -amount));
+LCSaveOption option = new LCSaveOption();
+option.query(new LCQuery<>("Account").whereGreaterThanOrEqualTo("balance", -amount));
 // 操作结束后，返回最新数据。
 // 如果是新对象，则所有属性都会被返回，
 // 否则只有更新的属性会被返回。
 option.setFetchWhenSave(true);
-account.saveInBackground(option).subscribe(new Observer<AVObject>() {
+account.saveInBackground(option).subscribe(new Observer<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVObject account) {
+    public void onNext(LCObject account) {
         System.out.println("当前余额为：" + account.get("balance"));
     }
     public void onError(Throwable throwable) {
@@ -1858,7 +1858,7 @@ Date alarm1 = getDateWithDateString("2018-04-30 07:10:00");
 Date alarm2 = getDateWithDateString("2018-04-30 07:20:00");
 Date alarm3 = getDateWithDateString("2018-04-30 07:30:00");
 
-AVObject todo = new AVObject("Todo");
+LCObject todo = new LCObject("Todo");
 todo.addAllUnique("alarms", Arrays.asList(alarm1, alarm2, alarm3));
 todo.save();
 ```
@@ -1981,7 +1981,7 @@ $todo->destroy();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject todo = AVObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
+LCObject todo = LCObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
 todo.delete();
 ```
 {% endif %}
@@ -2321,17 +2321,17 @@ LeanObject::saveAll($todos);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
-query.findInBackground().subscribe(new Observer<List<AVObject>>() {
+LCQuery<LCObject> query = new LCQuery<>("Todo");
+query.findInBackground().subscribe(new Observer<List<LCObject>>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<AVObject> todos) {
+    public void onNext(List<LCObject> todos) {
         // 获取需要更新的 todo
-        for (AVObject todo : todos) {
+        for (LCObject todo : todos) {
             // 更新属性值
             todo.put("isComplete", true);
         }
         // 批量更新
-        AVObject.saveAll(todos);
+        LCObject.saveAll(todos);
     }
     public void onError(Throwable throwable) {}
     public void onComplete() {}
@@ -2528,12 +2528,12 @@ $comment->save();
 {% if platform_name === "Android / Java" %}
 ```java
 // 创建 post
-AVObject post = new AVObject("Post");
+LCObject post = new LCObject("Post");
 post.put("title", "饿了……");
 post.put("content", "中午去哪吃呢？");
 
 // 创建 comment
-AVObject comment = new AVObject("Comment");
+LCObject comment = new LCObject("Comment");
 comment.put("content", "当然是肯德基啦！");
 
 // 将 post 设为 comment 的一个属性值
@@ -2675,7 +2675,7 @@ $comment->set("post", $post)
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject post = AVObject.createWithoutData("Post", "57328ca079bc44005c2472d0");
+LCObject post = LCObject.createWithoutData("Post", "57328ca079bc44005c2472d0");
 comment.put("post", post);
 ```
 {% endif %}
@@ -2762,10 +2762,10 @@ const serializedString = JSON.stringify(json);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject todo = new AVObject("Todo"); // 构建对象
+LCObject todo = new LCObject("Todo"); // 构建对象
 todo.put("title", "马拉松报名"); // 设置名称
 todo.put("priority", 2); // 设置优先级
-todo.put("owner", AVUser.getCurrentUser()); // 这里就是一个 Pointer 类型，指向当前登录的用户
+todo.put("owner", LCUser.getCurrentUser()); // 这里就是一个 Pointer 类型，指向当前登录的用户
 String serializedString = todo.toString();
 ```
 {% endif %}
@@ -2840,7 +2840,7 @@ const todo = db.decode(json);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject deserializedObject = AVObject.parseAVObject(serializedString);
+LCObject deserializedObject = LCObject.parseLCObject(serializedString);
 deserializedObject.save(); // 保存到服务端
 ```
 {% endif %}
@@ -2938,11 +2938,11 @@ $students = $query->find();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Student");
+LCQuery<LCObject> query = new LCQuery<>("Student");
 query.whereEqualTo("lastName", "Smith");
-query.findInBackground().subscribe(new Observer<List<AVObject>>() {
+query.findInBackground().subscribe(new Observer<List<LCObject>>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<AVObject> students) {
+    public void onNext(List<LCObject> students) {
         // students 是包含满足条件的 Student 对象的数组
     }
     public void onError(Throwable throwable) {}
@@ -3339,11 +3339,11 @@ $todo = $query->first();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.whereEqualTo("priority", 2);
-query.getFirstInBackground().subscribe(new Observer<AVObject>() {
+query.getFirstInBackground().subscribe(new Observer<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVObject todo) {
+    public void onNext(LCObject todo) {
         // todo 是第一个满足条件的 Todo 对象
     }
     public void onError(Throwable throwable) {}
@@ -3480,7 +3480,7 @@ $query->skip(20);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.whereEqualTo("priority", 2);
 query.limit(10);
 query.skip(20);
@@ -3822,11 +3822,11 @@ $notes = $todo->get("notes"); // null
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.selectKeys(Arrays.asList("title", "content"));
-query.getFirstInBackground().subscribe(new Observer<AVObject>() {
+query.getFirstInBackground().subscribe(new Observer<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVObject todo) {
+    public void onNext(LCObject todo) {
         String title = todo.getString("title"); // √
         String content = todo.getString("content"); // √
         String notes = todo.getString("notes"); // 会报错
@@ -3931,7 +3931,7 @@ $query->startsWith("title", "lunch");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 // 相当于 SQL 中的 title LIKE 'lunch%'
 query.whereStartsWith("title", "lunch");
 ```
@@ -3997,7 +3997,7 @@ $query->contains("title", "lunch");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 // 相当于 SQL 中的 title LIKE '%lunch%'
 query.whereContains("title", "lunch");
 ```
@@ -4065,7 +4065,7 @@ $query->matches("title", "{{ regex() | safe }}, "i");
 </code></pre>
 {% endif %}
 {% if platform_name === "Android / Java" %}
-<pre><code class="lang-java">AVQuery<AVObject> query = new AVQuery<>("Todo");
+<pre><code class="lang-java">LCQuery<LCObject> query = new LCQuery<>("Todo");
 // "title" 不包含 "ticket"（不区分大小写）
 query.whereMatches("title", "{{ regex() | safe }}, "i");
 </code></pre>
@@ -4336,7 +4336,7 @@ $query = Query::orQuery($priorityOne, $priorityTwo);
 {% if platform_name === "Android / Java" %}
 ```java
 // 单个查询
-AVQuery<AVObject> priorityOneOrTwo = new AVQuery<>("Todo");
+LCQuery<LCObject> priorityOneOrTwo = new LCQuery<>("Todo");
 priorityOneOrTwo.whereContainedIn("priority", Arrays.asList(1, 2));
 // 这样就可以了 :)
 
@@ -4345,13 +4345,13 @@ priorityOneOrTwo.whereContainedIn("priority", Arrays.asList(1, 2));
 // ---------------
 
 // 多个查询
-final AVQuery<AVObject> priorityOne = new AVQuery<>("Todo");
+final LCQuery<LCObject> priorityOne = new LCQuery<>("Todo");
 priorityOne.whereEqualTo("priority", 1);
 
-final AVQuery<AVObject> priorityTwo = new AVQuery<>("Todo");
+final LCQuery<LCObject> priorityTwo = new LCQuery<>("Todo");
 priorityTwo.whereEqualTo("priority", 2);
 
-AVQuery<AVObject> priorityOneOrTwo = AVQuery.or(Arrays.asList(priorityOne, priorityTwo));
+LCQuery<LCObject> priorityOneOrTwo = LCQuery.or(Arrays.asList(priorityOne, priorityTwo));
 // 好像有些繁琐 :(
 ```
 {% endif %}
@@ -4473,12 +4473,12 @@ $comments = $query->find();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject post = AVObject.createWithoutData("Post", "57328ca079bc44005c2472d0");
-AVQuery<AVObject> query = new AVQuery<>("Comment");
+LCObject post = LCObject.createWithoutData("Post", "57328ca079bc44005c2472d0");
+LCQuery<LCObject> query = new LCQuery<>("Comment");
 query.whereEqualTo("post", post);
-query.findInBackground().subscribe(new Observer<List<AVObject>>() {
+query.findInBackground().subscribe(new Observer<List<LCObject>>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<AVObject> comments) {
+    public void onNext(List<LCObject> comments) {
         // comments 包含与 post 相关联的评论
     }
     public void onError(Throwable throwable) {}
@@ -4561,10 +4561,10 @@ $query->matchesInQuery("post", $innerQuery);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> innerQuery = new AVQuery<>("Post");
+LCQuery<LCObject> innerQuery = new LCQuery<>("Post");
 innerQuery.whereExists("image");
 
-AVQuery<AVObject> query = new AVQuery<>("Comment");
+LCQuery<LCObject> query = new LCQuery<>("Comment");
 query.whereMatchesQuery("post", innerQuery);
 ```
 {% endif %}
@@ -4685,7 +4685,7 @@ forEach($comments as $comment) {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Comment");
+LCQuery<LCObject> query = new LCQuery<>("Comment");
 
 // 获取最新发布的
 query.orderByDescending("createdAt");
@@ -4696,13 +4696,13 @@ query.limit(10);
 // 同时包含博客文章
 query.include("post");
 
-query.findInBackground().subscribe(new Observer<List<AVObject>>() {
+query.findInBackground().subscribe(new Observer<List<LCObject>>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<AVObject> comments) {
+    public void onNext(List<LCObject> comments) {
         // comments 包含最新发布的 10 条评论，包含各自对应的博客文章
-        for (AVObject comment : comments) {
+        for (LCObject comment : comments) {
             // 该操作无需网络连接
-            AVObject post = comment.getAVObject("post");
+            LCObject post = comment.getLCObject("post");
         }
     }
     public void onError(Throwable throwable) {}
@@ -4837,7 +4837,7 @@ $count = $query->count();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.whereEqualTo("isComplete", true);
 query.countInBackground().subscribe(new Observer<Integer>() {
     public void onSubscribe(Disposable disposable) {}
@@ -4941,13 +4941,13 @@ $query = Query::orQuery($priorityQuery, $isCompleteQuery);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-final AVQuery<AVObject> priorityQuery = new AVQuery<>("Todo");
+final LCQuery<LCObject> priorityQuery = new LCQuery<>("Todo");
 priorityQuery.whereGreaterThanOrEqualTo("priority", 3);
 
-final AVQuery<AVObject> isCompleteQuery = new AVQuery<>("Todo");
+final LCQuery<LCObject> isCompleteQuery = new LCQuery<>("Todo");
 isCompleteQuery.whereEqualTo("isComplete", true);
 
-AVQuery<AVObject> query = AVQuery.or(Arrays.asList(priorityQuery, isCompleteQuery));
+LCQuery<LCObject> query = LCQuery.or(Arrays.asList(priorityQuery, isCompleteQuery));
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -5064,13 +5064,13 @@ Date getDateWithDateString(String dateString) {
     return date;
 }
 
-final AVQuery<AVObject> startDateQuery = new AVQuery<>("Todo");
+final LCQuery<LCObject> startDateQuery = new LCQuery<>("Todo");
 startDateQuery.whereGreaterThanOrEqualTo("createdAt", getDateWithDateString("2016-11-13"));
 
-final AVQuery<AVObject> endDateQuery = new AVQuery<>("Todo");
+final LCQuery<LCObject> endDateQuery = new LCQuery<>("Todo");
 endDateQuery.whereLessThan("createdAt", getDateWithDateString("2016-12-03"));
 
-AVQuery<AVObject> query = AVQuery.and(Arrays.asList(startDateQuery, endDateQuery));
+LCQuery<LCObject> query = LCQuery.and(Arrays.asList(startDateQuery, endDateQuery));
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -5241,22 +5241,22 @@ Date getDateWithDateString(String dateString) {
     return date;
 }
 
-final AVQuery<AVObject> createdAtQuery = new AVQuery<>("Todo");
+final LCQuery<LCObject> createdAtQuery = new LCQuery<>("Todo");
 createdAtQuery.whereGreaterThanOrEqualTo("createdAt", getDateWithDateString("2018-04-30"));
 createdAtQuery.whereLessThan("createdAt", getDateWithDateString("2018-05-01"));
 
-final AVQuery<AVObject> locationQuery = new AVQuery<>("Todo");
+final LCQuery<LCObject> locationQuery = new LCQuery<>("Todo");
 locationQuery.whereDoesNotExist("location");
 
-final AVQuery<AVObject> priority2Query = new AVQuery<>("Todo");
+final LCQuery<LCObject> priority2Query = new LCQuery<>("Todo");
 priority2Query.whereEqualTo("priority", 2);
 
-final AVQuery<AVObject> priority3Query = new AVQuery<>("Todo");
+final LCQuery<LCObject> priority3Query = new LCQuery<>("Todo");
 priority3Query.whereEqualTo("priority", 3);
 
-AVQuery<AVObject> priorityQuery = AVQuery.or(Arrays.asList(priority2Query, priority3Query));
-AVQuery<AVObject> timeLocationQuery = AVQuery.or(Arrays.asList(locationQuery, createdAtQuery));
-AVQuery<AVObject> query = AVQuery.and(Arrays.asList(priorityQuery, timeLocationQuery));
+LCQuery<LCObject> priorityQuery = LCQuery.or(Arrays.asList(priority2Query, priority3Query));
+LCQuery<LCObject> timeLocationQuery = LCQuery.or(Arrays.asList(locationQuery, createdAtQuery));
+LCQuery<LCObject> query = LCQuery.and(Arrays.asList(priorityQuery, timeLocationQuery));
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -5507,7 +5507,7 @@ const AV = require('leancloud-storage/live-query');
 {% if platform_name === "Android / Java" %}
 ```xml
 <service android:name="cn.leancloud.push.PushService"/>
-<receiver android:name="cn.leancloud.push.AVBroadcastReceiver">
+<receiver android:name="cn.leancloud.push.LCBroadcastReceiver">
   <intent-filter>
     <action android:name="android.intent.action.BOOT_COMPLETED"/>
     <action android:name="android.intent.action.USER_PRESENT"/>
@@ -5590,12 +5590,12 @@ query.subscribe().then((liveQuery) => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.whereEqualTo("isComplete", true);
-AVLiveQuery liveQuery = AVLiveQuery.initWithQuery(query);
-liveQuery.subscribeInBackground(new AVLiveQuerySubscribeCallback() {
+LCLiveQuery liveQuery = LCLiveQuery.initWithQuery(query);
+liveQuery.subscribeInBackground(new LCLiveQuerySubscribeCallback() {
     @Override
-    public void done(AVException e) {
+    public void done(LCException e) {
         if (e == null) {
             // 订阅成功
         }
@@ -5662,18 +5662,18 @@ query.subscribe().then((liveQuery) => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.whereEqualTo("isComplete", true);
-AVLiveQuery liveQuery = AVLiveQuery.initWithQuery(query);
-liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+LCLiveQuery liveQuery = LCLiveQuery.initWithQuery(query);
+liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
     @Override
-    public void onObjectCreated(AVObject newTodo) {
+    public void onObjectCreated(LCObject newTodo) {
         System.out.println(newTodo.getString("title")); // 更新作品集
     }
 });
-liveQuery.subscribeInBackground(new AVLiveQuerySubscribeCallback() {
+liveQuery.subscribeInBackground(new LCLiveQuerySubscribeCallback() {
     @Override
-    public void done(AVException e) {
+    public void done(LCException e) {
         if (e == null) {
             // 订阅成功
         }
@@ -5728,9 +5728,9 @@ liveQuery.on('update', (updatedTodo, updatedKeys) => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
     @Override
-    public void onObjectUpdated(AVObject updatedTodo, List<String> updatedKeys) {
+    public void onObjectUpdated(LCObject updatedTodo, List<String> updatedKeys) {
         System.out.println(updatedTodo.getString("content")); // 把我最近画的插画放上去
     }
 });
@@ -5788,9 +5788,9 @@ liveQuery.on('create', (object) => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
     @Override
-    public void onObjectCreated(AVObject object) {
+    public void onObjectCreated(LCObject object) {
         System.out.println("对象被创建。");
     }
 });
@@ -5838,9 +5838,9 @@ liveQuery.on('update', (object, updatedKeys) => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
     @Override
-    public void onObjectUpdated(AVObject object, List<String> updatedKeys) {
+    public void onObjectUpdated(LCObject object, List<String> updatedKeys) {
         System.out.println("对象被更新。");
     }
 });
@@ -5888,9 +5888,9 @@ liveQuery.on('enter', (object, updatedKeys) => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
     @Override
-    public void onObjectEnter(AVObject object, List<String> updatedKeys) {
+    public void onObjectEnter(LCObject object, List<String> updatedKeys) {
         System.out.println("对象进入。");
     }
 });
@@ -5942,9 +5942,9 @@ liveQuery.on('leave', (object, updatedKeys) => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
     @Override
-    public void onObjectLeave(AVObject object, List<String> updatedKeys) {
+    public void onObjectLeave(LCObject object, List<String> updatedKeys) {
         System.out.println("对象离开。");
     }
 });
@@ -5992,7 +5992,7 @@ liveQuery.on('delete', (object) => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-liveQuery.setEventHandler(new AVLiveQueryEventHandler() {
+liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
     @Override
     public void onObjectDeleted(String object) {
         System.out.println("对象被删除。");
@@ -6045,9 +6045,9 @@ liveQuery.unsubscribe().then(() => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-liveQuery.unsubscribeInBackground(new AVLiveQuerySubscribeCallback() {
+liveQuery.unsubscribeInBackground(new LCLiveQuerySubscribeCallback() {
     @Override
-    public void done(AVException e) {
+    public void done(LCException e) {
         if (e == null) {
             // 成功取消订阅
         }
@@ -6184,7 +6184,7 @@ $file = File::createWithData("resume.txt", "LeanCloud");
 
 ```java
 // resume.txt 是文件名
-AVFile file = new AVFile("resume.txt", "LeanCloud".getBytes());
+LCFile file = new LCFile("resume.txt", "LeanCloud".getBytes());
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -6236,7 +6236,7 @@ $file = File::createWithUrl("logo.png", "https://leancloud.cn/assets/imgs/press/
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVFile file = new AVFile(
+LCFile file = new LCFile(
     "logo.png",
     "https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png",
     new HashMap<String, Object>()
@@ -6303,7 +6303,7 @@ $file = File::createWithData("resume.txt", "{\"company\":\"LeanCloud\"}", "appli
 ```java
 Map<String, Object> meta = new HashMap<String, Object>();
 meta.put("mime_type", "application/json");
-AVFile file = new AVFile("resume.txt", "LeanCloud".getBytes(), meta);
+LCFile file = new LCFile("resume.txt", "LeanCloud".getBytes(), meta);
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -6374,7 +6374,7 @@ $file = File::createWithLocalFile("/tmp/avatar.jpg");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVFile file = AVFile.withAbsoluteLocalPath("avatar.jpg", "/tmp/avatar.jpg");
+LCFile file = LCFile.withAbsoluteLocalPath("avatar.jpg", "/tmp/avatar.jpg");
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -6465,9 +6465,9 @@ $file->save();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-file.saveInBackground().subscribe(new Observer<AVFile>() {
+file.saveInBackground().subscribe(new Observer<LCFile>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVFile file) {
+    public void onNext(LCFile file) {
         System.out.println("文件保存完成。objectId：" + file.getObjectId());
     }
     public void onError(Throwable throwable) {
@@ -6535,9 +6535,9 @@ file.save({ keepFileName: true }).then((file) => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-file.saveInBackground(true).subscribe(new Observer<AVFile>() {
+file.saveInBackground(true).subscribe(new Observer<LCFile>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVFile file) {
+    public void onNext(LCFile file) {
         System.out.println("文件保存完成。objectId：" + file.getObjectId());
     }
     public void onError(Throwable throwable) {
@@ -6591,7 +6591,7 @@ $todo->save();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject todo = new AVObject("Todo");
+LCObject todo = new LCObject("Todo");
 todo.put("title", "买蛋糕");
 // attachments 是一个 Array 属性
 todo.add("attachments", file);
@@ -6677,7 +6677,7 @@ $query = new Query("_File");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("_File");
+LCQuery<LCObject> query = new LCQuery<>("_File");
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -6750,17 +6750,17 @@ query.find().then((todos) => {
 {% if platform_name === "Android / Java" %}
 ```java
 // 获取同一标题且包含附件的 todo
-AVQuery<AVObject> query = new AVQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.whereEqualTo("title", "买蛋糕");
 query.whereExists("attachments");
 
 // 同时获取附件中的文件
 query.include("attachments");
 
-query.findInBackground().subscribe(new Observer<List<AVObject>>() {
+query.findInBackground().subscribe(new Observer<List<LCObject>>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<AVObject> todos) {
-        for (AVObject todo : todos) {
+    public void onNext(List<LCObject> todos) {
+        for (LCObject todo : todos) {
             // 获取每个 todo 的 attachments 数组
             // {# TODO #}
         }
@@ -6952,9 +6952,9 @@ $size = $file->getSize();
 ```java
 // 设置元数据
 file.addMetaData("author", "LeanCloud");
-file.saveInBackground().subscribe(new Observer<AVFile>() {
+file.saveInBackground().subscribe(new Observer<LCFile>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVFile file) {
+    public void onNext(LCFile file) {
         // 获取 author 属性
         String author = (String) file.getMetaData("author");
         // 获取文件名
@@ -7096,7 +7096,7 @@ $file->getThumbUrl(100, 200);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVFile file = new AVFile("test.jpg", "文件-url", new HashMap<String, Object>());
+LCFile file = new LCFile("test.jpg", "文件-url", new HashMap<String, Object>());
 file.getThumbnailUrl(true, 100, 100);
 ```
 {% endif %}
@@ -7140,7 +7140,7 @@ AVFile 也提供了清除缓存的方法：
 {% if platform_name === "Android / Java" %}
 ### 下载文件
 
-可以调用 AVFile 的 `getDataInBackground` 或 `getDataStreamInBackground` 方法下载文件：
+可以调用 LCFile 的 `getDataInBackground` 或 `getDataStreamInBackground` 方法下载文件：
 
 ```java
 avFile.getDataInBackground().subscribe(new Observer<byte[]>() {
@@ -7187,7 +7187,7 @@ avFile.getDataStreamInBackground().subscribe(new Observer<InputStream>() {
 });
 ```
 
-除了使用 SDK 提供的方法外，也可以获取 AVFile 的 url 后调用标准库和第三方库下载文件。
+除了使用 SDK 提供的方法外，也可以获取 LCFile 的 url 后调用标准库和第三方库下载文件。
 {% endif %}
 
 ### 删除文件
@@ -7220,7 +7220,7 @@ $file->destroy();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject file = AVObject.createWithoutData("_File", "552e0a27e4b0643b709e891e");
+LCObject file = LCObject.createWithoutData("_File", "552e0a27e4b0643b709e891e");
 file.delete()
 ```
 {% endif %}
@@ -7454,7 +7454,7 @@ $point = new GeoPoint(39.9, 116.4);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVGeoPoint point = new AVGeoPoint(39.9, 116.4);
+LCGeoPoint point = new LCGeoPoint(39.9, 116.4);
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -7584,15 +7584,15 @@ $todos = $query->find();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
-AVGeoPoint point = new AVGeoPoint(39.9, 116.4);
+LCQuery<LCObject> query = new LCQuery<>("Todo");
+LCGeoPoint point = new LCGeoPoint(39.9, 116.4);
 query.whereNear("location", point);
 
 // 限制为 10 条结果
 query.limit(10);
-query.findInBackground().subscribe(new Observer<List<AVObject>>() {
+query.findInBackground().subscribe(new Observer<List<LCObject>>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<AVObject> todos) {
+    public void onNext(List<LCObject> todos) {
         // todos 是包含满足条件的 Todo 对象的数组
     }
     public void onError(Throwable throwable) {}
@@ -7706,9 +7706,9 @@ $query->withinBox("location", $southwest, $northeast);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
-AVGeoPoint southwest = new AVGeoPoint(30, 115);
-AVGeoPoint northeast = new AVGeoPoint(40, 118);
+LCQuery<LCObject> query = new LCQuery<>("Todo");
+LCGeoPoint southwest = new LCGeoPoint(30, 115);
+LCGeoPoint northeast = new LCGeoPoint(40, 118);
 query.whereWithinGeoBox("location", southwest, northeast);
 ```
 {% endif %}
@@ -7865,7 +7865,7 @@ $user->signUp();
 {% if platform_name === "Android / Java" %}
 ```java
 // 创建实例
-AVUser user = new AVUser();
+LCUser user = new LCUser();
 
 // 等同于 user.put("username", "Tom")
 user.setUsername("Tom");
@@ -7875,12 +7875,12 @@ user.setPassword("cat!@#123");
 user.setEmail("tom@leancloud.rocks");
 user.setMobilePhoneNumber("+8618200008888");
 
-// 设置其他属性的方法跟 AVObject 一样
+// 设置其他属性的方法跟 LCObject 一样
 user.put("gender", "secret");
 
-user.signUpInBackground().subscribe(new Observer<AVUser>() {
+user.signUpInBackground().subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
+    public void onNext(LCUser user) {
         // 注册成功
         System.out.println("注册成功。objectId：" + user.getObjectId());
     }
@@ -8018,14 +8018,14 @@ SMS::requestSmsCode("+8618200008888");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVSMSOption option = new AVSMSOption();
+LCSMSOption option = new LCSMSOption();
 option.setSignatureName("sign_name"); //设置短信签名名称
-AVSMS.requestSMSCodeInBackground("+8618200008888", option).subscribe(new Observer<AVNull>() {
+LCSMS.requestSMSCodeInBackground("+8618200008888", option).subscribe(new Observer<LCNull>() {
     @Override
     public void onSubscribe(Disposable disposable) {
     }
     @Override
-    public void onNext(AVNull avNull) {
+    public void onNext(LCNull avNull) {
         Log.d("TAG","Result: succeed to request SMSCode.");
     }
     @Override
@@ -8104,9 +8104,9 @@ User::signUpOrLoginByMobilePhone("+8618200008888", "123456");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.signUpOrLoginByMobilePhoneInBackground("+8618200008888", "123456").subscribe(new Observer<AVUser>() {
+LCUser.signUpOrLoginByMobilePhoneInBackground("+8618200008888", "123456").subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
+    public void onNext(LCUser user) {
         // 注册成功
         System.out.println("注册成功。objectId：" + user.getObjectId());
     }
@@ -8197,9 +8197,9 @@ User::logIn("Tom", "cat!@#123");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.logIn("Tom", "cat!@#123").subscribe(new Observer<AVUser>() {
+LCUser.logIn("Tom", "cat!@#123").subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
+    public void onNext(LCUser user) {
         // 登录成功
     }
     public void onError(Throwable throwable) {
@@ -8288,9 +8288,9 @@ User::logInWithEmail("tom@leancloud.rocks", "cat!@#123");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.loginByEmail("tom@leancloud.rocks", "cat!@#123").subscribe(new Observer<AVUser>() {
+LCUser.loginByEmail("tom@leancloud.rocks", "cat!@#123").subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
+    public void onNext(LCUser user) {
         // 登录成功
     }
     public void onError(Throwable throwable) {
@@ -8381,9 +8381,9 @@ User::logInWithMobilePhoneNumber("+8618200008888", "cat!@#123");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.loginByMobilePhoneNumber("+8618200008888", "cat!@#123").subscribe(new Observer<AVUser>() {
+LCUser.loginByMobilePhoneNumber("+8618200008888", "cat!@#123").subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
+    public void onNext(LCUser user) {
         // 登录成功
     }
     public void onError(Throwable throwable) {
@@ -8456,9 +8456,9 @@ SMS::requestSmsCode("+8618200008888");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestLoginSmsCodeInBackground("+8618200008888").subscribe(new Observer<AVNull>() {
+LCUser.requestLoginSmsCodeInBackground("+8618200008888").subscribe(new Observer<LCNull>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVNull null) {
+    public void onNext(LCNull null) {
         // 成功调用
     }
     public void onError(Throwable throwable) {
@@ -8531,9 +8531,9 @@ User::signUpOrLoginByMobilePhone("+8618200008888", "123456");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.signUpOrLoginByMobilePhoneInBackground("+8618200008888", "123456").subscribe(new Observer<AVUser>() {
+LCUser.signUpOrLoginByMobilePhoneInBackground("+8618200008888", "123456").subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
+    public void onNext(LCUser user) {
         // 登录成功
     }
     public void onError(Throwable throwable) {
@@ -8638,9 +8638,9 @@ User::requestEmailVerify("tom@leancloud.rocks");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestEmailVerifyInBackground("tom@leancloud.rocks").subscribe(new Observer<AVNull>() {
+LCUser.requestEmailVerifyInBackground("tom@leancloud.rocks").subscribe(new Observer<LCNull>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVNull null) {
+    public void onNext(LCNull null) {
         // 成功调用
     }
     public void onError(Throwable throwable) {
@@ -8716,9 +8716,9 @@ User::requestMobilePhoneVerify("+8618200008888");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestMobilePhoneVerifyInBackground("+8618200008888").subscribe(new Observer<AVNull>() {
+LCUser.requestMobilePhoneVerifyInBackground("+8618200008888").subscribe(new Observer<LCNull>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVNull null) {
+    public void onNext(LCNull null) {
         // 成功调用
     }
     public void onError(Throwable throwable) {
@@ -8791,9 +8791,9 @@ User::verifyMobilePhone("123456");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.verifyMobilePhoneInBackground("123456").subscribe(new Observer<AVNull>() {
+LCUser.verifyMobilePhoneInBackground("123456").subscribe(new Observer<LCNull>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVNull null) {
+    public void onNext(LCNull null) {
         // mobilePhoneVerified 将变为 true
     }
     public void onError(Throwable throwable) {
@@ -8892,9 +8892,9 @@ _ = LCUser.verifyVerificationCode("123456", toUpdateMobilePhoneNumber:"+86182000
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestSMSCodeForUpdatingPhoneNumberInBackground("+8618200008888").subscribe(new Observer<AVNull>() {
+LCUser.requestSMSCodeForUpdatingPhoneNumberInBackground("+8618200008888").subscribe(new Observer<LCNull>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVNull null) {
+    public void onNext(LCNull null) {
         // 成功调用
     }
     public void onError(Throwable throwable) {
@@ -8903,11 +8903,11 @@ AVUser.requestSMSCodeForUpdatingPhoneNumberInBackground("+8618200008888").subscr
     public void onComplete() {}
 });
 
-AVUser.verifySMSCodeForUpdatingPhoneNumberInBackground("123456", "+8618200008888").subscribe(new Observer<AVNull>() {
+LCUser.verifySMSCodeForUpdatingPhoneNumberInBackground("123456", "+8618200008888").subscribe(new Observer<LCNull>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVNull null) {
+    public void onNext(LCNull null) {
         // 更新本地数据
-        AVUser currentUser = AVUser.getCurrentUser();
+        LCUser currentUser = LCUser.getCurrentUser();
         currentUser.setMobilePhoneNumber("+8618200008888");
     }
     public void onError(Throwable throwable) {
@@ -9024,7 +9024,7 @@ if ($currentUser != null) {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser currentUser = AVUser.getCurrentUser();
+LCUser currentUser = LCUser.getCurrentUser();
 if (currentUser != null) {
     // 跳到首页
 } else {
@@ -9100,10 +9100,10 @@ $currentUser = User::getCurrentUser();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.logOut();
+LCUser.logOut();
 
 // currentUser 变为 null
-AVUser currentUser = AVUser.getCurrentUser();
+LCUser currentUser = LCUser.getCurrentUser();
 ```
 {% endif %}
 {% if platform_name === "Flutter" %}
@@ -9129,7 +9129,7 @@ LCUser currentUser = await LCUser.GetCurrent();
 
 以下是一些应用可能需要用到 session token 的场景：
 
-- 应用根据以前缓存的 session token 登录（可以用 `{% if platform_name === "Objective-C" %}[AVUser currentUser].sessionToken{% endif %}{% if platform_name === "JavaScript" %}AV.User.current().getSessionToken(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current().get_session_token(){% endif %}{% if platform_name === "PHP" %}User::getCurrentSessionToken(){% endif %}{% if platform_name === "Android / Java" %}AVUser.getCurrentUser().getSessionToken(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser?.sessionToken?.value{% endif %}` 获取到当前用户的 session token，在服务端等受信任的环境下，可以通过 Master Key 读取任意用户的 `sessionToken` 字段以获取 session token）。
+- 应用根据以前缓存的 session token 登录（可以用 `{% if platform_name === "Objective-C" %}[AVUser currentUser].sessionToken{% endif %}{% if platform_name === "JavaScript" %}AV.User.current().getSessionToken(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current().get_session_token(){% endif %}{% if platform_name === "PHP" %}User::getCurrentSessionToken(){% endif %}{% if platform_name === "Android / Java" %}LCUser.getCurrentUser().getSessionToken(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser?.sessionToken?.value{% endif %}` 获取到当前用户的 session token，在服务端等受信任的环境下，可以通过 Master Key 读取任意用户的 `sessionToken` 字段以获取 session token）。
 - 应用内的某个 WebView 需要知道当前登录的用户。
 - 在服务端登录后，返回 session token 给客户端，客户端根据返回的 session token 登录。
 
@@ -9181,11 +9181,11 @@ User::become("anmlwi96s381m6ca7o7266pzf");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.becomeWithSessionTokenInBackground("anmlwi96s381m6ca7o7266pzf").subscribe(new Observer<AVUser>() {
+LCUser.becomeWithSessionTokenInBackground("anmlwi96s381m6ca7o7266pzf").subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
-        // 修改 AVUser.currentUser
-        AVUser.changeCurrentUser(user, true);
+    public void onNext(LCUser user) {
+        // 修改 currentUser
+        LCUser.changeCurrentUser(user, true);
     }
     public void onError(Throwable throwable) {
         // session token 无效
@@ -9283,7 +9283,7 @@ if ($authenticated) {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-boolean authenticated = AVUser.getCurrentUser().isAuthenticated();
+boolean authenticated = LCUser.getCurrentUser().isAuthenticated();
 if (authenticated) {
     // session token 有效
 } else {
@@ -9353,9 +9353,9 @@ User::requestPasswordReset("tom@leancloud.rocks");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestPasswordResetInBackground("tom@leancloud.rocks").subscribe(new Observer<AVNull>() {
+LCUser.requestPasswordResetInBackground("tom@leancloud.rocks").subscribe(new Observer<LCNull>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVNull null) {
+    public void onNext(LCNull null) {
         // 成功调用
     }
     public void onError(Throwable throwable) {
@@ -9431,9 +9431,9 @@ User::requestPasswordResetBySmsCode("+8618200008888");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.requestPasswordResetBySmsCodeInBackground("+8618200008888").subscribe(new Observer<AVNull>() {
+LCUser.requestPasswordResetBySmsCodeInBackground("+8618200008888").subscribe(new Observer<LCNull>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVNull null) {
+    public void onNext(LCNull null) {
         // 成功调用
     }
     public void onError(Throwable throwable) {
@@ -9512,9 +9512,9 @@ User::resetPasswordBySmsCode("123456", "cat!@#123");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.resetPasswordBySmsCodeInBackground("123456", "cat!@#123").subscribe(new Observer<AVNull>() {
+LCUser.resetPasswordBySmsCodeInBackground("123456", "cat!@#123").subscribe(new Observer<LCNull>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVNull null) {
+    public void onNext(LCNull null) {
         // 密码重置成功
     }
     public void onError(Throwable throwable) {
@@ -9584,7 +9584,7 @@ $userQuery = new Query("_User");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVQuery<AVUser> userQuery = AVUser.getQuery();
+LCQuery<LCUser> userQuery = LCUser.getQuery();
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -9680,19 +9680,19 @@ $books = $query->find();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVObject book = new AVObject("Book");
-AVUser author = AVUser.getCurrentUser();
+LCObject book = new LCObject("Book");
+LCUser author = LCUser.getCurrentUser();
 book.put("title", "我的第五本书");
 book.put("author", author);
-book.saveInBackground().subscribe(new Observer<AVObject>() {
+book.saveInBackground().subscribe(new Observer<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVObject book) {
+    public void onNext(LCObject book) {
         // 获取所有该作者写的书
-        AVQuery<AVObject> query = new AVQuery<>("Book");
+        LCQuery<LCObject> query = new LCQuery<>("Book");
         query.whereEqualTo("author", author);
-        query.findInBackground().subscribe(new Observer<List<AVObject>>() {
+        query.findInBackground().subscribe(new Observer<List<LCObject>>() {
             public void onSubscribe(Disposable disposable) {}
-            public void onNext(List<AVObject> books) {
+            public void onNext(List<LCObject> books) {
                 // books 是包含同一作者所有 Book 对象的数组
             }
             public void onError(Throwable throwable) {}
@@ -9878,9 +9878,9 @@ $unauthenticatedUser->save()
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.logIn("Tom", "cat!@#123").subscribe(new Observer<AVUser>() {
+LCUser.logIn("Tom", "cat!@#123").subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
+    public void onNext(LCUser user) {
         // 试图修改用户名
         user.put("username", "Jerry");
         // 密码已被加密，这样做会获取到空字符串
@@ -9889,10 +9889,10 @@ AVUser.logIn("Tom", "cat!@#123").subscribe(new Observer<AVUser>() {
         user.save();
 
         // 绕过鉴权直接获取用户
-        AVQuery<AVUser> query = new AVQuery<>("_User");
-        query.getInBackground(user.getObjectId()).subscribe(new Observer<AVUser>() {
+        LCQuery<LCUser> query = new LCQuery<>("_User");
+        query.getInBackground(user.getObjectId()).subscribe(new Observer<LCUser>() {
             public void onSubscribe(Disposable disposable) {}
-            public void onNext(AVUser unauthenticatedUser) {
+            public void onNext(LCUser unauthenticatedUser) {
                 unauthenticatedUser.put("username", "Toodle");
                 // 会出错，因为用户未鉴权
                 unauthenticatedUser.save();
@@ -10020,7 +10020,7 @@ if err := client.User(unauthenticatedUser).Set("username", "Toodle"); err != nil
 }
 ```
 {% endif %}
-通过 `{% if platform_name === "Objective-C" %}[AVUser currentUser]{% endif %}{% if platform_name === "JavaScript" %}AV.User.current(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current(){% endif %}{% if platform_name === "PHP" %}User::getCurrentUser(){% endif %}{% if platform_name === "Android / Java" %}AVUser.getCurrentUser(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser{% endif %}{% if platform_name === "Flutter" %}LCUser.getCurrent(){% endif %}{% if platform_name === ".Net" %}LCUser.GetCurrent(){% endif %}` 获取的 `{{ userObjectName }}` 总是经过鉴权的。
+通过 `{% if platform_name === "Objective-C" %}[AVUser currentUser]{% endif %}{% if platform_name === "JavaScript" %}AV.User.current(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current(){% endif %}{% if platform_name === "PHP" %}User::getCurrentUser(){% endif %}{% if platform_name === "Android / Java" %}LCUser.getCurrentUser(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser{% endif %}{% if platform_name === "Flutter" %}LCUser.getCurrent(){% endif %}{% if platform_name === ".Net" %}LCUser.GetCurrent(){% endif %}` 获取的 `{{ userObjectName }}` 总是经过鉴权的。
 
 要查看一个 `{{ userObjectName }}` 是否经过鉴权，可以调用 `{% if platform_name === "Objective-C" %}isAuthenticatedWithSessionToken{% endif %}{% if platform_name === "JavaScript" %}isAuthenticated{% endif %}{% if platform_name === "Python" %}is_authenticated{% endif %}{% if platform_name === "PHP" %}isAuthenticated{% endif %}{% if platform_name === "Android / Java" %}isAuthenticated{% endif %}{% if platform_name === "Swift" %}{# TODO #}{% endif %}` 方法。通过经过鉴权的方法获取到的 `{{ userObjectName }}` 无需进行该检查。
 
@@ -10028,7 +10028,7 @@ if err := client.User(unauthenticatedUser).Set("username", "Toodle"); err != nil
 
 ### 其他对象的安全
 
-对于给定的一个对象，可以指定哪些用户有权限读取或修改它。为实现该功能，每个对象都有一个由 `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}AVACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}` 对象组成的访问控制表。请参阅 [ACL 权限管理开发指南](acl-guide.html)。
+对于给定的一个对象，可以指定哪些用户有权限读取或修改它。为实现该功能，每个对象都有一个由 `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}LCACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}` 对象组成的访问控制表。请参阅 [ACL 权限管理开发指南](acl-guide.html)。
 
 ### 第三方账户登录
 
@@ -10099,10 +10099,10 @@ thirdPartyData.put("access_token", "ACCESS_TOKEN");
 //可选
 thirdPartyData.put("refresh_token", "REFRESH_TOKEN");
 thirdPartyData.put("scope", "SCOPE");
-AVUser.loginWithAuthData(thirdPartyData, "weixin").subscribe(new Observer<AVUser>() {
+LCUser.loginWithAuthData(thirdPartyData, "weixin").subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {
     }
-    public void onNext(AVUser avUser) {
+    public void onNext(LCUser avUser) {
        System.out.println("成功登录");
     }
     public void onError(Throwable throwable) {
@@ -10423,12 +10423,12 @@ $user->linkWith("weixin", $weixinData);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-avUser.associateWithAuthData(weixinData, "weixin").subscribe(new Observer<AVUser>() {
+avUser.associateWithAuthData(weixinData, "weixin").subscribe(new Observer<LCUser>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVUser avUser) {
+    public void onNext(LCUser avUser) {
         System.out.println("绑定成功");
     }
     @Override
@@ -10509,13 +10509,13 @@ $user->unlinkWith("weixin");
 
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser avUser = AVUser.currentUser();
-avUser.dissociateWithAuthData("weixin").subscribe(new Observer<AVUser>() {
+LCUser avUser = LCUser.currentUser();
+avUser.dissociateWithAuthData("weixin").subscribe(new Observer<LCUser>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVUser avUser) {
+    public void onNext(LCUser avUser) {
         System.out.println("解绑成功");
     }
     @Override
@@ -10675,18 +10675,18 @@ thirdPartyData.put("access_token", "ACCESS_TOKEN");
 thirdPartyData.put("refresh_token", "REFRESH_TOKEN");
 thirdPartyData.put("scope", "SCOPE");
 Boolean failOnNotExist = true;
-AVUser user = new AVUser();
-user.loginWithAuthData(thirdPartyData, "weixin", failOnNotExist).subscribe(new Observer<AVUser>() {
+LCUser user = new LCUser();
+user.loginWithAuthData(thirdPartyData, "weixin", failOnNotExist).subscribe(new Observer<LCUser>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVUser avUser) {
+    public void onNext(LCUser avUser) {
         System.out.println("存在匹配的用户，登录成功");
     }
     @Override
     public void onError(Throwable e) {
-        AVException avException = new AVException(e);
+        LCException avException = new LCException(e);
         int code = avException.getCode();
         if (code == 211){
             // 跳转到输入用户名、密码、手机号等业务页面
@@ -10700,15 +10700,15 @@ user.loginWithAuthData(thirdPartyData, "weixin", failOnNotExist).subscribe(new O
 });
 
 // 跳转到输入用户名、密码、手机号等业务页面之后
-AVUser avUser = new AVUser();
+LCUser avUser = new LCUser();
 avUser.setUsername("Tom");
 avUser.setMobilePhoneNumber("+8618200008888");
-avUser.loginWithAuthData(thirdPartyData, "weixin").subscribe(new Observer<AVUser>() {
+avUser.loginWithAuthData(thirdPartyData, "weixin").subscribe(new Observer<LCUser>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVUser avUser) {
+    public void onNext(LCUser avUser) {
         System.out.println("登录成功");
     }
     @Override
@@ -10924,15 +10924,15 @@ thirdPartyData.put("expires_in", 1384686496);
 thirdPartyData.put("uid", "officeopenid");
 thirdPartyData.put("access_token", "officetoken");
 thirdPartyData.put("scope", "SCOPE");
-AVUser.loginWithAuthData(thirdPartyData, "wxleanoffice",
+LCUser.loginWithAuthData(thirdPartyData, "wxleanoffice",
    "unionid4a", "weixin", true)   // 新增参数，分别表示 uniondId，unionIdPlatform，asMainAccount
                                   // 对于 unionIdPlatform，这里使用「weixin」来指代微信平台。
-   .subscribe(new Observer<AVUser>() {
+   .subscribe(new Observer<LCUser>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVUser avUser) {
+    public void onNext(LCUser avUser) {
         System.out.println("登录成功");
     }
     @Override
@@ -11100,14 +11100,14 @@ thirdPartyData.put("expires_in", 1384686496);
 thirdPartyData.put("uid", "supportopenid");
 thirdPartyData.put("access_token", "supporttoken");
 thirdPartyData.put("scope", "SCOPE");
-AVUser.loginWithAuthData(thirdPartyData, "wxleansupport", "unionid4a",
+LCUser.loginWithAuthData(thirdPartyData, "wxleansupport", "unionid4a",
   "weixin",     // 这里指定 unionIdPlatform，使用「weixin」来指代微信平台。
-  false).subscribe(new Observer<AVUser>() {
+  false).subscribe(new Observer<LCUser>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVUser avUser) {
+    public void onNext(LCUser avUser) {
         System.out.println("登录成功");
     }
     @Override
@@ -11338,9 +11338,9 @@ AV.User.loginAnonymously().then((user) => {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser.logInAnonymously().subscribe(new Observer<AVUser>() {
+LCUser.logInAnonymously().subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
+    public void onNext(LCUser user) {
         // user 是新的匿名用户
     }
     public void onError(Throwable throwable) {}
@@ -11403,14 +11403,14 @@ user.signUp().then((user) => {
 {% if platform_name === "Android / Java" %}
 ```java
 // currentUser 是个匿名用户
-AVUser currentUser = AVUser.getCurrentUser();
+LCUser currentUser = LCUser.getCurrentUser();
 
 currentUser.setUsername("Tom");
 currentUser.setPassword("cat!@#123");
 
-currentUser.signUpInBackground().subscribe(new Observer<AVUser>() {
+currentUser.signUpInBackground().subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
+    public void onNext(LCUser user) {
         // currentUser 已经转化为普通用户
     }
     public void onError(Throwable throwable) {
@@ -11465,7 +11465,7 @@ if (currentUser.isAnonymous()) {
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-AVUser currentUser = AVUser.getCurrentUser();
+LCUser currentUser = LCUser.getCurrentUser();
 if (currentUser.isAnonymous()) {
   // currentUser 是匿名用户
 } else {

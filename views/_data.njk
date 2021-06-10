@@ -60,7 +60,7 @@ LeanCloud 云端使用的并非关系型数据库，无法做到真正的联表�
 
 {% set libVersion = {
     leancloud:  "4.7.15",
-    unified:    "7.2.6",
+    unified:    "8.0.1",
     fastjson:   "1.2.70",
     okhttp:     "3.8.0",
     okio:       "1.13.0",
@@ -112,7 +112,7 @@ implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
 {% macro android_key_init(appid="appid") %}
 ```java
-import cn.leancloud.AVOSCloud;
+import cn.leancloud.LeanCloud;
 
 public class MyLeanCloudApp extends Application {
     @Override
@@ -120,7 +120,7 @@ public class MyLeanCloudApp extends Application {
         super.onCreate();
 
         // 提供 this、App ID、绑定的自定义 API 域名作为参数
-        AVOSCloud.initializeSecurely(this, "{{appid}}", "https://please-replace-with-your-customized.domain.com");
+        LeanCloud.initializeSecurely(this, "{{appid}}", "https://please-replace-with-your-customized.domain.com");
     }
 }
 ```

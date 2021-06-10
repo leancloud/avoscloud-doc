@@ -1,17 +1,20 @@
 # Java Unified SDK 迁移指南
 
-如果你还在在使用我们老版本 Android SDK（所有版本号低于 `5.0.0`，`groupId` 为 `cn.leancloud.android` 的 libraries），要迁移到最新的 Java Unified SDK，请阅读以下指南。如果你使用的已经是新版本 SDK（版本号高于 `5.0.0`），那么可以忽略本文档。
+我们于 2018 年 9 月推出了新的 [Java Unified SDK](https://leancloudblog.com/java-unified-sdk-kai-fang-ce-shi-tong-zhi/)，兼容纯 Java、云引擎和 Android 等多个平台，老的 Android SDK（版本号低于 `5.0.0`，`groupId` 为 `cn.leancloud.android` 的 libraries）已于 2019 年 9 月底停止维护。
 
-新版本 Java Unified SDK 根据底层依赖的 JSON 解析库的不同，有两个不同分支：
+Java Unified SDK 根据底层依赖的 JSON 解析库的不同，有两个不同分支：
 
 - 6.x 分支依赖 [fastjson](https://github.com/alibaba/fastjson) 来进行 JSON 解析；
-- 7.x 分支使用 [Gson](https://github.com/google/gson) 来进行 JSON 解析；
+- 7.0 以后版本使用 [Gson](https://github.com/google/gson) 来进行 JSON 解析（最新版本）；
 
-两个版本的对外接口完全一致，开发者可以根据自己的需求选择合适的版本（考虑到平台兼容性和稳定性，我们推荐大家使用 7.x 的分支来进行开发）。
+两个版本的对外接口完全一致，开发者可以根据自己的需求选择合适的版本。但是考虑到平台兼容性和稳定性，我们推荐大家使用带 Gson 库的版本来进行开发。
 
-## 新老版本的差异说明
+从 2021 年 6 月开始，我们推出了 8.0 版本，与 7.x 版本相比，主要的变化是改变了公开类的前缀（`AV` -> `LC`），同时也删除了一些长期处于 `deprecated` 状态的接口，它将是我们今后会长期维护的版本。
 
-与老版本 SDK 相比，新版 SDK 的主要改进有两点：
+
+## Java Unified SDK（新版）与老版本 SDK 的差异
+
+与老版本 SDK 相比，Java Unified SDK 的主要改进有两点：
 
 - 一份代码，支持多个平台
 
@@ -26,19 +29,19 @@
 
 #### 基础包（可以在纯 Java 环境下调用）
 - storage-core：包含所有数据存储的功能，如
-  - 结构化数据（AVObject）
-  - 内建账户系统（AVUser）
-  - 查询（AVQuery）
-  - 文件存储（AVFile）
-  - 朋友圈（AVStatus）
-  - 短信（AVSMS）
+  - 结构化数据（LCObject）
+  - 内建账户系统（LCUser）
+  - 查询（LCQuery）
+  - 文件存储（LCFile）
+  - 朋友圈（LCStatus）
+  - 短信（LCSMS）
   - 社交关系（用户 follow 关系）
   - 等等
 - realtime-core：部分依赖 storage-core library，实现了 LiveQuery 以及即时通讯功能，如：
   - LiveQuery
-  - AVIMClient
-  - AVIMConversation 以及多种场景对话
-  - AVIMMessage 以及多种子类化的多媒体消息
+  - LCIMClient
+  - LCIMConversation 以及多种场景对话
+  - LCIMMessage 以及多种子类化的多媒体消息
   - 等等
 
 #### Android 特有的包
@@ -137,7 +140,7 @@ todo.saveInBackground().subscribe(ObserverBuilder.buildSingleObserver(new SaveCa
 
 ## 从 6.x 迁移到 7.x 版本的操作要点
 
-7.x 分支当前最新的版本是 `7.0.9`，它与 6.x 版本的对外接口完全一致，差异仅仅在于底层依赖的 JSON 解析库不同，所以从 6.x 到 7.x 的迁移是比较简单的。
+7.x 分支当前最新的版本是 `7.2.7`，它与 6.x 版本的对外接口完全一致，差异仅仅在于底层依赖的 JSON 解析库不同，所以从 6.x 到 7.x 的迁移是比较简单的。
 
 ### 三种不同的迁移场景
 
@@ -178,3 +181,7 @@ java.lang.RuntimeException
 ```
 
 按照[这里](https://github.com/google/gson/issues/1641)的解释，可以通过升级 `Android Gradle plugin -> 3.5.3, Gradle -> v5.5` 解决。
+
+## 从 7.x 迁移到 8.x 版本的操作要点
+
+从 8.x 版本开始，我们把公开类名字前缀由 `AV` 改为了 `LC`，同时也删除了一些长期处于 `deprecated` 状态的接口，这将是我们今后会长期维护的版本。开发者升级要做的具体修改点，可以参考 SDK 源码工程文档：[](https://github.com/leancloud/java-unified-sdk#migration-to-8x)。

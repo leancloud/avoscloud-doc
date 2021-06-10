@@ -240,7 +240,7 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
    params.put("watch_ids",watchIds);
 
    try{
-     Object result =  AVCloud.callFunction("sign",params);
+     Object result =  LCCloud.callFunction("sign",params);
      if(result instanceof Map){
        Map<String,Object> serverSignature = (Map<String,Object>) result;
        Signature signature = new Signature();
@@ -249,7 +249,7 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
        signature.setNonce((String)serverSignature.get("nonce"));
        return signature;
      }
-   }catch(AVException e){
+   }catch(LCException e){
      throw (SignatureFactory.SignatureException) e;
    }
    return null;
@@ -265,7 +265,7 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
    params.put("action",action);
 
    try{
-     Object result = AVCloud.callFunction("sign2",params);
+     Object result = LCCloud.callFunction("sign2",params);
      if(result instanceof Map){
         Map<String,Object> serverSignature = (Map<String,Object>) result;
         Signature signature = new Signature();
@@ -274,7 +274,7 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
         signature.setNonce((String)serverSignature.get("nonce"));
         return signature;
      }
-   }catch(AVException e){
+   }catch(LCException e){
      throw (SignatureFactory.SignatureException) e;
    }
    return null;
@@ -290,7 +290,7 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
     params.put("action",action);
 
     try{
-      Object result = AVCloud.callFunction("sign3",params);
+      Object result = LCCloud.callFunction("sign3",params);
       if(result instanceof Map){
          Map<String,Object> serverSignature = (Map<String,Object>) result;
          Signature signature = new Signature();
@@ -299,15 +299,15 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
          signature.setNonce((String)serverSignature.get("nonce"));
          return signature;
       }
-    }catch(AVException e){
+    }catch(LCException e){
       throw (SignatureFactory.SignatureException) e;
     }
     return null;
   }
 }
 
-// 将签名工厂类的实例绑定到 AVIMClient 上
-AVIMOptions.getGlobalOptions().setSignatureFactory(new KeepAliveSignatureFactory());
+// 将签名工厂类的实例绑定到 LCIMClient 上
+LCIMOptions.getGlobalOptions().setSignatureFactory(new KeepAliveSignatureFactory());
 ```
 ```cs
 public class LocalSignatureFactory : ILCIMSignatureFactory {
@@ -448,19 +448,19 @@ _ = LCUser.logIn(username: "username", password: "password") { (result) in
 }];
 ```
 ```java
-// 以 AVUser 的用户名和密码登录到 LeanCloud 内建账户系统
-AVUser.logInInBackground("username", "password", new LogInCallback<AVUser>() {
+// 以 LCUser 的用户名和密码登录到 LeanCloud 内建账户系统
+LCUser.logInInBackground("username", "password", new LogInCallback<LCUser>() {
     @Override
-    public void done(AVUser user, AVException e) {
+    public void done(LCUser user, LCException e) {
         if (null != e) {
           return;
         }
-        // 以 AVUser 实例创建了一个 client
-        AVIMClient client = AVIMClient.getInstance(user);
+        // 以 LCUser 实例创建了一个 client
+        LCIMClient client = LCIMClient.getInstance(user);
         // 登录即时通讯云端
-        client.open(new AVIMClientCallback() {
+        client.open(new LCIMClientCallback() {
           @Override
-          public void done(final AVIMClient avimClient, AVIMException e) {
+          public void done(final LCIMClient avimClient, LCIMException e) {
             // 执行其他逻辑
           }
        });
@@ -539,7 +539,7 @@ public func update(role: MemberRole, ofMember memberID: String, completion: @esc
  * @param role      角色
  * @param callback  结果回调函数
  */
-public void updateMemberRole(final String memberId, final ConversationMemberRole role, final AVIMConversationCallback callback);
+public void updateMemberRole(final String memberId, final ConversationMemberRole role, final LCIMConversationCallback callback);
 ```
 ```cs
 /// <summary>
@@ -604,7 +604,7 @@ Future<void> updateMemberRole({String role, String memberId})
   * @param limit     查询结果集上限
   * @param callback  结果回调函数
   */
-  public void getAllMemberInfo(int offset, int limit, final AVIMConversationMemberQueryCallback callback);
+  public void getAllMemberInfo(int offset, int limit, final LCIMConversationMemberQueryCallback callback);
   ```
   ```cs
   /// <summary>
@@ -652,7 +652,7 @@ Future<void> updateMemberRole({String role, String memberId})
   * @param memberId  成员的 clientid
   * @param callback  结果回调函数
   */
-  public void getMemberInfo(final String memberId, final AVIMConversationMemberQueryCallback callback);
+  public void getMemberInfo(final String memberId, final LCIMConversationMemberQueryCallback callback);
   ```
   ```cs
   /// <summary>
@@ -765,20 +765,20 @@ public func checkMuting(member ID: String, completion: @escaping (LCGenericResul
  * @param memberIds  成员列表
  * @param callback   结果回调函数
  */
-public void muteMembers(final List<String> memberIds, final AVIMOperationPartiallySucceededCallback callback);
+public void muteMembers(final List<String> memberIds, final LCIMOperationPartiallySucceededCallback callback);
 /**
  * 将部分成员解除禁言
  * @param memberIds  成员列表
  * @param callback   结果回调函数
  */
-public void unmuteMembers(final List<String> memberIds, final AVIMOperationPartiallySucceededCallback callback);
+public void unmuteMembers(final List<String> memberIds, final LCIMOperationPartiallySucceededCallback callback);
 /**
  * 查询被禁言的成员列表
  * @param offset    查询结果的起始点
  * @param limit     查询结果集上限
  * @param callback  结果回调函数
  */
-public void queryMutedMembers(int offset, int limit, final AVIMConversationSimpleResultCallback callback);
+public void queryMutedMembers(int offset, int limit, final LCIMConversationSimpleResultCallback callback);
 ```
 ```cs
 /// <summary>
@@ -931,20 +931,20 @@ public func checkBlocking(member ID: String, completion: @escaping (LCGenericRes
  * @param memberIds  成员列表
  * @param callback   结果回调函数
  */
-public void blockMembers(final List<String> memberIds, final AVIMOperationPartiallySucceededCallback callback);
+public void blockMembers(final List<String> memberIds, final LCIMOperationPartiallySucceededCallback callback);
 /**
  * 将部分成员从黑名单移出来
  * @param memberIds  成员列表
  * @param callback   结果回调函数
  */
-public void unblockMembers(final List<String> memberIds, final AVIMOperationPartiallySucceededCallback callback);
+public void unblockMembers(final List<String> memberIds, final LCIMOperationPartiallySucceededCallback callback);
 /**
  * 查询黑名单的成员列表
  * @param offset    查询结果的起始点
  * @param limit     查询结果集上限
  * @param callback  结果回调函数
  */
-public void queryBlockedMembers(int offset, int limit, final AVIMConversationSimpleResultCallback callback);
+public void queryBlockedMembers(int offset, int limit, final LCIMConversationSimpleResultCallback callback);
 ```
 ```cs
 /// <summary>
@@ -1034,9 +1034,9 @@ do {
 ```
 ```java
 tom.createChatRoom("聊天室", null,
-    new AVIMConversationCreatedCallback() {
+    new LCIMConversationCreatedCallback() {
         @Override
-        public void done(AVIMConversation conv, AVIMException e) {
+        public void done(LCIMConversation conv, LCIMException e) {
             if (e == null) {
                 // 创建成功
             }
@@ -1091,10 +1091,10 @@ AVIMConversationQuery *query = [tom conversationQuery];
 [query whereKey:@"tr" equalTo:@(YES)]; 
 ```
 ```java
-AVIMConversationsQuery query = tom.getChatRoomQuery();
-query.findInBackground(new AVIMConversationQueryCallback() {
+LCIMConversationsQuery query = tom.getChatRoomQuery();
+query.findInBackground(new LCIMConversationQueryCallback() {
     @Override
-    public void done(List<AVIMConversation> conversations, AVIMException e) {
+    public void done(List<LCIMConversation> conversations, LCIMException e) {
         if (null != e) {
             // 获取成功
         } else {
@@ -1117,7 +1117,7 @@ try {
   print(e);
 }
 ```
-> Java / Android / C# SDK 专门提供了 `AVIMClient#getChatRoomQuery` 方法来生成聊天室查询对象，屏蔽了 `transient` 属性的细节，建议开发者优先使用这些高层 API。
+> Java / Android / C# SDK 专门提供了 `LCIMClient#getChatRoomQuery` 方法来生成聊天室查询对象，屏蔽了 `transient` 属性的细节，建议开发者优先使用这些高层 API。
 
 ### 加入和离开聊天室
 
@@ -1163,27 +1163,27 @@ do {
 ```
 ```java
 private void TomQueryWithLimit() {
-  AVIMClient tom = AVIMClient.getInstance("Tom");
-  tom.open(new AVIMClientCallback() {
+  LCIMClient tom = LCIMClient.getInstance("Tom");
+  tom.open(new LCIMClientCallback() {
 
     @Override
-    public void done(AVIMClient client, AVIMException e) {
+    public void done(LCIMClient client, LCIMException e) {
       if (e == null) {
         // 登录成功
-        AVIMConversationsQuery query = tom.getConversationsQuery();
+        LCIMConversationsQuery query = tom.getConversationsQuery();
         query.setLimit(1);
         // 获取第一个对话
-        query.findInBackground(new AVIMConversationQueryCallback() {
+        query.findInBackground(new LCIMConversationQueryCallback() {
           @Override
-          public void done(List<AVIMConversation> convs, AVIMException e) {
+          public void done(List<LCIMConversation> convs, LCIMException e) {
             if (e == null) {
               if (convs != null && !convs.isEmpty()) {
-                AVIMConversation conv = convs.get(0);
+                LCIMConversation conv = convs.get(0);
                 // 获取第一个对话的在线人数
-                conv.getMemberCount(new AVIMConversationMemberCountCallback() {
+                conv.getMemberCount(new LCIMConversationMemberCountCallback() {
 
                   @Override
-                  public void done(Integer count, AVIMException e) {
+                  public void done(Integer count, LCIMException e) {
                     if (e == null) {
                       Log.d("Tom & Jerry 对话的在线人数为 " + count);
                     }
@@ -1272,25 +1272,25 @@ self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
 }];
 ```
 ```java
-AVIMClient tom = AVIMClient.getInstance("Tom");
-    tom.open(new AVIMClientCallback() {
+LCIMClient tom = LCIMClient.getInstance("Tom");
+    tom.open(new LCIMClientCallback() {
       @Override
-      public void done(AVIMClient client, AVIMException e) {
+      public void done(LCIMClient client, LCIMException e) {
         if (e == null) {
           // 创建名为「猫和老鼠」的对话
           client.createConversation(Arrays.asList("Jerry"), "猫和老鼠", null,
-            new AVIMConversationCreatedCallback() {
+            new LCIMConversationCreatedCallback() {
               @Override
-              public void done(AVIMConversation conv, AVIMException e) {
+              public void done(LCIMConversation conv, LCIMException e) {
                 if (e == null) {
-                  AVIMTextMessage msg = new AVIMTextMessage();
+                  LCIMTextMessage msg = new LCIMTextMessage();
                   msg.setText("耗子，起床！");
 
-                  AVIMMessageOption messageOption = new AVIMMessageOption();
-                  messageOption.setPriority(AVIMMessageOption.MessagePriority.High);
-                  conv.sendMessage(msg, messageOption, new AVIMConversationCallback() {
+                  LCIMMessageOption messageOption = new LCIMMessageOption();
+                  messageOption.setPriority(LCIMMessageOption.MessagePriority.High);
+                  conv.sendMessage(msg, messageOption, new LCIMConversationCallback() {
                     @Override
-                    public void done(AVIMException e) {
+                    public void done(LCIMException e) {
                       if (e == null) {
                         // 发送成功
                       }
@@ -1368,18 +1368,18 @@ conversation.mute { (result) in
 }
 ```
 ```java
-AVIMClient tom = AVIMClient.getInstance("Tom");
-tom.open(new AVIMClientCallback(){
+LCIMClient tom = LCIMClient.getInstance("Tom");
+tom.open(new LCIMClientCallback(){
 
     @Override
-    public void done(AVIMClient client,AVIMException e){
+    public void done(LCIMClient client,LCIMException e){
       if(e==null){
       // 登录成功
-      AVIMConversation conv = client.getConversation("551260efe4b01608686c3e0f");
-      conv.mute(new AVIMConversationCallback(){
+      LCIMConversation conv = client.getConversation("551260efe4b01608686c3e0f");
+      conv.mute(new LCIMConversationCallback(){
 
         @Override
-        public void done(AVIMException e){
+        public void done(LCIMException e){
           if(e==null){
           // 设置成功
           }
@@ -1470,15 +1470,15 @@ do {
             }];
 ```
 ```java
-tom.createTemporaryConversation(Arrays.asList(members), 3600, new AVIMConversationCreatedCallback(){
+tom.createTemporaryConversation(Arrays.asList(members), 3600, new LCIMConversationCreatedCallback(){
     @Override
-    public void done(AVIMConversation conversation, AVIMException e) {
+    public void done(LCIMConversation conversation, LCIMException e) {
         if (null == e) {
-        AVIMTextMessage msg = new AVIMTextMessage();
+        LCIMTextMessage msg = new LCIMTextMessage();
         msg.setText("这里是临时对话，一小时之后，这个对话就会消失");
-        conversation.sendMessage(msg, new AVIMConversationCallback(){
+        conversation.sendMessage(msg, new LCIMConversationCallback(){
             @Override
-            public void done(AVIMException e) {
+            public void done(LCIMException e) {
             }
         });
         }
@@ -1558,21 +1558,21 @@ AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
 }];
 ```
 ```java
-AVIMClient client = AVIMClient.getInstance("Tom");
-client.open(new AVIMClientCallback() {
+LCIMClient client = LCIMClient.getInstance("Tom");
+client.open(new LCIMClientCallback() {
     @Override
-    public void done(AVIMClient avimClient, AVIMException e) {
+    public void done(LCIMClient avimClient, LCIMException e) {
     if (null == e) {
         String[] members = {"Jerry", "William"};
-        avimClient.createTemporaryConversation(Arrays.asList(members), 3600, new AVIMConversationCreatedCallback(){
+        avimClient.createTemporaryConversation(Arrays.asList(members), 3600, new LCIMConversationCreatedCallback(){
         @Override
-        public void done(AVIMConversation conversation, AVIMException e) {
+        public void done(LCIMConversation conversation, LCIMException e) {
             if (null == e) {
-            AVIMTextMessage msg = new AVIMTextMessage();
+            LCIMTextMessage msg = new LCIMTextMessage();
             msg.setText("这里是临时对话，一小时之后，这个对话就会消失");
-            conversation.sendMessage(msg, new AVIMConversationCallback(){
+            conversation.sendMessage(msg, new LCIMConversationCallback(){
                 @Override
-                public void done(AVIMException e) {
+                public void done(LCIMException e) {
                 }
             });
             }

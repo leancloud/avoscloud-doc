@@ -139,12 +139,12 @@ android {
 
 新的 Android SDK 会使用新的安全方式进行请求签名，与 LeanCloud 云端完成数据交互。
 如果开发者没有在客户端直接调用云引擎中的[云函数](leanengine_cloudfunction_guide-node.html)，那么所有的集成都已经完成了，可以忽略本章内容。
-如果你有在 Android 客户端调用过云函数（例如代码里有 `AVCloud#callFunctionInBackground` 或 `AVCloud#callRPCInBackground` 请求），为了保证 SDK 发出的请求能被云引擎正确处理，您还需要升级云引擎的 runtime 库并重新部署云引擎实例。
+如果你有在 Android 客户端调用过云函数（例如代码里有 `LCCloud#callFunctionInBackground` 或 `LCCloud#callRPCInBackground` 请求），为了保证 SDK 发出的请求能被云引擎正确处理，您还需要升级云引擎的 runtime 库并重新部署云引擎实例。
 
 现在支持 Android SDK 新认证方式的云引擎 runtime SDK 版本如下：
 - Python SDK：2.3.0 and later
 - Node.js SDK：3.5.0 and later
-- Java SDK (engine-core)：6.1.0 and later
+- Java SDK (engine-core)：8.0.1 and later
 
 大家更新云引擎代码依赖的版本，通过 `lean publish` 进行发布即可。
 

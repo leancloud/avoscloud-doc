@@ -19,7 +19,7 @@ Android 的消息推送主要依赖客户端的 PushService 服务。PushService
 
 ## 接入推送服务
 
-要接入推送服务，需要依赖 avoscloud-sdk 和 avoscloud-push 两个 library。首先打开 `app` 目录下的 `build.gradle` 进行如下配置：
+要接入推送服务，需要依赖 realtime-android library。首先打开 `app` 目录下的 `build.gradle` 进行如下配置：
 
 ```
 dependencies {
@@ -40,7 +40,7 @@ public class MyLeanCloudApp extends Application {
         super.onCreate();
 
         // 初始化参数依次为 this, AppId, AppKey
-        AVOSCloud.initialize(this,"{{appid}}","{{appkey}}");
+        LeanCloud.initialize(this,"{{appid}}","{{appkey}}");
     }
 }
 ```
@@ -64,7 +64,7 @@ public class MyLeanCloudApp extends Application {
 为了让应用能在关闭的情况下也可以收到推送，你需要在 `<application>` 中加入：
 
 ```xml
-<receiver android:name="cn.leancloud.push.AVBroadcastReceiver">
+<receiver android:name="cn.leancloud.push.LCBroadcastReceiver">
     <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED" />
         <action android:name="android.intent.action.USER_PRESENT" />
@@ -99,7 +99,7 @@ public class MyLeanCloudApp extends Application {
   <!-- 即时通讯和推送 START -->
   <!-- 即时通讯和推送都需要 PushService -->
   <service android:name="cn.leancloud.push.PushService"/>
-  <receiver android:name="cn.leancloud.push.AVBroadcastReceiver">
+  <receiver android:name="cn.leancloud.push.LCBroadcastReceiver">
     <intent-filter>
       <action android:name="android.intent.action.BOOT_COMPLETED"/>
       <action android:name="android.intent.action.USER_PRESENT"/>
@@ -121,20 +121,20 @@ public class MyLeanCloudApp extends Application {
 当应用在用户设备上安装好以后，如果要使用消息推送功能，LeanCloud SDK 会自动生成一个 Installation 对象。该对象本质上是应用在设备上生成的安装信息，需要首先将它保存到云端设备才能收到推送：
 
 ```java
-AVInstallation.getCurrentInstallation().saveInBackground();
+LCInstallation.getCurrentInstallation().saveInBackground();
 ```
 
 **这段代码应该在应用启动的时候调用一次**，保证设备注册到 LeanCloud 云端。你可以监听调用回调，获取 installationId 做数据关联。
 
 ```java
-AVInstallation.getCurrentInstallation().saveInBackground().subscribe(new Observer<AVObject>() {
+LCInstallation.getCurrentInstallation().saveInBackground().subscribe(new Observer<LCObject>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVObject avObject) {
+    public void onNext(LCObject avObject) {
         // 关联 installationId 到用户表等操作。
-        String installationId = AVInstallation.getCurrentInstallation().getInstallationId();
+        String installationId = LCInstallation.getCurrentInstallation().getInstallationId();
         System.out.println("保存成功：" + installationId );
     }
     @Override
@@ -178,12 +178,12 @@ PushService.subscribe(this, "protected", Callback2.class);
 ```java
 PushService.unsubscribe(context, "protected");
 //退订之后需要重新保存 Installation
-AVInstallation.getCurrentInstallation().saveInBackground();
+LCInstallation.getCurrentInstallation().saveInBackground();
 ```
 
 ### Android 8.0 推送适配
 
-在调用 `AVOSCloud.initialize` 之后，需要调用 `PushService.setDefaultChannelId(context, channelid)` 设置通知展示的默认 `channel`，否则消息无法展示。Channel ID 的解释请阅读 Google 官方文档 [Creating a notification](https://developer.android.com/training/notify-user/channels.html)。
+在调用 `LeanCloud.initialize` 之后，需要调用 `PushService.setDefaultChannelId(context, channelid)` 设置通知展示的默认 `channel`，否则消息无法展示。Channel ID 的解释请阅读 Google 官方文档 [Creating a notification](https://developer.android.com/training/notify-user/channels.html)。
 
 另外，我们的推送服务也支持多个推送 Channel。在客户端，开发者可以通过调用 `PushService` 的如下方法创建新的通知 Channel（也可以自己调用底层 API 创建）：
 ```
@@ -220,7 +220,7 @@ curl -X POST \
 ### 推送给所有的设备
 
 ```java
-AVPush push = new AVPush();
+LCPush push = new LCPush();
 Map<String, Object> pushData = new HashMap<String, Object>();
 pushData.put("alert","push message to android device directly");
 push.setPushToAndroid(true);
@@ -248,9 +248,9 @@ push.sendInBackground().subscribe(new Observer<JSONObject>() {
 发送给「public」频道的用户：
 
 ```java
-AVQuery pushQuery = AVInstallation.getQuery();
+LCQuery pushQuery = LCInstallation.getQuery();
 pushQuery.whereEqualTo("channels", "public");
-AVPush push = new AVPush();
+LCPush push = new LCPush();
 push.setQuery(pushQuery);
 push.setMessage("Push to channel.");
 push.setPushToAndroid(true);
@@ -272,14 +272,14 @@ push.sendInBackground().subscribe(new Observer<JSONObject>() {
 });
 ```
 
-发送给某个 Installation id 的用户，通常来说，你会将 AVInstallation 关联到设备的登录用户 AVUser 上作为一个属性，然后就可以通过下列代码查询 InstallationId 的方式来发送消息给特定用户，实现类似私信的功能：
+发送给某个 Installation id 的用户，通常来说，你会将 LCInstallation 关联到设备的登录用户 LCUser 上作为一个属性，然后就可以通过下列代码查询 InstallationId 的方式来发送消息给特定用户，实现类似私信的功能：
 
 ```java
-AVQuery pushQuery = AVInstallation.getQuery();
+LCQuery pushQuery = LCInstallation.getQuery();
 // 假设 THE_INSTALLATION_ID 是保存在用户表里的 installationId，
 // 可以在应用启动的时候获取并保存到用户表
 pushQuery.whereEqualTo("installationId", THE_INSTALLATION_ID);
-AVPush.sendMessageInBackground("installationId1112",pushQuery).subscribe(new Observer() {
+LCPush.sendMessageInBackground("installationId1112",pushQuery).subscribe(new Observer() {
     @Override
     public void onSubscribe(Disposable d) {
     }

@@ -67,16 +67,16 @@ _ = LCSMSClient.requestShortMessage(
 }
 ```
 ```java
-AVSMSOption option = new AVSMSOption();
+LCSMSOption option = new LCSMSOption();
 option.setTemplateName("Register_Notice"); // 控制台配置好的模板名称
 option.setSignatureName("LeanCloud");      // 控制台配置好的短信签名
 // 往 18200008888 这个手机号码发送短信，使用预先配置的模板和签名
-AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<LCNull>() {
     @Override
     public void onSubscribe(Disposable disposable) {
     }
     @Override
-    public void onNext(AVNull avNull) {
+    public void onNext(LCNull avNull) {
         Log.d("TAG","Result: Successfully sent text message.");
     }
     @Override
@@ -204,16 +204,16 @@ try {
   }
   ```
   ```java
-  AVSMSOption option = new AVSMSOption();
+  LCSMSOption option = new LCSMSOption();
   option.setTtl(10);
   option.setApplicationName("应用名称");
   option.setOperation("某种操作");
-  AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+  LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<LCNull>() {
       @Override
       public void onSubscribe(Disposable disposable) {
       }
       @Override
-      public void onNext(AVNull avNull) {
+      public void onNext(LCNull avNull) {
           Log.d("TAG","Result: Successfully sent verification code.");
       }
       @Override
@@ -296,12 +296,12 @@ try {
   }
   ```
   ```java 
-  AVSMS.verifySMSCodeInBackground("123456","18200008888").subscribe(new Observer<AVNull>() {
+  LCSMS.verifySMSCodeInBackground("123456","18200008888").subscribe(new Observer<LCNull>() {
       @Override
       public void onSubscribe(Disposable d) {
       }
       @Override
-      public void onNext(AVNull avNull) {
+      public void onNext(LCNull avNull) {
           Log.d("TAG","Result: Successfully verified the number.");
       }
       @Override
@@ -373,14 +373,14 @@ _ = LCSMSClient.requestVoiceVerificationCode(mobilePhoneNumber: "18200008888") {
 }
 ```
 ```java
-AVSMSOption option = new AVSMSOption();
-option.setType(AVSMS.TYPE.VOICE_SMS);
-AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+LCSMSOption option = new LCSMSOption();
+option.setType(LCSMS.TYPE.VOICE_SMS);
+LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<LCNull>() {
     @Override
     public void onSubscribe(Disposable disposable) {
     }
     @Override
-    public void onNext(AVNull avNull) {
+    public void onNext(LCNull avNull) {
         Log.d("TAG","Result: Successfully made a call.");
     }
     @Override
@@ -445,12 +445,12 @@ _ = LCSMSClient.verifyMobilePhoneNumber("18200008888", verificationCode: "123456
 }
 ```
 ```java
-AVSMS.verifySMSCodeInBackground("123456","18200008888").subscribe(new Observer<AVNull>() {
+LCSMS.verifySMSCodeInBackground("123456","18200008888").subscribe(new Observer<LCNull>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVNull avNull) {
+    public void onNext(LCNull avNull) {
         Log.d("TAG","Result: Successfully verified the number.");
     }
     @Override
@@ -579,18 +579,18 @@ _ = LCSMSClient.requestShortMessage(
 }
 ```
 ```java
-AVSMSOption option = new AVSMSOption();
+LCSMSOption option = new LCSMSOption();
 option.setTemplateName("Order_Notice");
 option.setSignatureName("sign_BuyBuyBuy");
 Map<String, Object> parameters = new HashMap<String, Object>();
 parameters.put("order_id", "7623432424540"); // 使用实际的值来替换模板中的变量
 option.setEnvMap(parameters);
-AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<LCNull>() {
     @Override
     public void onSubscribe(Disposable disposable) {
     }
     @Override
-    public void onNext(AVNull avNull) {
+    public void onNext(LCNull avNull) {
         Log.d("TAG","Result: Successfully sent text message.");
     }
     @Override
@@ -921,15 +921,15 @@ LCCaptchaClient.requestCaptcha(width: 100, height: 50) { (result) in
 }
 ```
 ```java
-AVCaptchaOption option = new AVCaptchaOption();
+LCCaptchaOption option = new LCCaptchaOption();
 option.setWidth(85);
 option.setHeight(30);
-AVCaptcha.requestCaptchaInBackground(option).subscribe(new Observer<AVCaptchaDigest>() {
+LCCaptcha.requestCaptchaInBackground(option).subscribe(new Observer<LCCaptchaDigest>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVCaptchaDigest avCaptchaDigest) {
+    public void onNext(LCCaptchaDigest avCaptchaDigest) {
         Log.d("TAG","图片的 URL 是：" + avCaptchaDigest.getCaptchaUrl());
     }
     @Override
@@ -999,12 +999,12 @@ LCCaptchaClient.verifyCaptcha(code: "code", captchaToken: "captcha.token") { (re
 }
 ```
 ```java
-AVCaptcha.verifyCaptchaCodeInBackground("123456",avCaptchaDigest).subscribe(new Observer<AVCaptchaValidateResult>() {
+LCCaptcha.verifyCaptchaCodeInBackground("123456",avCaptchaDigest).subscribe(new Observer<LCCaptchaValidateResult>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVCaptchaValidateResult avCaptchaValidateResult) {
+    public void onNext(LCCaptchaValidateResult avCaptchaValidateResult) {
         Log.d("TAG","Result: Verification completed.");
     }
     @Override
@@ -1077,16 +1077,16 @@ _ = LCSMSClient.requestShortMessage(
 }
 ```
 ```java
-AVSMSOption option = new AVSMSOption();
+LCSMSOption option = new LCSMSOption();
 option.setTemplateName("Order_Notice");
 option.setSignatureName("sign_BuyBuyBuy");
 option.setCaptchaValidateToken("validateToken");
-AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<LCNull>() {
     @Override
     public void onSubscribe(Disposable disposable) {
     }
     @Override
-    public void onNext(AVNull avNull) {
+    public void onNext(LCNull avNull) {
         Log.d("TAG","Result: Successfully sent verification code.");
     }
     @Override
