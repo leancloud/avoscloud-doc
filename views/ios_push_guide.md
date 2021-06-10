@@ -100,7 +100,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 }
 ```
 ```objc
-#import <LCCloud/LCCloud.h>
+#import <LeanCloudObjc/Foundation.h>
 #import <UserNotifications/UserNotifications.h>
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
