@@ -240,7 +240,7 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
    params.put("watch_ids",watchIds);
 
    try{
-     Object result =  AVCloud.callFunction("sign",params);
+     Object result =  LCCloud.callFunction("sign",params);
      if(result instanceof Map){
        Map<String,Object> serverSignature = (Map<String,Object>) result;
        Signature signature = new Signature();
@@ -265,7 +265,7 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
    params.put("action",action);
 
    try{
-     Object result = AVCloud.callFunction("sign2",params);
+     Object result = LCCloud.callFunction("sign2",params);
      if(result instanceof Map){
         Map<String,Object> serverSignature = (Map<String,Object>) result;
         Signature signature = new Signature();
@@ -274,7 +274,7 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
         signature.setNonce((String)serverSignature.get("nonce"));
         return signature;
      }
-   }catch(AVException e){
+   }catch(LCException e){
      throw (SignatureFactory.SignatureException) e;
    }
    return null;
@@ -290,7 +290,7 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
     params.put("action",action);
 
     try{
-      Object result = AVCloud.callFunction("sign3",params);
+      Object result = LCCloud.callFunction("sign3",params);
       if(result instanceof Map){
          Map<String,Object> serverSignature = (Map<String,Object>) result;
          Signature signature = new Signature();
@@ -299,7 +299,7 @@ public class KeepAliveSignatureFactory implements SignatureFactory {
          signature.setNonce((String)serverSignature.get("nonce"));
          return signature;
       }
-    }catch(AVException e){
+    }catch(LCException e){
       throw (SignatureFactory.SignatureException) e;
     }
     return null;
