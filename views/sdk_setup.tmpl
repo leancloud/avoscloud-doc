@@ -19,9 +19,12 @@
 Java Unified SDK 根据底层依赖的 JSON 解析库的不同，有两个不同分支：
 
 - 6.x 分支依赖 [fastjson](https://github.com/alibaba/fastjson) 来进行 JSON 解析；
-- 7.x 分支使用 [Gson](https://github.com/google/gson) 来进行 JSON 解析（最新版本）；
+- 7.0 以后版本使用 [Gson](https://github.com/google/gson) 来进行 JSON 解析（最新版本）；
 
-两个版本的对外接口完全一致，开发者可以根据自己的需求选择合适的版本。但是考虑到平台兼容性和稳定性，我们推荐大家使用 7.x 的分支来进行开发。下面的流程都是基于 7.x 版本的 SDK 书写的，切换到 7.x 的改动非常小，原来使用 6.x 版本的开发者可以参考[Java Unified SDK 迁移指南](java_unified_sdk_migration.html)中「从 6.x 迁移到 7.x 版本的操作要点」一节的说明进行升级。
+两个版本的对外接口完全一致，开发者可以根据自己的需求选择合适的版本。但是考虑到平台兼容性和稳定性，我们推荐大家使用 7.x 以后的版本来进行开发。切换到 7.x 的改动非常小，原来使用 6.x 版本的开发者可以参考[Java Unified SDK 迁移指南](java_unified_sdk_migration.html)中「从 6.x 迁移到 7.x 版本的操作要点」一节的说明进行升级。
+
+> 从 2021 年 6 月开始，我们推出了 8.x 版本，它是在 7.x 版本基础上改变了公开类的前缀（`AV` -> `LC`）而来的，从 7.x 版本升级到 8.x 版本的方法可以参考文档：[Migration to 8.x 指南](https://github.com/leancloud/java-unified-sdk#migration-to-8x)。
+> 下面的流程都是基于 8.x 版本 Java Unified SDK 书写.
 
 ## 平台与 SDK 对应关系
 Java SDK 主要包含以下几个 library，其层次结构以及平台对应关系如下：
@@ -1336,7 +1339,7 @@ client := leancloud.NewClient(&leancloud.ClientOptions{
 如果是一个 Android 项目，则向 `Application` 类的 `onCreate` 方法添加：
 
 ```java
-import cn.leancloud.AVOSCloud;
+import cn.leancloud.LeanCloud;
 
 public class MyLeanCloudApp extends Application {
     @Override
@@ -1344,8 +1347,8 @@ public class MyLeanCloudApp extends Application {
         super.onCreate();
 
         // 提供 this、App ID、App Key、Server Host 作为参数
-        // 注意这里千万不要调用 cn.leancloud.core.AVOSCloud 的 initialize 方法，否则会出现 NetworkOnMainThread 等错误。
-        AVOSCloud.initialize(this, "{{appid}}", "{{appkey}}", "https://please-replace-with-your-customized.domain.com");
+        // 注意这里千万不要调用 cn.leancloud.core.LeanCloud 的 initialize 方法，否则会出现 NetworkOnMainThread 等错误。
+        LeanCloud.initialize(this, "{{appid}}", "{{appkey}}", "https://please-replace-with-your-customized.domain.com");
     }
 }
 ```
@@ -1380,10 +1383,10 @@ public class MyLeanCloudApp extends Application {
 
 ```
 
-> 注意：对于**只使用 LeanCloud 即时通讯服务**，而**不使用推送服务**的应用来说，在初始化的时候设置 AVIMOptions#disableAutoLogin4Push 选项，可以加快即时通讯用户登录的过程。设置方法如下：
+> 注意：对于**只使用 LeanCloud 即时通讯服务**，而**不使用推送服务**的应用来说，在初始化的时候设置 LCIMOptions#disableAutoLogin4Push 选项，可以加快即时通讯用户登录的过程。设置方法如下：
 ```
-// 在 AVOSCloud#initialize 之后调用，禁止自动发送推送服务的 login 请求。
-AVIMOptions.getGlobalOptions().setDisableAutoLogin4Push(true);
+// 在 LeanCloud#initialize 之后调用，禁止自动发送推送服务的 login 请求。
+LCIMOptions.getGlobalOptions().setDisableAutoLogin4Push(true);
 ```
 
 #### 更安全的客户端初始化方法
@@ -1400,9 +1403,9 @@ AVIMOptions.getGlobalOptions().setDisableAutoLogin4Push(true);
 如果是一个普通 Java 项目，则在代码开头添加：
 
 ```java
-import cn.leancloud.core.AVOSCloud;
+import cn.leancloud.core.LeanCloud;
 
-AVOSCloud.initialize("{{appid}}", "{{appkey}}", "https://please-replace-with-your-customized.domain.com");
+LeanCloud.initialize("{{appid}}", "{{appkey}}", "https://please-replace-with-your-customized.domain.com");
 ```
 
 注意，云引擎内部访问 API 是通过内网，所以不需要也不应该配置 API 自定义域名（`serverUrl`）。
@@ -1412,9 +1415,9 @@ AVOSCloud.initialize("{{appid}}", "{{appkey}}", "https://please-replace-with-you
 LeanCloud realtime-core library 也支持在纯 Java Application 中使用，但是与 Android 的调用方式有细微差异，Java Application 中需要开发者显式建立与 LeanCloud 即时通讯云端的长链接（Android 平台是通过 PushService 自动建立的）。建立长链接的方法如下：
 
 ```java
-AVConnectionManager.getInstance().startConnection(new AVCallback() {
+LCConnectionManager.getInstance().startConnection(new LCCallback() {
   @Override
-  protected void internalDone0(Object o, AVException e) {
+  protected void internalDone0(Object o, LCException e) {
     if (e == null) {
       System.out.println("成功建立 WebSocket 链接");
     } else {
@@ -1553,8 +1556,8 @@ import 'package:leancloud_official_plugin/leancloud_plugin.dart';
 
 首先向 Application 类的 onCreate 方法添加：
 ```java
-import cn.leancloud.AVOSCloud;
-import cn.leancloud.AVLogger;
+import cn.leancloud.LeanCloud;
+import cn.leancloud.LCogger;
 import io.flutter.app.FlutterApplication;
 
 public class MyLeanCloudApp extends FlutterApplication {
@@ -1562,12 +1565,12 @@ public class MyLeanCloudApp extends FlutterApplication {
     public void onCreate() {
         super.onCreate();
         //开启未读消息数更新通知
-        AVIMOptions.getGlobalOptions().setUnreadNotificationEnabled(true);
+        LCIMOptions.getGlobalOptions().setUnreadNotificationEnabled(true);
         //开启调试日志
-        AVOSCloud.setLogLevel(AVLogger.Level.DEBUG);
+        LeanCloud.setLogLevel(LCLogger.Level.DEBUG);
         // 提供 this、App ID、App Key、Server Host 作为参数
         // 请将 xxx.example.com 替换为你的应用绑定的 API 域名
-        AVOSCloud.initialize(this, "{{appid}}", "{{appkey}}", "https://please-replace-with-your-customized.domain.com");
+        LeanCloud.initialize(this, "{{appid}}", "{{appkey}}", "https://please-replace-with-your-customized.domain.com");
     }
 }
 ```
@@ -1588,7 +1591,7 @@ public class MyLeanCloudApp extends FlutterApplication {
   <!-- 即时通讯和推送 START -->
   <!-- 即时通讯和推送都需要 PushService -->
   <service android:name="cn.leancloud.push.PushService"/>
-  <receiver android:name="cn.leancloud.push.AVBroadcastReceiver">
+  <receiver android:name="cn.leancloud.push.LCBroadcastReceiver">
     <intent-filter>
       <action android:name="android.intent.action.BOOT_COMPLETED"/>
       <action android:name="android.intent.action.USER_PRESENT"/>
@@ -1741,8 +1744,8 @@ LEANCLOUD_DEBUG=true lean up
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-// 在 AVOSCloud.initialize() 之前调用
-AVOSCloud.setLogLevel(AVLogger.Level.DEBUG);
+// 在 LeanCloud.initialize() 之前调用
+LeanCloud.setLogLevel(LCLogger.Level.DEBUG);
 ```
 
 详细调试流程可以参考[Android SDK 调试指南][android-debug-guide]。

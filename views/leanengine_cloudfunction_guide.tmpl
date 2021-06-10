@@ -236,15 +236,15 @@ Cloud::start();
 ```java
 @EngineFunction("averageStars")
 public static float getAverageStars(@EngineFunctionParam("movie") String movie)
-    throws AVException {
-  AVQuery<AVObject> query = new AVQuery("Review");
+    throws LCException {
+  LCQuery<LCObject> query = new LCQuery("Review");
   query.whereEqualTo("movie", movie);
-  List<AVObject> reviews = query.find();
+  List<LCObject> reviews = query.find();
   int sum = 0;
   if (reviews == null && reviews.isEmpty()) {
     return 0;
   }
-  for (AVObject review : reviews) {
+  for (LCObject review : reviews) {
     sum += review.getInt("star");
   }
   return sum / reviews.size();
@@ -510,7 +510,7 @@ try {
 
 ### 云引擎调用云函数
 
-在云引擎中可以使用 `{% if platformName === "Go" %}leancloud.Run{% endif %}{% if platformName === "Node.js" %}AV.Cloud.run{% endif %}{% if platformName === "Python" %}leancloud.cloud.run{% endif %}{% if platformName === "PHP" %}LeanCloudEngineCloud::run{% endif %}{% if platformName === "Java" %}AVCloud.callFunctionInBackground{% endif %}{% if platformName === ".NET" %}AVCloud.CallFunctionAsync{% endif %}` 调用 `{% if platformName === "Go" %}leancloud.Define{% endif %}{% if platformName === "Node.js" %}AV.Cloud.define{% endif %}{% if platformName === "Python" %}engine.define{% endif %}{% if platformName === "PHP" %}LeanCloudEngineCloud::define{% endif %}{% if platformName === "Java" %}@EngineFunction{% endif %}{% if platformName === ".NET" %}EngineFunctionAttribute{% endif %}` 定义的云函数：
+在云引擎中可以使用 `{% if platformName === "Go" %}leancloud.Run{% endif %}{% if platformName === "Node.js" %}AV.Cloud.run{% endif %}{% if platformName === "Python" %}leancloud.cloud.run{% endif %}{% if platformName === "PHP" %}LeanCloudEngineCloud::run{% endif %}{% if platformName === "Java" %}LCCloud.callFunctionInBackground{% endif %}{% if platformName === ".NET" %}AVCloud.CallFunctionAsync{% endif %}` 调用 `{% if platformName === "Go" %}leancloud.Define{% endif %}{% if platformName === "Node.js" %}AV.Cloud.define{% endif %}{% if platformName === "Python" %}engine.define{% endif %}{% if platformName === "PHP" %}LeanCloudEngineCloud::define{% endif %}{% if platformName === "Java" %}@EngineFunction{% endif %}{% if platformName === ".NET" %}EngineFunctionAttribute{% endif %}` 定义的云函数：
 
 {% if platformName === "Node.js" %}
 ```js
@@ -576,7 +576,7 @@ try {
 Map<String, Object> params = new HashMap<String, Object>();
 params.put("movie", "夏洛特烦恼");
 try {
-  float result = AVCloud.callFunctionInBackground("averageStars", params).blockingFirst();
+  float result = LCCloud.callFunctionInBackground("averageStars", params).blockingFirst();
 } catch (AVException e) {
   e.printStackTrace();
 }
@@ -611,7 +611,7 @@ if err != nil {
 {% endif %}
 ### RPC 调用云函数
 
-RPC 调用云函数是指：云引擎会在这种调用方式下自动为 HTTP Response Body 做序列化，而 SDK 调用之后拿回的返回结果就是一个完整的 `{%if platformName === "Go" %}Object{% endif %}{% if platformName === "Node.js" %}AV.Object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}AVObject{% endif %}{% if platformName === ".NET" %}AVObject{% endif %}` 或包含这样的对象的数据结构：
+RPC 调用云函数是指：云引擎会在这种调用方式下自动为 HTTP Response Body 做序列化，而 SDK 调用之后拿回的返回结果就是一个完整的 `{%if platformName === "Go" %}Object{% endif %}{% if platformName === "Node.js" %}AV.Object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}LCObject{% endif %}{% if platformName === ".NET" %}AVObject{% endif %}` 或包含这样的对象的数据结构：
 
 ```objc
 NSDictionary *dicParameters = [NSDictionary dictionaryWithObject:@"夏洛特烦恼"
@@ -768,14 +768,14 @@ Cloud::define("errorCode", function($params, $user) {
 {% if platformName === "Java" %}
 ```java
 @EngineFunction("errorCode")
-public static AVUser getCurrentUser() throws Exception {
+public static LCUser getCurrentUser() throws Exception {
   String sessionToken = EngineRequestContext.getSessionToken();
-  AVUser u = null;
+  LCUser u = null;
   if (!StringUtil.isEmpty(sessionToken)) {
-    u = AVUser.becomeWithSessionToken(sessionToken);
+    u = LCUser.becomeWithSessionToken(sessionToken);
   }
   if (u == null) {
-    throw new AVException(211, "Could not find the user.");
+    throw new LCException(211, "Could not find the user.");
   } else {
     return u;
   }
@@ -836,7 +836,7 @@ Cloud::define("customErrorCode", function($params, $user) {
 ```java
 @EngineFunction()
 public static void customErrorCode() throws Exception {
-  throw new AVException(123, "自定义错误信息。");
+  throw new LCException(123, "自定义错误信息。");
 }
 ```
 {% endif %}
@@ -1080,7 +1080,7 @@ Cloud::beforeSave("Review", function($review, $user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "Review", type = EngineHookType.beforeSave)
-public static AVObject reviewBeforeSaveHook(AVObject review) throws Exception {
+public static LCObject reviewBeforeSaveHook(LCObject review) throws Exception {
   if (StringUtil.isEmpty(review.getString("comment"))) {
     throw new Exception("No comment provided!");
   } else if (review.getString("comment").length() > 140) {
@@ -1168,7 +1168,7 @@ Cloud::afterSave("Comment", function($comment, $user) {
 ```java
 @EngineHook(className = "Review", type = EngineHookType.afterSave)
 public static void reviewAfterSaveHook(AVObject review) throws Exception {
-  AVObject post = review.getAVObject("post");
+  LCObject post = review.getLCObject("post");
   post.fetch();
   post.increment("comments");
   post.save();
@@ -1247,7 +1247,7 @@ Cloud::afterSave("_User", function($userObj, $currentUser) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "_User", type = EngineHookType.afterSave)
-public static void userAfterSaveHook(AVUser user) throws Exception {
+public static void userAfterSaveHook(LCUser user) throws Exception {
   user.put("from", "LeanCloud");
   user.save();
 }
@@ -1315,7 +1315,7 @@ Cloud::beforeUpdate("Review", function($review, $user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "Review", type = EngineHookType.beforeUpdate)
-public static AVObject reviewBeforeUpdateHook(AVObject review) throws Exception {
+public static LCObject reviewBeforeUpdateHook(LCObject review) throws Exception {
   List<String> updateKeys = EngineRequestContext.getUpdateKeys();
   for (String key : updateKeys) {
     // 如果 comment 字段被修改了，检查该字段的长度
@@ -1411,7 +1411,7 @@ Cloud::afterUpdate("Review", function($review, $user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "Review", type = EngineHookType.afterUpdate)
-public static void reviewAfterUpdateHook(AVObject review) throws Exception {
+public static void reviewAfterUpdateHook(LCObject review) throws Exception {
   List<String> updateKeys = EngineRequestContext.getUpdateKeys();
   for (String key : updateKeys) {
     if ("comment".equals(key) && review.getString("comment").length()<5) {
@@ -1535,7 +1535,7 @@ Cloud::afterUpdate("Post", function($post, $user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className="Post", type = EngineHookType.afterUpdate)
-public static void afterUpdatePost(AVObject post) throws AVException {
+public static void afterUpdatePost(LCObject post) throws AVException {
   // 直接修改并保存对象不会再次触发 afterUpdate Hook 函数
   post.put("foo", "bar");
   post.save();
@@ -1546,7 +1546,7 @@ public static void afterUpdatePost(AVObject post) throws AVException {
   post.put("foo", "bar");
 
   // 如果是其他方式构建对象，则需要在新构建的对象上调用 disableAfterHook 来确保不会再次触发 Hook 函数
-  post = AVObject.createWithoutData("Post", post.getObjectId());
+  post = LCObject.createWithoutData("Post", post.getObjectId());
   post.disableAfterHook();
   post.save();
 }
@@ -1629,8 +1629,8 @@ Cloud::beforeDelete("Album", function($album, $user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "Album", type = EngineHookType.beforeDelete)
-public static AVObject albumBeforeDeleteHook(AVObject album) throws Exception {
-  AVQuery query = new AVQuery("Photo");
+public static LCObject albumBeforeDeleteHook(LCObject album) throws Exception {
+  LCQuery query = new LCQuery("Photo");
   query.whereEqualTo("album", album);
   int count = query.count();
   if (count > 0) {
