@@ -443,3 +443,32 @@ AfterUpdate 是在云引擎内执行的，执行 afetrUpdate 不算 API 请求�
 
 同样，云函数不存在重复定义的前提下，如果您需要在某个云引擎实例内调用其他分组上的云函数，那么传入 `remote: true` 即可，详见[文档](leanengine_cloudfunction_guide-node.html#云引擎调用云函数
 )。
+
+## 云引擎下如何通过 JavaScript SDK 创建推送？
+
+请参考 SDK 的 API 文档 [AV.Push](https://leancloud.github.io/javascript-sdk/docs/AV.Push.html)。
+这里举两个简单的例子：
+
+推送给所有订阅了 `public` 频道的设备：
+
+```js
+AV.Push.send({
+  channels: [ 'public' ],
+  data: {
+    alert: 'public message'
+  }
+});
+```
+
+如果希望按照某个 `_Installation` 表的查询条件来推送，例如推送给某个 `installationId` 的 Android 设备，可以传入一个 `AV.Query` 对象作为 `where` 条件：
+
+```js
+const query = new AV.Query('_Installation');
+query.equalTo('installationId', installationId);
+AV.Push.send({
+  where: query,
+  data: {
+    alert: 'Public message'
+  }
+});
+```

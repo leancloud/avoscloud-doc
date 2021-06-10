@@ -11991,40 +11991,6 @@ assert(student.save().isSuccess)
 {% endif %}
 
 {% if platform_name === "JavaScript" %}
-## Push 通知
-
-通过 JavaScript SDK 也可以向移动设备推送消息。
-
-一个简单例子推送给所有订阅了 `public` 频道的设备：
-
-```js
-AV.Push.send({
-  channels: [ 'public' ],
-  data: {
-    alert: 'public message'
-  }
-});
-```
-
-这就向订阅了 `public` 频道的设备发送了一条内容为 `public message` 的消息。
-
-如果希望按照某个 `_Installation` 表的查询条件来推送，例如推送给某个 `installationId` 的 Android 设备，可以传入一个 `AV.Query` 对象作为 `where` 条件：
-
-```js
-const query = new AV.Query('_Installation');
-query.equalTo('installationId', installationId);
-AV.Push.send({
-  where: query,
-  data: {
-    alert: 'Public message'
-  }
-});
-```
-
-`AV.Push` 的更多使用信息参考 API 文档 [AV.Push](https://leancloud.github.io/javascript-sdk/docs/AV.Push.html)。更多推送的查询条件和格式，请查阅 [消息推送指南](push_guide.html)。
-{% endif %}
-
-{% if platform_name === "JavaScript" %}
 ## WebView
 
 JS SDK 支持在各种 WebView 中使用，包括 PhoneGap、Cordova、微信 WebView 等。
