@@ -112,7 +112,7 @@ implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
 {% macro android_key_init(appid="appid") %}
 ```java
-import cn.leancloud.AVOSCloud;
+import cn.leancloud.LeanCloud;
 
 public class MyLeanCloudApp extends Application {
     @Override
@@ -120,7 +120,7 @@ public class MyLeanCloudApp extends Application {
         super.onCreate();
 
         // 提供 this、App ID、绑定的自定义 API 域名作为参数
-        AVOSCloud.initializeSecurely(this, "{{appid}}", "https://please-replace-with-your-customized.domain.com");
+        LeanCloud.initializeSecurely(this, "{{appid}}", "https://please-replace-with-your-customized.domain.com");
     }
 }
 ```

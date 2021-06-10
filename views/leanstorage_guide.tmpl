@@ -972,7 +972,7 @@ $createdAt = $todo->getCreatedAt();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-LCQuery<AVObject> query = new LCQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.getInBackground("582570f38ac247004f39c24b").subscribe(new Observer<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
     public void onNext(LCObject todo) {
@@ -1546,7 +1546,7 @@ final int amount = -100;
 account.increment("balance", amount);
 // 设置条件
 LCSaveOption option = new LCSaveOption();
-option.query(new AVQuery<>("Account").whereGreaterThanOrEqualTo("balance", -amount));
+option.query(new LCQuery<>("Account").whereGreaterThanOrEqualTo("balance", -amount));
 // 操作结束后，返回最新数据。
 // 如果是新对象，则所有属性都会被返回，
 // 否则只有更新的属性会被返回。
@@ -2321,7 +2321,7 @@ LeanObject::saveAll($todos);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-LCQuery<AVObject> query = new LCQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.findInBackground().subscribe(new Observer<List<LCObject>>() {
     public void onSubscribe(Disposable disposable) {}
     public void onNext(List<LCObject> todos) {
@@ -2840,7 +2840,7 @@ const todo = db.decode(json);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-LCObject deserializedObject = LCObject.parseAVObject(serializedString);
+LCObject deserializedObject = LCObject.parseLCObject(serializedString);
 deserializedObject.save(); // 保存到服务端
 ```
 {% endif %}
@@ -2938,7 +2938,7 @@ $students = $query->find();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-LCQuery<AVObject> query = new LCQuery<>("Student");
+LCQuery<LCObject> query = new LCQuery<>("Student");
 query.whereEqualTo("lastName", "Smith");
 query.findInBackground().subscribe(new Observer<List<LCObject>>() {
     public void onSubscribe(Disposable disposable) {}
@@ -3339,7 +3339,7 @@ $todo = $query->first();
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-LCQuery<AVObject> query = new LCQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.whereEqualTo("priority", 2);
 query.getFirstInBackground().subscribe(new Observer<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
@@ -3480,7 +3480,7 @@ $query->skip(20);
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-LCQuery<AVObject> query = new LCQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.whereEqualTo("priority", 2);
 query.limit(10);
 query.skip(20);
@@ -3822,7 +3822,7 @@ $notes = $todo->get("notes"); // null
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-LCQuery<AVObject> query = new LCQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.selectKeys(Arrays.asList("title", "content"));
 query.getFirstInBackground().subscribe(new Observer<LCObject>() {
     public void onSubscribe(Disposable disposable) {}
@@ -3931,7 +3931,7 @@ $query->startsWith("title", "lunch");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-LCQuery<AVObject> query = new LCQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 // 相当于 SQL 中的 title LIKE 'lunch%'
 query.whereStartsWith("title", "lunch");
 ```
@@ -3997,7 +3997,7 @@ $query->contains("title", "lunch");
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
-LCQuery<AVObject> query = new LCQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 // 相当于 SQL 中的 title LIKE '%lunch%'
 query.whereContains("title", "lunch");
 ```
@@ -6760,7 +6760,7 @@ query.include("attachments");
 query.findInBackground().subscribe(new Observer<List<LCObject>>() {
     public void onSubscribe(Disposable disposable) {}
     public void onNext(List<LCObject> todos) {
-        for (AVObject todo : todos) {
+        for (LCObject todo : todos) {
             // 获取每个 todo 的 attachments 数组
             // {# TODO #}
         }
@@ -7187,7 +7187,7 @@ avFile.getDataStreamInBackground().subscribe(new Observer<InputStream>() {
 });
 ```
 
-除了使用 SDK 提供的方法外，也可以获取 AVFile 的 url 后调用标准库和第三方库下载文件。
+除了使用 SDK 提供的方法外，也可以获取 LCFile 的 url 后调用标准库和第三方库下载文件。
 {% endif %}
 
 ### 删除文件
@@ -7875,7 +7875,7 @@ user.setPassword("cat!@#123");
 user.setEmail("tom@leancloud.rocks");
 user.setMobilePhoneNumber("+8618200008888");
 
-// 设置其他属性的方法跟 AVObject 一样
+// 设置其他属性的方法跟 LCObject 一样
 user.put("gender", "secret");
 
 user.signUpInBackground().subscribe(new Observer<LCUser>() {
@@ -8903,11 +8903,11 @@ LCUser.requestSMSCodeForUpdatingPhoneNumberInBackground("+8618200008888").subscr
     public void onComplete() {}
 });
 
-AVUser.verifySMSCodeForUpdatingPhoneNumberInBackground("123456", "+8618200008888").subscribe(new Observer<LCNull>() {
+LCUser.verifySMSCodeForUpdatingPhoneNumberInBackground("123456", "+8618200008888").subscribe(new Observer<LCNull>() {
     public void onSubscribe(Disposable disposable) {}
     public void onNext(LCNull null) {
         // 更新本地数据
-        AVUser currentUser = AVUser.getCurrentUser();
+        LCUser currentUser = LCUser.getCurrentUser();
         currentUser.setMobilePhoneNumber("+8618200008888");
     }
     public void onError(Throwable throwable) {

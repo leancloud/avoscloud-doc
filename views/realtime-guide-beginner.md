@@ -830,7 +830,7 @@ final LCIMConversation conv = client.getConversation("CONVERSATION_ID");
 // 邀请 Mary 加入对话
 conv.addMembers(Arrays.asList("Mary"), new LCIMOperationPartiallySucceededCallback() {
     @Override
-    public void done(LCIMException e, List<String> successfulClientIds, List<AVIMOperationFailure> failures) {
+    public void done(LCIMException e, List<String> successfulClientIds, List<LCIMOperationFailure> failures) {
       // 添加成功
     }
 });
@@ -916,7 +916,7 @@ public class CustomConversationEventHandler extends LCIMConversationEventHandler
     public void onMemberJoined(LCIMClient client, LCIMConversation conversation,
         List<String> members, String invitedBy) {
         // 手机屏幕上会显示一小段文字：Mary 加入到 551260efe4b01608686c3e0f；操作者为：Tom
-        Toast.makeText(AVOSCloud.applicationContext,
+        Toast.makeText(LeanCloud.applicationContext,
           members + " 加入到 " + conversation.getConversationId() + "；操作者为："
               + invitedBy, Toast.LENGTH_SHORT).show();
     }
@@ -1133,7 +1133,7 @@ do {
 ```java
 conv.kickMembers(Arrays.asList("Mary"), new LCIMOperationPartiallySucceededCallback() {
     @Override
-    public void done(LCIMException e, List<String> successfulClientIds, List<AVIMOperationFailure> failures) {
+    public void done(LCIMException e, List<String> successfulClientIds, List<LCIMOperationFailure> failures) {
     }
 });
 ```
@@ -1221,7 +1221,7 @@ public class CustomConversationEventHandler extends LCIMConversationEventHandler
   @Override
   public abstract void onMemberLeft(LCIMClient client,
     LCIMConversation conversation, List<String> members, String kickedBy) {
-    Toast.makeText(AVOSCloud.applicationContext,
+    Toast.makeText(LeanCloud.applicationContext,
       members + " 离开对话 " + conversation.getConversationId() + "；操作者为："
           + kickedBy, Toast.LENGTH_SHORT).show();
   }
@@ -1236,7 +1236,7 @@ public class CustomConversationEventHandler extends LCIMConversationEventHandler
   @Override
   public abstract void onKicked(LCIMClient client, LCIMConversation conversation,
     String kickedBy) {
-    Toast.makeText(AVOSCloud.applicationContext,
+    Toast.makeText(LeanCloud.applicationContext,
       "你已离开对话 " + conversation.getConversationId() + "；操作者为："
           + kickedBy, Toast.LENGTH_SHORT).show();
   }
@@ -1718,7 +1718,7 @@ AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"萌妹子一枚"
 }];
 ```
 ```java
-AVFile file = AVFile.withAbsoluteLocalPath("San_Francisco.png", Environment.getExternalStorageDirectory() + "/San_Francisco.png");
+LCFile file = LCFile.withAbsoluteLocalPath("San_Francisco.png", Environment.getExternalStorageDirectory() + "/San_Francisco.png");
 // 创建一条图像消息
 LCIMImageMessage m = new LCIMImageMessage(file);
 m.setText("发自我的小米手机");
@@ -1800,7 +1800,7 @@ AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"萌妹子一枚"
 }];
 ```
 ```java
-AVFile file = new AVFile("萌妹子","http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif", null);
+LCFile file = new LCFile("萌妹子","http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif", null);
 LCIMImageMessage m = new LCIMImageMessage(file);
 m.setText("萌妹子一枚");
 // 创建一条图像消息
@@ -1993,7 +1993,7 @@ if (!error) {
 }
 ```
 ```java
-AVFile file = AVFile.withAbsoluteLocalPath("忐忑.mp3",localFilePath);
+LCFile file = LCFile.withAbsoluteLocalPath("忐忑.mp3",localFilePath);
 LCIMAudioMessage m = new LCIMAudioMessage(file);
 m.setText("听听人类的神曲");
 // 创建一条音频消息
@@ -2918,7 +2918,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
  * @param attr      被更新的属性
  * @param operator  该操作的发起者 ID
  */
-public void onInfoChanged(AVIMClient client, AVIMConversation conversation, JSONObject attr,
+public void onInfoChanged(LCIMClient client, LCIMConversation conversation, JSONObject attr,
                           String operator)
 ```
 ```cs
@@ -3708,14 +3708,14 @@ query.cachePolicy = kAVCachePolicyNetworkElseCache;
 
 ```java
 // 设置 LCIMConversationsQuery 的查询策略
-public void setQueryPolicy(AVQuery.CachePolicy policy);
+public void setQueryPolicy(LCQuery.CachePolicy policy);
 ```
 
 有时你希望先走网络查询，发生网络错误的时候，再从本地查询，可以这样：
 
 ```java
 LCIMConversationsQuery query = client.getConversationsQuery();
-query.setQueryPolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
+query.setQueryPolicy(LCQuery.CachePolicy.NETWORK_ELSE_CACHE);
 query.findInBackground(new LCIMConversationQueryCallback() {
   @Override
   public void done(List<LCIMConversation> conversations, LCIMException e) {

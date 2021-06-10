@@ -19,7 +19,7 @@ Android 的消息推送主要依赖客户端的 PushService 服务。PushService
 
 ## 接入推送服务
 
-要接入推送服务，需要依赖 avoscloud-sdk 和 avoscloud-push 两个 library。首先打开 `app` 目录下的 `build.gradle` 进行如下配置：
+要接入推送服务，需要依赖 realtime-android library。首先打开 `app` 目录下的 `build.gradle` 进行如下配置：
 
 ```
 dependencies {
