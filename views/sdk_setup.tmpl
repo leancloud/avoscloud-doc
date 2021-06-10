@@ -102,12 +102,15 @@ $ pod init
 参考 [GET STARTED](https://cocoapods.org) 文档，在 `Podfile` 文件中的 `target` 里添加以下 pod 依赖：
 
 ```ruby
-pod 'AVOSCloud'           # 数据存储、短信、推送、云引擎等基础服务模块，必选
-pod 'AVOSCloudIM'         # 即时通讯模块，可选
-pod 'AVOSCloudLiveQuery'  # LiveQuery 模块，可选
+pod 'LeanCloudObjc'   # 集成所有服务模块
 ```
 
-> **注意**，`AVOSCloudIM` 依赖了 `AVOSCloud`，`AVOSCloudLiveQuery` 依赖了 `AVOSCloudIM`，所以不同模块的版本号必需保持一致。
+`LeanCloudObjc` 包含多个 Subspecs。如果只需要部分功能，可以按需选择：
+
+```ruby
+pod 'LeanCloudObjc/Foundation'    # 数据存储、短信、推送、云引擎等基础服务模块
+pod 'LeanCloudObjc/Realtime'      # 即时通讯、LiveQuery 模块
+```
 
 最后，在项目根目录下执行下列任意命令，集成最新的 SDK：
 
@@ -454,9 +457,7 @@ $ gradle clean assemble
 
 接着为示例项目连接依赖库，在 **xcodeproj > target > general > frameworks** 添加如下内容：
 
-![「AVOSCloud.framework」，「AVOSCloudIM.framework」和「AVOSCloudLiveQuery.framework。」](images/quick_start/ios/link-binary.png)
-
-> 上图选择了 iOS 平台的 `AVOSCloud`，`AVOSCloudIM` 以及 `AVOSCloudLiveQuery` 三个 framework。请根据实际需要来选择支持的平台以及要使用的模块。
+![「LeanCloudObjc.framework」](images/quick_start/ios/link-binary.png)
 
 这样就集成完毕了。
 {% endif %}
@@ -1198,16 +1199,16 @@ PM> Install-Package LeanCloud.Realtime
 打开 `AppDelegate` 文件，导入基础模块头文件：
 
 ```objc
-#import <AVOSCloud/AVOSCloud.h>
+#import <LeanCloudObjc/Foundation.h>
 ```
 
 
 然后在 `application:didFinishLaunchingWithOptions:` 方法中设置 App ID，App Key 以及服务器地址：
 
 ```objc
-[AVOSCloud setApplicationId:{{appid}}
-                  clientKey:{{appkey}}
-            serverURLString:"https://please-replace-with-your-customized.domain.com"];
+[LCApplication setApplicationId:{{appid}}
+                      clientKey:{{appkey}}
+                serverURLString:"https://please-replace-with-your-customized.domain.com"];
 ```
 
 {{ docs.alert("在使用 SDK 的 API 时，请确保进行了 Application 的 ID、Key 以及 Server URL 的初始化。") }}
@@ -1645,7 +1646,7 @@ import LeanCloud
 {% if platform_name === "Objective-C" %}
 ```objc
 // 在 Application 初始化代码执行之前执行
-[AVOSCloud setAllLogsEnabled:YES];
+[LCApplication setAllLogsEnabled:true];
 ```
 
 详细调试流程可以参考 [Objective-C SDK 调试指南][objc-debug-guide]。
@@ -1796,9 +1797,7 @@ LCLogger.LogDelegate = (LCLogLevel level, string info) => {
 {% if platform_name === "Objective-C" %}
 ```objc
 // 在 Application 初始化代码执行之前执行
-[AVOSCloud setAllLogsEnabled:NO];
-[AVOSCloud setLogLevel:AVLogLevelNone];
-[AVOSCloud setVerbosePolicy:kAVVerboseNone];
+[LCApplication setAllLogsEnabled:false];
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -1842,7 +1841,7 @@ curl "https://{{host}}/1.1/date"
 下面来试着向 LeanCloud 云端保存一条数据，将下面的代码拷贝到 `viewDidLoad` 方法或其它在应用运行时会被调用的方法中：
 
 ```objc
-AVObject *testObject = [AVObject objectWithClassName:@"TestObject"];
+LCObject *testObject = [LCObject objectWithClassName:@"TestObject"];
 [testObject setObject:@"Hello world!" forKey:@"words"];
 [testObject save];
 ```
