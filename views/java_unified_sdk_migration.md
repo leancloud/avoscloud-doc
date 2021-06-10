@@ -5,9 +5,9 @@
 新版本 Java Unified SDK 根据底层依赖的 JSON 解析库的不同，有两个不同分支：
 
 - 6.x 分支依赖 [fastjson](https://github.com/alibaba/fastjson) 来进行 JSON 解析；
-- 7.x 分支使用 [Gson](https://github.com/google/gson) 来进行 JSON 解析；
+- 7.0 以上版本使用 [Gson](https://github.com/google/gson) 来进行 JSON 解析；
 
-两个版本的对外接口完全一致，开发者可以根据自己的需求选择合适的版本（考虑到平台兼容性和稳定性，我们推荐大家使用 7.x 的分支来进行开发）。
+两个版本的对外接口基本一致（从 8.0 开始，公开接口的类名前缀由 `AV` 改为了 `LC`），开发者可以根据自己的需求选择合适的版本（考虑到平台兼容性和稳定性，我们推荐大家使用带 Gson 的分支来进行开发）。
 
 ## 新老版本的差异说明
 
@@ -137,7 +137,7 @@ todo.saveInBackground().subscribe(ObserverBuilder.buildSingleObserver(new SaveCa
 
 ## 从 6.x 迁移到 7.x 版本的操作要点
 
-7.x 分支当前最新的版本是 `7.0.9`，它与 6.x 版本的对外接口完全一致，差异仅仅在于底层依赖的 JSON 解析库不同，所以从 6.x 到 7.x 的迁移是比较简单的。
+7.x 分支当前最新的版本是 `7.2.7`，它与 6.x 版本的对外接口完全一致，差异仅仅在于底层依赖的 JSON 解析库不同，所以从 6.x 到 7.x 的迁移是比较简单的。
 
 ### 三种不同的迁移场景
 
@@ -178,3 +178,7 @@ java.lang.RuntimeException
 ```
 
 按照[这里](https://github.com/google/gson/issues/1641)的解释，可以通过升级 `Android Gradle plugin -> 3.5.3, Gradle -> v5.5` 解决。
+
+## 从 7.x 迁移到 8.x 版本的操作要点
+
+从 8.x 版本开始，我们把公开类名字前缀由 `AV` 改为了 `LC`，同时也删除了一些长期处于 `deprecated` 状态的接口，这将是我们今后会长期维护的版本。开发者升级要做的具体修改点，可以参考 SDK 源码工程文档：[](https://github.com/leancloud/java-unified-sdk#migration-to-8x)。

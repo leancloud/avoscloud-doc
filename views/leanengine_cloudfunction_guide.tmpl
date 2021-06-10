@@ -104,7 +104,7 @@ leancloud.use_production(False) # 调用预备环境
 LeanClient::useProduction(false); // 调用预备环境
 ```
 ```java
-AVCloud.setProductionMode(false); // 调用预备环境
+LCCloud.setProductionMode(false); // 调用预备环境
 ```
 ```dart
 LCCloud.setProduction(false); // 调用预备环境
@@ -430,7 +430,7 @@ Map<String, String> dicParameters = new HashMap<String, String>();
 dicParameters.put("movie", "夏洛特烦恼");
 
 // 调用指定名称的云函数 averageStars，并且传递参数（默认不使用缓存）
-AVCloud.callFunctionInBackground("averageStars", dicParameters).subscribe(new Observer<Object>() {
+LCCloud.callFunctionInBackground("averageStars", dicParameters).subscribe(new Observer<Object>() {
   @Override
   public void onSubscribe(Disposable disposable) {
 
@@ -452,10 +452,10 @@ AVCloud.callFunctionInBackground("averageStars", dicParameters).subscribe(new Ob
   }
 });
 
-// Java SDK 还提供了一个支持缓存的版本，和 AVQuery 一样，开发者在请求的时候，可以指定 CachePolicy 以及缓存的
+// Java SDK 还提供了一个支持缓存的版本，和 LCQuery 一样，开发者在请求的时候，可以指定 CachePolicy 以及缓存的
 // 最长期限，这样可以避免短时间一直直接请求云端服务器。
 // 下面的请求表示优先使用上次缓存的结果，缓存有效期为 30 秒（30000 毫秒）。
-AVCloud.callFunctionWithCacheInBackground("averageStars", dicParameters, AVQuery.CachePolicy.CACHE_ELSE_NETWORK, 30000)
+LCCloud.callFunctionWithCacheInBackground("averageStars", dicParameters, LCQuery.CachePolicy.CACHE_ELSE_NETWORK, 30000)
 .subscribe(new Observer<Object>() {
   @Override
   public void onSubscribe(Disposable disposable) {
@@ -577,7 +577,7 @@ Map<String, Object> params = new HashMap<String, Object>();
 params.put("movie", "夏洛特烦恼");
 try {
   float result = LCCloud.callFunctionInBackground("averageStars", params).blockingFirst();
-} catch (AVException e) {
+} catch (LCException e) {
   e.printStackTrace();
 }
 ```
@@ -664,14 +664,14 @@ cloud.rpc('averageStars', movie='夏洛特烦恼')
 Map<String, Object> dicParameters = new HashMap<>();
 dicParameters.put("movie", "夏洛特烦恼");
 
-AVCloud.callRPCInBackground<AVObject>("averageStars", dicParameters).subscribe(new Observer<AVObject>() {
+LCCloud.callRPCInBackground<LCObject>("averageStars", dicParameters).subscribe(new Observer<LCObject>() {
   @Override
   public void onSubscribe(Disposable disposable) {
 
   }
 
   @Override
-  public void onNext(AVObject avObject) {
+  public void onNext(LCObject avObject) {
     // succeed.
   }
 
@@ -686,18 +686,18 @@ AVCloud.callRPCInBackground<AVObject>("averageStars", dicParameters).subscribe(n
   }
 });
 
-// Java SDK 还提供了一个支持缓存的版本，和 AVQuery 一样，开发者在请求的时候，可以指定 CachePolicy 以及缓存的
+// Java SDK 还提供了一个支持缓存的版本，和 LCQuery 一样，开发者在请求的时候，可以指定 CachePolicy 以及缓存的
 // 最长期限，这样可以避免短时间一直直接请求云端服务器。
 // 下面的请求表示优先使用上次缓存的结果，缓存有效期为 30 秒（30000 毫秒）。
-AVCloud.callRPCWithCacheInBackground<AVObject>("averageStars", dicParameters, AVQuery.CachePolicy.CACHE_ELSE_NETWORK, 30000)
-.subscribe(new Observer<AVObject>() {
+LCCloud.callRPCWithCacheInBackground<LCObject>("averageStars", dicParameters, LCQuery.CachePolicy.CACHE_ELSE_NETWORK, 30000)
+.subscribe(new Observer<LCObject>() {
   @Override
   public void onSubscribe(Disposable disposable) {
 
   }
 
   @Override
-  public void onNext(AVObject avObject) {
+  public void onNext(LCObject avObject) {
     // succeed.
   }
 
@@ -1167,7 +1167,7 @@ Cloud::afterSave("Comment", function($comment, $user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "Review", type = EngineHookType.afterSave)
-public static void reviewAfterSaveHook(AVObject review) throws Exception {
+public static void reviewAfterSaveHook(LCObject review) throws Exception {
   LCObject post = review.getLCObject("post");
   post.fetch();
   post.increment("comments");
@@ -1463,7 +1463,7 @@ leancloud.AfterUpdate("Review", func(req *ClassHookRequest) error {
 不过请注意，以下情况还需要开发者自行处理：
 
 - 对传入的 `{% if platformName === "Go" %}req.Object{% endif %}{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 对象进行 `fetch` 操作。
-- 重新构造传入的 `{% if platformName === "Go" %}req.Object{% endif %}{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 对象，如使用 `{% if platformName === "Node.js" %}AV.Object.createWithoutData(){% endif %}{% if platformName === "Python" %}leancloud.Object.create_without_data(){% endif %}{% if platformName === "PHP" %}LeanObject::create(){% endif %}{% if platformName === "Java" %}AVObject.createWithoutData(String, String){% endif %}{% if platformName === ".NET" %}AVObject.CreateWithoutData(){% endif %}` 方法。
+- 重新构造传入的 `{% if platformName === "Go" %}req.Object{% endif %}{% if platformName === "Node.js" %}request.object{% endif %}{% if platformName === "Python" %}leancloud.Object{% endif %}{% if platformName === "PHP" %}LeanObject{% endif %}{% if platformName === "Java" %}post{% endif %}{% if platformName === ".NET" %}Post{% endif %}` 对象，如使用 `{% if platformName === "Node.js" %}AV.Object.createWithoutData(){% endif %}{% if platformName === "Python" %}leancloud.Object.create_without_data(){% endif %}{% if platformName === "PHP" %}LeanObject::create(){% endif %}{% if platformName === "Java" %}LCObject.createWithoutData(String, String){% endif %}{% if platformName === ".NET" %}AVObject.CreateWithoutData(){% endif %}` 方法。
 
 对于使用上述方式产生的对象，请根据需要自行调用 `{% if platformName === "Node.js" %}object.disableBeforeHook(){% endif %}{% if platformName === "Python" %}leancloud.Object.disable_before_hook(){% endif %}{% if platformName === "PHP" %}LeanObject->disableBeforeHook(){% endif %}{% if platformName === "Java" %}post.disableBeforeHook(){% endif %}{% if platformName === ".NET" %}post.DisableBeforeHook(){% endif %}` 或 `{% if platformName === "Node.js" %}object.disableAfterHook(){% endif %}{% if platformName === "Python" %}leancloud.Object.disable_after_hook(){% endif %}{% if platformName === "PHP" %}LeanObject->disableAfterHook(){% endif %}{% if platformName === "Java" %}post.disableAfterHook(){% endif %}{% if platformName === ".NET" %}post.DisableAfterHook(){% endif %}`：
 
@@ -1535,7 +1535,7 @@ Cloud::afterUpdate("Post", function($post, $user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className="Post", type = EngineHookType.afterUpdate)
-public static void afterUpdatePost(LCObject post) throws AVException {
+public static void afterUpdatePost(LCObject post) throws LCException {
   // 直接修改并保存对象不会再次触发 afterUpdate Hook 函数
   post.put("foo", "bar");
   post.save();
@@ -1728,12 +1728,12 @@ Cloud::afterDelete("Album", function($album, $user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "Album", type = EngineHookType.afterDelete)
-public static void albumAfterDeleteHook(AVObject album) throws Exception {
-  AVQuery query = new AVQuery("Photo");
+public static void albumAfterDeleteHook(LCObject album) throws Exception {
+  LCQuery query = new LCQuery("Photo");
   query.whereEqualTo("album", album);
-  List<AVObject> result = query.find();
+  List<LCObject> result = query.find();
   if (result != null && !result.isEmpty()) {
-    AVObject.deleteAll(result);
+    LCObject.deleteAll(result);
   }
 }
 ```
@@ -1806,12 +1806,12 @@ Cloud::onVerifed("sms", function($user, $meta) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "_User", type = EngineHookType.onVerifiedSMS)
-public static void userOnVerifiedHook(AVUser user) throws Exception {
+public static void userOnVerifiedHook(LCUser user) throws Exception {
   LOGGER.d("用户 " + user.getObjectId() + " 已通过短信验证。");
 }
 
 @EngineHook(className = "_User", type = EngineHookType.onVerifiedEmail)
-public static void userOnVerifiedHook(AVUser user) throws Exception {
+public static void userOnVerifiedHook(LCUser user) throws Exception {
   LOGGER.d("用户 " + user.getObjectId() + " 已通过邮箱验证。");
 }
 ```
@@ -1887,7 +1887,7 @@ Cloud::onLogin(function($user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "_User", type = EngineHookType.onLogin)
-public static AVUser userOnLoginHook(AVUser user) throws Exception {
+public static LCUser userOnLoginHook(LCUser user) throws Exception {
   if ("noLogin".equals(user.getUsername())) {
     throw new Exception("Forbidden");
   } else {
@@ -1984,7 +1984,7 @@ Cloud::onLogin(function($user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "_User", type = EngineHookType.onLogin)
-public static AVUser userOnLoginHook(AVUser user) throws Exception {
+public static LCUser userOnLoginHook(LCUser user) throws Exception {
   JSONObject authData = user.getJSONObject("authData");
   JSONObject examplePlatform = (JSONObject) authData.get("example_platform");
   String userID = (String) examplePlatform.get("uid");
@@ -2079,8 +2079,8 @@ Cloud::beforeSave("Review", function($review, $user) {
 {% if platformName === "Java" %}
 ```java
 @EngineHook(className = "Review", type = EngineHookType.beforeSave)
-public static AVObject reviewBeforeSaveHook(AVObject review) throws Exception {
-  throw new AVException(123, "An error occurred.");
+public static LCObject reviewBeforeSaveHook(LCObject review) throws Exception {
+  throw new LCException(123, "An error occurred.");
 }
 ```
 {% endif %}
