@@ -863,17 +863,17 @@ Cloud::define('_conversationAdded', function($params, $user) {
 public static void onConversationAdded(Map<String, Object> params) {
   String[] members = (String[])params.get("members");
   if (members.length > 10) {
-    AVSMSOption option = new AVSMSOption();
+    LCSMSOption option = new LCSMSOption();
     option.setTemplateName("Group_Notice");
     option.setSignatureName("sign_example");
     Map<String, Object> parameters = new HashMap<String, Object>();
     parameters.put("conv_id", params.get("convId")); 
     option.setEnvMap(parameters);
-    AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+    LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<LCNull>() {
       @Override
       public void onSubscribe(Disposable disposable) {}
       @Override
-      public void onNext(AVNull avNull) {
+      public void onNext(LCNull avNull) {
         Log.d("TAG","Result: Successfully sent text message.");
       }
       @Override

@@ -75,7 +75,7 @@ if (error) {
 ```
 ```java
 // clientId 为 Tom
-AVIMClient tom = AVIMClient.getInstance("Tom");
+LCIMClient tom = LCIMClient.getInstance("Tom");
 ```
 ```cs
 LCIMClient tom = new LCIMClient("Tom");
@@ -135,11 +135,11 @@ if (error) {
 ```
 ```java
 // Tom 创建了一个 client，用自己的名字作为 clientId 登录
-AVIMClient tom = AVIMClient.getInstance("Tom");
+LCIMClient tom = LCIMClient.getInstance("Tom");
 // Tom 登录
-tom.open(new AVIMClientCallback() {
+tom.open(new LCIMClientCallback() {
   @Override
-  public void done(AVIMClient client, AVIMException e) {
+  public void done(LCIMClient client, LCIMException e) {
     if (e == null) {
       // 成功打开连接
     }
@@ -207,15 +207,15 @@ LCUser.logIn(username: USER_NAME, password: PASSWORD) { (result) in
 }];
 ```
 ```java
-// 以 AVUser 的用户名和密码登录到 LeanCloud 存储服务
-AVUser.logIn("Tom", "cat!@#123").subscribe(new Observer<AVUser>() {
+// 以 LCUser 的用户名和密码登录到 LeanCloud 存储服务
+LCUser.logIn("Tom", "cat!@#123").subscribe(new Observer<LCUser>() {
     public void onSubscribe(Disposable disposable) {}
-    public void onNext(AVUser user) {
+    public void onNext(LCUser user) {
         // 登录成功，与服务器连接
-        AVIMClient client = AVIMClient.getInstance(user);
-        client.open(new AVIMClientCallback() {
+        LCIMClient client = LCIMClient.getInstance(user);
+        client.open(new LCIMClientCallback() {
             @Override
-            public void done(final AVIMClient avimClient, AVIMException e) {
+            public void done(final LCIMClient avimClient, LCIMException e) {
                 // 执行其他逻辑
             }
         });
@@ -275,9 +275,9 @@ do {
 ```
 ```java
 tom.createConversation(Arrays.asList("Jerry"), "Tom & Jerry", null, false, true,
-    new AVIMConversationCreatedCallback() {
+    new LCIMConversationCreatedCallback() {
         @Override
-        public void done(AVIMConversation conversation, AVIMException e) {
+        public void done(LCIMConversation conversation, LCIMException e) {
           if(e == null) {
             // 创建成功
           }
@@ -391,7 +391,7 @@ public func createTemporaryConversation(clientIDs: Set<String>, timeToLive: Int3
  */
 public void createConversation(final List<String> members, final String name,
     final Map<String, Object> attributes, final boolean isTransient, final boolean isUnique,
-    final AVIMConversationCreatedCallback callback);
+    final LCIMConversationCreatedCallback callback);
 /**
  * 创建一个聊天对话
  *
@@ -402,7 +402,7 @@ public void createConversation(final List<String> members, final String name,
  */
 public void createConversation(final List<String> members, final String name,
                                final Map<String, Object> attributes, final boolean isTransient,
-                               final AVIMConversationCreatedCallback callback);
+                               final LCIMConversationCreatedCallback callback);
 /**
  * 创建一个聊天对话
  *
@@ -413,7 +413,7 @@ public void createConversation(final List<String> members, final String name,
  * @since 3.0
  */
 public void createConversation(final List<String> conversationMembers, String name,
-    final Map<String, Object> attributes, final AVIMConversationCreatedCallback callback);
+    final Map<String, Object> attributes, final LCIMConversationCreatedCallback callback);
 /**
  * 创建一个聊天对话
  * 
@@ -423,7 +423,7 @@ public void createConversation(final List<String> conversationMembers, String na
  * @since 3.0
  */
 public void createConversation(final List<String> conversationMembers,
-    final Map<String, Object> attributes, final AVIMConversationCreatedCallback callback);
+    final Map<String, Object> attributes, final LCIMConversationCreatedCallback callback);
 ```
 ```cs
 /// <summary>
@@ -538,12 +538,12 @@ AVIMTextMessage *message = [AVIMTextMessage messageWithText:@"耗子，起床！
 }];
 ```
 ```java
-AVIMTextMessage msg = new AVIMTextMessage();
+LCIMTextMessage msg = new LCIMTextMessage();
 msg.setText("Jerry，起床了！");
 // 发送消息
-conversation.sendMessage(msg, new AVIMConversationCallback() {
+conversation.sendMessage(msg, new LCIMConversationCallback() {
   @Override
-  public void done(AVIMException e) {
+  public void done(LCIMException e) {
     if (e == null) {
       Log.d("Tom & Jerry", "发送成功！");
     }
@@ -601,10 +601,10 @@ jerry = [[AVIMClient alloc] initWithClientId:@"Jerry"];
 ```
 ```java
 // Jerry 登录
-AVIMClient jerry = AVIMClient.getInstance("Jerry");
-jerry.open(new AVIMClientCallback(){
+LCIMClient jerry = LCIMClient.getInstance("Jerry");
+jerry.open(new LCIMClientCallback(){
   @Override
-  public void done(AVIMClient client,AVIMException e){
+  public void done(LCIMClient client,LCIMException e){
     if(e==null){
       // 登录成功后的逻辑
     }
@@ -683,7 +683,7 @@ jerry.delegate = delegator;
 ```
 ```java
 // Java/Android SDK 通过定制自己的对话事件 Handler 处理服务端下发的对话事件通知
-public class CustomConversationEventHandler extends AVIMConversationEventHandler {
+public class CustomConversationEventHandler extends LCIMConversationEventHandler {
   /**
    * 实现本方法来处理当前用户被邀请到某个聊天对话事件
    *
@@ -693,15 +693,15 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
    * @since 3.0
    */
   @Override
-  public void onInvited(AVIMClient client, AVIMConversation conversation, String invitedBy) {
+  public void onInvited(LCIMClient client, LCIMConversation conversation, String invitedBy) {
     // 当前 clientId（Jerry）被邀请到对话，执行此处逻辑
   }
 }
 // 设置全局的对话事件处理 handler
-AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
+LCIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
 
 // Java/Android SDK 通过定制自己的消息事件 Handler 处理服务端下发的消息通知
-public static class CustomMessageHandler extends AVIMMessageHandler{
+public static class CustomMessageHandler extends LCIMMessageHandler{
   /**
    * 重载此方法来处理接收消息
    * 
@@ -710,14 +710,14 @@ public static class CustomMessageHandler extends AVIMMessageHandler{
    * @param client
    */
    @Override
-   public void onMessage(AVIMMessage message,AVIMConversation conversation,AVIMClient client){
-     if(message instanceof AVIMTextMessage){
-       Log.d(((AVIMTextMessage)message).getText()); // Jerry，起床了
+   public void onMessage(LCIMMessage message,LCIMConversation conversation,LCIMClient client){
+     if(message instanceof LCIMTextMessage){
+       Log.d(((LCIMTextMessage)message).getText()); // Jerry，起床了
      }
    }
  }
 // 设置全局的消息处理 handler
-AVIMMessageManager.registerDefaultMessageHandler(new CustomMessageHandler());
+LCIMMessageManager.registerDefaultMessageHandler(new CustomMessageHandler());
 ```
 ```cs
 jerry.OnInvited = (conv, initBy) => {
@@ -826,11 +826,11 @@ AVIMConversationQuery *query = [self.client conversationQuery];
 ```
 ```java
 // 首先根据 ID 获取 Conversation 实例
-final AVIMConversation conv = client.getConversation("CONVERSATION_ID");
+final LCIMConversation conv = client.getConversation("CONVERSATION_ID");
 // 邀请 Mary 加入对话
-conv.addMembers(Arrays.asList("Mary"), new AVIMOperationPartiallySucceededCallback() {
+conv.addMembers(Arrays.asList("Mary"), new LCIMOperationPartiallySucceededCallback() {
     @Override
-    public void done(AVIMException e, List<String> successfulClientIds, List<AVIMOperationFailure> failures) {
+    public void done(LCIMException e, List<String> successfulClientIds, List<AVIMOperationFailure> failures) {
       // 添加成功
     }
 });
@@ -902,7 +902,7 @@ jerry.delegate = delegator;
 }
 ```
 ```java
-public class CustomConversationEventHandler extends AVIMConversationEventHandler {
+public class CustomConversationEventHandler extends LCIMConversationEventHandler {
   /**
    * 实现本方法以处理聊天对话中的参与者加入事件
    *
@@ -913,7 +913,7 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
    * @since 3.0
    */
     @Override
-    public void onMemberJoined(AVIMClient client, AVIMConversation conversation,
+    public void onMemberJoined(LCIMClient client, LCIMConversation conversation,
         List<String> members, String invitedBy) {
         // 手机屏幕上会显示一小段文字：Mary 加入到 551260efe4b01608686c3e0f；操作者为：Tom
         Toast.makeText(AVOSCloud.applicationContext,
@@ -922,7 +922,7 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
     }
 }
 // 设置全局的对话事件处理 handler
-AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
+LCIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
 ```
 ```cs
 jerry.OnMembersJoined = (conv, memberList, initBy) => {
@@ -1010,9 +1010,9 @@ NSArray *friends = @[@"Jerry", @"Mary"];
 ```
 ```java
 tom.createConversation(Arrays.asList("Jerry","Mary"), "Tom & Jerry & friends", null,
-   new AVIMConversationCreatedCallback() {
+   new LCIMConversationCreatedCallback() {
       @Override
-      public void done(AVIMConversation conversation, AVIMException e) {
+      public void done(LCIMConversation conversation, LCIMException e) {
            if (e == null) {
               // 创建成功
            }
@@ -1064,12 +1064,12 @@ do {
 }];
 ```
 ```java
-AVIMTextMessage msg = new AVIMTextMessage();
+LCIMTextMessage msg = new LCIMTextMessage();
 msg.setText("大家好，欢迎来到我们的群聊对话！");
 // 发送消息
-conversation.sendMessage(msg, new AVIMConversationCallback() {
+conversation.sendMessage(msg, new LCIMConversationCallback() {
   @Override
-  public void done(AVIMException e) {
+  public void done(LCIMException e) {
     if (e == null) {
       Log.d("群聊", "发送成功！");
     }
@@ -1131,9 +1131,9 @@ do {
 }];
 ```
 ```java
-conv.kickMembers(Arrays.asList("Mary"), new AVIMOperationPartiallySucceededCallback() {
+conv.kickMembers(Arrays.asList("Mary"), new LCIMOperationPartiallySucceededCallback() {
     @Override
-    public void done(AVIMException e, List<String> successfulClientIds, List<AVIMOperationFailure> failures) {
+    public void done(LCIMException e, List<String> successfulClientIds, List<AVIMOperationFailure> failures) {
     }
 });
 ```
@@ -1208,7 +1208,7 @@ jerry.delegate = delegator;
 }
 ```
 ```java
-public class CustomConversationEventHandler extends AVIMConversationEventHandler {
+public class CustomConversationEventHandler extends LCIMConversationEventHandler {
   /**
    * 实现本方法以处理聊天对话中的参与者离开事件
    *
@@ -1219,8 +1219,8 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
    * @since 3.0
    */
   @Override
-  public abstract void onMemberLeft(AVIMClient client,
-    AVIMConversation conversation, List<String> members, String kickedBy) {
+  public abstract void onMemberLeft(LCIMClient client,
+    LCIMConversation conversation, List<String> members, String kickedBy) {
     Toast.makeText(AVOSCloud.applicationContext,
       members + " 离开对话 " + conversation.getConversationId() + "；操作者为："
           + kickedBy, Toast.LENGTH_SHORT).show();
@@ -1234,7 +1234,7 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
    * @since 3.0
    */
   @Override
-  public abstract void onKicked(AVIMClient client, AVIMConversation conversation,
+  public abstract void onKicked(LCIMClient client, LCIMConversation conversation,
     String kickedBy) {
     Toast.makeText(AVOSCloud.applicationContext,
       "你已离开对话 " + conversation.getConversationId() + "；操作者为："
@@ -1242,7 +1242,7 @@ public class CustomConversationEventHandler extends AVIMConversationEventHandler
   }
 }
 // 设置全局的对话事件处理 handler
-AVIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
+LCIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
 ```
 ```cs
 jerry.OnMembersLeft = (conv, leftIds, kickedBy) => {
@@ -1322,10 +1322,10 @@ AVIMConversationQuery *query = [william conversationQuery];
 }];
 ```
 ```java
-AVIMConversation conv = william.getConversation("CONVERSATION_ID");
-conv.join(new AVIMConversationCallback(){
+LCIMConversation conv = william.getConversation("CONVERSATION_ID");
+conv.join(new LCIMConversationCallback(){
     @Override
-    public void done(AVIMException e){
+    public void done(LCIMException e){
         if(e==null){
           // 加入成功
         }
@@ -1388,12 +1388,12 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```java
-public class CustomConversationEventHandler extends AVIMConversationEventHandler {
+public class CustomConversationEventHandler extends LCIMConversationEventHandler {
   @Override
-  public void onMemberJoined(AVIMClient client, AVIMConversation conversation,
+  public void onMemberJoined(LCIMClient client, LCIMConversation conversation,
       List<String> members, String invitedBy) {
       // 手机屏幕上会显示一小段文字：William 加入到 551260efe4b01608686c3e0f；操作者为：William
-      Toast.makeText(AVOSCloud.applicationContext,
+      Toast.makeText(LeanCloud.applicationContext,
         members + " 加入到 " + conversation.getConversationId() + "；操作者为："
             + invitedBy, Toast.LENGTH_SHORT).show();
   }
@@ -1446,9 +1446,9 @@ do {
 }];
 ```
 ```java
-conversation.quit(new AVIMConversationCallback(){
+conversation.quit(new LCIMConversationCallback(){
     @Override
-    public void done(AVIMException e){
+    public void done(LCIMException e){
       if(e==null){
         // 退出成功
       }
@@ -1500,9 +1500,9 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```java
-public class CustomConversationEventHandler extends AVIMConversationEventHandler {
+public class CustomConversationEventHandler extends LCIMConversationEventHandler {
   @Override
-  public void onMemberLeft(AVIMClient client, AVIMConversation conversation, List<String> members,
+  public void onMemberLeft(LCIMClient client, LCIMConversation conversation, List<String> members,
       String kickedBy) {
       // 有其他成员离开时，执行此处逻辑
   }
@@ -1560,7 +1560,7 @@ LeanCloud 即时通讯服务默认支持文本、文件、图像、音频、视�
 - `FileMessage` 普通文件消息（.txt/.doc/.md 等各种）
 - `LocationMessage` 地理位置消息
 
-所有消息均派生自 `AVIMMessage`，每种消息实例都具备如下属性：
+所有消息均派生自 `LCIMMessage`，每种消息实例都具备如下属性：
 
 {{ docs.langSpecStart('js') }}
 
@@ -1621,8 +1621,8 @@ LeanCloud 即时通讯服务默认支持文本、文件、图像、音频、视�
 | `messageId`        | `String`               | 消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 ID。 |
 | `timestamp`        | `long`                 | 消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。 |
 | `receiptTimestamp` | `long`                 | 消息被对方接收到的时间。消息被接收之后，由 LeanCloud 云端赋予的全局的时间戳。 |
-| `status`           | `AVIMMessageStatus` 枚举 | 消息状态，有五种取值：<br/><br/>`AVIMMessageStatusNone`（未知）<br/>`AVIMMessageStatusSending`（发送中）<br/>`AVIMMessageStatusSent`（发送成功）<br/>`AVIMMessageStatusReceipt`（被接收）<br/>`AVIMMessageStatusFailed`（失败） |
-| `ioType`           | `AVIMMessageIOType` 枚举 | 消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（发给当前用户）<br/>`AVIMMessageIOTypeOut`（由当前用户发出） |
+| `status`           | `MessageStatus` 枚举 | 消息状态，有五种取值：<br/><br/>`StatusNone`（未知）<br/>`StatusSending`（发送中）<br/>`StatusSent`（发送成功）<br/>`StatusReceipt`（被接收）<br/>`StatusFailed`（失败） |
+| `ioType`           | `MessageIOType` 枚举 | 消息传输方向，有两种取值：<br/><br/>`TypeIn`（发给当前用户）<br/>`TypeOut`（由当前用户发出） |
 
 {{ docs.langSpecEnd('java') }}
 
@@ -1720,11 +1720,11 @@ AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"萌妹子一枚"
 ```java
 AVFile file = AVFile.withAbsoluteLocalPath("San_Francisco.png", Environment.getExternalStorageDirectory() + "/San_Francisco.png");
 // 创建一条图像消息
-AVIMImageMessage m = new AVIMImageMessage(file);
+LCIMImageMessage m = new LCIMImageMessage(file);
 m.setText("发自我的小米手机");
-conv.sendMessage(m, new AVIMConversationCallback() {
+conv.sendMessage(m, new LCIMConversationCallback() {
   @Override
-  public void done(AVIMException e) {
+  public void done(LCIMException e) {
     if (e == null) {
       // 发送成功
     }
@@ -1801,12 +1801,12 @@ AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"萌妹子一枚"
 ```
 ```java
 AVFile file = new AVFile("萌妹子","http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif", null);
-AVIMImageMessage m = new AVIMImageMessage(file);
+LCIMImageMessage m = new LCIMImageMessage(file);
 m.setText("萌妹子一枚");
 // 创建一条图像消息
-conv.sendMessage(m, new AVIMConversationCallback() {
+conv.sendMessage(m, new LCIMConversationCallback() {
     @Override
-    public void done(AVIMException e) {
+    public void done(LCIMException e) {
       if (e == null) {
         // 发送成功
       }
@@ -1882,10 +1882,10 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```java
-AVIMMessageManager.registerMessageHandler(AVIMImageMessage.class,
-    new AVIMTypedMessageHandler<AVIMImageMessage>() {
+LCIMMessageManager.registerMessageHandler(LCIMImageMessage.class,
+    new LCIMTypedMessageHandler<LCIMImageMessage>() {
         @Override
-        public void onMessage(AVIMImageMessage msg, AVIMConversation conv, AVIMClient client) {
+        public void onMessage(LCIMImageMessage msg, LCIMConversation conv, LCIMClient client) {
             // 只处理 Jerry 这个客户端的消息
             // 并且来自 conversationId 为 55117292e4b065f7ee9edd29 的 conversation 的消息
             if ("Jerry".equals(client.getClientId()) && "55117292e4b065f7ee9edd29".equals(conv.getConversationId())) {
@@ -1994,12 +1994,12 @@ if (!error) {
 ```
 ```java
 AVFile file = AVFile.withAbsoluteLocalPath("忐忑.mp3",localFilePath);
-AVIMAudioMessage m = new AVIMAudioMessage(file);
+LCIMAudioMessage m = new LCIMAudioMessage(file);
 m.setText("听听人类的神曲");
 // 创建一条音频消息
-conv.sendMessage(m, new AVIMConversationCallback() {
+conv.sendMessage(m, new LCIMConversationCallback() {
     @Override
-    public void done(AVIMException e) {
+    public void done(LCIMException e) {
       if (e == null) {
         // 发送成功
       }
@@ -2071,12 +2071,12 @@ AVIMAudioMessage *message = [AVIMAudioMessage messageWithText:@"来自苹果发�
 }];
 ```
 ```java
-AVFile file = new AVFile("apple.aac", "https://some.website.com/apple.aac", null);
-AVIMAudioMessage m = new AVIMAudioMessage(file);
+LCFile file = new LCFile("apple.aac", "https://some.website.com/apple.aac", null);
+LCIMAudioMessage m = new LCIMAudioMessage(file);
 m.setText("来自苹果发布会现场的录音");
-conv.sendMessage(m, new AVIMConversationCallback() {
+conv.sendMessage(m, new LCIMConversationCallback() {
     @Override
-    public void done(AVIMException e) {
+    public void done(LCIMException e) {
       if (e == null) {
         // 发送成功
       }
@@ -2140,13 +2140,13 @@ AVIMLocationMessage *message = [AVIMLocationMessage messageWithText:@"蛋糕店�
 }];
 ```
 ```java
-final AVIMLocationMessage locationMessage = new AVIMLocationMessage();
+final LCIMLocationMessage locationMessage = new LCIMLocationMessage();
 // 开发者可以通过设备的 API 获取设备的具体地理位置，此处设置了 2 个经纬度常量作为演示
-locationMessage.setLocation(new AVGeoPoint(31.3753285,120.9664658));
+locationMessage.setLocation(new LCGeoPoint(31.3753285,120.9664658));
 locationMessage.setText("蛋糕店的位置");
-conversation.sendMessage(locationMessage, new AVIMConversationCallback() {
+conversation.sendMessage(locationMessage, new LCIMConversationCallback() {
     @Override
-    public void done(AVIMException e) {
+    public void done(LCIMException e) {
         if (null != e) {
           e.printStackTrace();
         } else {
@@ -2226,7 +2226,7 @@ Objective-C SDK 是通过实现 `AVIMClientDelegate` 代理来响应新消息到
 
 {{ docs.langSpecStart('java') }}
 
-Java/Android SDK 中定义了 `AVIMMessageHandler` 接口来通知应用层新消息到达事件发生，开发者通过调用 `AVIMMessageManager#registerDefaultMessageHandler` 方法来注册自己的消息处理函数。`AVIMMessageManager` 提供了两个不同的方法来注册默认的消息处理函数，或特定类型的消息处理函数：
+Java/Android SDK 中定义了 `LCIMMessageHandler` 接口来通知应用层新消息到达事件发生，开发者通过调用 `LCIMMessageManager#registerDefaultMessageHandler` 方法来注册自己的消息处理函数。`LCIMMessageManager` 提供了两个不同的方法来注册默认的消息处理函数，或特定类型的消息处理函数：
 
 ```java
 /**
@@ -2234,33 +2234,33 @@ Java/Android SDK 中定义了 `AVIMMessageHandler` 接口来通知应用层新�
  *
  * @param handler
  */
-public static void registerDefaultMessageHandler(AVIMMessageHandler handler);
+public static void registerDefaultMessageHandler(LCIMMessageHandler handler);
 /**
  * 注册特定消息格式的处理单元
  *
  * @param clazz 特定的消息类
  * @param handler
  */
-public static void registerMessageHandler(Class<? extends AVIMMessage> clazz, MessageHandler<?> handler);
+public static void registerMessageHandler(Class<? extends LCIMMessage> clazz, MessageHandler<?> handler);
 /**
  * 取消特定消息格式的处理单元
  *
  * @param clazz
  * @param handler
  */
-public static void unregisterMessageHandler(Class<? extends AVIMMessage> clazz, MessageHandler<?> handler);
+public static void unregisterMessageHandler(Class<? extends LCIMMessage> clazz, MessageHandler<?> handler);
 ```
 
 消息处理函数需要在应用初始化时完成设置，理论上我们支持为每一种消息（包括应用层自定义的消息）分别注册不同的消息处理函数，并且也支持取消注册。
 
-多次调用 `AVIMMessageManager` 的 `registerDefaultMessageHandler`，只有最后一次调用有效；而通过 `registerMessageHandler` 注册的 `AVIMMessageHandler`，则是可以同存的。
+多次调用 `LCIMMessageManager` 的 `registerDefaultMessageHandler`，只有最后一次调用有效；而通过 `registerMessageHandler` 注册的 `LCIMMessageHandler`，则是可以同存的。
 
 当客户端收到一条消息的时候，SDK 内部的处理流程为：
 
 - 首先解析消息的类型，然后找到开发者为这一类型所注册的处理响应 handler chain，再逐一调用这些 handler 的 `onMessage` 函数。
 - 如果没有找到专门处理这一类型消息的 handler，就会转交给 `defaultHandler` 处理。
 
-这样一来，在开发者为 `AVIMTypedMessage`（及其子类）指定了专门的 handler，也指定了全局的 `defaultHandler` 了的时候，如果发送端发送的是通用的 `AVIMMessage` 消息，那么接收端就是 `AVIMMessageManager#registerDefaultMessageHandler()` 中指定的 handler 被调用；如果发送的是 `AVIMTypedMessage`（及其子类）的消息，那么接收端就是 `AVIMMessageManager#registerMessageHandler()` 中指定的 handler 被调用。
+这样一来，在开发者为 `AVIMTypedMessage`（及其子类）指定了专门的 handler，也指定了全局的 `defaultHandler` 了的时候，如果发送端发送的是通用的 `LCIMMessage` 消息，那么接收端就是 `LCIMMessageManager#registerDefaultMessageHandler()` 中指定的 handler 被调用；如果发送的是 `AVIMTypedMessage`（及其子类）的消息，那么接收端就是 `LCIMMessageManager#registerMessageHandler()` 中指定的 handler 被调用。
 
 {{ docs.langSpecEnd('java') }}
 
@@ -2386,47 +2386,47 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 ```
 ```java
 // 1. 注册默认 handler，只有其他 handle 都没有被调用到时才会调用
-AVIMMessageManager.registerDefaultMessageHandler(new AVIMMessageHandler(){
-    public void onMessage(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
+LCIMMessageManager.registerDefaultMessageHandler(new LCIMMessageHandler(){
+    public void onMessage(LCIMMessage message, LCIMConversation conversation, LCIMClient client) {
         // 接收消息
     }
 
-    public void onMessageReceipt(AVIMMessage message, AVIMConversation conversation, AVIMClient client) {
+    public void onMessageReceipt(LCIMMessage message, LCIMConversation conversation, LCIMClient client) {
         // 未来可能添加新的自定义消息类型，新版 SDK 也可能添加新的消息类型。
         // 因此别忘了在这里处理未知类型，例如提示用户升级客户端至最新版本。
     }
 });
 // 2. 为每一种消息类型注册 handler
-AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new AVIMTypedMessageHandler<AVIMTypedMessage>(){
-    public void onMessage(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
+LCIMMessageManager.registerMessageHandler(LCIMTypedMessage.class, new LCIMTypedMessageHandler<LCIMTypedMessage>(){
+    public void onMessage(LCIMTypedMessage message, LCIMConversation conversation, LCIMClient client) {
         switch (message.getMessageType()) {
-            case AVIMMessageType.TEXT_MESSAGE_TYPE:
+            case LCIMMessageType.TEXT_MESSAGE_TYPE:
                 // 执行其他逻辑
-                AVIMTextMessage textMessage = (AVIMTextMessage)message;
+                LCIMTextMessage textMessage = (LCIMTextMessage)message;
                 break;
-            case AVIMMessageType.IMAGE_MESSAGE_TYPE:
+            case LCIMMessageType.IMAGE_MESSAGE_TYPE:
                 // 执行其他逻辑
-                AVIMImageMessage imageMessage = (AVIMImageMessage)message;
+                LCIMImageMessage imageMessage = (LCIMImageMessage)message;
                 break;
-            case AVIMMessageType.AUDIO_MESSAGE_TYPE:
+            case LCIMMessageType.AUDIO_MESSAGE_TYPE:
                 // 执行其他逻辑
-                AVIMAudioMessage audioMessage = (AVIMAudioMessage)message;
+                LCIMAudioMessage audioMessage = (LCIMAudioMessage)message;
                 break;
-            case AVIMMessageType.VIDEO_MESSAGE_TYPE:
+            case LCIMMessageType.VIDEO_MESSAGE_TYPE:
                 // 执行其他逻辑
-                AVIMVideoMessage videoMessage = (AVIMVideoMessage)message;
+                LCIMVideoMessage videoMessage = (LCIMVideoMessage)message;
                 break;
-            case AVIMMessageType.LOCATION_MESSAGE_TYPE:
+            case LCIMMessageType.LOCATION_MESSAGE_TYPE:
                 // 执行其他逻辑
-                AVIMLocationMessage locationMessage = (AVIMLocationMessage)message;
+                LCIMLocationMessage locationMessage = (LCIMLocationMessage)message;
                 break;
-            case AVIMMessageType.FILE_MESSAGE_TYPE:
+            case LCIMMessageType.FILE_MESSAGE_TYPE:
                 // 执行其他逻辑
-                AVIMFileMessage fileMessage = (AVIMFileMessage)message;
+                LCIMFileMessage fileMessage = (LCIMFileMessage)message;
                 break;
-            case AVIMMessageType.RECALLED_MESSAGE_TYPE:
+            case LCIMMessageType.RECALLED_MESSAGE_TYPE:
                 // 执行其他逻辑
-                AVIMRecalledMessage recalledMessage = (AVIMRecalledMessage)message;
+                LCIMRecalledMessage recalledMessage = (LCIMRecalledMessage)message;
                 break;
             case 123:
                 // 这是一个自定义消息类型
@@ -2436,7 +2436,7 @@ AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, new AVIMTypedM
         }
     }
 
-    public void onMessageReceipt(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
+    public void onMessageReceipt(LCIMTypedMessage message, LCIMConversation conversation, LCIMClient client) {
         // 执行收到消息后的逻辑
     }
 });
@@ -2576,7 +2576,7 @@ jerry.onMessage = ({
 
 {{ docs.langSpecStart('java') }}
 
-| `AVIMConversation` get 方法名 | `_Conversation` 字段 | 含义 |
+| `LCIMConversation` get 方法名 | `_Conversation` 字段 | 含义 |
 | --- | --- | --- |
 | `getAttributes`            | `attr`             | 自定义属性                                         |
 | `getConversationId`        | `objectId`         | 全局唯一的 ID                                    |
@@ -2700,9 +2700,9 @@ HashMap<String,Object> attr = new HashMap<String,Object>();
 attr.put("type","private");
 attr.put("pinned",true);
 client.createConversation(Arrays.asList("Jerry"),"猫和老鼠", attr, false, true,
-    new AVIMConversationCreatedCallback(){
+    new LCIMConversationCreatedCallback(){
         @Override
-        public void done(AVIMConversation conv,AVIMException e){
+        public void done(LCIMConversation conv,LCIMException e){
           if(e==null){
             // 创建成功
           }
@@ -2765,11 +2765,11 @@ conversation[@"name"] = @"聪明的喵星人";
 }];
 ```
 ```java
-AVIMConversation conversation = client.getConversation("55117292e4b065f7ee9edd29");
+LCIMConversation conversation = client.getConversation("55117292e4b065f7ee9edd29");
 conversation.setName("聪明的喵星人");
-conversation.updateInfoInBackground(new AVIMConversationCallback(){
+conversation.updateInfoInBackground(new LCIMConversationCallback(){
   @Override
-  public void done(AVIMException e){        
+  public void done(LCIMException e){        
     if(e==null){
       // 更新成功
     }
@@ -2833,9 +2833,9 @@ String type = conversation.get("attr.type");
 // 为 pinned 属性设置新的值
 conversation.set("attr.pinned",false);
 // 保存
-conversation.updateInfoInBackground(new AVIMConversationCallback(){
+conversation.updateInfoInBackground(new LCIMConversationCallback(){
   @Override
-  public void done(AVIMException e){        
+  public void done(LCIMException e){        
     if(e==null){
       // 更新成功
     }
@@ -2909,7 +2909,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 - (void)conversation:(AVIMConversation *)conversation didUpdateAt:(NSDate * _Nullable)date byClientId:(NSString * _Nullable)clientId updatedData:(NSDictionary * _Nullable)data;
 ```
 ```java
-// 在 AVIMConversationEventHandler 接口中有如下定义
+// 在 LCIMConversationEventHandler 接口中有如下定义
 /**
  * 对话自身属性变更通知
  *
@@ -2978,9 +2978,9 @@ do {
 ```
 ```java
 // fetchInfoInBackground 方法会执行一次刷新操作，以获取云端最新对话数据。
-conversation.fetchInfoInBackground(new AVIMConversationCallback() {
+conversation.fetchInfoInBackground(new LCIMConversationCallback() {
   @Override
-  public void done(AVIMException e) {
+  public void done(LCIMException e) {
     if (e == null) {
       conversation.getMembers();
     }
@@ -3040,11 +3040,11 @@ AVIMConversationQuery *query = [tom conversationQuery];
 }];
 ```
 ```java
-AVIMConversationsQuery query = tom.getConversationsQuery();
+LCIMConversationsQuery query = tom.getConversationsQuery();
 query.whereEqualTo("objectId","551260efe4b01608686c3e0f");
-query.findInBackground(new AVIMConversationQueryCallback(){
+query.findInBackground(new LCIMConversationQueryCallback(){
     @Override
-    public void done(List<AVIMConversation> convs,AVIMException e){
+    public void done(List<LCIMConversation> convs,LCIMException e){
       if(e==null){
         if(convs!=null && !convs.isEmpty()){
           // convs.get(0) 就是想要的 conversation
@@ -3108,12 +3108,12 @@ AVIMConversationQuery *query = [tom conversationQuery];
 }];
 ```
 ```java
-AVIMConversationsQuery query = tom.getConversationsQuery();
+LCIMConversationsQuery query = tom.getConversationsQuery();
 query.whereEqualTo("attr.type","private");
 // 执行查询
-query.findInBackground(new AVIMConversationQueryCallback(){
+query.findInBackground(new LCIMConversationQueryCallback(){
   @Override
-  public void done(List<AVIMConversation> convs,AVIMException e){
+  public void done(List<LCIMConversation> convs,LCIMException e){
     if(e == null){
       // convs 就是想要的结果
     }
@@ -3185,7 +3185,7 @@ try {
 
 {{ docs.langSpecStart('java') }}
 
-| 逻辑比较 | `AVIMConversationQuery` 方法 |
+| 逻辑比较 | `LCIMConversationsQuery` 方法 |
 | --- | --- |
 | 等于     | `whereEqualTo`               |
 | 不等于   | `whereNotEqualsTo`           |
@@ -3421,13 +3421,13 @@ AVIMConversationQuery *keywordsQuery = [tom conversationQuery];
 AVIMConversationQuery *query = [AVIMConversationQuery orQueryWithSubqueries:[NSArray arrayWithObjects:ageQuery,keywordsQuery,nil]];
 ```
 ```java
-AVIMConversationsQuery ageQuery = tom.getConversationsQuery();
+LCIMConversationsQuery ageQuery = tom.getConversationsQuery();
 ageQuery.whereLessThan('age', 18);
 
-AVIMConversationsQuery keywordsQuery = tom.getConversationsQuery();
+LCIMConversationsQuery keywordsQuery = tom.getConversationsQuery();
 keywordsQuery.whereContains('keywords', '教育');
 
-AVIMConversationsQuery query = AVIMConversationsQuery.or(Arrays.asList(priorityQuery, statusQuery));
+LCIMConversationsQuery query = LCIMConversationsQuery.or(Arrays.asList(priorityQuery, statusQuery));
 ```
 ```cs
 //暂不支持
@@ -3450,21 +3450,21 @@ try conversationQuery.where("createdAt", .descending)
 [query orderByDescending:@"createdAt"];
 ```
 ```java
-AVIMClient tom = AVIMClient.getInstance("Tom");
+LCIMClient tom = LCIMClient.getInstance("Tom");
 
-tom.open(new AVIMClientCallback() {
+tom.open(new LCIMClientCallback() {
   @Override
-  public void done(AVIMClient client, AVIMException e) {
+  public void done(LCIMClient client, LCIMException e) {
     if (e == null) {
       // 登录成功
-      AVIMConversationsQuery query = client.getConversationsQuery();
+      LCIMConversationsQuery query = client.getConversationsQuery();
 
       // 按对话的创建时间降序
       query.orderByDescending("createdAt");
 
-      query.findInBackground(new AVIMConversationQueryCallback() {
+      query.findInBackground(new LCIMConversationQueryCallback() {
         @Override
-        public void done(List<AVIMConversation> convs, AVIMException e) {
+        public void done(List<LCIMConversation> convs, LCIMException e) {
           if (e == null) {
             if(convs != null && !convs.isEmpty()) {
               // 获取符合查询条件的 conversation 列表
@@ -3498,17 +3498,17 @@ query.option = AVIMConversationQueryOptionCompact;
 ```
 ```java
 public void queryConversationCompact() {
-  AVIMClient tom = AVIMClient.getInstance("Tom");
-  tom.open(new AVIMClientCallback() {
+  LCIMClient tom = LCIMClient.getInstance("Tom");
+  tom.open(new LCIMClientCallback() {
     @Override
-    public void done(AVIMClient client, AVIMException e) {
+    public void done(LCIMClient client, LCIMException e) {
       if (e == null) {
         // 登录成功
-        AVIMConversationsQuery query = client.getConversationsQuery();
+        LCIMConversationsQuery query = client.getConversationsQuery();
         query.setCompact(true);
-        query.findInBackground(new AVIMConversationQueryCallback() {
+        query.findInBackground(new LCIMConversationQueryCallback() {
           @Override
-          public void done(List<AVIMConversation> convs, AVIMException e) {
+          public void done(List<LCIMConversation> convs, LCIMException e) {
             if (e == null) {
               // 获取符合查询条件的 Conversation 列表
             }
@@ -3541,18 +3541,18 @@ query.option = AVIMConversationQueryOptionWithMessage;
 ```
 ```java
 public void queryConversationWithLastMessage() {
-  AVIMClient tom = AVIMClient.getInstance("Tom");
-  tom.open(new AVIMClientCallback() {
+  LCIMClient tom = LCIMClient.getInstance("Tom");
+  tom.open(new LCIMClientCallback() {
     @Override
-    public void done(AVIMClient client, AVIMException e) {
+    public void done(LCIMClient client, LCIMException e) {
       if (e == null) {
         // 登录成功
-        AVIMConversationsQuery query = client.getConversationsQuery();
+        LCIMConversationsQuery query = client.getConversationsQuery();
         /* 设置查询选项，指定返回对话的最后一条消息 */
         query.setWithLastMessagesRefreshed(true);
-        query.findInBackground(new AVIMConversationQueryCallback() {
+        query.findInBackground(new LCIMConversationQueryCallback() {
           @Override
-          public void done(List<AVIMConversation> convs, AVIMException e) {
+          public void done(List<LCIMConversation> convs, LCIMException e) {
             if (e == null) {
               // 获取符合查询条件的 Conversation 列表
             }
@@ -3704,21 +3704,21 @@ query.cachePolicy = kAVCachePolicyNetworkElseCache;
 
 通常，将查询结果缓存到磁盘上是一种行之有效的方法，这样就算设备离线，应用刚刚打开，网络请求尚未完成时，数据也能显示出来。或者为了节省用户流量，在应用打开的第一次查询走网络，之后的查询可优先走本地缓存。
 
-值得注意的是，默认的策略是先走本地缓存的再走网络的，缓存时间是一小时。`AVIMConversationsQuery` 中有如下方法：
+值得注意的是，默认的策略是先走本地缓存的再走网络的，缓存时间是一小时。`LCIMConversationsQuery` 中有如下方法：
 
 ```java
-// 设置 AVIMConversationsQuery 的查询策略
+// 设置 LCIMConversationsQuery 的查询策略
 public void setQueryPolicy(AVQuery.CachePolicy policy);
 ```
 
 有时你希望先走网络查询，发生网络错误的时候，再从本地查询，可以这样：
 
 ```java
-AVIMConversationsQuery query = client.getConversationsQuery();
+LCIMConversationsQuery query = client.getConversationsQuery();
 query.setQueryPolicy(AVQuery.CachePolicy.NETWORK_ELSE_CACHE);
-query.findInBackground(new AVIMConversationQueryCallback() {
+query.findInBackground(new LCIMConversationQueryCallback() {
   @Override
-  public void done(List<AVIMConversation> conversations, AVIMException e) {
+  public void done(List<LCIMConversation> conversations, LCIMException e) {
 
   }
 });
@@ -3788,9 +3788,9 @@ do {
 ```java
 // limit 取值范围 1~100，如调用 queryMessages 时不带 limit 参数，默认获取 20 条消息记录
 int limit = 10;
-conv.queryMessages(limit, new AVIMMessagesQueryCallback() {
+conv.queryMessages(limit, new LCIMMessagesQueryCallback() {
   @Override
-  public void done(List<AVIMMessage> messages, AVIMException e) {
+  public void done(List<LCIMMessage> messages, LCIMException e) {
     if (e == null) {
       // 成功获取最新 10 条消息记录
     }
@@ -3871,18 +3871,18 @@ do {
 ```
 ```java
 // limit 取值范围 1~1000，默认 100
-conv.queryMessages(10, new AVIMMessagesQueryCallback() {
+conv.queryMessages(10, new LCIMMessagesQueryCallback() {
   @Override
-  public void done(List<AVIMMessage> messages, AVIMException e) {
+  public void done(List<LCIMMessage> messages, LCIMException e) {
     if (e == null) {
       // 成功获取最新 10 条消息记录
       // 返回的消息一定是时间增序排列，也就是最早的消息一定是第一个
-      AVIMMessage oldestMessage = messages.get(0);
+      LCIMMessage oldestMessage = messages.get(0);
 
       conv.queryMessages(oldestMessage.getMessageId(), oldestMessage.getTimestamp(),20,
-          new AVIMMessageQueryCallback(){
+          new LCIMMessageQueryCallback(){
             @Override
-            public void done(List<AVIMMessage> messagesInPage,AVIMException e){
+            public void done(List<LCIMMessage> messagesInPage,LCIMException e){
               if(e== null){
                 // 查询成功返回
                 Log.d("Tom & Jerry", "got " + messagesInPage.size()+" messages ");
@@ -3961,10 +3961,10 @@ do {
 }];
 ```
 ```java
-int msgType = .AVIMMessageType.IMAGE_MESSAGE_TYPE;
-conversation.queryMessagesByType(msgType, limit, new AVIMMessagesQueryCallback() {
+int msgType = LCIMMessageType.IMAGE_MESSAGE_TYPE;
+conversation.queryMessagesByType(msgType, limit, new LCIMMessagesQueryCallback() {
     @Override
-    public void done(List<AVIMMessage> messages, AVIMException e){
+    public void done(List<LCIMMessage> messages, LCIMException e){
     }
 });
 ```
@@ -4018,10 +4018,10 @@ do {
 }];
 ```
 ```java
-AVIMMessageInterval interval = new AVIMMessageInterval(null, null);
-conversation.queryMessages(interval, AVIMMessageQueryDirectionFromOldToNew, limit,
-  new AVIMMessagesQueryCallback(){
-    public void done(List<AVIMMessage> messages, AVIMException exception) {
+LCIMMessageInterval interval = new LCIMMessageInterval(null, null);
+conversation.queryMessages(interval, DirectionFromOldToNew, limit,
+  new LCIMMessagesQueryCallback(){
+    public void done(List<LCIMMessage> messages, LCIMException exception) {
       // 处理结果
     }
 });
@@ -4091,12 +4091,12 @@ AVIMMessageInterval *interval = [[AVIMMessageInterval alloc] initWithStartInterv
 }];
 ```
 ```java
-AVIMMessageIntervalBound start = AVIMMessageInterval.createBound(messageId, timestamp, false);
-AVIMMessageInterval interval = new AVIMMessageInterval(start, null);
-AVIMMessageQueryDirection direction;
+LCIMMessageIntervalBound start = LCIMMessageInterval.createBound(messageId, timestamp, false);
+LCIMMessageInterval interval = new LCIMMessageInterval(start, null);
+LCIMMessageQueryDirection direction;
 conversation.queryMessages(interval, direction, limit,
-  new AVIMMessagesQueryCallback(){
-    public void done(List<AVIMMessage> messages, AVIMException exception) {
+  new LCIMMessagesQueryCallback(){
+    public void done(List<LCIMMessage> messages, LCIMException exception) {
       // 处理结果
     }
 });
@@ -4176,13 +4176,13 @@ AVIMMessageInterval *interval = [[AVIMMessageInterval alloc] initWithStartInterv
 }];
 ```
 ```java
-AVIMMessageIntervalBound start = AVIMMessageInterval.createBound(messageId, timestamp, false);
-AVIMMessageIntervalBound end = AVIMMessageInterval.createBound(endMessageId, endTimestamp, false);
-AVIMMessageInterval interval = new AVIMMessageInterval(start, end);
-AVIMMessageQueryDirection direction;
+LCIMMessageIntervalBound start = LCIMMessageInterval.createBound(messageId, timestamp, false);
+LCIMMessageIntervalBound end = LCIMMessageInterval.createBound(endMessageId, endTimestamp, false);
+LCIMMessageInterval interval = new LCIMMessageInterval(start, end);
+LCIMMessageQueryDirection direction;
 conversation.queryMessages(interval, direction, limit,
-  new AVIMMessagesQueryCallback(){
-    public void done(List<AVIMMessage> messages, AVIMException exception) {
+  new LCIMMessagesQueryCallback(){
+    public void done(List<LCIMMessage> messages, LCIMException exception) {
       // 处理结果
     }
 });
@@ -4266,8 +4266,8 @@ do {
 avimClient.messageQueryCacheEnabled = false;
 ```
 ```java
-// 需要在调用 AVIMClient.open(callback) 函数之前设置，关闭历史消息缓存开关。
-AVIMOptions.getGlobalOptions().setMessageQueryCacheEnabled(false);
+// 需要在调用 LCIMClient.open(callback) 函数之前设置，关闭历史消息缓存开关。
+LCIMOptions.getGlobalOptions().setMessageQueryCacheEnabled(false);
 ```
 ```cs
 // 暂不支持
@@ -4305,9 +4305,9 @@ tom.close { (result) in
 }];
 ```
 ```java
-tom.close(new AVIMClientCallback(){
+tom.close(new LCIMClientCallback(){
     @Override
-    public void done(AVIMClient client,AVIMException e){
+    public void done(LCIMClient client,LCIMException e){
         if(e==null){
             // 登出成功
         }
@@ -4423,7 +4423,7 @@ func client(_ client: IMClient, event: IMClientEvent) {
 
 {{ docs.langSpecStart('java') }}
 
-`AVIMClientEventHandler` 上会有如下事件通知：
+`LCIMClientEventHandler` 上会有如下事件通知：
 
 - `onConnectionPaused()` 指网络连接断开事件发生，此时聊天服务不可用。
 - `onConnectionResume()` 指网络连接恢复正常，此时聊天服务变得可用。
