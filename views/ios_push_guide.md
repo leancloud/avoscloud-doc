@@ -106,11 +106,10 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     // 首先需要初始化应用
-    [LCCloud setApplicationId:{{appid}}
-                      clientKey:{{appkey}}
-                // 请将 xxx.example.com 替换为你的应用绑定的自定义 API 域名      
-                serverURLString:@"https://xxx.example.com"];
-    
+    [LCApplication setApplicationId:{{appid}}
+                          clientKey:{{appkey}}
+                    serverURLString:"https://please-replace-with-your-customized.domain.com"];
+
     [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
         switch ([settings authorizationStatus]) {
             case UNAuthorizationStatusAuthorized:
