@@ -135,22 +135,22 @@ _ = query.get("55f1572460b2ce30e8b7afde") { result in
 }
 ```
 ```java
-AVQuery<AVUser> query = AVUser.getQuery();
-query.getInBackground("55f1572460b2ce30e8b7afde").subscribe(new Observer<AVUser>() {
+LCQuery<LCUser> query = LCUser.getQuery();
+query.getInBackground("55f1572460b2ce30e8b7afde").subscribe(new Observer<LCUser>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
     @Override
-    public void onNext(AVUser anotherUser) {
+    public void onNext(LCUser anotherUser) {
         // 新建一个帖子对象
-        AVObject post= new AVObject("Post");
+        LCObject post= new LCObject("Post");
         post.put("title","这是我的第二条发言，谢谢大家！");
         post.put("content","我最近喜欢看足球和篮球了。");
 
         //新建一个 ACL 实例
-        AVACL acl = new AVACL();
+        LCACL acl = new LCACL();
         acl.setPublicReadAccess(true);// 设置公开的「读」权限，任何人都可阅读
-        acl.setWriteAccess(AVUser.getCurrentUser(), true);//为当前用户赋予「写」权限
+        acl.setWriteAccess(LCUser.getCurrentUser(), true);//为当前用户赋予「写」权限
         acl.setWriteAccess(anotherUser, true);
 
         // 将 ACL 实例赋予 Post对象
@@ -406,11 +406,11 @@ do {
 ```
 ```java
 // 角色本身的 ACL
-AVACL roleACL = new AVACL();
+LCACL roleACL = new LCACL();
 roleACL.setPublicReadAccess(true);
-roleACL.setWriteAccess(AVUser.getCurrentUser(),true);
+roleACL.setWriteAccess(LCUser.getCurrentUser(),true);
 
-AVRole admin = new AVRole("admin", roleACL);
+LCRole admin = new LCRole("admin", roleACL);
 admin.saveInBackground().blockingSubscribe();
 ```
 ```js
@@ -490,7 +490,7 @@ if let currentUser = LCApplication.default.currentUser {
 }
 ```
 ```java
-admin.getUsers().add(AVUser.getCurrentUser());
+admin.getUsers().add(LCUser.getCurrentUser());
 ```
 ```js
 admin.getUsers().add(AV.User.current());
@@ -521,7 +521,7 @@ if let currentUser = LCApplication.default.currentUser {
 }
 ```
 ```java
-admin.getUsers().remove(AVUser.getCurrentUser());
+admin.getUsers().remove(LCUser.getCurrentUser());
 ```
 ```js
 admin.getUsers().remove(AV.User.current());
@@ -628,10 +628,10 @@ if let user = LCApplication.default.currentUser {
 }
 ```
 ```java
-AVUser user = AVUser.getCurrentUser();
-user.getRolesInBackground().subscribe(new Observer<List<AVRole>>() {
+LCUser user = LCUser.getCurrentUser();
+user.getRolesInBackground().subscribe(new Observer<List<LCRole>>() {
     @Override public void onSubscribe(Disposable d) {}
-    @Override public void onNext(List<AVRole> avRoles) {
+    @Override public void onNext(List<LCRole> avRoles) {
         // avRoles 是查询结果
     }
     @Override public void onError(Throwable e) {}
@@ -677,7 +677,7 @@ AVUser *userQuery = [[moderator users] query];
 let *userQuery = moderator.users?.query
 ```
 ```java
-AVQuery<AVUser> userQuery = moderator.getUsers().getQuery();
+LCQuery<LCUser> userQuery = moderator.getUsers().getQuery();
 ```
 ```js
 const userQuery = moderator.getUsers().query();
@@ -706,7 +706,7 @@ AVRole *subroleQuery = [[moderator roles] query];
 let *subRoleQuery = moderator.roles?.query
 ```
 ```java
-AVQuery<AVRole> subroleQuery = moderator.getRoles().getQuery();
+LCQuery<LCRole> subroleQuery = moderator.getRoles().getQuery();
 ```
 ```js
 const subroleQuery = moderator.getRoles().query();
@@ -751,7 +751,7 @@ let query = LCQuery(className: "Todo")
 query.includeACL = true
 ```
 ```java
-AVQuery<AVObject> query = new AVQuery<>("Todo");
+LCQuery<LCObject> query = new LCQuery<>("Todo");
 query.includeACL(true);
 ```
 ```js
