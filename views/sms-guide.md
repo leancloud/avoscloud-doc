@@ -67,11 +67,11 @@ _ = LCSMSClient.requestShortMessage(
 }
 ```
 ```java
-AVSMSOption option = new AVSMSOption();
+LCSMSOption option = new LCSMSOption();
 option.setTemplateName("Register_Notice"); // 控制台配置好的模板名称
 option.setSignatureName("LeanCloud");      // 控制台配置好的短信签名
 // 往 18200008888 这个手机号码发送短信，使用预先配置的模板和签名
-AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
     @Override
     public void onSubscribe(Disposable disposable) {
     }
@@ -204,11 +204,11 @@ try {
   }
   ```
   ```java
-  AVSMSOption option = new AVSMSOption();
+  LCSMSOption option = new LCSMSOption();
   option.setTtl(10);
   option.setApplicationName("应用名称");
   option.setOperation("某种操作");
-  AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+  LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
       @Override
       public void onSubscribe(Disposable disposable) {
       }
@@ -296,7 +296,7 @@ try {
   }
   ```
   ```java 
-  AVSMS.verifySMSCodeInBackground("123456","18200008888").subscribe(new Observer<AVNull>() {
+  LCSMS.verifySMSCodeInBackground("123456","18200008888").subscribe(new Observer<AVNull>() {
       @Override
       public void onSubscribe(Disposable d) {
       }
@@ -373,9 +373,9 @@ _ = LCSMSClient.requestVoiceVerificationCode(mobilePhoneNumber: "18200008888") {
 }
 ```
 ```java
-AVSMSOption option = new AVSMSOption();
-option.setType(AVSMS.TYPE.VOICE_SMS);
-AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+LCSMSOption option = new LCSMSOption();
+option.setType(LCSMS.TYPE.VOICE_SMS);
+LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
     @Override
     public void onSubscribe(Disposable disposable) {
     }
@@ -445,7 +445,7 @@ _ = LCSMSClient.verifyMobilePhoneNumber("18200008888", verificationCode: "123456
 }
 ```
 ```java
-AVSMS.verifySMSCodeInBackground("123456","18200008888").subscribe(new Observer<AVNull>() {
+LCSMS.verifySMSCodeInBackground("123456","18200008888").subscribe(new Observer<AVNull>() {
     @Override
     public void onSubscribe(Disposable d) {
     }
@@ -579,13 +579,13 @@ _ = LCSMSClient.requestShortMessage(
 }
 ```
 ```java
-AVSMSOption option = new AVSMSOption();
+LCSMSOption option = new LCSMSOption();
 option.setTemplateName("Order_Notice");
 option.setSignatureName("sign_BuyBuyBuy");
 Map<String, Object> parameters = new HashMap<String, Object>();
 parameters.put("order_id", "7623432424540"); // 使用实际的值来替换模板中的变量
 option.setEnvMap(parameters);
-AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
     @Override
     public void onSubscribe(Disposable disposable) {
     }
@@ -1077,11 +1077,11 @@ _ = LCSMSClient.requestShortMessage(
 }
 ```
 ```java
-AVSMSOption option = new AVSMSOption();
+LCSMSOption option = new LCSMSOption();
 option.setTemplateName("Order_Notice");
 option.setSignatureName("sign_BuyBuyBuy");
 option.setCaptchaValidateToken("validateToken");
-AVSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
+LCSMS.requestSMSCodeInBackground("18200008888", option).subscribe(new Observer<AVNull>() {
     @Override
     public void onSubscribe(Disposable disposable) {
     }
