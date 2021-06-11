@@ -1,20 +1,20 @@
 # iOS 消息推送开发指南
 
-本文介绍了如何在 iOS 设备中使用 LeanCloud 的推送功能。建议先阅读《消息推送概览》了解相关概念。
+本文介绍了如何在 iOS 设备中使用 LeanCloud 的推送功能。建议先阅读《云推送总览》了解相关概念。
 
 ## 配置 APNs 推送证书
 
-配置 APNs 证书是使用推送服务的前提，详情请参考《iOS 推送证书设置指南》。
+配置 APNs 证书是使用推送服务的前提，详情请参考《iOS 推送设置指南》。
 
 ## iOS 流程简介
 
 首先，注册 APNs 申请 Token，并将其保存到云端：
 
-<img src="images/apns-registration.svg" class="img-responsive" alt="">
+![注册 APNs 申请 Token](images/apns-registration.svg)
 
-然后，调用 LeanCloud 提供的接口发送推送消息：
+然后，调用云推送提供的接口发送推送消息：
 
-<img src="images/push-workflow-ios.svg" class="img-responsive" alt="">
+![调用云推送接口发推送](images/push-workflow-ios.svg)
 
 ## Installation
 
@@ -345,7 +345,7 @@ LCPush *push = [[LCPush alloc] init];
 
 ## 高级定向发送
 
-频道对于大多数应用来说可能就足够了。但是某些情况下，你可能需要更高精度的定向推送。LeanCloud 允许你通过 LCQuery API 查询 Installation 列表，并向指定条件的 query 推送消息。
+频道对于大多数应用来说可能就足够了。但是某些情况下，你可能需要更高精度的定向推送。云推送允许你通过 LCQuery API 查询 Installation 列表，并向指定条件的 query 推送消息。
 
 因为 Installation 同时是 LCObject 的子类，因此你可以保存任何数据类型到 Installation，并将它和你的其他应用数据对象关联起来，这样一来，你可以非常灵活地向你用户群做定制化、动态的推送。
 

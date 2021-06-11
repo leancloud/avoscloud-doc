@@ -7,7 +7,7 @@
 
 # Android 消息推送开发指南
 
-请先阅读 [消息推送概览](push_guide.html) 了解相关概念。
+请先阅读 [云推送总览](push_guide.html) 了解相关概念。
 
 Android 消息推送有专门的 Demo，请见 [Android-Push-Demo](https://github.com/leancloud/android-push-demo) 项目。
 
