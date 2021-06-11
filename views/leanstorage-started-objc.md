@@ -4,10 +4,10 @@
 {# --Start--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 {% set platformName = 'Objective-C' %}
 {% set segment_code = "objc" %}
-{% set avUserName = 'AVUser' %}
-{% set avQueryName = 'AVQuery' %}
-{% set avObjectName = 'AVObject' %}
-{% set avFileName = 'AVFile' %}
+{% set avUserName = 'LCUser' %}
+{% set avQueryName = 'LCQuery' %}
+{% set avObjectName = 'LCObject' %}
+{% set avFileName = 'LCFile' %}
 {% set storage_guide_url ="[Objective-C 数据存储开发指南](leanstorage_guide-objc.html)"%}
 {# --End--变量定义，主模板使用的单词和短语在所有子模板都必须赋值 #}
 
@@ -21,7 +21,7 @@
     if (username && password && email) {
         // LeanCloud - 注册
         // https://leancloud.cn/docs/leanstorage_guide-objc.html#用户名和密码注册
-        AVUser *user = [AVUser user];
+        LCUser *user = [LCUser user];
         user.username = username;
         user.password = password;
         user.email = email;
@@ -43,7 +43,7 @@
     if (username && password) {
         // LeanCloud - 登录
         // https://leancloud.cn/docs/leanstorage_guide-objc.html#登录
-        [AVUser logInWithUsernameInBackground:username password:password block:^(AVUser *user, NSError *error) {
+        [LCUser logInWithUsernameInBackground:username password:password block:^(LCUser *user, NSError *error) {
             if (error) {
                 NSLog(@"登录失败 %@", error);
             } else {
@@ -64,14 +64,14 @@
     // LeanCloud - 构建图片
     // https://leancloud.cn/docs/leanstorage_guide-objc.html#从数据流构建文件
     NSData *data = UIImagePNGRepresentation(self.selectedImage);
-    AVFile *file = [AVFile fileWithData:data];
+    LCFile *file = [LCFile fileWithData:data];
     // LeanCloud - 获取当前用户
     // https://leancloud.cn/docs/leanstorage_guide-objc.html#当前用户
-    AVUser *currentUser = [AVUser currentUser];
+    LCUser *currentUser = [LCUser currentUser];
     
     // LeanCloud - 保存对象
     // https://leancloud.cn/docs/leanstorage_guide-objc.html#对象
-    AVObject *product = [AVObject objectWithClassName:@"Product"];
+    LCObject *product = [LCObject objectWithClassName:@"Product"];
     [product setObject:title forKey:@"title"];
     [product setObject:price forKey:@"price"];
     
@@ -95,7 +95,7 @@
 ```objc
     // LeanCloud - 查询 - 获取商品列表
     // https://leancloud.cn/docs/leanstorage_guide-objc.html#查询
-    AVQuery *query = [AVQuery queryWithClassName:@"Product"];
+    LCQuery *query = [LCQuery queryWithClassName:@"Product"];
     [query orderByDescending:@"createdAt"];
     // owner 为 Pointer，指向 _User 表
     [query includeKey:@"owner"];
@@ -114,7 +114,7 @@
 ```objc
     // LeanCloud - 退出登录
     // https://leancloud.cn/docs/leanstorage_guide-objc.html#登出
-    [AVUser logOut];
+    [LCUser logOut];
 ```
 {% endblock %}
 
