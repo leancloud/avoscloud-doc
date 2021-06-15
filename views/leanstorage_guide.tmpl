@@ -11538,7 +11538,7 @@ student.name = @"小明";
 要实现子类化，需要下面几个步骤：
 
 1. 导入 `LCObject+Subclass.h`；
-2. 继承 `LCObject` 并实现 `AVSubclassing` 协议；
+2. 继承 `LCObject` 并实现 `LCSubclassing` 协议；
 3. 实现类方法 `parseClassName`，返回的字符串是原先要传给 `initWithClassName:` 的参数，这样后续就不必再进行类名引用了。如果不实现，默认返回的是类的名字。**请注意：`LCUser` 子类化后必须返回 `_User`**；
 4. 在实例化子类之前调用 `[YourClass registerSubclass]`（**在应用当前生命周期中，只需要调用一次**。可在子类的 `+load` 方法或者 `UIApplication` 的 `-application:didFinishLaunchingWithOptions:` 方法里面调用）。
 
