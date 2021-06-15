@@ -48,15 +48,15 @@ query.find().then(function(results) {
 });
 ```
 ```objc
-AVSearchQuery *searchQuery = [AVSearchQuery searchWithQueryString:@"test-query"];
+LCSearchQuery *searchQuery = [LCSearchQuery searchWithQueryString:@"test-query"];
 searchQuery.className = @"GameScore";
 searchQuery.highlights = @"field1,field2";
 searchQuery.limit = 10;
-searchQuery.cachePolicy = kAVCachePolicyCacheElseNetwork;
+searchQuery.cachePolicy = kLCCachePolicyCacheElseNetwork;
 searchQuery.maxCacheAge = 60;
 searchQuery.fields = @[@"field1", @"field2"];
 [searchQuery findInBackground:^(NSArray *objects, NSError *error) {
-  for (AVObject *object in objects) {
+  for (LCObject *object in objects) {
         NSString *appUrl = [object objectForKey:@"_app_url"];
         NSString *deeplink = [object objectForKey:@"_deeplink"];
         NSString *hightlight = [object objectForKey:@"_highlight"];
@@ -128,22 +128,22 @@ Debug.Log(response.Sid);
 有关查询语法，可以参考 [q 查询语法](search-rest-api.html#q_查询语法)。
 
 因为每次请求都有 limit 限制，所以一次请求可能并不能获取到所有满足条件的记录。
-`AVSearchQuery` 的 `hits()` 标示所有满足查询条件的记录数。
-你可以多次调用同一个 `AV.SearchQuery` 的 `find()` 获取余下的记录。
+`SearchQuery` 的 `hits()` 标示所有满足查询条件的记录数。
+你可以多次调用同一个 `SearchQuery` 的 `find()` 获取余下的记录。
 
-如果在不同请求之间无法保存查询的 query 对象，可以利用 sid 做到翻页，一次查询是通过 `AV.SearchQuery` 的 `_sid` 属性来标示的。
-你可以通过 `AV.SearchQuery` 的 `sid()` 来重建查询 query 对象，继续翻页查询。
+如果在不同请求之间无法保存查询的 query 对象，可以利用 sid 做到翻页，一次查询是通过 `SearchQuery` 的 `_sid` 属性来标示的。
+你可以通过 `SearchQuery` 的 `sid()` 来重建查询 query 对象，继续翻页查询。
 sid 在 5 分钟内有效。
 
-复杂排序可以使用 `AV.SearchSortBuilder`，例如，假设 `scores` 是由分数组成的数组，现在需要根据分数的平均分倒序排序，并且没有分数的排在最后：
+复杂排序可以使用 `SearchSortBuilder`，例如，假设 `scores` 是由分数组成的数组，现在需要根据分数的平均分倒序排序，并且没有分数的排在最后：
 
 ```js
 searchQuery.sortBy(new AV.SearchSortBuilder().descending('scores', 'avg', 'last'));
 ```
 ```objc
-AVSearchSortBuilder *builder = [AVSearchSortBuilder newBuilder];
+LCSearchSortBuilder *builder = [LCSearchSortBuilder newBuilder];
 [builder orderByDescending:@"scores" withMode:@"max" andMissing:@"last"];
-searchQuery.AVSearchSortBuilder = builder;
+searchQuery.sortBuilder = builder;
 ```
 ```java
 AVSearchSortBuilder builder = AVSearchSortBuilder.newBuilder();
@@ -168,8 +168,8 @@ searchQuery.SortBy(sortBuilder);
 - [AV.SearchSortBuilder](https://leancloud.github.io/javascript-sdk/docs/AV.SearchSortBuilder.html)
 {{ docs.langSpecEnd('js') }}
 {{ docs.langSpecStart('objc') }}
-- [AVSearchQuery](https://leancloud.cn/api-docs/iOS/Classes/AVSearchQuery.html)
-- [AVSearchSortBuilder](https://leancloud.cn/api-docs/iOS/Classes/AVSearchSortBuilder.html)
+- [LCSearchQuery](https://leancloud.cn/api-docs/iOS/Classes/LCSearchQuery.html)
+- [LCSearchSortBuilder](https://leancloud.cn/api-docs/iOS/Classes/LCSearchSortBuilder.html)
 {{ docs.langSpecEnd('objc') }}
 {{ docs.langSpecStart('java') }}
 - [AVSearchQuery](https://leancloud.cn/api-docs/android/index.html)
