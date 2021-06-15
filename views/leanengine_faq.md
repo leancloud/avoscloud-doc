@@ -92,6 +92,10 @@
 
 [HT202491]: https://support.apple.com/en-us/HT202491
 
+## 之前使用 `npm` 装过旧版的命令行工具，如果升级到新版？
+
+如果之前使用 `npm` 安装过旧版本的命令行工具，为了避免与新版本产生冲突，建议使用 `npm uninstall -g leancloud-cli` 卸载旧版本命令行工具。或者直接按照 `homebrew` 的提示，执行 `brew link --overwrite lean-cli` 覆盖掉之前的 `lean` 命令来解决。
+
 ## 命令行工具在本地调试时提示 `Error: listen EADDRINUSE :::3000`，无法访问应用
 
 `listen EADDRINUSE :::3000` 表示你的程序默认使用的 3000 端口被其他应用占用了，可以按照下面的方法找到并关闭占用 3000 端口的程序：
@@ -1594,3 +1598,78 @@ AV.Push.send({
   }
 });
 ```
+
+## 命令行工具的 metric 命令有什么用？
+
+使用 `metric` 命令可以查看 LeanStorage 的状态报告：
+
+```sh
+$ lean metric --from 2017-09-07
+[INFO] Retrieving xxxxxx storage report
+Date                 2017-09-07   2017-09-08   2017-09-09
+API Requests         49           35           14
+Max Concurrent       2            2            2
+Mean Concurrent      1            1            1
+Exceed Time          0            0            0
+Max QPS              5            5            5
+Mean Duration Time   9ms          21ms         7ms
+80% Duration Time    15ms         22ms         9ms
+95% Duration Time    26ms         110ms        25ms
+```
+
+相关状态的描述如下：
+
+<table>
+	<tr><th width="35%">状态</th><th>描述</th></tr>
+	<tr><td>`Date`</td><td>日期</td></tr>
+	<tr><td>`API Requests`</td><td>API 请求次数</td></tr>
+	<tr><td>`Max Concurrent`</td><td>最大工作线程数</td></tr>
+	<tr><td>`Mean Concurrent`</td><td>平均工作线程数</td></tr>
+	<tr><td>`Exceed Time`</td><td>超限请求数</td></tr>
+	<tr><td>`Max QPS`</td><td>最大 QPS</td></tr>
+	<tr><td>`Mean Duration Time`</td><td>平均响应时间</td></tr>
+	<tr><td>`80% Duration Time`</td><td>80% 响应时间</td></tr>
+	<tr><td>`95% Duration Time`</td><td>95% 响应时间</td></tr>
+</table>
+
+`metric` 接收参数与 `logs` 类似，具体参考 `lean metric -h`。
+
+## 如何通过命令行工具上传文件至文件服务？
+
+
+```sh
+$ lean upload public/index.html
+Uploads /Users/dennis/programming/avos/new_app/public/index.html successfully at: http://ac-7104en0u.qiniudn.com/f9e13e69-10a2-1742-5e5a-8e71de75b9fc.html
+```
+
+文件上传成功后会自动生成在云端的 URL，即上例中 `successfully at:` 之后的信息。
+
+上传 images 目录下的所有文件：
+
+```sh
+$ lean upload images/
+```
+
+## 如何扩展命令行工具的功能？
+
+有时我们需要对某个应用进行特定并且频繁的操作，比如查看应用 `_User` 表的记录总数，这样可以使用命令行工具的自定义命令来实现。
+
+只要在当前系统的 `PATH` 环境变量下，或者在项目目录 `.leancloud/bin` 下存在一个以 `lean-` 开头的可执行文件，比如 `lean-usercount`，那么执行 `$ lean usercount`，命令行工具就会自动调用这个可执行文件。与直接执行 `$ lean-usercount` 不同的是，这个命令可以获取与应用相关的环境变量，方便访问对应的数据。
+
+例如将如下脚本放到当前系统的 `PATH` 环境变量中（比如 `/usr/local/bin`）：
+
+```python
+#! /bin/env python
+
+import sys
+
+import leancloud
+
+app_id = os.environ['LEANCLOUD_APP_ID']
+master_key = os.environ['LEANCLOUD_APP_MASTER_KEY']
+
+leancloud.init(app_id, master_key=master_key)
+print(leancloud.User.query.count())
+```
+
+同时赋予这个脚本可执行权限 `$ chmod +x /usr/local/bin/lean-usercount`，然后执行 `$ lean usercount`，就可以看到当前应用对应的 `_User` 表中记录总数了。

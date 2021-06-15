@@ -1,9 +1,7 @@
-{% import "views/_leanengine.njk" as leanengine %}
-{% set release = "[GitHub releases 页面](https://releases.leanapp.cn/#/leancloud/lean-cli/releases)" %}
 
 # 命令行工具 CLI 使用指南
 
-命令行工具是用来管理和部署云引擎项目的工具。它不仅可以部署、发布和回滚云引擎代码，对同一个云引擎项目做多应用管理，还能查看云引擎日志，批量将文件上传到 LeanCloud 云端。
+命令行工具是用来管理和部署云引擎项目的工具。它不仅可以部署、发布和回滚云引擎代码，对同一个云引擎项目做多应用管理，还能查看云引擎日志，批量将文件上传到云端。
 
 ## 安装命令行工具
 
@@ -16,21 +14,20 @@ brew update
 brew install lean-cli
 ```
 
-如果之前使用 `npm` 安装过旧版本的命令行工具，为了避免与新版本产生冲突，建议使用 `npm uninstall -g leancloud-cli` 卸载旧版本命令行工具。或者直接按照 `homebrew` 的提示，执行 `brew link --overwrite lean-cli` 覆盖掉之前的 `lean` 命令来解决。
-
-如果通过 Homebrew 安装遇到问题，可以参考[这个 FAQ](leanengine_faq.html#使用_Homebrew_安装命令行工具失败)。
-
+如果通过 Homebrew 安装遇到问题，可以参考《云引擎常见问题解答》的《使用 Homebrew 安装命令行工具失败》。
 ### Windows
 
-Windows 用户可以在 {{release}} 根据操作系统版本下载最新的 32 位 或 64 位 **msi** 安装包进行安装，安装成功之后在 Windows 命令提示符（或 PowerShell）下直接输入 `lean` 命令即可使用。
+Windows 用户可以在 [GitHub releases 页面]根据操作系统版本下载最新的 32 位 或 64 位 **msi** 安装包进行安装，安装成功之后在 Windows 命令提示符（或 PowerShell）下直接输入 `lean` 命令即可使用。
+
+[GitHub releases 页面]: https://releases.leanapp.cn/#/leancloud/lean-cli/releases
 
 也可以选择编译好的绿色版 **exe** 文件，下载后将此文件更名为 `lean.exe`，并将其路径加入到系统 **PATH** 环境变量（[设置方法](https://www.java.com/zh_CN/download/help/path.xml)）中去。这样使用时在 Windows 命令提示符（或 PowerShell）下，在任意目录下输入 `lean` 就可以使用命令行工具了。当然也可以将此文件直接放到已经在 PATH 环境变量中声明的任意目录中去，比如 `C:\Windows\System32` 中。
 
 ### Linux
 
-基于 Debian 的发行版可以从 {{release}} 下载 deb 包安装。
+基于 Debian 的发行版可以从 [GitHub releases 页面] 下载 deb 包安装。
 
-其他发行版可以从 {{release}} 下载预编译好的二进制文件 `lean-linux-x64`，赋予可执行权限（`chmod a+x lean-linux-x64`），重命名为 `lean` 并放到已经在 PATH 环境变量中声明的任意目录中即可。
+其他发行版可以从 [GitHub releases 页面] 下载预编译好的二进制文件 `lean-linux-x64`，赋予可执行权限（`chmod a+x lean-linux-x64`），重命名为 `lean` 并放到已经在 PATH 环境变量中声明的任意目录中即可。
 
 如果你使用 Linux 版的 Homebrew，同样可以通过 Homebrew 安装：
 
@@ -61,12 +58,6 @@ brew upgrade
 安装成功之后，直接在 terminal 终端运行 `lean help`，输出帮助信息：
 
 ```sh
- _                        ______ _                 _
-| |                      / _____) |               | |
-| |      ____ ____ ____ | /     | | ___  _   _  _ | |
-| |     / _  ) _  |  _ \| |     | |/ _ \| | | |/ || |
-| |____( (/ ( ( | | | | | \_____| | |_| | |_| ( (_| |
-|_______)____)_||_|_| |_|\______)_|\___/ \____|\____|
 NAME:
    lean - Command line to manage and deploy LeanCloud apps
 
@@ -74,15 +65,15 @@ USAGE:
    lean [global options] command [command options] [arguments...]
 
 VERSION:
-   0.21.0
+   0.25.0
 
 COMMANDS:
      login    Log in to LeanCloud
+     switch   Change the associated LeanCloud app
      metric   Obtain LeanStorage performance metrics of current project
      info     Show information about the current user and app
      up       Start a development instance locally
      init     Initialize a LeanEngine project
-     switch   Change the associated LeanCloud app
      deploy   Deploy the project to LeanEngine
      publish  Publish code from staging to production
      upload   Upload files to the current application (available in the '_File' class)
@@ -90,7 +81,7 @@ COMMANDS:
      debug    Start the debug console without running the project
      env      Output environment variables used by the current project
      cache    LeanCache shell
-     cql      Start CQL interactive mode
+     cql      Start CQL interactive mode (warn: CQL is deprecated)
      help, h  Show all commands or help info for one command
 
 GLOBAL OPTIONS:
@@ -102,11 +93,11 @@ GLOBAL OPTIONS:
 命令 | 用途
 - | -
 `login` | 登录 LeanCloud 账号
+`switch` | 切换关联的云引擎项目
 `metric` | 当前项目的 LeanStorage 统计信息
 `info` | 当前用户、应用
 `up` | 启动本地开发调试实例
 `init` | 初始化云引擎项目
-`switch` | 切换关联的云引擎项目
 `deploy` | 部署项目至云引擎
 `publish` | 部署至生产环境
 `upload` | 上传文件至当前应用（可以在 `_File` 类中查看）
@@ -119,7 +110,7 @@ GLOBAL OPTIONS:
 
 ```sh
 $ lean --version
-lean version 0.21.0
+lean version 0.25.0
 ```
 
 `lean command -h` 可以查看子命令的帮助信息，例如：
@@ -129,25 +120,27 @@ NAME:
    lean login - Log in to LeanCloud
 
 USAGE:
-   lean login [command options] [-u username -p password (--region <CN> | <US> | <TAB>)]
+   lean login [command options] [-u <username>] [-p <password>] [--use-token] [--token <token>] [--region (cn-n1 | cn-e1 | us-w1)]
 
 OPTIONS:
    --username value, -u value  Username
    --password value, -p value  Password
-   --region value, -r value    The LeanCloud region to log in to (e.g., US, CN)
+   --region value, -r value    The LeanCloud region to log in to (e.g., cn-n1, us-w1)
+   --use-token                 Use AccessToken to log in
+   --token value               AccessToken generated from the Dashboard
 ```
 
 下文中凡是以 `$ lean` 开头的文字即表示在终端里执行命令。
 
 ## 登录
 
-安装完命令行工具之后，首先第一步需要登录 LeanCloud 账户。
+安装完命令行工具之后，首先第一步需要登录云服务账户。
 
 ```sh
 $ lean login
 ```
 
-然后按照提示选择区域并输入 LeanCloud 用户名和密码完成登录。
+然后按照提示选择区域并输入用户名和密码完成登录。
 
 如果同时使用多个区域，那么可以多次运行 `lean login`，每次选择不同的区域，并使用相应的用户名、密码登录。
 
@@ -157,7 +150,7 @@ $ lean login
 
 ## 初始化项目
 
-登录完成之后，可以使用 `init` 命令来初始化一个项目，并且关联到已有的 LeanCloud 应用上。
+登录完成之后，可以使用 `init` 命令来初始化一个项目，并且关联到已有的云服务应用上。
 
 ```sh
 [?] Please select an app:
@@ -173,7 +166,9 @@ $ lean login
  2) Python
  3) Java
  4) PHP
- 5) Others
+ 5) .Net
+ 6）Go
+ 7) Others
 ```
 
 之后命令行工具会将此项目模版下载到本地，这样初始化就完成了：
@@ -193,7 +188,7 @@ $ lean login
 $ lean switch
 ```
 
-将已有项目关联到 LeanCloud 应用上。
+将已有项目关联到云服务应用上。
 
 ## 切换分组
 
@@ -209,14 +204,7 @@ $ lean switch
 $ cd AwesomeApp
 ```
 
-之后需要安装此项目相关的依赖，需要根据项目语言来查看不同文档：
-
-- [Python](leanengine_webhosting_guide-python.html#本地运行和调试)
-- [Node.js](leanengine_webhosting_guide-node.html#本地运行和调试)
-- [PHP](leanengine_webhosting_guide-php.html#本地运行和调试)
-- [Java](leanengine_webhosting_guide-java.html#本地运行和调试)
-
-启动应用：
+安装此项目相关的依赖后，可以通过命令行工具启动应用：
 
 ```sh
 $ lean up
@@ -225,17 +213,9 @@ $ lean up
 - 在浏览器中打开 <http://localhost:3000>，进入 web 应用的首页。
 - 在浏览器中打开 <http://localhost:3001>，进入云引擎云函数和 Hook 函数调试界面。
 
-<div class="callout callout-info">
-  <ul>
-    <li>如果想变更启动端口号，可以使用 `lean up --port 新端口号` 命令来指定。</li>
-    <li>命令行工具的所有命令都可以通过 `-h` 参数来查看详细的参数说明信息，比如 `lean up -h`。</li>
-  </ul>
-</div>
+注意，如果想变更启动端口号，可以使用 `lean up --port 新端口号` 命令来指定。
 
 旧版命令行工具可以在 `$ lean up` 的过程中，监测项目文件的变更，实现自动重启开发服务进程。新版命令行工具移除了这一功能，转由项目代码本身来实现，以便更好地与项目使用的编程语言或框架集成。
-
-- 使用旧版命令行工具创建的 Node.js 项目，请参考 [Pull Request #26](https://github.com/leancloud/node-js-getting-started/pull/26/files) 来配置。
-- 使用旧版命令行工具创建的 Python 项目，请参考 [Pull Request #12](https://github.com/leancloud/python-getting-started/pull/12/files) 来配置。
 
 除了使用命令行工具来启动项目之外，还可以**原生地**启动项目，比如直接使用 `node server.js` 或者 `python wsgi.py`。这样能够将云引擎开发流程更好地集成到开发者管用的工作流程中，也可以直接和 IDE 集成。但是直接使用命令行工具创建的云引擎项目，默认会依赖一些环境变量，因此需要提前设置好这些环境变量。
 
@@ -251,7 +231,7 @@ $ lean up
 $ lean debug --remote=http://remote-url-or-ip-address:remote-port --app-id=xxxxxx
 ```
 
-更多关于云引擎开发的内容，请参考 [云引擎服务总览](leanengine_overview.html)。
+更多关于云引擎开发的内容，请参考《云引擎服务总览》。
 
 ## 部署
 
@@ -263,7 +243,7 @@ $ lean debug --remote=http://remote-url-or-ip-address:remote-port --app-id=xxxxx
 $ lean deploy
 ```
 
-对于生产环境是<u>体验实例</u>的云引擎的应用，这个命令会将本地源码部署到线上的生产环境，无条件覆盖之前的代码（无论是从本地仓库部署、Git 部署还是在线定义）；而对于生产环境是<u>标准实例</u>的云引擎的应用，这个命令会先部署到**预备环境**，后续需要使用 `lean publish` 来完成向生产环境的部署，如需直接部署到生产环境，可额外添加 `--prod 1` 选项：
+对于生产环境是**体验实例**的云引擎的应用，这个命令会将本地源码部署到线上的生产环境，无条件覆盖之前的代码（无论是从本地仓库部署、Git 部署还是在线定义）；而对于生产环境是**标准实例**的云引擎的应用，这个命令会先部署到**预备环境**，后续需要使用 `lean publish` 来完成向生产环境的部署，如需直接部署到生产环境，可额外添加 `--prod 1` 选项：
 
 ```sh
 $ lean deploy --prod 1
@@ -296,13 +276,13 @@ $ lean deploy
 [INFO] Deleting temporary files
 ```
 
-默认部署备注为「从命令行工具构建」，显示在 **应用控制台 > 云引擎 > 日志** 中。你可以通过 `-m` 选项来自定义部署的备注信息：
+默认部署备注为「从命令行工具构建」，显示在 **云服务控制台 > 云引擎 > 云引擎分组 > 日志** 中。你可以通过 `-m` 选项来自定义部署的备注信息：
 
 ```sh
-$ lean deploy -m 'Be more awesome! 这是定制的部署备注'
+$ lean deploy -m 'fix #42'
 ```
 
-部署之后需要[绑定一个云引擎自定义域名](custom-api-domain-guide.html#云引擎域名)，然后通过 curl 命令来测试你的云引擎代码，或者通过浏览器访问相应的网址。
+部署之后需要绑定一个云引擎自定义域名，然后就可以通过 curl 命令来测试你的云引擎代码，或者通过浏览器访问相应的网址。
 
 #### 部署时忽略部分文件
 
@@ -314,7 +294,7 @@ $ lean deploy -m 'Be more awesome! 这是定制的部署备注'
 
 ### 从 Git 仓库部署
 
-如果代码保存在某个 Git 仓库上，例如 [GitHub](https://github.com)，并且在 LeanCloud 控制台已经正确设置了 git repo 地址以及 deploy key，你也可以请求 LeanCloud 平台从 Git 仓库获取源码并自动部署。这个操作可以在云引擎的部署菜单里完成，也可以在本地执行：
+如果代码保存在某个 Git 仓库上，例如 [GitHub](https://github.com)，并且在 LeanCloud 控制台已经正确设置了 git repo 地址以及 deploy key，你也可以请求云引擎从 Git 仓库获取源码并自动部署。这个操作可以在云引擎的部署菜单里完成，也可以在本地执行：
 
 ```sh
 $ lean deploy -g
@@ -322,13 +302,12 @@ $ lean deploy -g
 
 - `-g` 选项要求从 Git 仓库部署，Git 仓库地址必须已经在云引擎菜单中保存。
 - 默认部署使用 **master** 分支的最新代码，你可以通过 `-r <revision>` 来指定部署特定的 commit 或者 branch。
-- 设置 git repo 地址以及 deploy key 的方法可以参考[云引擎网站托管指南 · Git 部署](leanengine_webhosting_guide-node.html#Git_部署)。
-
+- 设置 git repo 地址以及 deploy key 的方法可以参考《云引擎网站托管指南》的《Git 部署》一节。
 ## 发布到生产环境
 
 以下步骤仅适用于生产环境是 [标准实例](leanengine_plan.html#标准实例) 的用户。
 
-如果预备环境如果测试没有问题，此时需要将预备环境的云引擎代码切换到生产环境，可以在 **应用控制台 > 云引擎 > 部署** 中发布，也可以直接运行 `publish` 命令：
+如果预备环境如果测试没有问题，此时需要将预备环境的云引擎代码切换到生产环境，可以在 **云服务控制台 > 云引擎 > 云引擎分组 > 部署** 中发布，也可以直接运行 `publish` 命令：
 
 ```sh
 $ lean publish
@@ -407,58 +386,9 @@ $ lean logs --from=2017-07-01 --to=2017-07-07 --format=json > leanengine.logs
 
 `--from`、`--to` 的时区为本地时区（运行 lean-cli 命令行工具的机器的本地时区）。
 
-## 查看 LeanStorage 状态报告
-
-使用 `metric` 命令可以查看 LeanStorage 的状态报告：
-
-```sh
-$ lean metric --from 2017-09-07
-[INFO] Retrieving xxxxxx storage report
-Date                 2017-09-07   2017-09-08   2017-09-09
-API Requests         49           35           14
-Max Concurrent       2            2            2
-Mean Concurrent      1            1            1
-Exceed Time          0            0            0
-Max QPS              5            5            5
-Mean Duration Time   9ms          21ms         7ms
-80% Duration Time    15ms         22ms         9ms
-95% Duration Time    26ms         110ms        25ms
-```
-
-相关状态的描述如下：
-
-<table>
-	<tr><th width="35%">状态</th><th>描述</th></tr>
-	<tr><td>`Date`</td><td>日期</td></tr>
-	<tr><td>`API Requests`</td><td>API 请求次数</td></tr>
-	<tr><td>`Max Concurrent`</td><td>最大工作线程数</td></tr>
-	<tr><td>`Mean Concurrent`</td><td>平均工作线程数</td></tr>
-	<tr><td>`Exceed Time`</td><td>超限请求数</td></tr>
-	<tr><td>`Max QPS`</td><td>最大 QPS</td></tr>
-	<tr><td>`Mean Duration Time`</td><td>平均响应时间</td></tr>
-	<tr><td>`80% Duration Time`</td><td>80% 响应时间</td></tr>
-	<tr><td>`95% Duration Time`</td><td>95% 响应时间</td></tr>
-</table>
-
-`metric` 接收参数与 `logs` 类似，具体介绍如下：
-
-```sh
-$ lean metric -h
-NAME:
-   lean metric - Obtain LeanStorage performance metrics of current project
-
-USAGE:
-   lean metric [command options] [--from fromTime --to toTime --format default|json]
-
-OPTIONS:
-   --from value    Start date, formatted as YYYY-MM-DD，e.g., 1926-08-17
-   --to value      End date formated as YYYY-MM-DD，e.g., 1926-08-17
-   --format value  Output format，'default' or 'json'
-```
-
 ## 多应用管理
 
-一个项目的代码可以同时部署到多个 LeanCloud 应用上。
+一个项目的代码可以同时部署到多个云服务应用上。
 
 ### 查看当前应用状态
 
@@ -477,7 +407,7 @@ $ lean info
 
 ### 切换应用
 
-如果需要将当前项目切换到其他 LeanCloud 应用，可以使用 `switch` 命令：
+如果需要将当前项目切换到其他应用，可以使用 `switch` 命令：
 
 ```sh
 $ lean switch
@@ -486,113 +416,6 @@ $ lean switch
 之后运行向导会给出可供切换的应用列表。
 
 另外还可以直接执行 `$ lean switch 其他应用的id` 来快速切换关联应用。
-
-
-## 上传文件
-
-使用 `upload` 命令既可以上传单个文件，也可以批量上传一个目录下（包括子目录）下的所有文件到 LeanCloud 云端。
-
-```sh
-$ lean upload public/index.html
-Uploads /Users/dennis/programming/avos/new_app/public/index.html successfully at: http://ac-7104en0u.qiniudn.com/f9e13e69-10a2-1742-5e5a-8e71de75b9fc.html
-```
-
-文件上传成功后会自动生成在 LeanCloud 云端的 URL，即上例中 `successfully at:` 之后的信息。
-
-上传 images 目录下的所有文件：
-
-```sh
-$ lean upload images/
-```
-
-## CQL 交互查询
-
-可以通过 `$ lean cql` 命令来使用 [CQL](cql_guide.html) 语言查询存储服务数据：
-
-```
-$ lean cql
-CQL > select objectId, mime_type, createdAt, updatedAt from _File where mime_type != null limit 10;
-objectId                   mime_type                                   createdAt                  updatedAt
-5583bc44e4b0ef6154cb1b9e   application/zip, application/octet-stream   2015-06-19T06:52:52.106Z   2015-06-19T06:52:52.106Z
-559a63bee4b0c4d3e72432f6   application/zip, application/octet-stream   2015-07-06T11:17:18.885Z   2015-07-06T11:17:18.885Z
-55cc4d3b60b28da5fc3af7c5   image/jpeg                                  2015-08-13T07:54:35.119Z   2015-08-13T07:54:35.119Z
-55cc4d7660b2d1408c770cde   image/jpeg                                  2015-08-13T07:55:34.496Z   2015-08-13T07:55:34.496Z
-55cc4df460b2c0a2834d63e2   image/jpeg                                  2015-08-13T07:57:40.013Z   2015-08-13T07:57:40.013Z
-55cc4eb660b2597462bc093e   image/jpeg                                  2015-08-13T08:00:54.983Z   2015-08-13T08:00:54.983Z
-55cc4ece60b2597462bc0e06   image/jpeg                                  2015-08-13T08:01:18.323Z   2015-08-13T08:01:18.323Z
-563b2fc360b216575c579204   application/zip, application/octet-stream   2015-11-05T10:30:27.721Z   2015-11-05T10:30:27.721Z
-564ae21400b0ee7f5ca4e11a   application/zip, application/octet-stream   2015-11-17T08:15:16.951Z   2015-11-17T08:15:16.951Z
-564da57360b2ed36207ad273   text/plain                                  2015-11-19T10:33:23.854Z   2015-11-19T10:33:23.854Z
-```
-
-如果需要查询的 Class 有大量 Object / Array 等嵌套的数据结构，但以上的表格形式不便于查看结果，可以尝试用 `$ lean cql --format=json` 将结果以 JSON 格式来展示：
-
-```
-$ lean cql --format=json
-CQL > select objectId, mime_type from _File where mime_type != null limit 3;
-[
-  {
-    "createdAt": "2015-06-19T06:52:52.106Z",
-    "mime_type": "application/zip, application/octet-stream",
-    "objectId": "5583bc44e4b0ef6154cb1b9e",
-    "updatedAt": "2015-06-19T06:52:52.106Z"
-  },
-  {
-    "createdAt": "2015-07-06T11:17:18.885Z",
-    "mime_type": "application/zip, application/octet-stream",
-    "objectId": "559a63bee4b0c4d3e72432f6",
-    "updatedAt": "2015-07-06T11:17:18.885Z"
-  },
-  {
-    "createdAt": "2015-08-13T07:54:35.119Z",
-    "mime_type": "image/jpeg",
-    "objectId": "55cc4d3b60b28da5fc3af7c5",
-    "updatedAt": "2015-08-13T07:54:35.119Z"
-  }
-]
-```
-
-## LeanCache 管理
-
-LeanCache 用户可以使用命令行工具来连接线上的 LeanCache 实例，对数据进行增删改查。
-
-{{ leanengine.leancacheWithCli() }}
-
-### 自定义命令
-
-有时我们需要对某个应用进行特定并且频繁的操作，比如查看应用 `_User` 表的记录总数，这样可以使用命令行工具的自定义命令来实现。
-
-只要在当前系统的 `PATH` 环境变量下，或者在项目目录 `.leancloud/bin` 下存在一个以 `lean-` 开头的可执行文件，比如 `lean-usercount`，那么执行 `$ lean usercount`，命令行工具就会自动调用这个可执行文件。与直接执行 `$ lean-usercount` 不同的是，这个命令可以获取与应用相关的环境变量，方便访问对应的数据。
-
-相关的环境变量有：
-
-环境变量名 | 描述
----|---
-`LEANCLOUD_APP_ID`| 当前应用的 app id
-`LEANCLOUD_APP_KEY` | 当前应用的 app key
-`LEANCLOUD_APP_MASTER_KEY` | 当前应用的 master key
-`LEANCLOUD_APP_HOOK_KEY` | 当前应用的 hook key
-`LEANCLOUD_APP_PORT` | 使用 `$ lean up` 启动应用时，默认的端口
-`LEANCLOUD_API_SERVER` | 当前应用对应 API 服务的 host
-`LEANCLOUD_REGION` | 当前应用对应区域信息，可能的值有 `cn`、`us`、`tab`
-
-例如将如下脚本放到当前系统的 `PATH` 环境变量中（比如 `/usr/local/bin`）：
-
-```python
-#! /bin/env python
-
-import sys
-
-import leancloud
-
-app_id = os.environ['LEANCLOUD_APP_ID']
-master_key = os.environ['LEANCLOUD_APP_MASTER_KEY']
-
-leancloud.init(app_id, master_key=master_key)
-print(leancloud.User.query.count())
-```
-
-同时赋予这个脚本可执行权限 `$ chmod +x /usr/local/bin/lean-usercount`，然后执行 `$ lean usercount`，就可以看到当前应用对应的 `_User` 表中记录总数了。
 
 ## 贡献
 
