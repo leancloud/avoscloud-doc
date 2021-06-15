@@ -2,7 +2,7 @@
 {% from "views/_data.njk" import libVersion as version %}
 # Flutter 消息推送开发指南
 
-本文介绍了如何在 Flutter 环境中使用 LeanCloud 的推送功能。建议先阅读 [云推送总览](push_guide.html) 了解相关概念。
+本文介绍了如何在 Flutter 环境中使用 LeanCloud 的推送功能。建议先阅读 [推送通知服务总览](push_guide.html) 了解相关概念。
 
 Flutter 即时通信 SDK 的推送服务依赖于 [LeanCloud-Swift-SDK](https://github.com/leancloud/swift-sdk) 和 [LeanCloud-Java-SDK](https://github.com/leancloud/java-unified-sdk)。所以下面分别讨论在 iOS 与 Android 设备中的配置。
 
