@@ -11637,7 +11637,7 @@ student.name = @"小明";
 另外，值为 `Pointer` 的实例可用 `LCObject*` 来表示。例如，如果 `Student` 中 `bestFriend` 代表一个指向另一个 `Student` 的键，由于 `Student` 是一个 `LCObject`，因此在表示这个键的值的时候，可以用一个 `LCObject*` 来代替：
 
 ```objc
-@interface Student : LCUser <AVSubclassing>
+@interface Student : LCUser <LCSubclassing>
 @property(nonatomic, strong) LCObject *bestFriend;
  …
 @end
