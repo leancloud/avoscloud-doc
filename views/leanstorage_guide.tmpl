@@ -11582,7 +11582,7 @@ student.name = @"小明";
 
 ### 属性
 
-为 `LCObject` 的子类添加自定义的属性和方法，可以更好地将这个类的逻辑封装起来。用 `AVSubclassing` 可以把所有的相关逻辑放在一起，这样不必再使用不同的类来区分业务逻辑和存储转换逻辑了。
+为 `LCObject` 的子类添加自定义的属性和方法，可以更好地将这个类的逻辑封装起来。用 `LCSubclassing` 可以把所有的相关逻辑放在一起，这样不必再使用不同的类来区分业务逻辑和存储转换逻辑了。
 
 `LCObject` 支持动态 synthesizer，就像 `NSManagedObject` 一样。先正常声明一个属性，只是在 `.m` 文件中把 `@synthesize` 变成 `@dynamic`。
 
