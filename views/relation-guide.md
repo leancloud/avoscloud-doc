@@ -102,7 +102,7 @@ RDBMS 中通过 Person_ID 域来连接 PERSON 表和 CAR 表，以此支持应�
 例如，为了记录每个学生的家庭住址，我们可以把住址信息作为一个整体嵌入 Student 类里面。
 
 ```objc
-    AVObject *studentTom = [AVObject objectWithClassName:@"Student"];
+    LCObject *studentTom = [LCObject objectWithClassName:@"Student"];
     [studentTom setObject:@"Tom" forKey:@"name"];
     NSDictionary *addr = [NSDictionary dictionaryWithObjectsAndKeys:
                           @"北京", @"city",
@@ -241,10 +241,10 @@ await studentTom.save();
 > 为了表述方便，后文中提及城市都泛指一级行政市以及直辖市行政区，而省份也包含了北京、上海等直辖市。
 
 ```objc
-    AVObject *GuangZhou = [AVObject objectWithClassName:@"City"];
+    LCObject *GuangZhou = [LCObject objectWithClassName:@"City"];
     [GuangZhou setObject:@"广州" forKey:@"name"];
 
-    AVObject *GuangDong = [AVObject objectWithClassName:@"Province"];
+    LCObject *GuangDong = [LCObject objectWithClassName:@"Province"];
     [GuangDong setObject:@"广东" forKey:@"name"];
 
     [GuangZhou setObject:GuangDong forKey:@"dependent"];
@@ -368,8 +368,8 @@ await guangZhou.save();
 要关联一个已经存在于云端的对象，例如将「东莞市」添加至「广东省」（假设广东的 objectId 为 `56545c5b00b09f857a603632`），方法如下：
 
 ```objc
-    AVObject *GuangDong = [AVObject objectWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];    
-    AVObject *DongGuan = [AVObject objectWithClassName:@"City"];
+    LCObject *GuangDong = [LCObject objectWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];    
+    LCObject *DongGuan = [LCObject objectWithClassName:@"City"];
     [DongGuan setObject:@"东莞" forKey:@"name"];
     [DongGuan setObject:GuangDong forKey:@"dependent"];
 ```
@@ -424,12 +424,12 @@ DongGuan['dependent'] = guangDong;
 想知道广州属于哪个省份：
 
 ```objc
-    AVQuery *query = [AVQuery queryWithClassName:@"City"];
+    LCQuery *query = [LCQuery queryWithClassName:@"City"];
     [query whereKey:@"name" equalTo:@"广州"];
     [query includeKey:@"dependent"];
 
-    [query getFirstObjectInBackgroundWithBlock:^(AVObject *city, NSError *error) {
-        AVObject *province = [city objectForKey:@"dependent"];
+    [query getFirstObjectInBackgroundWithBlock:^(LCObject *city, NSError *error) {
+        LCObject *province = [city objectForKey:@"dependent"];
     }];
 ```
 ```swift
@@ -500,11 +500,11 @@ LCObject province = city['dependent'];
 想知道哪些城市属于广东省（假定代表广东省的对象的 objectId 是 `56545c5b00b09f857a603632`） ？
 
 ```objc
-    AVObject *GuangDong = [AVObject objectWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];    
-    AVQuery *query = [AVQuery queryWithClassName:@"City"];
+    LCObject *GuangDong = [LCObject objectWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];    
+    LCQuery *query = [LCQuery queryWithClassName:@"City"];
     [query whereKey:@"dependent" equalTo:GuangDong];
     [query findObjectsInBackgroundWithBlock:^(NSArray *cities, NSError *error) {
-        for (AVObject *city in cities) {
+        for (LCObject *city in cities) {
             // cities 为广东省下辖的所有城市
         }
     }];
@@ -590,17 +590,17 @@ List<LCObject> cities = await query.find();
 如下代码演示使用 Relation 来保存城市和省份之间的关系：
 
 ```objc
-    AVObject *hangzhou = [[AVObject alloc] initWithClassName:@"City"];
+    LCObject *hangzhou = [[LCObject alloc] initWithClassName:@"City"];
     [hangzhou setObject:@"杭州" forKey:@"name"];
 
-    AVObject *ningbo = [[AVObject alloc] initWithClassName:@"City"];
+    LCObject *ningbo = [[LCObject alloc] initWithClassName:@"City"];
     [ningbo setObject:@"宁波" forKey:@"name"];
 
-    [AVObject saveAllInBackground:@[hangzhou,ningbo] block:^(BOOL succeeded, NSError * _Nullable error) {
-        AVObject *zhejiang = [[AVObject alloc] initWithClassName:@"Province"];
+    [LCObject saveAllInBackground:@[hangzhou,ningbo] block:^(BOOL succeeded, NSError * _Nullable error) {
+        LCObject *zhejiang = [[LCObject alloc] initWithClassName:@"Province"];
         [zhejiang setObject:@"name" forKey:@"浙江"];
 
-        AVRelation *relation = [zhejiang relationForKey:@"includedCities"];
+        LCRelation *relation = [zhejiang relationForKey:@"includedCities"];
         [relation addObject:hangzhou];
         [relation addObject:ningbo];
         
@@ -685,11 +685,11 @@ List<LCObject> cities = await query.find();
 而关系创建完毕之后，需要实现两者之间的互相查询，假设要查询一个省份管辖的所有城市，可以使用如下代码：
 
 ```objc
-    AVObject *zhejiang = [AVObject objectWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];
-    AVRelation *relation = [zhejiang relationForKey:@"includedCities"];
-    AVQuery *query = [relation query];
+    LCObject *zhejiang = [LCObject objectWithClassName:@"Province" objectId:@"56545c5b00b09f857a603632"];
+    LCRelation *relation = [zhejiang relationForKey:@"includedCities"];
+    LCQuery *query = [relation query];
     [query findObjectsInBackgroundWithBlock:^(NSArray *cities, NSError *error) {
-        for (AVObject *city in cities) {
+        for (LCObject *city in cities) {
             // cities 的结果为广东省下辖的所有城市
         }
     }];
@@ -752,13 +752,13 @@ List<LCObject> cities = await query.find();
 假设已知一个城市，想通过城市查询它的上级省份可以通过如下代码实现:
 
 ```objc
-    AVObject *wenzhou = [AVObject objectWithClassName:@"City" objectId:@"587d8156b123db4d5e7dddd2"];
-    AVQuery *query = [AVQuery queryWithClassName:@"Province"];
+    LCObject *wenzhou = [LCObject objectWithClassName:@"City" objectId:@"587d8156b123db4d5e7dddd2"];
+    LCQuery *query = [LCQuery queryWithClassName:@"Province"];
     [query whereKey:@"includedCities" equalTo:wenzhou];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *provinceList, NSError *error) {
         // 理论上 provinceList 应该只有浙江这一条数据
-        AVObject *zhejiang = provinceList[0];
+        LCObject *zhejiang = provinceList[0];
     }];
 ```
 ```swift
@@ -849,13 +849,13 @@ List<LCObject> cities = await query.find();
 如此，实现选修功能的代码如下：
 
 ```objc
-    AVObject *studentTom = [AVObject objectWithClassName:@"Student"];
+    LCObject *studentTom = [LCObject objectWithClassName:@"Student"];
     [studentTom setObject:@"Tom" forKey:@"name"];
 
-    AVObject *courseLinearAlgebra = [AVObject objectWithClassName:@"Course"];
+    LCObject *courseLinearAlgebra = [LCObject objectWithClassName:@"Course"];
     [courseLinearAlgebra setObject:@"线性代数" forKey:@"name"];
 
-    AVObject *studentCourseMapTom = [AVObject objectWithClassName:@"StudentCourseMap"];
+    LCObject *studentCourseMapTom = [LCObject objectWithClassName:@"StudentCourseMap"];
 
     // 设置关联
     [studentCourseMapTom setObject:studentTom forKey:@"student"];
@@ -1048,10 +1048,10 @@ await studentCourseMapTom.save();
 
 ```objc
     // 线性代数课程
-    AVObject *courseLinearAlgebra = [AVObject objectWithClassName:@"Course" objectId:@"562da3fdddb2084a8a576d49"];
+    LCObject *courseLinearAlgebra = [LCObject objectWithClassName:@"Course" objectId:@"562da3fdddb2084a8a576d49"];
 
     // 构建 StudentCourseMap 的查询
-    AVQuery *query = [AVQuery queryWithClassName:@"StudentCourseMap"];
+    LCQuery *query = [LCQuery queryWithClassName:@"StudentCourseMap"];
 
     // 查询所有选择了线性代数的学生
     [query whereKey:@"course" equalTo:courseLinearAlgebra];
@@ -1060,8 +1060,8 @@ await studentCourseMapTom.save();
     [query findObjectsInBackgroundWithBlock:^(NSArray *studentCourseMaps, NSError *error) {
         // studentCourseMaps 是所有 course 等于线性代数的选课对象
         // 然后遍历过程中可以访问每一个选课对象的 student,course,duration,platform 等属性
-        for (AVObject *studentCourseMap in studentCourseMaps) {
-            AVObject *student =[studentCourseMap objectForKey:@"student"];
+        for (LCObject *studentCourseMap in studentCourseMaps) {
+            LCObject *student =[studentCourseMap objectForKey:@"student"];
             NSArray *duration = [studentCourseMap objectForKey:@"duration"];
             NSLog(@"platform: %@", [studentCourseMap objectForKey:@"platform"]);
         }
@@ -1206,8 +1206,8 @@ for (LCObject studentCourseMap in list) {
 {% block code_query_relationTable_courses_by_student %}{% endblock %}
 
 ```objc
-    AVQuery *query = [AVQuery queryWithClassName:@"StudentCourseMap"];
-    AVObject *studentTom = [AVObject objectWithClassName:@"Student" objectId:@"562da3fc00b0bf37b117c250"];
+    LCQuery *query = [LCQuery queryWithClassName:@"StudentCourseMap"];
+    LCObject *studentTom = [LCObject objectWithClassName:@"Student" objectId:@"562da3fc00b0bf37b117c250"];
     [query whereKey:@"student" equalTo:studentTom];
 ```
 ```swift
@@ -1255,24 +1255,24 @@ query.whereEqualTo('student', studentTom);
 如下代码演示在学生对象中设置一个 Relation 类型的属性 `coursesChosen` 用来保存所选课程：
 
 ```objc
-    AVObject *studentTom = [[AVObject alloc] initWithClassName:@"Student"];// 学生 Tom
+    LCObject *studentTom = [[LCObject alloc] initWithClassName:@"Student"];// 学生 Tom
     [studentTom setObject:@"Tom" forKey:@"name"];
     
-    AVObject *courseLinearAlgebra = [[AVObject alloc] initWithClassName:@"Course"];
+    LCObject *courseLinearAlgebra = [[LCObject alloc] initWithClassName:@"Course"];
     [courseLinearAlgebra setObject:@"线性代数" forKey:@"name"];
     
-    AVObject *courseObjectOrientedProgramming = [[AVObject alloc] initWithClassName:@"Course"];
+    LCObject *courseObjectOrientedProgramming = [[LCObject alloc] initWithClassName:@"Course"];
     [courseObjectOrientedProgramming setObject:@"面向对象程序设计" forKey:@"name"];
     
-    AVObject *courseOperatingSystem = [[AVObject alloc] initWithClassName:@"Course"];
+    LCObject *courseOperatingSystem = [[LCObject alloc] initWithClassName:@"Course"];
     [courseOperatingSystem setObject:@"操作系统" forKey:@"name"];
     
-    [AVObject saveAllInBackground:@[courseLinearAlgebra,courseObjectOrientedProgramming,courseOperatingSystem] block:^(BOOL succeeded, NSError *error) {
+    [LCObject saveAllInBackground:@[courseLinearAlgebra,courseObjectOrientedProgramming,courseOperatingSystem] block:^(BOOL succeeded, NSError *error) {
         if (error) {
             // 出现错误
         } else {
             // 保存成功
-            AVRelation *relation = [studentTom relationforKey:@"coursesChosen"];// 新建一个 AVRelation，用来保存所选的课程
+            LCRelation *relation = [studentTom relationforKey:@"coursesChosen"];// 新建一个 LCRelation，用来保存所选的课程
             [relation addObject:courseLinearAlgebra];
             [relation addObject:courseObjectOrientedProgramming];
             [relation addObject:courseOperatingSystem];
@@ -1543,7 +1543,7 @@ if(存在附加属性){
 当要关联的数据是简单数据并且查询多于修改的时候，用数组比较合适。比如社交类应用里给朋友加标签，就可以使用 string 数组来存储这个属性{#，一般情况下 Relation 比数组好用#}。
 
 ```objc
-    AVObject *beckham = [AVObject objectWithClassName:@"Boy"];
+    LCObject *beckham = [LCObject objectWithClassName:@"Boy"];
     [beckham setObject: [NSArray arrayWithObjects:@"颜值爆表",@"明星范儿",nil] forKey:@"tags"];
 ```
 ```swift
