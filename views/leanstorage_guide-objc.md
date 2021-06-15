@@ -1,7 +1,7 @@
 {% extends "./leanstorage_guide.tmpl" %}
 {% set platform_name = "Objective-C" %}
-{% set baseObjectName = "AVObject" %}
-{% set baseQueryClassName = "AVQuery" %}
-{% set fileObjectName = "AVFile" %}
-{% set geoPointObjectName = "AVGeoPoint" %}
-{% set userObjectName = "AVUser" %}
+{% set baseObjectName = "LCObject" %}
+{% set baseQueryClassName = "LCQuery" %}
+{% set fileObjectName = "LCFile" %}
+{% set geoPointObjectName = "LCGeoPoint" %}
+{% set userObjectName = "LCUser" %}

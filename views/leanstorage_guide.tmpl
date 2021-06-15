@@ -14,7 +14,7 @@
 {% if platform_name === "Objective-C" %}
 ```objc
 // 构建对象
-AVObject *todo = [AVObject objectWithClassName:@"Todo"];
+LCObject *todo = [LCObject objectWithClassName:@"Todo"];
 
 // 为属性赋值
 [todo setObject:@"工程师周会"        forKey:@"title"];
@@ -303,7 +303,7 @@ NSArray      *array      = [NSArray arrayWithObjects: string, number, nil];
 NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: number, @"number", string, @"string", nil];
 
 // 构建对象
-AVObject *testObject = [AVObject objectWithClassName:@"TestObject"];
+LCObject *testObject = [LCObject objectWithClassName:@"TestObject"];
 [testObject setObject:boolean    forKey:@"testBoolean"];
 [testObject setObject:number     forKey:@"testInteger"];
 [testObject setObject:string     forKey:@"testString"];
@@ -585,10 +585,10 @@ meeting := Meeting{
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVObject *todo = [AVObject objectWithClassName:@"Todo"];
+LCObject *todo = [LCObject objectWithClassName:@"Todo"];
 
 // 等同于
-AVObject *todo = [[AVObject alloc] initWithClassName:@"Todo"];
+LCObject *todo = [[LCObject alloc] initWithClassName:@"Todo"];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -670,7 +670,7 @@ AV.Object.register(Todo);
 {% if platform_name === "Objective-C" %}
 ```objc
 // 构建对象
-AVObject *todo = [AVObject objectWithClassName:@"Todo"];
+LCObject *todo = [LCObject objectWithClassName:@"Todo"];
 
 // 为属性赋值
 [todo setObject:@"马拉松报名" forKey:@"title"];
@@ -900,8 +900,8 @@ if err := client.Class("Todo").Create(map[string]interface{}{
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-[query getObjectInBackgroundWithId:@"582570f38ac247004f39c24b" block:^(AVObject *todo, NSError *error) {
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
+[query getObjectInBackgroundWithId:@"582570f38ac247004f39c24b" block:^(LCObject *todo, NSError *error) {
     // todo 就是 objectId 为 582570f38ac247004f39c24b 的 Todo 实例
     NSString *title    = todo[@"title"];
     int priority       = [[todo objectForKey:@"priority"] intValue];
@@ -1115,8 +1115,8 @@ db.class('Todo')
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVObject *todo = [AVObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
-[todo fetchInBackgroundWithBlock:^(AVObject *todo, NSError *error) {
+LCObject *todo = [LCObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
+[todo fetchInBackgroundWithBlock:^(LCObject *todo, NSError *error) {
     // todo 已刷新
 }];
 ```
@@ -1184,9 +1184,9 @@ await todo.Fetch();
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVObject *todo = [AVObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
+LCObject *todo = [LCObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
 NSArray *keys = [NSArray arrayWithObjects:@"priority", @"location", nil];
-[todo fetchInBackgroundWithKeys:keys block:^(AVObject *todo, NSError *error) {
+[todo fetchInBackgroundWithKeys:keys block:^(LCObject *todo, NSError *error) {
     // 只有 priority 和 location 会被获取和刷新
 }];
 ```
@@ -1323,7 +1323,7 @@ if err := client.Class("Account").ID("5745557f71cfe40068c6abe0").UpdateWithQuery
 {% if platform_name === "Objective-C" %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `saveInBackground` 方法。例如：
 ```objc
-AVObject *todo = [AVObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
+LCObject *todo = [LCObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
 [todo setObject:@"这周周会改到周三下午三点。" forKey:@"content"];
 [todo saveInBackground];
 ```
@@ -1444,14 +1444,14 @@ todo.revert(['content'])
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVObject *account = [AVObject objectWithClassName:@"Account" objectId:@"5745557f71cfe40068c6abe0"];
+LCObject *account = [LCObject objectWithClassName:@"Account" objectId:@"5745557f71cfe40068c6abe0"];
 // 对 balance 原子减少 100
 NSInteger amount = -100;
 [account incrementKey:@"balance" byAmount:@(amount)];
 // 设置条件
-AVQuery *query = [[AVQuery alloc] init];
+LCQuery *query = [[LCQuery alloc] init];
 [query whereKey:@"balance" greaterThanOrEqualTo:@(-amount)];
-AVSaveOption *option = [[AVSaveOption alloc] init];
+LCSaveOption *option = [[LCSaveOption alloc] init];
 option.query = query;
 // 操作结束后，返回最新数据。
 // 如果是新对象，则所有属性都会被返回，
@@ -1788,7 +1788,7 @@ NSDate *alarm3 = [self getDateWithDateString:@"2018-04-30 07:30:00"];
 
 NSArray *alarms = [NSArray arrayWithObjects:alarm1, alarm2, alarm3, nil];
 
-AVObject *todo = [AVObject objectWithClassName:@"Todo"];
+LCObject *todo = [LCObject objectWithClassName:@"Todo"];
 [todo addUniqueObjectsFromArray:alarms forKey:@"alarms"];
 [todo saveInBackground];
 ```
@@ -1951,7 +1951,7 @@ if err := client.Class("Todo").Create(map[string]interface{}{
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVObject *todo = [AVObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
+LCObject *todo = [LCObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
 [todo deleteInBackground];
 ```
 {% endif %}
@@ -2252,15 +2252,15 @@ LCObject.FetchAll();
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
 [query findObjectsInBackgroundWithBlock:^(NSArray *todos, NSError *error) {
     // 获取需要更新的 todo
-    for (AVObject *todo in todos) {
+    for (LCObject *todo in todos) {
         // 更新属性值
         todo[@"isComplete"] = @(YES);
     }
     // 批量更新
-    [AVObject saveAllInBackground:todos];
+    [LCObject saveAllInBackground:todos];
 }];
 ```
 {% endif %}
@@ -2439,12 +2439,12 @@ _ = todo.save { result in
 {% if platform_name === "Objective-C" %}
 ```objc
 // 创建 post
-AVObject *post = [[AVObject alloc] initWithClassName:@"Post"];
+LCObject *post = [[LCObject alloc] initWithClassName:@"Post"];
 [post setObject:@"饿了……" forKey:@"title"];
 [post setObject:@"中午去哪吃呢？" forKey:@"content"];
 
 // 创建 comment
-AVObject *comment = [[AVObject alloc] initWithClassName:@"Comment"];
+LCObject *comment = [[LCObject alloc] initWithClassName:@"Comment"];
 [comment setObject:@"当然是肯德基啦！" forKey:@"content"];
 
 // 将 post 设为 comment 的一个属性值
@@ -2642,7 +2642,7 @@ if err := client.Class("Comment").Create(&comment); err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVObject *post = [AVObject objectWithClassName:@"Post" objectId:@"57328ca079bc44005c2472d0"];
+LCObject *post = [LCObject objectWithClassName:@"Post" objectId:@"57328ca079bc44005c2472d0"];
 [comment setObject:post forKey:@"post"];
 ```
 {% endif %}
@@ -2719,10 +2719,10 @@ comment["post"] = post;
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVObject *todo = [[AVObject alloc] initWithClassName:@"Todo"]; // 构建对象
+LCObject *todo = [[LCObject alloc] initWithClassName:@"Todo"]; // 构建对象
 [todo setObject:@"马拉松报名" forKey:@"title"]; // 设置名称
 [todo setObject:@2 forKey:@"priority"]; // 设置优先级
-[todo setObject:[AVUser currentUser] forKey:@"owner"]; // 这里就是一个 Pointer 类型，指向当前登录的用户
+[todo setObject:[LCUser currentUser] forKey:@"owner"]; // 这里就是一个 Pointer 类型，指向当前登录的用户
 
 NSMutableDictionary *serializedJSONDictionary = [todo dictionaryForObject]; // 获取序列化后的字典
 NSError *err;
@@ -2817,7 +2817,7 @@ NSMutableDictionary *objectDictionary = [NSMutableDictionary dictionaryWithCapac
 [objectDictionary setObject:@2 forKey:@"priority"];
 [objectDictionary setObject:@"Todo" forKey:@"className"];
 
-AVObject *todo = [AVObject objectWithDictionary:objectDictionary]; // 由 NSMutableDictionary 转化一个 AVObject
+LCObject *todo = [LCObject objectWithDictionary:objectDictionary]; // 由 NSMutableDictionary 转化一个 LCObject
 
 [todo saveInBackground]; // 保存到云端
 ```
@@ -2904,7 +2904,7 @@ await newObject.Save();
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Student"];
+LCQuery *query = [LCQuery queryWithClassName:@"Student"];
 [query whereKey:@"lastName" equalTo:@"Smith"];
 [query findObjectsInBackgroundWithBlock:^(NSArray *students, NSError *error) {
     // students 是包含满足条件的 Student 对象的数组
@@ -3306,9 +3306,9 @@ query := client.Class("Student").NewQuery().Limit(10)
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
 [query whereKey:@"priority" equalTo:@2];
-[query getFirstObjectInBackgroundWithBlock:^(AVObject *todo, NSError *error) {
+[query getFirstObjectInBackgroundWithBlock:^(LCObject *todo, NSError *error) {
     // todo 是第一个满足条件的 Todo 对象
 }];
 ```
@@ -3447,7 +3447,7 @@ query := client.Class("Todo").NewQuery().Skip(20)
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
 [query whereKey:@"priority" equalTo:@2];
 query.limit = 10;
 query.skip = 20;
@@ -3777,9 +3777,9 @@ studentQuery.find().then((students) => {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
 [query selectKeys:@[@"title", @"content"]];
-[query getFirstObjectInBackgroundWithBlock:^(AVObject *todo, NSError *error) {
+[query getFirstObjectInBackgroundWithBlock:^(LCObject *todo, NSError *error) {
     NSString *title = todo[@"title"]; // √
     NSString *content = todo[@"content"]; // √
     NSString *notes = todo[@"notes"]; // 会报错
@@ -3902,7 +3902,7 @@ if err := client.Class("Todo").NewQuery().Select("title", "content").Find(&todo)
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
 // 相当于 SQL 中的 title LIKE 'lunch%'
 [query whereKey:@"title" hasPrefix:@"lunch"];
 ```
@@ -3968,7 +3968,7 @@ query := client.Class("Todo").NewQuery().StartsWith("title", "lunch")
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
 // 相当于 SQL 中的 title LIKE '%lunch%'
 [query whereKey:@"title" containsString:@"lunch"];
 ```
@@ -4039,7 +4039,7 @@ query := client.Class("Todo").NewQuery().Contains("title", "lunch")
 如果想查找某一属性值不包含特定字符串的对象，可以使用 `{% if platform_name === "Go" %}Query.Regexp{% endif %}{% if platform_name === "Objective-C" %}matchesRegex{% endif %}{% if platform_name === "JavaScript" %}matches{% endif %}{% if platform_name === "Python" %}matched{% endif %}{% if platform_name === "PHP" %}matches{% endif %}{% if platform_name === "Android / Java" %}whereMatches{% endif %}{% if platform_name === "Swift" %}.matchedPattern{% endif %}{% if platform_name === "Flutter" %}whereMatches{% endif %}{% if platform_name === ".Net" %}WhereMatches{% endif %}` 进行基于正则表达式的查询：
 
 {% if platform_name === "Objective-C" %}
-<pre><code class="lang-objc">AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+<pre><code class="lang-objc">LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
 // "title" 不包含 "ticket"（不区分大小写）
 [query whereKey:@"title" matchesRegex:@"{{ regex() | safe }}, modifiers:"i"];
 </code></pre>
@@ -4245,7 +4245,7 @@ query := client.Class("Todo").NewQuery().ContainsAll("tags", []string{"工作", 
 {% if platform_name === "Objective-C" %}
 ```objc
 // 单个查询
-AVQuery *priorityOneOrTwo = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *priorityOneOrTwo = [LCQuery queryWithClassName:@"Todo"];
 [priorityOneOrTwo whereKey:@"priority" containedIn:[NSArray arrayWithObjects:@1, @2, nil]];
 // 这样就可以了 :)
 
@@ -4254,13 +4254,13 @@ AVQuery *priorityOneOrTwo = [AVQuery queryWithClassName:@"Todo"];
 // ---------------
 
 // 多个查询
-AVQuery *priorityOne = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *priorityOne = [LCQuery queryWithClassName:@"Todo"];
 [priorityOne whereKey:@"priority" equalTo:@1];
 
-AVQuery *priorityTwo = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *priorityTwo = [LCQuery queryWithClassName:@"Todo"];
 [priorityTwo whereKey:@"priority" equalTo:@2];
 
-AVQuery *priorityOneOrTwo = [AVQuery orQueryWithSubqueries:[NSArray arrayWithObjects:priorityOne, priorityTwo, nil]];
+LCQuery *priorityOneOrTwo = [LCQuery orQueryWithSubqueries:[NSArray arrayWithObjects:priorityOne, priorityTwo, nil]];
 // 好像有些繁琐 :(
 ```
 {% endif %}
@@ -4436,8 +4436,8 @@ ReadOnlyCollection<LCObject> results = await priorityOneOrTwo.Find();
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVObject *post = [AVObject objectWithClassName:@"Post" objectId:@"57328ca079bc44005c2472d0"];
-AVQuery *query = [AVQuery queryWithClassName:@"Comment"];
+LCObject *post = [LCObject objectWithClassName:@"Post" objectId:@"57328ca079bc44005c2472d0"];
+LCQuery *query = [LCQuery queryWithClassName:@"Comment"];
 [query whereKey:@"post" equalTo:post];
 [query findObjectsInBackgroundWithBlock:^(NSArray *comments, NSError *error) {
     // comments 包含与 post 相关联的评论
@@ -4525,10 +4525,10 @@ ReadOnlyCollection<LCObject> comments = await query.Find();
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *innerQuery = [AVQuery queryWithClassName:@"Post"];
+LCQuery *innerQuery = [LCQuery queryWithClassName:@"Post"];
 [innerQuery whereKeyExists:@"images"];
 
-AVQuery *query = [AVQuery queryWithClassName:@"Comment"];
+LCQuery *query = [LCQuery queryWithClassName:@"Comment"];
 [query whereKey:@"post" matchesQuery:innerQuery];
 ```
 {% endif %}
@@ -4602,7 +4602,7 @@ query.WhereMatchesQuery("post", innerQuery);
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Comment"];
+LCQuery *query = [LCQuery queryWithClassName:@"Comment"];
 
 // 获取最新发布的
 [query orderByDescending:@"createdAt"];
@@ -4615,9 +4615,9 @@ query.limit = 10;
 
 [query findObjectsInBackgroundWithBlock:^(NSArray *comments, NSError *error) {
     // comments 包含最新发布的 10 条评论，包含各自对应的博客文章
-    for (AVObject *comment in comments) {
+    for (LCObject *comment in comments) {
         // 该操作无需网络连接
-        AVObject *post = comment[@"post"];
+        LCObject *post = comment[@"post"];
     }
 }];
 ```
@@ -4804,7 +4804,7 @@ LeanCloud 云端使用的并非关系型数据库，无法做到真正的联表�
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
 [query whereKey:@"isComplete" equalTo:@(YES)];
 [query countObjectsInBackgroundWithBlock:^(NSInteger count, NSError *error) {
     NSLog(@"%ld 个 todo 已完成。", count);
@@ -4895,13 +4895,13 @@ OR 操作表示多个查询条件符合其中任意一个即可。 例如，查�
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *priorityQuery = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *priorityQuery = [LCQuery queryWithClassName:@"Todo"];
 [priorityQuery whereKey:@"priority" greaterThanOrEqualTo:@3];
 
-AVQuery *isCompleteQuery = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *isCompleteQuery = [LCQuery queryWithClassName:@"Todo"];
 [isCompleteQuery whereKey:@"isComplete" equalTo:@(YES)];
 
-AVQuery *query = [AVQuery orQueryWithSubqueries:[NSArray arrayWithObjects:priorityQuery, isCompleteQuery, nil]];
+LCQuery *query = [LCQuery orQueryWithSubqueries:[NSArray arrayWithObjects:priorityQuery, isCompleteQuery, nil]];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -5008,13 +5008,13 @@ NSDate *(^dateFromString)(NSString *string) = ^(NSString *string) {
     return [dateFormatter dateFromString:string];
 };
 
-AVQuery *startDateQuery = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *startDateQuery = [LCQuery queryWithClassName:@"Todo"];
 [startDateQuery whereKey:@"createdAt" greaterThanOrEqualTo:dateFromString(@"2016-11-13")];
 
-AVQuery *endDateQuery = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *endDateQuery = [LCQuery queryWithClassName:@"Todo"];
 [endDateQuery whereKey:@"createdAt" lessThan:dateFromString(@"2016-12-03")];
 
-AVQuery *query = [AVQuery andQueryWithSubqueries:[NSArray arrayWithObjects:startDateQuery, endDateQuery, nil]];
+LCQuery *query = [LCQuery andQueryWithSubqueries:[NSArray arrayWithObjects:startDateQuery, endDateQuery, nil]];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -5149,22 +5149,22 @@ NSDate *(^dateFromString)(NSString *string) = ^(NSString *string) {
     return [dateFormatter dateFromString:string];
 };
 
-AVQuery *createdAtQuery = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *createdAtQuery = [LCQuery queryWithClassName:@"Todo"];
 [createdAtQuery whereKey:@"createdAt" greaterThanOrEqualTo:dateFromString(@"2018-04-30")];
 [createdAtQuery whereKey:@"createdAt" lessThan:dateFromString(@"2018-05-01")];
 
-AVQuery *locationQuery = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *locationQuery = [LCQuery queryWithClassName:@"Todo"];
 [locationQuery whereKeyDoesNotExist:@"location"];
 
-AVQuery *priority2Query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *priority2Query = [LCQuery queryWithClassName:@"Todo"];
 [priority2Query whereKey:@"priority" equalTo:@2];
 
-AVQuery *priority3Query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *priority3Query = [LCQuery queryWithClassName:@"Todo"];
 [priority3Query whereKey:@"priority" equalTo:@3];
 
-AVQuery *priorityQuery = [AVQuery orQueryWithSubqueries:[NSArray arrayWithObjects:priority2Query, priority3Query, nil]];
-AVQuery *timeLocationQuery = [AVQuery orQueryWithSubqueries:[NSArray arrayWithObjects:locationQuery, createdAtQuery, nil]];
-AVQuery *query = [AVQuery andQueryWithSubqueries:[NSArray arrayWithObjects:priorityQuery, timeLocationQuery, nil]];
+LCQuery *priorityQuery = [LCQuery orQueryWithSubqueries:[NSArray arrayWithObjects:priority2Query, priority3Query, nil]];
+LCQuery *timeLocationQuery = [LCQuery orQueryWithSubqueries:[NSArray arrayWithObjects:locationQuery, createdAtQuery, nil]];
+LCQuery *query = [LCQuery andQueryWithSubqueries:[NSArray arrayWithObjects:priorityQuery, timeLocationQuery, nil]];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -5334,7 +5334,7 @@ LCQuery<LCObject> query = LCQuery<LCObject>.And(new LCQuery<LCObject>[] { priori
 默认情况下的查询不会使用缓存，除非你调用接口明确设置启用。例如，尝试从网络请求，如果网络不可用则从缓存数据中获取，可以这样设置：
 
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Post"];
+LCQuery *query = [LCQuery queryWithClassName:@"Post"];
 query.cachePolicy = kAVCachePolicyNetworkElseCache;
 
 // 设置缓存有效期
@@ -5378,7 +5378,7 @@ query.maxCacheAge = 24*3600;
 - 删除查询的所有缓存结果：
 
   ```objc
-  [AVQuery clearAllCachedResults];
+  [LCQuery clearAllCachedResults];
   ```
 
 - 设定缓存结果的最长时限：
@@ -5387,7 +5387,7 @@ query.maxCacheAge = 24*3600;
   query.maxCacheAge = 60 * 60 * 24; // 一天的总秒数
   ```
 
-查询缓存也适用于 `AVQuery` 的辅助方法，包括 `getFirstObject` 和 `getObjectInBackground`。
+查询缓存也适用于 `LCQuery` 的辅助方法，包括 `getFirstObject` 和 `getObjectInBackground`。
 {% endif %}
 {% if platform_name === "Swift" %}
 ### 缓存查询
@@ -5475,14 +5475,22 @@ LiveQuery 使用 WebSocket 在客户端和云端之间建立连接。WebSocket �
 
 ### 启用 LiveQuery
 
-进入 **控制台 > 存储 > 设置**，在 **其他** 里面勾选 **启用 LiveQuery**{% if platform_name === "Objective-C" %}，然后将下面的 pod 添加到项目根目录下的 `Podfile` 即可：{% endif %}{% if platform_name === "Swift" %}，然后导入 LeanCloud Swift SDK：{% endif %}{% if platform_name === "JavaScript" %}，然后将下面的 npm 模块添加到项目中即可：{% endif %}{% if platform_name === "Android / Java" %}即可。确保即时通信模块已被添加到 `AndroidManifest.xml`：{% endif %}
+进入 **控制台 > 存储 > 设置**，在 **其他** 里面勾选 **启用 LiveQuery**{% if platform_name === "Swift" %}，然后导入 LeanCloud Swift SDK：{% endif %}{% if platform_name === "JavaScript" %}，然后将下面的 npm 模块添加到项目中即可：{% endif %}{% if platform_name === "Android / Java" %}即可。确保即时通信模块已被添加到 `AndroidManifest.xml`：{% endif %}
 
 {% if platform_name === "Objective-C" %}
+如果没有集成 `Realtime` 模块，需先集成 `Realtime` 模块，pod 添加示例如下：
+
 ```ruby
-pod 'AVOSCloudLiveQuery'
+pod 'LeanCloudObjc/Realtime'
 ```
 
 可以在 [SDK 安装与初始化](#SDK-安装与初始化) 中找到完整设置方法。
+
+之后在相关头文件中导入 `Realtime` 模块，示例如下：
+
+```objc
+#import <LeanCloudObjc/Realtime.h>
+```
 {% endif %}
 {% if platform_name === "Swift" %}
 ```swift
@@ -5554,8 +5562,8 @@ using LeanCloud.LiveQuery;
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-self.liveQuery = [[AVLiveQuery alloc] initWithQuery:query];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
+self.liveQuery = [[LCLiveQuery alloc] initWithQuery:query];
 self.liveQuery.delegate = self;
 [self.liveQuery subscribeWithCallback:^(BOOL succeeded, NSError * _Nonnull error) {
     // 订阅成功
@@ -5620,13 +5628,13 @@ LiveQuery 不支持内嵌查询，也不支持返回指定属性。
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-self.liveQuery = [[AVLiveQuery alloc] initWithQuery:query];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
+self.liveQuery = [[LCLiveQuery alloc] initWithQuery:query];
 self.liveQuery.delegate = self;
 [self.liveQuery subscribeWithCallback:^(BOOL succeeded, NSError * _Nonnull error) {
     // 订阅成功
 }];
-- (void)liveQuery:(AVLiveQuery *)liveQuery objectDidCreate:(id)object {
+- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidCreate:(id)object {
     if (liveQuery == self.liveQuery) {
         NSLog(@"%@", object[@"title"]); // 更新作品集
     }
@@ -5695,7 +5703,7 @@ liveQuery.OnCreate = (obj) => {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-- (void)liveQuery:(AVLiveQuery *)liveQuery objectDidUpdate:(id)updatedTodo updatedKeys:(NSArray<NSString *> *)updatedKeys {
+- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidUpdate:(id)updatedTodo updatedKeys:(NSArray<NSString *> *)updatedKeys {
     NSLog(@"%@", updatedTodo[@"content"]); // 把我最近画的插画放上去
 }
 ```
@@ -5760,7 +5768,7 @@ liveQuery.OnUpdate = (updatedTodo, updatedKeys) => {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-- (void)liveQuery:(AVLiveQuery *)liveQuery objectDidCreate:(id)object {
+- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidCreate:(id)object {
     if (liveQuery == self.liveQuery) {
         NSLog(@"对象被创建。");
     }
@@ -5810,7 +5818,7 @@ liveQuery.OnCreate = (obj) => {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-- (void)liveQuery:(AVLiveQuery *)liveQuery objectDidUpdate:(id)object updatedKeys:(NSArray<NSString *> *)updatedKeys {
+- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidUpdate:(id)object updatedKeys:(NSArray<NSString *> *)updatedKeys {
     if (liveQuery == self.liveQuery) {
         NSLog(@"对象被更新。");
     }
@@ -5860,7 +5868,7 @@ liveQuery.OnUpdate = (obj, updatedKeys) => {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-- (void)liveQuery:(AVLiveQuery *)liveQuery objectDidEnter:(id)object updatedKeys:(nonnull NSArray<NSString *> *)updatedKeys {
+- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidEnter:(id)object updatedKeys:(nonnull NSArray<NSString *> *)updatedKeys {
     if (liveQuery == self.liveQuery) {
         NSLog(@"对象进入。");
     }
@@ -5914,7 +5922,7 @@ liveQuery.OnEnter = (obj, updatedKeys) => {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-- (void)liveQuery:(AVLiveQuery *)liveQuery objectDidLeave:(id)object updatedKeys:(nonnull NSArray<NSString *> *)updatedKeys {
+- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidLeave:(id)object updatedKeys:(nonnull NSArray<NSString *> *)updatedKeys {
     if (liveQuery == self.liveQuery) {
         NSLog(@"对象离开。");
     }
@@ -5964,7 +5972,7 @@ liveQuery.OnLeave = (obj, updatedKeys) => {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-- (void)liveQuery:(AVLiveQuery *)liveQuery objectDidDelete:(id)object {
+- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidDelete:(id)object {
     if (liveQuery == self.liveQuery) {
         NSLog(@"对象被删除。");
     }
@@ -6125,7 +6133,7 @@ if err := client.Files.Upload(file, fd); err != nil {
 ```objc
 NSData *data = [@"LeanCloud" dataUsingEncoding:NSUTF8StringEncoding];
 // resume.txt 是文件名
-AVFile *file = [AVFile fileWithData:data name:@"resume.txt"];
+LCFile *file = [LCFile fileWithData:data name:@"resume.txt"];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -6213,7 +6221,7 @@ LCFile file = new LCFile("resume.txt", UTF8.GetBytes("LeanCloud"));
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVFile *file = [AVFile fileWithRemoteURL:[NSURL URLWithString:@"https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png"]];
+LCFile *file = [LCFile fileWithRemoteURL:[NSURL URLWithString:@"https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png"]];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -6343,7 +6351,7 @@ NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUser
 NSString *documentsDirectory = [paths objectAtIndex:0];
 NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:@"avatar.jpg"];
 NSError *error;
-AVFile *file = [AVFile fileWithLocalPath:imagePath error:&error];
+LCFile *file = [LCFile fileWithLocalPath:imagePath error:&error];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -6553,7 +6561,7 @@ file.saveInBackground(true).subscribe(new Observer<LCFile>() {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVObject *todo = [AVObject objectWithClassName:@"Todo"];
+LCObject *todo = [LCObject objectWithClassName:@"Todo"];
 [todo setObject:@"买蛋糕" forKey:@"title"];
 // attachments 是一个 Array 属性
 [todo addObject:file forKey:@"attachments"];
@@ -6657,7 +6665,7 @@ if err := client.Class("Todo").Create(todo); err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"_File"];
+LCQuery *query = [LCQuery queryWithClassName:@"_File"];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -6710,7 +6718,7 @@ query := client.Class("_File").NewQuery()
 {% if platform_name === "Objective-C" %}
 ```objc
 // 获取同一标题且包含附件的 todo
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
 [query whereKey:@"title" equalTo:@"买蛋糕"];
 [query whereKeyExists:@"attachments"];
 
@@ -6718,7 +6726,7 @@ AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
 [query includeKey:@"attachments"];
 
 [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable todos, NSError * _Nullable error) {
-    for (AVObject *todo in todos) {
+    for (LCObject *todo in todos) {
         // 获取每个 todo 的 attachments 数组
         // {# TODO #}
     }
@@ -7059,7 +7067,7 @@ if err := client.Files.Upload(file, fd); err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVFile *file = [AVFile fileWithRemoteURL:[NSURL URLWithString:@"文件-url"]];
+LCFile *file = [LCFile fileWithRemoteURL:[NSURL URLWithString:@"文件-url"]];
 [file getThumbnail:YES width:100 height:100 withBlock:^(UIImage *image, NSError *error) {
     // 其他逻辑
 }];
@@ -7126,7 +7134,7 @@ string url = file.GetThumbnailUrl(100, 200);
 {% if platform_name === "Objective-C" %}
 ### 清除缓存
 
-AVFile 也提供了清除缓存的方法：
+LCFile 也提供了清除缓存的方法：
 
 ```objc
 // 清除当前文件缓存
@@ -7196,7 +7204,7 @@ avFile.getDataStreamInBackground().subscribe(new Observer<InputStream>() {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVFile *file = [AVFile getFileWithObjectId:@"552e0a27e4b0643b709e891e"];
+LCFile *file = [LCFile getFileWithObjectId:@"552e0a27e4b0643b709e891e"];
 [file deleteInBackground];
 ```
 {% endif %}
@@ -7266,7 +7274,7 @@ LeanCloud 即时通讯组件也使用 `{{ fileObjectName }}` 来保存消息的�
 {% if platform_name === "Objective-C" %}
 #### iOS 9 适配
 
-从 iOS 9 开始，Apple 默认屏蔽 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了 `AVFile` 的 `getData` 之外的 API 都支持通过 HTTPS 访问。
+从 iOS 9 开始，Apple 默认屏蔽 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了 `LCFile` 的 `getData` 之外的 API 都支持通过 HTTPS 访问。
 
 如果你仍然需要 HTTP 访问，例如即时通讯消息中仍然有使用 HTTP 域名的文件，你可以 **为项目配置访问策略来允许 HTTP 访问**，从而解决这个问题。方法如下：
 
@@ -7430,7 +7438,7 @@ LeanCloud 允许你通过将 `{{ geoPointObjectName }}` 关联到 `{{ baseObject
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
+LCGeoPoint *point = [LCGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -7536,8 +7544,8 @@ if err := client.Class("Todo").Set("location", point); err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-AVGeoPoint *point = [AVGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
+LCGeoPoint *point = [LCGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
 [query whereKey:@"location" nearGeoPoint:point];
 
 // 限制为 10 条结果
@@ -7674,9 +7682,9 @@ if err := client.Class("Todo").NewQuery().Near("location", point).Limit(10).Find
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
-AVGeoPoint *southwest = [AVGeoPoint geoPointWithLatitude:30 longitude:115];
-AVGeoPoint *northeast = [AVGeoPoint geoPointWithLatitude:40 longitude:118];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
+LCGeoPoint *southwest = [LCGeoPoint geoPointWithLatitude:30 longitude:115];
+LCGeoPoint *northeast = [LCGeoPoint geoPointWithLatitude:40 longitude:118];
 [query whereKey:@"location" withinGeoBoxFromSouthwest:southwest toNortheast:northeast];
 ```
 {% endif %}
@@ -7777,7 +7785,7 @@ iOS 8.0 之后，使用定位服务之前，需要调用 `[locationManager reque
 {% if platform_name === "Objective-C" %}
 ```objc
 // 创建实例
-AVUser *user = [AVUser user];
+LCUser *user = [LCUser user];
 
 // 等同于 [user setObject:@"Tom" forKey:@"username"]
 user.username = @"Tom";
@@ -7787,7 +7795,7 @@ user.password = @"cat!@#123";
 user.email = @"tom@leancloud.rocks";
 user.mobilePhoneNumber = @"+8618200008888";
 
-// 设置其他属性的方法跟 AVObject 一样
+// 设置其他属性的方法跟 LCObject 一样
 [user setObject:@"secret" forKey:@"gender"];
 
 [user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -7989,10 +7997,10 @@ if err := client.Users.ID(user.ID).Set("email", "tom@leancloud.rocks"); err != n
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVShortMessageRequestOptions *options = [[AVShortMessageRequestOptions alloc] init];
+LCShortMessageRequestOptions *options = [[LCShortMessageRequestOptions alloc] init];
 options.templateName = @"template_name";// 控制台配置好的模板名称
 options.signatureName = @"sign_name";     // 控制台配置好的短信签名
-[AVSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx" options:options callback:^(BOOL succeeded, NSError * _Nullable error) {
+[LCSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx" options:options callback:^(BOOL succeeded, NSError * _Nullable error) {
     if (succeeded) {
         /* 请求成功 */
     } else {
@@ -8072,7 +8080,7 @@ if err := client.Users.RequestMobilePhoneVerify("+8618200008888"); err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser signUpOrLoginWithMobilePhoneNumberInBackground:@"+8618200008888" smsCode:@"123456" block:^(AVUser *user, NSError *error) {
+[LCUser signUpOrLoginWithMobilePhoneNumberInBackground:@"+8618200008888" smsCode:@"123456" block:^(LCUser *user, NSError *error) {
     if (user != nil) {
         // 注册成功
         NSLog(@"注册成功。objectId：%@", user.objectId);
@@ -8166,7 +8174,7 @@ if err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser logInWithUsernameInBackground:@"Tom" password:@"cat!@#123" block:^(AVUser *user, NSError *error) {
+[LCUser logInWithUsernameInBackground:@"Tom" password:@"cat!@#123" block:^(LCUser *user, NSError *error) {
     if (user != nil) {
         // 登录成功
     } else {
@@ -8257,7 +8265,7 @@ if err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser loginWithEmail:@"tom@leancloud.rocks" password:@"cat!@#123" block:^(AVUser *user, NSError *error) {
+[LCUser loginWithEmail:@"tom@leancloud.rocks" password:@"cat!@#123" block:^(LCUser *user, NSError *error) {
     if (user != nil) {
         // 登录成功
     } else {
@@ -8351,7 +8359,7 @@ fmt.Println(user)
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser logInWithMobilePhoneNumberInBackground:@"+8618200008888" password:@"cat!@#123" block:^(AVUser *user, NSError *error) {
+[LCUser logInWithMobilePhoneNumberInBackground:@"+8618200008888" password:@"cat!@#123" block:^(LCUser *user, NSError *error) {
     if (user != nil) {
         // 登录成功
     } else {
@@ -8436,7 +8444,7 @@ try {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser requestLoginSmsCode:@"+8618200008888"];
+[LCUser requestLoginSmsCode:@"+8618200008888"];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -8501,7 +8509,7 @@ if err := client.Users.RequestLoginSMSCode("+8618200008888"); err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser logInWithMobilePhoneNumberInBackground:@"+8618200008888" smsCode:@"123456" block:^(AVUser *user, NSError *error) {
+[LCUser logInWithMobilePhoneNumberInBackground:@"+8618200008888" smsCode:@"123456" block:^(LCUser *user, NSError *error) {
     if (user != nil) {
         // 登录成功
     } else {
@@ -8618,7 +8626,7 @@ if err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser requestEmailVerify:@"tom@leancloud.rocks"];
+[LCUser requestEmailVerify:@"tom@leancloud.rocks"];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -8690,7 +8698,7 @@ if err := client.Users.RequestEmailVerify("tom@leancloud.rocks"); err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser requestMobilePhoneVerify:@"+8618200008888" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
+[LCUser requestMobilePhoneVerify:@"+8618200008888" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
     if(succeeded){
         //请求成功
     }else{
@@ -8761,7 +8769,7 @@ if err := client.Users.RequestMobilePhoneVerify("+8618200008888"); err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser verifyMobilePhone:@"123456" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
+[LCUser verifyMobilePhone:@"123456" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
     if(succeeded){
         // mobilePhoneVerified 将变为 true
     }else{
@@ -8848,7 +8856,7 @@ AV.User.changePhoneNumber('+8618200008888', '123456').then(() => {
 {% endif %}
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser requestVerificationCodeForUpdatingPhoneNumber:@"+8618200008888" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
+[LCUser requestVerificationCodeForUpdatingPhoneNumber:@"+8618200008888" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
     if (succeeded) {
         // 请求成功
     } else {
@@ -8856,7 +8864,7 @@ AV.User.changePhoneNumber('+8618200008888', '123456').then(() => {
     }
 }];
 
-[AVUser verifyCodeToUpdatePhoneNumber:@"+8618200008888" code:@"123456" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
+[LCUser verifyCodeToUpdatePhoneNumber:@"+8618200008888" code:@"123456" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
     if (succeeded) {
         // mobilePhoneNumber 变为 +8618200008888
         // mobilePhoneVerified 变为 true
@@ -8974,7 +8982,7 @@ if err := client.Users.ChangePhoneNumber("123456", "+8618200008888"); err != nil
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVUser *currentUser = [AVUser currentUser];
+LCUser *currentUser = [LCUser currentUser];
 if (currentUser != nil) {
     // 跳到首页
 } else {
@@ -9061,10 +9069,10 @@ if (currentUser != null) {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser logOut];
+[LCUser logOut];
 
 // currentUser 变为 nil
-AVUser *currentUser = [AVUser currentUser];
+LCUser *currentUser = [LCUser currentUser];
 ```
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -9129,7 +9137,7 @@ LCUser currentUser = await LCUser.GetCurrent();
 
 以下是一些应用可能需要用到 session token 的场景：
 
-- 应用根据以前缓存的 session token 登录（可以用 `{% if platform_name === "Objective-C" %}[AVUser currentUser].sessionToken{% endif %}{% if platform_name === "JavaScript" %}AV.User.current().getSessionToken(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current().get_session_token(){% endif %}{% if platform_name === "PHP" %}User::getCurrentSessionToken(){% endif %}{% if platform_name === "Android / Java" %}LCUser.getCurrentUser().getSessionToken(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser?.sessionToken?.value{% endif %}` 获取到当前用户的 session token，在服务端等受信任的环境下，可以通过 Master Key 读取任意用户的 `sessionToken` 字段以获取 session token）。
+- 应用根据以前缓存的 session token 登录（可以用 `{% if platform_name === "Objective-C" %}[LCUser currentUser].sessionToken{% endif %}{% if platform_name === "JavaScript" %}AV.User.current().getSessionToken(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current().get_session_token(){% endif %}{% if platform_name === "PHP" %}User::getCurrentSessionToken(){% endif %}{% if platform_name === "Android / Java" %}LCUser.getCurrentUser().getSessionToken(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser?.sessionToken?.value{% endif %}` 获取到当前用户的 session token，在服务端等受信任的环境下，可以通过 Master Key 读取任意用户的 `sessionToken` 字段以获取 session token）。
 - 应用内的某个 WebView 需要知道当前登录的用户。
 - 在服务端登录后，返回 session token 给客户端，客户端根据返回的 session token 登录。
 
@@ -9137,7 +9145,7 @@ LCUser currentUser = await LCUser.GetCurrent();
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser becomeWithSessionTokenInBackground:@"anmlwi96s381m6ca7o7266pzf" block:^(AVUser * _Nullable user, NSError * _Nullable error) {
+[LCUser becomeWithSessionTokenInBackground:@"anmlwi96s381m6ca7o7266pzf" block:^(LCUser * _Nullable user, NSError * _Nullable error) {
     if (user != nil) {
         // 登录成功
     } else {
@@ -9224,7 +9232,7 @@ if err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVUser *currentUser = [AVUser currentUser];
+LCUser *currentUser = [LCUser currentUser];
 NSString *token = currentUser.sessionToken;
 [currentUser isAuthenticatedWithSessionToken:token callback:^(BOOL succeeded, NSError * _Nullable error) {
     if (succeeded) {
@@ -9333,7 +9341,7 @@ if (isAuthenticated) {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser requestPasswordResetForEmailInBackground:@"tom@leancloud.rocks"];
+[LCUser requestPasswordResetForEmailInBackground:@"tom@leancloud.rocks"];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -9411,7 +9419,7 @@ if err := client.Users.RequestPasswordReset("tom@leancloud.rocks"); err != nil {
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser requestPasswordResetWithPhoneNumber:@"+8618200008888"];
+[LCUser requestPasswordResetWithPhoneNumber:@"+8618200008888"];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -9482,7 +9490,7 @@ if err := client.Users.RequestPasswordResetBySmsCode("+8618200008888"); err != n
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser resetPasswordWithSmsCode:@"123456" newPassword:@"cat!@#123" block:^(BOOL succeeded, NSError *error) {
+[LCUser resetPasswordWithSmsCode:@"123456" newPassword:@"cat!@#123" block:^(BOOL succeeded, NSError *error) {
     if (succeeded) {
         // 密码重置成功
     } else {
@@ -9564,7 +9572,7 @@ if err := client.Users.ResetPasswordBySmsCode("+8618200008888", "123456", "cat!@
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVQuery *userQuery = [AVUser query];
+LCQuery *userQuery = [LCUser query];
 ```
 {% endif %}
 {% if platform_name === "JavaScript" %}
@@ -9618,13 +9626,13 @@ userQuery := client.Users.NewUserQuery()
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVObject *book = [AVObject objectWithClassName:@"Book"];
-AVUser *author = [AVUser currentUser];
+LCObject *book = [LCObject objectWithClassName:@"Book"];
+LCUser *author = [LCUser currentUser];
 [book setObject:@"我的第五本书" forKey:@"title"];
 [book setObject:author forKey:@"author"];
 [book saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
     // 获取所有该作者写的书
-    AVQuery *query = [AVQuery queryWithClassName:@"Book"];
+    LCQuery *query = [LCQuery queryWithClassName:@"Book"];
     [query whereKey:@"author" equalTo:author];
     [query findObjectsInBackgroundWithBlock:^(NSArray *books, NSError *error) {
         // books 是包含同一作者所有 Book 对象的数组
@@ -9780,7 +9788,7 @@ ReadOnlyCollection<LCObject> books = await query.Find();
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser logInWithUsernameInBackground:@"Tom" password:@"cat!@#123" block:^(AVUser *user, NSError *error) {
+[LCUser logInWithUsernameInBackground:@"Tom" password:@"cat!@#123" block:^(LCUser *user, NSError *error) {
     if (user != nil) {
         // 试图修改用户名
         [user setObject:@"Jerry" forKey:@"username")];
@@ -9792,8 +9800,8 @@ ReadOnlyCollection<LCObject> books = await query.Find();
                 // 可以执行，因为用户已鉴权
 
                 // 绕过鉴权直接获取用户
-                AVQuery *query = [AVQuery queryWithClassName:@"_User"];
-                [query getObjectInBackgroundWithId:user.objectId block:^(AVObject *unauthenticatedUser, NSError *error) {
+                LCQuery *query = [LCQuery queryWithClassName:@"_User"];
+                [query getObjectInBackgroundWithId:user.objectId block:^(LCObject *unauthenticatedUser, NSError *error) {
                     [unauthenticatedUser setObject:@"Toodle" forKey:@"username"];
                     [unauthenticatedUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         if (succeeded) {
@@ -10020,7 +10028,7 @@ if err := client.User(unauthenticatedUser).Set("username", "Toodle"); err != nil
 }
 ```
 {% endif %}
-通过 `{% if platform_name === "Objective-C" %}[AVUser currentUser]{% endif %}{% if platform_name === "JavaScript" %}AV.User.current(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current(){% endif %}{% if platform_name === "PHP" %}User::getCurrentUser(){% endif %}{% if platform_name === "Android / Java" %}LCUser.getCurrentUser(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser{% endif %}{% if platform_name === "Flutter" %}LCUser.getCurrent(){% endif %}{% if platform_name === ".Net" %}LCUser.GetCurrent(){% endif %}` 获取的 `{{ userObjectName }}` 总是经过鉴权的。
+通过 `{% if platform_name === "Objective-C" %}[LCUser currentUser]{% endif %}{% if platform_name === "JavaScript" %}AV.User.current(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current(){% endif %}{% if platform_name === "PHP" %}User::getCurrentUser(){% endif %}{% if platform_name === "Android / Java" %}LCUser.getCurrentUser(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser{% endif %}{% if platform_name === "Flutter" %}LCUser.getCurrent(){% endif %}{% if platform_name === ".Net" %}LCUser.GetCurrent(){% endif %}` 获取的 `{{ userObjectName }}` 总是经过鉴权的。
 
 要查看一个 `{{ userObjectName }}` 是否经过鉴权，可以调用 `{% if platform_name === "Objective-C" %}isAuthenticatedWithSessionToken{% endif %}{% if platform_name === "JavaScript" %}isAuthenticated{% endif %}{% if platform_name === "Python" %}is_authenticated{% endif %}{% if platform_name === "PHP" %}isAuthenticated{% endif %}{% if platform_name === "Android / Java" %}isAuthenticated{% endif %}{% if platform_name === "Swift" %}{# TODO #}{% endif %}` 方法。通过经过鉴权的方法获取到的 `{{ userObjectName }}` 无需进行该检查。
 
@@ -10048,8 +10056,8 @@ NSDictionary *thirdPartyData = @{
                             @"refresh_token":@"REFRESH_TOKEN",
                             @"scope":@"SCOPE",
                             };
-AVUser *user = [AVUser user];
-AVUserAuthDataLoginOption *option = [AVUserAuthDataLoginOption new];
+LCUser *user = [LCUser user];
+LCUserAuthDataLoginOption *option = [LCUserAuthDataLoginOption new];
 option.platform = LeanCloudSocialPlatformWeiXin;
 [user loginWithAuthData:thirdPartyData platformId:LeanCloudSocialPlatformWeiXin options:option callback:^(BOOL succeeded, NSError * _Nullable error) {
     if (succeeded) {
@@ -10255,7 +10263,7 @@ NSDictionary *appleAuthData = @{
                             @"identity_token":@"IDENTITY TOKEN",
                             @"code":@"AUTHORIZATION CODE",
                             };
-AVUser *user = [AVUser user];
+LCUser *user = [LCUser user];
 [user loginWithAuthData:appleAuthData platformId:"lc_apple" options:nil callback:^(BOOL succeeded, NSError * _Nullable error) {
     if (succeeded) {
         NSLog(@"登录成功");
@@ -10386,8 +10394,8 @@ LeanCloud 会自动为 `_User` class 中每个用户的 `authData.<PLATFORM>.<ui
 
 #### 绑定第三方账户
 
-用户已经有了 AVUser 并登录成功后，可以绑定新的第三方账号信息。
-绑定成功后，新的第三方账户信息会被添加到 AVUser 的 authData 字段里。
+用户已经有了 LCUser 并登录成功后，可以绑定新的第三方账号信息。
+绑定成功后，新的第三方账户信息会被添加到 LCUser 的 authData 字段里。
 
 例如，下面的代码可以关联微信账户：
 
@@ -10571,23 +10579,23 @@ NSDictionary *thirdPartyData = @{
                             @"openid":@"OPENID",
                             @"scope":@"SCOPE",
                             };
-AVUser *user = [AVUser user];
-AVUserAuthDataLoginOption *option = [AVUserAuthDataLoginOption new];
+LCUser *user = [LCUser user];
+LCUserAuthDataLoginOption *option = [LCUserAuthDataLoginOption new];
 option.platform = LeanCloudSocialPlatformWeiXin;
 option.failOnNotExist = true;
 [user loginWithAuthData:thirdPartyData platformId:LeanCloudSocialPlatformWeiXin options:option callback:^(BOOL succeeded, NSError * _Nullable error) {
     if (succeeded) {
         // 你的逻辑
     } else if ([error.domain isEqualToString:kLeanCloudErrorDomain] && error.code == 211) {
-        // 不存在 thirdPartyData 的 AVUser 的实例，跳转到输入用户名、密码、手机号等业务页面
+        // 不存在 thirdPartyData 的 LCUser 的实例，跳转到输入用户名、密码、手机号等业务页面
     }
 }];
 
 // 跳转到输入用户名、密码、手机号等业务页面之后
-AVUser *user = [AVUser user];
+LCUser *user = [LCUser user];
 user.username = @"Tom";
 user.mobilePhoneNumber = @"+8618200008888";
-AVUserAuthDataLoginOption *option = [AVUserAuthDataLoginOption new];
+LCUserAuthDataLoginOption *option = [LCUserAuthDataLoginOption new];
 option.platform = LeanCloudSocialPlatformWeiXin;
 [user loginWithAuthData:thirdPartyData platformId:LeanCloudSocialPlatformWeiXin options:option callback:^(BOOL succeeded, NSError * _Nullable error) {
         if (succeeded) {
@@ -10740,7 +10748,7 @@ try {
   LCUser currentUser = await LCUser.loginWithAuthData(thirdPartyData, 'weixin', option: option);
 } on LCException catch (e) {
   if (e.code == 211) {
-    // 不存在 authData 的 AVUser 的实例，跳转到输入用户名、密码、手机号等业务页面
+    // 不存在 authData 的 LCUser 的实例，跳转到输入用户名、密码、手机号等业务页面
   }
 }
 
@@ -10781,7 +10789,7 @@ try {
   LCUser currentUser = await LCUser.LoginWithAuthData(thirdPartyData, "weixin", option: option);
 } catch (LCException e) {
   if (e.code == 211) {
-    // 不存在 authData 的 AVUser 的实例，跳转到输入用户名、密码、手机号等业务页面
+    // 不存在 authData 的 LCUser 的实例，跳转到输入用户名、密码、手机号等业务页面
   }
 }
 
@@ -10851,8 +10859,8 @@ NSDictionary *thirdPartyData = @{
                             @"scope":@"SCOPE",
                             @"unionid":@"unionid4a" // 新增属性
                             };
-AVUser *currentuser = [AVUser user];
-AVUserAuthDataLoginOption *option = [AVUserAuthDataLoginOption new];
+LCUser *currentuser = [LCUser user];
+LCUserAuthDataLoginOption *option = [LCUserAuthDataLoginOption new];
 option.platform = @"weixin";   // 这里指定 UnionIdPlatform，使用「weixin」来指代微信平台。
 option.unionId = thirdPartyData[@"unionid"];
 option.isMainAccount = true;
@@ -11027,8 +11035,8 @@ NSDictionary *thirdPartyData = @{
                             @"scope":@"SCOPE",
                             @"unionid":@"unionid4a"
                             };
-AVUser *currentuser = [AVUser user];
-AVUserAuthDataLoginOption *option = [AVUserAuthDataLoginOption new];
+LCUser *currentuser = [LCUser user];
+LCUserAuthDataLoginOption *option = [LCUserAuthDataLoginOption new];
 option.platform = @"weixin";   // 这里指定 unionIdPlatform，使用「weixin」来指代微信平台。
 option.unionId = thirdPartyData[@"unionid"];
 option.isMainAccount = false;
@@ -11324,7 +11332,7 @@ objectId | 微信用户 | authData.<platform> | authData._{platform}_unionid
 
 {% if platform_name === "Objective-C" %}
 ```objc
-[AVUser loginAnonymouslyWithCallback:^(AVUser *user, NSError *error) {
+[LCUser loginAnonymouslyWithCallback:^(LCUser *user, NSError *error) {
     // user 是新的匿名用户
 }];
 ```
@@ -11369,7 +11377,7 @@ await LCUser.LoginAnonymously();
 {% if platform_name === "Objective-C" %}
 ```objc
 // currentUser 是个匿名用户
-AVUser *currentUser = [AVUser currentUser];
+LCUser *currentUser = [LCUser currentUser];
 
 user.username = @"Tom";
 user.password = @"cat!@#123";
@@ -11445,7 +11453,7 @@ await currentUser.SignUp();
 
 {% if platform_name === "Objective-C" %}
 ```objc
-AVUser *currentUser = [AVUser currentUser];
+LCUser *currentUser = [LCUser currentUser];
 if (currentUser.isAnonymous) {
     // currentUser 是匿名用户
 } else {
@@ -11505,12 +11513,12 @@ if (currentUser.IsAnonymous) {
 ## 子类化
 
 {% if platform_name === "Objective-C" %}
-子类化推荐给进阶的开发者在进行代码重构的时候做参考。你可以用 `AVObject` 访问到所有的数据，用 `objectForKey:` 获取任意字段。在成熟的代码中，子类化有很多优势，包括降低代码量，具有更好的扩展性，和支持自动补全。
+子类化推荐给进阶的开发者在进行代码重构的时候做参考。你可以用 `LCObject` 访问到所有的数据，用 `objectForKey:` 获取任意字段。在成熟的代码中，子类化有很多优势，包括降低代码量，具有更好的扩展性，和支持自动补全。
 
 子类化是可选的，请对照下面的例子来加深理解：
 
 ```
-AVObject *student = [AVObject objectWithClassName:@"Student"];
+LCObject *student = [LCObject objectWithClassName:@"Student"];
 [student setObject:@"小明" forKey:@"name"];
 [student saveInBackground];
 ```
@@ -11529,9 +11537,9 @@ student.name = @"小明";
 
 要实现子类化，需要下面几个步骤：
 
-1. 导入 `AVObject+Subclass.h`；
-2. 继承 `AVObject` 并实现 `AVSubclassing` 协议；
-3. 实现类方法 `parseClassName`，返回的字符串是原先要传给 `initWithClassName:` 的参数，这样后续就不必再进行类名引用了。如果不实现，默认返回的是类的名字。**请注意：`AVUser` 子类化后必须返回 `_User`**；
+1. 导入 `LCObject+Subclass.h`；
+2. 继承 `LCObject` 并实现 `LCSubclassing` 协议；
+3. 实现类方法 `parseClassName`，返回的字符串是原先要传给 `initWithClassName:` 的参数，这样后续就不必再进行类名引用了。如果不实现，默认返回的是类的名字。**请注意：`LCUser` 子类化后必须返回 `_User`**；
 4. 在实例化子类之前调用 `[YourClass registerSubclass]`（**在应用当前生命周期中，只需要调用一次**。可在子类的 `+load` 方法或者 `UIApplication` 的 `-application:didFinishLaunchingWithOptions:` 方法里面调用）。
 
 下面是实现 `Student` 子类化的例子：
@@ -11540,7 +11548,7 @@ student.name = @"小明";
   // Student.h
   #import <AVOSCloud/AVOSCloud.h>
 
-  @interface Student : AVObject <AVSubclassing>
+  @interface Student : LCObject <LCSubclassing>
 
   @property(nonatomic,copy) NSString *name;
 
@@ -11574,9 +11582,9 @@ student.name = @"小明";
 
 ### 属性
 
-为 `AVObject` 的子类添加自定义的属性和方法，可以更好地将这个类的逻辑封装起来。用 `AVSubclassing` 可以把所有的相关逻辑放在一起，这样不必再使用不同的类来区分业务逻辑和存储转换逻辑了。
+为 `LCObject` 的子类添加自定义的属性和方法，可以更好地将这个类的逻辑封装起来。用 `LCSubclassing` 可以把所有的相关逻辑放在一起，这样不必再使用不同的类来区分业务逻辑和存储转换逻辑了。
 
-`AVObject` 支持动态 synthesizer，就像 `NSManagedObject` 一样。先正常声明一个属性，只是在 `.m` 文件中把 `@synthesize` 变成 `@dynamic`。
+`LCObject` 支持动态 synthesizer，就像 `NSManagedObject` 一样。先正常声明一个属性，只是在 `.m` 文件中把 `@synthesize` 变成 `@dynamic`。
 
 请看下面的例子是怎么添加一个「年龄」属性：
 
@@ -11584,7 +11592,7 @@ student.name = @"小明";
   // Student.h
   #import <AVOSCloud/AVOSCloud.h>
 
-  @interface Student : AVObject <AVSubclassing>
+  @interface Student : LCObject <AVSubclassing>
 
   @property int age;
 
@@ -11616,7 +11624,7 @@ student.name = @"小明";
 注意：`AVRelation` 同样可以作为子类化的一个属性来使用，比如：
 
 ```objc
-@interface Student : AVUser <AVSubclassing>
+@interface Student : LCUser <AVSubclassing>
 @property(retain) AVRelation *friends;
   …
 @end
@@ -11626,11 +11634,11 @@ student.name = @"小明";
   …
 ```
 
-另外，值为 `Pointer` 的实例可用 `AVObject*` 来表示。例如，如果 `Student` 中 `bestFriend` 代表一个指向另一个 `Student` 的键，由于 `Student` 是一个 `AVObject`，因此在表示这个键的值的时候，可以用一个 `AVObject*` 来代替：
+另外，值为 `Pointer` 的实例可用 `LCObject*` 来表示。例如，如果 `Student` 中 `bestFriend` 代表一个指向另一个 `Student` 的键，由于 `Student` 是一个 `LCObject`，因此在表示这个键的值的时候，可以用一个 `LCObject*` 来代替：
 
 ```objc
-@interface Student : AVUser <AVSubclassing>
-@property(nonatomic, strong) AVObject *bestFriend;
+@interface Student : LCUser <LCSubclassing>
+@property(nonatomic, strong) LCObject *bestFriend;
  …
 @end
 
@@ -11654,12 +11662,12 @@ student.name = @"小明";
 
 ```
 
-### 针对 AVUser 子类化的特别说明
+### 针对 LCUser 子类化的特别说明
 
-假如现在已经有一个基于 `AVUser` 的子类，如上面提到的 `Student`：
+假如现在已经有一个基于 `LCUser` 的子类，如上面提到的 `Student`：
 
 ```objc
-@interface Student : AVUser<AVSubclassing>
+@interface Student : LCUser<LCSubclassing>
 @property (retain) NSString *displayName;
 @end
 
@@ -11675,13 +11683,13 @@ student.name = @"小明";
 登录时需要调用 `Student` 的登录方法才能通过 `currentUser` 得到这个子类：
 
 ```objc
-[Student logInWithUsernameInBackground:@"USER_NAME" password:@"PASSWORD" block:^(AVUser *user, NSError *error) {
+[Student logInWithUsernameInBackground:@"USER_NAME" password:@"PASSWORD" block:^(LCUser *user, NSError *error) {
         Student *student = [Student currentUser];
         student.displayName = @"YOUR_DISPLAY_NAME";
     }];
 ```
 
-同样需要调用 `[Student registerSubclass];`，确保在其它地方得到的对象是 `Student`，而非 `AVUser`。
+同样需要调用 `[Student registerSubclass];`，确保在其它地方得到的对象是 `Student`，而非 `LCUser`。
 
 ### 初始化子类
 
@@ -11694,7 +11702,7 @@ student.name = @"小明";
 例如，查询年龄小于 21 岁的学生：
 
 ```objc
-  AVQuery *query = [Student query];
+  LCQuery *query = [Student query];
   [query whereKey:@"age" lessThanOrEqualTo:@(21)];
   [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
     if (!error) {
@@ -11841,7 +11849,7 @@ $student->save();
 
 这样代码看起来是不是更简洁呢？
 
-### 子类化 AVObject
+### 子类化 LCObject
 
 要实现子类化，需要下面几个步骤：
 
