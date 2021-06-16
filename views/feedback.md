@@ -310,7 +310,6 @@ compile ('cn.leancloud.android:avoscloud-feedback:4.7.10@aar')
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application...>
        <activity
          android:name="com.avos.avoscloud.feedback.ThreadActivity" >

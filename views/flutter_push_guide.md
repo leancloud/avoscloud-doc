@@ -172,10 +172,8 @@ public class MyLeanCloudApp extends FlutterApplication {
 
 ```xml
 <!-- 基本模块（必须）START -->
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 <!-- 基本模块 END -->
 
 <application
