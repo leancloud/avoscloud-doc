@@ -1,4 +1,3 @@
-{% import "views/_leanengine.njk" as leanengine %}
 # LeanCache 使用指南
 
 <div style="max-width:200px;margin: 0 0 20px 0;"><img src="images/redislogo.svg" class="img-responsive" alt=""></div>
