@@ -1270,7 +1270,7 @@ conversation.removeFromLocalCache(message);
 
 iOS 和 Android 分别提供了内置的离线消息推送通知服务，但是使用的前提是按照推送文档配置 iOS 的推送证书和 Android 开启推送的开关，详细请阅读如下文档：
 
-1. [消息推送服务总览](push_guide.html)
+1. [推送通知服务总览](push_guide.html)
 2. [Android 消息推送开发指南](android_push_guide.html) / [iOS 消息推送开发指南](ios_push_guide.html)
 
 LeanCloud 本就提供完善的消息推送服务，现在将推送与即时通讯服务无缝结合起来，LeanCloud 云端会将用户的即时通讯 `clientId` 与推送服务的设备数据 `_Installation` 自动进行关联。当用户 A 发出消息后，如果对话中部分成员当前不在线，而且这些成员使用的是 iOS 设备，或者是成功开通 [混合推送功能](android_mixpush_guide.html) 的 Android 设备的话，LeanCloud 云端会自动将即时通讯消息转成特定的推送通知发送至客户端，同时我们也提供扩展机制，允许开发者对接第三方的消息推送服务。
