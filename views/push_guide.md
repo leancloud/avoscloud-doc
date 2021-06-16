@@ -1,4 +1,4 @@
-# 消息推送服务总览
+# 推送通知服务总览
 
 消息推送，使得开发者可以即时地向其应用程序的用户推送通知或者消息，与用户保持互动，从而有效地提高留存率，提升用户体验。平台提供整合了 Android 推送、iOS 推送的统一推送服务。
 
@@ -16,7 +16,7 @@ Installation 表示一个允许推送的设备的唯一标示，对应数据管�
 ---|---|---
 badge|iOS|呈现在应用图标右上角的红色圆形数字提示，例如待更新的应用数、未读信息数目等。
 channels| |设备订阅的频道。频道名称只能包含大小写英文字母、数字、下划线（`_`）、连字符（`-`）、等号（`=`）、汉字（中日韩统一表意文字）。
-deviceProfile||在应用有多个 iOS 推送证书或多个 Android 混合推送配置的场景下，deviceProfile 用于指定当前设备使用的证书名或配置名。其值需要与 **控制台 > 消息 >  推送 > 设置** 内配置的证书名或配置名对应，否则将无法完成推送。`deviceProfile` 的值必须以字母开头，由大小写字母、数字和下划线组成的字符串，或为空值。deviceProfile 是特殊字段，只支持 `equals` 查询。 
+deviceProfile||在应用有多个 iOS 推送证书或多个 Android 混合推送配置的场景下，deviceProfile 用于指定当前设备使用的证书名或配置名。其值需要与 **云服务控制台 > 推送 > 设置** 内配置的证书名或配置名对应，否则将无法完成推送。`deviceProfile` 的值必须以字母开头，由大小写字母、数字和下划线组成的字符串，或为空值。deviceProfile 是特殊字段，只支持 `equals` 查询。 
 deviceToken|iOS|APNS 推送的唯一标识符
 apnsTopic|iOS|基于 Token Authentication 的推送需要设置该字段。iOS SDK 会自动读取 iOS 应用的 bundle ID 作为 apnsTopic。但以下情况需要手工指定： 1. 使用低于 v4.2.0 的 iOS SDK 版本; 2. 不使用 iOS SDK （如 React Native）；3. 使用不同于 bundle ID 的 topic。
 deviceType| |设备类型，目前支持 `ios`、`android`。
@@ -52,11 +52,11 @@ errors| | 本次推送过程中的错误信息。
 
 ## Android 消息推送
 
-由于 Android 系统权限控制越来越严，LeanCloud 自有通道的推送到达率受到影响。
+由于 Android 系统权限控制越来越严，云服务自有通道的推送到达率受到影响。
 因此，建议商用版应用使用我们的「混合推送」方案，该方案对接了国内主流厂商的不同接口，让开发者通过统一的 API 完成推送任务。
 详见《Android 混合推送开发指南》。
 
-如果想要使用 LeanCloud 自有通道推送，请阅读《Android 消息推送开发指南》。 
+如果想要使用云服务自有通道推送，请阅读《Android 消息推送开发指南》。 
 ## 使用 REST API 推送消息
 
 请阅读《推送 REST API 使用指南》。
