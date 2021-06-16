@@ -543,3 +543,50 @@ select * from Comment where post=
 CQL 最终还是转换成 [REST API](./rest_api.html) 里查询部分提到的各种 where 条件，因为多了一层转换，理论上会比直接使用 `where` 查询慢一点。并且 CQL 对长度有所限制，要求在 4096 字节以内。
 
 此外，我们推荐查询语句都采用占位符的方式，使用占位符的查询语句将有机会被缓存复用，避免重复解释的开销。
+
+## CQL 交互查询
+
+可以通过 `$ lean cql` 命令来使用 [CQL](cql_guide.html) 语言查询存储服务数据：
+
+```
+$ lean cql
+CQL > select objectId, mime_type, createdAt, updatedAt from _File where mime_type != null limit 10;
+objectId                   mime_type                                   createdAt                  updatedAt
+5583bc44e4b0ef6154cb1b9e   application/zip, application/octet-stream   2015-06-19T06:52:52.106Z   2015-06-19T06:52:52.106Z
+559a63bee4b0c4d3e72432f6   application/zip, application/octet-stream   2015-07-06T11:17:18.885Z   2015-07-06T11:17:18.885Z
+55cc4d3b60b28da5fc3af7c5   image/jpeg                                  2015-08-13T07:54:35.119Z   2015-08-13T07:54:35.119Z
+55cc4d7660b2d1408c770cde   image/jpeg                                  2015-08-13T07:55:34.496Z   2015-08-13T07:55:34.496Z
+55cc4df460b2c0a2834d63e2   image/jpeg                                  2015-08-13T07:57:40.013Z   2015-08-13T07:57:40.013Z
+55cc4eb660b2597462bc093e   image/jpeg                                  2015-08-13T08:00:54.983Z   2015-08-13T08:00:54.983Z
+55cc4ece60b2597462bc0e06   image/jpeg                                  2015-08-13T08:01:18.323Z   2015-08-13T08:01:18.323Z
+563b2fc360b216575c579204   application/zip, application/octet-stream   2015-11-05T10:30:27.721Z   2015-11-05T10:30:27.721Z
+564ae21400b0ee7f5ca4e11a   application/zip, application/octet-stream   2015-11-17T08:15:16.951Z   2015-11-17T08:15:16.951Z
+564da57360b2ed36207ad273   text/plain                                  2015-11-19T10:33:23.854Z   2015-11-19T10:33:23.854Z
+```
+
+如果需要查询的 Class 有大量 Object / Array 等嵌套的数据结构，但以上的表格形式不便于查看结果，可以尝试用 `$ lean cql --format=json` 将结果以 JSON 格式来展示：
+
+```
+$ lean cql --format=json
+CQL > select objectId, mime_type from _File where mime_type != null limit 3;
+[
+  {
+    "createdAt": "2015-06-19T06:52:52.106Z",
+    "mime_type": "application/zip, application/octet-stream",
+    "objectId": "5583bc44e4b0ef6154cb1b9e",
+    "updatedAt": "2015-06-19T06:52:52.106Z"
+  },
+  {
+    "createdAt": "2015-07-06T11:17:18.885Z",
+    "mime_type": "application/zip, application/octet-stream",
+    "objectId": "559a63bee4b0c4d3e72432f6",
+    "updatedAt": "2015-07-06T11:17:18.885Z"
+  },
+  {
+    "createdAt": "2015-08-13T07:54:35.119Z",
+    "mime_type": "image/jpeg",
+    "objectId": "55cc4d3b60b28da5fc3af7c5",
+    "updatedAt": "2015-08-13T07:54:35.119Z"
+  }
+]
+```
