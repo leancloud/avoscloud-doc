@@ -63,10 +63,10 @@ do {
 ```
 ```objc
 // 定义一个常驻内存的属性变量
-@property (nonatomic) AVIMClient *tom;
+@property (nonatomic) LCIMClient *tom;
 // 初始化
 NSError *error;
-tom = [[AVIMClient alloc] initWithClientId:@"Tom" error:&error];
+tom = [[LCIMClient alloc] initWithClientId:@"Tom" error:&error];
 if (error) {
     NSLog(@"init failed with error: %@", error);
 } else {
@@ -119,10 +119,10 @@ do {
 ```
 ```objc
 // 定义一个常驻内存的属性变量
-@property (nonatomic) AVIMClient *tom;
+@property (nonatomic) LCIMClient *tom;
 // 初始化，然后登陆
 NSError *error;
-tom = [[AVIMClient alloc] initWithClientId:@"Tom" error:&error];
+tom = [[LCIMClient alloc] initWithClientId:@"Tom" error:&error];
 if (error) {
     NSLog(@"init failed with error: %@", error);
 } else {
@@ -188,12 +188,12 @@ LCUser.logIn(username: USER_NAME, password: PASSWORD) { (result) in
 ```
 ```objc
 // 定义一个常驻内存的属性变量
-@property (nonatomic) AVIMClient *client;
+@property (nonatomic) LCIMClient *client;
 // 登陆 User，然后使用登陆成功的 User 初始化 Client 并登陆
-[AVUser logInWithUsernameInBackground:USER_NAME password:PASSWORD block:^(AVUser * _Nullable user, NSError * _Nullable error) {
+[LCUser logInWithUsernameInBackground:USER_NAME password:PASSWORD block:^(LCUser * _Nullable user, NSError * _Nullable error) {
     if (user) {
         NSError *err;
-        client = [[AVIMClient alloc] initWithUser:user error:&err];
+        client = [[LCIMClient alloc] initWithUser:user error:&err];
         if (err) {
             NSLog(@"init failed with error: %@", err);
         } else {
@@ -268,9 +268,8 @@ do {
 ```
 ```objc
 // 创建与 Jerry 之间的对话
-[tom createConversationWithName:@"Tom & Jerry" clientIds:@[@"Jerry"] attributes:nil options:AVIMConversationOptionUnique
-                       callback:^(AVIMConversation *conversation, NSError *error) {
-
+[self createConversationWithClientIds:@[@"Jerry"] callback:^(LCIMConversation * _Nullable conversation, NSError * _Nullable error) {
+    // handle callback
 }];
 ```
 ```java
@@ -349,31 +348,55 @@ public func createChatRoom(name: String? = nil, attributes: [String : Any]? = ni
 public func createTemporaryConversation(clientIDs: Set<String>, timeToLive: Int32, completion: @escaping (LCGenericResult<IMTemporaryConversation>) -> Void) throws
 ```
 ```objc
-/*!
- 创建一个新的用户对话。
- 在单聊的场合，传入对方一个 clientId 即可；群聊的时候，支持同时传入多个 clientId 列表
- @param name - 会话名称。
- @param clientIds - 聊天参与者（发起人除外）的 clientId 列表。
- @param callback － 对话建立之后的回调
- */
-- (void)createConversationWithName:(NSString * _Nullable)name
-                         clientIds:(NSArray<NSString *> *)clientIds
-                          callback:(void (^)(AVIMConversation * _Nullable conversation, NSError * _Nullable error))callback;
-/*!
- 创建一个新的用户对话。
- 在单聊的场合，传入对方一个 clientId 即可；群聊的时候，支持同时传入多个 clientId 列表
- @param name - 会话名称。
- @param clientIds - 聊天参与者（发起人除外）的 clientId 列表。
- @param attributes - 会话的自定义属性。
- @param options － 可选参数，可以使用或 “|” 操作表示多个选项
- @param callback － 对话建立之后的回调
- */
-- (void)createConversationWithName:(NSString * _Nullable)name
-                         clientIds:(NSArray<NSString *> *)clientIds
-                        attributes:(NSDictionary * _Nullable)attributes
-                           options:(AVIMConversationOption)options
-                          callback:(void (^)(AVIMConversation * _Nullable conversation, NSError * _Nullable error))callback;
+/// The option of conversation creation.
+@interface LCIMConversationCreationOption : NSObject
+/// The name of the conversation.
+@property (nonatomic, nullable) NSString *name;
+/// The attributes of the conversation.
+@property (nonatomic, nullable) NSDictionary *attributes;
+/// Create or get an unique conversation, default is `true`.
+@property (nonatomic) BOOL isUnique;
+/// The time interval for the life of the temporary conversation.
+@property (nonatomic) NSUInteger timeToLive;
+@end
 
+/// Create a Normal Conversation. Default is a Normal Unique Conversation.
+/// @param clientIds The set of client ID. it's the members of the conversation which will be created. the initialized members always contains current client's ID. if the created conversation is unique, and server has one unique conversation with the same members, that unique conversation will be returned.
+/// @param callback Result callback.
+- (void)createConversationWithClientIds:(NSArray<NSString *> *)clientIds
+                               callback:(void (^)(LCIMConversation * _Nullable conversation, NSError * _Nullable error))callback;
+
+/// Create a Normal Conversation. Default is a Normal Unique Conversation.
+/// @param clientIds The set of client ID. it's the members of the conversation which will be created. the initialized members always contains current client's ID. if the created conversation is unique, and server has one unique conversation with the same members, that unique conversation will be returned.
+/// @param option See `LCIMConversationCreationOption`.
+/// @param callback Result callback.
+- (void)createConversationWithClientIds:(NSArray<NSString *> *)clientIds
+                                 option:(LCIMConversationCreationOption * _Nullable)option
+                               callback:(void (^)(LCIMConversation * _Nullable conversation, NSError * _Nullable error))callback;
+
+/// Create a Chat Room.
+/// @param callback Result callback.
+- (void)createChatRoomWithCallback:(void (^)(LCIMChatRoom * _Nullable chatRoom, NSError * _Nullable error))callback;
+
+/// Create a Chat Room.
+/// @param option See `LCIMConversationCreationOption`.
+/// @param callback Result callback.
+- (void)createChatRoomWithOption:(LCIMConversationCreationOption * _Nullable)option
+                        callback:(void (^)(LCIMChatRoom * _Nullable chatRoom, NSError * _Nullable error))callback;
+
+/// Create a Temporary Conversation. Temporary Conversation is unique in it's Life Cycle.
+/// @param clientIds The set of client ID. it's the members of the conversation which will be created. the initialized members always contains this client's ID.
+/// @param callback Result callback.
+- (void)createTemporaryConversationWithClientIds:(NSArray<NSString *> *)clientIds
+                                        callback:(void (^)(LCIMTemporaryConversation * _Nullable temporaryConversation, NSError * _Nullable error))callback;
+
+/// Create a Temporary Conversation. Temporary Conversation is unique in it's Life Cycle.
+/// @param clientIds The set of client ID. it's the members of the conversation which will be created. the initialized members always contains this client's ID.
+/// @param option See `LCIMConversationCreationOption`.
+/// @param callback Result callback.
+- (void)createTemporaryConversationWithClientIds:(NSArray<NSString *> *)clientIds
+                                          option:(LCIMConversationCreationOption * _Nullable)option
+                                        callback:(void (^)(LCIMTemporaryConversation * _Nullable temporaryConversation, NSError * _Nullable error))callback;
 ```
 ```java
 /**
@@ -530,7 +553,7 @@ do {
 }
 ```
 ```objc
-AVIMTextMessage *message = [AVIMTextMessage messageWithText:@"耗子，起床！" attributes:nil];
+LCIMTextMessage *message = [LCIMTextMessage messageWithText:@"耗子，起床！" attributes:nil];
 [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
   if (succeeded) {
     NSLog(@"发送成功！");
@@ -570,7 +593,7 @@ try {
 
 ### 接收消息
 
-在另一个设备上，我们用 `Jerry` 作为 `clientId` 来创建一个 `AVIMClient` 并登录即时通讯服务（与前两节 Tom 的处理流程一样）：
+在另一个设备上，我们用 `Jerry` 作为 `clientId` 来创建一个 `IMClient` 并登录即时通讯服务（与前两节 Tom 的处理流程一样）：
 
 ```js
 var { Event } = require('leancloud-realtime');
@@ -594,10 +617,13 @@ do {
 }
 ```
 ```objc
-jerry = [[AVIMClient alloc] initWithClientId:@"Jerry"];
-[jerry openWithCallback:^(BOOL succeeded, NSError *error) {
-
-}];
+NSError *error;
+jerry = [[LCIMClient alloc] initWithClientId:@"Jerry" error:&error];
+if (!error) {
+    [jerry openWithCallback:^(BOOL succeeded, NSError *error) {
+        // handle callback
+    }];
+}
 ```
 ```java
 // Jerry 登录
@@ -658,7 +684,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```objc
-// Objective-C SDK 通过实现 AVIMClientDelegate 代理来处理服务端通知
+// Objective-C SDK 通过实现 LCIMClientDelegate 代理来处理服务端通知
 // 不了解 Objective-C 代理（delegate）概念的读者可以参考：
 // https://developer.apple.com/library/archive/documentation/General/Conceptual/CocoaEncyclopedia/DelegatesandDataSources/DelegatesandDataSources.html
 jerry.delegate = delegator;
@@ -668,7 +694,7 @@ jerry.delegate = delegator;
  @param conversation － 所属对话
  @param clientId - 邀请者的 ID
  */
--(void)conversation:(AVIMConversation *)conversation invitedByClientId:(NSString *)clientId{
+- (void)conversation:(LCIMConversation *)conversation invitedByClientId:(NSString *)clientId {
     NSLog(@"%@", [NSString stringWithFormat:@"当前 clientId（Jerry）被 %@ 邀请，加入了对话",clientId]);
 }
 
@@ -677,7 +703,7 @@ jerry.delegate = delegator;
  @param conversation － 所属对话
  @param message - 具体的消息
  */
-- (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
+- (void)conversation:(LCIMConversation *)conversation didReceiveTypedMessage:(LCIMTypedMessage *)message {
     NSLog(@"%@", message.text); // Jerry，起床了！
 }
 ```
@@ -814,8 +840,8 @@ do {
 ```
 ```objc
 // 首先根据 ID 获取 Conversation 实例
-AVIMConversationQuery *query = [self.client conversationQuery];
-[query getConversationById:@"CONVERSATION_ID" callback:^(AVIMConversation *conversation, NSError *error) {
+LCIMConversationQuery *query = [self.client conversationQuery];
+[query getConversationById:@"CONVERSATION_ID" callback:^(LCIMConversation *conversation, NSError *error) {
     // 邀请 Mary 加入对话
     [conversation addMembersWithClientIds:@[@"Mary"] callback:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
@@ -890,14 +916,14 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 ```objc
 jerry.delegate = delegator;
 
-#pragma mark - AVIMClientDelegate
+#pragma mark - LCIMClientDelegate
 /*!
  对话中有新成员加入时所有成员都会收到这一通知。
  @param conversation － 所属对话
  @param clientIds - 加入的新成员列表
  @param clientId - 邀请者的 ID
  */
-- (void)conversation:(AVIMConversation *)conversation membersAdded:(NSArray *)clientIds byClientId:(NSString *)clientId {
+- (void)conversation:(LCIMConversation *)conversation membersAdded:(NSArray *)clientIds byClientId:(NSString *)clientId {
     NSLog(@"%@", [NSString stringWithFormat:@"%@ 加入到对话，操作者为：%@",[clientIds objectAtIndex:0],clientId]);
 }
 ```
@@ -999,10 +1025,7 @@ do {
 ```
 ```objc
 // Tom 建立了与朋友们的会话
-NSArray *friends = @[@"Jerry", @"Mary"];
-[tom createConversationWithName:@"Tom & Jerry & friends" clientIds:friends
-  options:AVIMConversationOptionUnique
-  callback:^(AVIMConversation *conversation, NSError *error) {
+[tom createConversationWithClientIds:@[@"Jerry", @"Mary"] callback:^(LCIMConversation * _Nullable conversation, NSError * _Nullable error) {
     if (!error) {
         NSLog(@"创建成功！");
     }
@@ -1057,7 +1080,7 @@ do {
 }
 ```
 ```objc
-[conversation sendMessage:[AVIMTextMessage messageWithText:@"大家好，欢迎来到我们的群聊对话！" attributes:nil] callback:^(BOOL succeeded, NSError *error) {
+[conversation sendMessage:[LCIMTextMessage messageWithText:@"大家好，欢迎来到我们的群聊对话！" attributes:nil] callback:^(BOOL succeeded, NSError *error) {
     if (succeeded) {
         NSLog(@"发送成功！");
     }
@@ -1188,14 +1211,14 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 ```objc
 jerry.delegate = delegator;
 
-#pragma mark - AVIMClientDelegate
+#pragma mark - LCIMClientDelegate
 /*!
  对话中有成员离开时所有剩余成员都会收到这一通知。
  @param conversation － 所属对话
  @param clientIds - 离开的成员列表
  @param clientId - 操作者的 ID
  */
-- (void)conversation:(AVIMConversation *)conversation membersRemoved:(NSArray<NSString *> * _Nullable)clientIds byClientId:(NSString * _Nullable)clientId {
+- (void)conversation:(LCIMConversation *)conversation membersRemoved:(NSArray<NSString *> * _Nullable)clientIds byClientId:(NSString * _Nullable)clientId {
   ;
 }
 /*!
@@ -1203,7 +1226,7 @@ jerry.delegate = delegator;
  @param conversation － 所属对话
  @param clientId - 操作者的 ID
  */
-- (void)conversation:(AVIMConversation *)conversation kickedByClientId:(NSString * _Nullable)clientId {
+- (void)conversation:(LCIMConversation *)conversation kickedByClientId:(NSString * _Nullable)clientId {
   ;
 }
 ```
@@ -1312,8 +1335,8 @@ do {
 }
 ```
 ```objc
-AVIMConversationQuery *query = [william conversationQuery];
-[query getConversationById:@"CONVERSATION_ID" callback:^(AVIMConversation *conversation, NSError *error) {
+LCIMConversationQuery *query = [william conversationQuery];
+[query getConversationById:@"CONVERSATION_ID" callback:^(LCIMConversation *conversation, NSError *error) {
     [conversation joinWithCallback:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             NSLog(@"加入成功！");
@@ -1383,7 +1406,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```objc
-- (void)conversation:(AVIMConversation *)conversation membersAdded:(NSArray *)clientIds byClientId:(NSString *)clientId {
+- (void)conversation:(LCIMConversation *)conversation membersAdded:(NSArray *)clientIds byClientId:(NSString *)clientId {
     NSLog(@"%@", [NSString stringWithFormat:@"%@ 加入到对话，操作者为：%@",[clientIds objectAtIndex:0],clientId]);
 }
 ```
@@ -1495,7 +1518,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 ```
 ```objc
 // Mary 登录之后，Jerry 退出了对话，在 Mary 所在的客户端就会激发以下回调
--(void)conversation:(AVIMConversation *)conversation membersRemoved:(NSArray *)clientIds byClientId:(NSString *)clientId{
+- (void)conversation:(LCIMConversation *)conversation membersRemoved:(NSArray *)clientIds byClientId:(NSString *)clientId {
     NSLog(@"%@", [NSString stringWithFormat:@"%@ 离开了对话，操作者为：%@",[clientIds objectAtIndex:0],clientId]);
 }
 ```
@@ -1606,8 +1629,8 @@ LeanCloud 即时通讯服务默认支持文本、文件、图像、音频、视�
 | `messageId`          | `NSString`             | 消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 ID。 |
 | `sendTimestamp`      | `int64_t`              | 消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。 |
 | `deliveredTimestamp` | `int64_t`              | 消息被对方接收到的时间。消息被接收之后，由 LeanCloud 云端赋予的全局的时间戳。 |
-| `status`             | `AVIMMessageStatus` 枚举 | 消息状态，有五种取值：<br/><br/>`AVIMMessageStatusNone`（未知）<br/>`AVIMMessageStatusSending`（发送中）<br/>`AVIMMessageStatusSent`（发送成功）<br/>`AVIMMessageStatusDelivered`（被接收）<br/>`AVIMMessageStatusFailed`（失败） |
-| `ioType`             | `AVIMMessageIOType` 枚举 | 消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（发给当前用户）<br/>`AVIMMessageIOTypeOut`（由当前用户发出） |
+| `status`             | `AVIMMessageStatus` 枚举 | 消息状态，有五种取值：<br/><br/>`LCIMMessageStatusNone`（未知）<br/>`LCIMMessageStatusSending`（发送中）<br/>`LCIMMessageStatusSent`（发送成功）<br/>`LCIMMessageStatusDelivered`（被接收）<br/>`LCIMMessageStatusFailed`（失败） |
+| `ioType`             | `LCIMMessageIOType` 枚举 | 消息传输方向，有两种取值：<br/><br/>`LCIMMessageIOTypeIn`（发给当前用户）<br/>`LCIMMessageIOTypeOut`（由当前用户发出） |
 
 {{ docs.langSpecEnd('objc') }}
 
@@ -1709,8 +1732,8 @@ NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUser
 NSString *documentsDirectory = [paths objectAtIndex:0];
 NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:@"LeanCloud.png"];
 NSError *error;
-AVFile *file = [AVFile fileWithLocalPath:imagePath error:&error];
-AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"萌妹子一枚" file:file attributes:nil];
+LCFile *file = [LCFile fileWithLocalPath:imagePath error:&error];
+LCIMImageMessage *message = [LCIMImageMessage messageWithText:@"萌妹子一枚" file:file attributes:nil];
 [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
     if (succeeded) {
         NSLog(@"发送成功！");
@@ -1791,8 +1814,8 @@ do {
 ```
 ```objc
 // Tom 发了一张图片给 Jerry
-AVFile *file = [AVFile fileWithURL:[self @"http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"]];
-AVIMImageMessage *message = [AVIMImageMessage messageWithText:@"萌妹子一枚" file:file attributes:nil];
+LCFile *file = [LCFile fileWithURL:[self @"http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"]];
+LCIMImageMessage *message = [LCIMImageMessage messageWithText:@"萌妹子一枚" file:file attributes:nil];
 [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
     if (succeeded) {
         NSLog(@"发送成功！");
@@ -1870,8 +1893,8 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```objc
-- (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
-    AVIMImageMessage *imageMessage = (AVIMImageMessage *)message;
+- (void)conversation:(LCIMConversation *)conversation didReceiveTypedMessage:(LCIMTypedMessage *)message {
+    LCIMImageMessage *imageMessage = (LCIMImageMessage *)message;
 
     // 消息的 ID
     NSString *messageId = imageMessage.messageId;
@@ -1982,9 +2005,9 @@ do {
 ```
 ```objc
 NSError *error = nil;
-AVFile *file = [AVFile fileWithLocalPath:localPath error:&error];
+LCFile *file = [AVFile fileWithLocalPath:localPath error:&error];
 if (!error) {
-    AVIMAudioMessage *message = [AVIMAudioMessage messageWithText:@"听听人类的神曲" file:file attributes:nil];
+    LCIMAudioMessage *message = [LCIMAudioMessage messageWithText:@"听听人类的神曲" file:file attributes:nil];
     [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
             NSLog(@"发送成功！");
@@ -2062,8 +2085,8 @@ do {
 }
 ```
 ```objc
-AVFile *file = [AVFile fileWithRemoteURL:[NSURL URLWithString:@"https://some.website.com/apple.aac"]];
-AVIMAudioMessage *message = [AVIMAudioMessage messageWithText:@"来自苹果发布会现场的录音" file:file attributes:nil];
+LCFile *file = [LCFile fileWithRemoteURL:[NSURL URLWithString:@"https://some.website.com/apple.aac"]];
+LCIMAudioMessage *message = [LCIMAudioMessage messageWithText:@"来自苹果发布会现场的录音" file:file attributes:nil];
 [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
     if (succeeded) {
         NSLog(@"发送成功！");
@@ -2132,7 +2155,7 @@ do {
 }
 ```
 ```objc
-AVIMLocationMessage *message = [AVIMLocationMessage messageWithText:@"蛋糕店的位置" latitude:31.3753285 longitude:120.9664658 attributes:nil];
+LCIMLocationMessage *message = [LCIMLocationMessage messageWithText:@"蛋糕店的位置" latitude:31.3753285 longitude:120.9664658 attributes:nil];
 [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
     if (succeeded) {
         NSLog(@"发送成功！");
@@ -2204,7 +2227,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 
 {{ docs.langSpecStart('objc') }}
 
-Objective-C SDK 是通过实现 `AVIMClientDelegate` 代理来响应新消息到达通知的，并且，分别使用了两个方法来分别处理普通的 `AVIMMessage` 消息和内建的多媒体消息 `AVIMTypedMessage`（包括应用层由此派生的[自定义消息](realtime-guide-intermediate.html#自定义消息类型)）：
+Objective-C SDK 是通过实现 `LCIMClientDelegate` 代理来响应新消息到达通知的，并且，分别使用了两个方法来分别处理普通的 `LCIMMessage` 消息和内建的多媒体消息 `LCIMTypedMessage`（包括应用层由此派生的[自定义消息](realtime-guide-intermediate.html#自定义消息类型)）：
 
 ```objc
 /*!
@@ -2212,14 +2235,14 @@ Objective-C SDK 是通过实现 `AVIMClientDelegate` 代理来响应新消息到
  @param conversation － 所属对话
  @param message - 具体的消息
  */
-- (void)conversation:(AVIMConversation *)conversation didReceiveCommonMessage:(AVIMMessage *)message;
+- (void)conversation:(LCIMConversation *)conversation didReceiveCommonMessage:(LCIMMessage *)message;
 
 /*!
  接收到新的富媒体消息。
  @param conversation － 所属对话
  @param message - 具体的消息
  */
-- (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message;
+- (void)conversation:(LCIMConversation *)conversation didReceiveTypedMessage:(LCIMTypedMessage *)message;
 ```
 
 {{ docs.langSpecEnd('objc') }}
@@ -2360,18 +2383,18 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 ```
 ```objc
 // 处理默认类型消息
-- (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
-    if (message.mediaType == kAVIMMessageMediaTypeImage) {
-        AVIMImageMessage *imageMessage = (AVIMImageMessage *)message; // 处理图像消息
-    } else if(message.mediaType == kAVIMMessageMediaTypeAudio){
+- (void)conversation:(LCIMConversation *)conversation didReceiveTypedMessage:(LCIMTypedMessage *)message {
+    if (message.mediaType == kLCIMMessageMediaTypeImage) {
+        LCIMImageMessage *imageMessage = (LCIMImageMessage *)message; // 处理图像消息
+    } else if(message.mediaType == kLCIMMessageMediaTypeAudio){
         // 处理音频消息
-    } else if(message.mediaType == kAVIMMessageMediaTypeVideo){
+    } else if(message.mediaType == kLCIMMessageMediaTypeVideo){
         // 处理视频消息
-    } else if(message.mediaType == kAVIMMessageMediaTypeLocation){
+    } else if(message.mediaType == kLCIMMessageMediaTypeLocation){
         // 处理位置消息
-    } else if(message.mediaType == kAVIMMessageMediaTypeFile){
+    } else if(message.mediaType == kLCIMMessageMediaTypeFile){
         // 处理文件消息
-    } else if(message.mediaType == kAVIMMessageMediaTypeText){
+    } else if(message.mediaType == kLCIMMessageMediaTypeText){
         // 处理文本消息
     } else if(message.mediaType == 123){
         // 处理自定义的消息类型
@@ -2379,7 +2402,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 
 // 处理未知消息类型
-- (void)conversation:(AVIMConversation *)conversation didReceiveCommonMessage:(AVIMMessage *)message {
+- (void)conversation:(LCIMConversation *)conversation didReceiveCommonMessage:(LCIMMessage *)message {
     // 未来可能添加新的自定义消息类型，新版 SDK 也可能添加新的消息类型。
     // 因此别忘了在这里处理未知类型，例如提示用户升级客户端至最新版本。
 }
@@ -2548,7 +2571,7 @@ jerry.onMessage = ({
 
 {{ docs.langSpecStart('objc') }}
 
-| `AVIMConversation` 属性名 | `_Conversation` 字段 | 含义 |
+| `LCIMConversation` 属性名 | `_Conversation` 字段 | 含义 |
 | --- | --- | --- |
 | `clientID`              | N/A                | 会话所属的 `Client` 的 `ID` |
 | `conversationId`        | `objectId`         | 全局唯一的 ID                                      |
@@ -2571,7 +2594,7 @@ jerry.onMessage = ({
 | `temporary`             | N/A                | 是否为临时对话（临时对话数据不保存到 `_Conversation` 表中 ）
 | `temporaryTTL`             | N/A                | 临时对话存活时间                              | 
 | `muted`                 | N/A                | 当前用户是否静音该对话                             |
-| `imClient`              | N/A                | 对话所属的 `AVIMClient` 对象 |
+| `imClient`              | N/A                | 对话所属的 `LCIMClient` 对象 |
 {{ docs.langSpecEnd('objc') }}
 
 {{ docs.langSpecStart('java') }}
@@ -2685,11 +2708,13 @@ do {
 ```
 ```objc
 // Tom 创建名称为「猫和老鼠」的会话，并附加会话属性
-NSDictionary *attributes = @{ 
+LCIMConversationCreationOption *option = [LCIMConversationCreationOption new];
+option.name = @"猫和老鼠";
+option.attributes = @{
     @"type": @"private",
-    @"pinned": @(YES) 
+    @"pinned": @(YES)
 };
-[tom createConversationWithName:@"猫和老鼠" clientIds:@[@"Jerry"] attributes:attributes options:AVIMConversationOptionUnique callback:^(AVIMConversation *conversation, NSError *error) {
+[self createConversationWithClientIds:@[@"Jerry"] option:option callback:^(LCIMConversation * _Nullable conversation, NSError * _Nullable error) {
     if (succeeded) {
         NSLog(@"创建成功！");
     }
@@ -2898,15 +2923,13 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```objc
-/**
- 对话信息被更新
- 
- @param conversation 被更新的对话
- @param date 更新时间
- @param clientId 该操作的发起者 ID
- @param data 更新内容
- */
-- (void)conversation:(AVIMConversation *)conversation didUpdateAt:(NSDate * _Nullable)date byClientId:(NSString * _Nullable)clientId updatedData:(NSDictionary * _Nullable)data;
+/// Notification for conversation's attribution updated.
+/// @param conversation Updated conversation.
+/// @param date Updated date.
+/// @param clientId Client ID which do this update.
+/// @param updatedData Updated data.
+/// @param updatingData Updating data.
+- (void)conversation:(LCIMConversation *)conversation didUpdateAt:(NSDate * _Nullable)date byClientId:(NSString * _Nullable)clientId updatedData:(NSDictionary * _Nullable)updatedData updatingData:(NSDictionary * _Nullable)updatingData;
 ```
 ```java
 // 在 LCIMConversationEventHandler 接口中有如下定义
@@ -3032,8 +3055,8 @@ do {
 }
 ```
 ```objc
-AVIMConversationQuery *query = [tom conversationQuery];
-[query getConversationById:@"551260efe4b01608686c3e0f" callback:^(AVIMConversation *conversation, NSError *error) {
+LCIMConversationQuery *query = [tom conversationQuery];
+[query getConversationById:@"551260efe4b01608686c3e0f" callback:^(LCIMConversation *conversation, NSError *error) {
     if (succeeded) {
         NSLog(@"查询成功！");
     }
@@ -3100,7 +3123,7 @@ do {
 }
 ```
 ```objc
-AVIMConversationQuery *query = [tom conversationQuery];
+LCIMConversationQuery *query = [tom conversationQuery];
 [query whereKey:@"attr.type" equalTo:@"private"];
 // 执行查询
 [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
@@ -3172,7 +3195,7 @@ try {
 
 {{ docs.langSpecStart('objc') }}
 
-| 逻辑比较 | `AVIMConversationQuery` 方法 |
+| 逻辑比较 | `LCIMConversationQuery` 方法 |
 | --- | --- |
 | 等于     | `equalTo`                  |
 | 不等于   | `notEqualTo`               |
@@ -3412,13 +3435,13 @@ do {
 }
 ```
 ```objc
-AVIMConversationQuery *ageQuery = [tom conversationQuery];
+LCIMConversationQuery *ageQuery = [tom conversationQuery];
 [ageQuery whereKey:@"age" greaterThan:@(18)];
 
-AVIMConversationQuery *keywordsQuery = [tom conversationQuery];
+LCIMConversationQuery *keywordsQuery = [tom conversationQuery];
 [keywordsQuery whereKey:@"keywords" containsString:@"教育"];
 
-AVIMConversationQuery *query = [AVIMConversationQuery orQueryWithSubqueries:[NSArray arrayWithObjects:ageQuery,keywordsQuery,nil]];
+LCIMConversationQuery *query = [LCIMConversationQuery orQueryWithSubqueries:[NSArray arrayWithObjects:ageQuery,keywordsQuery,nil]];
 ```
 ```java
 LCIMConversationsQuery ageQuery = tom.getConversationsQuery();
@@ -3494,7 +3517,7 @@ query.compact(true);
 conversationQuery.options = [.notContainMembers]
 ```
 ```objc
-query.option = AVIMConversationQueryOptionCompact;
+query.option = LCIMConversationQueryOptionCompact;
 ```
 ```java
 public void queryConversationCompact() {
@@ -3537,7 +3560,7 @@ query.withLastMessagesRefreshed(true);
 conversationQuery.options = [.containLastMessage]
 ```
 ```objc
-query.option = AVIMConversationQueryOptionWithMessage;
+query.option = LCIMConversationQueryOptionWithMessage;
 ```
 ```java
 public void queryConversationWithLastMessage() {
@@ -3676,11 +3699,11 @@ do {
 
 通常，将查询结果缓存到磁盘上是一种行之有效的方法，这样就算设备离线，应用刚刚打开，网络请求尚未完成时，数据也能显示出来。或者为了节省用户流量，在应用打开的第一次查询走网络，之后的查询可优先走本地缓存。
 
-值得注意的是，默认的策略是先走本地缓存的再走网络的，缓存时间是一小时。`AVIMConversationQuery` 中有如下方法：
+值得注意的是，默认的策略是先走本地缓存的再走网络的，缓存时间是一小时。`LCIMConversationQuery` 中有如下方法：
 
 ```objc
-// 设置缓存策略，默认是 kAVCachePolicyCacheElseNetwork
-@property (nonatomic) AVCachePolicy cachePolicy;
+// 设置缓存策略，默认是 kLCCachePolicyCacheElseNetwork
+@property (nonatomic) LCCachePolicy cachePolicy;
 
 // 设置缓存的过期时间，默认是 1 小时（1 * 60 * 60）
 @property (nonatomic) NSTimeInterval cacheMaxAge;
@@ -3689,14 +3712,14 @@ do {
 有时你希望先走网络查询，发生网络错误的时候，再从本地查询，可以这样：
 
 ```objc
-AVIMConversationQuery *query = [[AVIMClient defaultClient] conversationQuery];
-query.cachePolicy = kAVCachePolicyNetworkElseCache;
+LCIMConversationQuery *query = [client conversationQuery];
+query.cachePolicy = kLCCachePolicyNetworkElseCache;
 [query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
 
 }];
 ```
 
-各种查询缓存策略的行为可以参考 [存储指南 · AVQuery 缓存查询](leanstorage_guide-objc.html#缓存查询) 一节。
+各种查询缓存策略的行为可以参考 [存储指南 · LCQuery 缓存查询](leanstorage_guide-objc.html#缓存查询) 一节。
 
 {{ docs.langSpecEnd('objc') }}
 
@@ -3863,7 +3886,7 @@ do {
 [conversation queryMessagesWithLimit:10 callback:^(NSArray *messages, NSError *error) {
     NSLog(@"第一次查询成功！");
     // 以第一页的最早的消息作为开始，继续向前拉取消息
-    AVIMMessage *oldestMessage = [messages firstObject];
+    LCIMMessage *oldestMessage = [messages firstObject];
     [conversation queryMessagesBeforeId:oldestMessage.messageId timestamp:oldestMessage.sendTimestamp limit:10 callback:^(NSArray *messagesInPage, NSError *error) {
         NSLog(@"第二次查询成功！");
     }];
@@ -3954,7 +3977,7 @@ do {
 }
 ```
 ```objc
-[conversation queryMediaMessagesFromServerWithType:kAVIMMessageMediaTypeImage limit:10 fromMessageId:nil fromTimestamp:0 callback:^(NSArray *messages, NSError *error) {
+[conversation queryMediaMessagesFromServerWithType:kLCIMMessageMediaTypeImage limit:10 fromMessageId:nil fromTimestamp:0 callback:^(NSArray *messages, NSError *error) {
     if (!error) {
         NSLog(@"查询成功！");
     }
@@ -4011,7 +4034,7 @@ do {
 }
 ```
 ```objc
-[conversation queryMessagesInInterval:nil direction:AVIMMessageQueryDirectionFromOldToNew limit:20 callback:^(NSArray<AVIMMessage *> * _Nullable messages, NSError * _Nullable error) {
+[conversation queryMessagesInInterval:nil direction:LCIMMessageQueryDirectionFromOldToNew limit:20 callback:^(NSArray<LCIMMessage *> * _Nullable messages, NSError * _Nullable error) {
     if (messages.count) {
         // 处理结果
     }
@@ -4082,9 +4105,9 @@ do {
 }
 ```
 ```objc
-AVIMMessageIntervalBound *start = [[AVIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:timestamp closed:false];
-AVIMMessageInterval *interval = [[AVIMMessageInterval alloc] initWithStartIntervalBound:start endIntervalBound:nil];
-[conversation queryMessagesInInterval:interval direction:direction limit:20 callback:^(NSArray<AVIMMessage *> * _Nullable messages, NSError * _Nullable error) {
+LCIMMessageIntervalBound *start = [[LCIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:timestamp closed:false];
+LCIMMessageInterval *interval = [[LCIMMessageInterval alloc] initWithStartIntervalBound:start endIntervalBound:nil];
+[conversation queryMessagesInInterval:interval direction:direction limit:20 callback:^(NSArray<LCIMMessage *> * _Nullable messages, NSError * _Nullable error) {
     if (messages.count) {
         // 处理结果
     }
@@ -4166,10 +4189,10 @@ do {
 }
 ```
 ```objc
-AVIMMessageIntervalBound *start = [[AVIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:startTimestamp closed:false];
-    AVIMMessageIntervalBound *end = [[AVIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:endTimestamp closed:false];
-AVIMMessageInterval *interval = [[AVIMMessageInterval alloc] initWithStartIntervalBound:start endIntervalBound:end];
-[conversation queryMessagesInInterval:interval direction:direction limit:100 callback:^(NSArray<AVIMMessage *> * _Nullable messages, NSError * _Nullable error) {
+LCIMMessageIntervalBound *start = [[LCIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:startTimestamp closed:false];
+LCIMMessageIntervalBound *end = [[LCIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:endTimestamp closed:false];
+LCIMMessageInterval *interval = [[LCIMMessageInterval alloc] initWithStartIntervalBound:start endIntervalBound:end];
+[conversation queryMessagesInInterval:interval direction:direction limit:100 callback:^(NSArray<LCIMMessage *> * _Nullable messages, NSError * _Nullable error) {
     if (messages.count) {
         // 处理结果
     }
@@ -4390,7 +4413,7 @@ func client(_ client: IMClient, event: IMClientEvent) {
 
 {{ docs.langSpecStart('objc') }}
 
-在 `AVIMClientDelegate` 里，可以接收到如下所示的事件通知：
+在 `LCIMClientDelegate` 里，可以接收到如下所示的事件通知：
 
 * `imClientResumed`：连接自动恢复了
 * `imClientPaused`：连接断开了；该事件被触发的常见场景：网络无法访问、应用进入后台
@@ -4398,22 +4421,22 @@ func client(_ client: IMClient, event: IMClientEvent) {
 * `imClientClosed`：连接关闭，且不会自动重连；该事件被触发的常见场景：单设备登陆冲突、后台主动把该 client 下线
 
 ```objc
-- (void)imClientResumed:(AVIMClient *)imClient
+- (void)imClientResumed:(LCIMClient *)imClient
 {
     
 }
 
-- (void)imClientResuming:(AVIMClient *)imClient
+- (void)imClientResuming:(LCIMClient *)imClient
 {
     
 }
 
-- (void)imClientPaused:(AVIMClient *)imClient error:(NSError * _Nullable)error
+- (void)imClientPaused:(LCIMClient *)imClient error:(NSError * _Nullable)error
 {
     
 }
 
-- (void)imClientClosed:(AVIMClient *)imClient error:(NSError * _Nullable)error
+- (void)imClientClosed:(LCIMClient *)imClient error:(NSError * _Nullable)error
 {
     
 }
