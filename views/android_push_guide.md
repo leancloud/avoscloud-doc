@@ -13,7 +13,7 @@ Android 的推送主要依赖客户端的 PushService 服务。PushService 是�
 
 要接入推送服务，需要依赖 realtime-android library。首先打开 `app` 目录下的 `build.gradle` 进行如下配置：
 
-```
+```groovy
 dependencies {
 
 implementation 'cn.leancloud:realtime-android:8.0.1'
@@ -319,7 +319,7 @@ PushService 在发出通知栏消息的时候，会根据开发者调用 `PushSe
 
 在回调类的 onCreate 函数中开发者则可以通过如下代码获取推送消息的具体数据：
 
-```
+```java
 public class CallbackActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
