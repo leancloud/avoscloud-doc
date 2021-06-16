@@ -79,18 +79,18 @@ LeanCloud 云端对客户端发过来的每一个请求都要进行用户身份�
 继续上面的例子，假设某个帖子的发布人允许另一个特定的用户（比如两个人合作编写一篇文章）修改帖子，除此之外的其他人不可修改，那么我们可以这样设置 ACL：
 
 ```objc
-AVQuery *query = [AVUser query];
-[query getObjectInBackgroundWithId:@"55f1572460b2ce30e8b7afde" block:^(AVObject * _Nullable object, NSError * _Nullable error) {
+LCQuery *query = [LCUser query];
+[query getObjectInBackgroundWithId:@"55f1572460b2ce30e8b7afde" block:^(LCObject * _Nullable object, NSError * _Nullable error) {
     if (error == nil) {
         // 新建一个帖子对象
-        AVObject *post = [AVObject objectWithClassName:@"Post"];
+        LCObject *post = [LCObject objectWithClassName:@"Post"];
         [post setObject:@"这是我的第二条发言，谢谢大家！" forKey:@"title"];
         [post setObject:@"我最近喜欢看足球和篮球了。" forKey:@"content"];
 
         //新建一个 ACL 实例
-        AVACL *acl = [AVACL ACL];
+        LCACL *acl = [LCACL ACL];
         [acl setPublicReadAccess:YES];// 设置公开的「读」权限，任何人都可阅读
-        [acl setWriteAccess:YES forUser:[AVUser currentUser]];// 为当前用户赋予「写」权限
+        [acl setWriteAccess:YES forUser:[LCUser currentUser]];// 为当前用户赋予「写」权限
         [acl setWriteAccess:YES forUser:otherUser];
         
         post.ACL = acl;// 将 ACL 实例赋予 Post 对象
@@ -298,7 +298,7 @@ try {
 }
 ```
 
-从结果可以看出，该条 Post 已经允许 `objectId` 为 `55b9df0400b0f6d7efaa8801` 以及 `55f1572460b2ce30e8b7afde` 的两个用户（AVUser）修改，他们拥有写权限 `"write": ture`。
+从结果可以看出，该条 Post 已经允许 `objectId` 为 `55b9df0400b0f6d7efaa8801` 以及 `55f1572460b2ce30e8b7afde` 的两个用户（User）修改，他们拥有写权限 `"write": ture`。
 
 假设论坛有一个管理员，可以编辑、删除所有帖子，那么我们可以用类似的方法给每个帖子加上相应的权限：（注意，为了避免示例过于冗长，重点不突出，从下面的示例开始，都不再给出可以直接执行的完整代码，只保留关键部分）
 
@@ -341,7 +341,7 @@ acl.SetUserWriteAccess(anAdministrator, true);
 继续上面的例子，让我们看看如何赋予管理员角色写权限（假定已经存在一个名为 `admin` 的角色）：
 
 ```objc
-AVRole *admin = [AVRole objectWithClassName:@"_Role" objectId:@"55fc0eb700b039e44440016c"];
+LCRole *admin = [LCRole objectWithClassName:@"_Role" objectId:@"55fc0eb700b039e44440016c"];
 [acl setWriteAccess:YES  forRole:admin];
 ```
 ```swift
@@ -373,7 +373,7 @@ acl.SetRoleReadAccess(admin, true);
 
 下面让我们看看如何创建一个角色。
 
-这里有一个需要特别注意的地方，因为 `AVRole` 本身也是一个 `AVObject`，它自身也有 ACL 控制，并且它的权限控制应该更严谨。
+这里有一个需要特别注意的地方，因为 `Role` 本身也是一个 `Object`，它自身也有 ACL 控制，并且它的权限控制应该更严谨。
 所以通常我们在创建角色的时候会显式地设定该角色的 ACL。
 如果不指定，那么 SDK 会默认设定角色的 ACL 为所有人可读、所有人不可写。
 换言之，在不显式指定 ACL 的情况下，SDK 的默认设定会导致角色一经创建，未来无法在客户端修改，以后添加成员等操作都需要在控制台进行或在服务端使用 masterKey 进行。
@@ -381,11 +381,11 @@ acl.SetRoleReadAccess(admin, true);
 
 ```objc
 // 角色本身的 ACL
-AVACL *roleACL = [AVACL ACL];
+LCACL *roleACL = [LCACL ACL];
 [roleACL setPublicReadAccess:YES];
-[roleACL setWriteAccess:YES forUser:[AVUser currentUser]];
+[roleACL setWriteAccess:YES forUser:[LCUser currentUser]];
 
-AVRole *admin = [AVRole roleWithName:@"admin" acl:roleACL];
+LCRole *admin = [LCRole roleWithName:@"admin" acl:roleACL];
 [admin save];
 ```
 ```swift
@@ -475,7 +475,7 @@ try {
 现在这个 `admin` 角色是空的，我们接下来把当前用户添加到这个角色：
 
 ```objc
-[[admin users] addObject: [AVUser currentUser]];
+[[admin users] addObject: [LCUser currentUser]];
 ```
 ```swift
 if let currentUser = LCApplication.default.currentUser {
@@ -513,7 +513,7 @@ admin.AddRelation("users", currentUser);
 如果我们又想从角色中移除用户：
 
 ```objc
-[[admin users] removeObject:[AVUser currentUser]];
+[[admin users] removeObject:[LCUser currentUser]];
 ```
 ```swift
 if let currentUser = LCApplication.default.currentUser {
@@ -608,8 +608,8 @@ moderator.RemoveRelation("roles", admin);
 查询某个用户有哪些角色：
 
 ```objc
-AVUser *user = [AVUser currentUser];
-[user getRolesInBackgroundWithBlock:^(NSArray<AVRole *> * _Nullable avRoles, NSError * _Nullable error) {
+LCUser *user = [LCUser currentUser];
+[user getRolesInBackgroundWithBlock:^(NSArray<LCRole *> * _Nullable avRoles, NSError * _Nullable error) {
   // avRoles 是查询结果
 }];
 ```
@@ -671,7 +671,7 @@ try {
 查询某个角色包含的用户（这里只给出构建查询的代码）：
 
 ```objc
-AVUser *userQuery = [[moderator users] query];
+LCUser *userQuery = [[moderator users] query];
 ```
 ```swift
 let *userQuery = moderator.users?.query
@@ -700,7 +700,7 @@ LCQuery<LCUser> userQuery = moderator.Users.Query;
 限于篇幅，就不在这里列出完整的代码了，只列出如何构建子角色查询的代码：
 
 ```objc
-AVRole *subroleQuery = [[moderator roles] query];
+LCRole *subroleQuery = [[moderator roles] query];
 ```
 ```swift
 let *subRoleQuery = moderator.roles?.query
@@ -743,7 +743,7 @@ LCQuery<LCRole> subroleQuery = moderator.Roles.Query;
 代码如下：
 
 ```objc
-AVQuery *query = [AVQuery queryWithClassName:@"Todo"];
+LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
 query.includeACL = YES;
 ```
 ```swift

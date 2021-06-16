@@ -40,7 +40,7 @@ AV.User.current().follow('user_object_id').then(function(){
 ```objc
 NSString *userObjectId = @"XXXXXX";
 //关注
-[[AVUser currentUser] follow:userObjectId andCallback:^(BOOL succeeded, NSError *error) {
+[[LCUser currentUser] follow:userObjectId andCallback:^(BOOL succeeded, NSError *error) {
 }];
 ```
 
@@ -90,7 +90,7 @@ AV.User.current().follow({
 
 ```objc
    NSDictionary * attrs = ……
-   [[AVUser currentUser] follow:userObjectId userDictionary:attrs andCallback:^(BOOL succeeded, NSError *error) {
+   [[LCUser currentUser] follow:userObjectId userDictionary:attrs andCallback:^(BOOL succeeded, NSError *error) {
 	    //处理结果
     }];
 ```
@@ -146,7 +146,7 @@ AV.User.current().unfollow('user_object_id').then(function(){
 ```objc
 NSString *userObjectId = @"XXXXXX";
 //取消关注
-[[AVUser currentUser] unfollow:userObjectId andCallback:^(BOOL succeeded, NSError *error) {
+[[LCUser currentUser] unfollow:userObjectId andCallback:^(BOOL succeeded, NSError *error) {
 }];
 ```
 
@@ -196,7 +196,7 @@ query.find().then(function(followees){
 ```
 
 ```objc
-AVQuery *query= [AVUser followeeQuery:@"USER_OBJECT_ID"];
+LCQuery *query= [LCUser followeeQuery:@"USER_OBJECT_ID"];
 // 通过 `include` 将 followee 的所有信息查询包括进来
 [query includeKey:@"followee"];
 ```
@@ -248,7 +248,7 @@ query.find().then(function(followers){
 ```
 
 ```objc
-AVQuery *query= [AVUser followerQuery:@"USER_OBJECT_ID"];
+LCQuery *query= [LCUser followerQuery:@"USER_OBJECT_ID"];
 [query includeKey:@"follower"];
 ```
 
@@ -379,7 +379,7 @@ AVUser.currentUser().getFollowersAndFolloweesInBackground(new FollowersAndFollow
 下面的方法实现了一次获取粉丝和关注用户列表的功能，当然，你也可以用上面的方法通过两次调用来获取这些数据，特别是用户列表很长需要翻页的时候，下面的方法就失效了。
 
 ```objc
-[[AVUser currentUser] getFollowersAndFollowees:^(NSDictionary *dict, NSError *error) {
+[[LCUser currentUser] getFollowersAndFollowees:^(NSDictionary *dict, NSError *error) {
     NSArray *followers=dict[@"followers"];
     NSArray *followees=dict[@"followees"];
 }];
