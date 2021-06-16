@@ -116,18 +116,25 @@ lean version 0.25.0
 `lean command -h` 可以查看子命令的帮助信息，例如：
 
 ```sh
+$ lean deploy -h
 NAME:
-   lean login - Log in to LeanCloud
+   lean deploy - Deploy the project to LeanEngine
 
 USAGE:
-   lean login [command options] [-u <username>] [-p <password>] [--use-token] [--token <token>] [--region (cn-n1 | cn-e1 | us-w1)]
+   lean deploy [command options] [arguments...]
 
 OPTIONS:
-   --username value, -u value  Username
-   --password value, -p value  Password
-   --region value, -r value    The LeanCloud region to log in to (e.g., cn-n1, us-w1)
-   --use-token                 Use AccessToken to log in
-   --token value               AccessToken generated from the Dashboard
+   -g                                              Deploy from git repo
+   --war                                           Deploy .war file for Java project. The first .war file in target/ is used by default
+   --no-cache                                      Force download dependencies
+   --overwrite-functions                           Overwrite cloud functions with the same name in other groups
+   --leanignore value                              Rule file for ignored files in deployment (default: ".leanignore")
+   --message value, -m value                       Comment for this deployment, only applicable when deploying from local files
+   --keep-deploy-file                              
+   --revision value, -r value                      Git revision or branch. Only applicable when deploying from Git (default: "master")
+   --options --options build-root=app&atomic=true  Send additional deploy options to server, in urlencode format(like --options build-root=app&atomic=true)
+   --prod --prod 1                                 Deploy to production(--prod 1) or staging(`--prod 0`) environment, default to staging if it exists
+   --direct                                        Upload project's tarball to remote directly
 ```
 
 下文中凡是以 `$ lean` 开头的文字即表示在终端里执行命令。
@@ -135,14 +142,7 @@ OPTIONS:
 ## 登录
 
 安装完命令行工具之后，首先第一步需要登录云服务账户。
-
-```sh
-$ lean login
-```
-
-然后按照提示选择区域并输入用户名和密码完成登录。
-
-如果同时使用多个区域，那么可以多次运行 `lean login`，每次选择不同的区域，并使用相应的用户名、密码登录。
+请根据**云服务控制台 > 云引擎 > 云引擎分组 > 部署 > 部署项目 > 命令行工具部署**处的指引登录你的云服务账户。
 
 ### 切换账户
 
