@@ -159,8 +159,6 @@ dependencies {
 <uses-permission android:name="android.permission.INTERNET"/>
 <!-- 检测网络状态 -->
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-<!-- 检测wifi状态 -->
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 ```
 
 集成最新的 HMS Core Push SDK 版本后要在 AndroidManifest.xml 文件的 application 节点下参照以下步骤注册 Service，用于接收华为推送的消息与令牌。
@@ -354,13 +352,13 @@ dependencies {
 然后配置相关 AndroidManifest。添加 Permission：
 
 ```xml
+<!-- 小米 SDK 需要的权限。 -->
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-<!-- 小米 SDK 需要的权限。 -->
 <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-<uses-permission android:name="android.permission.GET_TASKS" />
-<uses-permission android:name="android.permission.VIBRATE"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.VIBRATE" />
 <permission android:name="<包名>.permission.MIPUSH_RECEIVE" android:protectionLevel="signature" />
 <uses-permission android:name="<包名>.permission.MIPUSH_RECEIVE" />
 ```
@@ -568,11 +566,8 @@ dependencies {
 接下来配置 AndroidManifest，添加权限声明：
 
 ```xml
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ```
 
 最后在 AndroidManifest 中添加 service 与 receiver（开发者要将其中的 `com.vivo.push.app_id` 和 `com.vivo.push.app_key` 替换为自己的应用的信息）：
@@ -760,10 +755,8 @@ dependencies {
 - 增加权限列表（如果应用无透传权限，则不用配置）
 ```xml
     <!-- 基础模块（必须加入以下声明）START -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <!-- 基础模块 END -->
 
     <uses-permission android:name="com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE"/>
