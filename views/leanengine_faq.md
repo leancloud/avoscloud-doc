@@ -633,8 +633,8 @@ LCCloud.IsProduction = true; // production (default)
 LCCloud.IsProduction = false; // stage
 ```
 ```java
-AVCloud.setProductionMode(true); // production
-AVCloud.setProductionMode(false); // stage
+LCCloud.setProductionMode(true); // production
+LCCloud.setProductionMode(false); // stage
 ```
 ```objc
 [LCCloud setProductionMode:YES]; // production (default)
@@ -1484,8 +1484,8 @@ java -jar target/{zipped jar file}
 同时也需要自行初始化 SDK（注意我们在云引擎中开启了 masterKey 权限，这将会跳过 ACL 和其他权限限制）。
 
 ```java
-import cn.leancloud.AVCloud;
-import cn.leancloud.AVObject;
+import cn.leancloud.LCCloud;
+import cn.leancloud.LCObject;
 import cn.leancloud.core.GeneralRequestSignature;
 import cn.leancloud.LeanEngine;
 
