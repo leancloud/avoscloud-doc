@@ -387,7 +387,7 @@ LeanCloud 即时通讯服务是完全独立的即时通讯业务抽象，专注�
 
 LeanCloud 云引擎提供了托管 Python 和 Node.js 运行的方式，开发者可以用这两种语言按照签名的算法实现签名，完全可以支持开发者的自定义权限控制。
 
-## 消息推送常见问题
+## 推送通知常见问题
 ### 为什么成功设备数小于目标设备数？
 
 「目标设备数」是指符合本次推送查询条件的有效设备数量，「成功设备数」是指这次推送成功到达的设备数量。没有到达设备一般有以下几种情况：
@@ -432,7 +432,7 @@ invalidTokens 的数量由以下两部分组成：
 
 ### Android 消息接收能不能自定义 Receiver 不弹出通知
 
-可以。请参考 [消息推送开发指南](push_guide.html#消息内容_Data)。
+可以。请参考《Android 推送开发指南》。
 
 如果要自定义 receiver，必须在消息的 data 里带上自定义的 action。LeanCloud 在接收到消息后，将广播 action 为您定义的值的 intent 事件，您的 receiver 里也必须带上 `intent-filter` 来捕获该 action 值的 intent 事件。
 
