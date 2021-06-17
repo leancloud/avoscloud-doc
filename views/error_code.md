@@ -84,7 +84,7 @@
 ## 114
 
 * 信息 - `Invalid device token.`
-* 含义 - iOS 推送存储的 deviceToken 无效，如何存储 installation 请阅读 [消息推送开发指南](./push_guide.html#iOS_消息推送)。
+* 含义 - iOS 推送存储的 deviceToken 无效，如何存储 installation 请阅读《iOS 推送开发指南》。
 
 ## 116
 

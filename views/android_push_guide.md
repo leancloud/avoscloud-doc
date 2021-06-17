@@ -1,19 +1,19 @@
-# Android 消息推送开发指南
+# Android 推送开发指南
 
 请先阅读《推送通知服务总览》了解相关概念。
 
 Android 消息推送有专门的 Demo，请见 [Android-Push-Demo](https://github.com/leancloud/android-push-demo) 项目。
 
-## 消息推送流程简介
+## 推送流程简介
 
-Android 的消息推送主要依赖客户端的 PushService 服务。PushService 是一个独立于应用程序的进程，在应用程序第一次启动时顺带创建，其后则（尽量）一直存活于后台，它主要负责维持与云推送服务器的 WebSocket 长链接。
+Android 的推送主要依赖客户端的 PushService 服务。PushService 是一个独立于应用程序的进程，在应用程序第一次启动时顺带创建，其后则（尽量）一直存活于后台，它主要负责维持与云推送服务器的 WebSocket 长链接。
 所以，只要 PushService 存活，那么推送服务器上有任何需要下发到当前设备的消息，都会立刻推送下来；如果 PushService 被杀死，那推送通道中断，Android 设备就收不到任何推送消息（混合推送除外，后述会有说明）。PushService 第一次启动，建立起与推送服务器的 WebSocket 长链接之后，也会一次性收到多条服务端缓存的未成功下发的历史消息。
 
 ## 接入推送服务
 
 要接入推送服务，需要依赖 realtime-android library。首先打开 `app` 目录下的 `build.gradle` 进行如下配置：
 
-```
+```groovy
 dependencies {
 
 implementation 'cn.leancloud:realtime-android:8.0.1'
@@ -110,7 +110,7 @@ public class MyLeanCloudApp extends Application {
 
 ### 保存 Installation
 
-当应用在用户设备上安装好以后，如果要使用消息推送功能，SDK 会自动生成一个 Installation 对象。该对象本质上是应用在设备上生成的安装信息，需要首先将它保存到云端设备才能收到推送：
+当应用在用户设备上安装好以后，如果要使用推送功能，SDK 会自动生成一个 Installation 对象。该对象本质上是应用在设备上生成的安装信息，需要首先将它保存到云端设备才能收到推送：
 
 ```java
 LCInstallation.getCurrentInstallation().saveInBackground();
@@ -319,7 +319,7 @@ PushService 在发出通知栏消息的时候，会根据开发者调用 `PushSe
 
 在回调类的 onCreate 函数中开发者则可以通过如下代码获取推送消息的具体数据：
 
-```
+```java
 public class CallbackActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

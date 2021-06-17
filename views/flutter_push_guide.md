@@ -1,6 +1,6 @@
 {% import "views/_data.njk" as data %}
 {% from "views/_data.njk" import libVersion as version %}
-# Flutter 消息推送开发指南
+# Flutter 推送开发指南
 
 本文介绍了如何在 Flutter 环境中使用 LeanCloud 的推送功能。建议先阅读 [推送通知服务总览](push_guide.html) 了解相关概念。
 
