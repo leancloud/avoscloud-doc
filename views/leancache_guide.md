@@ -1,18 +1,14 @@
 # LeanCache 使用指南
 
-<div style="max-width:200px;margin: 0 0 20px 0;"><img src="images/redislogo.svg" class="img-responsive" alt=""></div>
-
 LeanCache 使用 [Redis](http://redis.io/) （3.0.x）来提供高性能、高可用的 Key-Value 内存存储，主要用作缓存数据的存储，也可以用作持久化数据的存储。它非常适合用于以下场景：
 
 * 某些数据量少，但是读写比例很高，比如某些应用的菜单可以通过后台调整，所有用户会频繁读取该信息。
 * 需要同步锁或者队列处理，比如秒杀、抢红包等场景。
 * 多个云引擎节点的协同和通信。
 
-<div class="callout callout-danger">抢红包、游戏排名、秒杀购物等场景，强烈建议使用 LeanCache。</div>
-
 下图为 LeanCache 和云引擎配合使用的架构：
 
-<div style="max-width:620px"><img src="images/leancache_arch.png" class="img-responsive" alt=""></div>
+![LeanCache 架构](images/leancache_arch.png)
 
 恰当使用 LeanCache 不仅可以极大地提高应用的服务性能，还能**降低成本**，因为某些高频率的查询不需要走存储服务（存储服务按调用次数收费）。你可以在 [leanengine-nodejs-demos](https://github.com/leancloud/leanengine-nodejs-demos) 中找到一些有关 LeanCache 的示例：
 
@@ -31,9 +27,9 @@ LeanCache 使用 [Redis](http://redis.io/) （3.0.x）来提供高性能、高�
 
 ## 创建实例
 
-在**控制台 > 存储 > 云引擎 > LeanDB > LeanCache (Redis)**页面点击**创建实例**即可创建新实例。
+在**云服务控制台 > 云引擎 > LeanCache (Redis)**页面点击**创建实例**即可创建新实例。
 
-<div class="callout callout-info">LeanCache 实例一旦生成，就开始计费，因此请认真对待该操作。</div>
+**LeanCache 实例一旦生成，就开始计费，因此请认真对待该操作。**
 
 创建实例时可设置的参数有：
 
@@ -54,16 +50,16 @@ LeanCache 使用 [Redis](http://redis.io/) （3.0.x）来提供高性能、高�
 | `allkeys-lru`                            | 优先删除最近最少使用的 key，以释放内存。               |
 | `volatile-lru`                           | 优先删除设定了过期时间的 key 中最近最少使用的 key，以释放内存。 |
 | `allkeys-random`                         | 随机删除一个 key，以释放内存。                    |
-| <code class="text-nowrap">volatile-random</code> | 从设定了过期时间的 key 中随机删除一个，以释放内存。         |
+| `volatile-random`                        | 从设定了过期时间的 key 中随机删除一个，以释放内存。         |
 | `volatile-ttl`                           | 从设定了过期时间的 key 中删除最老的 key，以释放内存。      |
 
 请注意，如果所有的 key 都不设置过期时间，那么 `volatile-lru`、`volatile-random`、`volatile-ttl` 这三种策略会等同于 `noeviction`（不删除）。更详细的内容请参考 [Using Redis as an LRU cache](http://redis.io/topics/lru-cache)。
 
-<div class="callout callout-info">LeanCache 实例一旦生成后，该属性不可修改。</div>
+**LeanCache 实例一旦生成后，该属性不可修改。**
 
 ## 删除实例
 
-在**控制台 > 云引擎 > LeanDB > LeanCache**页面的每个实例卡片中，点击**删除**按钮即可删除实例。
+在**云服务控制台 > 云引擎 > LeanCache (Redis)**页面的每个实例卡片中，点击**删除**按钮即可删除实例。
 
 删除**其他应用共享的实例**需要至该实例所属应用删除。
 
@@ -90,33 +86,29 @@ LeanCache (db 0) > GET foo
 "bar"
 ```
 
-LeanCache 基于 Redis，所以大部分 Redis 命令都可以使用。关于 Redis 的命令，请参考官方文档：https://redis.io/commands 。
+LeanCache 基于 Redis，所以大部分 Redis 命令都可以使用。关于 Redis 的命令，请参考[官方文档](https://redis.io/commands) 。
 
 可以通过下列命令查询当前应用有哪些 LeanCache 实例：
 
-``` shell
+```sh
 $ lean cache list
 ```
 
 **注意**：命令行工具操作 LeanCache 时，是通过 HTTPS 请求来进行通讯的，因此类似 `pub/sub`、`blpop` 等需要长连接的命令不能直接使用。但是线上没有这个限制，可以直接使用。
 
-
-
 ### 在云引擎中使用（Node.js 环境）
 
 首先添加相关依赖到云引擎应用中：
 
-``` json
+```json
 "dependencies": {
-  ...
-  "ioredis": "^4.9.0",
-  ...
+  "ioredis": "^4.9.0"
 }
 ```
 
 然后可以使用下列代码获取 Redis 连接：（假定实例名称为 `MYCACHE`）
 
-``` javascript
+```js
 const Redis = require('ioredis')
 
 const client = new Redis(process.env['REDIS_URL_MYCACHE']);
@@ -129,7 +121,7 @@ client.on('error', function(err) {
 
 首先添加相关依赖到云引擎应用的 `requirements.txt` 中：
 
-``` python
+```python
 Flask>=0.10.1
 leancloud-sdk>=1.0.9
 ...
@@ -138,7 +130,7 @@ redis
 
 然后可以使用下列代码获取 Redis 连接：（假定实例名称为 `MYCACHE`）
 
-``` python
+```python
 import os
 import redis
 
@@ -149,7 +141,7 @@ r = redis.from_url(os.environ.get("REDIS_URL_MYCACHE"))
 
 首先添加 redis 库的依赖，比如 predis：
 
-```
+```sh
 composer require 'predis/predis:1.1.*'
 ```
 
@@ -213,7 +205,7 @@ public class RedisHelper {
 }
 ```
 
-### 在云引擎中使用(.NET Core 环境)
+### 在云引擎中使用（.NET Core 环境）
 
 首先在项目里面安装 nuget 依赖：
 
@@ -267,7 +259,7 @@ var bar = db.StringGet("foo");
 
 默认情况下，在本地运行时程序没有 LeanCache 的环境变量，因此会使用本地的 Redis 服务器地址。
 
-```javascript
+```js
 // 在本地 process.env['REDIS_URL_<实例名称>'] 为 undefined，会连接默认的 127.0.0.1:6379
 const client = new Redis(process.env['REDIS_URL_MYCACHE']); // 假定实例名称为 MYCACHE
 ```
@@ -287,7 +279,7 @@ LeanCache 实例在开发者账户内全局可见，并不与某个应用固定�
 
 下面是使用 redis-benchmark 测试一个典型的容量为 2 GB 的 LeanCache 实例的性能表现：
 
-``` shell
+```sh
 $ redis-benchmark -n 100000 -q
 PING_INLINE: 69783.67 requests per second
 PING_BULK: 68306.01 requests per second
@@ -318,13 +310,11 @@ MSET (10 keys): 60096.15 requests per second
 
 当主、从节点同时失效，未同步到从节点和从节点未刷新到磁盘 AOF 文件中的数据将会丢失。
 
-<!-- TODO: 2015-11-19: 我们会提供迁移的日志文件，从中找出服务器因何原因节点迁移。-->
-
 ## 在线扩容
 
 你可以在线扩大（或者缩小） LeanCache 实例的最大内存容量。整个过程可能会持续一段时间，在此期间 LeanCache 会中断几秒钟进行切换，其他时间都正常提供服务。如果你的应用访问量较大的话，LeanCache 中断的这几秒可能会对你的云引擎实例产生较为明显的影响（例如内存增加），可以考虑将扩容安排在低峰时刻。
 
-<div class="callout callout-danger">缩小容量之前，请务必确认现有数据体积小于目标容量，否则可能造成数据丢失。</div>
+**缩小容量之前，请务必确认现有数据体积小于目标容量，否则可能造成数据丢失。**
 
 ## 多实例
 
@@ -347,11 +337,7 @@ LeanCache 采取按天扣费，使用时间不足一天按一天收费，次日�
 
 如果在系统扣费之时，账户没有充足余额，那么在扣费当天的上午 10 点，账户内所有应用使用的**全部实例会停止服务**，但数据仍会保留，期限为 1 个月。
 
-已停止服务的实例状态显示为 <span class="label label-warning">未运行</span>。要恢复服务，需要向账户充值。在账户余额补足后的 5 分钟内，已停止服务的所有实例将会自动恢复运行。
-
-{% if node!='qcloud' %}
-<div class="callout callout-info">账户充值请到财务概况中进行。建议使用「支付宝」来实时充值，避免对公账户付款（银行转账）产生的到款延迟而影响服务开通的时间。</div>
-{% endif %}
+已停止服务的实例状态显示为「未运行」。要恢复服务，需要向账户充值。在账户余额补足后的 5 分钟内，已停止服务的所有实例将会自动恢复运行。
 
 ### 删除无用实例
 
@@ -371,4 +357,4 @@ LeanCache 采取按天扣费，使用时间不足一天按一天收费，次日�
 
 LeanCache 或者任何网络程序都有可能出现连接闪断的问题，可能是因为网络波动，或是服务器负载、容量调整等等。这时只需要重建连接即可使用。而 Redis Client 一般都有断开重连的机制，未连接期间指令会保存到队列，待连接成功后再发送队列中的指令（[Redis client library](https://www.npmjs.com/package/redis) 便是如此实现）。所以如果这个错误<u>偶尔发生</u>，一般不会有什么问题；同时建议在应用中 [增加 Redis 的 on error 事件处理](#在云引擎中使用_Node_js_环境_)。
 
-如果这个错误<u>频繁出现</u>，那么很可能 LeanCache 节点处于非受控状态，请联系 [技术支持](faq.html#获取客服支持有哪些途径) 进行处理。
+如果这个错误**频繁出现**，那么很可能 LeanCache 节点处于非受控状态，请联系技术支持进行处理。

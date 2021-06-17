@@ -12,7 +12,7 @@
 ### 云引擎支持 HTTPS 吗
 
 - 自定义域名在绑定时启用 SSL 即可支持 HTTPS。
-- 如需配置自动跳转，请看[云引擎下如何重定向到 HTTPS？](#云引擎下如何重定向到-HTTPS？)。
+- 如需配置自动跳转，请看[云引擎下如何重定向到 HTTPS？](#云引擎下如何重定向到-https？)。
 
 ### 云引擎采用什么样的休眠策略？
 
@@ -746,6 +746,24 @@ npm ERR! peer dep missing: graphql@^0.10.0 || ^0.11.0, required by express-graph
 如果不希望使用 `yarn.lock`，请将它们加入 `.gitignore`（Git 部署时）或 `.leanengineignore`（命令行工具部署时）。
 
 另外，也请注意 `yarn.lock` 中包含了下载依赖的 URL，请选择合适的源，否则可能拖慢云引擎部署。
+
+### Node.js 项目如何打印 SDK 发出的网络请求？
+
+你可以通过设置一个 `DEBUG=leancloud:request` 的环境变量来打印由 SDK 发出的网络请求。在本地调试时你可以通过这样的命令启动程序：
+
+```sh
+env DEBUG=leancloud:request lean up
+```
+
+当有对 LeanCloud 的调用时，你可以看到类似这样的日志：
+
+```sh
+leancloud:request request(0) +0ms GET https://{{host}}/1.1/classes/Todo?&where=%7B%7D&order=-createdAt { where: '{}', order: '-createdAt' }
+leancloud:request response(0) +220ms 200 {"results":[{"content":"1","createdAt":"2016-08-09T06:18:13.028Z","updatedAt":"2016-08-09T06:18:13.028Z","objectId":"57a975a55bbb5000643fb690"}]}
+```
+
+我们不建议在线上生产环境开启这个日志，否则将会打印大量的日志。如有必要，可以指定 `DEBUG=leancloud:request:error`，只打印出错的网络请求。
+
 ### 如何排查云引擎 Node.js 内存使用过高（内存泄漏）？
 
 首先建议检查云引擎日志，检查每分钟请求数、响应时间、CPU、内存统计，查看是否存在其他异常情况，如果有的话，先解决其他的问题。如果是从某个时间点开始内存使用变高，建议检查这个时间点之前是否有部署新版本，然后检查新版本的代码改动或尝试回滚版本。
