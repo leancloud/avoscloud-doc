@@ -204,31 +204,34 @@ do {
 }
 ```
 ```objc
-// 实现 AVIMSignatureDataSource 协议
-- (AVIMSignature *)signatureWithClientId:(NSString *)clientId
-                          conversationId:(NSString *)conversationId
-                                  action:(AVIMSignatureAction)action
-                       actionOnClientIds:(NSArray<NSString *> *)clientIds
+// 实现 LCIMSignatureDataSource 协议
+- (void)client:(LCIMClient *)client
+        action:(LCIMSignatureAction)action
+  conversation:(LCIMConversation * _Nullable)conversation
+     clientIds:(NSArray<NSString *> * _Nullable)clientIds
+signatureHandler:(void (^)(LCIMSignature * _Nullable))handler
 {
-    if (action == AVIMSignatureActionOpen) {
+    if ([action isEqualToString:LCIMSignatureActionOpen]) {
         // 开启了签名认证的模块，需返回对应的签名
-        AVIMSignature *signature;
+        LCIMSignature *signature;
         /*
          ...
          ...
          具体实现可以参考章节「云引擎签名范例」
          */
-        return signature;
+        handler(signature);
     } else {
         // 没有开启签名认证的模块，需返回 nil
-        return nil;
+        handler(nil);
     }
 }
 
 // 设置协议代理者
-AVIMClient *imClient = [[AVIMClient alloc] initWithClientId:@"Tom"];
-imClient.delegate = delegator;
-imClient.signatureDataSource = signatureDelegator;
+NSError *error;
+LCIMClient *imClient = [[LCIMClient alloc] initWithClientId:@"Tom" error:&error];
+if (!error) {
+    imClient.signatureDataSource = signatureDelegator;
+}
 ```
 ```java
 // 这是一个依赖云引擎完成签名的示例
@@ -406,10 +409,10 @@ LCIMClient tom = new LCIMClient("tom", signatureFactory: new LocalSignatureFacto
 
 {{ docs.alert("需要强调的是：开发者切勿在客户端直接使用 Master Key 进行签名操作，因为 Master Key 一旦泄露，会造成应用的数据处于高危状态，后果不容小视。因此，强烈建议开发者将签名的具体代码托管在安全性高稳定性好的云端服务器上（例如 LeanCloud 云引擎）。") }}
 
-### 内建账户系统（AVUser）的签名机制
+### 内建账户系统（User）的签名机制
 
-`AVUser` 是 LeanCloud 存储服务提供的默认账户系统，对于使用了它来完成用户注册、登录的产品来说，终端用户通过 `AVUser` 账户系统的登录认证之后，转到即时通讯服务上，是无需再进行登录签名操作的。
-使用 `AVUser` 账号系统登录即时通讯服务的示例如下：
+`User` 是 LeanCloud 存储服务提供的默认账户系统，对于使用了它来完成用户注册、登录的产品来说，终端用户通过 `User` 账户系统的登录认证之后，转到即时通讯服务上，是无需再进行登录签名操作的。
+使用 `User` 账号系统登录即时通讯服务的示例如下：
 
 ```js
 var AV = require('leancloud-storage');
@@ -437,14 +440,17 @@ _ = LCUser.logIn(username: "username", password: "password") { (result) in
 }
 ```
 ```objc
-// 以 AVUser 的用户名和密码登录到 LeanCloud 内建账户系统
-[AVUser logInWithUsernameInBackground:username password:password block:^(AVUser * _Nullable user, NSError * _Nullable error) {
-    // 以 AVUser 实例创建了一个 client
-    AVIMClient *client = [[AVIMClient alloc] initWithUser:user];
-    // 登录即时通讯云端
-    [client openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
-        // 执行其他逻辑
-    }];
+// 以 LCUser 的用户名和密码登录到 LeanCloud 内建账户系统
+[LCUser logInWithUsernameInBackground:username password:password block:^(LCUser * _Nullable user, NSError * _Nullable error) {
+    // 以 LCUser 实例创建了一个 client
+    NSError *err;
+    LCIMClient *client = [[LCIMClient alloc] initWithUser:user error:&err];
+    if (!err) {
+        // 登录即时通讯云端
+        [client openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
+            // 执行其他逻辑
+        }];
+    }
 }];
 ```
 ```java
@@ -529,7 +535,7 @@ public func update(role: MemberRole, ofMember memberID: String, completion: @esc
  @param callback 结果回调函数
  */
 - (void)updateMemberRoleWithMemberId:(NSString *)memberId
-                                role:(AVIMConversationMemberRole)role
+                                role:(LCIMConversationMemberRole)role
                             callback:(void (^)(BOOL succeeded, NSError * _Nullable error))callback;
 ```
 ```java
@@ -586,7 +592,7 @@ Future<void> updateMemberRole({String role, String memberId})
 
   @param callback 结果回调函数
   */
-  - (void)getAllMemberInfoWithCallback:(void (^)(NSArray<AVIMConversationMemberInfo *> * _Nullable memberInfos, NSError * _Nullable error))callback;
+  - (void)getAllMemberInfoWithCallback:(void (^)(NSArray<LCIMConversationMemberInfo *> * _Nullable memberInfos, NSError * _Nullable error))callback;
 
   /**
   获取当前对话的所有角色信息。
@@ -595,7 +601,7 @@ Future<void> updateMemberRole({String role, String memberId})
   @param callback 结果回调函数
   */
   - (void)getAllMemberInfoWithIgnoringCache:(BOOL)ignoringCache
-                                  callback:(void (^)(NSArray<AVIMConversationMemberInfo *> * _Nullable memberInfos, NSError * _Nullable error))callback;
+                                  callback:(void (^)(NSArray<LCIMConversationMemberInfo *> * _Nullable memberInfos, NSError * _Nullable error))callback;
   ```
   ```java
   /**
@@ -644,7 +650,7 @@ Future<void> updateMemberRole({String role, String memberId})
   @param callback 结果回调函数
   */
   - (void)getMemberInfoWithMemberId:(NSString *)memberId
-                          callback:(void (^)(AVIMConversationMemberInfo * _Nullable memberInfo, NSError * _Nullable error))callback;
+                          callback:(void (^)(LCIMConversationMemberInfo * _Nullable memberInfo, NSError * _Nullable error))callback;
   ```
   ```java
   /**
@@ -739,7 +745,7 @@ public func checkMuting(member ID: String, completion: @escaping (LCGenericResul
  @param callback 结果回调函数
  */
 - (void)muteMembers:(NSArray<NSString *> *)memberIds
-           callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<AVIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
+           callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<LCIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
 /**
  将部分成员解除禁言。
  
@@ -747,7 +753,7 @@ public func checkMuting(member ID: String, completion: @escaping (LCGenericResul
  @param callback 结果回调函数
  */
 - (void)unmuteMembers:(NSArray<NSString *> *)memberIds
-             callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<AVIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
+             callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<LCIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
 /**
  查询被禁言的成员列表。
  
@@ -903,7 +909,7 @@ public func checkBlocking(member ID: String, completion: @escaping (LCGenericRes
  @param callback 结果回调函数
  */
 - (void)blockMembers:(NSArray<NSString *> *)memberIds
-            callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<AVIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
+            callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<LCIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
 
 /**
  将部分成员从黑名单移出来
@@ -912,7 +918,7 @@ public func checkBlocking(member ID: String, completion: @escaping (LCGenericRes
  @param callback 结果回调函数
  */
 - (void)unblockMembers:(NSArray<NSString *> *)memberIds
-              callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<AVIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
+              callback:(void (^)(NSArray<NSString *> * _Nullable successfulIds, NSArray<LCIMOperationFailure *> * _Nullable failedIds, NSError * _Nullable error))callback;
 
 /**
  查询黑名单的成员列表
@@ -1001,7 +1007,7 @@ Future<QueryMemberResult> queryBlockedMembers({int limit = 50, String next})
 
 ### 创建聊天室
 
-`AVIMClient` 提供了专门的 `createChatRoom` 方法来创建聊天室：
+`IMClient` 提供了专门的 `createChatRoom` 方法来创建聊天室：
 
 ```js
 tom.createChatRoom({ name:'聊天室' }).catch(console.error);
@@ -1021,9 +1027,9 @@ do {
 }
 ```
 ```objc
-[client createChatRoomWithName:@"聊天室" attributes:nil callback:^(AVIMChatRoom *chatRoom, NSError *error) {
+[client createChatRoomWithCallback:^(LCIMChatRoom * _Nullable chatRoom, NSError * _Nullable error) {
     if (chatRoom && !error) {        
-        AVIMTextMessage *textMessage = [AVIMTextMessage messageWithText:@"这是一条消息" attributes:nil];
+        LCIMTextMessage *textMessage = [LCIMTextMessage messageWithText:@"这是一条消息" attributes:nil];
         [chatRoom sendMessage:textMessage callback:^(BOOL success, NSError *error) {
             if (success && !error) {
 
@@ -1087,7 +1093,7 @@ do {
 }
 ```
 ```objc
-AVIMConversationQuery *query = [tom conversationQuery];
+LCIMConversationQuery *query = [tom conversationQuery];
 [query whereKey:@"tr" equalTo:@(YES)]; 
 ```
 ```java
@@ -1251,24 +1257,10 @@ do {
 }
 ```
 ```objc
-// Tom 创建了一个 client，用自己的名字作为 clientId
-self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
-
-// Tom 打开 client
-[self.client openWithCallback:^(BOOL succeeded, NSError *error) {
-    // Tom 建立了与 Jerry 的会话
-    [self.client createConversationWithName:@"猫和老鼠" clientIds:@[@"Jerry"]
-      options:AVIMConversationOptionUnique
-      callback:^(AVIMConversation *conversation, NSError *error) {
-        // Tom 发了一条消息给 Jerry
-
-        AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
-        option.priority = AVIMMessagePriorityHigh;
-        [conversation sendMessage:[AVIMTextMessage messageWithText:@"耗子，起床！" attributes:nil] option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
-            // 在这里处理发送失败或者成功之后的逻辑
-        }];
-
-    }];
+LCIMMessageOption *option = [[LCIMMessageOption alloc] init];
+option.priority = LCIMMessagePriorityHigh;
+[chatRoom sendMessage:[LCIMTextMessage messageWithText:@"耗子，起床！" attributes:nil] option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
+    // 在这里处理发送失败或者成功之后的逻辑
 }];
 ```
 ```java
@@ -1348,24 +1340,12 @@ conversation.mute { (result) in
 }
 ```
 ```objc
-- (void)tomMuteConversation {
-    // Tom 创建了一个 client，用自己的名字作为 clientId
-    self.client = [[AVIMClient alloc] initWithClientId:@"Tom"];
-
-    // Tom 打开 client
-    [self.client openWithCallback:^(BOOL succeeded, NSError *error) {
-        // Tom 查询 ID 为 551260efe4b01608686c3e0f 的会话
-        AVIMConversationQuery *query = [self.client conversationQuery];
-        [query getConversationById:@"551260efe4b01608686c3e0f" callback:^(AVIMConversation *conversation, NSError *error) {
-            // Tom 将会话设置为静音
-            [conversation muteWithCallback:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    NSLog(@"修改成功！");
-                }
-            }];
-        }];
-    }];
-}
+// Tom 将会话设置为静音
+[conversation muteWithCallback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"修改成功！");
+    }
+}];
 ```
 ```java
 LCIMClient tom = LCIMClient.getInstance("Tom");
@@ -1428,7 +1408,7 @@ await chatRoom.mute();
 
 ### 临时对话实例
 
-`AVIMConversation` 有专门的 `createTemporaryConversation` 方法用于创建临时对话：
+`IMConversation` 有专门的 `createTemporaryConversation` 方法用于创建临时对话：
 
 ```js
 realtime.createIMClient('Tom').then(function(tom) {
@@ -1454,20 +1434,11 @@ do {
 }
 ```
 ```objc
-[tom createTemporaryConversationWithClientIds:@[@"Jerry", @"William"]
-                                                timeToLive:3600
-                                                callback:
-            ^(AVIMTemporaryConversation *tempConv, NSError *error) {
-
-                AVIMTextMessage *textMessage = [AVIMTextMessage messageWithText:@"这里是临时对话，一小时之后，这个对话就会消失"
-                                                                    attributes:nil];
-                [tempConv sendMessage:textMessage callback:^(BOOL success, NSError *error) {
-
-                    if (success) {
-                        // 发送成功
-                    }
-                }];
-            }];
+[self createTemporaryConversationWithClientIds:@[@"Jerry", @"William"] callback:^(LCIMTemporaryConversation * _Nullable temporaryConversation, NSError * _Nullable error) {
+    if (temporaryConversation) {
+        // success
+    }
+}];
 ```
 ```java
 tom.createTemporaryConversation(Arrays.asList(members), 3600, new LCIMConversationCreatedCallback(){
@@ -1533,27 +1504,11 @@ do {
 }
 ```
 ```objc
-AVIMClient *client = [[AVIMClient alloc] initWithClientId:@"Tom"];
-
-[client openWithCallback:^(BOOL success, NSError *error) {
-    
-    if (success) {
-        
-        [client createTemporaryConversationWithClientIds:@[@"Jerry", @"William"]
-                                                timeToLive:3600
-                                                callback:
-            ^(AVIMTemporaryConversation *tempConv, NSError *error) {
-                
-                AVIMTextMessage *textMessage = [AVIMTextMessage messageWithText:@"这里是临时对话，一小时之后，这个对话就会消失"
-                                                                    attributes:nil];
-                
-                [tempConv sendMessage:textMessage callback:^(BOOL success, NSError *error) {
-                    
-                    if (success) {
-                        // 发送成功
-                    }
-                }];
-            }];
+LCIMConversationCreationOption *option = [LCIMConversationCreationOption new];
+option.timeToLive = 3600;
+[self createTemporaryConversationWithClientIds:@[@"Jerry", @"William"] option:option callback:^(LCIMTemporaryConversation * _Nullable temporaryConversation, NSError * _Nullable error) {
+    if (temporaryConversation) {
+        // success
     }
 }];
 ```
