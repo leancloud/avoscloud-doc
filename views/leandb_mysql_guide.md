@@ -1,6 +1,6 @@
 # LeanDB MySQL 使用文档
 
-LeanDB 是 LeanCloud 推出的数据库托管方案，开发者可以在「控制台 => 云引擎 => LeanDB」中创建托管在 LeanCloud 的数据库实例，目前仅在华北节点支持 MySQL 数据库。
+LeanDB 是 LeanCloud 推出的数据库托管方案，开发者可以在「控制台 => 云引擎 => LeanDB」中创建托管在 LeanCloud 的数据库实例。
 
 开发者可以在云引擎中连接到自己的 LeanDB 实例，使用通用的 MySQL 客户端类库，访问完整的 MySQL 功能。
 
