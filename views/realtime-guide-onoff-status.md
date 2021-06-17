@@ -144,7 +144,7 @@ func getOnOffStatus(peerIds: [String]) {
     // 约定 key: ”peerIds” 对应的 value 是一组客户端的 ID
     NSDictionary *parameters = @{ @"peerIds": peerIds };
     // 调用云函数 `getOnOffStatus`
-    [AVCloud callFunctionInBackground:@"getOnOffStatus" withParameters:parameters block:^(id  _Nullable object, NSError * _Nullable error) {
+    [LCCloud callFunctionInBackground:@"getOnOffStatus" withParameters:parameters block:^(id  _Nullable object, NSError * _Nullable error) {
         if (error) {
             NSLog(@"%@", error);
         } else if ([object isKindOfClass:[NSArray class]]) {
