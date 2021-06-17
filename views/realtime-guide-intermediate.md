@@ -66,7 +66,7 @@ do {
 }
 ```
 ```objc
-AVIMMessage *message = [AVIMTextMessage messageWithText:@"@Tom 早点回家" attributes:nil];
+LCIMMessage *message = [LCIMTextMessage messageWithText:@"@Tom 早点回家" attributes:nil];
 message.mentionList = @[@"Tom"];
 [conversation sendMessage:message callback:^(BOOL succeeded, NSError * _Nullable error) {
     /* 一条提及 Tom 的消息已发出 */
@@ -127,7 +127,7 @@ do {
 }
 ```
 ```objc
-AVIMMessage *message = [AVIMTextMessage messageWithText:@"@all" attributes:nil];
+LCIMMessage *message = [LCIMTextMessage messageWithText:@"@all" attributes:nil];
 message.mentionAll = YES;
 [conversation sendMessage:message callback:^(BOOL succeeded, NSError * _Nullable error) {
     /* 一条提及所有用户的消息已发出 */
@@ -192,8 +192,8 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```objc
-// 示例代码演示 AVIMTypedMessage 接收时，获取该条消息提醒的 clientId 列表，同理可以用类似的代码操作 AVIMMessage 的其他子类
-- (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
+// 示例代码演示 LCIMTypedMessage 接收时，获取该条消息提醒的 clientId 列表，同理可以用类似的代码操作 LCIMMessage 的其他子类
+- (void)conversation:(LCIMConversation *)conversation didReceiveTypedMessage:(LCIMTypedMessage *)message {
     // 读取消息 @ 的 clientId 列表
     NSArray *mentionList = message.mentionList;
 }
@@ -249,8 +249,8 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```objc
-// 示例代码演示 AVIMTypedMessage 接收时，获取该条消息是否 @ 了当前对话里的所有成员或当前用户，同理可以用类似的代码操作 AVIMMessage 的其他子类
-- (void)conversation:(AVIMConversation *)conversation didReceiveTypedMessage:(AVIMTypedMessage *)message {
+// 示例代码演示 LCIMTypedMessage 接收时，获取该条消息是否 @ 了当前对话里的所有成员或当前用户，同理可以用类似的代码操作 LCIMMessage 的其他子类
+- (void)conversation:(LCIMConversation *)conversation didReceiveTypedMessage:(LCIMTypedMessage *)message {
     // 读取消息是否 @ 了对话的所有成员
     BOOL mentionAll = message.mentionAll;
     // 读取消息是否 @ 了当前用户
@@ -305,8 +305,8 @@ do {
 }
 ```
 ```objc
-AVIMMessage *oldMessage = <#MessageYouWantToUpdate#>;
-AVIMMessage *newMessage = [AVIMTextMessage messageWithText:@"Just a new message" attributes:nil];
+LCIMMessage *oldMessage = <#MessageYouWantToUpdate#>;
+LCIMMessage *newMessage = [LCIMTextMessage messageWithText:@"Just a new message" attributes:nil];
 
 [conversation updateMessage:oldMessage
               toNewMessage:newMessage
@@ -374,18 +374,9 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```objc
-/* 实现 delegate 方法，以处理消息修改和撤回的事件 */
-- (void)conversation:(AVIMConversation *)conversation messageHasBeenUpdated:(AVIMMessage *)message {
-    /* 有消息被修改或撤回 */
-
-    switch (message.mediaType) {
-    case kAVIMMessageMediaTypeRecalled:
-        NSLog(@"message 是一条撤回消息");
-        break;
-    default:
-        NSLog(@"message 是一条更新消息");
-        break;
-    }
+/* 实现 delegate 方法，以处理消息修改的事件 */
+- (void)conversation:(LCIMConversation *)conversation messageHasBeenUpdated:(LCIMMessage *)message reason:(LCIMMessagePatchedReason * _Nullable)reason {
+    /* 有消息被修改 */
 }
 ```
 ```java
@@ -446,9 +437,9 @@ do {
 }
 ```
 ```objc
-AVIMMessage *oldMessage = <#MessageYouWantToRecall#>;
+LCIMMessage *oldMessage = <#MessageYouWantToRecall#>;
 
-[conversation recallMessage:oldMessage callback:^(BOOL succeeded, NSError * _Nullable error, AVIMRecalledMessage * _Nullable recalledMessage) {
+[conversation recallMessage:oldMessage callback:^(BOOL succeeded, NSError * _Nullable error, LCIMRecalledMessage * _Nullable recalledMessage) {
     if (succeeded) {
         NSLog(@"消息已被撤回。");
     }
@@ -505,18 +496,9 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 }
 ```
 ```objc
-/* 实现 delegate 方法，以处理消息修改和撤回的事件 */
-- (void)conversation:(AVIMConversation *)conversation messageHasBeenUpdated:(AVIMMessage *)message {
-    /* 有消息被修改或撤回 */
-
-    switch (message.mediaType) {
-    case kAVIMMessageMediaTypeRecalled:
-        NSLog(@"message 是一条撤回消息");
-        break;
-    default:
-        NSLog(@"message 是一条更新消息");
-        break;
-    }
+/* 实现 delegate 方法，以处理消息撤回的事件 */
+- (void)conversation:(LCIMConversation *)conversation messageHasBeenRecalled:(LCIMRecalledMessage *)message reason:(LCIMMessagePatchedReason * _Nullable)reason {
+    /* 有消息被撤回 */
 }
 ```
 ```java
@@ -579,7 +561,7 @@ public func send(message: IMMessage, options: MessageSendOptions = .default, pri
 /*!
  往对话中发送消息。
  */
-- (void)sendMessage:(AVIMMessage *)message
+- (void)sendMessage:(LCIMMessage *)message
            callback:(void (^)(BOOL succeeded, NSError * _Nullable error))callback;
 ```
 ```java
@@ -645,8 +627,8 @@ public func send(message: IMMessage, options: MessageSendOptions = .default, pri
  @param option － 消息发送选项
  @param callback － 结果回调
  */
-- (void)sendMessage:(AVIMMessage *)message
-             option:(nullable AVIMMessageOption *)option
+- (void)sendMessage:(LCIMMessage *)message
+             option:(nullable LCIMMessageOption *)option
            callback:(void (^)(BOOL succeeded, NSError * _Nullable error))callback;
 ```
 ```java
@@ -706,8 +688,8 @@ do {
 }
 ```
 ```objc
-AVIMMessage *message = [AVIMTextMessage messageWithText:@"Tom 正在输入…" attributes:nil];
-AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
+LCIMMessage *message = [LCIMTextMessage messageWithText:@"Tom 正在输入…" attributes:nil];
+LCIMMessageOption *option = [[LCIMMessageOption alloc] init];
 option.transient = true;
 [conversation sendMessage:message option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
     /* 一条暂态消息已发出 */
@@ -777,10 +759,12 @@ do {
 }
 ```
 ```objc
-[conversation sendMessage:message options:AVIMMessageSendOptionRequestReceipt callback:^(BOOL succeeded, NSError *error) {
-  if (succeeded) {
-    NSLog(@"发送成功！需要回执。");
-  }
+LCIMMessageOption *option = [[LCIMMessageOption alloc] init];
+option.receipt = true;
+[conversation sendMessage:message option:option callback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"发送成功！需要回执。");
+    }
 }];
 ```
 ```java
@@ -844,7 +828,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 ```
 ```objc
 // 监听消息是否已送达实现 `conversation:messageDelivered` 即可。
-- (void)conversation:(AVIMConversation *)conversation messageDelivered:(AVIMMessage *)message{
+- (void)conversation:(LCIMConversation *)conversation messageDelivered:(LCIMMessage *)message {
     NSLog(@"%@", @"消息已送达。"); // 打印消息
 }
 ```
@@ -965,10 +949,10 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     }
     ```
     ```objc
-    AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
+    LCIMMessageOption *option = [[LCIMMessageOption alloc] init];
     option.receipt = YES; /* 将消息设置为需要回执。 */
 
-    AVIMTextMessage *message = [AVIMTextMessage messageWithText:@"Hello, Jerry!" attributes:nil];
+    LCIMTextMessage *message = [LCIMTextMessage messageWithText:@"Hello, Jerry!" attributes:nil];
 
     [conversaiton sendMessage:message option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
         if (!error) {
@@ -1063,8 +1047,8 @@ Tom 和 Jerry 聊天，Tom 想及时知道 Jerry 是否阅读了自己发去的�
     ```
     ```objc
     // Tom 可以在 client 的 delegate 方法中捕捉到 lastReadAt 的更新
-    - (void)conversation:(AVIMConversation *)conversation didUpdateForKey:(NSString *)key {
-        if ([key isEqualToString:@"lastReadAt"]) {
+    - (void)conversation:(LCIMConversation *)conversation didUpdateForKey:(LCIMConversationUpdatedKey)key {
+        if ([key isEqualToString:LCIMConversationUpdatedKeyLastReadAt]) {
             NSDate *lastReadAt = conversation.lastReadAt;
             /* Jerry 阅读了你的消息。可以使用 lastReadAt 更新 UI，例如把时间戳小于 lastReadAt 的消息都标记为已读。 */
         }
@@ -1137,10 +1121,10 @@ do {
 }
 ```
 ```objc
-AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
+LCIMMessageOption *option = [[LCIMMessageOption alloc] init];
 option.will = YES;
 
-AVIMMessage *willMessage = [AVIMTextMessage messageWithText:@"我是一条遗愿消息，当发送者意外下线的时候，我会被下发给对话里面的其他成员。" attributes:nil];
+LCIMMessage *willMessage = [LCIMTextMessage messageWithText:@"我是一条遗愿消息，当发送者意外下线的时候，我会被下发给对话里面的其他成员。" attributes:nil];
 
 [conversaiton sendMessage:willMessage option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
     if (succeeded) {
@@ -1334,9 +1318,9 @@ LeanCloud 本就提供完善的消息推送服务，现在将推送与即时通�
   }
   ```
   ```objc
-  AVIMMessageOption *option = [[AVIMMessageOption alloc] init];
+  LCIMMessageOption *option = [[LCIMMessageOption alloc] init];
   option.pushData = @{@"alert" : @"您有一条未读消息", @"sound" : @"message.mp3", @"badge" : @1, @"custom-key" : @"由用户添加的自定义属性，custom-key 仅是举例，可随意替换"};
-  [conversation sendMessage:[AVIMTextMessage messageWithText:@"Jerry，今晚有比赛，我约了 Kate，咱们仨一起去酒吧看比赛啊？！" attributes:nil] option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
+  [conversation sendMessage:[LCIMTextMessage messageWithText:@"Jerry，今晚有比赛，我约了 Kate，咱们仨一起去酒吧看比赛啊？！" attributes:nil] option:option callback:^(BOOL succeeded, NSError * _Nullable error) {
       // 在这里处理发送失败或者成功之后的逻辑
   }];
   ```
@@ -1493,25 +1477,16 @@ LeanCloud 提供两种方式进来同步离线消息：
 
 在客户端重新登录上线后，即时通讯云端会实时计算下线时间段内当前用户参与过的对话中的新消息数量。
 
-客户端只有设置了主动拉取的方式，云端才会在必要的时候下发这一通知。如前所述，对于 JavaScript SDK 来说，仅支持客户端主动拉取未读消息，所以不需要再做什么设置。对于 Android 和 iOS SDK 来说，则需要在 `AVOSCloud` 初始化语句后面加上如下语句，明确切换到「拉取」的离线消息同步方式：
+客户端只有设置了主动拉取的方式，云端才会在必要的时候下发这一通知。如前所述，对于 JavaScript SDK 来说，仅支持客户端主动拉取未读消息，所以不需要再做什么设置。对于 Android 和 iOS SDK 来说，则需要在初始化语句后面加上如下语句，明确切换到「拉取」的离线消息同步方式：
 
 ```js
 // 无需额外设置
 ```
 ```swift
 // 默认支持，无需额外设置
-
-// 关闭未读消息数更新通知
-do {
-    var options = IMClient.Options.default
-    options.remove(.receiveUnreadMessageCountAfterSessionDidOpen)
-    let client = try IMClient(ID: "CLIENT_ID", options: options)
-} catch {
-    print(error)
-}
 ```
 ```objc
-[AVIMClient setUnreadNotificationEnabled:YES];
+// 默认支持，无需额外设置
 ```
 ```java
 LCIMOptions.getGlobalOptions().setUnreadNotificationEnabled(true);
@@ -1523,7 +1498,7 @@ LCIMOptions.getGlobalOptions().setUnreadNotificationEnabled(true);
 // Flutter 配置方式同 Swift SDK 与 Java SDK
 ```
 
-客户端 SDK 会在 `AVIMConversation` 上维护一个 `unreadMessagesCount` 字段，来统计当前对话中存在有多少未读消息。
+客户端 SDK 会在 `IMConversation` 上维护一个 `unreadMessagesCount` 字段，来统计当前对话中存在有多少未读消息。
 
 客户端用户登录之后，云端会以「未读消息数更新」事件的形式，将当前用户所在的多对 `<Conversation, UnreadMessageCount, LastMessage>` 数据通知到客户端，这就是客户端维护的 `<Conversation, UnreadMessageCount>` 初始值。之后 SDK 在收到新的在线消息的时候，会自动增加对应的 `unreadMessageCount` 计数。直到用户把某一个对话的未读消息清空，这时候云端和 SDK 的 `<Conversation, UnreadMessageCount>` 计数都会清零。
 
@@ -1554,8 +1529,8 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 ```
 ```objc
 // 使用代理方法 conversation:didUpdateForKey: 来观察对话的 unreadMessagesCount 属性
-- (void)conversation:(AVIMConversation *)conversation didUpdateForKey:(NSString *)key {
-    if ([key isEqualToString:@"unreadMessagesCount"]) {
+- (void)conversation:(LCIMConversation *)conversation didUpdateForKey:(LCIMConversationUpdatedKey)key {
+    if ([key isEqualToString:LCIMConversationUpdatedKeyUnreadMessagesCount]) {
         NSUInteger unreadMessagesCount = conversation.unreadMessagesCount;
         /* 有未读消息产生，请更新 UI，或者拉取对话。 */
     }
@@ -1634,12 +1609,15 @@ do {
 }
 ```
 ```objc
-AVIMClient *currentClient = [[AVIMClient alloc] initWithClientId:@"Tom" tag:@"Mobile"];
-[currentClient openWithCallback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        // 与云端建立连接成功
-    }
-}];
+NSError *error;
+LCIMClient *currentClient = [[LCIMClient alloc] initWithClientId:@"Tom" tag:@"Mobile" error:&error];
+if (!error) {
+   [currentClient openWithCallback:^(BOOL succeeded, NSError *error) {
+       if (succeeded) {
+           // 与云端建立连接成功
+       }
+   }];
+}
 ```
 ```java
 // 第二个参数：登录标记 tag
@@ -1689,7 +1667,7 @@ func client(_ client: IMClient, event: IMClientEvent) {
 }
 ```
 ```objc
-- (void)imClientClosed:(AVIMClient *)imClient error:(NSError * _Nullable)error
+- (void)imClientClosed:(LCIMClient *)imClient error:(NSError * _Nullable)error
 {
     if ([error.domain isEqualToString:kLeanCloudErrorDomain] &&
         error.code == 4111) {
@@ -1764,11 +1742,11 @@ do {
 ```
 ```objc
 NSError *err;
-AVIMClient *currentClient = [[AVIMClient alloc] initWithClientId:@"Tom" tag:@"Mobile" error:&err];
+LCIMClient *currentClient = [[LCIMClient alloc] initWithClientId:@"Tom" tag:@"Mobile" error:&err];
 if (err) {
     NSLog(@"init failed with error: %@", err);
 } else {
-    [currentClient openWithOption:AVIMClientOpenOptionReopen callback:^(BOOL succeeded, NSError * _Nullable error) {
+    [currentClient openWithOption:LCIMClientOpenOptionReopen callback:^(BOOL succeeded, NSError * _Nullable error) {
         if ([error.domain isEqualToString:kLeanCloudErrorDomain] &&
             error.code == 4111) {
             // 冲突时登录失败，不会踢掉较早登录的设备
@@ -1829,7 +1807,7 @@ messageWithCity.attributes = ["city": "北京"];
 ```
 ```objc
 NSDictionary *attributes = @{ @"city": @"北京" };
-AVIMTextMessage *messageWithCity = [AVIMTextMessage messageWithText:@"天气太冷了" attributes:attributes];
+LCIMTextMessage *messageWithCity = [LCIMTextMessage messageWithText:@"天气太冷了" attributes:attributes];
 ```
 ```java
 LCIMTextMessage messageWithCity = new LCIMTextMessage();
@@ -1876,9 +1854,9 @@ message.attributes = {'city': '北京'};
 
 {{ docs.langSpecStart('objc') }}
 
-继承于 `AVIMTypedMessage`，开发者也可以扩展自己的富媒体消息。其要求和步骤是：
+继承于 `LCIMTypedMessage`，开发者也可以扩展自己的富媒体消息。其要求和步骤是：
 
-* 实现 `AVIMTypedMessageSubclassing` 协议；
+* 实现 `LCIMTypedMessageSubclassing` 协议；
 * 子类将自身类型进行注册，一般可在子类的 `+load` 方法或者 `UIApplication` 的 `-application:didFinishLaunchingWithOptions:` 方法里面调用 `[YourClass registerSubclass]`。
 
 {{ docs.langSpecEnd('objc') }}
@@ -1953,15 +1931,15 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 ```objc
 // 定义
 
-@interface CustomMessage : AVIMTypedMessage <AVIMTypedMessageSubclassing>
+@interface CustomMessage : LCIMTypedMessage <LCIMTypedMessageSubclassing>
 
-+ (AVIMMessageMediaType)classMediaType;
++ (LCIMMessageMediaType)classMediaType;
 
 @end
 
 @implementation CustomMessage
 
-+ (AVIMMessageMediaType)classMediaType {
++ (LCIMMessageMediaType)classMediaType {
     return 123;
 }
 
