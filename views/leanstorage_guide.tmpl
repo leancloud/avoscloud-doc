@@ -1,5 +1,3 @@
-{% import "views/_helper.njk" as docs %}
-{% import "views/_data.njk" as data %}
 {% macro regex(useSingleQuotes = false) -%}
 ^((?!ticket).)*&dollar;{% if useSingleQuotes == true %}&apos;{% else %}&quot;{% endif %}
 {%- endmacro %}
@@ -9,7 +7,7 @@
 
 # 数据存储开发指南 · {{platform_name}}
 
-数据存储（LeanStorage）是 LeanCloud 提供的核心功能之一，可用于存放和查询应用数据。下面的代码展示了如何创建一个对象并将其存入云端：
+数据存储是云服务提供的核心功能之一，可用于存放和查询应用数据。下面的代码展示了如何创建一个对象并将其存入云端：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -160,17 +158,7 @@ await todo.save();
 ```
 {% endif %}
 
-{% if platform_name === ".Net" %}
-```c#
-// 构建对象
-LCObject todo = new LCObject("Todo");
-// 为属性赋值
-todo["title"] = "工程师周会";
-todo["content"] = "周二两点，全体成员";
-// 将对象保存到云端
-await todo.Save();
-```
-{% endif %}
+
 
 {% if platform_name === "Go" %}
 ```go
@@ -193,9 +181,7 @@ if err := client.Class("Todo").Create(&todo); err != nil {
 ```
 {% endif %}
 
-{% call docs.noteWrap() %}
-我们为各个平台或者语言开发的 SDK 在底层都是通过 HTTPS 协议调用统一的 [REST API](rest_api.html)，提供完整的接口对数据进行各类操作。
-{% endcall %}
+我们为各个平台或者语言开发的 SDK 在底层都是通过 HTTPS 协议调用统一的 REST API，提供完整的接口对数据进行各类操作。
 
 ## SDK 安装与初始化
 
@@ -225,13 +211,7 @@ if err := client.Class("Todo").Create(&todo); err != nil {
 {% if platform_name === "Flutter" %}
 请阅读 [Flutter 安装指南](sdk_setup-flutter.html)。
 {% endif %}
-{% if platform_name === ".Net" %}
-请阅读 [.Net 安装指南](sdk_setup-dotnet-standard.html)。
 
-> C#/.Net/Unity SDK 老版本迁移
->
-> 如果你还在在使用我们老版本的 C#/.Net/Unity SDK（版本号为 `YYYYMMDD.N` 格式，类名以 `AV` 开头），请参考 [.Net SDK 迁移指南](dotnet_standard_sdk_migration.html) 迁移到新版 SDK。
-{% endif %}
 {% if platform_name === "Go" %}
 请阅读 [Go 安装指南](sdk_setup-go.html)
 {% endif %}
@@ -241,7 +221,7 @@ if err := client.Class("Todo").Create(&todo); err != nil {
 
 如果在前端使用 JavaScript SDK，当你准备正式发布的时候，请务必在 **控制台 > 设置 > 安全中心** 中配置 **Web 安全域名**，这样可以防止其他人通过外网其他地址盗用你的服务器资源。
 
-不过这样做还不够，因为你的应用是暴露在公网上的，任何人都有可能伪造请求来绕过前面的防范措施。所以 LeanCloud 还提供了其他方法来保护你的应用安全。参见：
+不过这样做还不够，因为你的应用是暴露在公网上的，任何人都有可能伪造请求来绕过前面的防范措施。所以云服务还提供了其他方法来保护你的应用安全。参见：
 
 - [数据和安全](data_security.html)
 - [ACL 权限管理开发指南](acl-guide.html)
@@ -251,7 +231,7 @@ if err := client.Class("Todo").Create(&todo); err != nil {
 
 ### `{{ baseObjectName }}`
 
-`{{ baseObjectName }}` 是 LeanCloud 对复杂对象的封装，每个 `{{ baseObjectName }}` 包含若干与 JSON 格式兼容的属性值对（也称键值对，key-value pairs）。这个数据是无模式化的（schema free），意味着你不需要提前标注每个 `{{ baseObjectName }}` 上有哪些 key，你只需要随意设置键值对就可以，云端会保存它。
+`{{ baseObjectName }}` 是云服务对复杂对象的封装，每个 `{{ baseObjectName }}` 包含若干与 JSON 格式兼容的属性值对（也称键值对，key-value pairs）。这个数据是无模式化的（schema free），意味着你不需要提前标注每个 `{{ baseObjectName }}` 上有哪些 key，你只需要随意设置键值对就可以，云端会保存它。
 
 比如说，一个保存着单个 Todo 的 `{{ baseObjectName }}` 可能包含如下数据：
 
@@ -380,31 +360,7 @@ object['intList'] = intList;
 object['stringMap'] = stringMap;
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 基本类型
-int numberValue = 2018;
-bool boolValue = true;
-string stringValue = "hello, world";
-DateTime now = DateTime.Now;
-List<int> intList = new List<int> { 1, 2, 3 };
-Dictionary<string, object> dict = new Dictionary<string, object> {
-  { "year", 1780 },
-  { "first", "partridge" },
-  { "second", "turtledoves" },
-  { "fifth", "golden rings" }
-};
 
-// 构建对象
-LCObject object = new LCObject("Hello");
-object["numberValue"] = numberValue;
-object["boolValue"] = boolValue;
-object["stringValue"] = stringValue;
-object["time"] = now;
-object["intList"] = intList;
-object["dictValue"] = dict;
-```
-{% endif %}
 {% if platform_name === "Python" %}
 ```python
 from datetime import datetime
@@ -569,13 +525,11 @@ meeting := Meeting{
 
 我们不推荐{% if platform_name === "Objective-C" %}通过 `NSData` {% endif %}{% if platform_name === "JavaScript" %}{% endif %}{% if platform_name === "Python" %}通过 `byte[]` {% endif %}{% if platform_name === "PHP" %}通过 `Bytes` {% endif %}{% if platform_name === "Android / Java" %}通过 `byte[]` {% endif %}{% if platform_name === "Swift" %}通过 `LCData` {% endif %}{% if platform_name === "Flutter" %}通过 `Uint8List` {% endif %}{% if platform_name === ".Net" %}通过 `byte[]` {% endif %}在 `{{ baseObjectName }}` 里面存储图片、文档等大型二进制数据。每个 `{{ baseObjectName }}` 的大小不应超过 **128 KB**。如需存储大型文件，可创建 `{{ fileObjectName }}` 实例并将将其关联到 `{{ baseObjectName }}` 的某个属性上。参见 [文件](#文件)。
 
-{% call docs.noteWrap() %}
 注意：时间类型在云端将会以 UTC 时间格式存储，但是客户端在读取之后会转化成本地时间。
 
-**控制台 > 存储 > 数据** 中展示的日期数据也会依据操作系统的时区进行转换。一个例外是当你通过 [REST API](rest_api.html) 获得数据时，这些数据将以 UTC 呈现。你可以手动对它们进行转换。
-{% endcall %}
+**控制台 > 数据存储 > 结构化数据** 中展示的日期数据也会依据操作系统的时区进行转换。一个例外是当你通过 REST API 获得数据时，这些数据将以 UTC 呈现。你可以手动对它们进行转换。
 
-若想了解 LeanCloud 是如何保护应用数据的，请阅读 [数据和安全](data_security.html)。
+若想了解云服务是如何保护应用数据的，请阅读 [数据和安全](data_security.html)。
 
 {% if platform_name not in ["Go", "JavaScript(next)"] %}
 
@@ -635,17 +589,12 @@ let todo = LCObject(className: "Todo")
 LCObject object = LCObject('Todo');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCObject object = new LCObject("Todo");
-```
-{% endif %}
-在构建对象时，为了使云端知道对象属于哪个 class，需要将 class 的名字作为参数传入。你可以将 LeanCloud 里面的 class 比作关系型数据库里面的表。一个 class 的名字必须以字母开头，且只能包含数字、字母和下划线。
+
+在构建对象时，为了使云端知道对象属于哪个 class，需要将 class 的名字作为参数传入。你可以将云服务里面的 class 比作关系型数据库里面的表。一个 class 的名字必须以字母开头，且只能包含数字、字母和下划线。
 
 {% if platform_name === "JavaScript" %}
-{% call docs.noteWrap() %}
-如果你的应用时不时出现 `Maximum call stack size exceeded` 异常，可能是因为在循环或回调中调用了 `AV.Object.extend`。有两种方法可以避免这种异常：一种是在循环或回调外声明 class，确保不会对一个 class 执行多次 `AV.Object.extend`；另一种是将 SDK 更换到 1.4 或更高版本。
-{% endcall %}
+
+注意，如果你的应用时不时出现 `Maximum call stack size exceeded` 异常，可能是因为在循环或回调中调用了 `AV.Object.extend`。有两种方法可以避免这种异常：一种是在循环或回调外声明 class，确保不会对一个 class 执行多次 `AV.Object.extend`；另一种是将 SDK 更换到 1.4 或更高版本。
 
 如果你使用的是 ES6，还可以通过 `extends` 关键字来创建 `AV.Object` 的子类，然而 SDK 无法自动识别你创建的子类。你需要通过这种方式手动注册一下：
 
@@ -813,17 +762,7 @@ todo['priority'] = 2;
 await todo.save();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 构建对象
-LCObject todo = new LCObject("Todo");
-// 为属性赋值
-todo["title"] = "马拉松报名";
-todo["priority"] = 2;
-// 将对象保存到云端
-await todo.Save();
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 Go SDK 支持 **自定义类型** 或 **hashmap** 创建对象:
 
@@ -854,7 +793,7 @@ if err := client.Class("Todo").Create(map[string]interface{}{
 ```
 {% endif %}
 
-为了确认对象已经保存成功，我们可以到 **控制台 > 存储 > 数据 > `Todo`** 里面看一下，应该会有一行新的数据产生。点一下这个数据的 `objectId`，应该能看到类似这样的内容：
+为了确认对象已经保存成功，我们可以到 **控制台 > 数据存储 > 结构化数据 > `Todo`** 里面看一下，应该会有一行新的数据产生。点一下这个数据的 `objectId`，应该能看到类似这样的内容：
 
 ```json
 {
@@ -872,9 +811,7 @@ if err := client.Class("Todo").Create(map[string]interface{}{
 }
 ```
 
-{% call docs.noteWrap() %}
-无需在 **控制台 > 存储 > 数据** 里面创建新的 `Todo` class 即可运行前面的代码。如果 class 不存在，它将自动创建。
-{% endcall %}
+注意，无需在 **控制台 > 数据存储 > 结构化数据** 里面创建新的 `Todo` class 即可运行前面的代码。如果 class 不存在，它将自动创建。
 
 以下是一些对象的内置属性，会在对象保存时自动创建，无需手动指定：
 
@@ -1024,20 +961,7 @@ DateTime updatedAt = todo.updatedAt;
 DateTime createdAt = todo.createdAt;
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-LCObject todo = await query.Get("582570f38ac247004f39c24b");
-// todo 就是 ObjectId 为 582570f38ac247004f39c24b 的 Todo 实例
-string title = todo["title"] as string;
-int priority = (int)(todo["priority"]);
 
-// 获取内置属性
-string objectId = todo.ObjectId;
-DateTime updatedAt = todo.UpdatedAt;
-DateTime createdAt = todo.CreatedAt;
-```
-{% endif %}
 {% if platform_name === "Go" %}
 在使用 Go SDK 获取已经保存到云端的对象时，我们推荐使用自定义类型对象；如果不想使用自定义类型的对象，也可以直接使用 `{{ baseObjectName }}`。
 
@@ -1170,13 +1094,7 @@ await todo.fetch();
 //todo 已刷新
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCObject todo = LCObject.CreateWithoutData("Todo", "582570f38ac247004f39c24b");
-await todo.Fetch();
-// todo 已刷新
-```
-{% endif %}
+
 
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Swift" %}
 刷新操作会强行使用云端的属性值覆盖本地的属性。因此如果本地有属性修改，**`{% if platform_name === "Objective-C" %}fetchInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}fetch{% endif %}{% if platform_name === "Android / Java" %}fetchInBackground{% endif %}{% if platform_name === "Swift" %}fetch{% endif %}` 操作会丢弃这些修改**。为避免这种情况，你可以在刷新时指定 **需要刷新的属性**，这样只有指定的属性会被刷新（包括内置属性 `objectId`、`createdAt` 和 `updatedAt`），其他属性不受影响。
@@ -1240,13 +1158,7 @@ await todo.fetch(includes: ['priority','location']);
 // 只有 priority 和 location 会被获取和刷新
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCObject todo = LCObject.CreateWithoutData("Todo", "582570f38ac247004f39c24b");
-await todo.Fetch(includes: new string[] { "priority", "location" });
-// 只有 priority 和 location 会被获取和刷新
-```
-{% endif %}
+
 
 {# After the object is refreshed successfully, its `updatedAt` value will be updated on the client. The cloud won't have this new value until the next save or fetch happens, thus some network bandwidth can be saved out of it. #}
 
@@ -1327,7 +1239,7 @@ LCObject *todo = [LCObject objectWithClassName:@"Todo" objectId:@"582570f38ac247
 [todo setObject:@"这周周会改到周三下午三点。" forKey:@"content"];
 [todo saveInBackground];
 ```
-LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "JavaScript" %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
@@ -1336,7 +1248,7 @@ const todo = AV.Object.createWithoutData('Todo', '582570f38ac247004f39c24b');
 todo.set('content', '这周周会改到周三下午三点。');
 todo.save();
 ```
-LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "JavaScript(next)" %}
 要更新一个对象，只需调用 `update` 方法并提供需要更新的属性名和属性值。例如：
@@ -1355,7 +1267,7 @@ todo = Todo.create_without_data('582570f38ac247004f39c24b')
 todo.set('content', '这周周会改到周三下午三点。')
 todo.save()
 ```
-LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "PHP" %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
@@ -1364,7 +1276,7 @@ $todo = LeanObject::create("Todo", "582570f38ac247004f39c24b");
 $todo->set("content", '这周周会改到周三下午三点。');
 $todo->save();
 ```
-LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "Android / Java" %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
@@ -1373,7 +1285,7 @@ LCObject todo = LCObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
 todo.put("content", "这周周会改到周三下午三点。");
 todo.save();
 ```
-LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "Swift" %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
@@ -1393,7 +1305,7 @@ do {
     print(error)
 }
 ```
-LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 {% if platform_name === "Flutter" %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
@@ -1402,20 +1314,13 @@ LCObject todo = LCObject.createWithoutData('Todo', '582570f38ac247004f39c24b');
 todo['content'] = '这周周会改到周三下午三点。';
 await todo.save();
 ```
-LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
-{% if platform_name === ".Net" %}
-要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `Save` 方法。例如：
-```cs
-LCObject todo = LCObject.CreateWithoutData("Todo", "582570f38ac247004f39c24b");
-todo["content"] = "这周周会改到周三下午三点。";
-await todo.Save();
-```
-{% endif %}
+
 
 {% if platform_name != "Go" %}
 
-LeanCloud 会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
+云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
 
 {% if platform_name === "JavaScript" %}
@@ -1619,28 +1524,7 @@ try {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-try {
-  LCObject account = LCObject.CreateWithoutData("Account", "5745557f71cfe40068c6abe0");
-  // 对 balance 原子减少 100
-  int amount = -100;
-  account.Increment("balance", amount);
-  // 设置条件
-  LCQuery<LCObject> query = new LCQuery<LCObject>("Account");
-  query.WhereGreaterThanOrEqualTo("balance", -amount);
-  // 操作结束后，返回最新数据。
-  // 如果是新对象，则所有属性都会被返回，
-  // 否则只有更新的属性会被返回。
-  await account.Save(fetchWhenSave: true, query: query);
-  print($"当前余额为：{account["balance"]}");
-} catch (LCException e) {
-  if (e.code == 305) {
-    print("余额不足，操作失败！");
-  }
-}
-```
-{% endif %}
+
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Android / Java" or platform_name === "Swift" %}
 **`query` 选项只对已存在的对象有效**，不适用于尚未存入云端的对象。
 
@@ -1691,11 +1575,7 @@ try post.increase("likes", by: 1)
 post.increment('likes',1);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-post.Increment("likes", 1);
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 leancloud.OpIncrement(1)
@@ -1703,7 +1583,10 @@ leancloud.OpIncrement(1)
 {% endif %}
 可以指定需要增加或减少的值。若未指定，则默认使用 `1`。
 
-{{ data.inc_float_warn() }}
+注意，虽然原子增减支持浮点数，但因为底层数据库的浮点数存储格式限制，会有舍入误差。
+因此，需要原子增减的字段建议使用整数以避免误差，例如 `3.14` 可以存储为 `314`，然后在客户端进行相应的转换。
+否则，以比较大小为条件查询对象的时候，需要特殊处理，
+`< a` 需改查 `< a + e`，`> a` 需改查 `> a - e`，`== a` 需改查 `> a - e` 且 `< a + e`，其中 `e` 为误差范围，据所需精度取值，比如 `0.0001`。
 
 #### 更新数组
 
@@ -1758,14 +1641,7 @@ leancloud.OpIncrement(1)
 - `remove(key, value)`<br/>从数组字段中删除指定对象的所有实例。
 - `removeAll(key, values)`<br/>从数组字段中删除指定的对象数组。
 {% endif %}
-{% if platform_name === ".Net" %}
-- `Add(key, value)`<br/>将指定对象附加到数组末尾。
-- `AddAll(key, values)`<br/>将一组对象附加到数组末尾。
-- `AddUnique(key, value)`<br/>将指定对象附加到数组末尾，确保对象唯一。
-- `AddAllUnique(key, values)`<br/>将指定对象数组附加到数组末尾，确保对象唯一。
-- `Remove(key, value)`<br/>从数组字段中删除指定对象的所有实例。
-- `RemoveAll(key, values)`<br/>从数组字段中删除指定的对象数组。
-{% endif %}
+
 {% if platform_name === "Go" %}
 - `OpAdd(value)`<br/>将指定对象附加到数组末尾。
 - `OpAddUnique(value)`<br/>将指定对象附加到数组末尾，确保对象唯一。
@@ -1917,17 +1793,7 @@ todo.addAllUnique('alarms', [alarm1, alarm2, alarm3]);
 await todo.save();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-DateTime alarm1 = DateTime.Parse("2018-04-30 07:10:00Z");
-DateTime alarm2 = DateTime.Parse("2018-04-30 07:20:00Z");
-DateTime alarm3 = DateTime.Parse("2018-04-30 07:30:00Z");
 
-LCObject todo = new LCObject("Todo");
-todo.AddAllUnique("alarms", new object[] { alarm1, alarm2, alarm3 });
-await todo.Save();
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 alarm1 := time.Parse("2006-01-02 15:04:05Z", "2018-04-30 07:10:00Z")
@@ -2004,12 +1870,7 @@ LCObject todo = LCObject.createWithoutData('Todo', '582570f38ac247004f39c24b');
 await todo.delete();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCObject todo = LCObject.CreateWithoutData("Todo", "582570f38ac247004f39c24b");
-await todo.Delete();
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 如果只需删除对象的一个属性，可以用 `unset`：
 
@@ -2045,18 +1906,7 @@ todo.unset('priority');
 await todo.save();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-如果只需删除对象的一个属性，可以用 `Unset`：
-```cs
-LCObject todo = LCObject.CreateWithoutData("Todo", "582570f38ac247004f39c24b");
 
-// priority 属性会被删除
-todo.Unset("priority");
-
-// 保存对象
-await todo.Save();
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 if err := client.Class("Todo").ID("582570f38ac247004f39c24b").Destroy(); err != nil {
@@ -2064,11 +1914,8 @@ if err := client.Class("Todo").ID("582570f38ac247004f39c24b").Destroy(); err != 
 }
 ```
 {% endif %}
-{# Please note that use of `object.set(null)` to remove a field from an object is not recommended and will result in unexpected functionality. #}
 
-{% call docs.alertWrap() %}
-删除对象是一个较为敏感的操作，我们建议你阅读 [ACL 权限管理开发指南](acl-guide.html) 来了解潜在的风险。熟悉 class 级别、对象级别和字段级别的权限可以帮助你有效阻止未经授权的操作。
-{% endcall %}
+注意，删除对象是一个较为敏感的操作，我们建议你阅读《ACL 权限管理开发指南》来了解潜在的风险。熟悉 class 级别、对象级别和字段级别的权限可以帮助你有效阻止未经授权的操作。
 
 {% if platform_name !== "Go" %}
 ### 批量操作
@@ -2236,18 +2083,7 @@ LCObject.deleteAll();
 LCObject.fetchAll();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 批量构建和更新
-LCObject.SaveAll();
 
-// 批量删除
-LCObject.DeleteAll();
-
-// 批量同步
-LCObject.FetchAll();
-```
-{% endif %}
 下面的代码将所有 `Todo` 的 `isComplete` 设为 `true`：
 
 {% if platform_name === "Objective-C" %}
@@ -2380,25 +2216,14 @@ for (LCObject todo in results) {
 await LCObject.saveAll(results);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-ReadOnlyCollection<LCObject> results = await query.Find();
-// 获取需要更新的 todo
-foreach (LCObject todo in results) {
-  // 更新属性值
-  todo["isComplete"] = true;
-}
-await LCObject.SaveAll(results);
-```
-{% endif %}
+
 
 虽然上述方法可以在一次请求中包含多个操作，每一个分别的保存或同步操作在计费时依然会被算作一次请求，而所有的删除操作则会被合并为一次请求。
 {% endif %}
 {% if platform_name === "Objective-C" or platform_name === "Android / Java" or platform_name === "Swift" %}
 ### 后台运行
 
-细心的开发者已经发现，在所有的示例代码中几乎都是用了异步来访问 LeanStorage 云端，形如{% if platform_name === "Objective-C" %} `xxxxInBackground` {% endif %}{% if platform_name === "Android / Java" %} `xxxxInBackground` {% endif %}{% if platform_name === "Swift" %}下面{% endif %}的用法都是提供给开发者在主线程调用用以实现后台运行的方法，因此开发者在主线程可以放心地调用这种命名方式的函数。另外，需要强调的是 **回调函数的代码是在主线程执行**。
+细心的开发者已经发现，在所有的示例代码中几乎都是用了异步来访问云端，形如{% if platform_name === "Objective-C" %} `xxxxInBackground` {% endif %}{% if platform_name === "Android / Java" %} `xxxxInBackground` {% endif %}{% if platform_name === "Swift" %}下面{% endif %}的用法都是提供给开发者在主线程调用用以实现后台运行的方法，因此开发者在主线程可以放心地调用这种命名方式的函数。
 
 {% if platform_name === "Swift" %}
 ```swift
@@ -2421,14 +2246,14 @@ _ = todo.save { result in
 
 大多数保存功能可以立刻执行，并通知应用「保存完毕」。不过若不需要知道保存完成的时间，则可使用 `saveEventually` 来代替。
 
-它的优点在于：如果用户目前尚未接入网络，`saveEventually` 会缓存设备中的数据，并在网络连接恢复后上传。如果应用在网络恢复之前就被关闭了，那么当它下一次打开时，LeanStorage 会再次尝试保存操作。
+它的优点在于：如果用户目前尚未接入网络，`saveEventually` 会缓存设备中的数据，并在网络连接恢复后上传。如果应用在网络恢复之前就被关闭了，那么当它下一次打开时，SDK 会再次尝试保存操作。
 
 所有 `saveEventually`（或 `deleteEventually`）的相关调用，将按照调用的顺序依次执行。因此，多次对某一对象使用 `saveEventually` 是安全的。
 {% endif %}
 
 ### 数据模型
 
-对象之间可以产生关联。拿一个博客应用来说，一个 `Post` 对象可以与许多个 `Comment` 对象产生关联。LeanCloud 支持三种关系：一对一、一对多、多对多。
+对象之间可以产生关联。拿一个博客应用来说，一个 `Post` 对象可以与许多个 `Comment` 对象产生关联。云服务支持三种关系：一对一、一对多、多对多。
 
 #### 一对一、一对多关系
 
@@ -2583,24 +2408,7 @@ comment['parent'] = post;
 await comment.save();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 创建 post
-LCObject post = new LCObject("Post");
-post["title"] = "饿了……";
-post["content"] = "中午去哪吃呢?";
 
-// 创建 comment
-LCObject comment = new LCObject("Comment");
-comment["content"] = "当然是肯德基啦!";
-
-// 将 post 设为 comment 的一个属性值
-comment["parent"] = post;
-
-// 保存 comment 会同时保存 post
-await comment.Save();
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 type Post struct {
@@ -2691,12 +2499,7 @@ LCObject post = LCObject.createWithoutData('Post', '57328ca079bc44005c2472d0');
 comment['post'] = post;
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCObject post = LCObject.CreateWithoutData("Post", "57328ca079bc44005c2472d0");
-comment["post"] = post;
-```
-{% endif %}
+
 
 请参阅 [关系查询](#关系查询) 来了解如何获取关联的对象。
 
@@ -2705,10 +2508,6 @@ comment["post"] = post;
 想要建立多对多关系，最简单的办法就是使用 **数组**。在大多数情况下，使用数组可以有效减少查询的次数，提升程序的运行效率。但如果有额外的属性需要附着于两个 class 之间的关联，那么使用 **中间表** 可能是更好的方式。注意这里说到的额外的属性是用来描述 class 之间的关系的，而不是任何单一的 class 的。
 
 我们建议你在任何一个 class 的对象数量超出 100 的时候考虑使用中间表。
-
-{% call docs.noteWrap() %}
-我们知道设计数据模型并不容易，所以我们专门写了一篇 [数据模型设计指南](relation-guide.html) 来详细介绍这部分内容，推荐你去看一下。
-{% endcall %}
 
 {% if platform_name in ["Objective-C", "JavaScript", "JavaScript(next)", "Android / Java", "Swift", "Flutter", ".Net"] %}
 ### 序列化和反序列化
@@ -2744,9 +2543,7 @@ const json = todo.toFullJSON();
 const serializedString = JSON.stringify(json);
 ```
 
-{% call docs.noteWrap() %}
 `AV.Object` 还提供了另一个方法 `toJSON()`。它们的区别是 `toJSON()` 得到的对象仅包含对象的 payload，一般用于展示，而 `toFullJSON()` 得到的对象包含了元数据，一般用于传输。在使用时请注意区分。
-{% endcall %}
 {% endif %}
 {% if platform_name === "JavaScript(next)" %}
 ```js
@@ -2756,9 +2553,7 @@ const json = db.encode(todo);
 const serializedString = JSON.stringify(json);
 ```
 
-{% call docs.noteWrap() %}
 `LCObject` 还提供了一个方法 `toJSON()`。它们的区别是 `toJSON()` 得到的对象仅包含对象的 payload，一般用于展示，而 `db.encode` 得到的对象包含了元数据，一般用于传输。在使用时请注意区分。
-{% endcall %}
 {% endif %}
 {% if platform_name === "Android / Java" %}
 ```java
@@ -2798,15 +2593,7 @@ object['owner'] = LCUser.getCurrent();
 String serializedString = object.toString();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCObject object = new LCObject("Hello");
-object["title"] = "马拉松报名";
-object["priority"] = 2;
-object["owner"] = await LCUser.GetCurrent();
-string serializedString = object.ToString();
-```
-{% endif %}
+
 
 反序列化：
 
@@ -2872,12 +2659,7 @@ LCObject newObject = LCObject.parseObject(json);
 await newObject.save();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCObject newObject = LCObject.ParseObject(json);
-await newObject.Save();
-```
-{% endif %}
+
 {% endif %}
 
 {% if platform_name === "Python" %}
@@ -2889,8 +2671,6 @@ await newObject.Save();
 ## 查询
 
 我们已经了解到如何从云端获取单个 `{{ baseObjectName }}`，但你可能还会有一次性获取多个符合特定条件的 `{{ baseObjectName }}` 的需求，这时候就需要用到 `{{ baseQueryClassName }}` 了。
-
-{# Before you continue, familiarize yourself with the models that are used in this guide. #}
 
 ### 基础查询
 
@@ -2973,14 +2753,7 @@ query.whereEqualTo('lastName', 'Smith');
 List<LCObject> students = await query.find();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Student");
-query.WhereEqualTo("lastName", "Smith");
-// students 是包含满足条件的 Student 对象的数组
-ReadOnlyCollection<LCObject> students = await query.Find();
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 type Student struct {
@@ -3040,11 +2813,7 @@ query.whereKey("firstName", .notEqualTo("Jack"))
 query.whereNotEqualTo('firstName', 'Jack');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-query.WhereNotEqualTo("firstName", "Jack");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 query := client.Class("Student").NewQuery().NotEqualTo("firstName", "Jack")
@@ -3157,21 +2926,7 @@ query.whereGreaterThan('age', 18);
 query.whereGreaterThanOrEqualTo('age', 18);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 限制 age < 18
-query.WhereLessThan("age", 18);
 
-// 限制 age <= 18
-query.WhereLessThanOrEqualTo("age", 18);
-
-// 限制 age > 18
-query.WhereGreaterThan("age", 18);
-
-// 限制 age >= 18
-query.WhereGreaterThanOrEqualTo("age", 18);
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 // 限制 age < 18
@@ -3231,12 +2986,7 @@ query.whereEqualTo('firstName', 'Jack');
 query.whereGreaterThan('age', 18);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-query.WhereEqualTo("firstName", "Jack");
-query.WhereGreaterThan("age", 18);
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 query := client.Class("Student").NewQuery().EqualTo("firstName", "Jack").GreaterThan("age", 18)
@@ -3286,21 +3036,14 @@ query.limit = 10
 query.limit(10);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 最多获取 10 条结果
-query.Limit(10);
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 // 最多获取 10 条结果
 query := client.Class("Student").NewQuery().Limit(10)
 ```
 {% endif %}
-{% call docs.noteWrap() %}
 由于性能原因，`limit` 最大只能设为 `1000`。即使将其设为大于 `1000` 的数，云端也只会返回 1,000 条结果。
-{% endcall %}
 
 如果只需要一条结果，可以直接用 `{% if platform_name === "Objective-C" %}getFirstObject{% endif %}{% if platform_name === "JavaScript" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Android / Java" %}getFirst{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}{% if platform_name === "Flutter" %}first{% endif %}{% if platform_name === ".Net" %}First{% endif %}{% if platform_name === "Go" %}First{% endif %}`：
 
@@ -3373,14 +3116,7 @@ query.whereEqualTo('priority', 2);
 LCObject todo = await query.first();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-query.WhereEqualTo("priority", 2);
-// todo 是第一个满足条件的 Todo 对象
-LCObject todo = await query.First();
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 todo := new(Todo)
@@ -3433,11 +3169,7 @@ query.skip = 20
 query.skip(20);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-query.Skip(20);
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 query := client.Class("Todo").NewQuery().Skip(20)
@@ -3502,22 +3234,14 @@ query.limit(10);
 query.skip(20);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-query.WhereEqualTo("priority", 2);
-query.Limit(10);
-query.Skip(20);
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 query := client.Class("Todo").NewQuery().EqualTo("priority", 2).Limit(10).Skip(20)
 ```
 {% endif %}
-{% call docs.noteWrap() %}
-需要注意的是，`skip` 的值越高，查询所需的时间就越长。作为替代方案，可以通过设置 `createdAt` 或 `updatedAt` 的范围来实现更高效的翻页，因为它们都自带索引。{# , or using the last value returned from an auto-increment field along with `limit` for the purpose of pagination #}
-{% endcall %}
+需要注意的是，`skip` 的值越高，查询所需的时间就越长。作为替代方案，可以通过设置 `createdAt` 或 `updatedAt` 的范围来实现更高效的翻页，因为它们都自带索引。
+同理，也可以通过设置自增字段的范围来实现翻页。
 
 对于能够排序的属性，可以指定结果的排序规则：
 
@@ -3584,15 +3308,7 @@ query.orderByAscending('createdAt');
 query.orderByDescending('createdAt');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 按 createdAt 升序排列
-query.OrderByAscending("createdAt");
 
-// 按 createdAt 降序排列
-query.OrderByDescending("createdAt");
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 // 按 createdAt 升序排列
@@ -3646,12 +3362,7 @@ query.addAscendingOrder('priority');
 query.addDescendingOrder('createdAt');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-query.AddAscendingOrder("priority");
-query.AddDescendingOrder("createdAt");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 query := client.Class("Todo").NewQuery().Order("priority").Order("-createdAt")
@@ -3731,15 +3442,7 @@ query.whereExists('images');
 query.whereDoesNotExist('images');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 查找包含 'images' 的对象
-query.WhereExists("images");
 
-// 查找不包含 'images' 的对象
-query.WhereDoesNotExist("images");
-```
-{% endif %}
 
 {% if platform_name === "JavaScript" %}
 可以用 `matchesKeyInQuery` 查找某一属性值为另一查询返回结果的对象。
@@ -3865,18 +3568,7 @@ String content = todo['content']; // √
 String notes = todo['notes']; // null
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-query.Select("title");
-query.Select("content");
-LCObject todo = await query.First();
 
-string title = todo["title"] as string; // √
-string content = todo["content"] as string; // √
-string notes = todo["notes"] as string; // null
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 todos := make([]Todo, 0)
@@ -3887,7 +3579,7 @@ if err := client.Class("Todo").NewQuery().Select("title", "content").Find(&todo)
 ```
 {% endif %}
 `{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}{% if platform_name === "Go" %}Select{% endif %}`
-支持点号（`author.firstName`），详见 [点号使用指南](dot-notation.html#在查询对象时使用点号)。
+支持点号（`author.firstName`），详见《点号使用指南》。
 另外，字段名前添加减号前缀表示反向选择，例如 `-author` 表示不返回 `author` 字段。
 反向选择同样适用于内置字段，比如 `-objectId`，也可以和点号组合使用，比如 `-pubUser.createdAt`。
 
@@ -3950,13 +3642,7 @@ LCQuery<LCObject> query = new LCQuery('Todo');
 query.whereStartsWith('title', 'lunch');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-// 相当于 SQL 中的 title LIKE 'lunch%'
-query.WhereStartsWith("title", "lunch");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 // 相当于 SQL 中的 title LIKE 'lunch%'
@@ -4016,13 +3702,7 @@ LCQuery<LCObject> query = LCQuery('Todo');
 query.whereContains('title', 'lunch');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-// 相当于 SQL 中的 title LIKE '%lunch%'
-query.WhereContains("title", "lunch");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 // 相当于 SQL 中的 title LIKE '%lunch%'
@@ -4032,9 +3712,7 @@ query := client.Class("Todo").NewQuery().Contains("title", "lunch")
 
 和 `{% if platform_name === "Go" %}Query.StartsWith{% endif %}{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}{% if platform_name === ".Net" %}WhereStartsWith{% endif %}` 不同，`{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === ".Net" %}WhereContains{% endif %}{% if platform_name === "Go" %}Query.Contains{% endif %}` 无法利用索引，因此不建议用于大型数据集。
 
-{% call docs.noteWrap() %}
 注意 `{% if platform_name === "Go" %}Query.StartsWith{% endif %}{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}{% if platform_name === ".Net" %}WhereStartsWith{% endif %}` 和 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === ".Net" %}WhereContains{% endif %}` 都是 **区分大小写** 的，所以上述查询会忽略 `Lunch`、`LUNCH` 等字符串。
-{% endcall %}
 
 如果想查找某一属性值不包含特定字符串的对象，可以使用 `{% if platform_name === "Go" %}Query.Regexp{% endif %}{% if platform_name === "Objective-C" %}matchesRegex{% endif %}{% if platform_name === "JavaScript" %}matches{% endif %}{% if platform_name === "Python" %}matched{% endif %}{% if platform_name === "PHP" %}matches{% endif %}{% if platform_name === "Android / Java" %}whereMatches{% endif %}{% if platform_name === "Swift" %}.matchedPattern{% endif %}{% if platform_name === "Flutter" %}whereMatches{% endif %}{% if platform_name === ".Net" %}WhereMatches{% endif %}` 进行基于正则表达式的查询：
 
@@ -4082,12 +3760,7 @@ query.whereKey("title", .matchedRegularExpression("{{ regex() | safe }}, option:
 query.whereMatches('title', '{{ regexFlutter() | safe }}', modifiers: 'i');
 </code></pre>
 {% endif %}
-{% if platform_name === ".Net" %}
-<pre><code class="lang-cs">LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-// 'title' 不包含 "ticket"（不区分大小写）
-query.WhereMatches("title", "{{ regexFlutter() | safe }}", modifiers: "i");
-</code></pre>
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 query := client.Class("Todo").NewQuery().Regexp("title", "^((?!ticket).)*$", "i")
@@ -4095,11 +3768,10 @@ query := client.Class("Todo").NewQuery().Regexp("title", "^((?!ticket).)*$", "i"
 {% endif %}
 {# 2016-12-29 DO NOT USE markdown to rewrite the previous block #}
 
-不过我们并不推荐大量使用这类查询，尤其是对于包含超过 100,000 个对象的 class，{# LeanCloud restricts how many such operations can be run on a particular app at any given time. #}因为这类查询无法利用索引，实际操作中云端会遍历所有对象来获取结果。如果有进行全文搜索的需求，可以了解一下 [全文搜索](app_search_guide.html) 功能。
+不过我们并不推荐大量使用这类查询，尤其是对于包含超过 100,000 个对象的 class，
+因为这类查询无法利用索引，实际操作中云端会遍历所有对象来获取结果。如果有进行全文搜索的需求，可以使用全文搜索服务。
 
-{% call docs.noteWrap() %}
 使用查询时如果遇到性能问题，可参阅 [查询性能优化](#查询性能优化)。
-{% endcall %}
 
 ### 数组查询
 
@@ -4140,11 +3812,7 @@ query.whereKey("tags", .equalTo("工作"))
 query.whereEqualTo('tags', '工作');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-query.WhereEqualTo("tags", "工作");
-```
-{% endif %}
+
 
 下面的代码查询数组属性长度为 3 （正好包含 3 个标签）的对象：
 
@@ -4183,11 +3851,7 @@ query.whereKey("tags", .equalToSize(3))
 query.whereSizeEqualTo('tags', 3);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-query.WhereSizeEqualTo("tags", 3);
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 query := client.Class("Todo").NewQuery().EqualTo("tags", "工作")
@@ -4230,11 +3894,7 @@ query.whereKey("tags", .containedAllIn(["工作", "销售", "会议"]))
 query.whereContainsAll('tags', ['工作', '销售', '会议']);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-query.WhereContainsAll("tags", new string[] { "工作", "销售", "会议" });
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 query := client.Class("Todo").NewQuery().ContainsAll("tags", []string{"工作", "销售", "会议"})
@@ -4400,29 +4060,7 @@ List<LCObject> results = await priorityOneOrTwo.find();
 // 好像有些繁琐 :(
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 单个查询
-LCQuery<LCObject> priorityOneOrTwo = new LCQuery<LCObject>("Todo");
-priorityOneOrTwo.WhereContainedIn("priority", new string[] { 1, 2 });
-// 这样就可以了 :)
 
-// ---------------
-//       vs.
-// ---------------
-
-// 多个查询
-LCQuery<LCObject> priorityOne = new LCQuery<LCObject>("Todo");
-priorityOne.WhereEqualTo("priority", 1);
-
-LCQuery<LCObject> priorityTwo = new LCQuery<LCObject>("Todo");
-priorityTwo.WhereEqualTo("priority", 2);
-
-LCQuery<LCObject> priorityOneOrTwo = LCQuery.Or(new LCQuery<LCObject>[] { priorityOne, priorityTwo });
-ReadOnlyCollection<LCObject> results = await priorityOneOrTwo.Find();
-// 好像有些繁琐 :(
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 // 暂不支持
@@ -4511,15 +4149,7 @@ query.whereEqualTo('post', post);
 List<LCObject> comments = await query.find();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCObject post = LCObject.CreateWithoutData("Post", "57328ca079bc44005c2472d0");
-LCQuery<LCObject> query = new LCQuery<LCObject>("Comment");
-query.WhereEqualTo("post", post);
-// comments 包含与 post 相关联的评论
-ReadOnlyCollection<LCObject> comments = await query.Find();
-```
-{% endif %}
+
 
 如需获取某一属性值为另一查询结果中任一 `{{ baseObjectName }}` 的对象，可以用 `{% if platform_name === "Objective-C" %}matchesQuery{% endif %}{% if platform_name === "JavaScript" %}matchesQuery{% endif %}{% if platform_name === "Python" %}matches_query{% endif %}{% if platform_name === "PHP" %}matchesInQuery{% endif %}{% if platform_name === "Android / Java" %}whereMatchesQuery{% endif %}{% if platform_name === "Swift" %}.matchedQuery{% endif %}`。下面的代码构建的查询可以找到所有包含图片的博客文章的评论：
 
@@ -4586,15 +4216,7 @@ LCQuery query = LCQuery('Comment');
 query.whereMatchesQuery('post', innerQuery);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> innerQuery = new LCQuery<LCObject>("Post");
-innerQuery.WhereExists("image");
 
-LCQuery<LCObject> query = new LCQuery<LCObject>("Comment");
-query.WhereMatchesQuery("post", innerQuery);
-```
-{% endif %}
 
 如需获取某一属性值不是另一查询结果中任一 `{{ baseObjectName }}` 的对象，则使用 `{% if platform_name === "Objective-C" %}doesNotMatchQuery{% endif %}{% if platform_name === "JavaScript" %}doesNotMatchQuery{% endif %}{% if platform_name === "Python" %}does_not_match_query{% endif %}{% if platform_name === "PHP" %}notMatchInQuery{% endif %}{% if platform_name === "Android / Java" %}whereDoesNotMatchQuery{% endif %}{% if platform_name === "Swift" %}.notMatchedQuery{% endif %}{% if platform_name === "Flutter" %}whereDoesNotMatchQuery{% endif %}{% if platform_name === ".Net" %}WhereDoesNotMatchQuery{% endif %}`。
 
@@ -4758,39 +4380,17 @@ for (LCObject comment in comments) {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Comment");
 
-// 获取最新发布的
-query.OrderByDescending("createdAt");
 
-// 只获取 10 条
-query.Limit(10);
-
-// 同时包含博客文章
-query.Include("post");
-
-// comments 包含最新发布的 10 条评论，包含各自对应的博客文章
-ReadOnlyCollection<LCObject> comments = await query.Find();
-foreach (LCObject comment in comments) {
-// 该操作无需网络连接
-  LCObject post = comment["post"] as LCObject;
-}
-```
-{% endif %}
-
-可以用 dot 符号（`.`）来获取多级关系，例如 `post.author`，详见 [点号使用指南](dot-notation.html#在查询对象时使用点号)。
+可以用 dot 符号（`.`）来获取多级关系，例如 `post.author`，详见《点号使用指南》的《在查询对象时使用点号》一节。
 
 可以在同一查询上应用多次 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Android / Java" %}include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}` 以包含多个属性。通过这种方法获取到的对象同样接受 `{% if platform_name === "Objective-C" %}getFirstObject{% endif %}{% if platform_name === "JavaScript" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Android / Java" %}getFirst{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}`{% if platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Swift" %}、`get`{% endif %} 等 `{{ baseQueryClassName }}` 辅助方法。
 
-{% call docs.noteWrap() %}
 通过 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Android / Java" %}include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}` 进行多级查询的方式不适用于数组属性内部的 `{{ baseObjectName }}`，只能包含到数组本身。
-{% endcall %}
 
 #### 关系查询的注意事项
 
-LeanCloud 云端使用的并非关系型数据库，无法做到真正的联表查询，所以实际的处理方式是：先执行内嵌/子查询（和普通查询一样，`limit` 默认为 `100`，最大 `1000`），然后将子查询的结果填入主查询的对应位置，再执行主查询。如果子查询匹配到的记录数量超出 `limit`，且主查询有其他查询条件，那么可能会出现没有结果或结果不全的情况，因为只有 `limit` 数量以内的结果会被填入主查询。
+云端使用的并非关系型数据库，无法做到真正的联表查询，所以实际的处理方式是：先执行内嵌/子查询（和普通查询一样，`limit` 默认为 `100`，最大 `1000`），然后将子查询的结果填入主查询的对应位置，再执行主查询。如果子查询匹配到的记录数量超出 `limit`，且主查询有其他查询条件，那么可能会出现没有结果或结果不全的情况，因为只有 `limit` 数量以内的结果会被填入主查询。
 
 我们建议采用以下方案进行改进：
 
@@ -4864,14 +4464,7 @@ int count = await query.count();
 print('$count 个 todo 已完成');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-query.WhereEqualTo("isComplete", true);
-int count = await query.Count();
-print($"{count} 个 todo 已完成");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 count, err := client.Class("Todo").NewQuery().EqualTo("isComplete", true).Count()
@@ -4885,9 +4478,7 @@ fmt.Printf("%d 个 todo 已完成。", count)
 
 组合查询就是把诸多查询条件用一定逻辑合并到一起（`OR` 或 `AND`）再交给云端去查询。
 
-{% call docs.noteWrap() %}
 组合查询不支持在子查询中包含 `GeoPoint` 或其他非过滤性的限制（例如 `near`、`withinGeoBox`、`limit`、`skip`、`ascending`、`descending`、`include`）。
-{% endcall %}
 
 #### OR 查询
 
@@ -4973,18 +4564,7 @@ LCQuery<LCObject> priorityOneOrTwo = LCQuery.or([priorityQuery, isCompleteQuery]
 List<LCObject> results = await priorityOneOrTwo.find();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> priorityQuery = new LCQuery<LCObject>("Todo");
-priorityQuery.WhereGreaterThanOrEqualTo("priority", 3);
 
-LCQuery<LCObject> isCompleteQuery = new LCQuery<LCObject>("Todo");
-isCompleteQuery.WhereEqualTo("isComplete", true);
-
-LCQuery<LCObject> priorityOneOrTwo = LCQuery.Or(new LCQuery<LCObject>[] { priorityQuery, isCompleteQuery });
-ReadOnlyCollection<LCObject> results = await priorityOneOrTwo.Find();
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 priorityQuery := client.Class("Todo").NewQuery().GreaterThanOrEqualTo("priority", 3)
@@ -4992,9 +4572,7 @@ isCompleteQuery := client.Class("Todo").NewQuery().EqualTo("isComplete", true)
 query = client.Class("Todo").NewQuery().Or(priorityQuery, isCompleteQuery)
 ```
 {% endif %}
-{% call docs.noteWrap() %}
 使用 OR 查询时，子查询中不能包含 `GeoPoint` 相关的查询。
-{% endcall %}
 
 #### AND 查询
 
@@ -5102,18 +4680,7 @@ LCQuery<LCObject> query = LCQuery.and([startDateQuery, endDateQuery]);
 List<LCObject> results = await query.find();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> startDateQuery = new LCQuery<LCObject>("Todo");
-startDateQuery.WhereGreaterThanOrEqualTo("createdAt", DateTime.Parse("2016-11-13 00:00:00Z"));
 
-LCQuery<LCObject> endDateQuery = new LCQuery<LCObject>("Todo");
-endDateQuery.WhereLessThan("createdAt", DateTime.Parse("2016-12-03 00:00:00Z"));
-
-LCQuery<LCObject> query = LCQuery<LCObject>.And(new LCQuery<LCObject>[] { startDateQuery, endDateQuery });
-ReadOnlyCollection<LCObject> results = await query.Find();
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 startDateQuery := client.Class("Todo").NewQuery().GreaterThanOrEqualTo("createdAt", time.Parse("2000-01-01 00:00:00Z", "2016-11-13 00:00:00Z"))
@@ -5305,26 +4872,7 @@ LCQuery<LCObject> timeLocationQuery = LCQuery.or([locationQuery, createdAtQuery]
 LCQuery<LCObject> query = LCQuery.and([priorityQuery, timeLocationQuery]);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> createdAtQuery = new LCQuery<LCObject>("Todo");
-createdAtQuery.WhereGreaterThanOrEqualTo("createdAt", DateTime.Parse("2018-04-30 00:00:00Z"));
-createdAtQuery.WhereLessThan("createdAt", DateTime.Parse("2018-05-01 00:00:00Z"));
 
-LCQuery<LCObject> locationQuery = new LCQuery<LCObject>("Todo");
-locationQuery.WhereDoesNotExist("location");
-
-LCQuery<LCObject> priority2Query = new LCQuery<LCObject>("Todo");
-priorityQuery.WhereEqualTo("priority", 2);
-
-LCQuery<LCObject> priority3Query = new LCQuery<LCObject>("Todo");
-priorityQuery.WhereEqualTo("priority", 3);
-
-LCQuery<LCObject> priorityQuery = LCQuery<LCObject>.Or(new LCQuery<LCObject>[] { priority2Query, priority3Query });
-LCQuery<LCObject> timeLocationQuery = LCQuery<LCObject>.Or(new LCQuery<LCObject>[] { locationQuery, createdAtQuery });
-LCQuery<LCObject> query = LCQuery<LCObject>.And(new LCQuery<LCObject>[] { priorityQuery, timeLocationQuery });
-```
-{% endif %}
 
 {% if platform_name === "Objective-C" %}
 ### 缓存查询
@@ -5475,7 +5023,7 @@ LiveQuery 使用 WebSocket 在客户端和云端之间建立连接。WebSocket �
 
 ### 启用 LiveQuery
 
-进入 **控制台 > 存储 > 设置**，在 **其他** 里面勾选 **启用 LiveQuery**{% if platform_name === "Swift" %}，然后导入 LeanCloud Swift SDK：{% endif %}{% if platform_name === "JavaScript" %}，然后将下面的 npm 模块添加到项目中即可：{% endif %}{% if platform_name === "Android / Java" %}即可。确保即时通信模块已被添加到 `AndroidManifest.xml`：{% endif %}
+进入 **控制台 > 存储 > 设置**，在 **其他** 里面勾选 **启用 LiveQuery**{% if platform_name === "Swift" %}，然后导入云服务Swift SDK：{% endif %}{% if platform_name === "JavaScript" %}，然后将下面的 npm 模块添加到项目中即可：{% endif %}{% if platform_name === "Android / Java" %}即可。确保即时通信模块已被添加到 `AndroidManifest.xml`：{% endif %}
 
 {% if platform_name === "Objective-C" %}
 如果没有集成 `Realtime` 模块，需先集成 `Realtime` 模块，pod 添加示例如下：
@@ -5526,11 +5074,7 @@ const AV = require('leancloud-storage/live-query');
 
 可以在 [SDK 安装与初始化](#SDK-安装与初始化) 中找到完整设置方法。
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-using LeanCloud.LiveQuery;
-```
-{% endif %}
+
 
 ### Demo
 
@@ -5544,15 +5088,17 @@ using LeanCloud.LiveQuery;
 
 使用我们的「LeanTodo」微信小程序和网页应用，可以实际体验以上视频所演示的效果，步骤如下：
 
-1. 微信扫码，添加小程序「LeanTodo」；<br/>
-   <img src="images/leantodo-weapp-qr.jpg" width="150" height="150">
+1. 微信扫码，添加小程序「LeanTodo」；
+
+    ![LeanTodo mini program](images/leantodo-weapp-qr.jpg" width="150" height="150")
+
 2. 进入小程序，点击首页左下角 **设置** > **账户设置**，输入便于记忆的用户名和密码；
+
 3. 使用浏览器访问 <https://leancloud.github.io/leantodo-vue/>，输入刚刚在小程序中更新好的账户信息，点击 **Login**；
+
 4. 随意添加更改数据，查看两端的同步状态。
 
-{% call docs.noteWrap() %}
 注意按以上顺序操作。在网页应用中使用 **Signup** 注册的账户无法与小程序创建的账户相关联，所以如果颠倒以上操作顺序，则无法观测到数据同步效果。
-{% endcall %}
 
 [LiveQuery 公开课](http://www.bilibili.com/video/av11291992/) 涵盖了许多开发者关心的问题和解答。
 
@@ -5611,18 +5157,9 @@ liveQuery.subscribeInBackground(new LCLiveQuerySubscribeCallback() {
 });
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-query.WhereEqualTo("isComplete", true);
-await query.Subscribe();
-// 订阅成功
-```
-{% endif %}
 
-{% call docs.noteWrap() %}
+
 LiveQuery 不支持内嵌查询，也不支持返回指定属性。
-{% endcall %}
 
 订阅成功后，就可以接收到和 `{{ baseObjectName }}` 相关的更新了。假如在另一个客户端上创建了一个 `Todo` 对象，对象的 `title` 设为 `更新作品集`，那么下面的代码可以获取到这个新的 `Todo`：
 
@@ -5689,15 +5226,7 @@ liveQuery.subscribeInBackground(new LCLiveQuerySubscribeCallback() {
 });
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-LCLiveQuery liveQuery = await query.Subscribe();
-liveQuery.OnCreate = (obj) => {
-  print(obj["title"]); // 更新作品集
-};
-```
-{% endif %}
+
 
 此时如果有人把 `Todo` 的 `content` 改为 `把我最近画的插画放上去`，那么下面的代码可以获取到本次更新：
 
@@ -5744,13 +5273,7 @@ liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
 });
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-liveQuery.OnUpdate = (updatedTodo, updatedKeys) => {
-  print(updatedTodo["content"]); // 把我最近画的插画放上去
-};
-```
-{% endif %}
+
 
 ### 事件处理
 
@@ -5804,13 +5327,7 @@ liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
 });
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-liveQuery.OnCreate = (obj) => {
-  print("对象被创建。");
-};
-```
-{% endif %}
+
 
 #### `update` 事件
 
@@ -5854,13 +5371,7 @@ liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
 });
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-liveQuery.OnUpdate = (obj, updatedKeys) => {
-  print("对象被更新。");
-};
-```
-{% endif %}
+
 
 #### `enter` 事件
 
@@ -5904,17 +5415,9 @@ liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
 });
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-liveQuery.OnEnter = (obj, updatedKeys) => {
-  print("对象进入。");
-};
-```
-{% endif %}
 
-{% call docs.noteWrap() %}
+
 注意区分 `create` 和 `enter` 的不同行为。如果一个对象已经存在，在更新之前不符合查询条件，而在更新之后符合查询条件，那么 `enter` 事件会被触发。如果一个对象原本不存在，后来被构建了出来，那么 `create` 事件会被触发。
-{% endcall %}
 
 #### `leave` 事件
 
@@ -5958,13 +5461,7 @@ liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
 });
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-liveQuery.OnLeave = (obj, updatedKeys) => {
-  print("对象离开。");
-};
-```
-{% endif %}
+
 
 #### `delete` 事件
 
@@ -6008,13 +5505,7 @@ liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
 });
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-liveQuery.OnDelete = (objId) => {
-  print("对象被删除。");
-};
-```
-{% endif %}
+
 
 
 ### 取消订阅
@@ -6063,12 +5554,7 @@ liveQuery.unsubscribeInBackground(new LCLiveQuerySubscribeCallback() {
 });
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await liveQuery.Unsubscribe();
-// 成功取消订阅
-```
-{% endif %}
+
 
 ### 断开连接
 
@@ -6083,7 +5569,10 @@ await liveQuery.Unsubscribe();
 
 ### LiveQuery 的注意事项
 
-因为 LiveQuery 的实时性，很多用户会陷入一个误区，试着用 LiveQuery 来实现一个简单的聊天功能。我们不建议这样做，因为使用 LiveQuery 构建聊天服务会承担额外的存储成本，产生的费用会增加，后期维护的难度非常大（聊天记录、对话维护之类的代码会很混乱），并且 LeanCloud 已经提供了 [即时通讯](realtime_v2.html) 的服务。LiveQuery 的核心还是提供一个针对查询的推拉结合的用法，脱离设计初衷容易造成前端的模块混乱。
+因为 LiveQuery 的实时性，很多用户会陷入一个误区，试着用 LiveQuery 来实现一个简单的聊天功能。
+我们不建议这样做，因为使用 LiveQuery 构建聊天服务会承担额外的存储成本，产生的费用会增加，后期维护的难度非常大（聊天记录、对话维护之类的代码会很混乱），并且云服务已经提供了即时通讯的服务。
+LiveQuery 的核心还是提供一个针对查询的推拉结合的用法，脱离设计初衷容易造成前端的模块混乱。
+
 
 {% if platform_name === "Android / Java" %}
 如果你的应用只使用 LiveQuery （不使用即时通讯和其他推送服务），那么可以在初始化 SDK 时使用 `PushService` 的静态方法 `startIfRequired` 来创建 WebSocket 连接：
@@ -6210,12 +5699,7 @@ if let data = "LeanCloud".data(using: .utf8) {
 LCFile file = LCFile.fromBytes('resume.txt', utf8.encode('LeanCloud'));
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-可以通过字符串构建文件：
-```cs
-LCFile file = new LCFile("resume.txt", UTF8.GetBytes("LeanCloud"));
-```
-{% endif %}
+
 
 除此之外，还可以通过 URL 构建文件：
 
@@ -6263,11 +5747,7 @@ if let url = URL(string: "https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue
 LCFile file = LCFile.fromUrl('logo.png', 'https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCFile file = new LCFile("logo.png", new Uri("https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png"));
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 file := &File{
@@ -6281,12 +5761,10 @@ if err := client.Files.UploadFromURL(file); err != nil {
 }
 ```
 {% endif %}
-{% call docs.noteWrap() %}
 通过 URL 构建文件时，SDK 并不会将原本的文件转储到云端，而是会将文件的物理地址存储为字符串，这样也就不会产生任何文件上传流量。使用其他方式构建的文件会被保存在云端。
-{% endcall %}
 
 {% if platform_name === "JavaScript" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Android / Java" or platform_name === "Swift" or platform_name === "Flutter" or platform_name === ".Net" %}
-LeanCloud 会根据文件扩展名自动检测文件类型。如果需要的话，也可以手动指定 `Content-Type`（一般称为 MIME 类型）：
+云端会根据文件扩展名自动检测文件类型。如果需要的话，也可以手动指定 `Content-Type`（一般称为 MIME 类型）：
 {% endif %}
 
 {% if platform_name === "JavaScript" %}
@@ -6328,14 +5806,9 @@ LCFile file = LCFile.fromBytes('resume.txt', utf8.encode('LeanCloud'));
 file.mimeType = 'application/json';
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCFile file = new LCFile("resume.txt", UTF8.GetBytes("LeanCloud"));
-file.MimeType = "application/json";
-```
-{% endif %}
 
-与前面提到的方式相比，一个更常见的文件构建方式是从本地路径上传{{ "。如果开发的是 web 应用，可以先在页面上放一个按钮：" if platform_name === "JavaScript" else "：" }}
+
+与前面提到的方式相比，一个更常见的文件构建方式是从本地路径上传。
 
 {% if platform_name === "Go" %}
 ```go
@@ -6397,17 +5870,13 @@ if let url = Bundle.main.url(forResource: "avatar", withExtension: "jpg") {
 LCFile file = await LCFile.fromPath('avatar.jpg', './avatar.jpg');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCFile file = new LCFile("avatar.jpg", "./avatar.jpg");
-```
-{% endif %}
+
 
 这里上传的文件名字叫做 `avatar.jpg`。需要注意：
 
 - 每个文件会被分配到一个独一无二的 `objectId`，所以在一个应用内是允许多个文件重名的。
 - 文件必须有扩展名才能被云端正确地识别出类型。比如说要用 `{{ fileObjectName }}` 保存一个 PNG 格式的图像，那么扩展名应为 `.png`。
-- 如果文件没有扩展名，且没有手动指定类型，那么 LeanCloud 将默认使用 `application/octet-stream`。
+- 如果文件没有扩展名，且没有手动指定类型，那么云服务将默认使用 `application/octet-stream`。
 
 {% if platform_name in ["Python", "PHP", "JavaScript"] %}
 如果希望指定文件上传后在云端的路径，可以设置文件的 `key` 属性。
@@ -6506,12 +5975,7 @@ await file.save();
 print(file.objectId);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await file.Save();
-print(file.ObjectId);
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 file, err := client.Files.UploadFromFile("resume.txt")
@@ -6522,9 +5986,7 @@ if err != nil {
 fmt.Println("The URL of file is ", file.URL)
 ```
 {% endif %}
-{% call docs.noteWrap() %}
 文件上传后，可以在 `_File` class 中找到。已上传的文件无法再被修改。如果需要修改文件，只能重新上传修改过的文件并取得新的 `objectId` 和 URL。
-{% endcall %}
 
 {% if platform_name in ["JavaScript", "Android / Java"] %}
 如果希望在文件的 url 中保留文件名，可以在保存时传入 `keepFileName` 参数。
@@ -6635,15 +6097,7 @@ todo.add('attachments', file);
 await todo.save();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCObject todo = new LCObject("Todo");
-todo["title"] = "买蛋糕";
-// attachments 是一个 File 类型
-todo.Add("attachments", file);
-await todo.Save();
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 type Todo struct {
@@ -6699,17 +6153,15 @@ let query = LCQuery(className: "_File")
 LCQuery<LCObject> query = LCQuery('_File');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = LCFile.GetQuery();
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 query := client.Class("_File").NewQuery()
 ```
 {% endif %}
-{{ data.file_url_query() }}
+
+需要注意的是，内部文件（上传到文件服务的文件）的 `url` 字段是由云端动态生成的，其中涉及切换自定义域名的相关处理逻辑。
+因此，通过 url 字段查询文件仅适用于外部文件（直接保存外部 URL 到 `_File` 表创建的文件），内部文件请改用 key 字段（URL 中的路径）查询。
 
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Flutter" or platform_name === ".Net"  %}
 注意，如果文件被保存到了 `{{ baseObjectName }}` 的一个数组属性中，那么在查询 `{{ baseObjectName }}` 时如果需要包含文件，则要用到 `{{ baseQueryClassName }}` 的 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Android / Java"%}include{% endif %}` 方法。比如说，在获取所有标题为 `买蛋糕` 的 todo 的同时获取附件中的文件：
@@ -6794,22 +6246,7 @@ for (LCObject todo in todos) {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 获取同一标题且包含附件的 todo
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-query.WhereEqualTo("title", "买蛋糕");
-query.WhereExists("attachments");
 
-// 同时获取附件中的文件
-query.Include("attachments");
-ReadOnlyCollection<LCObject> todos = await query.Find();
-foreach (LCObject todo in todos) {
-  // 获取每个 todo 的 attachments 数组
-  List<object> attachments = todo["attachments"] as List<object>;
-}
-```
-{% endif %}
 
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Swift" or platform_name === "Flutter" or platform_name === ".Net" %}
 ### 上传进度监听
@@ -6877,16 +6314,7 @@ if (count == total) {
 });
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await file.Save((count, total) => {
-  print($"{count}/{total}");
-  if (count == total) {
-    print("done");
-  }
-});
-```
-{% endif %}
+
 
 ### 文件元数据
 
@@ -7003,15 +6431,7 @@ file.mimeType = 'image/jpg';
 await file.save();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-file.AddMetaData("size", 1024);
-file.AddMetaData("width", 128);
-file.AddMetaData("height", 256);
-file.MimeType = "image/jpg";
-await file.Save();
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 // 打开文件
@@ -7114,20 +6534,11 @@ file.getThumbnailUrl(true, 100, 100);
  String url = file.getThumbnailUrl(100, 200);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 获得宽度为 100 像素，高度为 200 像素的缩略图 url
-string url = file.GetThumbnailUrl(100, 200);
-```
-{% endif %}
 
-{% call docs.noteWrap() %}
+
 图片最大不超过 **20 MB** 才可以获取缩略图。
-{% endcall %}
 
-{% call docs.alertWrap() %}
 国际版不支持图片缩略图。
-{% endcall %}
 {% endif %}
 {% endif %}
 
@@ -7244,12 +6655,7 @@ LCFile file = LCObject.createWithoutData('_File', '552e0a27e4b0643b709e891e');
 await file.delete();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCFile file = LCObject.CreateWithoutData("_File", "552e0a27e4b0643b709e891e");
-await file.Delete();
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 if err := client.File("552e0a27e4b0643b709e891e").Destroy(); err != nil {
@@ -7257,24 +6663,12 @@ if err := client.File("552e0a27e4b0643b709e891e").Destroy(); err != nil {
 }
 ```
 {% endif %}
-{% call docs.alertWrap() %}
-默认情况下，文件的删除权限是关闭的，需要进入 **控制台 > 存储 > 数据 > `_File`**，选择 **其他** > **权限设置** > **`delete`** 来开启。
-{% endcall %}
-
-### 启用 HTTPS 域名
-
-如果希望使用 HTTPS 域名来访问文件，需要进入 **控制台 > 存储 > 设置 > 自定义文件域名**，勾选 **启用 HTTPS 域名**。HTTPS 文件流量无免费的使用额度，收费标准将在该选项开启时显示。
-
-「启用 HTTPS 域名」会影响到 API 返回的文件地址是 HTTPS 还是 HTTP 类型的 URL。需要注意的是，即使没有启用这一选项，终端仍然可以选择使用 HTTPS URL 来访问文件，但由此会产生 HTTPS 流量扣费。
-
-在启用文件 HTTPS 域名之后，之前已保存在 `_File` 表中的文件的 URL 会自动被转换为以 HTTPS 开头。如果取消 HTTPS 域名，已经改为 HTTPS 域名的文件不会变回到 HTTP。
-
-LeanCloud 即时通讯组件也使用 `{{ fileObjectName }}` 来保存消息的图片、音频等文件，并且把文件的地址写入到了消息内容中。当文件 HTTPS 域名被开启后，之前历史消息中的文件地址不会像 `_File` 表那样被自动转换，而依然保持 HTTP。
+默认情况下，文件的删除权限是关闭的，需要进入 **控制台 > 数据存储 > 结构化数据 > `_File`**，选择 **其他** > **权限设置** > **`delete`** 来开启。
 
 {% if platform_name === "Objective-C" %}
 #### iOS 9 适配
 
-从 iOS 9 开始，Apple 默认屏蔽 HTTP 访问，只支持 HTTPS 访问。LeanCloud 除了 `LCFile` 的 `getData` 之外的 API 都支持通过 HTTPS 访问。
+从 iOS 9 开始，Apple 默认屏蔽 HTTP 访问，只支持 HTTPS 访问。云服务除了 `LCFile` 的 `getData` 之外的 API 都支持通过 HTTPS 访问。
 
 如果你仍然需要 HTTP 访问，例如即时通讯消息中仍然有使用 HTTP 域名的文件，你可以 **为项目配置访问策略来允许 HTTP 访问**，从而解决这个问题。方法如下：
 
@@ -7303,14 +6697,10 @@ LeanCloud 即时通讯组件也使用 `{{ fileObjectName }}` 来保存消息的�
 你也可以根据项目需要，允许所有的 HTTP 访问，更多可参考 [iOS 9 适配系列教程](https://github.com/ChenYilong/iOS9AdaptationTips)。
 {% endif %}
 
-### CDN 加速
-
-{{ data.cdn(true, fileObjectName) }}
-
 {% if platform_name === "JavaScript" %}
 ## Promise
 
-每一个在 LeanCloud JavaScript SDK 中的异步方法都会返回一个 `Promise`，可以用于处理该异步方法的完成与异常。下面的示例代码在查询到一个 `AV.Object` 后对其进行更新：
+每一个在 JavaScript SDK 中的异步方法都会返回一个 `Promise`，可以用于处理该异步方法的完成与异常。下面的示例代码在查询到一个 `AV.Object` 后对其进行更新：
 
 ```js
 const query = new AV.Query('Todo');
@@ -7432,7 +6822,7 @@ async function example() {
 
 ## GeoPoint
 
-LeanCloud 允许你通过将 `{{ geoPointObjectName }}` 关联到 `{{ baseObjectName }}` 的方式存储折射真实世界地理位置的经纬坐标，这样做可以让你查询包含一个点附近的坐标的对象。常见的使用场景有「查找附近的用户」和「查找附近的地点」。
+云服务允许你通过将 `{{ geoPointObjectName }}` 关联到 `{{ baseObjectName }}` 的方式存储折射真实世界地理位置的经纬坐标，这样做可以让你查询包含一个点附近的坐标的对象。常见的使用场景有「查找附近的用户」和「查找附近的地点」。
 
 要构建一个包含地理位置的对象，首先要构建一个地理位置。下面的代码构建了一个 `{{geoPointObjectName}}` 并将其纬度（`latitude`）设为 `39.9`，经度（`longitude`）设为 `116.4`：
 
@@ -7475,11 +6865,7 @@ let point = LCGeoPoint(latitude: 39.9, longitude: 116.4)
 LCGeoPoint point = LCGeoPoint(39.9, 116.4);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCGeoPoint point = new LCGeoPoint(39.9, 116.4);
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 point := leancloud.GeoPoint{
@@ -7526,11 +6912,7 @@ try todo.set("location", value: point)
 todo['location'] = point;
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-todo["location"] = point;
-```
-{% endif %}
+
 {% if platform_name === "Go" %} 
 ```go
 if err := client.Class("Todo").Set("location", point); err != nil {
@@ -7639,18 +7021,7 @@ query.limit(10);
 List<LCObject> todos = await query.find();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-LCGeoPoint point = new LCGeoPoint(39.9, 116.4);
-query.WhereNear("location", point);
 
-// 限制为 10 条结果
-query.Limit(10);
-// todos 是包含满足条件的 Todo 对象的数组
-ReadOnlyCollection<LCObject> todos = await query.Find();
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 point := &leancloud.GeoPoint{
@@ -7664,21 +7035,17 @@ if err := client.Class("Todo").NewQuery().Near("location", point).Limit(10).Find
   panic(err)
 }
 ```
-{% call docs.noteWrap() %}
 像 `Order` 这样额外的排序条件会获得比默认的距离排序更高的优先级。
-{% endcall %}
 {% endif %}
 {% if platform_name !== "Go" %}
-{% call docs.noteWrap() %}
 像 `{% if platform_name === "Objective-C" %}orderByAscending{% endif %}{% if platform_name === "JavaScript" %}ascending{% endif %}{% if platform_name === "Python" %}ascending{% endif %}{% if platform_name === "PHP" %}ascend{% endif %}{% if platform_name === "Android / Java" %}orderByAscending{% endif %}{% if platform_name === "Swift" %}.ascending{% endif %}{% if platform_name === "Flutter" %}orderByAscending{% endif %}{% if platform_name === ".Net" %}OrderByAscending{% endif %}` 和 `{% if platform_name === "Objective-C" %}orderByDescending{% endif %}{% if platform_name === "JavaScript" %}descending{% endif %}{% if platform_name === "Python" %}descending{% endif %}{% if platform_name === "PHP" %}descend{% endif %}{% if platform_name === "Android / Java" %}orderByDescending{% endif %}{% if platform_name === "Swift" %}.descending{% endif %}{% if platform_name === "Flutter" %}orderByDescending{% endif %}{% if platform_name === ".Net" %}OrderByDescending{% endif %}` 这样额外的排序条件会获得比默认的距离排序更高的优先级。
-{% endcall %}
 {% endif %}
 
 若要限制结果和给定地点之间的距离，可以参考 API 文档中的 {% if platform_name === "Go" %}`WithinKilometers`、`WithinMiles` 和 `WithinRadians`{% endif %}{% if platform_name === "Objective-C" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "JavaScript" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Python" %}`within_kilometers`、`within_miles` 和 `within_radians`{% endif %}{% if platform_name === "PHP" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinKilometers`、`whereWithinMiles` 和 `whereWithinRadians`{% endif %}{% if platform_name === "Swift" %} `kilometersTo`、`milesTo` 和 `radiansTo`{% endif %} 参数。
 
 若要查询在某一矩形范围内的对象，可以用 {% if platform_name === "Go" %}`WithinGeoBox`{% endif %}{% if platform_name === "Objective-C" %}`withinGeoBoxFromSouthwest` 和 `toNortheast`{% endif %}{% if platform_name === "JavaScript" %}`withinGeoBox`{% endif %}{% if platform_name === "Python" %}`within_geo_box`{% endif %}{% if platform_name === "PHP" %}`withinBox`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinGeoBox`{% endif %}{% if platform_name === "Swift" %}`.locatedWithin`{% endif %}{% if platform_name === "Flutter" %}`whereWithinGeoBox`{% endif %}{% if platform_name === ".Net" %}`WhereWithinGeoBox`{% endif %}：
 
-<img width="300" height="200" src="images/geopoint-withingeobox.svg" />
+![withinGeoBox](images/geopoint-withingeobox.svg)
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -7736,14 +7103,7 @@ LCGeoPoint northeast = LCGeoPoint(40, 118);
 query.whereWithinGeoBox('location', southwest, northeast);
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCObject> query = new LCQuery<LCObject>("Todo");
-LCGeoPoint southwest = new LCGeoPoint(30, 115);
-LCGeoPoint northeast = new LCGeoPoint(40, 118);
-query.WhereWithinGeoBox("location", southwest, northeast);
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 southwest := leancloud.GeoPoint{30, 115}
@@ -7753,7 +7113,8 @@ query := client.Class("Todo").WithinBox("location", southwest, northeast)
 {% endif %}
 ### GeoPoint 的注意事项
 
-{{ data.geopoint_requirements() }}
+GeoPoint 的经纬度的类型是数字，且经度需在 -180.0 到 180.0 之间，纬度需在 -90.0 到 90.0 之间。
+另外，每个对象最多只能有一个类型为 GeoPoint 的属性。
 
 {% if platform_name === "Objective-C" %}
 iOS 8.0 之后，使用定位服务之前，需要调用 `[locationManager requestWhenInUseAuthorization]` 或 `[locationManager requestAlwaysAuthorization]` 来获取用户的「使用期授权」或「永久授权」，而这两个请求授权需要在 `info.plist` 里面对应添加 `NSLocationWhenInUseUsageDescription` 或 `NSLocationAlwaysUsageDescription` 的键值对，值为开启定位服务原因的描述。SDK 内部默认使用的是「使用期授权」。
@@ -7947,24 +7308,7 @@ user['gender'] = 'secret';
 await user.signUp();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-// 创建实例
-LCUser user = new LCUser();
 
-// 等同于 user["username"] = "Tom";
-user.Username = "Tom";
-user.Password = "cat!@#123";
-
-// 可选
-user.Email = "tom@leancloud.rocks";
-user.Mobile = "+8618200008888";
-
-// 设置其他属性的方法跟 LCObject 一样
-user["gender"] = "secret";
-await user.SignUp();
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 // 注册用户
@@ -7980,17 +7324,13 @@ if err := client.Users.ID(user.ID).Set("email", "tom@leancloud.rocks"); err != n
 ```
 {% endif %}
 {% if platform_name !== "Go" %}
-{% call docs.noteWrap() %}
 新建 `{{ userObjectName }}` 的操作应使用 `{% if platform_name === "Objective-C" %}signUpInBackground{% endif %}{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Android / Java" %}signUpInBackground{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}{% if platform_name === "Flutter" %}signUp{% endif %}{% if platform_name === ".Net" %}SignUp{% endif %}` 而不是 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}{% if platform_name === ".Net" %}Save{% endif %}`，但以后的更新操作就可以用 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}{% if platform_name === ".Net" %}Save{% endif %}` 了。
-{% endcall %}
 {% endif %}
-如果收到 `202` 错误码，意味着 `_User` 表里已经存在使用同一 `username` 的账号，此时应提示用户换一个用户名。除此之外，每个用户的 `email` 和 `mobilePhoneNumber` 也需要保持唯一性，否则会收到 `203` 或 `214` 错误。可以考虑在注册时把用户的 `username` 设为与 `email` 相同，这样用户可以直接 [用邮箱重置密码](#重置密码)。
+如果收到 `202` 错误码，意味着 `_User` 表里已经存在使用同一 `username` 的账号，此时应提示用户换一个用户名。除此之外，每个用户的 `email` 和 `mobilePhoneNumber` 也需要保持唯一性，否则会收到 `203` 或 `214` 错误。
+可以考虑在注册时把用户的 `username` 设为与 `email` 相同，这样用户可以直接 [用邮箱重置密码](#重置密码)。
 
-{% call docs.noteWrap() %}
 采用「用户名 + 密码」注册时需要注意：密码是以明文方式通过 HTTPS 加密传输给云端，云端会以密文存储密码（云端对密码的长度、复杂度不作限制），并且我们的加密算法是无法通过所谓「彩虹表撞库」获取的，这一点请开发者放心。换言之，用户的密码只可能用户本人知道，开发者不论是通过控制台还是 API 都是无法获取。另外我们需要强调 **在客户端，应用切勿再次对密码加密，这会导致 [重置密码](#重置密码) 等功能失效**。
-{% endcall %}
 
-{% if node !== "qcloud" %}
 #### 手机号注册
 
 对于移动应用来说，允许用户以手机号注册是个很常见的需求。实现该功能大致分两步，第一步是让用户提供手机号，点击「获取验证码」按钮后，该号码会收到一个六位数的验证码：
@@ -8064,11 +7404,7 @@ _ = LCSMSClient.requestShortMessage(mobilePhoneNumber: "+8618200008888", templat
 await LCSMSClient.requestSMSCode('+8618200008888');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCSMSClient.RequestSMSCode("+8618200008888");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 if err := client.Users.RequestMobilePhoneVerify("+8618200008888"); err != nil {
@@ -8142,11 +7478,7 @@ _ = LCUser.signUpOrLogIn(mobilePhoneNumber: "+8618200008888", verificationCode: 
  await LCUser.signUpOrLoginByMobilePhone('+8618200008888', '123456');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.SignUpOrLoginByMobilePhone("+8618200008888", "123456");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 user, err := client.Users.SignUpByMobilePhone("+8618200008888", "123456")
@@ -8155,18 +7487,15 @@ if err != nil {
 }
 ```
 {% endif %}
-{% call docs.noteWrap() %}
 `username` 将与 `mobilePhoneNumber` 相同，`password` 会由云端随机生成。
 如果希望让用户指定密码，可以在客户端让用户填写手机号和密码，然后按照上一小节使用用户名和密码注册的流程，将用户填写的手机号作为 `username` 和 `mobilePhoneNumber` 的值同时提交。
-同时根据业务需求，在「控制台 > 存储 > 用户 > 设置」勾选「未验证手机号码的用户，禁止登录」、「已验证手机号码的用户，允许以短信验证码登录」。
-{% endcall %}
+同时根据业务需求，在**云服务控制台 > 数据存储 > 用户 > 设置**勾选**未验证手机号码的用户，禁止登录**、**已验证手机号码的用户，允许以短信验证码登录**。
 
 #### 手机号格式
 
 `{{ userObjectName }}` 接受的手机号以 `+` 和国家代码开头，后面紧跟着剩余的部分。手机号中不应含有任何划线、空格等非数字字符。例如，`+19490008888` 是一个合法的美国或加拿大手机号（`1` 是国家代码），`+8618200008888` 是一个合法的中国手机号（`86` 是国家代码）。
 
-请参阅官网的价格页面以了解 LeanCloud 支持的国家和地区。
-{% endif %}
+请参阅官网的价格页面以了解支持的国家和地区。
 
 ### 登录
 
@@ -8240,17 +7569,7 @@ try {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-try {
-  // 登录成功
-  LCUser user = await LCUser.Login("Tom", "cat!@#123");
-} catch (LCException e) {
-  // 登录失败（可能是密码错误）
-  print($"{e.code} : {e.message}");
-}
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 user, err := client.Users.LogIn("Tom", "cat!@#123")
@@ -8331,17 +7650,7 @@ try {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-try {
-  // 登录成功
-  LCUser user = await LCUser.LoginByEmail("tom@leancloud.rocks", "cat!@#123");
-} catch (LCException e) {
-  // 登录失败（可能是密码错误）
-  print($"{e.code} : {e.message}");
-}
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 user, err := client.LoginByEmail("tom@leancloud.rocks", "cat!@#123")
@@ -8352,7 +7661,6 @@ if err != nil {
 fmt.Println(user)
 ```
 {% endif %}
-{% if node !== "qcloud" %}
 #### 手机号登录
 
 如果应用允许用户以手机号注册，那么也可以让用户以手机号配合密码或短信验证码登录。下面的代码用手机号和密码登录一个账户：
@@ -8424,21 +7732,9 @@ try {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-try {
-  // 登录成功
-  LCUser user = await LCUser.LoginByMobilePhoneNumber("+8618200008888", "cat!@#123");
-} catch (LCException e) {
-  // 登录失败（可能是密码错误）
-  print($"{e.code} : {e.message}");
-}
-```
-{% endif %}
 
-{% call docs.noteWrap() %}
-默认情况下，LeanCloud 允许所有关联了手机号的用户直接以手机号登录，无论手机号是否 [通过验证](#验证手机号)。为了让应用更加安全，你可以选择只允许验证过手机号的用户通过手机号登录。可以在 **控制台 > 存储 > 设置** 里面开启该功能。
-{% endcall %}
+
+默认情况下，云服务允许所有关联了手机号的用户直接以手机号登录，无论手机号是否 [通过验证](#验证手机号)。为了让应用更加安全，你可以选择只允许验证过手机号的用户通过手机号登录。可以在 **控制台 > 存储 > 设置** 里面开启该功能。
 
 除此之外，还可以让用户通过短信验证码登录，适用于用户忘记密码且不愿重置密码的情况。和 [通过手机号注册](#手机号注册) 的步骤类似，首先让用户填写与账户关联的手机号码，然后在用户点击「获取验证码」后调用下面的方法：
 
@@ -8493,11 +7789,7 @@ _ = LCUser.requestLoginVerificationCode(mobilePhoneNumber: "+8618200008888") { r
 await LCUser.requestLoginSMSCode('+8618200008888');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.RequestLoginSMSCode("+8618200008888");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 if err := client.Users.RequestLoginSMSCode("+8618200008888"); err != nil {
@@ -8574,17 +7866,7 @@ try {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-try {
-  // 登录成功
-  await LCUser.SignUpOrLoginByMobilePhone("+8618200008888", "123456");
-} catch (LCException e) {
-  // 登录失败（可能是密码错误）
-  print($"{e.code} : {e.message}");
-}
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 user, err := client.Users.LogInByMobilePhoneNumber("+8618200008888", "123456")
@@ -8602,7 +7884,6 @@ if err != nil {
 测试手机号还可用于将 iOS 应用提交到 App Store 进行审核的场景，因为审核人员可能因没有有效的手机号码而无法登录应用来进行评估审核。如果不提供一个测试手机号，应用有可能被拒绝。
 
 可参阅 [短信 SMS 服务使用指南](sms-guide.html) 来了解更多有关短信发送和接收的限制。
-{% endif %}
 
 #### 单设备登录
 
@@ -8675,11 +7956,7 @@ _ = LCUser.requestVerificationMail(email: "tom@leancloud.rocks") { result in
 await LCUser.requestEmailVerify('tom@leancloud.rocks');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.RequestEmailVerify("tom@leancloud.rocks");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 if err := client.Users.RequestEmailVerify("tom@leancloud.rocks"); err != nil {
@@ -8753,11 +8030,7 @@ _ = LCUser.requestVerificationCode(mobilePhoneNumber: "+8618200008888") { result
 await LCUser.requestMobilePhoneVerify('+8618200008888');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.RequestMobilePhoneVerify("+8618200008888");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 if err := client.Users.RequestMobilePhoneVerify("+8618200008888"); err != nil {
@@ -8830,15 +8103,11 @@ _ = LCUser.verifyMobilePhoneNumber(mobilePhoneNumber: "+8618200008888", verifica
 await LCUser.verifyMobilePhone('+8618200008888','123456');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.VerifyMobilePhone("+8618200008888", "123456");
-```
-{% endif %}
+
 
 #### 绑定、修改手机号之前先验证
 
-除了在用户绑定、修改手机号**之后**进行验证，LeanCloud 也支持在用户绑定或修改手机号**之前**先通过短信验证。
+除了在用户绑定、修改手机号**之后**进行验证，云服务也支持在用户绑定或修改手机号**之前**先通过短信验证。
 也就是说，绑定手机号或修改手机号时先请求发送验证码（用户需处于登录状态），再凭短信验证码完成绑定或修改操作。
 
 {% if platform_name === "JavaScript" %}
@@ -8935,16 +8204,7 @@ LCUser currentUser = await LCUser.getCurrent();
 user.mobile = '+8618200008888';
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.RequestSMSCodeForUpdatingPhoneNumber("+8618200008888");
 
-await LCUser.VerifyCodeForUpdatingPhoneNumber("+8618200008888", "123456");
-// 更新本地数据
-LCUser currentUser = await LCUser.GetCurrent();
-user.Mobile = "+8618200008888";
-```
-{% endif %}
 {% if platform_name === "Python" %}
 ```python
 User.request_change_phone_number("+8618200008888")
@@ -9050,16 +8310,7 @@ if (currentUser != null) {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCUser currentUser = await LCUser.GetCurrent();
-if (currentUser != null) {
-  // 跳到首页
-} else {
-  // 显示注册或登录页面
-}
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 // TODO
@@ -9122,14 +8373,7 @@ await LCUser.logout();
 LCUser currentUser = await LCUser.getCurrent();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.Logout();
 
-// currentUser 变为 null
-LCUser currentUser = await LCUser.GetCurrent();
-```
-{% endif %}
 
 ### 设置当前用户
 
@@ -9207,11 +8451,7 @@ LCUser.becomeWithSessionTokenInBackground("anmlwi96s381m6ca7o7266pzf").subscribe
 await LCUser.becomeWithSessionToken('anmlwi96s381m6ca7o7266pzf');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.BecomeWithSessionToken("anmlwi96s381m6ca7o7266pzf");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 user, err := client.Users.Become("anmlwi96s381m6ca7o7266pzf")
@@ -9220,13 +8460,9 @@ if err != nil {
 }
 ```
 {% endif %}
-{% call docs.alertWrap() %}
 请避免在外部浏览器使用 URL 来传递 session token，以防范信息泄露风险。
-{% endcall %}
 
-{% call docs.noteWrap() %}
 如果在 **控制台 > 存储 > 设置** 中勾选了 **密码修改后，强制客户端重新登录**，那么当一个用户修改密码后，该用户的 session token 会被重置。此时需要让用户重新登录，否则会遇到 [`403 (Forbidden)`](error_code.html#_403) 错误。
-{% endcall %}
 
 下面的代码检查 session token 是否有效：
 
@@ -9310,17 +8546,7 @@ if (isAuthenticated) {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCUser currentUser = await LCUser.GetCurrent();
-bool isAuthenticated = await currentUser.IsAuthenticated();
-if (isAuthenticated) {
-  // session token 有效
-} else {
-  // session token 无效
-}
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 // 暂不支持
@@ -9333,7 +8559,7 @@ if (isAuthenticated) {
 邮箱重置密码的流程如下：
 
 1. 用户输入注册的电子邮箱，请求重置密码；
-2. LeanCloud 向该邮箱发送一封包含重置密码的特殊链接的电子邮件；
+2. 云端向该邮箱发送一封包含重置密码的特殊链接的电子邮件；
 3. 用户点击重置密码链接后，一个特殊的页面会打开，让他们输入新密码；
 4. 用户的密码已被重置为新输入的密码。
 
@@ -9390,11 +8616,7 @@ _ = LCUser.requestPasswordReset(email: "tom@leancloud.rocks") { (result) in
 await LCUser.requestPasswordReset('tom@leancloud.rocks');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.RequestPasswordReset("tom@leancloud.rocks");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 if err := client.Users.RequestPasswordReset("tom@leancloud.rocks"); err != nil {
@@ -9404,15 +8626,12 @@ if err := client.Users.RequestPasswordReset("tom@leancloud.rocks"); err != nil {
 {% endif %}
 上面的代码会查询 `_User` 表中是否有对象的 `email` 属性与前面提供的邮箱匹配。如果有的话，则向该邮箱发送一封密码重置邮件。之前提到过，应用可以让 `username` 与 `email` 保持一致，也可以单独收集用户的邮箱并将其存为 `email`。
 
-{% call docs.noteWrap() %}
-密码重置邮件的内容可在应用的 **控制台 > 设置 > 邮件模版** 中自定义。更多关于自定义邮件模板和验证链接的内容，请参考 [自定义邮件验证和重设密码页面](custom-reset-verify-page.html)。
-{% endcall %}
+密码重置邮件的内容可在应用的 **云服务控制台 > 数据存储 > 用户 > 邮件模版** 中自定义。更多关于自定义邮件模板和验证链接的内容，请参考 [自定义邮件验证和重设密码页面](custom-reset-verify-page.html)。
 
-{% if node !== "qcloud" %}
 除此之外，还可以用手机号重置密码：
 
 1. 用户输入注册的手机号，请求重置密码；
-2. LeanCloud 向该号码发送一条包含验证码的短信；
+2.云端向该号码发送一条包含验证码的短信；
 3. 用户输入验证码和新密码。
 
 下面的代码向用户发送含有验证码的短信：
@@ -9468,11 +8687,7 @@ _ = LCUser.requestPasswordReset(mobilePhoneNumber: "+8618200008888") { (result) 
 await LCUser.requestPasswordRestBySmsCode('+8618200008888');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.RequestPasswordRestBySmsCode("+8618200008888");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 if err := client.Users.RequestPasswordResetBySmsCode("+8618200008888"); err != nil {
@@ -9482,9 +8697,7 @@ if err := client.Users.RequestPasswordResetBySmsCode("+8618200008888"); err != n
 {% endif %}
 上面的代码会查询 `_User` 表中是否有对象的 `mobilePhoneNumber` 属性与前面提供的手机号匹配。如果有的话，则向该号码发送验证码短信。
 
-{% call docs.noteWrap() %}
-可以在 **控制台 > 存储 > 设置** 中设置只有在 `mobilePhoneVerified` 为 `true` 的情况下才能用手机号重置密码。
-{% endcall %}
+可以在 **云服务控制台 > 数据存储 > 用户 > 设置** 中设置只有在 `mobilePhoneVerified` 为 `true` 的情况下才能用手机号重置密码。
 
 用户输入验证码和新密码后，用下面的代码完成密码重置：
 
@@ -9551,19 +8764,13 @@ _ = LCUser.resetPassword(mobilePhoneNumber: "+8618200008888", verificationCode: 
 await LCUser.resetPasswordBySmsCode('+8618200008888', '123456', 'cat!@#123');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.ResetPasswordBySmsCode("+8618200008888", "123456", "cat!@#123");
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 if err := client.Users.ResetPasswordBySmsCode("+8618200008888", "123456", "cat!@#123"); err != nil {
     panic(err)
 }
 ```
-{% endif %}
-{# > Note that the messaging in either of the above flows will reference your app by the name that you specified when you created this app on LeanCloud. #}
 {% endif %}
 
 ### 用户的查询
@@ -9605,18 +8812,14 @@ let userQuery = LCQuery(className: "_User")
 LCQuery<LCUser> userQuery = LCUser.getQuery();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCQuery<LCUser> userQuery = LCUser.GetQuery();
-```
-{% endif %}
+
 {% if platform_name === "Go" %}
 ```go
 userQuery := client.Users.NewUserQuery()
 ```
 {% endif %}
 
-为了安全起见，**新创建的应用的 `_User` 表默认关闭了 `find` 权限**，这样每位用户登录后只能查询到自己在 `_User` 表中的数据，无法查询其他用户的数据。如果需要让其查询其他用户的数据，建议单独创建一张表来保存这类数据，并开放这张表的 `find` 查询权限。除此之外，还可以在 [云引擎](leanengine_overview.html) 里封装用户查询相关的方法，这样就无需开放 `_User` 表的 `find` 权限。
+为了安全起见，**新创建的应用的 `_User` 表默认关闭了 `find` 权限**，这样每位用户登录后只能查询到自己在 `_User` 表中的数据，无法查询其他用户的数据。如果需要让其查询其他用户的数据，建议单独创建一张表来保存这类数据，并开放这张表的 `find` 查询权限。除此之外，还可以在云引擎里封装用户查询相关的方法。
 
 可以参见 [用户对象的安全](#用户对象的安全) 来了解 `_User` 表的一些限制，还可以阅读 [数据和安全](data_security.html) 来了解更多 class 级权限设置的方法。
 
@@ -9759,20 +8962,7 @@ query.whereEqualTo('author', author);
 List<LCObject> books = await query.find();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCObject book = new LCObject("Book");
-LCUser author = await LCUser.GetCurrent();
-book["title"] = "我的第五本书";
-book["author"] = author;
-await book.Save();
 
-LCQuery<LCObject> query = new LCQuery<LCObject>("Book");
-query.WhereEqualTo("author", author);
-// books 是包含同一作者所有 Book 对象的数组
-ReadOnlyCollection<LCObject> books = await query.Find();
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 // TODO
@@ -9973,29 +9163,7 @@ try {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-try {
-  LCUser user = await LCUser.Login("Tom", "cat!@#123");
-  // 试图修改用户名
-  user["username"] = "Jerry";
-  // 密码已被加密，这样做会获取到空字符串
-  string password = user["password"];
-  // 可以执行，因为用户已鉴权
-  await user.Save();
 
-  // 绕过鉴权直接获取用户
-  LCQuery<LCUser> userQuery = LCUser.GetQuery();
-  LCUser unauthenticatedUser = await userQuery.Get(user.ObjectId);
-  unauthenticatedUser["username"] = "Toodle";
-
-  // 会出错，因为用户未鉴权
-  unauthenticatedUser.Save();
-} catch (LCException e) {
-  print($"{e.code} : {e.message}");
-}
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 user, err := client.Users.LogIn("Tom", "cat!@#123")
@@ -10040,7 +9208,7 @@ if err := client.User(unauthenticatedUser).Set("username", "Toodle"); err != nil
 
 ### 第三方账户登录
 
-LeanCloud 支持应用层直接使用第三方社交平台（例如微信、微博、QQ 等）的账户信息来创建自己的账户体系并完成登录，也允许将既有账户与第三方账户绑定起来，这样终端用户后续可以直接用第三方账户信息来便捷登录。
+云服务支持应用层直接使用第三方社交平台（例如微信、微博、QQ 等）的账户信息来创建自己的账户体系并完成登录，也允许将既有账户与第三方账户绑定起来，这样终端用户后续可以直接用第三方账户信息来便捷登录。
 
 例如以下的代码展示了终端用户使用微信登录的处理流程：
 
@@ -10161,21 +9329,7 @@ var thirdPartyData = {
 LCUser currentUser = await LCUser.loginWithAuthData(thirdPartyData, 'weixin');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-Dictionary<string, object> thirdPartyData = new Dictionary<string, object> {
-  // 必须
-  { "openid", "OPENID" },
-  { "access_token", "ACCESS_TOKEN" },
-  { "expires_in", 7200 },
 
-  // 可选
-  { "refresh_token", "REFRESH_TOKEN" },
-  { "scope", "SCOPE" }
-};
-LCUser currentUser = await LCUser.LoginWithAuthData(thirdPartyData, "weixin");
-```
-{% endif %}
 {% if platform_name === "Go" %}
 ```go
 // TODO
@@ -10186,7 +9340,7 @@ LCUser currentUser = await LCUser.LoginWithAuthData(thirdPartyData, "weixin");
 - 第三方平台的名字，就是前例中的 `weixin`，该名字由应用层自己决定。
 - 第三方平台的授权信息，就是前例中的 `thirdPartyData`（一般包括 `uid`、`token`、`expires` 等信息，与具体的第三方平台有关）。
 
-LeanCloud 云端会使用第三方平台的鉴权信息来查询是否已经存在与之关联的账户。如果存在的话，则返回 `200 OK` 状态码，同时附上用户的信息（包括 [`sessionToken`](#设置当前用户)）。如果第三方平台的信息没有和任何账户关联，客户端会收到 `201 Created` 状态码，意味着新账户被创建，同时附上用户的 `objectId`、`createdAt`、`sessionToken` 和一个自动生成的 `username`，例如：
+云端会使用第三方平台的鉴权信息来查询是否已经存在与之关联的账户。如果存在的话，则返回 `200 OK` 状态码，同时附上用户的信息（包括 [`sessionToken`](#设置当前用户)）。如果第三方平台的信息没有和任何账户关联，客户端会收到 `201 Created` 状态码，意味着新账户被创建，同时附上用户的 `objectId`、`createdAt`、`sessionToken` 和一个自动生成的 `username`，例如：
 
 ```json
 {
@@ -10211,12 +9365,12 @@ LeanCloud 云端会使用第三方平台的鉴权信息来查询是否已经存�
 
 这时候我们会看到 `_User` 表中出现了一条新的账户记录，账户中有一个名为 `authData` 的列，保存了第三方平台的授权信息。出于安全考虑，`authData` 不会被返回给客户端，除非它属于当前用户。
 
-开发者需要自己完成第三方平台的鉴权流程（一般通过 OAuth 1.0 或 2.0），以获取鉴权信息，继而到 LeanCloud 云端来登录。
+开发者需要自己完成第三方平台的鉴权流程（一般通过 OAuth 1.0 或 2.0），以获取鉴权信息，继而到云端来登录。
 
 {% if platform_name in ["Swift", "Objective-C", "Flutter"] %}
 
 #### Signin With Apple
-如果你需要开发 [Sigin With Apple](https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api)，LeanCloud 可以帮你校验 `identityToken`，并获取 Apple 的 `access_token`。Apple Sign In 的 `authData` 结构如下：
+如果你需要开发 [Sigin With Apple](https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api)，云服务可以帮你校验 `identityToken`，并获取 Apple 的 `access_token`。Apple Sign In 的 `authData` 结构如下：
 
 ```
 {
@@ -10229,10 +9383,10 @@ LeanCloud 云端会使用第三方平台的鉴权信息来查询是否已经存�
 ```
 `authData` 中的 key 的作用：
 
-* **`lc_apple`**：只有 platform 为 `lc_apple` 时，LeanCloud 才会执行 `identity_token` 和 `code` 的逻辑。
-* **`uid`**：必填。LeanCloud 通过 `uid` 判断是否存在用户。
-* **`identity_token`**：可选。`authData` 中有 `identity_token` 时 LeanCloud 会自动校验 `identity_token` 的有效性。开发者需要在 LeanCloud 控制台「存储」-「用户」-「设置」-「第三方集成」中填写 Apple 的相关信息。
-* **`code`**：可选。`authData` 中有 `code` 时 LeanCloud 会自动用该 `code` 向 Apple 换取 `access_token` 和 `refresh_token`。开发者需要在 LeanCloud 控制台「存储」-「用户」-「设置」-「第三方集成」中填写 Apple 的相关信息。
+* **`lc_apple`**：只有 platform 为 `lc_apple` 时，云服务才会执行 `identity_token` 和 `code` 的逻辑。
+* **`uid`**：必填。云服务通过 `uid` 判断是否存在用户。
+* **`identity_token`**：可选。`authData` 中有 `identity_token` 时云端会自动校验 `identity_token` 的有效性。开发者需要在云服务控制台「存储」-「用户」-「设置」-「第三方集成」中填写 Apple 的相关信息。
+* **`code`**：可选。`authData` 中有 `code` 时云端会自动用该 `code` 向 Apple 换取 `access_token` 和 `refresh_token`。开发者需要在云服务控制台「存储」-「用户」-「设置」-「第三方集成」中填写 Apple 的相关信息。
 
 ##### 获取 Client ID
 
@@ -10248,7 +9402,7 @@ Private Key 用于获取 `access_token`。登录 Apple 开发者平台，在左�
 
 Team ID 用于获取 `access_token`。登录 Apple 开发者平台，在右上角或 Membership 页面即可看到自己所属开发团队的 Team ID。注意选择 Bundle ID 对应的 Team。
 
-##### 使用 Apple Sign In 登录 LeanCloud
+##### 使用 Apple Sign In 登录云服务
 
 在控制台填写完成所有信息后，使用以下代码登录
 
@@ -10376,21 +9530,21 @@ LCUser currentUser = await LCUser.loginWithAuthData(appleData, 'lc_apple');
 }
 ```
 
-LeanCloud 云端首先会查找账户系统（_User 表），看看是否存在 authData.weixin.openid = “OPENID” 的账户，如果存在，则返回现有账户，如果不存在那么就创建一个新账户，同时将上面的鉴权信息写入新账户的 `authData` 属性中，并将新账户的数据当成结果返回。
+云端首先会查找账户系统（_User 表），看看是否存在 authData.weixin.openid = “OPENID” 的账户，如果存在，则返回现有账户，如果不存在那么就创建一个新账户，同时将上面的鉴权信息写入新账户的 `authData` 属性中，并将新账户的数据当成结果返回。
 
-LeanCloud 会自动为 `_User` class 中每个用户的 `authData.<PLATFORM>.<uid>` 创建唯一索引，从而避免重复数据。
-`<uid>` 在微信等部分 LeanCloud 内建支持的第三方平台上为 `openid` 字段，在其他第三方平台（包括部分 LeanCloud 专门支持的第三方平台和所有 LeanCloud 没有专门支持的第三方平台）上为 `uid` 字段。
+云端会自动为 `_User` class 中每个用户的 `authData.<PLATFORM>.<uid>` 创建唯一索引，从而避免重复数据。
+`<uid>` 在微信等部分云服务内建支持的第三方平台上为 `openid` 字段，在其他第三方平台（包括部分云服务专门支持的第三方平台和所有云服务没有专门支持的第三方平台）上为 `uid` 字段。
 
 #### 自动验证第三方平台授权信息
 
-为了确保账户数据的有效性，LeanCloud 云端还支持对部分平台的 access token 的有效性进行自动验证，以防止伪造账户数据。如果有效性验证不通过，云端会返回 `invalid authData` 错误，关联不会被建立。对于云端无法识别的服务，开发者需要自己去验证 access token 的有效性。
+为了确保账户数据的有效性，云端还支持对部分平台的 access token 的有效性进行自动验证，以防止伪造账户数据。如果有效性验证不通过，云端会返回 `invalid authData` 错误，关联不会被建立。对于云端无法识别的服务，开发者需要自己去验证 access token 的有效性。
 比如，注册、登录时分别通过云引擎的 [beforeSave hook](leanengine_cloudfunction_guide-node.html#beforeSave) 、[beforeUpdate hook](leanengine_cloudfunction_guide-node.html#beforeUpdate) 来验证 access token 有效性。
 
 如果希望使用这一功能，则在开始使用前，需要在 **控制台 > 存储 > 用户 > 设置** 配置相应平台的 **应用 ID** 和 **应用 Secret Key**。
 
 如果不希望云端自动验证 access token，可以在 **控制台 > 存储 > 设置** 里面取消勾选 **第三方登录时，验证用户 AccessToken 合法性**。
 
-配置平台账号的目的在于创建 `{{ userObjectName }}` 时，LeanCloud 云端会使用相关信息去校验请求参数 `thirdPartyData` 的合法性，确保 `{{ userObjectName }}` 实际对应着一个合法真实的用户，确保平台安全性。
+配置平台账号的目的在于创建 `{{ userObjectName }}` 时，云端会使用相关信息去校验请求参数 `thirdPartyData` 的合法性，确保 `{{ userObjectName }}` 实际对应着一个合法真实的用户，确保平台安全性。
 
 #### 绑定第三方账户
 
@@ -10467,11 +9621,7 @@ currentUser.associate(authData: weixinData, platform: .weixin) { (result) in
 await currentUser.associateAuthData(weixinData, 'weixin');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await currentUser.AssociateAuthData(weixinData, "weixin");
-```
-{% endif %}
+
 
 为节省篇幅，上面的代码示例中没有给出具体的微信平台授权信息，相关内容请参考上面的[「第三方账户登录」](#第三方账户登录)一节。
 
@@ -10556,12 +9706,7 @@ LCUser currentUser = await LCUser.getCurrent();
 await currentUser.disassociateWithAuthData('weixin');
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCUser currentUser = await LCUser.GetCurrent();
-await currentUser.DisassociateWithAuthData("weixin");
-```
-{% endif %}
+
 
 
 #### 扩展：第三方登录时补充完整的用户信息
@@ -10771,46 +9916,7 @@ try {
 ```
 {% endif %}
 
-{% if platform_name === ".Net" %}
-```cs
-try {
-  Dictionary<string, object> thirdPartyData = new Dictionary<string, object> {
-    // 必须
-    { "openid", "OPENID" },
-    { "access_token", "ACCESS_TOKEN" },
-    { "expires_in", 7200 },
 
-    // 可选
-    { "refresh_token", "REFRESH_TOKEN" },
-    { "scope", "SCOPE" }
-  };
-  LCUserAuthDataLoginOption option = new LCUserAuthDataLoginOption();
-  option.FailOnNotExist = true;
-  LCUser currentUser = await LCUser.LoginWithAuthData(thirdPartyData, "weixin", option: option);
-} catch (LCException e) {
-  if (e.code == 211) {
-    // 不存在 authData 的 LCUser 的实例，跳转到输入用户名、密码、手机号等业务页面
-  }
-}
-
-// 跳转到输入用户名、密码、手机号等业务页面之后
-Dictionary<string, object> thirdPartyData = new Dictionary<string, object> {
-  { "expires_in", 7200 },
-  { "openid", "OPENID" },
-  { "access_token", "ACCESS_TOKEN" }
-};
-try {
-  LCUserAuthDataLoginOption option = new LCUserAuthDataLoginOption();
-  option.FailOnNotExist = true;
-  LCUser user = await LCUser.LoginWithAuthData(thirdPartyData, "weixin", option: option);
-  user.Username = "Tom";
-  user.Mobile = "+8618200008888";
-  await user.Save();
-} catch (LCException e) {
-    //其他报错信息
-}
-```
-{% endif %}
 
 #### 扩展：接入 UnionID 体系，打通不同子产品的账号系统
 
@@ -10824,16 +9930,17 @@ try {
 
 其他平台，如 QQ 和微博，与微信的设计也基本一致。
 
-LeanCloud 支持 `UnionID` 体系。你只需要给 `loginWithauthData` 和 `associateWithauthData` 接口传入更多的第三方鉴权信息，即可完成新 UnionID 体系的集成。新增加的第三方鉴权登录选项包括：
+云服务支持 `UnionID` 体系。你只需要给 `loginWithauthData` 和 `associateWithauthData` 接口传入更多的第三方鉴权信息，即可完成新 UnionID 体系的集成。新增加的第三方鉴权登录选项包括：
+
 - unionId，指第三方平台返回的 UnionId 字符串。
 - unionId platform，指 unionId 对应的 platform 字符串，由应用层自己指定，[后面](#该如何指定-unionIdPlatform)会详述。
 - asMainAccount，指示是否把当前平台的鉴权信息作为主账号来使用。如果作为主账号，那么就由当前用户唯一占有该 unionId，以后其他平台使用同样的 unionId 登录的话，会绑定到当前的用户记录上来；否则，当前应用的鉴权信息会被绑定到其他账号上去。
 
 下面让我们通过一个例子来说明如何使用这些参数完成 UnionID 登录。
 
-假设 LeanCloud 在微信开放平台上有两个应用，一个是「LeanCloud 通讯」，一个是「LeanCloud 技术支持」，这两个应用在接入第三方鉴权的时候，分别使用了 `wxleanoffice` 和 `wxleansupport` 作为 platform 来进行登录。现在我们开启 UnionID 的用户体系，希望同一个微信用户在这两个应用中都能对应到同一个账户系统（_User 表中的同一条记录），同时我们决定将 `wxleanoffice` 平台作为主账号平台。
+假设云服务在微信开放平台上有两个应用，一个是「云服务通讯」，一个是「云服务技术支持」，这两个应用在接入第三方鉴权的时候，分别使用了 `wxleanoffice` 和 `wxleansupport` 作为 platform 来进行登录。现在我们开启 UnionID 的用户体系，希望同一个微信用户在这两个应用中都能对应到同一个账户系统（_User 表中的同一条记录），同时我们决定将 `wxleanoffice` 平台作为主账号平台。
 
-假设对于用户 A，微信给 ta 为 LeanCloud 分配的 UnionId 为 `unionid4a`，而对两个应用的授权信息分别为：
+假设对于用户 A，微信给 ta 为 云服务分配的 UnionId 为 `unionid4a`，而对两个应用的授权信息分别为：
 
 ```json
 "wxleanoffice": {
@@ -10848,7 +9955,7 @@ LeanCloud 支持 `UnionID` 体系。你只需要给 `loginWithauthData` 和 `ass
 }
 ```
 
-现在，用户 A 在「LeanCloud 通讯」中通过微信登录，其调用请求为：
+现在，用户 A 在「云服务通讯」中通过微信登录，其调用请求为：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -10976,31 +10083,11 @@ LCUser currentUser = await LCUser.loginWithAuthDataAndUnionId(
 ```
 {% endif %}
 
-{% if platform_name === ".Net" %}
-```cs
-Dictionary<string, object> thirdPartyData = new Dictionary<string, object> {
-  // 必须
-  { "uid", "officeopenid" },
-  { "access_token", "officetoken" },
-  { "expires_in", 1384686496 },
-  { "unionId", "unionid4a" },   // 新增属性
 
-  // 可选
-  { "refresh_token", "..." },
-  { "scope", "SCOPE" }
-};
-LCUserAuthDataLoginOption option = new LCUserAuthDataLoginOption();
-option.AsMainAccount = true;
-option.UnionIdPlatform = "weixin";
-LCUser currentUser = await LCUser.LoginWithAuthDataAndUnionId(
-    thirdPartyData, "wxleanoffice", "unionid4a",
-    option: option);
-```
-{% endif %}
 
-> 注意代码中将微信传回来的 openid 属性改为了 uid，这是因为 LeanCloud 云端要求对于自定义的 platform，只能使用 uid 这样的属性名，才能保证自动建立 `authData.<PLATFORM>.uid` 的唯一索引，具体可以参考[连接用户账户和第三方平台](rest_api.html#连接用户账户和第三方平台)。
+> 注意代码中将微信传回来的 openid 属性改为了 uid，这是因为云端要求对于自定义的 platform，只能使用 uid 这样的属性名，才能保证自动建立 `authData.<PLATFORM>.uid` 的唯一索引，具体可以参考[连接用户账户和第三方平台](rest_api.html#连接用户账户和第三方平台)。
 
-如果用户 A 是第一次在「LeanCloud 通讯」中通过微信登录，那么 _User 表中会增加一个新用户（假设其 objectId 为 `ThisIsUserA`），其 `authData` 的结果如下：
+如果用户 A 是第一次在「云服务通讯」中通过微信登录，那么 _User 表中会增加一个新用户（假设其 objectId 为 `ThisIsUserA`），其 `authData` 的结果如下：
 
 ```json
 {
@@ -11020,11 +10107,11 @@ LCUser currentUser = await LCUser.LoginWithAuthDataAndUnionId(
 
 可以看到，与之前的第三方登录 API 相比，这里由于登录时指定了 `asMainAccount` 为 true，所以 authData 的第一级子目录中增加了 `_weixin_unionid` 的键值对，这里的 `weixin` 就是我们指定的 `unionIdPlatform` 的值。`_weixin_unionid` 这个增加的键值对非常重要，以后我们判断是否存在同样 UnionID 的账户就是依靠它来查找的，而是否增加这个键值对，则是由登录时指定的 `asMainAccount` 的值决定的：
 
-- 当 `asMainAccount` 为 true 时，LeanCloud 后台会在 `authData` 下面增加名为 `_{unionIdPlatform}_unionid` 的键值对，当前账号就会作为这一个 UnionID 对应的主账号被唯一确定。
-- 当 `asMainAccount` 为 false 时，LeanCloud 后台不会在 `authData` 下面增加名为 `_{unionIdPlatform}_unionid` 的键值对，此时如果通过提供的 UnionID 可以找到主账号，则会将当前的鉴权信息合并进主账号的 `authData` 属性里，同时返回主账号对应的 _User 表记录；如果通过提供的 UnionID 可以找不到主账号，则会根据平台的 `openid` 去查找账户，找到匹配的账户就返回匹配的，找不到就新建一个账户，此时的处理逻辑与不使用 UnionID 时的逻辑完全一致。
+- 当 `asMainAccount` 为 true 时，云端会在 `authData` 下面增加名为 `_{unionIdPlatform}_unionid` 的键值对，当前账号就会作为这一个 UnionID 对应的主账号被唯一确定。
+- 当 `asMainAccount` 为 false 时，云端不会在 `authData` 下面增加名为 `_{unionIdPlatform}_unionid` 的键值对，此时如果通过提供的 UnionID 可以找到主账号，则会将当前的鉴权信息合并进主账号的 `authData` 属性里，同时返回主账号对应的 _User 表记录；如果通过提供的 UnionID 可以找不到主账号，则会根据平台的 `openid` 去查找账户，找到匹配的账户就返回匹配的，找不到就新建一个账户，此时的处理逻辑与不使用 UnionID 时的逻辑完全一致。
 
 
-接下来，用户 A 继续在「LeanCloud 技术支持」中进行微信登录，其登录逻辑为：
+接下来，用户 A 继续在「云服务技术支持」中进行微信登录，其登录逻辑为：
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -11151,29 +10238,9 @@ LCUser currentUser = await LCUser.loginWithAuthDataAndUnionId(
 ```
 {% endif %}
 
-{% if platform_name === ".Net" %}
-```cs
-Dictionary<string, object> thirdPartyData = new Dictionary<string, object> {
-  // 必须
-  { "uid", "supportopenid" },
-  { "access_token", "supporttoken" },
-  { "expires_in", 1384686496 },
-  { "unionId", "unionid4a" },
 
-  // 可选
-  { "refresh_token", "..." },
-  { "scope", "SCOPE" }
-};
-LCUserAuthDataLoginOption option = new LCUserAuthDataLoginOption();
-option.AsMainAccount = false;
-option.UnionIdPlatform = "weixin";     // 这里指定 unionIdPlatform，使用「weixin」来指代微信平台。
-LCUser currentUser = await LCUser.LoginWithAuthDataAndUnionId(
-    thirdPartyData, "wxleansupport", "unionid4a",
-    option: option);
-```
-{% endif %}
 
-与「LeanCloud 通讯」中的登录过程相比，在「LeanCloud 技术支持」这个应用中，我们在登录时只是将 `asMainAccount` 设为了 false。 这时我们看到，本次登录得到的还是 objectId 为 `ThisIsUserA` 的 _User 表记录（同一个账户），同时该账户的 `authData` 属性中发生了变化，多了 `wxleansupport` 的数据，如下：
+与「云服务通讯」中的登录过程相比，在「云服务技术支持」这个应用中，我们在登录时只是将 `asMainAccount` 设为了 false。 这时我们看到，本次登录得到的还是 objectId 为 `ThisIsUserA` 的 _User 表记录（同一个账户），同时该账户的 `authData` 属性中发生了变化，多了 `wxleansupport` 的数据，如下：
 
 ```json
 {
@@ -11199,13 +10266,13 @@ LCUser currentUser = await LCUser.LoginWithAuthDataAndUnionId(
 }
 ```
 
-在新的登录方式中，当一个用户以「平台名为 `wxleanoffice`、uid 为 `officeopenid`、UnionID 为 `unionid4a`」的第三方鉴权信息登录得到新的 `{{ userObjectName }}` 后，接下来这个用户以「平台名为 `wxleansupport`、uid 为 `supportopenid`、UnionID 为 `unionid4a`」的第三方鉴权信息登录时，LeanCloud 判定是同样的 UnionID，就直接把来自 `wxleansupport` 的新用户数据加入到已有账户的 `authData` 里了，不会再创建新的账户。
+在新的登录方式中，当一个用户以「平台名为 `wxleanoffice`、uid 为 `officeopenid`、UnionID 为 `unionid4a`」的第三方鉴权信息登录得到新的 `{{ userObjectName }}` 后，接下来这个用户以「平台名为 `wxleansupport`、uid 为 `supportopenid`、UnionID 为 `unionid4a`」的第三方鉴权信息登录时，云端判定是同样的 UnionID，就直接把来自 `wxleansupport` 的新用户数据加入到已有账户的 `authData` 里了，不会再创建新的账户。
 
-这样一来，LeanCloud 后台通过识别平台性的用户唯一标识 UnionID，让来自同一个 UnionID 体系内的应用程序、小程序等不同平台的用户都绑定到了一个 `{{ userObjectName }}` 上，实现互通。
+这样一来，云端通过识别平台性的用户唯一标识 UnionID，让来自同一个 UnionID 体系内的应用程序、小程序等不同平台的用户都绑定到了一个 `{{ userObjectName }}` 上，实现互通。
 
 ##### 为 UnionID 建立索引
 
-LeanCloud 云端会为 UnionID 自动建立索引，不过因为自动创建基于请求的抽样统计，可能会滞后。
+云端会为 UnionID 自动建立索引，不过因为自动创建基于请求的抽样统计，可能会滞后。
 因此，我们推荐自行创建相关索引，特别是用户量（`_User`　表记录数）很大的应用，更需要预先创建索引，否则用户使用 UnionID 账号登录时可能超时失败。
 以上面的微信 UnionID 为例，建议在控制台预先创建下列唯一索引（允许缺失值）：
 
@@ -11215,7 +10282,7 @@ LeanCloud 云端会为 UnionID 自动建立索引，不过因为自动创建基�
 
 ##### 该如何指定 unionIdPlatform
 
-从上面的例子可以看出，使用 UnionID 登录的时候，需要指定 `unionIdPlatform` 的主要目的，就是为了便于查找已经存在的唯一主账号。LeanCloud 云端会在主账号对应账户的 `authData` 属性中增加一个 `_{unionIdPlatform}_unionid` 键值对来标记唯一性，终端用户在其他应用中登录的时候，LeanCloud 云端会根据参数中提供的 `uniondId` + `unionIdPlatform` 的组合，在 `_User` 表中进行查找，这样来确定唯一的既存主账号。
+从上面的例子可以看出，使用 UnionID 登录的时候，需要指定 `unionIdPlatform` 的主要目的，就是为了便于查找已经存在的唯一主账号。云端会在主账号对应账户的 `authData` 属性中增加一个 `_{unionIdPlatform}_unionid` 键值对来标记唯一性，终端用户在其他应用中登录的时候，云端会根据参数中提供的 `uniondId` + `unionIdPlatform` 的组合，在 `_User` 表中进行查找，这样来确定唯一的既存主账号。
 
 本来 `unionIdPlatform` 的取值，应该是开发者可以自行决定的，但是 Javascript SDK 基于易用性的目的，在 `loginWithAuthDataAndUnionId` 之外，还额外提供了两个接口：
 
@@ -11232,9 +10299,9 @@ LeanCloud 云端会为 UnionID 自动建立索引，不过因为自动创建基�
 
 ##### 主副应用不同登录顺序出现的不同结果
 
-上面的流程是用户先登录了「LeanCloud 通讯」这个主应用，然后再登录「LeanCloud 技术支持」这个副应用，所以账号都被通过 UnionID 有效关联起来了。可能有人会想到另外一个问题，如果用户 B 先登录副应用，后登录主应用，这时候会发生什么事情呢？
+上面的流程是用户先登录了「云服务通讯」这个主应用，然后再登录「云服务技术支持」这个副应用，所以账号都被通过 UnionID 有效关联起来了。可能有人会想到另外一个问题，如果用户 B 先登录副应用，后登录主应用，这时候会发生什么事情呢？
 
-用户 B 首先登录副应用的时候，提供了「平台名为 `wxleansupport`、uid 为 `supportopenid`、UnionID 为 `unionid4a`」的第三方鉴权信息，并且指定「UnionIDPlatform 为 `weixin`、`asMainAccount` 为 false」（与上面的调用完全一致），此时 LeanCloud 后台由于找不到存在的 UnionID，会新建一个 `{{ userObjectName }}` 对象，该账户 `authData` 结果为：
+用户 B 首先登录副应用的时候，提供了「平台名为 `wxleansupport`、uid 为 `supportopenid`、UnionID 为 `unionid4a`」的第三方鉴权信息，并且指定「UnionIDPlatform 为 `weixin`、`asMainAccount` 为 false」（与上面的调用完全一致），此时云端由于找不到存在的 UnionID，会新建一个 `{{ userObjectName }}` 对象，该账户 `authData` 结果为：
 
 ```json
 {
@@ -11249,7 +10316,7 @@ LeanCloud 云端会为 UnionID 自动建立索引，不过因为自动创建基�
 }
 ```
 
-用户 B 接着又使用了主应用，ta 再次通过微信登录，此时以「平台名为 `wxleanoffice`、uid 为 `officeopenid`、UnionID 为 `unionid4a`」的第三方鉴权信息，以及「UnionIDPlatform 为 `weixin`、`asMainAccount` 为 true」的参数进行登录，此时 LeanCloud 后台由于找不到存在的 UnionID，会再次新建一个 `{{ userObjectName }}` 对象，该账户 `authData` 结果为：
+用户 B 接着又使用了主应用，ta 再次通过微信登录，此时以「平台名为 `wxleanoffice`、uid 为 `officeopenid`、UnionID 为 `unionid4a`」的第三方鉴权信息，以及「UnionIDPlatform 为 `weixin`、`asMainAccount` 为 true」的参数进行登录，此时云端由于找不到存在的 UnionID，会再次新建一个 `{{ userObjectName }}` 对象，该账户 `authData` 结果为：
 
 ```json
 {
@@ -11271,7 +10338,7 @@ LeanCloud 云端会为 UnionID 自动建立索引，不过因为自动创建基�
 
 ##### 存量账户如何通过 UnionID 实现关联
 
-还是以我们的两个子产品「LeanCloud 通讯」（后续以「产品 1」指代）和「LeanCloud 技术支持为例」（后续以「产品 2」指代），在接入 UnionID 之前，我们就接入了之前版本的微信平台登录，这时候账户系统内可能存在多种账户：
+还是以我们的两个子产品「云服务通讯」（后续以「产品 1」指代）和「云服务技术支持为例」（后续以「产品 2」指代），在接入 UnionID 之前，我们就接入了之前版本的微信平台登录，这时候账户系统内可能存在多种账户：
 
 - 只使用产品 1 的微信用户 A
 - 只使用产品 2 的微信用户 B
@@ -11286,7 +10353,7 @@ objectId | 微信用户 | authData.<platform> | authData._{platform}_unionid
 3 | UserC | openid3（对应产品 1） | N/A
 4 | UserC | openid4（对应产品 2） | N/A
 
-现在我们对两个子产品进行升级，接入 UnionID 体系。这时因为已经有同一个微信用户在不同子产品中创建了不同的账户（例如 objectId 为 3 和 4 的账户），我们需要确定以哪个平台的账号为主。比如决定使用「LeanCloud 通讯」上生成的账号为主账号，则在该应用程序更新版本时，使用 `asMainAccount=true` 参数。这个应用带着 UnionID 登录匹配或创建的账号将作为主账号，之后所有这个 UnionID 的登录都会匹配到这个账号。请注意这时 `_User` 表里会剩下一些用户数据，也就是没有被选为主账号的、其他平台的同一个用户的旧账号数据（例如 objectId 为 2 和 4 的账户）。这部分数据会继续服务于已经发布的但仍然使用 OpenID 登录的旧版应用。
+现在我们对两个子产品进行升级，接入 UnionID 体系。这时因为已经有同一个微信用户在不同子产品中创建了不同的账户（例如 objectId 为 3 和 4 的账户），我们需要确定以哪个平台的账号为主。比如决定使用「云服务通讯」上生成的账号为主账号，则在该应用程序更新版本时，使用 `asMainAccount=true` 参数。这个应用带着 UnionID 登录匹配或创建的账号将作为主账号，之后所有这个 UnionID 的登录都会匹配到这个账号。请注意这时 `_User` 表里会剩下一些用户数据，也就是没有被选为主账号的、其他平台的同一个用户的旧账号数据（例如 objectId 为 2 和 4 的账户）。这部分数据会继续服务于已经发布的但仍然使用 OpenID 登录的旧版应用。
 
 接下来我们看一下，如果以产品 1 的账户作为「主账户」，按照前述的方式同时提供 openid/unionid 完成登录，则最后达到的结果是：
 
@@ -11361,11 +10428,7 @@ LCUser.logInAnonymously().subscribe(new Observer<LCUser>() {
 await LCUser.loginAnonymously();
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-await LCUser.LoginAnonymously();
-```
-{% endif %}
+
 
 可以像给普通用户设置属性那样给匿名用户设置 `username`、`password`、`email` 等属性，还可以通过走正常的注册流程来将匿名用户转化为普通用户。匿名用户能够：
 
@@ -11439,15 +10502,7 @@ await currentUser.signUp();
 ```
 {% endif %}
 
-{% if platform_name === ".Net" %}
-```cs
-LCUser currentUser = await LCUser.LoginAnonymously();
-currentUser.Username = "Tom";
-currentUser.Password = "cat!@#123";
 
-await currentUser.SignUp();
-```
-{% endif %}
 
 下面的代码检查当前用户是否为匿名用户：
 
@@ -11491,23 +10546,14 @@ if (currentUser.isAnonymous) {
 }
 ```
 {% endif %}
-{% if platform_name === ".Net" %}
-```cs
-LCUser currentUser = await LCUser.GetCurrent();
-if (currentUser.IsAnonymous) {
-  // currentUser 是匿名用户
-} else {
-  // currentUser 不是匿名用户
-}
-```
-{% endif %}
+
 
 如果匿名用户未能在登出前转化为普通用户，那么该用户将无法再次登录同一账户，且之前产生的数据也无法被取回。
 
 
 ## 角色
 
-随着用户量的增长，你可能会发现相比于为每一名用户单独设置权限，将预先设定好的权限直接分配给一部分用户是更好的选择。为了迎合这种需求，LeanCloud 支持基于角色的权限管理。请参阅 [ACL 权限管理开发指南](acl-guide.html)。
+随着用户量的增长，你可能会发现相比于为每一名用户单独设置权限，将预先设定好的权限直接分配给一部分用户是更好的选择。为了迎合这种需求，云服务支持基于角色的权限管理。请参阅 [ACL 权限管理开发指南](acl-guide.html)。
 
 {% if platform_name === "Objective-C" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Swift" %}
 ## 子类化
@@ -11713,7 +10759,7 @@ student.name = @"小明";
 ```
 {% endif %}
 {% if platform_name === "Python" %}
-LeanCloud 希望设计成能让人尽快上手并使用。你可以通过 `{{baseObjectName}}.get()` 方法访问所有的数据。但是在很多现有成熟的代码中，子类化能带来更多优点，诸如简洁、可扩展性以及 IDE 提供的代码自动完成的支持等等。子类化不是必须的，你可以将下列代码转化：
+云服务希望设计成能让人尽快上手并使用。你可以通过 `{{baseObjectName}}.get()` 方法访问所有的数据。但是在很多现有成熟的代码中，子类化能带来更多优点，诸如简洁、可扩展性以及 IDE 提供的代码自动完成的支持等等。子类化不是必须的，你可以将下列代码转化：
 
 ```python
 import leancloud
@@ -11831,7 +10877,7 @@ class MyUser(leancloud.User):
 ```
 {% endif %}
 {% if platform_name === "PHP" %}
-LeanCloud 希望设计成能让人尽快上手并使用。你可以通过 `LeanObject#get` 方法访问所有的数据。但是在很多现有成熟的代码中，子类化能带来更多优点，诸如简洁、可扩展性以及 IDE 提供的代码自动完成的支持等等。子类化不是必须的，你可以将下列代码转化：
+云服务希望设计成能让人尽快上手并使用。你可以通过 `LeanObject#get` 方法访问所有的数据。但是在很多现有成熟的代码中，子类化能带来更多优点，诸如简洁、可扩展性以及 IDE 提供的代码自动完成的支持等等。子类化不是必须的，你可以将下列代码转化：
 
 ```php
 $student = new LeanObject("Student");
