@@ -1,6 +1,6 @@
 # 小程序域名白名单
 
-请前往 [LeanCloud 控制台 > 设置 > 应用 Keys > 域名白名单][weapp-domains]，获取域名白名单（不同应用对应不同的域名）。
+请前往 [LeanCloud 控制台 > 设置 > 应用凭证 > 域名白名单][weapp-domains]，获取域名白名单（不同应用对应不同的域名）。
 
 [weapp-domains]: https://leancloud.cn/dashboard/app.html?appid={{appid}}#/key
 

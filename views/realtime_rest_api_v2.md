@@ -2,7 +2,7 @@
 
 ## 概览
 
-请求的 Base URL 可以在**云服务控制台 > 设置 > 应用 Keys > 服务器地址**查看。
+请求的 Base URL 可以在**云服务控制台 > 设置 > 应用凭证 > 服务器地址**查看。
 对于 POST 和 PUT 请求，请求的主体必须是 JSON 格式，而且 HTTP Header 的 Content-Type 需要设置为 `application/json`。
 请求的鉴权是通过 HTTP Header 里面包含的键值对来进行的，详见《存储 REST API 使用指南》中《请求格式》一节的说明。
 
