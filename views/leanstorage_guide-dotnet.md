@@ -789,7 +789,7 @@ using LeanCloud.LiveQuery;
 
 1. 微信扫码，添加小程序「LeanTodo」；
 
-    ![LeanTodo mini program](images/leantodo-weapp-qr.jpg" width="150" height="150")
+    ![LeanTodo mini program](images/leantodo-weapp-qr.jpg")
 
 2. 进入小程序，点击首页左下角 **设置** > **账户设置**，输入便于记忆的用户名和密码；
 
