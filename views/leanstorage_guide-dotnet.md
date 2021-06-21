@@ -321,7 +321,6 @@ await LCObject.SaveAll(results);
 ```
 
 虽然上述方法可以在一次请求中包含多个操作，每一个分别的保存或同步操作在计费时依然会被算作一次请求，而所有的删除操作则会被合并为一次请求。
-{% if platform_name === "Objective-C" or platform_name === "Android / Java" or platform_name === "Swift" %}
 ### 后台运行
 
 细心的开发者已经发现，在所有的示例代码中几乎都是用了异步来访问云端，形如的用法都是提供给开发者在主线程调用用以实现后台运行的方法，因此开发者在主线程可以放心地调用这种命名方式的函数。
