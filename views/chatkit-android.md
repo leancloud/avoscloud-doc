@@ -59,7 +59,7 @@ ChatDemo 中新建一个 Class，名字叫做 **ChatDemoApplication**，让它�
 ```java
 public class ChatDemoApplication extends Application {
 
-// appId、appKey 可以在「LeanCloud  控制台 > 设置 > 应用 Key」获取
+// appId、appKey 可以在「LeanCloud  控制台 > 设置 > 应用凭证」获取
   private final String APP_ID = "********";
   private final String APP_KEY = "********";
 

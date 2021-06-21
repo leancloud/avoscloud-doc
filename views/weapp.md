@@ -31,7 +31,7 @@
 
 ### 配置域名白名单
 
-- 前往 [LeanCloud 控制台 > 设置 > 应用 Keys > 域名白名单][weapp-domains]，获取域名白名单（不同应用对应不同的域名）。
+- 前往 [LeanCloud 控制台 > 设置 > 应用凭证 > 域名白名单][weapp-domains]，获取域名白名单（不同应用对应不同的域名）。
 - 登录 [微信公众平台] 或 [QQ 小程序开放平台]，前往 **设置 > 开发设置 > 服务器配置 > 「修改」** 链接，**增加**上述域名白名单中的域名。
 
 [weapp-domains]: https://leancloud.cn/dashboard/app.html?appid={{appid}}#/key

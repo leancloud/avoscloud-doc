@@ -1,8 +1,4 @@
 {% import "views/_helper.njk" as docs %}
-{% import "views/_im.njk" as im %}
-{% from 'views/_parts.html' import
-  supportEmail
-%}
 
 {{ docs.defaultLang('js') }}
 
@@ -19,7 +15,7 @@
 - 直播互动，不论是文体行业的大型电视节目中的观众互动、重大赛事直播，娱乐行业的游戏现场直播、网红直播，还是教育行业的在线课程直播、KOL 知识分享，在支持超大规模用户积极参与的同时，也需要做好内容审核管理。
 - 应用内社交，游戏公会嗨聊，等等。社交产品要能长时间吸引住用户，除了实时性之外，还需要更多的创新玩法，对于标准化通讯服务会存在更多的功能扩展需求。
 
-根据功能需求的层次性和技术实现的难易程度不同，我们分为多篇文档来一步步地讲解如何利用 LeanCloud 即时通讯服务实现不同业务场景需求：
+根据功能需求的层次性和技术实现的难易程度不同，我们分为多篇文档来一步步地讲解如何利用即时通讯服务实现不同业务场景需求：
 
 - 本篇文档，我们会从实现简单的单聊/群聊开始，演示创建和加入「对话」、发送和接收富媒体「消息」的流程，同时让大家了解历史消息云端保存与拉取的机制，希望可以满足在成熟产品中快速集成一个简单的聊天页面的需求。
 - [第二篇文档](realtime-guide-intermediate.html)，我们会介绍一些特殊消息的处理，例如 @ 成员提醒、撤回和修改、消息送达和被阅读的回执通知等，离线状态下的推送通知和消息同步机制，多设备登录的支持方案，以及如何扩展自定义消息类型，希望可以满足一个社交类产品的多方面需求。
@@ -28,9 +24,10 @@
 
 希望开发者最终顺利完成产品开发的同时，也对即时通讯服务的体系结构有一个清晰的了解，以便于产品的长期维护和定制化扩展。
 
-> 阅读准备
->
-> 在阅读本章之前，如果您还不太了解 LeanCloud 即时通讯服务的总体架构，建议先阅读 [即时通讯服务总览](realtime_v2.html)。另外，如果您还没有下载对应开发环境（语言）的 SDK，请参考 [SDK 安装指南](start.html) 完成 SDK 安装与初始化。
+阅读准备
+
+在阅读本章之前，如果您还不太了解即时通讯服务的总体架构，建议先阅读《即时通讯服务总览》。
+另外，如果您还没有下载对应开发环境（语言）的 SDK，请参考《SDK 安装指南》完成 SDK 安装与初始化。
 
 ## 一对一单聊
 
@@ -38,13 +35,32 @@
 
 > `IMClient` 对应实体的是一个用户，它代表着一个用户以客户端的身份登录到了即时通讯的系统。
 
-具体可以参考 [服务总览中的说明](realtime_v2.html#clientId、用户和登录)。
+具体可以参考《即时通讯服务总览》中《clientId、用户和登录》一节的说明。
 
 ### 创建 `IMClient`
 
 假设我们产品中有一个叫「Tom」的用户，首先我们在 SDK 中创建出一个与之对应的 `IMClient` 实例：
-（创建实例前请确保已经成功[初始化了 SDK](start.html)）
+（创建实例前请确保已经成功初始化了 SDK）
 
+```cs
+LCIMClient tom = new LCIMClient("Tom");
+```
+```java
+// clientId 为 Tom
+LCIMClient tom = LCIMClient.getInstance("Tom");
+```
+```objc
+// 定义一个常驻内存的属性变量
+@property (nonatomic) LCIMClient *tom;
+// 初始化
+NSError *error;
+tom = [[LCIMClient alloc] initWithClientId:@"Tom" error:&error];
+if (error) {
+    NSLog(@"init failed with error: %@", error);
+} else {
+    NSLog(@"init succeeded");
+}
+```
 ```js
 // Tom 用自己的名字作为 clientId 来登录即时通讯服务
 realtime.createIMClient('Tom').then(function(tom) {
@@ -61,25 +77,6 @@ do {
     print(error)
 }
 ```
-```objc
-// 定义一个常驻内存的属性变量
-@property (nonatomic) LCIMClient *tom;
-// 初始化
-NSError *error;
-tom = [[LCIMClient alloc] initWithClientId:@"Tom" error:&error];
-if (error) {
-    NSLog(@"init failed with error: %@", error);
-} else {
-    NSLog(@"init succeeded");
-}
-```
-```java
-// clientId 为 Tom
-LCIMClient tom = LCIMClient.getInstance("Tom");
-```
-```cs
-LCIMClient tom = new LCIMClient("Tom");
-```
 ```dart
 // clientId 为 Tom
 Client tom = Client(id: 'Tom');
@@ -89,10 +86,43 @@ Client tom = Client(id: 'Tom');
 
 ### 登录即时通讯服务器
 
-创建好了「Tom」这个用户对应的 `IMClient` 实例之后，我们接下来需要让该实例「登录」LeanCloud 即时通讯服务器。只有登录成功之后客户端才能开始与其他用户聊天，也才能接收到 LeanCloud 云端下发的各种事件通知。
+创建好了「Tom」这个用户对应的 `IMClient` 实例之后，我们接下来需要让该实例「登录」即时通讯服务器。
+只有登录成功之后客户端才能开始与其他用户聊天，也才能接收到云端下发的各种事件通知。
 
-这里需要说明一点，JavaScript 和 C#（Unity3D）SDK 在创建 `IMClient` 实例的同时会自动进行登录，而 iOS（包括 Objective-C 和 Swift）和 Android（包括通用的 Java）SDK 则需要调用开发者手动执行 `open` 方法进行登录：
+这里需要说明一点，有些 SDK （比如 C# SDK） 在创建 `IMClient` 实例的同时会自动进行登录，另一些 SDK （比如 iOS 和 Android SDK）则需要调用开发者手动执行 `open` 方法进行登录：
 
+```cs
+await tom.Open();
+```
+```java
+// Tom 创建了一个 client，用自己的名字作为 clientId 登录
+LCIMClient tom = LCIMClient.getInstance("Tom");
+// Tom 登录
+tom.open(new LCIMClientCallback() {
+  @Override
+  public void done(LCIMClient client, LCIMException e) {
+    if (e == null) {
+      // 成功打开连接
+    }
+  }
+});
+```
+```objc
+// 定义一个常驻内存的属性变量
+@property (nonatomic) LCIMClient *tom;
+// 初始化，然后登陆
+NSError *error;
+tom = [[LCIMClient alloc] initWithClientId:@"Tom" error:&error];
+if (error) {
+    NSLog(@"init failed with error: %@", error);
+} else {
+    [tom openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
+        if (succeeded) {
+            // open succeeded
+        }
+    }];
+}
+```
 ```js
 // Tom 用自己的名字作为 clientId 登录，并且获取 IMClient 对象实例
 realtime.createIMClient('Tom').then(function(tom) {
@@ -117,38 +147,6 @@ do {
     print(error)
 }
 ```
-```objc
-// 定义一个常驻内存的属性变量
-@property (nonatomic) LCIMClient *tom;
-// 初始化，然后登陆
-NSError *error;
-tom = [[LCIMClient alloc] initWithClientId:@"Tom" error:&error];
-if (error) {
-    NSLog(@"init failed with error: %@", error);
-} else {
-    [tom openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
-        if (succeeded) {
-            // open succeeded
-        }
-    }];
-}
-```
-```java
-// Tom 创建了一个 client，用自己的名字作为 clientId 登录
-LCIMClient tom = LCIMClient.getInstance("Tom");
-// Tom 登录
-tom.open(new LCIMClientCallback() {
-  @Override
-  public void done(LCIMClient client, LCIMException e) {
-    if (e == null) {
-      // 成功打开连接
-    }
-  }
-});
-```
-```cs
-await tom.Open();
-```
 ```dart
 // Tom 创建了一个 client，用自己的名字作为 clientId 登录
 Client tom = Client(id: 'Tom');
@@ -157,8 +155,52 @@ await tom.open();
 ```
 ### 使用 `_User` 登录
 
-除了应用层指定 `clientId` 登录之外，我们也支持直接使用 `_User` 对象来创建 `IMClient` 并登录。这种方式能直接利用云端内置的用户鉴权系统而省掉 [登录签名](realtime-guide-senior.html#用户登录签名) 操作，更方便地将存储和即时通讯这两个模块结合起来使用。示例代码如下：
+除了应用层指定 `clientId` 登录之外，我们也支持直接使用 `_User` 对象来创建 `IMClient` 并登录。这种方式能直接利用云端内置的用户鉴权系统而省掉登录签名操作，更方便地将存储和即时通讯这两个模块结合起来使用。示例代码如下：
 
+```cs
+var user = await LCUser.Login("USER_NAME", "PASSWORD");
+var client = new LCIMClient(user);
+```
+```java
+// 以 LCUser 的用户名和密码登录到存储服务
+LCUser.logIn("Tom", "cat!@#123").subscribe(new Observer<LCUser>() {
+    public void onSubscribe(Disposable disposable) {}
+    public void onNext(LCUser user) {
+        // 登录成功，与服务器连接
+        LCIMClient client = LCIMClient.getInstance(user);
+        client.open(new LCIMClientCallback() {
+            @Override
+            public void done(final LCIMClient avimClient, LCIMException e) {
+                // 执行其他逻辑
+            }
+        });
+    }
+    public void onError(Throwable throwable) {
+        // 登录失败（可能是密码错误）
+    }
+    public void onComplete() {}
+});
+```
+```objc
+// 定义一个常驻内存的属性变量
+@property (nonatomic) LCIMClient *client;
+// 登陆 User，然后使用登陆成功的 User 初始化 Client 并登陆
+[LCUser logInWithUsernameInBackground:USER_NAME password:PASSWORD block:^(LCUser * _Nullable user, NSError * _Nullable error) {
+    if (user) {
+        NSError *err;
+        client = [[LCIMClient alloc] initWithUser:user error:&err];
+        if (err) {
+            NSLog(@"init failed with error: %@", err);
+        } else {
+            [client openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
+                if (succeeded) {
+                    // open succeeded
+                }
+            }];
+        }
+    }
+}];
+```
 ```js
 var AV = require('leancloud-storage');
 // 以 AVUser 的用户名和密码登录即时通讯服务
@@ -186,50 +228,6 @@ LCUser.logIn(username: USER_NAME, password: PASSWORD) { (result) in
     }
 }
 ```
-```objc
-// 定义一个常驻内存的属性变量
-@property (nonatomic) LCIMClient *client;
-// 登陆 User，然后使用登陆成功的 User 初始化 Client 并登陆
-[LCUser logInWithUsernameInBackground:USER_NAME password:PASSWORD block:^(LCUser * _Nullable user, NSError * _Nullable error) {
-    if (user) {
-        NSError *err;
-        client = [[LCIMClient alloc] initWithUser:user error:&err];
-        if (err) {
-            NSLog(@"init failed with error: %@", err);
-        } else {
-            [client openWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
-                if (succeeded) {
-                    // open succeeded
-                }
-            }];
-        }
-    }
-}];
-```
-```java
-// 以 LCUser 的用户名和密码登录到 LeanCloud 存储服务
-LCUser.logIn("Tom", "cat!@#123").subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // 登录成功，与服务器连接
-        LCIMClient client = LCIMClient.getInstance(user);
-        client.open(new LCIMClientCallback() {
-            @Override
-            public void done(final LCIMClient avimClient, LCIMException e) {
-                // 执行其他逻辑
-            }
-        });
-    }
-    public void onError(Throwable throwable) {
-        // 登录失败（可能是密码错误）
-    }
-    public void onComplete() {}
-});
-```
-```cs
-var user = await LCUser.Login("USER_NAME", "PASSWORD");
-var client = new LCIMClient(user);
-```
 ```dart
 // 暂不支持
 ```
@@ -238,10 +236,30 @@ var client = new LCIMClient(user);
 
 用户登录之后，要开始与其他人聊天，需要先创建一个「对话」。
 
-> [对话（`Conversation`）](realtime_v2.html#对话（Conversation）)是消息的载体，所有消息都是发送给对话，即时通讯服务端会把消息下发给所有在对话中的成员。
+对话（`Conversation`）是消息的载体，所有消息都是发送给对话，即时通讯服务端会把消息下发给所有在对话中的成员。
 
 Tom 完成了登录之后，就可以选择用户聊天了。现在他要给 Jerry 发送消息，所以需要先创建一个只有他们两个成员的 `Conversation`：
 
+```cs
+var conversation = await tom.CreateConversation(new string[] { "Jerry" }, name: "Tom & Jerry", unique: true);
+```
+```java
+tom.createConversation(Arrays.asList("Jerry"), "Tom & Jerry", null, false, true,
+    new LCIMConversationCreatedCallback() {
+        @Override
+        public void done(LCIMConversation conversation, LCIMException e) {
+          if(e == null) {
+            // 创建成功
+          }
+        }
+});
+```
+```objc
+// 创建与 Jerry 之间的对话
+[self createConversationWithClientIds:@[@"Jerry"] callback:^(LCIMConversation * _Nullable conversation, NSError * _Nullable error) {
+    // handle callback
+}];
+```
 ```js
 // 创建与 Jerry 之间的对话
 tom.createConversation({ // tom 是一个 IMClient 实例
@@ -266,26 +284,6 @@ do {
     print(error)
 }
 ```
-```objc
-// 创建与 Jerry 之间的对话
-[self createConversationWithClientIds:@[@"Jerry"] callback:^(LCIMConversation * _Nullable conversation, NSError * _Nullable error) {
-    // handle callback
-}];
-```
-```java
-tom.createConversation(Arrays.asList("Jerry"), "Tom & Jerry", null, false, true,
-    new LCIMConversationCreatedCallback() {
-        @Override
-        public void done(LCIMConversation conversation, LCIMException e) {
-          if(e == null) {
-            // 创建成功
-          }
-        }
-});
-```
-```cs
-var conversation = await tom.CreateConversation(new string[] { "Jerry" }, name: "Tom & Jerry", unique: true);
-```
 ```dart
 try {
   // 创建与 Jerry 之间的对话
@@ -296,56 +294,79 @@ try {
 }
 ```
 
-`createConversation` 这个接口会直接创建一个对话，并且该对话会被存储在 `_Conversation` 表内，可以打开 **控制台 > 存储 > 数据** 查看数据。不同 SDK 提供的创建对话接口如下：
+`createConversation` 这个接口会直接创建一个对话，并且该对话会被存储在 `_Conversation` 表内，可以打开 **云服务控制台 > 存储 > 结构化数据** 查看数据。不同 SDK 提供的创建对话接口如下：
 
-```js
-/**
- * 创建一个对话
- * @param {Object} options 除了下列字段外的其他字段将被视为对话的自定义属性
- * @param {String[]} options.members 对话的初始成员列表，必要参数，默认包含当前 client
- * @param {String} [options.name] 对话的名字，可选参数，如果不传默认值为 null
- * @param {Boolean} [options.transient=false] 是否为聊天室，可选参数
- * @param {Boolean} [options.unique=false] 是否唯一对话，当其为 true 时，如果当前已经有相同成员的对话存在则返回该对话，否则会创建新的对话
- * @param {Boolean} [options.tempConv=false] 是否为临时对话，可选参数
- * @param {Integer} [options.tempConvTTL=0] 可选参数，如果 tempConv 为 true，这里可以指定临时对话的生命周期。
- * @return {Promise.<Conversation>}
- */
-async createConversation({
-  members: m,
-  name,
-  transient,
-  unique,
-  tempConv,
-  tempConvTTL,
-  // 可添加更多属性
-});
+```cs
+/// <summary>
+/// Creates a conversation
+/// </summary>
+/// <param name="members">The list of clientIds of participants in this conversation (except the creator)</param>
+/// <param name="name">The name of this conversation</param>
+/// <param name="unique">Whether this conversation is unique;
+/// if it is true and an existing conversation contains the same composition of members,
+/// the existing conversation will be reused, otherwise a new conversation will be created.</param>
+/// <param name="properties">Custom attributes of this conversation</param>
+/// <returns></returns>
+public async Task<LCIMConversation> CreateConversation(
+    IEnumerable<string> members,
+    string name = null,
+    bool unique = true,
+    Dictionary<string, object> properties = null) {
+    return await ConversationController.CreateConv(members: members,
+        name: name,
+        unique: unique,
+        properties: properties);
+}
 ```
-```swift
-/// Create a Normal Conversation. Default is a Unique Conversation.
-///
-/// - Parameters:
-///   - clientIDs: The set of client ID. it's the members of the conversation which will be created. the initialized members always contains current client's ID. if the created conversation is unique, and server has one unique conversation with the same members, that unique conversation will be returned.
-///   - name: The name of the conversation.
-///   - attributes: The attributes of the conversation.
-///   - isUnique: True means create or get a unique conversation, default is true.
-///   - completion: callback.
-public func createConversation(clientIDs: Set<String>, name: String? = nil, attributes: [String : Any]? = nil, isUnique: Bool = true, completion: @escaping (LCGenericResult<IMConversation>) -> Void) throws
-
-/// Create a Chat Room.
-///
-/// - Parameters:
-///   - name: The name of the chat room.
-///   - attributes: The attributes of the chat room.
-///   - completion: callback.
-public func createChatRoom(name: String? = nil, attributes: [String : Any]? = nil, completion: @escaping (LCGenericResult<IMChatRoom>) -> Void) throws
-
-/// Create a Temporary Conversation. Temporary Conversation is unique in it's Life Cycle.
-///
-/// - Parameters:
-///   - clientIDs: The set of client ID. it's the members of the conversation which will be created. the initialized members always contains this client's ID.
-///   - timeToLive: The time interval for the life of the temporary conversation.
-///   - completion: callback.
-public func createTemporaryConversation(clientIDs: Set<String>, timeToLive: Int32, completion: @escaping (LCGenericResult<IMTemporaryConversation>) -> Void) throws
+```java
+/**
+ * 创建或查询一个已有 conversation
+ *
+ * @param members 对话的成员
+ * @param name 对话的名字
+ * @param attributes 对话的额外属性
+ * @param isTransient 是否是聊天室
+ * @param isUnique 如果已经存在符合条件的会话，是否返回已有回话
+ *                 为 false 时，则一直为创建新的回话
+ *                 为 true 时，则先查询，如果已有符合条件的回话，则返回已有的，否则，创建新的并返回
+ *                 为 true 时，仅 members 为有效查询条件
+ * @param callback 结果回调函数
+ */
+public void createConversation(final List<String> members, final String name,
+    final Map<String, Object> attributes, final boolean isTransient, final boolean isUnique,
+    final LCIMConversationCreatedCallback callback);
+/**
+ * 创建一个聊天对话
+ *
+ * @param members 对话参与者
+ * @param attributes 对话的额外属性
+ * @param isTransient 是否为聊天室
+ * @param callback  结果回调函数
+ */
+public void createConversation(final List<String> members, final String name,
+                               final Map<String, Object> attributes, final boolean isTransient,
+                               final LCIMConversationCreatedCallback callback);
+/**
+ * 创建一个聊天对话
+ *
+ * @param conversationMembers 对话参与者
+ * @param name       对话名称
+ * @param attributes 对话属性
+ * @param callback   结果回调函数
+ * @since 3.0
+ */
+public void createConversation(final List<String> conversationMembers, String name,
+    final Map<String, Object> attributes, final LCIMConversationCreatedCallback callback);
+/**
+ * 创建一个聊天对话
+ * 
+ * @param conversationMembers 对话参与者
+ * @param attributes 对话属性
+ * @param callback   结果回调函数
+ * @since 3.0
+ */
+public void createConversation(final List<String> conversationMembers,
+    final Map<String, Object> attributes, final LCIMConversationCreatedCallback callback);
 ```
 ```objc
 /// The option of conversation creation.
@@ -398,77 +419,54 @@ public func createTemporaryConversation(clientIDs: Set<String>, timeToLive: Int3
                                           option:(LCIMConversationCreationOption * _Nullable)option
                                         callback:(void (^)(LCIMTemporaryConversation * _Nullable temporaryConversation, NSError * _Nullable error))callback;
 ```
-```java
+```js
 /**
- * 创建或查询一个已有 conversation
- *
- * @param members 对话的成员
- * @param name 对话的名字
- * @param attributes 对话的额外属性
- * @param isTransient 是否是聊天室
- * @param isUnique 如果已经存在符合条件的会话，是否返回已有回话
- *                 为 false 时，则一直为创建新的回话
- *                 为 true 时，则先查询，如果已有符合条件的回话，则返回已有的，否则，创建新的并返回
- *                 为 true 时，仅 members 为有效查询条件
- * @param callback 结果回调函数
+ * 创建一个对话
+ * @param {Object} options 除了下列字段外的其他字段将被视为对话的自定义属性
+ * @param {String[]} options.members 对话的初始成员列表，必要参数，默认包含当前 client
+ * @param {String} [options.name] 对话的名字，可选参数，如果不传默认值为 null
+ * @param {Boolean} [options.transient=false] 是否为聊天室，可选参数
+ * @param {Boolean} [options.unique=false] 是否唯一对话，当其为 true 时，如果当前已经有相同成员的对话存在则返回该对话，否则会创建新的对话
+ * @param {Boolean} [options.tempConv=false] 是否为临时对话，可选参数
+ * @param {Integer} [options.tempConvTTL=0] 可选参数，如果 tempConv 为 true，这里可以指定临时对话的生命周期。
+ * @return {Promise.<Conversation>}
  */
-public void createConversation(final List<String> members, final String name,
-    final Map<String, Object> attributes, final boolean isTransient, final boolean isUnique,
-    final LCIMConversationCreatedCallback callback);
-/**
- * 创建一个聊天对话
- *
- * @param members 对话参与者
- * @param attributes 对话的额外属性
- * @param isTransient 是否为聊天室
- * @param callback  结果回调函数
- */
-public void createConversation(final List<String> members, final String name,
-                               final Map<String, Object> attributes, final boolean isTransient,
-                               final LCIMConversationCreatedCallback callback);
-/**
- * 创建一个聊天对话
- *
- * @param conversationMembers 对话参与者
- * @param name       对话名称
- * @param attributes 对话属性
- * @param callback   结果回调函数
- * @since 3.0
- */
-public void createConversation(final List<String> conversationMembers, String name,
-    final Map<String, Object> attributes, final LCIMConversationCreatedCallback callback);
-/**
- * 创建一个聊天对话
- * 
- * @param conversationMembers 对话参与者
- * @param attributes 对话属性
- * @param callback   结果回调函数
- * @since 3.0
- */
-public void createConversation(final List<String> conversationMembers,
-    final Map<String, Object> attributes, final LCIMConversationCreatedCallback callback);
+async createConversation({
+  members: m,
+  name,
+  transient,
+  unique,
+  tempConv,
+  tempConvTTL,
+  // 可添加更多属性
+});
 ```
-```cs
-/// <summary>
-/// Creates a conversation
-/// </summary>
-/// <param name="members">The list of clientIds of participants in this conversation (except the creator)</param>
-/// <param name="name">The name of this conversation</param>
-/// <param name="unique">Whether this conversation is unique;
-/// if it is true and an existing conversation contains the same composition of members,
-/// the existing conversation will be reused, otherwise a new conversation will be created.</param>
-/// <param name="properties">Custom attributes of this conversation</param>
-/// <returns></returns>
-public async Task<LCIMConversation> CreateConversation(
-    IEnumerable<string> members,
-    string name = null,
-    bool unique = true,
-    Dictionary<string, object> properties = null) {
-    return await ConversationController.CreateConv(members: members,
-        name: name,
-        unique: unique,
-        properties: properties);
-}
+```swift
+/// Create a Normal Conversation. Default is a Unique Conversation.
+///
+/// - Parameters:
+///   - clientIDs: The set of client ID. it's the members of the conversation which will be created. the initialized members always contains current client's ID. if the created conversation is unique, and server has one unique conversation with the same members, that unique conversation will be returned.
+///   - name: The name of the conversation.
+///   - attributes: The attributes of the conversation.
+///   - isUnique: True means create or get a unique conversation, default is true.
+///   - completion: callback.
+public func createConversation(clientIDs: Set<String>, name: String? = nil, attributes: [String : Any]? = nil, isUnique: Bool = true, completion: @escaping (LCGenericResult<IMConversation>) -> Void) throws
+
+/// Create a Chat Room.
+///
+/// - Parameters:
+///   - name: The name of the chat room.
+///   - attributes: The attributes of the chat room.
+///   - completion: callback.
+public func createChatRoom(name: String? = nil, attributes: [String : Any]? = nil, completion: @escaping (LCGenericResult<IMChatRoom>) -> Void) throws
+
+/// Create a Temporary Conversation. Temporary Conversation is unique in it's Life Cycle.
+///
+/// - Parameters:
+///   - clientIDs: The set of client ID. it's the members of the conversation which will be created. the initialized members always contains this client's ID.
+///   - timeToLive: The time interval for the life of the temporary conversation.
+///   - completion: callback.
+public func createTemporaryConversation(clientIDs: Set<String>, timeToLive: Int32, completion: @escaping (LCGenericResult<IMTemporaryConversation>) -> Void) throws
 ```
 ```dart
 /// To create a normal [Conversation].
@@ -516,14 +514,19 @@ Future<TemporaryConversation> createTemporaryConversation({
 虽然不同语言/平台接口声明有所不同，但是支持的参数是基本一致的。在创建一个对话的时候，我们主要可以指定：
 
 1. `members`：必要参数，包含对话的初始成员列表，请注意当前用户作为对话的创建者，是默认包含在成员里面的，所以 `members` 数组中可以不包含当前用户的 `clientId`。
+
 2. `name`：对话名字，可选参数，上面代码指定为了「Tom & Jerry」。
-3. `attributes`：对话的自定义属性，可选。上面示例代码没有指定额外属性，开发者如果指定了额外属性的话，以后其他成员可以通过 `AVIMConversation` 的接口获取到这些属性值。附加属性在 `_Conversation` 表中被保存在 `attr` 列中。
-4. `unique`/`isUnique` 或者是 `AVIMConversationOptionUnique`：唯一对话标志位，可选。
-   - 如果设置为唯一对话，云端会根据完整的成员列表先进行一次查询，如果已经有正好包含这些成员的对话存在，那么就返回已经存在的对话，否则才创建一个新的对话。
-   - 如果指定 `unique` 标志为假，那么每次调用 `createConversation` 接口都会创建一个新的对话。
-   - 未指定 `unique` 时，JavaScript、Java、Swift、C# SDK 默认值为真，Objective-C、Python SDK 默认值为假（出于兼容性考虑）。  
-   - 从通用的聊天场景来看，不管是 Tom 发出「创建和 Jerry 单聊对话」的请求，还是 Jerry 发出「创建和 Tom 单聊对话」的请求，或者 Tom 以后再次发出创建和 Jerry 单聊对话的请求，都应该是同一个对话才是合理的，否则可能因为聊天记录的不同导致用户混乱。所以我们 ***建议开发者明确指定 `unique` 标志为 `true`***。
-5. 对话类型的其他标志，可选参数，例如 `transient`/`isTransient` 表示「聊天室」，`tempConv`/`tempConvTTL` 和 `AVIMConversationOptionTemporary` 用来创建「临时对话」等等。什么都不指定就表示创建普通对话，对于这些标志位的含义我们先不管，以后会有说明。
+
+3. `attributes`：对话的自定义属性，可选。上面示例代码没有指定额外属性，开发者如果指定了额外属性的话，以后其他成员可以通过 `LCIMConversation` 的接口获取到这些属性值。附加属性在 `_Conversation` 表中被保存在 `attr` 列中。
+
+4. `unique`/`isUnique` 或者是 `LCIMConversationOptionUnique`：唯一对话标志位，可选。
+
+    - 如果设置为唯一对话，云端会根据完整的成员列表先进行一次查询，如果已经有正好包含这些成员的对话存在，那么就返回已经存在的对话，否则才创建一个新的对话。
+    - 如果指定 `unique` 标志为假，那么每次调用 `createConversation` 接口都会创建一个新的对话。
+    - 未指定 `unique` 时，SDK 默认值为真。
+    - 从通用的聊天场景来看，不管是 Tom 发出「创建和 Jerry 单聊对话」的请求，还是 Jerry 发出「创建和 Tom 单聊对话」的请求，或者 Tom 以后再次发出创建和 Jerry 单聊对话的请求，都应该是同一个对话才是合理的，否则可能因为聊天记录的不同导致用户混乱。
+
+5. 对话类型的其他标志，可选参数，例如 `transient`/`isTransient` 表示「聊天室」，`tempConv`/`tempConvTTL` 和 `LCIMConversationOptionTemporary` 用来创建「临时对话」等等。什么都不指定就表示创建普通对话，对于这些标志位的含义我们先不管，以后会有说明。
 
 创建对话之后，可以获取对话的内置属性，云端会为每一个对话生成一个全局唯一的 ID 属性：`Conversation.id`，它是其他用户查询对话时常用的匹配字段。
 
@@ -531,6 +534,31 @@ Future<TemporaryConversation> createTemporaryConversation({
 
 对话已经创建成功了，接下来 Tom 可以在这个对话中发出第一条文本消息了：
 
+```cs
+var textMessage = new LCIMTextMessage("Jerry，起床了！");
+await conversation.Send(textMessage);
+```
+```java
+LCIMTextMessage msg = new LCIMTextMessage();
+msg.setText("Jerry，起床了！");
+// 发送消息
+conversation.sendMessage(msg, new LCIMConversationCallback() {
+  @Override
+  public void done(LCIMException e) {
+    if (e == null) {
+      Log.d("Tom & Jerry", "发送成功！");
+    }
+  }
+});
+```
+```objc
+LCIMTextMessage *message = [LCIMTextMessage messageWithText:@"耗子，起床！" attributes:nil];
+[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
+  if (succeeded) {
+    NSLog(@"发送成功！");
+  }
+}];
+```
 ```js
 var { TextMessage } = require('leancloud-realtime');
 conversation.send(new TextMessage('Jerry，起床了！')).then(function(message) {
@@ -552,31 +580,6 @@ do {
     print(error)
 }
 ```
-```objc
-LCIMTextMessage *message = [LCIMTextMessage messageWithText:@"耗子，起床！" attributes:nil];
-[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
-  if (succeeded) {
-    NSLog(@"发送成功！");
-  }
-}];
-```
-```java
-LCIMTextMessage msg = new LCIMTextMessage();
-msg.setText("Jerry，起床了！");
-// 发送消息
-conversation.sendMessage(msg, new LCIMConversationCallback() {
-  @Override
-  public void done(LCIMException e) {
-    if (e == null) {
-      Log.d("Tom & Jerry", "发送成功！");
-    }
-  }
-});
-```
-```cs
-var textMessage = new LCIMTextMessage("Jerry，起床了！");
-await conversation.Send(textMessage);
-```
 ```dart
 try {
   TextMessage textMessage = TextMessage();
@@ -595,6 +598,30 @@ try {
 
 在另一个设备上，我们用 `Jerry` 作为 `clientId` 来创建一个 `IMClient` 并登录即时通讯服务（与前两节 Tom 的处理流程一样）：
 
+```cs
+var jerry = new LCIMClient("Jerry");
+```
+```java
+// Jerry 登录
+LCIMClient jerry = LCIMClient.getInstance("Jerry");
+jerry.open(new LCIMClientCallback(){
+  @Override
+  public void done(LCIMClient client,LCIMException e){
+    if(e==null){
+      // 登录成功后的逻辑
+    }
+  }
+});
+```
+```objc
+NSError *error;
+jerry = [[LCIMClient alloc] initWithClientId:@"Jerry" error:&error];
+if (!error) {
+    [jerry openWithCallback:^(BOOL succeeded, NSError *error) {
+        // handle callback
+    }];
+}
+```
 ```js
 var { Event } = require('leancloud-realtime');
 // Jerry 登录
@@ -616,96 +643,31 @@ do {
     print(error)
 }
 ```
-```objc
-NSError *error;
-jerry = [[LCIMClient alloc] initWithClientId:@"Jerry" error:&error];
-if (!error) {
-    [jerry openWithCallback:^(BOOL succeeded, NSError *error) {
-        // handle callback
-    }];
-}
-```
-```java
-// Jerry 登录
-LCIMClient jerry = LCIMClient.getInstance("Jerry");
-jerry.open(new LCIMClientCallback(){
-  @Override
-  public void done(LCIMClient client,LCIMException e){
-    if(e==null){
-      // 登录成功后的逻辑
-    }
-  }
-});
-```
-```cs
-var jerry = new LCIMClient("Jerry");
-```
 ```dart
 Client jerry = Client(id: 'Jerry');
 await jerry.open();
 ```
+
 Jerry 作为消息的被动接收方，他不需要主动创建与 Tom 的对话，可能也无法知道 Tom 创建好的对话信息，Jerry 端需要通过设置即时通讯客户端事件的回调函数，才能获取到 Tom 那边操作的通知。
 
 即时通讯客户端事件回调能处理多种服务端通知，这里我们先关注这里会出现的两个事件：
+
 - 用户被邀请进入某个对话的通知事件。Tom 在创建和 Jerry 的单聊对话的时候，Jerry 这边就能立刻收到一条通知，获知到类似于「Tom 邀请你加入了一个对话」的信息。
 - 已加入对话中新消息到达的通知。在 Tom 发出「Jerry，起床了！」这条消息之后，Jerry 这边也能立刻收到一条新消息到达的通知，通知中带有消息具体数据以及对话、发送者等上下文信息。
 
 现在，我们看看具体应该如何响应服务端发过来的通知。Jerry 端会分别处理「加入对话」的事件通知和「新消息到达」的事件通知：
 
-```js
-// JS SDK 通过在 IMClient 实例上监听事件回调来响应服务端通知
-
-// 当前用户被添加至某个对话
-jerry.on(Event.INVITED, function invitedEventHandler(payload, conversation) {
-    console.log(payload.invitedBy, conversation.id);
-});
-
-// 当前用户收到了某一条消息，可以通过响应 Event.MESSAGE 这一事件来处理。
-jerry.on(Event.MESSAGE, function(message, conversation) {
-    console.log('收到新消息：' + message.text);
-});
-```
-```swift
-let delegator: Delegator = Delegator()
-jerry.delegate = delegator
-
-func client(_ client: IMClient, conversation: IMConversation, event: IMConversationEvent) {
-    switch event {
-    case .message(event: let messageEvent):
-        switch messageEvent {
-        case .received(message: let message):
-            print(message)
-        default:
-            break
-        }
-    default:
-        break
+```cs
+jerry.OnInvited = (conv, initBy) => {
+    WriteLine($"{initBy} 邀请 jerry 加入 {conv.Id} 对话");
+};
+jerry.OnMessage = (conv, msg) => {
+    if (msg is LCIMTextMessage textMessage) {
+        // textMessage.ConversationId 是该条消息所属于的对话 ID
+        // textMessage.Text 是该文本消息的文本内容
+        // textMessage.FromClientId 是消息发送者的 clientId
     }
-}
-```
-```objc
-// Objective-C SDK 通过实现 LCIMClientDelegate 代理来处理服务端通知
-// 不了解 Objective-C 代理（delegate）概念的读者可以参考：
-// https://developer.apple.com/library/archive/documentation/General/Conceptual/CocoaEncyclopedia/DelegatesandDataSources/DelegatesandDataSources.html
-jerry.delegate = delegator;
-
-/*!
- 当前用户被邀请加入对话的通知。
- @param conversation － 所属对话
- @param clientId - 邀请者的 ID
- */
-- (void)conversation:(LCIMConversation *)conversation invitedByClientId:(NSString *)clientId {
-    NSLog(@"%@", [NSString stringWithFormat:@"当前 clientId（Jerry）被 %@ 邀请，加入了对话",clientId]);
-}
-
-/*!
- 接收到新消息（使用内置消息格式）。
- @param conversation － 所属对话
- @param message - 具体的消息
- */
-- (void)conversation:(LCIMConversation *)conversation didReceiveTypedMessage:(LCIMTypedMessage *)message {
-    NSLog(@"%@", message.text); // Jerry，起床了！
-}
+};
 ```
 ```java
 // Java/Android SDK 通过定制自己的对话事件 Handler 处理服务端下发的对话事件通知
@@ -745,17 +707,60 @@ public static class CustomMessageHandler extends LCIMMessageHandler{
 // 设置全局的消息处理 handler
 LCIMMessageManager.registerDefaultMessageHandler(new CustomMessageHandler());
 ```
-```cs
-jerry.OnInvited = (conv, initBy) => {
-    WriteLine($"{initBy} 邀请 jerry 加入 {conv.Id} 对话");
-};
-jerry.OnMessage = (conv, msg) => {
-    if (msg is LCIMTextMessage textMessage) {
-        // textMessage.ConversationId 是该条消息所属于的对话 ID
-        // textMessage.Text 是该文本消息的文本内容
-        // textMessage.FromClientId 是消息发送者的 clientId
+```objc
+// Objective-C SDK 通过实现 LCIMClientDelegate 代理来处理服务端通知
+// 不了解 Objective-C 代理（delegate）概念的读者可以参考：
+// https://developer.apple.com/library/archive/documentation/General/Conceptual/CocoaEncyclopedia/DelegatesandDataSources/DelegatesandDataSources.html
+jerry.delegate = delegator;
+
+/*!
+ 当前用户被邀请加入对话的通知。
+ @param conversation － 所属对话
+ @param clientId - 邀请者的 ID
+ */
+- (void)conversation:(LCIMConversation *)conversation invitedByClientId:(NSString *)clientId {
+    NSLog(@"%@", [NSString stringWithFormat:@"当前 clientId（Jerry）被 %@ 邀请，加入了对话",clientId]);
+}
+
+/*!
+ 接收到新消息（使用内置消息格式）。
+ @param conversation － 所属对话
+ @param message - 具体的消息
+ */
+- (void)conversation:(LCIMConversation *)conversation didReceiveTypedMessage:(LCIMTypedMessage *)message {
+    NSLog(@"%@", message.text); // Jerry，起床了！
+}
+```
+```js
+// JS SDK 通过在 IMClient 实例上监听事件回调来响应服务端通知
+
+// 当前用户被添加至某个对话
+jerry.on(Event.INVITED, function invitedEventHandler(payload, conversation) {
+    console.log(payload.invitedBy, conversation.id);
+});
+
+// 当前用户收到了某一条消息，可以通过响应 Event.MESSAGE 这一事件来处理。
+jerry.on(Event.MESSAGE, function(message, conversation) {
+    console.log('收到新消息：' + message.text);
+});
+```
+```swift
+let delegator: Delegator = Delegator()
+jerry.delegate = delegator
+
+func client(_ client: IMClient, conversation: IMConversation, event: IMConversationEvent) {
+    switch event {
+    case .message(event: let messageEvent):
+        switch messageEvent {
+        case .received(message: let message):
+            print(message)
+        default:
+            break
+        }
+    default:
+        break
     }
-};
+}
 ```
 ```dart
 jerry.onMessage = ({
@@ -782,7 +787,8 @@ Cloud-->Jerry: 5. 下发通知：接收到有新消息
 Jerry-->UI: 6. 显示收到的消息内容
 ```
 
-在聊天过程中，接收方除了响应新消息到达通知之外，还需要响应多种对话成员变动通知，例如「新用户 XX 被 XX 邀请加入了对话」、「用户 XX 主动退出了对话」、「用户 XX 被管理员剔除出对话」，等等。LeanCloud 云端会实时下发这些事件通知给客户端，具体细节可以参考后续章节：[成员变更的事件通知总结](#成员变更的事件通知总结)。
+在聊天过程中，接收方除了响应新消息到达通知之外，还需要响应多种对话成员变动通知，例如「新用户 XX 被 XX 邀请加入了对话」、「用户 XX 主动退出了对话」、「用户 XX 被管理员剔除出对话」，等等。
+云端会实时下发这些事件通知给客户端，具体细节可以参考后续章节：[成员变更的事件通知总结](#成员变更的事件通知总结)。
 
 ## 多人群聊
 
@@ -794,6 +800,35 @@ Jerry-->UI: 6. 显示收到的消息内容
 
 在 Tom 和 Jerry 的对话中（假设对话 ID 为 `CONVERSATION_ID`，这只是一个示例，并不代表实际数据），后来 Tom 又希望把 Mary 也拉进来，他可以使用如下的办法：
 
+```cs
+// 首先根据 ID 获取 Conversation 实例
+var conversation = await tom.GetConversation("CONVERSATION_ID");
+// 邀请 Mary 加入对话
+await conversation.AddMembers(new string[] { "Mary" });
+```
+```java
+// 首先根据 ID 获取 Conversation 实例
+final LCIMConversation conv = client.getConversation("CONVERSATION_ID");
+// 邀请 Mary 加入对话
+conv.addMembers(Arrays.asList("Mary"), new LCIMOperationPartiallySucceededCallback() {
+    @Override
+    public void done(LCIMException e, List<String> successfulClientIds, List<LCIMOperationFailure> failures) {
+      // 添加成功
+    }
+});
+```
+```objc
+// 首先根据 ID 获取 Conversation 实例
+LCIMConversationQuery *query = [self.client conversationQuery];
+[query getConversationById:@"CONVERSATION_ID" callback:^(LCIMConversation *conversation, NSError *error) {
+    // 邀请 Mary 加入对话
+    [conversation addMembersWithClientIds:@[@"Mary"] callback:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"邀请成功！");
+        }
+    }];
+}];
+```
 ```js
 // 首先根据 ID 获取 Conversation 实例
 tom.getConversation('CONVERSATION_ID').then(function(conversation) {
@@ -838,35 +873,6 @@ do {
     print(error)
 }
 ```
-```objc
-// 首先根据 ID 获取 Conversation 实例
-LCIMConversationQuery *query = [self.client conversationQuery];
-[query getConversationById:@"CONVERSATION_ID" callback:^(LCIMConversation *conversation, NSError *error) {
-    // 邀请 Mary 加入对话
-    [conversation addMembersWithClientIds:@[@"Mary"] callback:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            NSLog(@"邀请成功！");
-        }
-    }];
-}];
-```
-```java
-// 首先根据 ID 获取 Conversation 实例
-final LCIMConversation conv = client.getConversation("CONVERSATION_ID");
-// 邀请 Mary 加入对话
-conv.addMembers(Arrays.asList("Mary"), new LCIMOperationPartiallySucceededCallback() {
-    @Override
-    public void done(LCIMException e, List<String> successfulClientIds, List<LCIMOperationFailure> failures) {
-      // 添加成功
-    }
-});
-```
-```cs
-// 首先根据 ID 获取 Conversation 实例
-var conversation = await tom.GetConversation("CONVERSATION_ID");
-// 邀请 Mary 加入对话
-await conversation.AddMembers(new string[] { "Mary" });
-```
 ```dart
 List<Conversation> conversations;
 try {
@@ -890,41 +896,9 @@ try {
 
 而 Jerry 端增加「新成员加入」的事件通知处理函数，就可以及时获知 Mary 被 Tom 邀请加入当前对话了：
 
-```js
-// 有用户被添加至某个对话
-jerry.on(Event.MEMBERS_JOINED, function membersjoinedEventHandler(payload, conversation) {
-    console.log(payload.members, payload.invitedBy, conversation.id);
-});
-```
-```swift
-jerry.delegate = delegator
-
-func client(_ client: IMClient, conversation: IMConversation, event: IMConversationEvent) {
-    switch event {
-    case let .joined(byClientID: byClientID, at: atDate):
-        print(byClientID)
-        print(atDate)
-    case let .membersJoined(members: members, byClientID: byClientID, at: atDate):
-        print(members)
-        print(byClientID)
-        print(atDate)
-    default:
-        break
-    }
-}
-```
-```objc
-jerry.delegate = delegator;
-
-#pragma mark - LCIMClientDelegate
-/*!
- 对话中有新成员加入时所有成员都会收到这一通知。
- @param conversation － 所属对话
- @param clientIds - 加入的新成员列表
- @param clientId - 邀请者的 ID
- */
-- (void)conversation:(LCIMConversation *)conversation membersAdded:(NSArray *)clientIds byClientId:(NSString *)clientId {
-    NSLog(@"%@", [NSString stringWithFormat:@"%@ 加入到对话，操作者为：%@",[clientIds objectAtIndex:0],clientId]);
+```cs
+jerry.OnMembersJoined = (conv, memberList, initBy) => {
+    WriteLine($"{initBy} 邀请了 {memberList} 加入了 {conv.Id} 对话");
 }
 ```
 ```java
@@ -950,9 +924,41 @@ public class CustomConversationEventHandler extends LCIMConversationEventHandler
 // 设置全局的对话事件处理 handler
 LCIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
 ```
-```cs
-jerry.OnMembersJoined = (conv, memberList, initBy) => {
-    WriteLine($"{initBy} 邀请了 {memberList} 加入了 {conv.Id} 对话");
+```objc
+jerry.delegate = delegator;
+
+#pragma mark - LCIMClientDelegate
+/*!
+ 对话中有新成员加入时所有成员都会收到这一通知。
+ @param conversation － 所属对话
+ @param clientIds - 加入的新成员列表
+ @param clientId - 邀请者的 ID
+ */
+- (void)conversation:(LCIMConversation *)conversation membersAdded:(NSArray *)clientIds byClientId:(NSString *)clientId {
+    NSLog(@"%@", [NSString stringWithFormat:@"%@ 加入到对话，操作者为：%@",[clientIds objectAtIndex:0],clientId]);
+}
+```
+```js
+// 有用户被添加至某个对话
+jerry.on(Event.MEMBERS_JOINED, function membersjoinedEventHandler(payload, conversation) {
+    console.log(payload.members, payload.invitedBy, conversation.id);
+});
+```
+```swift
+jerry.delegate = delegator
+
+func client(_ client: IMClient, conversation: IMConversation, event: IMConversationEvent) {
+    switch event {
+    case let .joined(byClientID: byClientID, at: atDate):
+        print(byClientID)
+        print(atDate)
+    case let .membersJoined(members: members, byClientID: byClientID, at: atDate):
+        print(members)
+        print(byClientID)
+        print(atDate)
+    default:
+        break
+    }
 }
 ```
 ```dart
@@ -1000,6 +1006,28 @@ Cloud-->Jerry: 2. 下发通知：Mary 被 Tom 邀请加入了对话
 
 而 **重新创建一个对话，并在创建的时候指定全部成员** 的方式如下：
 
+```cs
+var conversation = await tom.CreateConversation(new string[] { "Jerry","Mary" }, name: "Tom & Jerry & friends", unique: true);
+```
+```java
+tom.createConversation(Arrays.asList("Jerry","Mary"), "Tom & Jerry & friends", null,
+   new LCIMConversationCreatedCallback() {
+      @Override
+      public void done(LCIMConversation conversation, LCIMException e) {
+           if (e == null) {
+              // 创建成功
+           }
+      }
+   });
+```
+```objc
+// Tom 建立了与朋友们的会话
+[tom createConversationWithClientIds:@[@"Jerry", @"Mary"] callback:^(LCIMConversation * _Nullable conversation, NSError * _Nullable error) {
+    if (!error) {
+        NSLog(@"创建成功！");
+    }
+}];
+```
 ```js
 tom.createConversation({
   // 创建的时候直接指定 Jerry 和 Mary 一起加入多人群聊，当然根据需求可以添加更多成员
@@ -1023,28 +1051,6 @@ do {
     print(error)
 }
 ```
-```objc
-// Tom 建立了与朋友们的会话
-[tom createConversationWithClientIds:@[@"Jerry", @"Mary"] callback:^(LCIMConversation * _Nullable conversation, NSError * _Nullable error) {
-    if (!error) {
-        NSLog(@"创建成功！");
-    }
-}];
-```
-```java
-tom.createConversation(Arrays.asList("Jerry","Mary"), "Tom & Jerry & friends", null,
-   new LCIMConversationCreatedCallback() {
-      @Override
-      public void done(LCIMConversation conversation, LCIMException e) {
-           if (e == null) {
-              // 创建成功
-           }
-      }
-   });
-```
-```cs
-var conversation = await tom.CreateConversation(new string[] { "Jerry","Mary" }, name: "Tom & Jerry & friends", unique: true);
-```
 ```dart
 try {
   Conversation conversation = await jerry.createConversation(
@@ -1061,6 +1067,30 @@ try {
 
 例如，Tom 向好友群发送了一条欢迎消息：
 
+```cs
+var textMessage = new LCIMTextMessage("大家好，欢迎来到我们的群聊对话！");
+await conversation.Send(textMessage);
+```
+```java
+LCIMTextMessage msg = new LCIMTextMessage();
+msg.setText("大家好，欢迎来到我们的群聊对话！");
+// 发送消息
+conversation.sendMessage(msg, new LCIMConversationCallback() {
+  @Override
+  public void done(LCIMException e) {
+    if (e == null) {
+      Log.d("群聊", "发送成功！");
+    }
+  }
+});
+```
+```objc
+[conversation sendMessage:[LCIMTextMessage messageWithText:@"大家好，欢迎来到我们的群聊对话！" attributes:nil] callback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"发送成功！");
+    }
+}];
+```
 ```js
 conversation.send(new TextMessage('大家好，欢迎来到我们的群聊对话'));
 ```
@@ -1079,30 +1109,6 @@ do {
     print(error)
 }
 ```
-```objc
-[conversation sendMessage:[LCIMTextMessage messageWithText:@"大家好，欢迎来到我们的群聊对话！" attributes:nil] callback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        NSLog(@"发送成功！");
-    }
-}];
-```
-```java
-LCIMTextMessage msg = new LCIMTextMessage();
-msg.setText("大家好，欢迎来到我们的群聊对话！");
-// 发送消息
-conversation.sendMessage(msg, new LCIMConversationCallback() {
-  @Override
-  public void done(LCIMException e) {
-    if (e == null) {
-      Log.d("群聊", "发送成功！");
-    }
-  }
-});
-```
-```cs
-var textMessage = new LCIMTextMessage("大家好，欢迎来到我们的群聊对话！");
-await conversation.Send(textMessage);
-```
 ```dart
 try {
   TextMessage textMessage = TextMessage();
@@ -1119,6 +1125,23 @@ try {
 
 三个好友的群其乐融融不久，后来 Mary 出言不逊，惹恼了群主 Tom，Tom 直接把 Mary 踢出了对话群。Tom 端想要踢人，该怎么实现呢？
 
+```cs
+await conversation.RemoveMembers(new string[] { "Mary" });
+```
+```java
+conv.kickMembers(Arrays.asList("Mary"), new LCIMOperationPartiallySucceededCallback() {
+    @Override
+    public void done(LCIMException e, List<String> successfulClientIds, List<LCIMOperationFailure> failures) {
+    }
+});
+```
+```objc
+[conversation removeMembersWithClientIds:@[@"Mary"] callback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"踢人成功！");
+    }
+}];
+```
 ```js
 conversation.remove(['Mary']).then(function(conversation) {
   console.log('移除成功', conversation.members);
@@ -1146,23 +1169,6 @@ do {
     print(error)
 }
 ```
-```objc
-[conversation removeMembersWithClientIds:@[@"Mary"] callback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        NSLog(@"踢人成功！");
-    }
-}];
-```
-```java
-conv.kickMembers(Arrays.asList("Mary"), new LCIMOperationPartiallySucceededCallback() {
-    @Override
-    public void done(LCIMException e, List<String> successfulClientIds, List<LCIMOperationFailure> failures) {
-    }
-});
-```
-```cs
-await conversation.RemoveMembers(new string[] { "Mary" });
-```
 ```dart
 try {
   MemberResult removeMemberResult = await conversation.removeMembers(members: {'Mary'});
@@ -1170,6 +1176,7 @@ try {
   print(e);
 }
 ```
+
 Tom 端执行了这段代码之后会触发如下流程：
 
 ```seq
@@ -1181,54 +1188,13 @@ Cloud-->Tom: 2. 下发通知：Mary 被移除了对话
 
 这里出现了两个新的事件：当前用户被踢出对话 `KICKED`（Mary 收到的），成员 XX 被踢出对话 `MEMBERS_LEFT`（Jerry 和 Tom 收到的）。其处理方式与邀请人的流程类似：
 
-```js
-// 有成员被从某个对话中移除
-jerry.on(Event.MEMBERS_LEFT, function membersjoinedEventHandler(payload, conversation) {
-    console.log(payload.members, payload.kickedBy, conversation.id);
-});
-// 有用户被踢出某个对话
-jerry.on(Event.KICKED, function membersjoinedEventHandler(payload, conversation) {
-    console.log(payload.kickedBy, conversation.id);
-});
-```
-```swift
-jerry.delegate = delegator
-
-func client(_ client: IMClient, conversation: IMConversation, event: IMConversationEvent) {
-    switch event {
-    case let .left(byClientID: byClientID, at: atDate):
-        print(byClientID)
-        print(atDate)
-    case let .membersLeft(members: members, byClientID: byClientID, at: atDate):
-        print(members)
-        print(byClientID)
-        print(atDate)
-    default:
-        break
-    }
-}
-```
-```objc
-jerry.delegate = delegator;
-
-#pragma mark - LCIMClientDelegate
-/*!
- 对话中有成员离开时所有剩余成员都会收到这一通知。
- @param conversation － 所属对话
- @param clientIds - 离开的成员列表
- @param clientId - 操作者的 ID
- */
-- (void)conversation:(LCIMConversation *)conversation membersRemoved:(NSArray<NSString *> * _Nullable)clientIds byClientId:(NSString * _Nullable)clientId {
-  ;
-}
-/*!
- 当前用户被踢出对话的通知。
- @param conversation － 所属对话
- @param clientId - 操作者的 ID
- */
-- (void)conversation:(LCIMConversation *)conversation kickedByClientId:(NSString * _Nullable)clientId {
-  ;
-}
+```cs
+jerry.OnMembersLeft = (conv, leftIds, kickedBy) => {
+    WriteLine($"{leftIds} 离开对话 {conv.Id}；操作者为：{kickedBy}");
+} 
+jerry.OnKicked = (conv, initBy) => {
+    WriteLine($"你已经离开对话 {conv.Id}；操作者为：{initBy}");
+};
 ```
 ```java
 public class CustomConversationEventHandler extends LCIMConversationEventHandler {
@@ -1267,13 +1233,54 @@ public class CustomConversationEventHandler extends LCIMConversationEventHandler
 // 设置全局的对话事件处理 handler
 LCIMMessageManager.setConversationEventHandler(new CustomConversationEventHandler());
 ```
-```cs
-jerry.OnMembersLeft = (conv, leftIds, kickedBy) => {
-    WriteLine($"{leftIds} 离开对话 {conv.Id}；操作者为：{kickedBy}");
-} 
-jerry.OnKicked = (conv, initBy) => {
-    WriteLine($"你已经离开对话 {conv.Id}；操作者为：{initBy}");
-};
+```objc
+jerry.delegate = delegator;
+
+#pragma mark - LCIMClientDelegate
+/*!
+ 对话中有成员离开时所有剩余成员都会收到这一通知。
+ @param conversation － 所属对话
+ @param clientIds - 离开的成员列表
+ @param clientId - 操作者的 ID
+ */
+- (void)conversation:(LCIMConversation *)conversation membersRemoved:(NSArray<NSString *> * _Nullable)clientIds byClientId:(NSString * _Nullable)clientId {
+  ;
+}
+/*!
+ 当前用户被踢出对话的通知。
+ @param conversation － 所属对话
+ @param clientId - 操作者的 ID
+ */
+- (void)conversation:(LCIMConversation *)conversation kickedByClientId:(NSString * _Nullable)clientId {
+  ;
+}
+```
+```js
+// 有成员被从某个对话中移除
+jerry.on(Event.MEMBERS_LEFT, function membersjoinedEventHandler(payload, conversation) {
+    console.log(payload.members, payload.kickedBy, conversation.id);
+});
+// 有用户被踢出某个对话
+jerry.on(Event.KICKED, function membersjoinedEventHandler(payload, conversation) {
+    console.log(payload.kickedBy, conversation.id);
+});
+```
+```swift
+jerry.delegate = delegator
+
+func client(_ client: IMClient, conversation: IMConversation, event: IMConversationEvent) {
+    switch event {
+    case let .left(byClientID: byClientID, at: atDate):
+        print(byClientID)
+        print(atDate)
+    case let .membersLeft(members: members, byClientID: byClientID, at: atDate):
+        print(members)
+        print(byClientID)
+        print(atDate)
+    default:
+        break
+    }
+}
 ```
 ```dart
 // 有成员被从某个对话中移除
@@ -1300,6 +1307,31 @@ jerry.onKicked = ({
 
 把 Mary 踢走之后，Tom 嫌人少不好玩，所以他找到了 William，说他和 Jerry 有一个很好玩的聊天群，并且把群的 ID（或名称）告知给了 William。William 也很想进入这个群看看他们究竟在聊什么，他自己主动加入了对话：
 
+```cs
+var conv = await william.GetConversation("CONVERSATION_ID");
+await conv.Join();
+```
+```java
+LCIMConversation conv = william.getConversation("CONVERSATION_ID");
+conv.join(new LCIMConversationCallback(){
+    @Override
+    public void done(LCIMException e){
+        if(e==null){
+          // 加入成功
+        }
+    }
+});
+```
+```objc
+LCIMConversationQuery *query = [william conversationQuery];
+[query getConversationById:@"CONVERSATION_ID" callback:^(LCIMConversation *conversation, NSError *error) {
+    [conversation joinWithCallback:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"加入成功！");
+        }
+    }];
+}];
+```
 ```js
 william.getConversation('CONVERSATION_ID').then(function(conversation) {
   return conversation.join();
@@ -1334,31 +1366,6 @@ do {
     print(error)
 }
 ```
-```objc
-LCIMConversationQuery *query = [william conversationQuery];
-[query getConversationById:@"CONVERSATION_ID" callback:^(LCIMConversation *conversation, NSError *error) {
-    [conversation joinWithCallback:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            NSLog(@"加入成功！");
-        }
-    }];
-}];
-```
-```java
-LCIMConversation conv = william.getConversation("CONVERSATION_ID");
-conv.join(new LCIMConversationCallback(){
-    @Override
-    public void done(LCIMException e){
-        if(e==null){
-          // 加入成功
-        }
-    }
-});
-```
-```cs
-var conv = await william.GetConversation("CONVERSATION_ID");
-await conv.Join();
-```
 ```dart
 List<Conversation> conversations;
 try {
@@ -1388,6 +1395,28 @@ Cloud-->Jerry: 2. 下发通知：William 加入对话
 
 其他人则通过订阅 `MEMBERS_JOINED` 来接收 William 加入对话的通知:
 
+```cs
+jerry.OnMembersJoined = (conv, memberList, initBy) => {
+    WriteLine($"{memberList} 加入了 {conv.Id} 对话；操作者为：{initBy}");
+}
+```
+```java
+public class CustomConversationEventHandler extends LCIMConversationEventHandler {
+  @Override
+  public void onMemberJoined(LCIMClient client, LCIMConversation conversation,
+      List<String> members, String invitedBy) {
+      // 手机屏幕上会显示一小段文字：William 加入到 551260efe4b01608686c3e0f；操作者为：William
+      Toast.makeText(LeanCloud.applicationContext,
+        members + " 加入到 " + conversation.getConversationId() + "；操作者为："
+            + invitedBy, Toast.LENGTH_SHORT).show();
+  }
+}
+```
+```objc
+- (void)conversation:(LCIMConversation *)conversation membersAdded:(NSArray *)clientIds byClientId:(NSString *)clientId {
+    NSLog(@"%@", [NSString stringWithFormat:@"%@ 加入到对话，操作者为：%@",[clientIds objectAtIndex:0],clientId]);
+}
+```
 ```js
 jerry.on(Event.MEMBERS_JOINED, function membersJoinedEventHandler(payload, conversation) {
     console.log(payload.members, payload.invitedBy, conversation.id);
@@ -1405,28 +1434,6 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
     }
 }
 ```
-```objc
-- (void)conversation:(LCIMConversation *)conversation membersAdded:(NSArray *)clientIds byClientId:(NSString *)clientId {
-    NSLog(@"%@", [NSString stringWithFormat:@"%@ 加入到对话，操作者为：%@",[clientIds objectAtIndex:0],clientId]);
-}
-```
-```java
-public class CustomConversationEventHandler extends LCIMConversationEventHandler {
-  @Override
-  public void onMemberJoined(LCIMClient client, LCIMConversation conversation,
-      List<String> members, String invitedBy) {
-      // 手机屏幕上会显示一小段文字：William 加入到 551260efe4b01608686c3e0f；操作者为：William
-      Toast.makeText(LeanCloud.applicationContext,
-        members + " 加入到 " + conversation.getConversationId() + "；操作者为："
-            + invitedBy, Toast.LENGTH_SHORT).show();
-  }
-}
-```
-```cs
-jerry.OnMembersJoined = (conv, memberList, initBy) => {
-    WriteLine($"{memberList} 加入了 {conv.Id} 对话；操作者为：{initBy}");
-}
-```
 ```dart
 jerry.onMembersJoined = ({
   Client client,
@@ -1442,6 +1449,26 @@ jerry.onMembersJoined = ({
 
 随着 Tom 邀请进来的人越来越多，Jerry 觉得跟这些人都说不到一块去，他不想继续呆在这个对话里面了，所以选择自己主动退出对话，这时候可以调用 `Conversation#quit` 方法完成退群的操作：
 
+```cs
+await conversation.Quit();
+```
+```java
+conversation.quit(new LCIMConversationCallback(){
+    @Override
+    public void done(LCIMException e){
+      if(e==null){
+        // 退出成功
+      }
+    }
+});
+```
+```objc
+[conversation quitWithCallback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"退出成功！");
+    }
+}];
+```
 ```js
 conversation.quit().then(function(conversation) {
   console.log('退出成功', conversation.members);
@@ -1461,26 +1488,6 @@ do {
     print(error)
 }
 ```
-```objc
-[conversation quitWithCallback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        NSLog(@"退出成功！");
-    }
-}];
-```
-```java
-conversation.quit(new LCIMConversationCallback(){
-    @Override
-    public void done(LCIMException e){
-      if(e==null){
-        // 退出成功
-      }
-    }
-});
-```
-```cs
-await conversation.Quit();
-```
 ```dart
 try {
   MemberResult quitResult = await conversation.quit();
@@ -1488,6 +1495,7 @@ try {
   print(e);
 }
 ```
+
 执行了这段代码 Jerry 就离开了这个聊天群，此后群里所有的事件 Jerry 都不会再知晓。各个成员接收到的事件通知流程如下：
 
 ```seq
@@ -1499,6 +1507,26 @@ Cloud-->Tom: 2. 下发通知：Jerry 已离开对话
 
 而其他人需要通过订阅 `MEMBERS_LEFT` 来接收 Jerry 离开对话的事件通知：
 
+```cs
+mary.OnMembersLeft = (conv, members, initBy) => {
+    WriteLine($"{members} 离开了 {conv.Id} 对话；操作者为：{initBy}");
+}
+```
+```java
+public class CustomConversationEventHandler extends LCIMConversationEventHandler {
+  @Override
+  public void onMemberLeft(LCIMClient client, LCIMConversation conversation, List<String> members,
+      String kickedBy) {
+      // 有其他成员离开时，执行此处逻辑
+  }
+}
+```
+```objc
+// Mary 登录之后，Jerry 退出了对话，在 Mary 所在的客户端就会激发以下回调
+- (void)conversation:(LCIMConversation *)conversation membersRemoved:(NSArray *)clientIds byClientId:(NSString *)clientId {
+    NSLog(@"%@", [NSString stringWithFormat:@"%@ 离开了对话，操作者为：%@",[clientIds objectAtIndex:0],clientId]);
+}
+```
 ```js
 mary.on(Event.MEMBERS_LEFT, function membersLeftEventHandler(payload, conversation) {
     console.log(payload.members, payload.kickedBy, conversation.id);
@@ -1514,26 +1542,6 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
     default:
         break
     }
-}
-```
-```objc
-// Mary 登录之后，Jerry 退出了对话，在 Mary 所在的客户端就会激发以下回调
-- (void)conversation:(LCIMConversation *)conversation membersRemoved:(NSArray *)clientIds byClientId:(NSString *)clientId {
-    NSLog(@"%@", [NSString stringWithFormat:@"%@ 离开了对话，操作者为：%@",[clientIds objectAtIndex:0],clientId]);
-}
-```
-```java
-public class CustomConversationEventHandler extends LCIMConversationEventHandler {
-  @Override
-  public void onMemberLeft(LCIMClient client, LCIMConversation conversation, List<String> members,
-      String kickedBy) {
-      // 有其他成员离开时，执行此处逻辑
-  }
-}
-```
-```cs
-mary.OnMembersLeft = (conv, members, initBy) => {
-    WriteLine($"{members} 离开了 {conv.Id} 对话；操作者为：{initBy}");
 }
 ```
 ```dart
@@ -1565,12 +1573,12 @@ Jerry 主动退出 | `MEMBERS_LEFT` | `MEMBERS_LEFT` | / | `MEMBERS_LEFT`
 
 上面的示例都是发送文本消息，但是实际上可能图片、视频、位置等消息也是非常常见的消息格式，接下来我们就看看如何发送这些富媒体类型的消息。
 
-LeanCloud 即时通讯服务默认支持文本、文件、图像、音频、视频、位置、二进制等不同格式的消息，除了二进制消息之外，普通消息的收发接口都是字符串，但是文本消息和文件、图像、音视频消息有一点区别：
+即时通讯服务默认支持文本、文件、图像、音频、视频、位置、二进制等不同格式的消息，除了二进制消息之外，普通消息的收发接口都是字符串，但是文本消息和文件、图像、音视频消息有一点区别：
 
 - 文本消息发送的就是本身的内容
-- 而其他的多媒体消息，例如一张图片，实际上即时通讯 SDK 会首先调用 LeanCloud 存储服务的 `AVFile` 接口，将图像的二进制文件上传到存储服务云端，再把图像下载的 URL 放入即时通讯消息结构体中，所以 **图像消息不过是包含了图像下载链接的固定格式文本消息**。
+- 而其他的多媒体消息，例如一张图片，实际上即时通讯 SDK 会首先调用存储服务的 `AVFile` 接口，将图像的二进制文件上传到存储服务云端，再把图像下载的 URL 放入即时通讯消息结构体中，所以 **图像消息不过是包含了图像下载链接的固定格式文本消息**。
 
-> 图像等二进制数据不随即时通讯消息直接下发的主要原因在于，LeanCloud 的文件存储服务默认都是开通了 CDN 加速选项的，通过文件下载对于终端用户来说可以有更快的展现速度，同时对于开发者来说也能获得更低的存储成本。
+图像等二进制数据不随即时通讯消息直接下发的主要原因在于，文件存储服务默认都是开通了 CDN 加速选项的，通过文件下载对于终端用户来说可以有更快的展现速度，同时对于开发者来说也能获得更低的存储成本。
 
 ### 默认消息类型
 
@@ -1591,8 +1599,8 @@ LeanCloud 即时通讯服务默认支持文本、文件、图像、音频、视�
 | --- | --- | --- |
 | `from`        | `String` | 消息发送者的 `clientId`。 |
 | `cid`         | `String` | 消息所属对话 ID。 |
-| `id`          | `String` | 消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 ID。 |
-| `timestamp`   | `Date`   | 消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。 |
+| `id`          | `String` | 消息发送成功之后，由云端给每条消息赋予的唯一 ID。 |
+| `timestamp`   | `Date`   | 消息发送的时间。消息发送成功之后，由云端赋予的全局的时间戳。 |
 | `deliveredAt` | `Date`   | 消息送达时间。 |
 | `status`      | `Symbol` | 消息状态，其值为枚举 [`MessageStatus`](https://leancloud.github.io/js-realtime-sdk/docs/module-leancloud-realtime.html#.MessageStatus) 的成员之一：<br/><br/>`MessageStatus.NONE`（未知）<br/>`MessageStatus.SENDING`（发送中）<br/>`MessageStatus.SENT`（发送成功）<br/>`MessageStatus.DELIVERED`（已送达）<br/>`MessageStatus.FAILED`（失败） |
 
@@ -1606,8 +1614,8 @@ LeanCloud 即时通讯服务默认支持文本、文件、图像、音频、视�
 | `fromClientID`             | `String`               | 消息发送者的 `clientId`。 |
 | `currentClientID`          | `String`               | 消息接收者的 `clientId`。 |
 | `conversationID`           | `String`               | 消息所属对话 ID。 |
-| `ID`                       | `String`               | 消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 ID。 |
-| `sentTimestamp`            | `int64_t`              | 消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。 |
+| `ID`                       | `String`               | 消息发送成功之后，由云端给每条消息赋予的唯一 ID。 |
+| `sentTimestamp`            | `int64_t`              | 消息发送的时间。消息发送成功之后，云端赋予的全局的时间戳。 |
 | `deliveredTimestamp`       | `int64_t`              | 消息被对方接收到的时间戳。 |
 | `readTimestamp`            | `int64_t`              | 消息被对方阅读的时间戳。 |
 | `patchedTimestamp`         | `int64_t`              | 消息被修改的时间戳。 |
@@ -1626,9 +1634,9 @@ LeanCloud 即时通讯服务默认支持文本、文件、图像、音频、视�
 | `content`            | `NSString`             | 消息内容。 |
 | `clientId`           | `NSString`             | 消息发送者的 `clientId`。 |
 | `conversationId`     | `NSString`             | 消息所属对话 ID。 |
-| `messageId`          | `NSString`             | 消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 ID。 |
-| `sendTimestamp`      | `int64_t`              | 消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。 |
-| `deliveredTimestamp` | `int64_t`              | 消息被对方接收到的时间。消息被接收之后，由 LeanCloud 云端赋予的全局的时间戳。 |
+| `messageId`          | `NSString`             | 消息发送成功之后，由云端给每条消息赋予的唯一 ID。 |
+| `sendTimestamp`      | `int64_t`              | 消息发送的时间。消息发送成功之后，由云端赋予的全局的时间戳。 |
+| `deliveredTimestamp` | `int64_t`              | 消息被对方接收到的时间。消息被接收之后，由云端赋予的全局的时间戳。 |
 | `status`             | `AVIMMessageStatus` 枚举 | 消息状态，有五种取值：<br/><br/>`LCIMMessageStatusNone`（未知）<br/>`LCIMMessageStatusSending`（发送中）<br/>`LCIMMessageStatusSent`（发送成功）<br/>`LCIMMessageStatusDelivered`（被接收）<br/>`LCIMMessageStatusFailed`（失败） |
 | `ioType`             | `LCIMMessageIOType` 枚举 | 消息传输方向，有两种取值：<br/><br/>`LCIMMessageIOTypeIn`（发给当前用户）<br/>`LCIMMessageIOTypeOut`（由当前用户发出） |
 
@@ -1641,9 +1649,9 @@ LeanCloud 即时通讯服务默认支持文本、文件、图像、音频、视�
 | `content`          | `String`               | 消息内容。 |
 | `clientId`         | `String`               | 消息发送者的 `clientId`。 |
 | `conversationId`   | `String`               | 消息所属对话 ID。 |
-| `messageId`        | `String`               | 消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 ID。 |
-| `timestamp`        | `long`                 | 消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。 |
-| `receiptTimestamp` | `long`                 | 消息被对方接收到的时间。消息被接收之后，由 LeanCloud 云端赋予的全局的时间戳。 |
+| `messageId`        | `String`               | 消息发送成功之后，由云端给每条消息赋予的唯一 ID。 |
+| `timestamp`        | `long`                 | 消息发送的时间。消息发送成功之后，由云端赋予的全局的时间戳。 |
+| `receiptTimestamp` | `long`                 | 消息被对方接收到的时间。消息被接收之后，由云端赋予的全局的时间戳。 |
 | `status`           | `MessageStatus` 枚举 | 消息状态，有五种取值：<br/><br/>`StatusNone`（未知）<br/>`StatusSending`（发送中）<br/>`StatusSent`（发送成功）<br/>`StatusReceipt`（被接收）<br/>`StatusFailed`（失败） |
 | `ioType`           | `MessageIOType` 枚举 | 消息传输方向，有两种取值：<br/><br/>`TypeIn`（发给当前用户）<br/>`TypeOut`（由当前用户发出） |
 
@@ -1656,9 +1664,9 @@ LeanCloud 即时通讯服务默认支持文本、文件、图像、音频、视�
 | `content`          | `String`               | 消息内容。 |
 | `clientId`         | `String`               | 消息发送者的 `clientId`。 |
 | `conversationId`   | `String`               | 消息所属对话 ID。 |
-| `messageId`        | `String`               | 消息发送成功之后，由 LeanCloud 云端给每条消息赋予的唯一 ID。 |
-| `timestamp`        | `long`                 | 消息发送的时间。消息发送成功之后，由 LeanCloud 云端赋予的全局的时间戳。 |
-| `receiptTimestamp` | `long`                 | 消息被对方接收到的时间。消息被接收之后，由 LeanCloud 云端赋予的全局的时间戳。 |
+| `messageId`        | `String`               | 消息发送成功之后，由云端给每条消息赋予的唯一 ID。 |
+| `timestamp`        | `long`                 | 消息发送的时间。消息发送成功之后，由云端赋予的全局的时间戳。 |
+| `receiptTimestamp` | `long`                 | 消息被对方接收到的时间。消息被接收之后，由云端赋予的全局的时间戳。 |
 | `status`           | `AVIMMessageStatus` 枚举 | 消息状态，有五种取值：<br/><br/>`AVIMMessageStatusNone`（未知）<br/>`AVIMMessageStatusSending`（发送中）<br/>`AVIMMessageStatusSent`（发送成功）<br/>`AVIMMessageStatusReceipt`（被接收）<br/>`AVIMMessageStatusFailed`（失败） |
 | `ioType`           | `AVIMMessageIOType` 枚举 | 消息传输方向，有两种取值：<br/><br/>`AVIMMessageIOTypeIn`（发给当前用户）<br/>`AVIMMessageIOTypeOut`（由当前用户发出） |
 
@@ -1683,18 +1691,52 @@ LeanCloud 即时通讯服务默认支持文本、文件、图像、音频、视�
 
 ```seq
 Tom-->Local: 1. 获取图像实体内容
-Tom-->Storage: 2. SDK 后台上传文件（AVFile）到云端
+Tom-->Storage: 2. SDK 后台上传文件（LCFile）到云端
 Storage-->Tom: 3. 返回图像的云端地址
 Tom-->Cloud: 4. SDK 将图像消息发送给云端
 Cloud->Jerry: 5. 收到图像消息，在对话框里面做 UI 展现
 ```
 
 图解：
+
 1. Local 可能是来自于 `localStorage`/`camera`，表示图像的来源可以是本地存储例如 iPhone 手机的媒体库或者直接调用相机 API 实时地拍照获取的照片。
-2. `AVFile` 是 LeanCloud 提供的文件存储服务对象，详细可以参阅 [文件存储 AVFile](storage_overview.html#文件存储 AVFile)。
+2. `LCFile` 是云服务提供的文件存储对象。
 
 对应的代码并没有时序图那样复杂，因为调用 `send` 接口的时候，SDK 会自动上传图像，不需要开发者再去关心这一步：
 
+```cs
+var image = new LCFile("screenshot.png", new Uri("http://example.com/screenshot.png"));
+var imageMessage = new LCIMImageMessage(image);
+imageMessage.Text = "发自我的 Windows";
+await conversation.Send(imageMessage);
+```
+```java
+LCFile file = LCFile.withAbsoluteLocalPath("San_Francisco.png", Environment.getExternalStorageDirectory() + "/San_Francisco.png");
+// 创建一条图像消息
+LCIMImageMessage m = new LCIMImageMessage(file);
+m.setText("发自我的小米手机");
+conv.sendMessage(m, new LCIMConversationCallback() {
+  @Override
+  public void done(LCIMException e) {
+    if (e == null) {
+      // 发送成功
+    }
+  }
+});
+```
+```objc
+NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+NSString *documentsDirectory = [paths objectAtIndex:0];
+NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:@"Tarara.png"];
+NSError *error;
+LCFile *file = [LCFile fileWithLocalPath:imagePath error:&error];
+LCIMImageMessage *message = [LCIMImageMessage messageWithText:@"萌妹子一枚" file:file attributes:nil];
+[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"发送成功！");
+    }
+}];
+```
 ```js
 // 图像消息等富媒体消息依赖存储 SDK 和富媒体消息插件，
 // 具体的引用和初始化步骤请参考《SDK 安装指南》
@@ -1727,39 +1769,6 @@ do {
     print(error)
 }
 ```
-```objc
-NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-NSString *documentsDirectory = [paths objectAtIndex:0];
-NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:@"LeanCloud.png"];
-NSError *error;
-LCFile *file = [LCFile fileWithLocalPath:imagePath error:&error];
-LCIMImageMessage *message = [LCIMImageMessage messageWithText:@"萌妹子一枚" file:file attributes:nil];
-[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        NSLog(@"发送成功！");
-    }
-}];
-```
-```java
-LCFile file = LCFile.withAbsoluteLocalPath("San_Francisco.png", Environment.getExternalStorageDirectory() + "/San_Francisco.png");
-// 创建一条图像消息
-LCIMImageMessage m = new LCIMImageMessage(file);
-m.setText("发自我的小米手机");
-conv.sendMessage(m, new LCIMConversationCallback() {
-  @Override
-  public void done(LCIMException e) {
-    if (e == null) {
-      // 发送成功
-    }
-  }
-});
-```
-```cs
-var image = new LCFile("screenshot.png", new Uri("http://example.com/screenshot.png"));
-var imageMessage = new LCIMImageMessage(image);
-imageMessage.Text = "发自我的 Windows";
-await conversation.Send(imageMessage);
-```
 ```dart
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -1782,6 +1791,36 @@ try {
 
 除了上述这种从本地直接发送图片文件的消息之外，在很多时候，用户可能从网络上或者别的应用中拷贝了一个图像的网络连接地址，当做一条图像消息发送到对话中，这种需求可以用如下代码来实现：
 
+```cs
+var image = new LCFile("girl.gif", new Uri("http://example.com/girl.gif"));
+var imageMessage = new LCIMImageMessage(image);
+imageMessage.Text = "发自我的 Windows";
+await conversation.Send(imageMessage);
+```
+```java
+LCFile file = new LCFile("萌妹子","http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif", null);
+LCIMImageMessage m = new LCIMImageMessage(file);
+m.setText("萌妹子一枚");
+// 创建一条图像消息
+conv.sendMessage(m, new LCIMConversationCallback() {
+    @Override
+    public void done(LCIMException e) {
+      if (e == null) {
+        // 发送成功
+      }
+    }
+});
+```
+```objc
+// Tom 发了一张图片给 Jerry
+LCFile *file = [LCFile fileWithURL:[self @"http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"]];
+LCIMImageMessage *message = [LCIMImageMessage messageWithText:@"萌妹子一枚" file:file attributes:nil];
+[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"发送成功！");
+    }
+}];
+```
 ```js
 var AV = require('leancloud-storage');
 var { ImageMessage } = require('leancloud-realtime-plugin-typed-messages');
@@ -1812,36 +1851,6 @@ do {
     print(error)
 }
 ```
-```objc
-// Tom 发了一张图片给 Jerry
-LCFile *file = [LCFile fileWithURL:[self @"http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif"]];
-LCIMImageMessage *message = [LCIMImageMessage messageWithText:@"萌妹子一枚" file:file attributes:nil];
-[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        NSLog(@"发送成功！");
-    }
-}];
-```
-```java
-LCFile file = new LCFile("萌妹子","http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif", null);
-LCIMImageMessage m = new LCIMImageMessage(file);
-m.setText("萌妹子一枚");
-// 创建一条图像消息
-conv.sendMessage(m, new LCIMConversationCallback() {
-    @Override
-    public void done(LCIMException e) {
-      if (e == null) {
-        // 发送成功
-      }
-    }
-});
-```
-```cs
-var image = new LCFile("girl.gif", new Uri("http://example.com/girl.gif"));
-var imageMessage = new LCIMImageMessage(image);
-imageMessage.Text = "发自我的 Windows";
-await conversation.Send(imageMessage);
-```
 ```dart
 ImageMessage imageMessage = ImageMessage.from(
   url: 'http://ww3.sinaimg.cn/bmiddle/596b0666gw1ed70eavm5tg20bq06m7wi.gif',
@@ -1858,6 +1867,53 @@ try {
 
 图像消息的接收机制和之前是一样的，只需要修改一下接收消息的事件回调逻辑，根据消息类型来做不同的 UI 展现即可，例如：
 
+```cs
+client.OnMessage = (conv, msg) => {
+    if (e.Message is LCIMImageMessage imageMessage) {
+        WriteLine(imageMessage.Url);
+    }
+}
+```
+```java
+LCIMMessageManager.registerMessageHandler(LCIMImageMessage.class,
+    new LCIMTypedMessageHandler<LCIMImageMessage>() {
+        @Override
+        public void onMessage(LCIMImageMessage msg, LCIMConversation conv, LCIMClient client) {
+            // 只处理 Jerry 这个客户端的消息
+            // 并且来自 conversationId 为 55117292e4b065f7ee9edd29 的 conversation 的消息
+            if ("Jerry".equals(client.getClientId()) && "55117292e4b065f7ee9edd29".equals(conv.getConversationId())) {
+                String fromClientId = msg.getFrom();
+                String messageId = msg.getMessageId();
+                String url = msg.getFileUrl();
+                Map<String, Object> metaData = msg.getFileMetaData();
+                if (metaData.containsKey("size")) {
+                  int size = (Integer) metaData.get("size");
+                }
+                if (metaData.containsKey("width")) {
+                  int width = (Integer) metaData.get("width");
+                }
+                if (metaData.containsKey("height")) {
+                  int height = (Integer) metaData.get("height");
+                }
+                if (metaData.containsKey("format")) {
+                  String format = (String) metaData.get("format");
+                }
+            }
+        }
+});
+```
+```objc
+- (void)conversation:(LCIMConversation *)conversation didReceiveTypedMessage:(LCIMTypedMessage *)message {
+    LCIMImageMessage *imageMessage = (LCIMImageMessage *)message;
+
+    // 消息的 ID
+    NSString *messageId = imageMessage.messageId;
+    // 图像文件的 URL
+    NSString *imageUrl = imageMessage.file.url;
+    // 发该消息的 clientId
+    NSString *fromClientId = message.clientId;
+}
+```
 ```js
 var { Event, TextMessage } = require('leancloud-realtime');
 var { ImageMessage } = require('leancloud-realtime-plugin-typed-messages');
@@ -1892,53 +1948,6 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
     }
 }
 ```
-```objc
-- (void)conversation:(LCIMConversation *)conversation didReceiveTypedMessage:(LCIMTypedMessage *)message {
-    LCIMImageMessage *imageMessage = (LCIMImageMessage *)message;
-
-    // 消息的 ID
-    NSString *messageId = imageMessage.messageId;
-    // 图像文件的 URL
-    NSString *imageUrl = imageMessage.file.url;
-    // 发该消息的 clientId
-    NSString *fromClientId = message.clientId;
-}
-```
-```java
-LCIMMessageManager.registerMessageHandler(LCIMImageMessage.class,
-    new LCIMTypedMessageHandler<LCIMImageMessage>() {
-        @Override
-        public void onMessage(LCIMImageMessage msg, LCIMConversation conv, LCIMClient client) {
-            // 只处理 Jerry 这个客户端的消息
-            // 并且来自 conversationId 为 55117292e4b065f7ee9edd29 的 conversation 的消息
-            if ("Jerry".equals(client.getClientId()) && "55117292e4b065f7ee9edd29".equals(conv.getConversationId())) {
-                String fromClientId = msg.getFrom();
-                String messageId = msg.getMessageId();
-                String url = msg.getFileUrl();
-                Map<String, Object> metaData = msg.getFileMetaData();
-                if (metaData.containsKey("size")) {
-                  int size = (Integer) metaData.get("size");
-                }
-                if (metaData.containsKey("width")) {
-                  int width = (Integer) metaData.get("width");
-                }
-                if (metaData.containsKey("height")) {
-                  int height = (Integer) metaData.get("height");
-                }
-                if (metaData.containsKey("format")) {
-                  String format = (String) metaData.get("format");
-                }
-            }
-        }
-});
-```
-```cs
-client.OnMessage = (conv, msg) => {
-    if (e.Message is LCIMImageMessage imageMessage) {
-        WriteLine(imageMessage.Url);
-    }
-}
-```
 ```dart
 lient.onMessage = ({
   Client client,
@@ -1959,9 +1968,9 @@ lient.onMessage = ({
 
 如果文件是从 **客户端 API 读取的数据流（Stream）**，步骤为：
 
-1. 从本地构造 `AVFile`
-2. 调用 `AVFile` 的上传方法将文件上传到云端，并获取文件元信息（`metaData`）
-3. 把 `AVFile` 的 `objectId`、URL、文件元信息都封装在消息体内
+1. 从本地构造 `LCFile`
+2. 调用 `LCFile` 的上传方法将文件上传到云端，并获取文件元信息（`metaData`）
+3. 把 `LCFile` 的 `objectId`、URL、文件元信息都封装在消息体内
 4. 调用接口发送消息
 
 如果文件是 **外部链接的 URL**，则：
@@ -1971,6 +1980,38 @@ lient.onMessage = ({
 
 以发送音频消息为例，基本流程是：读取音频文件（或者录制音频）> 构建音频消息 > 消息发送。
 
+```cs
+var audio = new LCFile("tante.mp3", Path.Combine(Application.persistentDataPath, "tante.mp3"));
+var audioMessage = new LCIMAudioMessage(audio);
+audioMessage.Text = "听听人类的神曲";
+await conversation.Send(audioMessage);
+```
+```java
+LCFile file = LCFile.withAbsoluteLocalPath("忐忑.mp3",localFilePath);
+LCIMAudioMessage m = new LCIMAudioMessage(file);
+m.setText("听听人类的神曲");
+// 创建一条音频消息
+conv.sendMessage(m, new LCIMConversationCallback() {
+    @Override
+    public void done(LCIMException e) {
+      if (e == null) {
+        // 发送成功
+      }
+    }
+});
+```
+```objc
+NSError *error = nil;
+LCFile *file = [AVFile fileWithLocalPath:localPath error:&error];
+if (!error) {
+    LCIMAudioMessage *message = [LCIMAudioMessage messageWithText:@"听听人类的神曲" file:file attributes:nil];
+    [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"发送成功！");
+        }
+    }];
+}
+```
 ```js
 var AV = require('leancloud-storage');
 var { AudioMessage } = require('leancloud-realtime-plugin-typed-messages');
@@ -2003,38 +2044,6 @@ do {
     print(error)
 }
 ```
-```objc
-NSError *error = nil;
-LCFile *file = [AVFile fileWithLocalPath:localPath error:&error];
-if (!error) {
-    LCIMAudioMessage *message = [LCIMAudioMessage messageWithText:@"听听人类的神曲" file:file attributes:nil];
-    [conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            NSLog(@"发送成功！");
-        }
-    }];
-}
-```
-```java
-LCFile file = LCFile.withAbsoluteLocalPath("忐忑.mp3",localFilePath);
-LCIMAudioMessage m = new LCIMAudioMessage(file);
-m.setText("听听人类的神曲");
-// 创建一条音频消息
-conv.sendMessage(m, new LCIMConversationCallback() {
-    @Override
-    public void done(LCIMException e) {
-      if (e == null) {
-        // 发送成功
-      }
-    }
-});
-```
-```cs
-var audio = new LCFile("tante.mp3", Path.Combine(Application.persistentDataPath, "tante.mp3"));
-var audioMessage = new LCIMAudioMessage(audio);
-audioMessage.Text = "听听人类的神曲";
-await conversation.Send(audioMessage);
-```
 ```dart
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -2051,8 +2060,37 @@ try {
   print(e);
 }
 ```
+
 与图像消息类似，音频消息也支持从 URL 构建：
 
+```cs
+var audio = new LCFile("apple.aac", new Uri("https://some.website.com/apple.aac"));
+var audioMessage = new LCIMAudioMessage(audio);
+audioMessage.Text = "来自苹果发布会现场的录音";
+await conversation.Send(audioMessage);
+```
+```java
+LCFile file = new LCFile("apple.aac", "https://some.website.com/apple.aac", null);
+LCIMAudioMessage m = new LCIMAudioMessage(file);
+m.setText("来自苹果发布会现场的录音");
+conv.sendMessage(m, new LCIMConversationCallback() {
+    @Override
+    public void done(LCIMException e) {
+      if (e == null) {
+        // 发送成功
+      }
+    }
+});
+```
+```objc
+LCFile *file = [LCFile fileWithRemoteURL:[NSURL URLWithString:@"https://some.website.com/apple.aac"]];
+LCIMAudioMessage *message = [LCIMAudioMessage messageWithText:@"来自苹果发布会现场的录音" file:file attributes:nil];
+[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"发送成功！");
+    }
+}];
+```
 ```js
 var AV = require('leancloud-storage');
 var { AudioMessage } = require('leancloud-realtime-plugin-typed-messages');
@@ -2084,34 +2122,6 @@ do {
     print(error)
 }
 ```
-```objc
-LCFile *file = [LCFile fileWithRemoteURL:[NSURL URLWithString:@"https://some.website.com/apple.aac"]];
-LCIMAudioMessage *message = [LCIMAudioMessage messageWithText:@"来自苹果发布会现场的录音" file:file attributes:nil];
-[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        NSLog(@"发送成功！");
-    }
-}];
-```
-```java
-LCFile file = new LCFile("apple.aac", "https://some.website.com/apple.aac", null);
-LCIMAudioMessage m = new LCIMAudioMessage(file);
-m.setText("来自苹果发布会现场的录音");
-conv.sendMessage(m, new LCIMConversationCallback() {
-    @Override
-    public void done(LCIMException e) {
-      if (e == null) {
-        // 发送成功
-      }
-    }
-});
-```
-```cs
-var audio = new LCFile("apple.aac", new Uri("https://some.website.com/apple.aac"));
-var audioMessage = new LCIMAudioMessage(audio);
-audioMessage.Text = "来自苹果发布会现场的录音";
-await conversation.Send(audioMessage);
-```
 ```dart
 AudioMessage audioMessage = AudioMessage.from(
   url: 'https://some.website.com/apple.aac',
@@ -2128,6 +2138,35 @@ try {
 
 地理位置消息构建方式如下：
 
+```cs
+var location = new LCGeoPoint(31.3753285, 120.9664658);
+var locationMessage = new LCIMLocationMessage(location);
+await conversation.Send(locationMessage);
+```
+```java
+final LCIMLocationMessage locationMessage = new LCIMLocationMessage();
+// 开发者可以通过设备的 API 获取设备的具体地理位置，此处设置了 2 个经纬度常量作为演示
+locationMessage.setLocation(new LCGeoPoint(31.3753285,120.9664658));
+locationMessage.setText("蛋糕店的位置");
+conversation.sendMessage(locationMessage, new LCIMConversationCallback() {
+    @Override
+    public void done(LCIMException e) {
+        if (null != e) {
+          e.printStackTrace();
+        } else {
+          // 发送成功
+        }
+    }
+});
+```
+```objc
+LCIMLocationMessage *message = [LCIMLocationMessage messageWithText:@"蛋糕店的位置" latitude:31.3753285 longitude:120.9664658 attributes:nil];
+[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"发送成功！");
+    }
+}];
+```
 ```js
 var AV = require('leancloud-storage');
 var { LocationMessage } = require('leancloud-realtime-plugin-typed-messages');
@@ -2153,35 +2192,6 @@ do {
 } catch {
     print(error)
 }
-```
-```objc
-LCIMLocationMessage *message = [LCIMLocationMessage messageWithText:@"蛋糕店的位置" latitude:31.3753285 longitude:120.9664658 attributes:nil];
-[conversation sendMessage:message callback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        NSLog(@"发送成功！");
-    }
-}];
-```
-```java
-final LCIMLocationMessage locationMessage = new LCIMLocationMessage();
-// 开发者可以通过设备的 API 获取设备的具体地理位置，此处设置了 2 个经纬度常量作为演示
-locationMessage.setLocation(new LCGeoPoint(31.3753285,120.9664658));
-locationMessage.setText("蛋糕店的位置");
-conversation.sendMessage(locationMessage, new LCIMConversationCallback() {
-    @Override
-    public void done(LCIMException e) {
-        if (null != e) {
-          e.printStackTrace();
-        } else {
-          // 发送成功
-        }
-    }
-});
-```
-```cs
-var location = new LCGeoPoint(31.3753285, 120.9664658);
-var locationMessage = new LCIMLocationMessage(location);
-await conversation.Send(locationMessage);
 ```
 ```dart
 LocationMessage locationMessage = LocationMessage.from(
@@ -2227,7 +2237,7 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
 
 {{ docs.langSpecStart('objc') }}
 
-Objective-C SDK 是通过实现 `LCIMClientDelegate` 代理来响应新消息到达通知的，并且，分别使用了两个方法来分别处理普通的 `LCIMMessage` 消息和内建的多媒体消息 `LCIMTypedMessage`（包括应用层由此派生的[自定义消息](realtime-guide-intermediate.html#自定义消息类型)）：
+Objective-C SDK 是通过实现 `LCIMClientDelegate` 代理来响应新消息到达通知的，并且，分别使用了两个方法来分别处理普通的 `LCIMMessage` 消息和内建的多媒体消息 `LCIMTypedMessage`（包括应用层由此派生的自定义消息：
 
 ```objc
 /*!
@@ -2283,7 +2293,7 @@ public static void unregisterMessageHandler(Class<? extends LCIMMessage> clazz, 
 - 首先解析消息的类型，然后找到开发者为这一类型所注册的处理响应 handler chain，再逐一调用这些 handler 的 `onMessage` 函数。
 - 如果没有找到专门处理这一类型消息的 handler，就会转交给 `defaultHandler` 处理。
 
-这样一来，在开发者为 `AVIMTypedMessage`（及其子类）指定了专门的 handler，也指定了全局的 `defaultHandler` 了的时候，如果发送端发送的是通用的 `LCIMMessage` 消息，那么接收端就是 `LCIMMessageManager#registerDefaultMessageHandler()` 中指定的 handler 被调用；如果发送的是 `AVIMTypedMessage`（及其子类）的消息，那么接收端就是 `LCIMMessageManager#registerMessageHandler()` 中指定的 handler 被调用。
+这样一来，在开发者为 `AVIMTypedMessage`（及其子类）指定了专门的 handler，也指定了全局的 `defaultHandler` 了的时候，如果发送端发送的是通用的 `LCIMMessage` 消息，那么接收端就是 `LCIMMessageManager#registerDefaultMessageHandler()` 中指定的 handler 被调用；如果发送的是 `LCIMTypedMessage`（及其子类）的消息，那么接收端就是 `LCIMMessageManager#registerMessageHandler()` 中指定的 handler 被调用。
 
 {{ docs.langSpecEnd('java') }}
 
@@ -2517,7 +2527,7 @@ jerry.onMessage = ({
 ```
 
 上面的代码示例中涉及到接受自定义消息。
-我们将在[即时通讯指南的第二篇](realtime-guide-intermediate.html#自定义消息类型)介绍如何实现自定义消息。
+我们将在《即时通讯开发指南》第二篇的《自定义消息类型》一节介绍。
 
 ## 扩展对话：支持自定义属性
 
@@ -2669,9 +2679,9 @@ jerry.onMessage = ({
 
 - 客户端 SDK 查询会话数据是走 websocket 长连接，会首先从即时通讯服务器的内存缓存中查。直接操作 `_Conversation` 表，不会更新即时通讯服务器的缓存，这就带来了缓存不一致问题。
 - 直接操作 `_Conversation` 表的情况下，即时通讯服务器不会下发相应的事件通知客户端，客户端自然也就无从响应。
-- 如果定义了[即时通讯服务的 hook 函数](realtime-guide-systemconv.html#万能的_Hook_机制)，直接操作 `_Conversation` 表不会触发这些 hook。
+- 如果定义了即时通讯服务的 hook 函数，直接操作 `_Conversation` 表不会触发这些 hook。
 
-如有管理需求，我们推荐调用[专门的即时通讯 REST API 接口](realtime_rest_api_v2.html)。
+如有管理需求，我们推荐调用专门的即时通讯 REST API 接口。
 
 另外，我们可以通过「自定义属性」来在「对话」中保存更多业务层数据。
 
@@ -2681,6 +2691,41 @@ jerry.onMessage = ({
 
 假如在创建对话的时候，我们需要添加两个额外的属性值对 `{ "type": "private", "pinned": true }`，那么在调用 `IMClient#createConversation` 方法时可以把附加属性传进去：
 
+```cs
+var properties = new Dictionary<string, object> {
+    { "type", "private" },
+    { "pinned", true }
+};
+var conversation = await tom.CreateConversation("Jerry", name: "Tom & Jerry", unique: true, properties: properties);
+```
+```java
+HashMap<String,Object> attr = new HashMap<String,Object>();
+attr.put("type","private");
+attr.put("pinned",true);
+client.createConversation(Arrays.asList("Jerry"),"猫和老鼠", attr, false, true,
+    new LCIMConversationCreatedCallback(){
+        @Override
+        public void done(LCIMConversation conv,LCIMException e){
+          if(e==null){
+            // 创建成功
+          }
+        }
+    });
+```
+```objc
+// Tom 创建名称为「猫和老鼠」的会话，并附加会话属性
+LCIMConversationCreationOption *option = [LCIMConversationCreationOption new];
+option.name = @"猫和老鼠";
+option.attributes = @{
+    @"type": @"private",
+    @"pinned": @(YES)
+};
+[self createConversationWithClientIds:@[@"Jerry"] option:option callback:^(LCIMConversation * _Nullable conversation, NSError * _Nullable error) {
+    if (succeeded) {
+        NSLog(@"创建成功！");
+    }
+}];
+```
 ```js
 tom.createConversation({
   members: ['Jerry'],
@@ -2706,41 +2751,6 @@ do {
     print(error)
 }
 ```
-```objc
-// Tom 创建名称为「猫和老鼠」的会话，并附加会话属性
-LCIMConversationCreationOption *option = [LCIMConversationCreationOption new];
-option.name = @"猫和老鼠";
-option.attributes = @{
-    @"type": @"private",
-    @"pinned": @(YES)
-};
-[self createConversationWithClientIds:@[@"Jerry"] option:option callback:^(LCIMConversation * _Nullable conversation, NSError * _Nullable error) {
-    if (succeeded) {
-        NSLog(@"创建成功！");
-    }
-}];
-```
-```java
-HashMap<String,Object> attr = new HashMap<String,Object>();
-attr.put("type","private");
-attr.put("pinned",true);
-client.createConversation(Arrays.asList("Jerry"),"猫和老鼠", attr, false, true,
-    new LCIMConversationCreatedCallback(){
-        @Override
-        public void done(LCIMConversation conv,LCIMException e){
-          if(e==null){
-            // 创建成功
-          }
-        }
-    });
-```
-```cs
-var properties = new Dictionary<string, object> {
-    { "type", "private" },
-    { "pinned", true }
-};
-var conversation = await tom.CreateConversation("Jerry", name: "Tom & Jerry", unique: true, properties: properties);
-```
 ```dart
 try {
   Conversation conversation = await jerry.createConversation(
@@ -2757,12 +2767,38 @@ try {
   print(e);
 }
 ```
+
 **自定义属性在 SDK 级别是对所有成员可见的。**我们也支持通过自定义属性来查询对话，请参见 [使用复杂条件来查询对话](#使用复杂条件来查询对话)。
 
 ### 修改和使用属性
 
 在 `Conversation` 对象中，系统默认提供的属性，例如对话的名字（`name`），如果业务层没有限制的话，所有成员都是可以修改的，示例代码如下：
 
+```cs
+await conversation.UpdateInfo(new Dictionary<string, object> {
+  { "name", "聪明的喵星人" }
+});
+```
+```java
+LCIMConversation conversation = client.getConversation("55117292e4b065f7ee9edd29");
+conversation.setName("聪明的喵星人");
+conversation.updateInfoInBackground(new LCIMConversationCallback(){
+  @Override
+  public void done(LCIMException e){        
+    if(e==null){
+      // 更新成功
+    }
+  }
+});
+```
+```objc
+conversation[@"name"] = @"聪明的喵星人";
+[conversation updateWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
+    if (succeeded) {
+        NSLog(@"修改成功！");
+    }
+}];
+```
 ```js
 conversation.name = '聪明的喵星人';
 conversation.save();
@@ -2781,31 +2817,6 @@ do {
     print(error)
 }
 ```
-```objc
-conversation[@"name"] = @"聪明的喵星人";
-[conversation updateWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        NSLog(@"修改成功！");
-    }
-}];
-```
-```java
-LCIMConversation conversation = client.getConversation("55117292e4b065f7ee9edd29");
-conversation.setName("聪明的喵星人");
-conversation.updateInfoInBackground(new LCIMConversationCallback(){
-  @Override
-  public void done(LCIMException e){        
-    if(e==null){
-      // 更新成功
-    }
-  }
-});
-```
-```cs
-await conversation.UpdateInfo(new Dictionary<string, object> {
-  { "name", "聪明的喵星人" }
-});
-```
 ```dart
 try {
   await conversation.updateInfo(attributes: {
@@ -2815,8 +2826,44 @@ try {
   print(e);
 }
 ```
+
 而 `Conversation` 对象中自定义的属性，即时通讯服务也是允许对话内其他成员来读取、使用和修改的，示例代码如下：
 
+```cs
+// 获取自定义属性
+var type = conversation["type"];
+// 为 pinned 属性设置新的值
+await conversation.UpdateInfo(new Dictionary<string, object> {
+  { "pinned", false }
+});
+```
+```java
+// 获取自定义属性
+String type = conversation.get("attr.type");
+// 为 pinned 属性设置新的值
+conversation.set("attr.pinned",false);
+// 保存
+conversation.updateInfoInBackground(new LCIMConversationCallback(){
+  @Override
+  public void done(LCIMException e){        
+    if(e==null){
+      // 更新成功
+    }
+  }
+});
+```
+```objc
+// 获取自定义属性
+NSString *type = conversation.attributes[@"type"];
+// 为 pinned 属性设置新的值
+[conversation setObject:@(NO) forKey:@"attr.pinned"];
+// 保存
+[conversation updateWithCallback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"修改成功！");
+    }
+}];
+```
 ```js
 // 获取自定义属性
 var type = conversation.get('attr.type');
@@ -2840,41 +2887,6 @@ do {
     print(error)
 }
 ```
-```objc
-// 获取自定义属性
-NSString *type = conversation.attributes[@"type"];
-// 为 pinned 属性设置新的值
-[conversation setObject:@(NO) forKey:@"attr.pinned"];
-// 保存
-[conversation updateWithCallback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        NSLog(@"修改成功！");
-    }
-}];
-```
-```java
-// 获取自定义属性
-String type = conversation.get("attr.type");
-// 为 pinned 属性设置新的值
-conversation.set("attr.pinned",false);
-// 保存
-conversation.updateInfoInBackground(new LCIMConversationCallback(){
-  @Override
-  public void done(LCIMException e){        
-    if(e==null){
-      // 更新成功
-    }
-  }
-});
-```
-```cs
-// 获取自定义属性
-var type = conversation["type"];
-// 为 pinned 属性设置新的值
-await conversation.UpdateInfo(new Dictionary<string, object> {
-  { "pinned", false }
-});
-```
 ```dart
 try {
 // 获取自定义属性
@@ -2887,16 +2899,44 @@ try {
   print(e);
 }
 ```
-> 对自定义属性名的说明
->
-> 在 `IMClient#createConversation` 接口中指定的自定义属性，会被存入 `_Conversation` 表的 `attr` 字段，所以在之后对这些属性进行读取或修改的时候，属性名需要指定完整的路径，例如上面的 `attr.type`，这一点需要特别注意。
+
+对自定义属性名的说明
+
+在 `IMClient#createConversation` 接口中指定的自定义属性，会被存入 `_Conversation` 表的 `attr` 字段，所以在之后对这些属性进行读取或修改的时候，属性名需要指定完整的路径，例如上面的 `attr.type`，这一点需要特别注意。
 
 ### 对话属性同步
 
 对话的名字以及应用层附加的其他属性，一般都是需要全员共享的，一旦有人对这些数据进行了修改，那么就需要及时通知到全部成员。在前一个例子中，有一个用户对话名称改为了「聪明的喵星人」，那其他成员怎么能知道这件事情呢？
 
-LeanCloud 即时通讯云端提供了实时同步的通知机制，会把单个用户对「对话」的修改同步下发到所有在线成员（对于非在线的成员，他们下次登录上线之后，自然会拉取到最新的完整的对话数据）。对话属性更新的通知事件声明如下：
+即时通讯云端提供了实时同步的通知机制，会把单个用户对「对话」的修改同步下发到所有在线成员（对于非在线的成员，他们下次登录上线之后，自然会拉取到最新的完整的对话数据）。对话属性更新的通知事件声明如下：
 
+```cs
+jerry.OnConversationInfoUpdated = (conv, attrs, initBy) => {
+    WriteLine($"对话：${conv.Id} 被更新");
+};
+```
+```java
+// 在 LCIMConversationEventHandler 接口中有如下定义
+/**
+ * 对话自身属性变更通知
+ *
+ * @param client
+ * @param conversation
+ * @param attr      被更新的属性
+ * @param operator  该操作的发起者 ID
+ */
+public void onInfoChanged(LCIMClient client, LCIMConversation conversation, JSONObject attr,
+                          String operator)
+```
+```objc
+/// Notification for conversation's attribution updated.
+/// @param conversation Updated conversation.
+/// @param date Updated date.
+/// @param clientId Client ID which do this update.
+/// @param updatedData Updated data.
+/// @param updatingData Updating data.
+- (void)conversation:(LCIMConversation *)conversation didUpdateAt:(NSDate * _Nullable)date byClientId:(NSString * _Nullable)clientId updatedData:(NSDictionary * _Nullable)updatedData updatingData:(NSDictionary * _Nullable)updatingData;
+```
 ```js
 /**
  * 对话信息被更新
@@ -2922,33 +2962,6 @@ func client(_ client: IMClient, conversation: IMConversation, event: IMConversat
     }
 }
 ```
-```objc
-/// Notification for conversation's attribution updated.
-/// @param conversation Updated conversation.
-/// @param date Updated date.
-/// @param clientId Client ID which do this update.
-/// @param updatedData Updated data.
-/// @param updatingData Updating data.
-- (void)conversation:(LCIMConversation *)conversation didUpdateAt:(NSDate * _Nullable)date byClientId:(NSString * _Nullable)clientId updatedData:(NSDictionary * _Nullable)updatedData updatingData:(NSDictionary * _Nullable)updatingData;
-```
-```java
-// 在 LCIMConversationEventHandler 接口中有如下定义
-/**
- * 对话自身属性变更通知
- *
- * @param client
- * @param conversation
- * @param attr      被更新的属性
- * @param operator  该操作的发起者 ID
- */
-public void onInfoChanged(LCIMClient client, LCIMConversation conversation, JSONObject attr,
-                          String operator)
-```
-```cs
-jerry.OnConversationInfoUpdated = (conv, attrs, initBy) => {
-    WriteLine($"对话：${conv.Id} 被更新");
-};
-```
 ```dart
 jerry.onInfoUpdated = ({
   Client client,
@@ -2961,14 +2974,37 @@ jerry.onInfoUpdated = ({
   print('会话：${conversation.id} 被更新');
 };
 ```
-> 使用提示：
->
-> 应用层在该事件的响应函数中，可以获知当前什么属性被修改了，也可以直接从 SDK 的 `Conversation` 实例中获取最新的合并之后的属性值，然后依据需要来更新产品 UI。
+
+使用提示：
+
+应用层在该事件的响应函数中，可以获知当前什么属性被修改了，也可以直接从 SDK 的 `Conversation` 实例中获取最新的合并之后的属性值，然后依据需要来更新产品 UI。
 
 ### 获取群内成员列表
 
 群内成员列表是作为对话的属性持久化保存在云端的，所以要获取一个 `Conversation` 对象的成员列表，我们可以在调用这个对象的更新方法之后，直接获取成员属性即可。
 
+```cs
+await conversation.Fetch();
+```
+```java
+// fetchInfoInBackground 方法会执行一次刷新操作，以获取云端最新对话数据。
+conversation.fetchInfoInBackground(new LCIMConversationCallback() {
+  @Override
+  public void done(LCIMException e) {
+    if (e == null) {
+      conversation.getMembers();
+    }
+  }
+});
+```
+```objc
+// fetchWithCallback 方法会执行一次刷新操作，以获取云端最新对话数据。
+[conversation fetchWithCallback:^(BOOL succeeded, NSError *error) {
+    if (succeeded) {
+        NSLog(@"", conversation.members);
+    }
+}];
+```
 ```js
 // fetch 方法会执行一次刷新操作，以获取云端最新对话数据。
 conversation.fetch().then(function(conversation) {
@@ -2991,34 +3027,13 @@ do {
     print(error)
 }
 ```
-```objc
-// fetchWithCallback 方法会执行一次刷新操作，以获取云端最新对话数据。
-[conversation fetchWithCallback:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        NSLog(@"", conversation.members);
-    }
-}];
-```
-```java
-// fetchInfoInBackground 方法会执行一次刷新操作，以获取云端最新对话数据。
-conversation.fetchInfoInBackground(new LCIMConversationCallback() {
-  @Override
-  public void done(LCIMException e) {
-    if (e == null) {
-      conversation.getMembers();
-    }
-  }
-});
-```
-```cs
-await conversation.Fetch();
-```
 ```dart
 //暂不支持
 ```
-> 使用提示：
->
-> 成员列表是对 ***普通对话*** 而言的，对于像「聊天室」「系统对话」这样的特殊对话，并不存在「成员列表」属性。
+
+使用提示：
+
+成员列表是对 ***普通对话*** 而言的，对于像「聊天室」「系统对话」这样的特殊对话，并不存在「成员列表」属性。
 
 ## 使用复杂条件来查询对话
 
@@ -3028,12 +3043,32 @@ await conversation.Fetch();
 
 ID 对应就是 `_Conversation` 表中的 `objectId` 的字段值，这是一种最简单也最高效的查询（因为云端会对 ID 建立索引）：
 
-
-
-{{ docs.langSpecStart('dart') }}
-我们建议开发者首先尝试从内存中获取对话，以减少不必要的网络请求。
-{{ docs.langSpecEnd('dart') }}
-
+```cs
+var query = tom.GetQuery();
+var conversation = await query.Get("551260efe4b01608686c3e0f");
+```
+```java
+LCIMConversationsQuery query = tom.getConversationsQuery();
+query.whereEqualTo("objectId","551260efe4b01608686c3e0f");
+query.findInBackground(new LCIMConversationQueryCallback(){
+    @Override
+    public void done(List<LCIMConversation> convs,LCIMException e){
+      if(e==null){
+        if(convs!=null && !convs.isEmpty()){
+          // convs.get(0) 就是想要的 conversation
+        }
+      }
+    }
+});
+```
+```objc
+LCIMConversationQuery *query = [tom conversationQuery];
+[query getConversationById:@"551260efe4b01608686c3e0f" callback:^(LCIMConversation *conversation, NSError *error) {
+    if (succeeded) {
+        NSLog(@"查询成功！");
+    }
+}];
+```
 ```js
 tom.getConversation('551260efe4b01608686c3e0f').then(function(conversation) {
   console.log(conversation.id);
@@ -3054,33 +3089,9 @@ do {
     print(error)
 }
 ```
-```objc
-LCIMConversationQuery *query = [tom conversationQuery];
-[query getConversationById:@"551260efe4b01608686c3e0f" callback:^(LCIMConversation *conversation, NSError *error) {
-    if (succeeded) {
-        NSLog(@"查询成功！");
-    }
-}];
-```
-```java
-LCIMConversationsQuery query = tom.getConversationsQuery();
-query.whereEqualTo("objectId","551260efe4b01608686c3e0f");
-query.findInBackground(new LCIMConversationQueryCallback(){
-    @Override
-    public void done(List<LCIMConversation> convs,LCIMException e){
-      if(e==null){
-        if(convs!=null && !convs.isEmpty()){
-          // convs.get(0) 就是想要的 conversation
-        }
-      }
-    }
-});
-```
-```cs
-var query = tom.GetQuery();
-var conversation = await query.Get("551260efe4b01608686c3e0f");
-```
 ```dart
+// 我们建议开发者首先尝试从内存中获取对话，以减少不必要的网络请求。
+
 String convID = '551260efe4b01608686c3e0f';
 Conversation conversation = tom.conversationMap[convID];
 if (conversation == null) {
@@ -3099,6 +3110,32 @@ if (conversation == null) {
 
 我们首先从最简单的 `equalTo` 开始。例如查询所有自定义属性 `type`（字符串类型）为 `private` 的对话，需要如下代码：
 
+```cs
+var query = tom.GetQuery()
+    .WhereEqualTo("type", "private");
+await query.Find();
+```
+```java
+LCIMConversationsQuery query = tom.getConversationsQuery();
+query.whereEqualTo("attr.type","private");
+// 执行查询
+query.findInBackground(new LCIMConversationQueryCallback(){
+  @Override
+  public void done(List<LCIMConversation> convs,LCIMException e){
+    if(e == null){
+      // convs 就是想要的结果
+    }
+  }
+});
+```
+```objc
+LCIMConversationQuery *query = [tom conversationQuery];
+[query whereKey:@"attr.type" equalTo:@"private"];
+// 执行查询
+[query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
+    NSLog(@"找到 %ld 个对话！", [objects count]);
+}];
+```
 ```js
 var query = client.getQuery();
 query.equalTo('attr.type','private');
@@ -3122,32 +3159,6 @@ do {
     print(error)
 }
 ```
-```objc
-LCIMConversationQuery *query = [tom conversationQuery];
-[query whereKey:@"attr.type" equalTo:@"private"];
-// 执行查询
-[query findConversationsWithCallback:^(NSArray *objects, NSError *error) {
-    NSLog(@"找到 %ld 个对话！", [objects count]);
-}];
-```
-```java
-LCIMConversationsQuery query = tom.getConversationsQuery();
-query.whereEqualTo("attr.type","private");
-// 执行查询
-query.findInBackground(new LCIMConversationQueryCallback(){
-  @Override
-  public void done(List<LCIMConversation> convs,LCIMException e){
-    if(e == null){
-      // convs 就是想要的结果
-    }
-  }
-});
-```
-```cs
-var query = tom.GetQuery()
-    .WhereEqualTo("type", "private");
-await query.Find();
-```
 ```dart
 try {
   ConversationQuery query = jerry.conversationQuery();
@@ -3158,7 +3169,8 @@ try {
   print(e);
 }
 ```
-对 LeanCloud 数据存储服务熟悉的开发者可以更容易理解对话的查询构建，因为对话查询和数据存储服务的对象查询在接口上是十分接近的：
+
+熟悉数据存储服务的开发者可以更容易理解对话的查询构建，因为对话查询和数据存储服务的对象查询在接口上是十分接近的：
 
 - 可以通过 `find` 获取当前结果页数据
 - 支持通过 `count` 获取结果数
@@ -3232,77 +3244,89 @@ try {
 
 {{ docs.langSpecEnd('cs') }}
 
-> 使用注意：默认查询条件
-> 
-> 为了防止用户无意间拉取到所有的对话数据，在客户端不指定任何 `where` 条件的时候，`ConversationQuery` 会默认查询包含当前用户的对话。如果客户端添加了任一 `where` 条件，那么 `ConversationQuery` 会忽略默认条件而严格按照指定的条件来查询。如果客户端要查询包含某一个 `clientId` 的对话，那么使用下面的 [数组查询](#数组查询) 语法对 `m` 属性列和 `clientId` 值进行查询即可，不会和默认查询条件冲突。
+使用注意：默认查询条件
+
+为了防止用户无意间拉取到所有的对话数据，在客户端不指定任何 `where` 条件的时候，`ConversationQuery` 会默认查询包含当前用户的对话。如果客户端添加了任一 `where` 条件，那么 `ConversationQuery` 会忽略默认条件而严格按照指定的条件来查询。如果客户端要查询包含某一个 `clientId` 的对话，那么使用下面的 [数组查询](#数组查询) 语法对 `m` 属性列和 `clientId` 值进行查询即可，不会和默认查询条件冲突。
 
 ### 正则匹配查询
 
 `ConversationsQuery` 也支持在查询条件中使用正则表达式来匹配数据。比如要查询所有 `language` 是中文的对话：
 
+```cs
+query.WhereMatches("language", "[\\u4e00-\\u9fa5]"); // language 是中文字符
+```
+```java
+query.whereMatches("language","[\\u4e00-\\u9fa5]"); // language 是中文字符
+```
+```objc
+[query whereKey:@"language" matchesRegex:@"[\\u4e00-\\u9fa5]"]; // language 是中文字符
+```
 ```js
 query.matches('language',/[\\u4e00-\\u9fa5]/); // language 是中文字符
 ```
 ```swift
 try conversationQuery.where("language", .matchedRegularExpression("[\\u4e00-\\u9fa5]", option: nil))
 ```
-```objc
-[query whereKey:@"language" matchesRegex:@"[\\u4e00-\\u9fa5]"]; // language 是中文字符
-```
-```java
-query.whereMatches("language","[\\u4e00-\\u9fa5]"); // language 是中文字符
-```
-```cs
-query.WhereMatches("language", "[\\u4e00-\\u9fa5]"); // language 是中文字符
-```
 ```dart
 //暂不支持
 ```
 ### 字符串查询
 
-***前缀查询*** 类似于 SQL 的 `LIKE 'keyword%'` 条件。例如查询名字以「教育」开头的对话：
+**前缀查询** 类似于 SQL 的 `LIKE 'keyword%'` 条件。例如查询名字以「教育」开头的对话：
 
+```cs
+query.WhereStartsWith("name", "教育");
+```
+```java
+query.whereStartsWith("name","教育");
+```
+```objc
+[query whereKey:@"name" hasPrefix:@"教育"];
+```
 ```js
 query.startsWith('name','教育');
 ```
 ```swift
 try conversationQuery.where("name", .prefixedBy("教育"))
 ```
-```objc
-[query whereKey:@"name" hasPrefix:@"教育"];
-```
-```java
-query.whereStartsWith("name","教育");
-```
-```cs
-query.WhereStartsWith("name", "教育");
-```
 ```dart
 //暂不支持
 ```
-***包含查询*** 类似于 SQL 的 `LIKE '%keyword%'` 条件。例如查询名字中包含「教育」的对话：
 
+**包含查询** 类似于 SQL 的 `LIKE '%keyword%'` 条件。
+例如查询名字中包含「教育」的对话：
+
+```cs
+query.WhereContains("name", "教育");
+```
+```java
+query.whereContains("name","教育");
+```
+```objc
+[query whereKey:@"name" containsString:@"教育"];
+```
 ```js
 query.contains('name','教育');
 ```
 ```swift
 try conversationQuery.where("name", .matchedSubstring("教育"))
 ```
-```objc
-[query whereKey:@"name" containsString:@"教育"];
-```
-```java
-query.whereContains("name","教育");
-```
-```cs
-query.WhereContains("name", "教育");
-```
 ```dart
 //暂不支持
 ```
 
-***不包含查询*** 则可以使用 [正则匹配查询](#正则匹配查询) 来实现。例如查询名字中不包含「教育」的对话：
+**不包含查询** 则可以使用 [正则匹配查询](#正则匹配查询) 来实现。
+例如查询名字中不包含「教育」的对话：
 
+```cs
+query.WhereMatches("name", "^((?!教育).)* $ ");
+```
+```java
+query.whereMatches("name","^((?!教育).)* $ ");
+```
+```objc
+[query whereKey:@"name" matchesRegex:@"^((?!教育).)* $ "];
+```
 ```js
 var regExp = new RegExp('^((?!教育).)*$', 'i');
 query.matches('name', regExp);
@@ -3310,37 +3334,29 @@ query.matches('name', regExp);
 ```swift
 try conversationQuery.where("name", .matchedRegularExpression("^((?!教育).)* $ ", option: nil))
 ```
-```objc
-[query whereKey:@"name" matchesRegex:@"^((?!教育).)* $ "];
-```
-```java
-query.whereMatches("name","^((?!教育).)* $ ");
-```
-```cs
-query.WhereMatches("name", "^((?!教育).)* $ ");
-```
 ```dart
 //暂不支持
 ```
+
 ### 数组查询
 
 可以使用 `containsAll`、`containedIn`、`notContainedIn` 来对数组进行查询。例如查询成员中包含「Tom」的对话：
 
+```cs
+var members = new List<string> { "Tom" };
+query.WhereContainedIn("m", members);
+```
+```java
+query.whereContainedIn("m", Arrays.asList("Tom"));
+```
+```objc
+[query whereKey:@"m" containedIn:@[@"Tom"]];
+```
 ```js
 query.containedIn('m', ['Tom']);
 ```
 ```swift
 try conversationQuery.where("m", .containedIn(["Tom"]))
-```
-```objc
-[query whereKey:@"m" containedIn:@[@"Tom"]];
-```
-```java
-query.whereContainedIn("m", Arrays.asList("Tom"));
-```
-```cs
-var members = new List<string> { "Tom" };
-query.WhereContainedIn("m", members);
 ```
 ```dart
 //暂不支持
@@ -3349,40 +3365,41 @@ query.WhereContainedIn("m", members);
 
 空值查询是指查询相关列是否为空值的方法，例如要查询 `lm` 列为空值的对话：
 
+```cs
+query.WhereDoesNotExist("lm");
+```
+```java
+query.whereDoesNotExist("lm");
+```
+```objc
+[query whereKeyDoesNotExist:@"lm"];
+```
 ```js
 query.doesNotExist('lm')
 ```
 ```swift
 try conversationQuery.where("lm", .notExisted)
 ```
-```objc
-[query whereKeyDoesNotExist:@"lm"];
-```
-```java
-query.whereDoesNotExist("lm");
-```
-```cs
-query.WhereDoesNotExist("lm");
-```
 ```dart
 //暂不支持
 ```
+
 反过来，如果要查询 `lm` 列不为空的对话，则替换为如下条件即可：
 
+```cs
+query.WhereExists("lm");
+```
+```java
+query.whereExists("lm");
+```
+```objc
+[query whereKeyExists:@"lm"];
+```
 ```js
 query.exists('lm')
 ```
 ```swift
 try conversationQuery.where("lm", .existed)
-```
-```objc
-[query whereKeyExists:@"lm"];
-```
-```java
-query.whereExists("lm");
-```
-```cs
-query.WhereExists("lm");
 ```
 ```dart
 //暂不支持
@@ -3391,6 +3408,18 @@ query.WhereExists("lm");
 
 查询年龄小于 18 岁，并且关键字包含「教育」的对话：
 
+```cs
+query.WhereContains("keywords", "教育")
+    .WhereLessThan("age", 18);
+```
+```java
+query.whereContains("keywords", "教育");
+query.whereLessThan("age", 18);
+```
+```objc
+[query whereKey:@"keywords" containsString:@"教育"];
+[query whereKey:@"age" lessThan:@(18)];
+```
 ```js
 // 查询 keywords 包含「教育」且 age 小于 18 的对话
 query.contains('keywords', '教育').lessThan('age', 18);
@@ -3399,25 +3428,35 @@ query.contains('keywords', '教育').lessThan('age', 18);
 try conversationQuery.where("keywords", .matchedSubstring("教育"))
 try conversationQuery.where("age", .lessThan(18))
 ```
-```objc
-[query whereKey:@"keywords" containsString:@"教育"];
-[query whereKey:@"age" lessThan:@(18)];
-```
-```java
-query.whereContains("keywords", "教育");
-query.whereLessThan("age", 18);
-```
-```cs
-query.WhereContains("keywords", "教育")
-    .WhereLessThan("age", 18);
-```
 ```dart
 //暂不支持
 ```
+
 另外一种组合的方式是，两个查询采用 `or` 或者 `and` 的方式构建一个新的查询。
 
 查询年龄小于 18 或者关键字包含「教育」的对话：
 
+```cs
+//暂不支持
+```
+```java
+LCIMConversationsQuery ageQuery = tom.getConversationsQuery();
+ageQuery.whereLessThan('age', 18);
+
+LCIMConversationsQuery keywordsQuery = tom.getConversationsQuery();
+keywordsQuery.whereContains('keywords', '教育');
+
+LCIMConversationsQuery query = LCIMConversationsQuery.or(Arrays.asList(priorityQuery, statusQuery));
+```
+```objc
+LCIMConversationQuery *ageQuery = [tom conversationQuery];
+[ageQuery whereKey:@"age" greaterThan:@(18)];
+
+LCIMConversationQuery *keywordsQuery = [tom conversationQuery];
+[keywordsQuery whereKey:@"keywords" containsString:@"教育"];
+
+LCIMConversationQuery *query = [LCIMConversationQuery orQueryWithSubqueries:[NSArray arrayWithObjects:ageQuery,keywordsQuery,nil]];
+```
 ```js
 // JavaScript SDK 暂不支持
 ```
@@ -3434,27 +3473,6 @@ do {
     print(error)
 }
 ```
-```objc
-LCIMConversationQuery *ageQuery = [tom conversationQuery];
-[ageQuery whereKey:@"age" greaterThan:@(18)];
-
-LCIMConversationQuery *keywordsQuery = [tom conversationQuery];
-[keywordsQuery whereKey:@"keywords" containsString:@"教育"];
-
-LCIMConversationQuery *query = [LCIMConversationQuery orQueryWithSubqueries:[NSArray arrayWithObjects:ageQuery,keywordsQuery,nil]];
-```
-```java
-LCIMConversationsQuery ageQuery = tom.getConversationsQuery();
-ageQuery.whereLessThan('age', 18);
-
-LCIMConversationsQuery keywordsQuery = tom.getConversationsQuery();
-keywordsQuery.whereContains('keywords', '教育');
-
-LCIMConversationsQuery query = LCIMConversationsQuery.or(Arrays.asList(priorityQuery, statusQuery));
-```
-```cs
-//暂不支持
-```
 ```dart
 //暂不支持
 ```
@@ -3462,45 +3480,21 @@ LCIMConversationsQuery query = LCIMConversationsQuery.or(Arrays.asList(priorityQ
 
 可以指定查询结果按照部分属性值的升序或降序来返回。例如：
 
+```cs
+query.OrderByDescending("createdAt");
+```
+```java
+query.orderByDescending("createdAt");
+```
+```objc
+[query orderByDescending:@"createdAt"];
+```
 ```js
 // 对查询结果按照 name 升序，然后按照创建时间降序排序
 query.addAscending('name').addDescending('createdAt');
 ```
 ```swift
 try conversationQuery.where("createdAt", .descending)
-```
-```objc
-[query orderByDescending:@"createdAt"];
-```
-```java
-LCIMClient tom = LCIMClient.getInstance("Tom");
-
-tom.open(new LCIMClientCallback() {
-  @Override
-  public void done(LCIMClient client, LCIMException e) {
-    if (e == null) {
-      // 登录成功
-      LCIMConversationsQuery query = client.getConversationsQuery();
-
-      // 按对话的创建时间降序
-      query.orderByDescending("createdAt");
-
-      query.findInBackground(new LCIMConversationQueryCallback() {
-        @Override
-        public void done(List<LCIMConversation> convs, LCIMException e) {
-          if (e == null) {
-            if(convs != null && !convs.isEmpty()) {
-              // 获取符合查询条件的 conversation 列表
-            }
-          }
-        }
-      });
-    }
-  }
-});
-```
-```cs
-query.OrderByDescending("createdAt");
 ```
 ```dart
 //暂不支持
@@ -3510,6 +3504,12 @@ query.OrderByDescending("createdAt");
 
 普通对话最多可以容纳 500 个成员，在有些业务逻辑不需要对话的成员列表的情况下，可以使用「精简模式」进行查询，这样返回结果中不会包含成员列表（`members` 字段为空数组），有助于提升应用的性能同时减少流量消耗。
 
+```cs
+query.Compact = true;
+```
+```java
+query.setCompact(true);
+```
 ```js
 query.compact(true);
 ```
@@ -3519,32 +3519,6 @@ conversationQuery.options = [.notContainMembers]
 ```objc
 query.option = LCIMConversationQueryOptionCompact;
 ```
-```java
-public void queryConversationCompact() {
-  LCIMClient tom = LCIMClient.getInstance("Tom");
-  tom.open(new LCIMClientCallback() {
-    @Override
-    public void done(LCIMClient client, LCIMException e) {
-      if (e == null) {
-        // 登录成功
-        LCIMConversationsQuery query = client.getConversationsQuery();
-        query.setCompact(true);
-        query.findInBackground(new LCIMConversationQueryCallback() {
-          @Override
-          public void done(List<LCIMConversation> convs, LCIMException e) {
-            if (e == null) {
-              // 获取符合查询条件的 Conversation 列表
-            }
-          }
-        });
-      }
-    }
-  });
-}
-```
-```cs
-query.Compact = true;
-```
 ```dart
 query.excludeMembers = true;
 ```
@@ -3552,42 +3526,21 @@ query.excludeMembers = true;
 
 对于一个聊天应用，一个典型的需求是在对话的列表界面显示最后一条消息，默认情况下，针对对话的查询结果是不带最后一条消息的，需要单独打开相关选项：
 
+```cs
+query.WithLastMessageRefreshed = true;
+```
+```java
+query.setWithLastMessagesRefreshed(true);
+```
+```objc
+query.option = LCIMConversationQueryOptionWithMessage;
+```
 ```js
 // withLastMessagesRefreshed 方法可以指定让查询结果带上最后一条消息
 query.withLastMessagesRefreshed(true);
 ```
 ```swift
 conversationQuery.options = [.containLastMessage]
-```
-```objc
-query.option = LCIMConversationQueryOptionWithMessage;
-```
-```java
-public void queryConversationWithLastMessage() {
-  LCIMClient tom = LCIMClient.getInstance("Tom");
-  tom.open(new LCIMClientCallback() {
-    @Override
-    public void done(LCIMClient client, LCIMException e) {
-      if (e == null) {
-        // 登录成功
-        LCIMConversationsQuery query = client.getConversationsQuery();
-        /* 设置查询选项，指定返回对话的最后一条消息 */
-        query.setWithLastMessagesRefreshed(true);
-        query.findInBackground(new LCIMConversationQueryCallback() {
-          @Override
-          public void done(List<LCIMConversation> convs, LCIMException e) {
-            if (e == null) {
-              // 获取符合查询条件的 Conversation 列表
-            }
-          }
-        });
-      }
-    }
-  });
-}
-```
-```cs
-query.WithLastMessageRefreshed = true;
 ```
 ```dart
 query.includeLastMessage = true;
@@ -3764,16 +3717,16 @@ Flutter SDK 暂不支持缓存功能。
 
 ### 性能优化建议
 
-`Conversation` 数据是存储在 LeanCloud 云端数据库中的，与存储服务中的对象查询类似，我们需要尽可能利用索引来提升查询效率，这里有一些优化查询的建议：
+`Conversation` 数据是存储在云端数据库中的，与存储服务中的对象查询类似，我们需要尽可能利用索引来提升查询效率，这里有一些优化查询的建议：
 
 - `Conversation` 的 `objectId`、`updatedAt`、`createdAt` 等属性上是默认建了索引的，所以通过这些条件来查询会比较快。
 - 虽然 `skip` 搭配 `limit` 的方式可以翻页，但是在结果集较大的时候不建议使用，因为数据库端计算翻页距离是一个非常低效的操作，取而代之的是尽量通过 `updatedAt` 或 `lastMessageAt` 等属性来限定返回结果集大小，并以此进行翻页。
 - 使用 `m` 列的 `contains` 查询来查找包含某人的对话时，也尽量使用默认的 `limit` 大小 10，再配合 `updatedAt` 或者 `lastMessageAt` 来做条件约束，性能会提升较大。
-- 整个应用对话如果数量太多，可以考虑在云引擎封装一个云函数，用定时任务启动之后，周期性地做一些清理，例如可以归档一些不活跃的对话，直接删除即可。
+- 整个应用对话如果数量太多，可以考虑在云引擎封装一个云函数，用定时任务启动之后，周期性地做一些清理，例如可以归档或删除一些不活跃的对话。
 
 ## 聊天记录查询
 
-消息记录默认会在云端保存 **180** 天， 开发者可以通过额外付费来延长这一期限（有需要的用户请联系 {{ supportEmail() }}），也可以通过 REST API 将聊天记录同步到自己的服务器上。
+消息记录默认会在云端保存 **180** 天， 开发者可以通过额外付费来延长这一期限（有需要的用户请提工单联系技术支持），也可以通过 REST API 将聊天记录同步到自己的服务器上。
 
 SDK 提供了多种方式来拉取历史记录，iOS 和 Android SDK 还提供了内置的消息缓存机制，以减少客户端对云端消息记录的查询次数，并且在设备离线情况下，也能展示出部分数据保障产品体验不会中断。
 
@@ -3781,6 +3734,33 @@ SDK 提供了多种方式来拉取历史记录，iOS 和 Android SDK 还提供�
 
 在终端用户进入一个对话的时候，最常见的需求就是由新到旧、以翻页的方式拉取并展示历史消息，这可以通过如下代码实现：
 
+```cs
+// limit 取值范围 1~100，默认 20
+var messages = await conversation.QueryMessages(limit: 10);
+foreach (var message in messages) {
+    if (message is LCIMTextMessage textMessage) {
+      
+    }
+}
+```
+```java
+// limit 取值范围 1~100，如调用 queryMessages 时不带 limit 参数，默认获取 20 条消息记录
+int limit = 10;
+conv.queryMessages(limit, new LCIMMessagesQueryCallback() {
+  @Override
+  public void done(List<LCIMMessage> messages, LCIMException e) {
+    if (e == null) {
+      // 成功获取最新 10 条消息记录
+    }
+  }
+});
+```
+```objc
+// 查询对话中最后 10 条消息，limit 取值范围 1~100，值为 0 时获取 20 条消息记录（使用服务端默认值）
+[conversation queryMessagesWithLimit:10 callback:^(NSArray *objects, NSError *error) {
+    NSLog(@"查询成功！");
+}];
+```
 ```js
 conversation.queryMessages({
   limit: 10, // limit 取值范围 1~100，默认 20
@@ -3802,33 +3782,6 @@ do {
     print(error)
 }
 ```
-```objc
-// 查询对话中最后 10 条消息，limit 取值范围 1~100，值为 0 时获取 20 条消息记录（使用服务端默认值）
-[conversation queryMessagesWithLimit:10 callback:^(NSArray *objects, NSError *error) {
-    NSLog(@"查询成功！");
-}];
-```
-```java
-// limit 取值范围 1~100，如调用 queryMessages 时不带 limit 参数，默认获取 20 条消息记录
-int limit = 10;
-conv.queryMessages(limit, new LCIMMessagesQueryCallback() {
-  @Override
-  public void done(List<LCIMMessage> messages, LCIMException e) {
-    if (e == null) {
-      // 成功获取最新 10 条消息记录
-    }
-  }
-});
-```
-```cs
-// limit 取值范围 1~100，默认 20
-var messages = await conversation.QueryMessages(limit: 10);
-foreach (var message in messages) {
-    if (message is LCIMTextMessage textMessage) {
-      
-    }
-}
-```
 ```dart
 // limit 取值范围 1~100，如调用 queryMessage 时不带 limit 参数，默认获取 20 条消息记录
 try {
@@ -3840,8 +3793,54 @@ try {
 }
 ```
 
-`queryMessage` 接口也是支持翻页的。LeanCloud 即时通讯云端通过消息的 `messageId` 和发送时间戳来唯一定位一条消息，因此要从某条消息起拉取后续的 N 条记录，只需要指定起始消息的 `messageId` 和发送时间戳作为锚定就可以了，示例代码如下：
+`queryMessage` 接口也是支持翻页的。
+即时通讯云端通过消息的 `messageId` 和发送时间戳来唯一定位一条消息，因此要从某条消息起拉取后续的 N 条记录，只需要指定起始消息的 `messageId` 和发送时间戳作为锚定就可以了，示例代码如下：
 
+```cs
+// limit 取值范围 1~1000，默认 100
+var messages = await conversation.QueryMessages(limit: 10);
+var oldestMessage = messages[0];
+var start = new LCIMMessageQueryEndpoint {
+    MessageId = oldestMessage.Id,
+    SentTimestamp = oldestMessage.SentTimestamp
+};
+var messagesInPage = await conversation.QueryMessages(start: start); 
+```
+```java
+// limit 取值范围 1~1000，默认 100
+conv.queryMessages(10, new LCIMMessagesQueryCallback() {
+  @Override
+  public void done(List<LCIMMessage> messages, LCIMException e) {
+    if (e == null) {
+      // 成功获取最新 10 条消息记录
+      // 返回的消息一定是时间增序排列，也就是最早的消息一定是第一个
+      LCIMMessage oldestMessage = messages.get(0);
+
+      conv.queryMessages(oldestMessage.getMessageId(), oldestMessage.getTimestamp(),20,
+          new LCIMMessageQueryCallback(){
+            @Override
+            public void done(List<LCIMMessage> messagesInPage,LCIMException e){
+              if(e== null){
+                // 查询成功返回
+                Log.d("Tom & Jerry", "got " + messagesInPage.size()+" messages ");
+              }
+          }
+      });
+    }
+  }
+});
+```
+```objc
+// 查询对话中最后 10 条消息
+[conversation queryMessagesWithLimit:10 callback:^(NSArray *messages, NSError *error) {
+    NSLog(@"第一次查询成功！");
+    // 以第一页的最早的消息作为开始，继续向前拉取消息
+    LCIMMessage *oldestMessage = [messages firstObject];
+    [conversation queryMessagesBeforeId:oldestMessage.messageId timestamp:oldestMessage.sendTimestamp limit:10 callback:^(NSArray *messagesInPage, NSError *error) {
+        NSLog(@"第二次查询成功！");
+    }];
+}];
+```
 ```js
 // JS SDK 通过迭代器隐藏了翻页的实现细节，开发者通过不断的调用 next 方法即可获得后续数据。
 // 创建一个迭代器，每次获取 10 条历史消息
@@ -3881,51 +3880,6 @@ do {
     print(error)
 }
 ```
-```objc
-// 查询对话中最后 10 条消息
-[conversation queryMessagesWithLimit:10 callback:^(NSArray *messages, NSError *error) {
-    NSLog(@"第一次查询成功！");
-    // 以第一页的最早的消息作为开始，继续向前拉取消息
-    LCIMMessage *oldestMessage = [messages firstObject];
-    [conversation queryMessagesBeforeId:oldestMessage.messageId timestamp:oldestMessage.sendTimestamp limit:10 callback:^(NSArray *messagesInPage, NSError *error) {
-        NSLog(@"第二次查询成功！");
-    }];
-}];
-```
-```java
-// limit 取值范围 1~1000，默认 100
-conv.queryMessages(10, new LCIMMessagesQueryCallback() {
-  @Override
-  public void done(List<LCIMMessage> messages, LCIMException e) {
-    if (e == null) {
-      // 成功获取最新 10 条消息记录
-      // 返回的消息一定是时间增序排列，也就是最早的消息一定是第一个
-      LCIMMessage oldestMessage = messages.get(0);
-
-      conv.queryMessages(oldestMessage.getMessageId(), oldestMessage.getTimestamp(),20,
-          new LCIMMessageQueryCallback(){
-            @Override
-            public void done(List<LCIMMessage> messagesInPage,LCIMException e){
-              if(e== null){
-                // 查询成功返回
-                Log.d("Tom & Jerry", "got " + messagesInPage.size()+" messages ");
-              }
-          }
-      });
-    }
-  }
-});
-```
-```cs
-// limit 取值范围 1~1000，默认 100
-var messages = await conversation.QueryMessages(limit: 10);
-var oldestMessage = messages[0];
-var start = new LCIMMessageQueryEndpoint {
-    MessageId = oldestMessage.Id,
-    SentTimestamp = oldestMessage.SentTimestamp
-};
-var messagesInPage = await conversation.QueryMessages(start: start); 
-```
 ```dart
 List<Message> messages;
 try {
@@ -3953,10 +3907,29 @@ try {
 ```
 ### 按照消息类型获取
 
-除了按照时间先后顺序拉取历史消息之外，即时通讯服务云端也支持按照消息的类型来拉去历史消息，这一功能可能对某些产品来说非常有用，例如我们需要展现某一个聊天群组里面所有的图像。
+除了按照时间先后顺序拉取历史消息之外，即时通讯服务云端也支持按照消息的类型来拉取历史消息，这一功能可能对某些产品来说非常有用，例如我们需要展现某一个聊天群组里面所有的图像。
 
 `queryMessage` 接口还支持指定特殊的消息类型，其示例代码如下：
 
+```cs
+// 传入泛型参数，SDK 会自动读取类型的信息发送给服务端，用作筛选目标类型的消息
+var imageMessages = await conversation.QueryMessages(messageType: -2);
+```
+```java
+int msgType = LCIMMessageType.IMAGE_MESSAGE_TYPE;
+conversation.queryMessagesByType(msgType, limit, new LCIMMessagesQueryCallback() {
+    @Override
+    public void done(List<LCIMMessage> messages, LCIMException e){
+    }
+});
+```
+```objc
+[conversation queryMediaMessagesFromServerWithType:kLCIMMessageMediaTypeImage limit:10 fromMessageId:nil fromTimestamp:0 callback:^(NSArray *messages, NSError *error) {
+    if (!error) {
+        NSLog(@"查询成功！");
+    }
+}];
+```
 ```js
 conversation.queryMessages({ type: ImageMessage.TYPE }).then(messages => {
   console.log(messages);
@@ -3976,25 +3949,6 @@ do {
     print(error)
 }
 ```
-```objc
-[conversation queryMediaMessagesFromServerWithType:kLCIMMessageMediaTypeImage limit:10 fromMessageId:nil fromTimestamp:0 callback:^(NSArray *messages, NSError *error) {
-    if (!error) {
-        NSLog(@"查询成功！");
-    }
-}];
-```
-```java
-int msgType = LCIMMessageType.IMAGE_MESSAGE_TYPE;
-conversation.queryMessagesByType(msgType, limit, new LCIMMessagesQueryCallback() {
-    @Override
-    public void done(List<LCIMMessage> messages, LCIMException e){
-    }
-});
-```
-```cs
-// 传入泛型参数，SDK 会自动读取类型的信息发送给服务端，用作筛选目标类型的消息
-var imageMessages = await conversation.QueryMessages(messageType: -2);
-```
 ```dart
 try {
   List<Message> messages = await conversation.queryMessage(type: -2);
@@ -4009,6 +3963,25 @@ try {
 
 即时通讯云端支持的历史消息查询方式是非常多的，除了上面列举的两个最常见需求之外，还可以支持按照由旧到新的方向进行查询。如下代码演示从对话创建的时间点开始，从前往后查询消息记录：
 
+```cs
+var earliestMessages = await conversation.QueryMessages(direction: LCIMMessageQueryDirection.OldToNew);
+```
+```java
+LCIMMessageInterval interval = new LCIMMessageInterval(null, null);
+conversation.queryMessages(interval, DirectionFromOldToNew, limit,
+  new LCIMMessagesQueryCallback(){
+    public void done(List<LCIMMessage> messages, LCIMException exception) {
+      // 处理结果
+    }
+});
+```
+```objc
+[conversation queryMessagesInInterval:nil direction:LCIMMessageQueryDirectionFromOldToNew limit:20 callback:^(NSArray<LCIMMessage *> * _Nullable messages, NSError * _Nullable error) {
+    if (messages.count) {
+        // 处理结果
+    }
+}];
+```
 ```js
 var { MessageQueryDirection } = require('leancloud-realtime');
 conversation.queryMessages({
@@ -4033,25 +4006,6 @@ do {
     print(error)
 }
 ```
-```objc
-[conversation queryMessagesInInterval:nil direction:LCIMMessageQueryDirectionFromOldToNew limit:20 callback:^(NSArray<LCIMMessage *> * _Nullable messages, NSError * _Nullable error) {
-    if (messages.count) {
-        // 处理结果
-    }
-}];
-```
-```java
-LCIMMessageInterval interval = new LCIMMessageInterval(null, null);
-conversation.queryMessages(interval, DirectionFromOldToNew, limit,
-  new LCIMMessagesQueryCallback(){
-    public void done(List<LCIMMessage> messages, LCIMException exception) {
-      // 处理结果
-    }
-});
-```
-```cs
-var earliestMessages = await conversation.QueryMessages(direction: LCIMMessageQueryDirection.OldToNew);
-```
 ```dart
 try {
   List<Message> messages = await conversation.queryMessage(
@@ -4061,17 +4015,46 @@ try {
   print(e);
 }
 ```
+
 这种情况下要实现翻页，接口会稍微复杂一点，请继续阅读下一节。
 
 ### 从某一时间戳往某一方向查询
 
-LeanCloud 即时通讯服务云端支持以某一条消息的 ID 和时间戳为准，往一个方向查：
+即时通讯服务云端支持以某一条消息的 ID 和时间戳为准，往一个方向查：
 
 - 从新到旧：以某一条消息为基准，查询它 **之前** 产生的消息
 - 从旧到新：以某一条消息为基准，查询它 **之后** 产生的消息
 
 这样我们就可以在不同方向上实现消息翻页了。
 
+```cs
+var earliestMessages = await conversation.QueryMessages(direction: LCIMMessageQueryDirection.OldToNew, limit: 1);
+// 获取 earliestMessages.Last() 之后的消息
+var start = new LCIMMessageQueryEndpoint {
+    MessageId = earliestMessages.Last().Id
+};
+var nextPageMessages = await conversation.QueryMessages(start: start);
+```
+```java
+LCIMMessageIntervalBound start = LCIMMessageInterval.createBound(messageId, timestamp, false);
+LCIMMessageInterval interval = new LCIMMessageInterval(start, null);
+LCIMMessageQueryDirection direction;
+conversation.queryMessages(interval, direction, limit,
+  new LCIMMessagesQueryCallback(){
+    public void done(List<LCIMMessage> messages, LCIMException exception) {
+      // 处理结果
+    }
+});
+```
+```objc
+LCIMMessageIntervalBound *start = [[LCIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:timestamp closed:false];
+LCIMMessageInterval *interval = [[LCIMMessageInterval alloc] initWithStartIntervalBound:start endIntervalBound:nil];
+[conversation queryMessagesInInterval:interval direction:direction limit:20 callback:^(NSArray<LCIMMessage *> * _Nullable messages, NSError * _Nullable error) {
+    if (messages.count) {
+        // 处理结果
+    }
+}];
+```
 ```js
 var { MessageQueryDirection } = require('leancloud-realtime');
 conversation.queryMessages({
@@ -4104,34 +4087,6 @@ do {
     print(error)
 }
 ```
-```objc
-LCIMMessageIntervalBound *start = [[LCIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:timestamp closed:false];
-LCIMMessageInterval *interval = [[LCIMMessageInterval alloc] initWithStartIntervalBound:start endIntervalBound:nil];
-[conversation queryMessagesInInterval:interval direction:direction limit:20 callback:^(NSArray<LCIMMessage *> * _Nullable messages, NSError * _Nullable error) {
-    if (messages.count) {
-        // 处理结果
-    }
-}];
-```
-```java
-LCIMMessageIntervalBound start = LCIMMessageInterval.createBound(messageId, timestamp, false);
-LCIMMessageInterval interval = new LCIMMessageInterval(start, null);
-LCIMMessageQueryDirection direction;
-conversation.queryMessages(interval, direction, limit,
-  new LCIMMessagesQueryCallback(){
-    public void done(List<LCIMMessage> messages, LCIMException exception) {
-      // 处理结果
-    }
-});
-```
-```cs
-var earliestMessages = await conversation.QueryMessages(direction: LCIMMessageQueryDirection.OldToNew, limit: 1);
-// 获取 earliestMessages.Last() 之后的消息
-var start = new LCIMMessageQueryEndpoint {
-    MessageId = earliestMessages.Last().Id
-};
-var nextPageMessages = await conversation.QueryMessages(start: start);
-```
 ```dart
 try {
   List<Message> messages = await conversation.queryMessage(
@@ -4152,6 +4107,40 @@ try {
 
 注意：**每次查询也有 100 条限制，如果想要查询区间内所有产生的消息，替换区间起始点的参数即可。**
 
+```cs
+var earliestMessage = await conversation.QueryMessages(direction: LCIMMessageQueryDirection.OldToNew, limit: 1);
+var latestMessage = await conversation.QueryMessages(limit: 1);
+var start = new LCIMMessageQueryEndpoint {
+    MessageId = earliestMessage[0].Id
+};
+var end = new LCIMMessageQueryEndpoint {
+    MessageId = latestMessage[0].Id
+};
+// messagesInInterval 最多可包含 100 条消息
+var messagesInInterval = await conversation.QueryMessages(start: start, end: end);
+```
+```java
+LCIMMessageIntervalBound start = LCIMMessageInterval.createBound(messageId, timestamp, false);
+LCIMMessageIntervalBound end = LCIMMessageInterval.createBound(endMessageId, endTimestamp, false);
+LCIMMessageInterval interval = new LCIMMessageInterval(start, end);
+LCIMMessageQueryDirection direction;
+conversation.queryMessages(interval, direction, limit,
+  new LCIMMessagesQueryCallback(){
+    public void done(List<LCIMMessage> messages, LCIMException exception) {
+      // 处理结果
+    }
+});
+```
+```objc
+LCIMMessageIntervalBound *start = [[LCIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:startTimestamp closed:false];
+LCIMMessageIntervalBound *end = [[LCIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:endTimestamp closed:false];
+LCIMMessageInterval *interval = [[LCIMMessageInterval alloc] initWithStartIntervalBound:start endIntervalBound:end];
+[conversation queryMessagesInInterval:interval direction:direction limit:100 callback:^(NSArray<LCIMMessage *> * _Nullable messages, NSError * _Nullable error) {
+    if (messages.count) {
+        // 处理结果
+    }
+}];
+```
 ```js
 conversation.queryMessages({
   startTime: timestamp,
@@ -4188,40 +4177,6 @@ do {
     print(error)
 }
 ```
-```objc
-LCIMMessageIntervalBound *start = [[LCIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:startTimestamp closed:false];
-LCIMMessageIntervalBound *end = [[LCIMMessageIntervalBound alloc] initWithMessageId:nil timestamp:endTimestamp closed:false];
-LCIMMessageInterval *interval = [[LCIMMessageInterval alloc] initWithStartIntervalBound:start endIntervalBound:end];
-[conversation queryMessagesInInterval:interval direction:direction limit:100 callback:^(NSArray<LCIMMessage *> * _Nullable messages, NSError * _Nullable error) {
-    if (messages.count) {
-        // 处理结果
-    }
-}];
-```
-```java
-LCIMMessageIntervalBound start = LCIMMessageInterval.createBound(messageId, timestamp, false);
-LCIMMessageIntervalBound end = LCIMMessageInterval.createBound(endMessageId, endTimestamp, false);
-LCIMMessageInterval interval = new LCIMMessageInterval(start, end);
-LCIMMessageQueryDirection direction;
-conversation.queryMessages(interval, direction, limit,
-  new LCIMMessagesQueryCallback(){
-    public void done(List<LCIMMessage> messages, LCIMException exception) {
-      // 处理结果
-    }
-});
-```
-```cs
-var earliestMessage = await conversation.QueryMessages(direction: LCIMMessageQueryDirection.OldToNew, limit: 1);
-var latestMessage = await conversation.QueryMessages(limit: 1);
-var start = new LCIMMessageQueryEndpoint {
-    MessageId = earliestMessage[0].Id
-};
-var end = new LCIMMessageQueryEndpoint {
-    MessageId = latestMessage[0].Id
-};
-// messagesInInterval 最多可包含 100 条消息
-var messagesInInterval = await conversation.QueryMessages(start: start, end: end);
-```
 ```dart
 try {
   List<Message> messages = await conversation.queryMessage(
@@ -4238,7 +4193,7 @@ try {
 ```
 ### 客户端消息缓存
 
-iOS 和 Android SDK 针对移动设备的特殊性，实现了客户端消息的缓存（JavaScript 和 C# 暂不支持）。开发者无需进行特殊设置，只要接收或者查询到的新消息，默认都会进入被缓存起来，该机制给开发者提供了如下便利：
+iOS 和 Android SDK 针对移动设备的特殊性，实现了客户端消息的缓存。开发者无需进行特殊设置，只要接收或者查询到的新消息，默认都会进入被缓存起来，该机制给开发者提供了如下便利：
 
 1. 客户端可以在未联网的情况下进入对话列表之后，可以获取聊天记录，提升用户体验
 2. 减少查询的次数和流量的消耗
@@ -4246,6 +4201,17 @@ iOS 和 Android SDK 针对移动设备的特殊性，实现了客户端消息的
 
 客户端缓存是默认开启的，如果开发者有特殊的需求，SDK 也支持关闭缓存功能。例如有些产品在应用层进行了统一的消息缓存，无需 SDK 层再进行冗余存储，可以通过如下接口来关闭消息缓存：
 
+```cs
+// 暂不支持
+```
+```java
+// 需要在调用 LCIMClient.open(callback) 函数之前设置，关闭历史消息缓存开关。
+LCIMOptions.getGlobalOptions().setMessageQueryCacheEnabled(false);
+```
+```objc
+// 需要在调用 [avimClient openWithCallback:callback] 函数之前设置，关闭历史消息缓存开关。
+avimClient.messageQueryCacheEnabled = false;
+```
 ```js
 // 暂不支持
 ```
@@ -4284,17 +4250,6 @@ do {
     print(error)
 }
 ```
-```objc
-// 需要在调用 [avimClient openWithCallback:callback] 函数之前设置，关闭历史消息缓存开关。
-avimClient.messageQueryCacheEnabled = false;
-```
-```java
-// 需要在调用 LCIMClient.open(callback) 函数之前设置，关闭历史消息缓存开关。
-LCIMOptions.getGlobalOptions().setMessageQueryCacheEnabled(false);
-```
-```cs
-// 暂不支持
-```
 ```dart
 // 暂不支持
 ```    
@@ -4303,8 +4258,28 @@ LCIMOptions.getGlobalOptions().setMessageQueryCacheEnabled(false);
 
 ### 用户退出即时通讯服务
 
-如果产品层面设计了用户退出登录或者切换账号的接口，对于即时通讯服务来说，也是需要完全注销当前用户的登录状态的。在 SDK 中，开发者可以通过调用 `AVIMClient` 的 `close` 系列方法完成即时通讯服务的「退出」：
+如果产品层面设计了用户退出登录或者切换账号的接口，对于即时通讯服务来说，也是需要完全注销当前用户的登录状态的。在 SDK 中，开发者可以通过调用 `LCIMClient` 的 `close` 系列方法完成即时通讯服务的「退出」：
 
+```cs
+await tom.Close();
+```
+```java
+tom.close(new LCIMClientCallback(){
+    @Override
+    public void done(LCIMClient client,LCIMException e){
+        if(e==null){
+            // 登出成功
+        }
+    }
+});
+```
+```objc
+[tom closeWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
+    if (succeeded) {
+        NSLog(@"退出即时通讯服务");
+    }
+}];
+```
 ```js
 tom.close().then(function() {
   console.log('Tom 退出登录');
@@ -4319,26 +4294,6 @@ tom.close { (result) in
         print(error)
     }
 }
-```
-```objc
-[tom closeWithCallback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        NSLog(@"退出即时通讯服务");
-    }
-}];
-```
-```java
-tom.close(new LCIMClientCallback(){
-    @Override
-    public void done(LCIMClient client,LCIMException e){
-        if(e==null){
-            // 登出成功
-        }
-    }
-});
-```
-```cs
-await tom.Close();
 ```
 ```dart
 await tom.close();
@@ -4456,12 +4411,11 @@ func client(_ client: IMClient, event: IMClientEvent) {
 
 {{ docs.langSpecStart('cs') }}
 
-`AVRealtime` 上会有如下事件通知：
+`LCIMClient` 上会有如下事件通知：
 
-- `OnDisconnected` 指网络连接断开事件发生，此时聊天服务不可用。
-- `OnReconnecting` 指网络正在尝试重连，此时聊天服务不可用。
-- `OnReconnected` 指网络连接恢复正常，此时聊天服务变得可用。
-- `OnReconnectFailed` 指重连失败，此时聊天服务不可用。
+- `OnPaused` 指网络连接断开事件发生，此时聊天服务不可用
+- `OnResume` 指网络连接恢复正常，此时聊天服务变得可用
+- `OnClose` 指连接关闭，且不会自动重连
 
 {{ docs.langSpecEnd('cs') }}
 
@@ -4482,7 +4436,7 @@ func client(_ client: IMClient, event: IMClientEvent) {
 
 不管是当前用户参与的「对话」列表，还是全局热门的开放聊天室列表展示出来了，我们下一步要考虑的就是如何把最活跃的对话展示在前面，这里我们把「活跃」定义为最近有新消息发出来。我们希望有最新消息的对话可以展示在对话列表的最前面，甚至可以把最新的那条消息也附带显示出来，这时候该怎么实现呢？
 
-我们专门为 `AVIMConversation` 增加了一个动态的属性 `lastMessageAt`（对应 `_Conversation` 表里的 `lm` 字段），记录了对话中最后一条消息到达即时通讯云端的时间戳，这一数字是服务器端的时间（精确到秒），所以不用担心客户端时间对结果造成影响。另外，`AVIMConversation` 还提供了一个方法可以直接获取最新的一条消息。这样在界面展现的时候，开发者就可以自己决定展示内容与顺序了。
+我们专门为 `LCIMConversation` 增加了一个动态的属性 `lastMessageAt`（对应 `_Conversation` 表里的 `lm` 字段），记录了对话中最后一条消息到达即时通讯云端的时间戳，这一数字是服务器端的时间（精确到秒），所以不用担心客户端时间对结果造成影响。另外，`LCIMConversation` 还提供了一个方法可以直接获取最新的一条消息。这样在界面展现的时候，开发者就可以自己决定展示内容与顺序了。
 
 ### 自动重连
 
@@ -4492,10 +4446,11 @@ func client(_ client: IMClient, event: IMClientEvent) {
 
 即时通讯服务提供的功能就是让一个客户端与其他客户端进行在线的消息互发，对应不同的使用场景，除了前两章节介绍的 [一对一单聊](#一对一单聊) 和 [多人群聊](#多人群聊) 之外，我们也支持其他形式的「对话」模型：
 
-- 开放聊天室，例如直播中的弹幕聊天室，它与普通的「多人群聊」的主要差别是允许的成员人数以及消息到达的保证程度不一样。有兴趣的开发者可以参考文档：[第三篇：玩转直播聊天室](realtime-guide-senior.html#玩转直播聊天室)。
-- 临时对话，例如客服系统中用户和客服人员之间建立的临时通道，它与普通的「一对一单聊」的主要差别在于对话总是临时创建并且不会长期存在，在提升实现便利性的同时，还能降低服务使用成本（能有效减少存储空间方面的花费）。有兴趣的开发者可以参考下篇文档：[第三篇：使用临时对话](realtime-guide-senior.html#使用临时对话)。
-- 系统对话，例如在微信里面常见的公众号/服务号，系统全局的广播账号，与普通「多人群聊」的主要差别，在于「服务号」是以订阅的形式加入的，也没有成员限制，并且订阅用户和服务号的消息交互是一对一的，一个用户的上行消息不会群发给其他订阅用户。有兴趣的开发者可以参考下篇文档：[第四篇：「系统对话」的使用](realtime-guide-systemconv.html#「系统对话」的使用)。
+- 开放聊天室，例如直播中的弹幕聊天室，它与普通的「多人群聊」的主要差别是允许的成员人数以及消息到达的保证程度不一样。有兴趣的开发者可以参考《即时通讯开发指南》第三篇的《玩转直播聊天室》一节。
 
+- 临时对话，例如客服系统中用户和客服人员之间建立的临时通道，它与普通的「一对一单聊」的主要差别在于对话总是临时创建并且不会长期存在，在提升实现便利性的同时，还能降低服务使用成本（能有效减少存储空间方面的花费）。有兴趣的开发者可以参考《即时通讯开发指南》第三篇的《使用临时对话》一节。
+
+- 系统对话，例如在微信里面常见的公众号/服务号，系统全局的广播账号，与普通「多人群聊」的主要差别，在于「服务号」是以订阅的形式加入的，也没有成员限制，并且订阅用户和服务号的消息交互是一对一的，一个用户的上行消息不会群发给其他订阅用户。有兴趣的开发者可以参考《即时通讯开发指南》第四篇《「系统对话」的使用》一节。
 ## 进一步阅读
 
 [二，消息收发的更多方式，离线推送与消息同步，多设备登录](realtime-guide-intermediate.html)
