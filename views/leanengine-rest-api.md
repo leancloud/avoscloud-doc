@@ -6,7 +6,7 @@
 
 ## Base URL
 
-REST API 请求的 Base URL 可以在**云服务控制台 > 设置 > 应用 Keys > 服务器地址**查看。
+REST API 请求的 Base URL 可以在**云服务控制台 > 设置 > 应用凭证 > 服务器地址**查看。
 
 ## 概览
 
