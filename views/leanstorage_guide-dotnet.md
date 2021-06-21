@@ -1925,7 +1925,7 @@ LCUser currentUser = await LCUser.LoginWithAuthDataAndUnionId(
 
 此时的存量账户表如下所示：
 
-objectId | 微信用户 | authData.<platform> | authData._{platform}_unionid
+objectId | 微信用户 | authData.{platform} | authData._{platform}_unionid
 ------ | ------ | ------ | ------
 1 | UserA | openid1（对应产品 1） | N/A
 2 | UserB | openid2（对应产品 2） | N/A
@@ -1942,7 +1942,7 @@ objectId | 微信用户 | authData.<platform> | authData._{platform}_unionid
 
 以上面的三个用户为例，他们分别升级到两个产品的最新版，且最终都会启用两个产品，则账户表的最终结果如下：
 
-objectId | 微信用户 | authData.<platform> | authData._{platform}_unionid
+objectId | 微信用户 | authData.{platform} | authData._{platform}_unionid
 ------ | ------ | ------ | ------
 1 | UserA | openid1（对应产品 1）/openid6（对应产品 2） | unionId_user_A
 2 | UserB | openid2（对应产品 2） | N/A
@@ -1952,7 +1952,7 @@ objectId | 微信用户 | authData.<platform> | authData._{platform}_unionid
 
 之后有新的用户 D，分别在两个产品的新版本中登录，则账户表中会增加一条新的 objectId=6 的记录，结果如下：
 
-objectId | 微信用户 | authData.<platform> | authData._{platform}_unionid
+objectId | 微信用户 | authData.{platform} | authData._{platform}_unionid
 ------ | ------ | ------ | ------
 1 | UserA | openid1（对应产品 1）/openid6（对应产品 2） | unionId_user_A
 2 | UserB | openid2（对应产品 2） | N/A
@@ -1963,7 +1963,7 @@ objectId | 微信用户 | authData.<platform> | authData._{platform}_unionid
 
 如果之后我们增加了新的子产品 3，这些用户在子产品 3 中也进行微信登录的话，那么四个用户还是会继续绑定到 objectId 为 1/3/5/6 的主账户。此时账户表的结果会变为：
 
-objectId | 微信用户 | authData.<platform> | authData._{platform}_unionid
+objectId | 微信用户 | authData.{platform} | authData._{platform}_unionid
 ------ | ------ | ------ | ------
 1 | UserA | openid1（对应产品 1）/openid6（对应产品 2）/openid9（对应产品 3） | unionId_user_A
 2 | UserB | openid2（对应产品 2） | N/A
