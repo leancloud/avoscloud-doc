@@ -10,7 +10,7 @@
 数据存储是云服务提供的核心功能之一，可用于存放和查询应用数据。下面的代码展示了如何创建一个对象并将其存入云端：
 
 
-```c#
+```cs
 // 构建对象
 LCObject todo = new LCObject("Todo");
 // 为属性赋值
@@ -88,7 +88,7 @@ object["dictValue"] = dict;
 
 **云服务控制台 > 数据存储 > 结构化数据** 中展示的日期数据也会依据操作系统的时区进行转换。一个例外是当你通过 REST API 获得数据时，这些数据将以 UTC 呈现。你可以手动对它们进行转换。
 
-若想了解云服务是如何保护应用数据的，请阅读 [数据和安全](data_security.html)。
+若想了解云服务是如何保护应用数据的，请阅读《数据和安全》。
 
 ### 构建对象
 
@@ -1637,7 +1637,7 @@ Team ID 用于获取 `access_token`。登录 Apple 开发者平台，在右上�
 #### 自动验证第三方平台授权信息
 
 为了确保账户数据的有效性，云端还支持对部分平台的 access token 的有效性进行自动验证，以防止伪造账户数据。如果有效性验证不通过，云端会返回 `invalid authData` 错误，关联不会被建立。对于云端无法识别的服务，开发者需要自己去验证 access token 的有效性。
-比如，注册、登录时分别通过云引擎的 [beforeSave hook](leanengine_cloudfunction_guide-node.html#beforeSave) 、[beforeUpdate hook](leanengine_cloudfunction_guide-node.html#beforeUpdate) 来验证 access token 有效性。
+比如，注册、登录时分别通过云引擎的 `beforeSave hook`、`beforeUpdate hook` 来验证 access token 有效性。
 
 如果希望使用这一功能，则在开始使用前，需要在 **云服务控制台 > 数据存储 > 用户 > 设置** 配置相应平台的 **应用 ID** 和 **应用 Secret Key**。
 
@@ -1773,7 +1773,7 @@ LCUser currentUser = await LCUser.LoginWithAuthDataAndUnionId(
     option: option);
 ```
 
-> 注意代码中将微信传回来的 openid 属性改为了 uid，这是因为云端要求对于自定义的 platform，只能使用 uid 这样的属性名，才能保证自动建立 `authData.<PLATFORM>.uid` 的唯一索引，具体可以参考[连接用户账户和第三方平台](rest_api.html#连接用户账户和第三方平台)。
+> 注意代码中将微信传回来的 openid 属性改为了 uid，这是因为云端要求对于自定义的 platform，只能使用 uid 这样的属性名，才能保证自动建立 `authData.<PLATFORM>.uid` 的唯一索引，具体可以参考《数据存储 REST API 使用详解》的《连接用户账户和第三方平台》。
 
 如果用户 A 是第一次在「云服务通讯」中通过微信登录，那么 _User 表中会增加一个新用户（假设其 objectId 为 `ThisIsUserA`），其 `authData` 的结果如下：
 
