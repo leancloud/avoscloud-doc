@@ -1,78 +1,7 @@
 {% import "views/_helper.njk" as docs %}
-{% from "views/_data.njk" import android_groovy, android_key_init %}
-
-{% macro requireServerURL() %}
-请将 `https://please-replace-with-your-customized.domain.com` 替换为你的应用[绑定的 API 域名](custom-api-domain-guide.html#API_域名)。
-
-国际版应用不要求绑定自定义域名。
-如果你的国际版应用（App ID 后缀为 `-MdYXbMMI`）没有绑定自定义域名，**初始化 SDK 时不用传入服务器地址参数**。
-极个别　App ID　后缀不为 `-MdYXbMMI` 的国际版应用，请参见[这里的说明](custom-api-domain-guide.html#App_ID_后缀不为_-MdYXbMMI_的国际版应用如何初始化_SDK)。
-{% endmacro %}
 
 # {{platform_name}} SDK 安装指南
 
-{% if platform_name === "Android / Java" %}
-## SDK 维护期说明
-
-我们于 2018 年 9 月推出了新的 [Java Unified SDK](https://leancloudblog.com/java-unified-sdk-kai-fang-ce-shi-tong-zhi/)，兼容纯 Java、云引擎和 Android 等多个平台，老的 Android SDK（版本号低于 `5.0.0`，`groupId` 为 `cn.leancloud.android` 的 libraries）已于 2019 年 9 月底停止维护。
-
-Java Unified SDK 根据底层依赖的 JSON 解析库的不同，有两个不同分支：
-
-- 6.x 分支依赖 [fastjson](https://github.com/alibaba/fastjson) 来进行 JSON 解析；
-- 7.0 以后版本使用 [Gson](https://github.com/google/gson) 来进行 JSON 解析（最新版本）；
-
-两个版本的对外接口完全一致，开发者可以根据自己的需求选择合适的版本。但是考虑到平台兼容性和稳定性，我们推荐大家使用带 Gson 库的版本来进行开发。
-
-从 2021 年 6 月开始，我们推出了 8.0 版本，与 7.x 版本相比，主要的变化是改变了公开类的前缀（`AV` -> `LC`），同时也删除了一些长期处于 `deprecated` 状态的接口，它将是我们今后会长期维护的版本。欢迎老 SDK 的用户尽快切换到新的 Java Unified SDK，具体迁移方法详见 [Java Unified SDK 迁移指南](java_unified_sdk_migration.html)。
-
-请开发者注意，各个版本 SDK 的维护期如下：
-1. 6.0 以前版本已经停止维护。
-2. 原 7.x 版本从现在开始进入维护期（只改 bug，不增加新功能），并计划于 2022 年 6 月停止维护。
-3. 8.x 会是我们今后长期维护版本。
-
-> 下面的流程都是基于 8.x 版本 Java Unified SDK 书写.
-
-## 平台与 SDK 对应关系
-Java SDK 主要包含以下几个 library，其层次结构以及平台对应关系如下：
-
-### 基础包（可以在纯 Java 环境下调用）
-- storage-core：包含所有数据存储的功能，如
-  - 结构化数据（LCObject）
-  - 内建账户系统（LCUser）
-  - 查询（LCQuery）
-  - 文件存储（LCFile）
-  - 社交关系（LCFriendship，当前版本暂不提供）
-  - 朋友圈（LCStatus，当前版本暂不提供）
-  - 短信（LCSMS）
-  - 等等
-- realtime-core：部分依赖 storage-core library，实现了 LiveQuery 以及即时通讯功能，如：
-  - LiveQuery
-  - LCIMClient
-  - LCIMConversation 以及多种场景对话
-  - LCIMMessage 以及多种子类化的多媒体消息
-  - 等等
-
-### Android 特有的包
-- storage-android：是 storage-core 在 Android 平台的定制化实现，接口与 storage-core 完全相同。
-- realtime-android：是 realtime-core 在 Android 平台的定制化实现，并且增加 Android 推送相关接口。
-- mixpush-android：是 LeanCloud 混合推送的 library，支持华为、小米、魅族、vivo 以及 oppo 的官方推送。
-- leancloud-fcm：是 Firebase Cloud Messaging 的封装 library，供美国节点的 app 使用推送服务。
-
-
-### 模块依赖关系
-Java SDK 一共包含如下几个模块：
-
-目录 | 模块名 | 适用平台 | 依赖关系
----|---|---|---
-./core | storage-core，存储核心 library | java | 无，它是 LeanCloud 最核心的 library
-./realtime | realtime-core，LiveQuery 与实时通讯核心 library | java | storage-core
-./android-sdk/storage-android | storage-android，Android 存储 library | Android | storage-core
-./android-sdk/realtime-android | realtime-android，Android 推送、LiveQuery、即时通讯 library | Android | storage-android, realtime-core
-./android-sdk/mixpush-android | Android 混合推送 library | Android | realtime-android
-./android-sdk/leancloud-fcm | Firebase Cloud Messaging library | Android | realtime-android
-
-
-{% endif %}
 
 {% if platform_name === ".NET" %}
 
@@ -217,153 +146,7 @@ pip install leancloud
 取决于系统环境，可能需要在命令前加 `sudo`。
 {% endif %}
 
-{% if platform_name === "Android / Java" %}
 
-我们已经将所有的 library 发布到了 maven 中心仓库，开发者可以用以下任意包管理工具来安装 SDK。
-
-#### 使用存储功能
-Maven：
-
-```xml
-<dependency>
-    <groupId>cn.leancloud</groupId>
-    <artifactId>storage-core</artifactId>
-    <version>{{ version.unified }}</version>
-</dependency>
-```
-
-Ivy：
-
-```xml
-<dependency org="cn.leancloud" name="storage-core" rev="{{ version.unified }}" />
-```
-
-SBT：
-
-```sbt
-libraryDependencies += "cn.leancloud" %% "storage-core" % "{{ version.unified }}"
-```
-
-Gradle：
-
-```groovy
-implementation 'cn.leancloud:storage-core:{{ version.unified }}'
-```
-
-如果是 Android 项目，则换成以下这些包：
-
-{{ android_groovy() }}
-
-#### 使用即时通讯 / 推送服务
-Example for Maven：
-
-```
-<dependency>
-    <groupId>cn.leancloud</groupId>
-    <artifactId>realtime-core</artifactId>
-    <version>{{ version.unified }}</version>
-</dependency>
-```
-
-and for Ivy:
-```
-<dependency org="cn.leancloud" name="realtime-core" rev="{{ version.unified }}" />
-```
-
-and for SBT:
-```
-libraryDependencies += "cn.leancloud" %% "realtime-core" % "{{ version.unified }}"
-```
-
-and for Gradle:
-```
-implementation 'cn.leancloud:realtime-android:{{ version.unified }}'
-implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-```
-
-#### 使用混合推送服务
-
-Example for Gradle：
-```
-implementation 'cn.leancloud:mixpush-android:{{ version.unified }}'
-implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-```
-
-#### 对 fastjson 的特别说明
-
-请注意，这里的讨论仅针对 6.x 版本的 SDK 有效。
-
-从 `6.5.0` 版本开始，我们 Java 平台和 Android 平台的 SDK 都统一依赖 fastjson 最新的 JVM 版本（`1.2.68`），开发者在使用的时候不需要做特殊的处理。
-
-> 对 `6.5.0` 之前的 SDK 版本，我们根据使用环境做了不同的依赖选择：
-- storage-core 依赖的是面向纯 Java 平台的 fastjson（版本为 `1.2.60`）;
-- storage-android 和 realtime-android 以及其他推送 sdk 依赖的是面向 Android 平台的 fastjson（版本为 `1.1.71.android`）。
->
-> 同时，我们发现 Android 版本的 fastjson 库在反序列化的时候，对 double 和 float 类型的处理存在漏洞。如果属性值中存在 `3.1415F` 或 `3.1415D` 这样的数字，JSON#parse 方法会抛出异常，异常信息类似于 `com.alibaba.fastjson.JSONException: syntax error, pos 123, json : xxx `。为此我们提供了一个临时的 bugfix 版本供开发者下载使用，下载地址见[这里](https://github.com/leancloud/java-unified-sdk/tree/master/3rd-parties)。开发者可以通过引用本地文件的方式来依赖这个版本，build.gradle 中的依赖部分可按照如下示例进行更改：
-
-> ```
->     implementation fileTree(include: ['*.jar'], dir: 'libs') // 注意把上面的 lib 拷贝到该目录下
->
->     implementation('cn.leancloud:realtime-android:6.4.4') { // 注意替换具体的版本号
->         exclude group: 'com.alibaba', module: 'fastjson'
->         exclude group: 'org.ligboy.retrofit2', module: 'converter-fastjson'
->     }
->
->     implementation('cn.leancloud:storage-android:6.4.4') { // 注意替换具体的版本号
->         exclude group: 'com.alibaba', module: 'fastjson'
->         exclude group: 'org.ligboy.retrofit2', module: 'converter-fastjson'
->     }
->
->     // implementation 'com.alibaba:fastjson:1.1.71.android'  // 注意删除这一行
->
->     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
->     implementation("org.ligboy.retrofit2:converter-fastjson-android:2.1.0") {
->         exclude group: 'com.alibaba', module: 'fastjson' // 注意增加这一行
->     }
-> ```
-
-#### 对 maven 源的特别说明
-
-我们发现有时候 Maven 源的 CDN 缓存同步策略出现问题，可能会导致我们某个版本或者该版本下某种格式的 library 文件无法下载，这时候你可以在配置文件中显式增加一个 Sonatype 的源，就可以解决找不到文件的问题。
-
-Maven pom.xml 的修改示例如下：
-```
-<repositories>
-    <repository>
-        <id>oss-sonatype</id>
-        <name>oss-sonatype</name>
-        <url>https://oss.sonatype.org/content/groups/public/</url>
-    </repository>
-</repositories>
-```
-
-Gradle build.gradle 的修改示例如下：
-```
-buildscript {
-    repositories {
-        google()
-        jcenter()
-        // 增加下面的配置
-        maven {
-            url "https://oss.sonatype.org/content/groups/public/"
-        }
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        // 增加下面的配置
-        maven {
-            url "https://oss.sonatype.org/content/groups/public/"
-        }
-    }
-}
-
-```
-
-{% endif %}
 {% if platform_name === "Flutter" %}
 SDK 发布在 pub.dev:
 * [数据存储 SDK](https://pub.dev/packages/leancloud_storage)
@@ -430,22 +213,7 @@ $ pod update # 或者 $ pod install --repo-update
 <a class="btn btn-default" target="_blank" href="sdk_down.html">下载 SDK</a>
 {% endif %}
 
-{% if platform_name === "Android / Java" %}
-#### 从源码编译
 
-可以执行以下命令获取 Java SDK 并安装：
-```
-$ git clone https://github.com/leancloud/java-unified-sdk.git
-$ cd java-unified-sdk/
-$ mvn clean install
-```
-获取和安装 Android SDK：
-```
-$ cd java-unified-sdk/
-$ cd android-sdk/
-$ gradle clean assemble
-```
-{% endif %}
 {% if platform_name === "Objective-C" %}
 #### 下载源码
 
@@ -1172,7 +940,11 @@ PM> Install-Package LeanCloud.Realtime
 
 {{ docs.alert("在使用 SDK 的 API 时，请确保进行了 Application 的 ID、Key 以及 Server URL 的初始化。") }}
 
-{{ requireServerURL() }}
+请将 `https://please-replace-with-your-customized.domain.com` 替换为你的应用[绑定的 API 域名](custom-api-domain-guide.html#API_域名)。
+
+国际版应用不要求绑定自定义域名。
+如果你的国际版应用（App ID 后缀为 `-MdYXbMMI`）没有绑定自定义域名，**初始化 SDK 时不用传入服务器地址参数**。
+极个别　App ID　后缀不为 `-MdYXbMMI` 的国际版应用，请参见[这里的说明](custom-api-domain-guide.html#App_ID_后缀不为_-MdYXbMMI_的国际版应用如何初始化_SDK)。
 
 {% endif %}
 {% if platform_name === "Swift" %}
@@ -1198,7 +970,11 @@ do {
 
 {{ docs.alert("在使用 SDK 的 API 时，请确保进行了 Application 的 ID、Key 以及 Server URL 的初始化。") }}
 
-{{ requireServerURL() }}
+请将 `https://please-replace-with-your-customized.domain.com` 替换为你的应用[绑定的 API 域名](custom-api-domain-guide.html#API_域名)。
+
+国际版应用不要求绑定自定义域名。
+如果你的国际版应用（App ID 后缀为 `-MdYXbMMI`）没有绑定自定义域名，**初始化 SDK 时不用传入服务器地址参数**。
+极个别　App ID　后缀不为 `-MdYXbMMI` 的国际版应用，请参见[这里的说明](custom-api-domain-guide.html#App_ID_后缀不为_-MdYXbMMI_的国际版应用如何初始化_SDK)。
 
 ```swift
 //国际版应用初始化：
@@ -1255,7 +1031,11 @@ AV.init({
 });
 ```
 
-{{ requireServerURL() }}
+请将 `https://please-replace-with-your-customized.domain.com` 替换为你的应用[绑定的 API 域名](custom-api-domain-guide.html#API_域名)。
+
+国际版应用不要求绑定自定义域名。
+如果你的国际版应用（App ID 后缀为 `-MdYXbMMI`）没有绑定自定义域名，**初始化 SDK 时不用传入服务器地址参数**。
+极个别　App ID　后缀不为 `-MdYXbMMI` 的国际版应用，请参见[这里的说明](custom-api-domain-guide.html#App_ID_后缀不为_-MdYXbMMI_的国际版应用如何初始化_SDK)。
 
 {% endif %}
 {% if platform_name === "Python" %}
@@ -1298,103 +1078,7 @@ client := leancloud.NewClient(&leancloud.ClientOptions{
 ```
 
 {% endif %}
-{% if platform_name === "Android / Java" %}
 
-### Android 平台初始化
-
-如果是一个 Android 项目，则向 `Application` 类的 `onCreate` 方法添加：
-
-```java
-import cn.leancloud.LeanCloud;
-
-public class MyLeanCloudApp extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        // 提供 this、App ID、App Key、Server Host 作为参数
-        // 注意这里千万不要调用 cn.leancloud.core.LeanCloud 的 initialize 方法，否则会出现 NetworkOnMainThread 等错误。
-        LeanCloud.initialize(this, "{{appid}}", "{{appkey}}", "https://please-replace-with-your-customized.domain.com");
-    }
-}
-```
-
-{{ requireServerURL() }}
-
-然后指定 SDK 需要的权限并在 `AndroidManifest.xml` 里面声明 `MyLeanCloudApp` 类：
-
-```xml
-<!-- 基本模块（必须）START -->
-<uses-permission android:name="android.permission.INTERNET"/>
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<!-- 基本模块 END -->
-
-<application
-  …
-  android:name=".MyLeanCloudApp" >
-
-  <!-- 即时通讯和推送 START -->
-  <!-- 即时通讯和推送都需要 PushService -->
-  <service android:name="cn.leancloud.push.PushService"/>
-  <receiver android:name="cn.leancloud.push.LCBroadcastReceiver">
-    <intent-filter>
-      <action android:name="android.intent.action.BOOT_COMPLETED"/>
-      <action android:name="android.intent.action.USER_PRESENT"/>
-      <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-    </intent-filter>
-  </receiver>
-  <!-- 即时通讯和推送 END -->
-</application>
-
-```
-
-> 注意：对于**只使用 LeanCloud 即时通讯服务**，而**不使用推送服务**的应用来说，在初始化的时候设置 LCIMOptions#disableAutoLogin4Push 选项，可以加快即时通讯用户登录的过程。设置方法如下：
-```
-// 在 LeanCloud#initialize 之后调用，禁止自动发送推送服务的 login 请求。
-LCIMOptions.getGlobalOptions().setDisableAutoLogin4Push(true);
-```
-
-#### 更安全的客户端初始化方法
-
-对 Android 开发者来说，从 6.1.0 版本开始，除了支持通过 appId + appKey 完成初始化，我们还提供一种更加安全的使用方式，支持仅仅通过 appId 来初始化应用，例如：
-
-{{ android_key_init(appid) }}
-
-这时候程序初始化不再需要 appKey，避免了核心配置信息在客户端泄漏可能带来的潜在风险。具体的集成方法可参看文档 [Android SDK 更安全的接入和初始化方式](sdk_setup_android_securely.html)。
-
-
-### Java 平台初始化代码
-
-如果是一个普通 Java 项目，则在代码开头添加：
-
-```java
-import cn.leancloud.core.LeanCloud;
-
-LeanCloud.initialize("{{appid}}", "{{appkey}}", "https://please-replace-with-your-customized.domain.com");
-```
-
-注意，云引擎内部访问 API 是通过内网，所以不需要也不应该配置 API 自定义域名（`serverUrl`）。
-模板项目和[云引擎网站托管开发指南](leanengine_webhosting_guide-java.html)中的示例代码均未配置 API 自定义域名，
-请勿调用 `setServer`，否则会变成公网访问，影响性能。
-
-LeanCloud realtime-core library 也支持在纯 Java Application 中使用，但是与 Android 的调用方式有细微差异，Java Application 中需要开发者显式建立与 LeanCloud 即时通讯云端的长链接（Android 平台是通过 PushService 自动建立的）。建立长链接的方法如下：
-
-```java
-LCConnectionManager.getInstance().startConnection(new LCCallback() {
-  @Override
-  protected void internalDone0(Object o, LCException e) {
-    if (e == null) {
-      System.out.println("成功建立 WebSocket 链接");
-    } else {
-      System.out.println("建立 WebSocket 链接失败：" + e.getMessage());
-    }
-  }
-});
-```
-
-只有长链接成功建立之后，后续的聊天请求才能开始。
-
-{% endif %}
 {% if platform_name === ".NET" %}
 导入基础模块：
 
@@ -1414,7 +1098,11 @@ using LeanCloud.Realtime;
 AVClient.Initialize("{{appid}}", "{{appkey}}", "https://please-replace-with-your-customized.domain.com");
 ```
 
-{{ requireServerURL() }}
+请将 `https://please-replace-with-your-customized.domain.com` 替换为你的应用[绑定的 API 域名](custom-api-domain-guide.html#API_域名)。
+
+国际版应用不要求绑定自定义域名。
+如果你的国际版应用（App ID 后缀为 `-MdYXbMMI`）没有绑定自定义域名，**初始化 SDK 时不用传入服务器地址参数**。
+极个别　App ID　后缀不为 `-MdYXbMMI` 的国际版应用，请参见[这里的说明](custom-api-domain-guide.html#App_ID_后缀不为_-MdYXbMMI_的国际版应用如何初始化_SDK)。
 
 注意，云引擎内部访问 API 是通过内网，所以不需要也不应该配置 API 自定义域名。
 模板项目和[云引擎网站托管开发指南](leanengine_webhosting_guide-dotnet.html)中的示例代码均未配置 API 自定义域名，
@@ -1433,7 +1121,11 @@ const realtime = new AVRealtime(new AVRealtime.Configuration {
 AVLiveQuery.Channel = realtime;
 ```
 
-{{ requireServerURL() }}
+请将 `https://please-replace-with-your-customized.domain.com` 替换为你的应用[绑定的 API 域名](custom-api-domain-guide.html#API_域名)。
+
+国际版应用不要求绑定自定义域名。
+如果你的国际版应用（App ID 后缀为 `-MdYXbMMI`）没有绑定自定义域名，**初始化 SDK 时不用传入服务器地址参数**。
+极个别　App ID　后缀不为 `-MdYXbMMI` 的国际版应用，请参见[这里的说明](custom-api-domain-guide.html#App_ID_后缀不为_-MdYXbMMI_的国际版应用如何初始化_SDK)。
 
 ### 即时通讯初始化
 
@@ -1448,7 +1140,11 @@ const realtime = new AVRealtime(new AVRealtime.Configuration
 });
 ```
 
-{{ requireServerURL() }}
+请将 `https://please-replace-with-your-customized.domain.com` 替换为你的应用[绑定的 API 域名](custom-api-domain-guide.html#API_域名)。
+
+国际版应用不要求绑定自定义域名。
+如果你的国际版应用（App ID 后缀为 `-MdYXbMMI`）没有绑定自定义域名，**初始化 SDK 时不用传入服务器地址参数**。
+极个别　App ID　后缀不为 `-MdYXbMMI` 的国际版应用，请参见[这里的说明](custom-api-domain-guide.html#App_ID_后缀不为_-MdYXbMMI_的国际版应用如何初始化_SDK)。
 {% endif %}
 
 {% if platform_name === "Flutter" %}
@@ -1469,7 +1165,11 @@ LeanCloud.initialize(
     queryCache: new LCQueryCache());
 ```
 
-{{ requireServerURL() }}
+请将 `https://please-replace-with-your-customized.domain.com` 替换为你的应用[绑定的 API 域名](custom-api-domain-guide.html#API_域名)。
+
+国际版应用不要求绑定自定义域名。
+如果你的国际版应用（App ID 后缀为 `-MdYXbMMI`）没有绑定自定义域名，**初始化 SDK 时不用传入服务器地址参数**。
+极个别　App ID　后缀不为 `-MdYXbMMI` 的国际版应用，请参见[这里的说明](custom-api-domain-guide.html#App_ID_后缀不为_-MdYXbMMI_的国际版应用如何初始化_SDK)。
 
 ##### Android 权限设置
 
@@ -1570,7 +1270,7 @@ import LeanCloud
 
 ## 开启调试日志
 
-在应用开发阶段，你可以选择开启 SDK 的调试日志（debug log）来方便追踪问题。调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 IDE 的日志窗口，或是浏览器 Console 或是 LeanCloud 控制台的云引擎日志中。
+在应用开发阶段，你可以选择开启 SDK 的调试日志（debug log）来方便追踪问题。调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 IDE 的日志窗口，或是浏览器 Console 或是云引擎日志（如果在云引擎下运行 SDK）。
 
 {% if platform_name === "Objective-C" %}
 ```objc
@@ -1678,16 +1378,7 @@ Client::setDebug(true);
 LEANCLOUD_DEBUG=true lean up
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 在 LeanCloud.initialize() 之前调用
-LeanCloud.setLogLevel(LCLogger.Level.DEBUG);
-```
 
-详细调试流程可以参考[Android SDK 调试指南][android-debug-guide]。
-
-[android-debug-guide]: https://forum.leancloud.cn/t/leancloud-sdk-android-sdk/21829
-{% endif %}
 {% if platform_name === ".NET" %}
 ```cs
 // 开启存储日志
@@ -1840,17 +1531,7 @@ if err != nil {
 
 保存后运行程序。
 {% endif %}
-{% if platform_name === "Android / Java" %}
-然后在项目中编写如下测试代码：
 
-```java
-LCObject testObject = new LCObject("TestObject");
-testObject.put("words", "Hello world!");
-testObject.saveInBackground().blockingSubscribe();
-```
-
-保存后运行程序。
-{% endif %}
 {% if platform_name === ".NET" %}
 然后在项目中编写如下测试代码：
 
@@ -1902,71 +1583,3 @@ SDK 安装指南基于当前最新版本的 SDK 编写，所以排查问题前�
 
 客户端尤其是手机端，应用在访问网络的时候需要申请一定的权限。
 
-{% if platform_name === "Android / Java" %}
-
-## Android 代码混淆
-
-为了保证 SDK 在代码混淆后能正常运作，需要保证部分类和第三方库不被混淆，参考下列配置：
-
-```
-# proguard.cfg
-
--keepattributes Signature
--dontwarn com.jcraft.jzlib.**
--keep class com.jcraft.jzlib.**  { *;}
-
--dontwarn sun.misc.**
--keep class sun.misc.** { *;}
-
--dontwarn com.alibaba.fastjson.**
--keep class com.alibaba.fastjson.** { *;}
-
--dontwarn org.ligboy.retrofit2.**
--keep class org.ligboy.retrofit2.** { *;}
-
--dontwarn io.reactivex.rxjava2.**
--keep class io.reactivex.rxjava2.** { *;}
-
--dontwarn sun.security.**
--keep class sun.security.** { *; }
-
--dontwarn com.google.**
--keep class com.google.** { *;}
-
--dontwarn com.avos.**
--keep class com.avos.** { *;}
-
--dontwarn cn.leancloud.**
--keep class cn.leancloud.** { *;}
-
--keep public class android.net.http.SslError
--keep public class android.webkit.WebViewClient
-
--dontwarn android.webkit.WebView
--dontwarn android.net.http.SslError
--dontwarn android.webkit.WebViewClient
-
--dontwarn android.support.**
-
--dontwarn org.apache.**
--keep class org.apache.** { *;}
-
--dontwarn org.jivesoftware.smack.**
--keep class org.jivesoftware.smack.** { *;}
-
--dontwarn com.loopj.**
--keep class com.loopj.** { *;}
-
--dontwarn com.squareup.okhttp.**
--keep class com.squareup.okhttp.** { *;}
--keep interface com.squareup.okhttp.** { *; }
-
--dontwarn okio.**
-
--dontwarn org.xbill.**
--keep class org.xbill.** { *;}
-
--keepattributes *Annotation*
-
-```
-{% endif %}

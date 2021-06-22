@@ -1,6 +1,8 @@
+# .NET SDK 配置指南
+
 我们于 2020 年 12 月推出了基于 .Net Standard 2.0 接口标准实现的[新版 .Net SDK](https://github.com/leancloud/csharp-sdk)。旧版 .Net SDK（类名以 `AV` 开头的） 已不再更新，欢迎旧版 SDK 的用户尽快切换到[新版 .Net SDK](https://github.com/leancloud/csharp-sdk)，具体迁移方法详见 [.Net SDK 迁移指南]。
 
-[.Net SDK 迁移指南]: https://github.com/leancloud/csharp-sdk/wiki/.Net-Standard-SDK-%E8%BF%81%E7%A7%BB%E6%8C%87%E5%8D%97
+[.NET SDK 迁移指南]: https://github.com/leancloud/csharp-sdk/wiki/.Net-Standard-SDK-%E8%BF%81%E7%A7%BB%E6%8C%87%E5%8D%97
 
 新版 .Net SDK 基于 .Net Standard 2.0 接口标准实现，支持框架如下：
 
@@ -70,7 +72,7 @@ LCApplication.Initialize("{{appid}}", "{{appkey}}", "https://please-replace-with
 
 ## 开启调试日志
 
-在应用开发阶段，你可以选择开启 SDK 的调试日志（debug log）来方便追踪问题。调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 IDE 的日志窗口，或是浏览器 Console 或是 LeanCloud 控制台的云引擎日志中。
+在应用开发阶段，你可以选择开启 SDK 的调试日志（debug log）来方便追踪问题。调试日志开启后，SDK 会把网络请求、错误消息等信息输出到 IDE 的日志窗口，或是浏览器 Console 或是云引擎日志（如果在云引擎下运行 SDK）。
 
 ```cs
 LCLogger.LogDelegate = (LCLogLevel level, string info) => {
