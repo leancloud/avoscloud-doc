@@ -95,7 +95,7 @@ LCLogger.LogDelegate = (LCLogLevel level, string info) => {
 
 Unity 平台可重定向到 Debug.
 
-在应用发布之前，请关闭调试日志，以免暴露敏感数据。
+注意，在应用发布之前，请关闭调试日志，以免暴露敏感数据。
 
 ## 验证
 

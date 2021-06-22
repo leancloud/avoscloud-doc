@@ -334,6 +334,8 @@ LeanCloud.setLogLevel(LCLogger.Level.DEBUG);
 
 [android-debug-guide]: https://forum.leancloud.cn/t/leancloud-sdk-android-sdk/21829
 
+注意，在应用发布之前，请关闭调试日志，以免暴露敏感数据。
+
 ## 验证
 
 首先，确认本地网络环境是可以访问云端服务器的，可以执行以下命令：
@@ -359,6 +361,10 @@ testObject.saveInBackground().blockingSubscribe();
 ```
 
 保存后运行程序。
+
+然后打开 **云服务控制台 > 数据存储 > 结构化数据 > `TestObject`**，如果看到数据表中出现一行「words」列的值为「Hello world!」的数据，说明 SDK 已经正确地执行了上述代码，配置完毕。
+
+如果控制台没有发现对应的数据，请参考 [问题排查](#问题排查)。
 
 ## 问题排查
 
