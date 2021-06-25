@@ -337,13 +337,22 @@ followerNameQuery.findInBackground(new FindCallback<AVUser>() {
 
 {{ docs.langSpecEnd('java') }} 
 
-
-{{ docs.langSpecStart('java') }} 
-
 #### 一次性获取粉丝和关注列表
 
 下面的方法实现了一次获取粉丝和关注用户列表的功能，当然，你也可以用上面的方法通过两次调用来获取这些数据，特别是用户列表很长需要翻页的时候，下面的方法就失效了。
 
+```javascript
+user.getFollowersAndFollowees().then(function(followers, followees) {
+  // 粉丝列表 followers
+  // 关注列表 followees
+}).catch(console.error);
+```
+```objc
+[[LCUser currentUser] getFollowersAndFollowees:^(NSDictionary *dict, NSError *error) {
+    NSArray *followers=dict[@"followers"];
+    NSArray *followees=dict[@"followees"];
+}];
+```
 ```java
 AVUser.currentUser().getFollowersAndFolloweesInBackground(new FollowersAndFolloweesCallback() {
   @Override
@@ -368,36 +377,9 @@ AVUser.currentUser().getFollowersAndFolloweesInBackground(new FollowersAndFollow
   }
 });
 ```
-
-{{ docs.langSpecEnd('java') }} 
-
-
-{{ docs.langSpecStart('objc') }} 
-
-#### 一次性获取粉丝和关注列表
-
-下面的方法实现了一次获取粉丝和关注用户列表的功能，当然，你也可以用上面的方法通过两次调用来获取这些数据，特别是用户列表很长需要翻页的时候，下面的方法就失效了。
-
-```objc
-[[LCUser currentUser] getFollowersAndFollowees:^(NSDictionary *dict, NSError *error) {
-    NSArray *followers=dict[@"followers"];
-    NSArray *followees=dict[@"followees"];
-}];
-```
-
-{{ docs.langSpecEnd('objc') }} 
-
-{{ docs.langSpecStart('cs') }} 
-
-#### 一次性获取粉丝和关注列表
-
-下面的方法实现了一次获取粉丝和关注用户列表的功能，当然，你也可以用上面的方法通过两次调用来获取这些数据，特别是用户列表很长需要翻页的时候，下面的方法就失效了。
-
 ```cs
 LCFollowersAndFollowees followersAndFollowees = await user.GetFollowersAndFollowees();
 ```
-
-{{ docs.langSpecEnd('cs') }} 
 
 #### 向粉丝展示动态
 
