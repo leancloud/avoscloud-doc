@@ -706,7 +706,7 @@ query.limit = 10;
 
 可以用 dot 符号（`.`）来获取多级关系，例如 `post.author`，详见《点号使用指南》的《在查询对象时使用点号》一节。
 
-可以在同一查询上应用多次 `includeKey` 以包含多个属性。通过这种方法获取到的对象同样接受 `getFirstObject`{% if platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Swift" %}、`get`{% endif %} 等 `LCQuery` 辅助方法。
+可以在同一查询上应用多次 `includeKey` 以包含多个属性。通过这种方法获取到的对象同样接受 `getFirstObject` 等 `LCQuery` 辅助方法。
 
 通过 `includeKey` 进行多级查询的方式不适用于数组属性内部的 `LCObject`，只能包含到数组本身。
 
@@ -1647,7 +1647,7 @@ LCUser *currentUser = [LCUser currentUser];
 
 请避免在外部浏览器使用 URL 来传递 session token，以防范信息泄露风险。
 
-如果在 **控制台 > 存储 > 设置** 中勾选了 **密码修改后，强制客户端重新登录**，那么当一个用户修改密码后，该用户的 session token 会被重置。此时需要让用户重新登录，否则会遇到 [`403 (Forbidden)`](error_code.html#_403) 错误。
+如果在 **控制台 > 存储 > 设置** 中勾选了 **密码修改后，强制客户端重新登录**，那么当一个用户修改密码后，该用户的 session token 会被重置。此时需要让用户重新登录，否则会遇到 `403 (Forbidden)` 错误。
 
 下面的代码检查 session token 是否有效：
 
@@ -2589,7 +2589,7 @@ student.name = @"小明";
 
 ## 全文搜索
 
-全文搜索是一个针对应用数据进行全局搜索的接口，它基于搜索引擎构建，提供更强大的搜索功能。要深入了解其用法和阅读示例代码，请阅读 [全文搜索指南](app_search_guide.html)。
+全文搜索是一个针对应用数据进行全局搜索的接口，它基于搜索引擎构建，提供更强大的搜索功能。要深入了解其用法和阅读示例代码，请阅读《全文搜索指南》。
 
 <!-- This code is for Google Ads -->
 {% include 'templates/include/ga-config.html' %}
