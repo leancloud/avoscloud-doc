@@ -9,26 +9,7 @@
 
 数据存储是云服务提供的核心功能之一，可用于存放和查询应用数据。下面的代码展示了如何创建一个对象并将其存入云端：
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 构建对象
-LCObject *todo = [LCObject objectWithClassName:@"Todo"];
 
-// 为属性赋值
-[todo setObject:@"工程师周会"        forKey:@"title"];
-[todo setObject:@"周二两点，全体成员" forKey:@"content"];
-
-// 将对象保存到云端
-[todo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        // 成功保存之后，执行其他逻辑
-        NSLog(@"保存成功。objectId：%@", todo.objectId);
-    } else {
-        // 异常处理
-    }
-}];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 声明 class
@@ -96,29 +77,7 @@ $todo->set("content", "周二两点，全体成员");
 $todo->save();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 构建对象
-LCObject todo = new LCObject("Todo");
 
-// 为属性赋值
-todo.put("title",   "工程师周会");
-todo.put("content", "周二两点，全体成员");
-
-// 将对象保存到云端
-todo.saveInBackground().subscribe(new Observer<LCObject>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCObject todo) {
-        // 成功保存之后，执行其他逻辑
-        System.out.println("保存成功。objectId：" + todo.getObjectId());
-    }
-    public void onError(Throwable throwable) {
-        // 异常处理
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -158,8 +117,6 @@ await todo.save();
 ```
 {% endif %}
 
-
-
 {% if platform_name === "Go" %}
 ```go
 import "github.com/leancloud/go-sdk/leancloud"
@@ -185,9 +142,7 @@ if err := client.Class("Todo").Create(&todo); err != nil {
 
 ## SDK 安装与初始化
 
-{% if platform_name === "Objective-C" %}
-请阅读 [Objective-C 安装指南](sdk_setup-objc.html)。
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 请阅读 [JavaScript 安装指南](sdk_setup-js.html)。
 {% endif %}
@@ -197,14 +152,7 @@ if err := client.Class("Todo").Create(&todo); err != nil {
 {% if platform_name === "PHP" %}
 请阅读 [PHP 安装指南](sdk_setup-php.html)。
 {% endif %}
-{% if platform_name === "Android / Java" %}
-请阅读 [Android / Java 安装指南](sdk_setup-java.html)。
 
-> Android SDK 老版本迁移
->
-> 如果你还在在使用我们老版本 Android SDK（所有版本号低于 `5.0.0`，`groupId` 为 `cn.leancloud.android` 的 libraries），要迁移到新版的 Unified SDK，具体迁移方法见 [Java SDK 的 README](https://github.com/leancloud/java-unified-sdk#migration-to-8x)。
-
-{% endif %}
 {% if platform_name === "Swift" %}
 请阅读 [Swift 安装指南](sdk_setup-swift.html)。
 {% endif %}
@@ -259,7 +207,6 @@ type Todo struct {
 }
 ```
 {% endif %}
-{# Keys must be alphanumeric strings. Values can be strings, numbers, booleans, or even arrays, objects, and anything that can be JSON-encoded. #}
 
 ### 数据类型
 
@@ -271,29 +218,7 @@ type Todo struct {
 
 以下是一些示例：
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 基本类型
-NSNumber     *boolean    = @(YES);
-NSNumber     *number     = [NSNumber numberWithInt:2018];
-NSString     *string     = [NSString stringWithFormat:@"%@ 流行音乐榜单", number];
-NSDate       *date       = [NSDate date];
-NSData       *data       = [@"Hello world!" dataUsingEncoding:NSUTF8StringEncoding];
-NSArray      *array      = [NSArray arrayWithObjects: string, number, nil];
-NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys: number, @"number", string, @"string", nil];
 
-// 构建对象
-LCObject *testObject = [LCObject objectWithClassName:@"TestObject"];
-[testObject setObject:boolean    forKey:@"testBoolean"];
-[testObject setObject:number     forKey:@"testInteger"];
-[testObject setObject:string     forKey:@"testString"];
-[testObject setObject:date       forKey:@"testDate"];
-[testObject setObject:data       forKey:@"testData"];
-[testObject setObject:array      forKey:@"testArray"];
-[testObject setObject:dictionary forKey:@"testDictionary"];
-[testObject saveInBackground];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 基本类型
@@ -409,32 +334,7 @@ $testObject->set("testAssociativeArray", $dictionary);
 $testObject->save();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 基本类型
-boolean bool = true;
-int number = 2018;
-String string = number + " 流行音乐榜单";
-Date date = new Date();
-byte[] data = "Hello world!".getBytes();
-ArrayList<Object> arrayList = new ArrayList<>();
-arrayList.add(number);
-arrayList.add(string);
-HashMap<Object, Object> hashMap = new HashMap<>();
-hashMap.put("number", number);
-hashMap.put("string", string);
 
-// 构建对象
-LCObject testObject = new LCObject("TestObject");
-testObject.put("testBoolean",   bool);
-testObject.put("testInteger",   number);
-testObject.put("testDate",      date);
-testObject.put("testData",      data);
-testObject.put("testArrayList", arrayList);
-testObject.put("testHashMap",   hashMap);
-testObject.save();
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 /* 所有的 LC 数据类型都遵循 LCValue 协议，即它们也都是 LCValue 类型 */
@@ -523,11 +423,11 @@ meeting := Meeting{
 ```
 {% endif %}
 
-我们不推荐{% if platform_name === "Objective-C" %}通过 `NSData` {% endif %}{% if platform_name === "JavaScript" %}{% endif %}{% if platform_name === "Python" %}通过 `byte[]` {% endif %}{% if platform_name === "PHP" %}通过 `Bytes` {% endif %}{% if platform_name === "Android / Java" %}通过 `byte[]` {% endif %}{% if platform_name === "Swift" %}通过 `LCData` {% endif %}{% if platform_name === "Flutter" %}通过 `Uint8List` {% endif %}{% if platform_name === ".Net" %}通过 `byte[]` {% endif %}在 `{{ baseObjectName }}` 里面存储图片、文档等大型二进制数据。每个 `{{ baseObjectName }}` 的大小不应超过 **128 KB**。如需存储大型文件，可创建 `{{ fileObjectName }}` 实例并将将其关联到 `{{ baseObjectName }}` 的某个属性上。参见 [文件](#文件)。
+我们不推荐{% if platform_name === "JavaScript" %}{% endif %}{% if platform_name === "Python" %}通过 `byte[]` {% endif %}{% if platform_name === "PHP" %}通过 `Bytes` {% endif %}{% if platform_name === "Swift" %}通过 `LCData` {% endif %}{% if platform_name === "Flutter" %}通过 `Uint8List` {% endif %}在 `{{ baseObjectName }}` 里面存储图片、文档等大型二进制数据。每个 `{{ baseObjectName }}` 的大小不应超过 **128 KB**。如需存储大型文件，可创建 `{{ fileObjectName }}` 实例并将将其关联到 `{{ baseObjectName }}` 的某个属性上。参见 [文件](#文件)。
 
 注意：时间类型在云端将会以 UTC 时间格式存储，但是客户端在读取之后会转化成本地时间。
 
-**控制台 > 数据存储 > 结构化数据** 中展示的日期数据也会依据操作系统的时区进行转换。一个例外是当你通过 REST API 获得数据时，这些数据将以 UTC 呈现。你可以手动对它们进行转换。
+**云服务控制台 > 数据存储 > 结构化数据** 中展示的日期数据也会依据操作系统的时区进行转换。一个例外是当你通过 REST API 获得数据时，这些数据将以 UTC 呈现。你可以手动对它们进行转换。
 
 若想了解云服务是如何保护应用数据的，请阅读《数据和安全》。
 
@@ -537,14 +437,7 @@ meeting := Meeting{
 
 下面的代码构建了一个 class 为 `Todo` 的 `{{ baseObjectName }}`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCObject *todo = [LCObject objectWithClassName:@"Todo"];
 
-// 等同于
-LCObject *todo = [[LCObject alloc] initWithClassName:@"Todo"];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 为 AV.Object 创建子类
@@ -574,11 +467,7 @@ $todo = new LeanObject("Todo");
 $todo = LeanObject::create("Todo");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject todo = new LCObject("Todo");
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let todo = LCObject(className: "Todo")
@@ -616,26 +505,7 @@ AV.Object.register(Todo);
 
 下面的代码将一个 class 为 `Todo` 的对象存入云端：
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 构建对象
-LCObject *todo = [LCObject objectWithClassName:@"Todo"];
 
-// 为属性赋值
-[todo setObject:@"马拉松报名" forKey:@"title"];
-[todo setObject:@2 forKey:@"priority"];
-
-// 将对象保存到云端
-[todo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        // 成功保存之后，执行其他逻辑
-        NSLog(@"保存成功。objectId：%@", todo.objectId);
-    } else {
-        // 异常处理
-    }
-}];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 声明 class
@@ -702,29 +572,7 @@ $todo->set("priority", 2);
 $todo->save();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 构建对象
-LCObject todo = new LCObject("Todo");
 
-// 为属性赋值
-todo.put("title", "马拉松报名");
-todo.put("priority", 2);
-
-// 将对象保存到云端
-todo.saveInBackground().subscribe(new Observer<LCObject>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCObject todo) {
-        // 成功保存之后，执行其他逻辑
-        System.out.println("保存成功。objectId：" + todo.getObjectId());
-    }
-    public void onError(Throwable throwable) {
-        // 异常处理
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -793,7 +641,7 @@ if err := client.Class("Todo").Create(map[string]interface{}{
 ```
 {% endif %}
 
-为了确认对象已经保存成功，我们可以到 **控制台 > 数据存储 > 结构化数据 > `Todo`** 里面看一下，应该会有一行新的数据产生。点一下这个数据的 `objectId`，应该能看到类似这样的内容：
+为了确认对象已经保存成功，我们可以到 **云服务控制台 > 数据存储 > 结构化数据 > `Todo`** 里面看一下，应该会有一行新的数据产生。点一下这个数据的 `objectId`，应该能看到类似这样的内容：
 
 ```json
 {
@@ -811,16 +659,16 @@ if err := client.Class("Todo").Create(map[string]interface{}{
 }
 ```
 
-注意，无需在 **控制台 > 数据存储 > 结构化数据** 里面创建新的 `Todo` class 即可运行前面的代码。如果 class 不存在，它将自动创建。
+注意，无需在 **云服务控制台 > 数据存储 > 结构化数据** 里面创建新的 `Todo` class 即可运行前面的代码。如果 class 不存在，它将自动创建。
 
 以下是一些对象的内置属性，会在对象保存时自动创建，无需手动指定：
 
 内置属性 | 类型 | 描述
 --- | --- | ---
-`objectId` | `{% if platform_name === "Objective-C" %}NSString{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}String{% endif %}{% if platform_name === "Python" %}str{% endif %}{% if platform_name === "PHP" %}String{% endif %}{% if platform_name === "Android / Java" %}String{% endif %}{% if platform_name === "Swift" %}LCString{% endif %}{% if platform_name === "Flutter" %}String{% endif %}{% if platform_name === ".Net" %}string{% endif %}{% if platform_name === "Go"%}string{% endif %}` | 该对象唯一的 ID 标识。
-`ACL` | `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "JavaScript(next)" %}ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}LCACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}{% if platform_name === "Flutter" %}LCACL{% endif %}{% if platform_name === ".Net" %}LCACL{% endif %}{% if platform_name === "Go"%}ACL{% endif %}` | 该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
-`createdAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}{% if platform_name === "Go"%}time.Time{% endif %}` | 该对象被创建的时间。
-`updatedAt` | `{% if platform_name === "Objective-C" %}NSDate{% endif %}{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Android / Java" %}Date{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === ".Net" %}DateTime{% endif %}{% if platform_name === "Go"%}time.Time{% endif %}` | 该对象最后一次被修改的时间。
+`objectId` | `{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}String{% endif %}{% if platform_name === "Python" %}str{% endif %}{% if platform_name === "PHP" %}String{% endif %}{% if platform_name === "Swift" %}LCString{% endif %}{% if platform_name === "Flutter" %}String{% endif %}{% if platform_name === "Go"%}string{% endif %}` | 该对象唯一的 ID 标识。
+`ACL` | `{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "JavaScript(next)" %}ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}{% if platform_name === "Flutter" %}LCACL{% endif %}{% if platform_name === "Go"%}ACL{% endif %}` | 该对象的权限控制，实际上是一个 JSON 对象，控制台做了展现优化。
+`createdAt` | `{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === "Go"%}time.Time{% endif %}` | 该对象被创建的时间。
+`updatedAt` | `{% if platform_name === "JavaScript" or platform_name === "JavaScript(next)" %}Date{% endif %}{% if platform_name === "Python" %}datetime.datetime{% endif %}{% if platform_name === "PHP" %}DateTime{% endif %}{% if platform_name === "Swift" %}LCDate{% endif %}{% if platform_name === "Flutter" %}DateTime{% endif %}{% if platform_name === "Go"%}time.Time{% endif %}` | 该对象最后一次被修改的时间。
 
 
 这些属性的值会在对象被存入云端时自动填入，代码中尚未保存的 `{{ baseObjectName }}` 不存在这些属性。
@@ -835,21 +683,7 @@ if err := client.Class("Todo").Create(map[string]interface{}{
 
 对于已经保存到云端的 `{{ baseObjectName }}`，可以通过它的 `objectId` 将其取回：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-[query getObjectInBackgroundWithId:@"582570f38ac247004f39c24b" block:^(LCObject *todo, NSError *error) {
-    // todo 就是 objectId 为 582570f38ac247004f39c24b 的 Todo 实例
-    NSString *title    = todo[@"title"];
-    int priority       = [[todo objectForKey:@"priority"] intValue];
 
-    // 获取内置属性
-    NSString *objectId = todo.objectId;
-    NSDate *updatedAt  = todo.updatedAt;
-    NSDate *createdAt  = todo.createdAt;
-}];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
@@ -907,26 +741,7 @@ $updatedAt = $todo->getUpdatedAt();
 $createdAt = $todo->getCreatedAt();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-query.getInBackground("582570f38ac247004f39c24b").subscribe(new Observer<LCObject>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCObject todo) {
-        // todo 就是 objectId 为 582570f38ac247004f39c24b 的 Todo 实例
-        String title    = todo.getString("title");
-        int priority    = todo.getInt("priority");
 
-        // 获取内置属性
-        String objectId = todo.getObjectId();
-        Date updatedAt  = todo.getUpdatedAt();
-        Date createdAt  = todo.getCreatedAt();
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Todo")
@@ -1034,17 +849,10 @@ db.class('Todo')
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Android / Java" or platform_name === "Swift" %}
 #### 同步对象
 
-当云端数据发生更改时，你可以调用 `{% if platform_name === "Objective-C" %}fetchInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}fetch{% endif %}{% if platform_name === "Python" %}fetch{% endif %}{% if platform_name === "Android / Java" %}fetchInBackground{% endif %}{% if platform_name === "Swift" %}fetch{% endif %}` 方法来刷新对象，使之与云端数据同步：
+当云端数据发生更改时，你可以调用 `{% if platform_name === "JavaScript" %}fetch{% endif %}{% if platform_name === "Python" %}fetch{% endif %}{% if platform_name === "Swift" %}fetch{% endif %}` 方法来刷新对象，使之与云端数据同步：
 {% endif %}
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCObject *todo = [LCObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
-[todo fetchInBackgroundWithBlock:^(LCObject *todo, NSError *error) {
-    // todo 已刷新
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const todo = AV.Object.createWithoutData('Todo', '582570f38ac247004f39c24b');
@@ -1060,19 +868,7 @@ todo = Todo.create_without_data('582570f38ac247004f39c24b')
 todo.fetch()
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject todo = LCObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
-todo.fetchInBackground().subscribe(new Observable<LCObject>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCObject todo) {
-        // todo 已刷新
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let todo = LCObject(className: "Todo", objectId: "582570f38ac247004f39c24b")
@@ -1097,18 +893,10 @@ await todo.fetch();
 
 
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Swift" %}
-刷新操作会强行使用云端的属性值覆盖本地的属性。因此如果本地有属性修改，**`{% if platform_name === "Objective-C" %}fetchInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}fetch{% endif %}{% if platform_name === "Android / Java" %}fetchInBackground{% endif %}{% if platform_name === "Swift" %}fetch{% endif %}` 操作会丢弃这些修改**。为避免这种情况，你可以在刷新时指定 **需要刷新的属性**，这样只有指定的属性会被刷新（包括内置属性 `objectId`、`createdAt` 和 `updatedAt`），其他属性不受影响。
+刷新操作会强行使用云端的属性值覆盖本地的属性。因此如果本地有属性修改，**`{% if platform_name === "JavaScript" %}fetch{% endif %}{% if platform_name === "Swift" %}fetch{% endif %}` 操作会丢弃这些修改**。为避免这种情况，你可以在刷新时指定 **需要刷新的属性**，这样只有指定的属性会被刷新（包括内置属性 `objectId`、`createdAt` 和 `updatedAt`），其他属性不受影响。
 {% endif %}
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCObject *todo = [LCObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
-NSArray *keys = [NSArray arrayWithObjects:@"priority", @"location", nil];
-[todo fetchInBackgroundWithKeys:keys block:^(LCObject *todo, NSError *error) {
-    // 只有 priority 和 location 会被获取和刷新
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const todo = AV.Object.createWithoutData('Todo', '582570f38ac247004f39c24b');
@@ -1119,24 +907,7 @@ todo.fetch({
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject todo = LCObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
-String keys = "priority, location";
-todo.fetchInBackground(keys).subscribe(new Observable<LCObject>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCObject todo) {
-        // 只有 priority 和 location 会被获取和刷新
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
 
-如果想要确保只刷新已经保存到云端的对象，那么可以用 `fetchIfNeededInBackground` 替换 `fetchInBackground`。
-调用 `fetchIfNeededInBackground` 方法时，如果是本地构造尚未保存的对象，那么不会访问云端，onNext 方法中传入的是本地对象。
-
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 let todo = LCObject(className: "Todo", objectId: "582570f38ac247004f39c24b")
@@ -1160,14 +931,10 @@ await todo.fetch(includes: ['priority','location']);
 {% endif %}
 
 
-{# After the object is refreshed successfully, its `updatedAt` value will be updated on the client. The cloud won't have this new value until the next save or fetch happens, thus some network bandwidth can be saved out of it. #}
-
-{# With that in mind, let's make it more fun. Let's build a new `AV.Object` locally from scratch with an objectId, and retrieve more field values associated with this object from the cloud without using `AV.Query`. #}
-
 ### 更新对象
 
 {% if platform_name !== "Go" %}
-要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}{% if platform_name === ".Net" %}Save{% endif %}` 方法。例如：
+要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}` 方法。例如：
 {% endif %}
 {% if platform_name === "Go" %}
 在使用 Go SDK 时，更新对象和创建对象相同，可以使用自定义类型对象或者 `map`。
@@ -1232,15 +999,7 @@ if err := client.Class("Account").ID("5745557f71cfe40068c6abe0").UpdateWithQuery
 另一种解决方案则是则是不使用自定义结构体，转而使用 `map[string]interface{}`。对于 `map[string]interface{}` 来说，如果 `key` 不存在，则 `value` 也不存在，不会产生自定义结构体字段的零值问题。
 {% endif %}
 
-{% if platform_name === "Objective-C" %}
-要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `saveInBackground` 方法。例如：
-```objc
-LCObject *todo = [LCObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
-[todo setObject:@"这周周会改到周三下午三点。" forKey:@"content"];
-[todo saveInBackground];
-```
-云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
 ```js
@@ -1278,15 +1037,7 @@ $todo->save();
 ```
 云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
 {% endif %}
-{% if platform_name === "Android / Java" %}
-要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
-```java
-LCObject todo = LCObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
-todo.put("content", "这周周会改到周三下午三点。");
-todo.save();
-```
-云服务会自动识别需要更新的属性并将对应的数据发往云端，未更新的属性会保持原样。
-{% endif %}
+
 {% if platform_name === "Swift" %}
 要更新一个对象，只需指定需要更新的属性名和属性值，然后调用 `save` 方法。例如：
 ```swift
@@ -1347,30 +1098,7 @@ todo.revert(['content'])
 例如，用户的账户表 `Account` 有一个余额字段 `balance`，同时有多个请求要修改该字段值。为避免余额出现负值，只有当金额小于或等于余额的时候才能接受请求：
 {% endif %}
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCObject *account = [LCObject objectWithClassName:@"Account" objectId:@"5745557f71cfe40068c6abe0"];
-// 对 balance 原子减少 100
-NSInteger amount = -100;
-[account incrementKey:@"balance" byAmount:@(amount)];
-// 设置条件
-LCQuery *query = [[LCQuery alloc] init];
-[query whereKey:@"balance" greaterThanOrEqualTo:@(-amount)];
-LCSaveOption *option = [[LCSaveOption alloc] init];
-option.query = query;
-// 操作结束后，返回最新数据。
-// 如果是新对象，则所有属性都会被返回，
-// 否则只有更新的属性会被返回。
-option.fetchWhenSave = YES;
-[account saveInBackgroundWithOption:option block:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        NSLog(@"当前余额为：%@", account[@"balance"]);
-    } else if (error.code == 305) {
-        NSLog(@"余额不足，操作失败！");
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const account = AV.Object.createWithoutData('Account', '5745557f71cfe40068c6abe0');
@@ -1443,31 +1171,7 @@ except leancloud.LeanCloudError as e:
         raise
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject account = LCObject.createWithoutData("Account", "5745557f71cfe40068c6abe0");
-// 对 balance 原子减少 100
-final int amount = -100;
-account.increment("balance", amount);
-// 设置条件
-LCSaveOption option = new LCSaveOption();
-option.query(new LCQuery<>("Account").whereGreaterThanOrEqualTo("balance", -amount));
-// 操作结束后，返回最新数据。
-// 如果是新对象，则所有属性都会被返回，
-// 否则只有更新的属性会被返回。
-option.setFetchWhenSave(true);
-account.saveInBackground(option).subscribe(new Observer<LCObject>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCObject account) {
-        System.out.println("当前余额为：" + account.get("balance"));
-    }
-    public void onError(Throwable throwable) {
-        System.out.println("余额不足，操作失败！");
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -1535,11 +1239,7 @@ try {
 
 设想我们正在开发一个微博，需要统计一条微博有多少个赞和多少次转发。由于赞和转发的操作可能由多个客户端同时进行，直接在本地更新数字并保存到云端的做法极有可能导致差错。为保证计数的准确性，可以通过 **原子操作** 来增加或减少一个属性内保存的数字：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[post incrementKey:@"likes" byAmount:@1];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 post.increment('likes', 1);
@@ -1560,11 +1260,7 @@ post.increment('likes', 1)
 $post->increment("likes", 1);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-post.increment("likes", 1);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 try post.increase("likes", by: 1)
@@ -1592,14 +1288,7 @@ leancloud.OpIncrement(1)
 
 更新数组也是原子操作。使用以下方法可以方便地维护数组类型的数据：
 
-{% if platform_name === "Objective-C" %}
-- `addObject:forKey:`<br/>将指定对象附加到数组末尾。
-- `addObjectsFromArray:forKey:`<br/>将指定对象数组附加到数组末尾。
-- `addUniqueObject:forKey:`<br/>将指定对象附加到数组末尾，确保对象唯一。
-- `addUniqueObjectsFromArray:forKey:`<br/>将指定对象数组附加到数组末尾，确保对象唯一。
-- `removeObject:forKey:`<br/>从数组字段中删除指定对象的所有实例。
-- `removeObjectsInArray:forKey:`<br/>从数组字段中删除指定的对象数组。
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 - `AV.Object.add('arrayKey', value)`<br/>将指定对象附加到数组末尾。
 - `AV.Object.addUnique('arrayKey', value)`<br/>如果数组中不包含指定对象，则将该对象加入数组。对象的插入位置是随机的。
@@ -1620,11 +1309,7 @@ leancloud.OpIncrement(1)
 - `addUniqueIn()`<br/>如果数组中不包含指定对象，则将该对象加入数组。对象的插入位置是随机的。
 - `removeIn()`<br/>从数组字段中删除指定对象的所有实例。
 {% endif %}
-{% if platform_name === "Android / Java" %}
-- `add()`<br/>将指定对象附加到数组末尾。
-- `addUnique()`<br/>如果数组中不包含指定对象，则将该对象加入数组。对象的插入位置是随机的。
-- `removeAll()`<br/>从数组字段中删除指定对象的所有实例。
-{% endif %}
+
 {% if platform_name === "Swift" %}
 - `append(String, element: LCValue)`<br/>将指定对象附加到数组末尾。
 - `append(String, element: LCValue, unique: Bool)`<br/>将指定对象附加到数组末尾，并且可以设置一个 `unique` 的 `bool` 值表示只是确保唯一，不会重复添加。
@@ -1649,26 +1334,7 @@ leancloud.OpIncrement(1)
 {% endif %}
 例如，`Todo` 用一个 `alarms` 属性保存所有闹钟的时间。下面的代码将多个时间加入这个属性：
 
-{% if platform_name === "Objective-C" %}
-```objc
--(NSDate*) getDateWithDateString:(NSString*) dateString{
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *date = [dateFormat dateFromString:dateString];
-    return date;
-}
 
-NSDate *alarm1 = [self getDateWithDateString:@"2018-04-30 07:10:00"];
-NSDate *alarm2 = [self getDateWithDateString:@"2018-04-30 07:20:00"];
-NSDate *alarm3 = [self getDateWithDateString:@"2018-04-30 07:30:00"];
-
-NSArray *alarms = [NSArray arrayWithObjects:alarm1, alarm2, alarm3, nil];
-
-LCObject *todo = [LCObject objectWithClassName:@"Todo"];
-[todo addUniqueObjectsFromArray:alarms forKey:@"alarms"];
-[todo saveInBackground];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 const alarm1 = new Date('2018-04-30T07:10:00');
@@ -1722,23 +1388,7 @@ $todo->addUniqueIn("alarms", $alarm3);
 $todo->save();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-Date getDateWithDateString(String dateString) {
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    Date date = dateFormat.parse(dateString);
-    return date;
-}
 
-Date alarm1 = getDateWithDateString("2018-04-30 07:10:00");
-Date alarm2 = getDateWithDateString("2018-04-30 07:20:00");
-Date alarm3 = getDateWithDateString("2018-04-30 07:30:00");
-
-LCObject todo = new LCObject("Todo");
-todo.addAllUnique("alarms", Arrays.asList(alarm1, alarm2, alarm3));
-todo.save();
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 func dateWithString(_ string: String) -> LCDate {
@@ -1809,18 +1459,12 @@ if err := client.Class("Todo").Create(map[string]interface{}{
 }
 ```
 {% endif %}
-{# Note that it is not currently possible to atomically add and remove items from an array in the same save. You will have to call `save` in between every different kind of array operation. #}
 
 ### 删除对象
 
 下面的代码从云端删除一个 `Todo` 对象；
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCObject *todo = [LCObject objectWithClassName:@"Todo" objectId:@"582570f38ac247004f39c24b"];
-[todo deleteInBackground];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const todo = AV.Object.createWithoutData('Todo', '582570f38ac247004f39c24b');
@@ -1845,12 +1489,7 @@ $todo = LeanObject::create("Todo", "582570f38ac247004f39c24b");
 $todo->destroy();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject todo = LCObject.createWithoutData("Todo", "582570f38ac247004f39c24b");
-todo.delete();
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let todo = LCObject(className: "Todo", objectId: "582570f38ac247004f39c24b")
@@ -1926,24 +1565,7 @@ if err := client.Class("Todo").ID("582570f38ac247004f39c24b").Destroy(); err != 
 可以在一次请求中包含多个构建、保存、删除和同步对象的操作：
 {% endif %}
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 批量构建和更新
-+ (BOOL)saveAll:(NSArray *)objects error:(NSError **)error;
-+ (void)saveAllInBackground:(NSArray *)objects
-                      block:(AVBooleanResultBlock)block;
 
-// 批量删除
-+ (BOOL)deleteAll:(NSArray *)objects error:(NSError **)error;
-+ (void)deleteAllInBackground:(NSArray *)objects
-                        block:(AVBooleanResultBlock)block;
-
-// 批量同步
-+ (BOOL)fetchAll:(NSArray *)objects error:(NSError **)error;
-+ (void)fetchAllInBackground:(NSArray *)objects
-                       block:(AVArrayResultBlock)block;
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 创建一个保存所有 AV.Object 的数组
@@ -2020,21 +1642,7 @@ LeanObject::destroyAll()
 LeanObject::fetchAll()
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 批量构建和更新
-saveAll()
-saveAllInBackground()
 
-// 批量删除
-deleteAll()
-deleteAllInBackground()
-
-// 批量同步
-fetchAll()
-fetchAllInBackground()
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 // 创建一个保存所有 LCObject 的数组
@@ -2086,20 +1694,7 @@ LCObject.fetchAll();
 
 下面的代码将所有 `Todo` 的 `isComplete` 设为 `true`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-[query findObjectsInBackgroundWithBlock:^(NSArray *todos, NSError *error) {
-    // 获取需要更新的 todo
-    for (LCObject *todo in todos) {
-        // 更新属性值
-        todo[@"isComplete"] = @(YES);
-    }
-    // 批量更新
-    [LCObject saveAllInBackground:todos];
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
@@ -2155,25 +1750,7 @@ forEach ($todos as $todo) {
 LeanObject::saveAll($todos);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-query.findInBackground().subscribe(new Observer<List<LCObject>>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<LCObject> todos) {
-        // 获取需要更新的 todo
-        for (LCObject todo : todos) {
-            // 更新属性值
-            todo.put("isComplete", true);
-        }
-        // 批量更新
-        LCObject.saveAll(todos);
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Todo")
@@ -2223,7 +1800,7 @@ await LCObject.saveAll(results);
 {% if platform_name === "Objective-C" or platform_name === "Android / Java" or platform_name === "Swift" %}
 ### 后台运行
 
-细心的开发者已经发现，在所有的示例代码中几乎都是用了异步来访问云端，形如{% if platform_name === "Objective-C" %} `xxxxInBackground` {% endif %}{% if platform_name === "Android / Java" %} `xxxxInBackground` {% endif %}{% if platform_name === "Swift" %}下面{% endif %}的用法都是提供给开发者在主线程调用用以实现后台运行的方法，因此开发者在主线程可以放心地调用这种命名方式的函数。
+细心的开发者已经发现，在所有的示例代码中几乎都是用了异步来访问云端，形如{% if platform_name === "Swift" %}下面{% endif %}的用法都是提供给开发者在主线程调用用以实现后台运行的方法，因此开发者在主线程可以放心地调用这种命名方式的函数。
 
 {% if platform_name === "Swift" %}
 ```swift
@@ -2261,24 +1838,7 @@ _ = todo.save { result in
 
 下面的代码会创建一个含有单个 `Comment` 的 `Post`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 创建 post
-LCObject *post = [[LCObject alloc] initWithClassName:@"Post"];
-[post setObject:@"饿了……" forKey:@"title"];
-[post setObject:@"中午去哪吃呢？" forKey:@"content"];
 
-// 创建 comment
-LCObject *comment = [[LCObject alloc] initWithClassName:@"Comment"];
-[comment setObject:@"当然是肯德基啦！" forKey:@"content"];
-
-// 将 post 设为 comment 的一个属性值
-[comment setObject:post forKey:@"parent"];
-
-// 保存 comment 会同时保存 post
-[comment saveInBackground];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 创建 post
@@ -2350,24 +1910,7 @@ $comment->set("parent", $post)
 $comment->save();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 创建 post
-LCObject post = new LCObject("Post");
-post.put("title", "饿了……");
-post.put("content", "中午去哪吃呢？");
 
-// 创建 comment
-LCObject comment = new LCObject("Comment");
-comment.put("content", "当然是肯德基啦！");
-
-// 将 post 设为 comment 的一个属性值
-comment.put("parent", post);
-
-// 保存 comment 会同时保存 post
-comment.save();
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -2448,12 +1991,7 @@ if err := client.Class("Comment").Create(&comment); err != nil {
 云端存储时，会将被指向的对象用 `Pointer` 的形式存起来。你也可以用 `objectId` 来指向一个对象：
 {% endif %}
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCObject *post = [LCObject objectWithClassName:@"Post" objectId:@"57328ca079bc44005c2472d0"];
-[comment setObject:post forKey:@"post"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const post = AV.Object.createWithoutData('Post', '57328ca079bc44005c2472d0');
@@ -2481,12 +2019,7 @@ $post = LeanObject::create("Post", "57328ca079bc44005c2472d0")
 $comment->set("post", $post)
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject post = LCObject.createWithoutData("Post", "57328ca079bc44005c2472d0");
-comment.put("post", post);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let post = LCObject(className: "Post", objectId: "57328ca079bc44005c2472d0")
@@ -2516,20 +2049,7 @@ comment['post'] = post;
 
 序列化：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCObject *todo = [[LCObject alloc] initWithClassName:@"Todo"]; // 构建对象
-[todo setObject:@"马拉松报名" forKey:@"title"]; // 设置名称
-[todo setObject:@2 forKey:@"priority"]; // 设置优先级
-[todo setObject:[LCUser currentUser] forKey:@"owner"]; // 这里就是一个 Pointer 类型，指向当前登录的用户
 
-NSMutableDictionary *serializedJSONDictionary = [todo dictionaryForObject]; // 获取序列化后的字典
-NSError *err;
-NSData *jsonData = [NSJSONSerialization dataWithJSONObject:serializedJSONDictionary options:0 error:&err]; // 获取 JSON 数据
-NSString *serializedString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding]; // 获取 JSON 字符串
-// serializedString 的内容是：{"title":"马拉松报名","className":"Todo","priority":2}
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 const todo = new AV.Object('Todo'); // 构建对象
@@ -2555,15 +2075,7 @@ const serializedString = JSON.stringify(json);
 
 `LCObject` 还提供了一个方法 `toJSON()`。它们的区别是 `toJSON()` 得到的对象仅包含对象的 payload，一般用于展示，而 `db.encode` 得到的对象包含了元数据，一般用于传输。在使用时请注意区分。
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject todo = new LCObject("Todo"); // 构建对象
-todo.put("title", "马拉松报名"); // 设置名称
-todo.put("priority", 2); // 设置优先级
-todo.put("owner", LCUser.getCurrentUser()); // 这里就是一个 Pointer 类型，指向当前登录的用户
-String serializedString = todo.toString();
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -2597,18 +2109,7 @@ String serializedString = object.toString();
 
 反序列化：
 
-{% if platform_name === "Objective-C" %}
-```objc
-NSMutableDictionary *objectDictionary = [NSMutableDictionary dictionaryWithCapacity:10];// 声明一个 NSMutableDictionary
-[objectDictionary setObject:@"马拉松报名" forKey:@"title"];
-[objectDictionary setObject:@2 forKey:@"priority"];
-[objectDictionary setObject:@"Todo" forKey:@"className"];
 
-LCObject *todo = [LCObject objectWithDictionary:objectDictionary]; // 由 NSMutableDictionary 转化一个 LCObject
-
-[todo saveInBackground]; // 保存到云端
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 将字符串反序列化为 JSON 对象
@@ -2625,12 +2126,7 @@ const json = JSON.parse(serializedString);
 const todo = db.decode(json);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject deserializedObject = LCObject.parseLCObject(serializedString);
-deserializedObject.save(); // 保存到服务端
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -2682,15 +2178,7 @@ await newObject.save();
 
 下面的代码获取所有 `lastName` 为 `Smith` 的 `Student`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Student"];
-[query whereKey:@"lastName" equalTo:@"Smith"];
-[query findObjectsInBackgroundWithBlock:^(NSArray *students, NSError *error) {
-    // students 是包含满足条件的 Student 对象的数组
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Student');
@@ -2716,20 +2204,7 @@ $query->equalTo("lastName", "Smith");
 $students = $query->find();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Student");
-query.whereEqualTo("lastName", "Smith");
-query.findInBackground().subscribe(new Observer<List<LCObject>>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<LCObject> students) {
-        // students 是包含满足条件的 Student 对象的数组
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Student")
@@ -2778,11 +2253,7 @@ if err := client.Class("Student").NewQuery().EqualTo("lastName", "Smith").Find(&
 
 下面的代码查询所有 `firstName` 不为 `Jack` 的对象：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[query whereKey:@"firstName" notEqualTo:@"Jack"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 query.notEqualTo('firstName', 'Jack');
@@ -2798,11 +2269,7 @@ query.not_equal_to("firstName", 'Jack')
 $query->notEqualTo("firstName", "Jack");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-query.whereNotEqualTo("firstName", "Jack");
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 query.whereKey("firstName", .notEqualTo("Jack"))
@@ -2821,21 +2288,7 @@ query := client.Class("Student").NewQuery().NotEqualTo("firstName", "Jack")
 {% endif %}
 对于能够排序的属性（比如数字、字符串），可以进行比较查询：
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 限制 age < 18
-[query whereKey:@"age" lessThan:@18];
 
-// 限制 age <= 18
-[query whereKey:@"age" lessThanOrEqualTo:@18];
-
-// 限制 age > 18
-[query whereKey:@"age" greaterThan:@18];
-
-// 限制 age >= 18
-[query whereKey:@"age" greaterThanOrEqualTo:@18];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 限制 age < 18
@@ -2881,21 +2334,7 @@ $query->greaterThan("age", 18);
 $query->greaterThanOrEqualTo("age", 18);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 限制 age < 18
-query.whereLessThan("age", 18);
 
-// 限制 age <= 18
-query.whereLessThanOrEqualTo("age", 18);
-
-// 限制 age > 18
-query.whereGreaterThan("age", 18);
-
-// 限制 age >= 18
-query.whereGreaterThanOrEqualTo("age", 18);
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 // 限制 age < 18
@@ -2944,12 +2383,7 @@ query := client.Class("Student").NewQuery().GreaterThanOrEqualTo("age", 18)
 {% endif %}
 可以在同一个查询中设置多个条件，这样可以获取满足所有条件的结果。可以理解为所有的条件是 `AND` 的关系：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[query whereKey:@"firstName" equalTo:@"Jack"];
-[query whereKey:@"age" greaterThan:@18];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 query.equalTo('firstName', 'Jack');
@@ -2968,12 +2402,7 @@ $query->equalTo("firstName", "Jack");
 $query->greaterThan("age", 18);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-query.whereEqualTo("firstName", "Jack");
-query.whereGreaterThan("age", 18);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 query.whereKey("firstName", .equalTo("Jack"))
@@ -2994,12 +2423,7 @@ query := client.Class("Student").NewQuery().EqualTo("firstName", "Jack").Greater
 {% endif %}
 可以通过指定 `limit` 限制返回结果的数量（默认为 `100`）：
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 最多获取 10 条结果
-query.limit = 10;
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 // 最多获取 10 条结果
@@ -3018,12 +2442,7 @@ query.limit(10)
 $query->limit(10);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 最多获取 10 条结果
-query.limit(10);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 // 最多获取 10 条结果
@@ -3045,17 +2464,9 @@ query := client.Class("Student").NewQuery().Limit(10)
 {% endif %}
 由于性能原因，`limit` 最大只能设为 `1000`。即使将其设为大于 `1000` 的数，云端也只会返回 1,000 条结果。
 
-如果只需要一条结果，可以直接用 `{% if platform_name === "Objective-C" %}getFirstObject{% endif %}{% if platform_name === "JavaScript" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Android / Java" %}getFirst{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}{% if platform_name === "Flutter" %}first{% endif %}{% if platform_name === ".Net" %}First{% endif %}{% if platform_name === "Go" %}First{% endif %}`：
+如果只需要一条结果，可以直接用 `{% if platform_name === "JavaScript" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}{% if platform_name === "Flutter" %}first{% endif %}{% if platform_name === "Go" %}First{% endif %}`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-[query whereKey:@"priority" equalTo:@2];
-[query getFirstObjectInBackgroundWithBlock:^(LCObject *todo, NSError *error) {
-    // todo 是第一个满足条件的 Todo 对象
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
@@ -3080,20 +2491,7 @@ $query->equalTo("priority", 2);
 $todo = $query->first();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-query.whereEqualTo("priority", 2);
-query.getFirstInBackground().subscribe(new Observer<LCObject>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCObject todo) {
-        // todo 是第一个满足条件的 Todo 对象
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Todo")
@@ -3128,12 +2526,7 @@ if err := client.Class("Todo").NewQuery().EqualTo("priority", 2).First(todo); er
 {% endif %}
 可以通过设置 `skip` 来跳过一定数量的结果：
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 跳过前 20 条结果
-query.skip = 20;
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 // 跳过前 20 条结果
@@ -3152,12 +2545,7 @@ query.skip(20)
 $query->skip(20);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 跳过前 20 条结果
-query.skip(20);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 // 跳过前 20 条结果
@@ -3177,14 +2565,7 @@ query := client.Class("Todo").NewQuery().Skip(20)
 {% endif %}
 把 `skip` 和 `limit` 结合起来，就能实现翻页功能：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-[query whereKey:@"priority" equalTo:@2];
-query.limit = 10;
-query.skip = 20;
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
@@ -3210,14 +2591,7 @@ $query->limit(10);
 $query->skip(20);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-query.whereEqualTo("priority", 2);
-query.limit(10);
-query.skip(20);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Todo")
@@ -3245,15 +2619,7 @@ query := client.Class("Todo").NewQuery().EqualTo("priority", 2).Limit(10).Skip(2
 
 对于能够排序的属性，可以指定结果的排序规则：
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 按 createdAt 升序排列
-[query orderByAscending:@"createdAt"];
 
-// 按 createdAt 降序排列
-[query orderByDescending:@"createdAt"];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 按 createdAt 升序排列
@@ -3281,15 +2647,7 @@ $query->ascend("createdAt");
 $query->descend("createdAt");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 按 createdAt 升序排列
-query.orderByAscending("createdAt");
 
-// 按 createdAt 降序排列
-query.orderByDescending("createdAt");
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 // 按 createdAt 升序排列
@@ -3320,12 +2678,7 @@ query := client.Class("Todo").NewQuery().Order("-createdAt")
 {% endif %}
 还可以为同一个查询添加多个排序规则；
 
-{% if platform_name === "Objective-C" %}
-```objc
-[query addAscendingOrder:@"priority"];
-[query addDescendingOrder:@"createdAt"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 query.addAscending('priority');
@@ -3344,12 +2697,7 @@ $query->addAscend("priority");
 $query->addDescend("createdAt");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-query.addAscendingOrder("priority");
-query.addDescendingOrder("createdAt");
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 query.whereKey("priority", .ascending)
@@ -3379,15 +2727,7 @@ query := client.Class("Todo").NewQuery().Exists("image")
 query := client.Class("Todo").NewQuery().NotExists("image")
 ```
 {% endif  %}
-{% if platform_name === "Objective-C" %}
-```objc
-// 查找包含 "images" 的对象
-[query whereKeyExists:@"images"];
 
-// 查找不包含 "images" 的对象
-[query whereKeyDoesNotExist:@"images"];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 查找包含 'images' 的对象
@@ -3415,15 +2755,7 @@ $query->exists("images");
 $query->notExists("images");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 查找包含 "images" 的对象
-query.whereExists("images");
 
-// 查找不包含 "images" 的对象
-query.whereDoesNotExist("images");
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 // 查找包含 "images" 的对象
@@ -3476,19 +2808,9 @@ studentQuery.find().then((students) => {
 ```
 {% endif %}
 
-可以通过 `{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}{% if platform_name === "Go"%}Select{% endif %}` 指定需要返回的属性。下面的代码只获取每个对象的 `title` 和 `content`（包括内置属性 `objectId`、`createdAt` 和 `updatedAt`）：
+可以通过 `{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}{% if platform_name === "Go"%}Select{% endif %}` 指定需要返回的属性。下面的代码只获取每个对象的 `title` 和 `content`（包括内置属性 `objectId`、`createdAt` 和 `updatedAt`）：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-[query selectKeys:@[@"title", @"content"]];
-[query getFirstObjectInBackgroundWithBlock:^(LCObject *todo, NSError *error) {
-    NSString *title = todo[@"title"]; // √
-    NSString *content = todo[@"content"]; // √
-    NSString *notes = todo[@"notes"]; // 会报错
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
@@ -3523,22 +2845,7 @@ $content = $todo->get("content"); // √
 $notes = $todo->get("notes"); // null
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-query.selectKeys(Arrays.asList("title", "content"));
-query.getFirstInBackground().subscribe(new Observer<LCObject>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCObject todo) {
-        String title = todo.getString("title"); // √
-        String content = todo.getString("content"); // √
-        String notes = todo.getString("notes"); // 会报错
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Todo")
@@ -3578,27 +2885,21 @@ if err := client.Class("Todo").NewQuery().Select("title", "content").Find(&todo)
 }
 ```
 {% endif %}
-`{% if platform_name === "Objective-C" %}selectKeys{% endif %}{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Android / Java" %}selectKeys{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}{% if platform_name === "Go" %}Select{% endif %}`
+`{% if platform_name === "JavaScript" %}select{% endif %}{% if platform_name === "Python" %}select{% endif %}{% if platform_name === "PHP" %}select{% endif %}{% if platform_name === "Swift" %}.selected{% endif %}{% if platform_name === "Go" %}Select{% endif %}`
 支持点号（`author.firstName`），详见《点号使用指南》。
 另外，字段名前添加减号前缀表示反向选择，例如 `-author` 表示不返回 `author` 字段。
 反向选择同样适用于内置字段，比如 `-objectId`，也可以和点号组合使用，比如 `-pubUser.createdAt`。
 
 {% if platform_name !== "Go" %}
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Java" or platform_name === "Swift" %}
-对于未获取的属性，可以通过对结果中的对象进行 `{% if platform_name === "Objective-C" %}fetchInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}fetch{% endif %}{% if platform_name === "Python" %}fetch{% endif %}{% if platform_name === "Android / Java" %}fetchInBackground{% endif %}{% if platform_name === "Swift" %}fetch{% endif %}` 操作来获取。参见 [同步对象](#同步对象)。
+对于未获取的属性，可以通过对结果中的对象进行 `{% if platform_name === "JavaScript" %}fetch{% endif %}{% if platform_name === "Python" %}fetch{% endif %}{% if platform_name === "Swift" %}fetch{% endif %}` 操作来获取。参见 [同步对象](#同步对象)。
 {% endif %}
 {% endif %}
 ### 字符串查询
 
-可以用 `{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Go" %}Query.StartsWith{% endif %}` 来查找某一属性值以特定字符串开头的对象。和 SQL 中的 `LIKE` 一样，你可以利用索引带来的优势：
+可以用 `{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Go" %}Query.StartsWith{% endif %}` 来查找某一属性值以特定字符串开头的对象。和 SQL 中的 `LIKE` 一样，你可以利用索引带来的优势：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-// 相当于 SQL 中的 title LIKE 'lunch%'
-[query whereKey:@"title" hasPrefix:@"lunch"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
@@ -3621,13 +2922,7 @@ $query = new Query("Todo");
 $query->startsWith("title", "lunch");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-// 相当于 SQL 中的 title LIKE 'lunch%'
-query.whereStartsWith("title", "lunch");
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Todo")
@@ -3650,15 +2945,9 @@ query := client.Class("Todo").NewQuery().StartsWith("title", "lunch")
 ```
 {% endif %}
 
-可以用 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Go" %}Query.Contains{% endif %}` 来查找某一属性值包含特定字符串的对象：
+可以用 `{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Go" %}Query.Contains{% endif %}` 来查找某一属性值包含特定字符串的对象：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-// 相当于 SQL 中的 title LIKE '%lunch%'
-[query whereKey:@"title" containsString:@"lunch"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
@@ -3681,13 +2970,7 @@ $query = new Query("Todo");
 $query->contains("title", "lunch");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-// 相当于 SQL 中的 title LIKE '%lunch%'
-query.whereContains("title", "lunch");
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Todo")
@@ -3710,18 +2993,13 @@ query := client.Class("Todo").NewQuery().Contains("title", "lunch")
 ```
 {% endif %}
 
-和 `{% if platform_name === "Go" %}Query.StartsWith{% endif %}{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}{% if platform_name === ".Net" %}WhereStartsWith{% endif %}` 不同，`{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === ".Net" %}WhereContains{% endif %}{% if platform_name === "Go" %}Query.Contains{% endif %}` 无法利用索引，因此不建议用于大型数据集。
+和 `{% if platform_name === "Go" %}Query.StartsWith{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}` 不同，`{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === "Go" %}Query.Contains{% endif %}` 无法利用索引，因此不建议用于大型数据集。
 
-注意 `{% if platform_name === "Go" %}Query.StartsWith{% endif %}{% if platform_name === "Objective-C" %}hasPrefix{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Android / Java" %}whereStartsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}{% if platform_name === ".Net" %}WhereStartsWith{% endif %}` 和 `{% if platform_name === "Objective-C" %}containsString{% endif %}{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Android / Java" %}whereContains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}{% if platform_name === ".Net" %}WhereContains{% endif %}` 都是 **区分大小写** 的，所以上述查询会忽略 `Lunch`、`LUNCH` 等字符串。
+注意 `{% if platform_name === "Go" %}Query.StartsWith{% endif %}{% if platform_name === "JavaScript" %}startsWith{% endif %}{% if platform_name === "Python" %}startswith{% endif %}{% if platform_name === "PHP" %}startsWith{% endif %}{% if platform_name === "Swift" %}.prefixedBy{% endif %}{% if platform_name === "Flutter" %}whereStartsWith{% endif %}` 和 `{% if platform_name === "JavaScript" %}contains{% endif %}{% if platform_name === "Python" %}contains{% endif %}{% if platform_name === "PHP" %}contains{% endif %}{% if platform_name === "Swift" %}.matchedSubstring{% endif %}{% if platform_name === "Flutter" %}whereContains{% endif %}` 都是 **区分大小写** 的，所以上述查询会忽略 `Lunch`、`LUNCH` 等字符串。
 
-如果想查找某一属性值不包含特定字符串的对象，可以使用 `{% if platform_name === "Go" %}Query.Regexp{% endif %}{% if platform_name === "Objective-C" %}matchesRegex{% endif %}{% if platform_name === "JavaScript" %}matches{% endif %}{% if platform_name === "Python" %}matched{% endif %}{% if platform_name === "PHP" %}matches{% endif %}{% if platform_name === "Android / Java" %}whereMatches{% endif %}{% if platform_name === "Swift" %}.matchedPattern{% endif %}{% if platform_name === "Flutter" %}whereMatches{% endif %}{% if platform_name === ".Net" %}WhereMatches{% endif %}` 进行基于正则表达式的查询：
+如果想查找某一属性值不包含特定字符串的对象，可以使用 `{% if platform_name === "Go" %}Query.Regexp{% endif %}{% if platform_name === "JavaScript" %}matches{% endif %}{% if platform_name === "Python" %}matched{% endif %}{% if platform_name === "PHP" %}matches{% endif %}{% if platform_name === "Swift" %}.matchedPattern{% endif %}{% if platform_name === "Flutter" %}whereMatches{% endif %}` 进行基于正则表达式的查询：
 
-{% if platform_name === "Objective-C" %}
-<pre><code class="lang-objc">LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-// "title" 不包含 "ticket"（不区分大小写）
-[query whereKey:@"title" matchesRegex:@"{{ regex() | safe }}, modifiers:"i"];
-</code></pre>
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 <pre><code class="lang-js">const query = new AV.Query('Todo');
 // 'title' 不包含 'ticket'（不区分大小写）
@@ -3742,12 +3020,7 @@ query.matched('title', '{{ regex(true) | safe }}, ignore_case=True)
 $query->matches("title", "{{ regex() | safe }}, "i");
 </code></pre>
 {% endif %}
-{% if platform_name === "Android / Java" %}
-<pre><code class="lang-java">LCQuery<LCObject> query = new LCQuery<>("Todo");
-// "title" 不包含 "ticket"（不区分大小写）
-query.whereMatches("title", "{{ regex() | safe }}, "i");
-</code></pre>
-{% endif %}
+
 {% if platform_name === "Swift" %}
 <pre><code class="lang-swift">let query = LCQuery(className: "Todo")
 // "title" 不包含 "ticket"（不区分大小写）
@@ -3777,11 +3050,7 @@ query := client.Class("Todo").NewQuery().Regexp("title", "^((?!ticket).)*$", "i"
 
 下面的代码查找所有数组属性 `tags` 包含 `工作` 的对象：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[query whereKey:@"tags" equalTo:@"工作"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 query.equalTo('tags', '工作');
@@ -3797,11 +3066,7 @@ query.equal_to('tags', '工作')
 $query->equalTo("tags", "工作");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-query.whereEqualTo("tags", "工作");
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 query.whereKey("tags", .equalTo("工作"))
@@ -3816,11 +3081,7 @@ query.whereEqualTo('tags', '工作');
 
 下面的代码查询数组属性长度为 3 （正好包含 3 个标签）的对象：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[query whereKey:@"tags" sizeEqualTo:3];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 query.sizeEqualTo('tags', 3);
@@ -3836,11 +3097,7 @@ query.size_equal_to('tags', 3)
 $query->sizeEqualTo("tags", 3);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-query.whereSizeEqual("tags", 3);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 query.whereKey("tags", .equalToSize(3))
@@ -3859,11 +3116,7 @@ query := client.Class("Todo").NewQuery().EqualTo("tags", "工作")
 {% endif %}
 下面的代码查找所有数组属性 `tags` **同时包含** `工作`、`销售` 和 `会议` 的对象：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[query whereKey:@"tags" containsAllObjectsInArray:[NSArray arrayWithObjects:@"工作", @"销售", @"会议", nil]];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 query.containsAll('tags', ['工作', '销售', '会议']);
@@ -3879,11 +3132,7 @@ query.contains_all('tags', ['工作', '销售', '会议'])
 $query->containsAll("tags", array("工作", "销售", "会议"));
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-query.whereContainsAll("tags", Arrays.asList("工作", "销售", "会议"));
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 query.whereKey("tags", .containedAllIn(["工作", "销售", "会议"]))
@@ -3900,30 +3149,9 @@ query.whereContainsAll('tags', ['工作', '销售', '会议']);
 query := client.Class("Todo").NewQuery().ContainsAll("tags", []string{"工作", "销售", "会议"})
 ```
 {% endif %}
-如需获取某一属性值包含一列值中任意一个值的对象，可以直接用 `{% if platform_name === "Objective-C" %}containedIn{% endif %}{% if platform_name === "JavaScript" %}containedIn{% endif %}{% if platform_name === "Python" %}contained_in{% endif %}{% if platform_name === "PHP" %}containedIn{% endif %}{% if platform_name === "Android / Java" %}whereContainedIn{% endif %}{% if platform_name === "Swift" %}.containedIn{% endif %}` 而无需执行多次查询。下面的代码构建的查询会查找所有 `priority` 为 `1` **或** `2` 的 todo 对象：
+如需获取某一属性值包含一列值中任意一个值的对象，可以直接用 `{% if platform_name === "JavaScript" %}containedIn{% endif %}{% if platform_name === "Python" %}contained_in{% endif %}{% if platform_name === "PHP" %}containedIn{% endif %}{% if platform_name === "Swift" %}.containedIn{% endif %}` 而无需执行多次查询。下面的代码构建的查询会查找所有 `priority` 为 `1` **或** `2` 的 todo 对象：
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 单个查询
-LCQuery *priorityOneOrTwo = [LCQuery queryWithClassName:@"Todo"];
-[priorityOneOrTwo whereKey:@"priority" containedIn:[NSArray arrayWithObjects:@1, @2, nil]];
-// 这样就可以了 :)
 
-// ---------------
-//       vs.
-// ---------------
-
-// 多个查询
-LCQuery *priorityOne = [LCQuery queryWithClassName:@"Todo"];
-[priorityOne whereKey:@"priority" equalTo:@1];
-
-LCQuery *priorityTwo = [LCQuery queryWithClassName:@"Todo"];
-[priorityTwo whereKey:@"priority" equalTo:@2];
-
-LCQuery *priorityOneOrTwo = [LCQuery orQueryWithSubqueries:[NSArray arrayWithObjects:priorityOne, priorityTwo, nil]];
-// 好像有些繁琐 :(
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 单个查询
@@ -3993,28 +3221,7 @@ $query = Query::orQuery($priorityOne, $priorityTwo);
 // 好像有些繁琐 :(
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 单个查询
-LCQuery<LCObject> priorityOneOrTwo = new LCQuery<>("Todo");
-priorityOneOrTwo.whereContainedIn("priority", Arrays.asList(1, 2));
-// 这样就可以了 :)
 
-// ---------------
-//       vs.
-// ---------------
-
-// 多个查询
-final LCQuery<LCObject> priorityOne = new LCQuery<>("Todo");
-priorityOne.whereEqualTo("priority", 1);
-
-final LCQuery<LCObject> priorityTwo = new LCQuery<>("Todo");
-priorityTwo.whereEqualTo("priority", 2);
-
-LCQuery<LCObject> priorityOneOrTwo = LCQuery.or(Arrays.asList(priorityOne, priorityTwo));
-// 好像有些繁琐 :(
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 // 单个查询
@@ -4066,22 +3273,13 @@ List<LCObject> results = await priorityOneOrTwo.find();
 // 暂不支持
 ```
 {% endif %}
-反过来，还可以用 `{% if platform_name === "Objective-C" %}notContainedIn{% endif %}{% if platform_name === "JavaScript" %}notContainedIn{% endif %}{% if platform_name === "Python" %}not_contained_in{% endif %}{% if platform_name === "PHP" %}notContainedIn{% endif %}{% if platform_name === "Android / Java" %}whereNotContainedIn{% endif %}{% if platform_name === "Swift" %}.notContainedIn{% endif %}{% if platform_name === "Flutter" %}whereNotContainedIn{% endif %}{% if platform_name === ".Net" %}WhereNotContainedIn{% endif %}` 来获取某一属性值不包含一列值中任何一个的对象。
+反过来，还可以用 `{% if platform_name === "JavaScript" %}notContainedIn{% endif %}{% if platform_name === "Python" %}not_contained_in{% endif %}{% if platform_name === "PHP" %}notContainedIn{% endif %}{% if platform_name === "Swift" %}.notContainedIn{% endif %}{% if platform_name === "Flutter" %}whereNotContainedIn{% endif %}` 来获取某一属性值不包含一列值中任何一个的对象。
 
 ### 关系查询
 
-查询关联数据有很多种方式，常见的一种是查询某一属性值为特定 `{{ baseObjectName }}` 的对象，这时可以像其他查询一样直接用 `{% if platform_name === "Objective-C" %}equalTo{% endif %}{% if platform_name === "JavaScript" %}equalTo{% endif %}{% if platform_name === "Python" %}equal_to{% endif %}{% if platform_name === "PHP" %}equalTo{% endif %}{% if platform_name === "Android / Java" %}whereEqualTo{% endif %}{% if platform_name === "Swift" %}.equalTo{% endif %}`。比如说，如果每一条博客评论 `Comment` 都有一个 `post` 属性用来存放原文 `Post`，则可以用下面的方法获取所有与某一 `Post` 相关联的评论：
+查询关联数据有很多种方式，常见的一种是查询某一属性值为特定 `{{ baseObjectName }}` 的对象，这时可以像其他查询一样直接用 `{% if platform_name === "JavaScript" %}equalTo{% endif %}{% if platform_name === "Python" %}equal_to{% endif %}{% if platform_name === "PHP" %}equalTo{% endif %}{% if platform_name === "Swift" %}.equalTo{% endif %}`。比如说，如果每一条博客评论 `Comment` 都有一个 `post` 属性用来存放原文 `Post`，则可以用下面的方法获取所有与某一 `Post` 相关联的评论：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCObject *post = [LCObject objectWithClassName:@"Post" objectId:@"57328ca079bc44005c2472d0"];
-LCQuery *query = [LCQuery queryWithClassName:@"Comment"];
-[query whereKey:@"post" equalTo:post];
-[query findObjectsInBackgroundWithBlock:^(NSArray *comments, NSError *error) {
-    // comments 包含与 post 相关联的评论
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const post = AV.Object.createWithoutData('Post', '57328ca079bc44005c2472d0');
@@ -4109,21 +3307,7 @@ $query->equalTo("post", $post);
 $comments = $query->find();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject post = LCObject.createWithoutData("Post", "57328ca079bc44005c2472d0");
-LCQuery<LCObject> query = new LCQuery<>("Comment");
-query.whereEqualTo("post", post);
-query.findInBackground().subscribe(new Observer<List<LCObject>>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<LCObject> comments) {
-        // comments 包含与 post 相关联的评论
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let post = LCObject(className: "Post", objectId: "57328ca079bc44005c2472d0")
@@ -4151,17 +3335,9 @@ List<LCObject> comments = await query.find();
 {% endif %}
 
 
-如需获取某一属性值为另一查询结果中任一 `{{ baseObjectName }}` 的对象，可以用 `{% if platform_name === "Objective-C" %}matchesQuery{% endif %}{% if platform_name === "JavaScript" %}matchesQuery{% endif %}{% if platform_name === "Python" %}matches_query{% endif %}{% if platform_name === "PHP" %}matchesInQuery{% endif %}{% if platform_name === "Android / Java" %}whereMatchesQuery{% endif %}{% if platform_name === "Swift" %}.matchedQuery{% endif %}`。下面的代码构建的查询可以找到所有包含图片的博客文章的评论：
+如需获取某一属性值为另一查询结果中任一 `{{ baseObjectName }}` 的对象，可以用 `{% if platform_name === "JavaScript" %}matchesQuery{% endif %}{% if platform_name === "Python" %}matches_query{% endif %}{% if platform_name === "PHP" %}matchesInQuery{% endif %}{% if platform_name === "Swift" %}.matchedQuery{% endif %}`。下面的代码构建的查询可以找到所有包含图片的博客文章的评论：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *innerQuery = [LCQuery queryWithClassName:@"Post"];
-[innerQuery whereKeyExists:@"images"];
 
-LCQuery *query = [LCQuery queryWithClassName:@"Comment"];
-[query whereKey:@"post" matchesQuery:innerQuery];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 const innerQuery = new AV.Query('Post');
@@ -4189,15 +3365,7 @@ $query = new Query("Comment");
 $query->matchesInQuery("post", $innerQuery);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> innerQuery = new LCQuery<>("Post");
-innerQuery.whereExists("image");
 
-LCQuery<LCObject> query = new LCQuery<>("Comment");
-query.whereMatchesQuery("post", innerQuery);
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 let innerQuery = LCQuery(className: "Post")
@@ -4218,32 +3386,11 @@ query.whereMatchesQuery('post', innerQuery);
 {% endif %}
 
 
-如需获取某一属性值不是另一查询结果中任一 `{{ baseObjectName }}` 的对象，则使用 `{% if platform_name === "Objective-C" %}doesNotMatchQuery{% endif %}{% if platform_name === "JavaScript" %}doesNotMatchQuery{% endif %}{% if platform_name === "Python" %}does_not_match_query{% endif %}{% if platform_name === "PHP" %}notMatchInQuery{% endif %}{% if platform_name === "Android / Java" %}whereDoesNotMatchQuery{% endif %}{% if platform_name === "Swift" %}.notMatchedQuery{% endif %}{% if platform_name === "Flutter" %}whereDoesNotMatchQuery{% endif %}{% if platform_name === ".Net" %}WhereDoesNotMatchQuery{% endif %}`。
+如需获取某一属性值不是另一查询结果中任一 `{{ baseObjectName }}` 的对象，则使用 `{% if platform_name === "JavaScript" %}doesNotMatchQuery{% endif %}{% if platform_name === "Python" %}does_not_match_query{% endif %}{% if platform_name === "PHP" %}notMatchInQuery{% endif %}{% if platform_name === "Swift" %}.notMatchedQuery{% endif %}{% if platform_name === "Flutter" %}whereDoesNotMatchQuery{% endif %}`。
 
-有时候可能需要获取来自另一个 class 的数据而不想进行额外的查询，此时可以在同一个查询上使用 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Android / Java" %}include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}{% if platform_name === "Flutter" %}include{% endif %}{% if platform_name === ".Net" %}Include{% endif %}`。下面的代码查找最新发布的 10 条评论，并包含各自对应的博客文章：
+有时候可能需要获取来自另一个 class 的数据而不想进行额外的查询，此时可以在同一个查询上使用 `{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}{% if platform_name === "Flutter" %}include{% endif %}`。下面的代码查找最新发布的 10 条评论，并包含各自对应的博客文章：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Comment"];
 
-// 获取最新发布的
-[query orderByDescending:@"createdAt"];
-
-// 只获取 10 条
-query.limit = 10;
-
-// 同时包含博客文章
-[query includeKey:@"post"];
-
-[query findObjectsInBackgroundWithBlock:^(NSArray *comments, NSError *error) {
-    // comments 包含最新发布的 10 条评论，包含各自对应的博客文章
-    for (LCObject *comment in comments) {
-        // 该操作无需网络连接
-        LCObject *post = comment[@"post"];
-    }
-}];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Comment');
@@ -4305,33 +3452,7 @@ forEach($comments as $comment) {
 }
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Comment");
 
-// 获取最新发布的
-query.orderByDescending("createdAt");
-
-// 只获取 10 条
-query.limit(10);
-
-// 同时包含博客文章
-query.include("post");
-
-query.findInBackground().subscribe(new Observer<List<LCObject>>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<LCObject> comments) {
-        // comments 包含最新发布的 10 条评论，包含各自对应的博客文章
-        for (LCObject comment : comments) {
-            // 该操作无需网络连接
-            LCObject post = comment.getLCObject("post");
-        }
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Comment")
@@ -4384,9 +3505,9 @@ for (LCObject comment in comments) {
 
 可以用 dot 符号（`.`）来获取多级关系，例如 `post.author`，详见《点号使用指南》的《在查询对象时使用点号》一节。
 
-可以在同一查询上应用多次 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Android / Java" %}include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}` 以包含多个属性。通过这种方法获取到的对象同样接受 `{% if platform_name === "Objective-C" %}getFirstObject{% endif %}{% if platform_name === "JavaScript" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Android / Java" %}getFirst{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}`{% if platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Swift" %}、`get`{% endif %} 等 `{{ baseQueryClassName }}` 辅助方法。
+可以在同一查询上应用多次 `{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}` 以包含多个属性。通过这种方法获取到的对象同样接受 `{% if platform_name === "JavaScript" %}first{% endif %}{% if platform_name === "Python" %}first{% endif %}{% if platform_name === "PHP" %}{% endif %}{% if platform_name === "Swift" %}getFirst{% endif %}`{% if platform_name === "JavaScript" or platform_name === "Python" or platform_name === "Swift" %}、`get`{% endif %} 等 `{{ baseQueryClassName }}` 辅助方法。
 
-通过 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Android / Java" %}include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}` 进行多级查询的方式不适用于数组属性内部的 `{{ baseObjectName }}`，只能包含到数组本身。
+通过 `{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Python" %}include{% endif %}{% if platform_name === "PHP" %}_include{% endif %}{% if platform_name === "Swift" %}.included{% endif %}` 进行多级查询的方式不适用于数组属性内部的 `{{ baseObjectName }}`，只能包含到数组本身。
 
 #### 关系查询的注意事项
 
@@ -4400,17 +3521,9 @@ for (LCObject comment in comments) {
 
 ### 统计总数量
 
-如果只需知道有多少对象匹配查询条件而无需获取对象本身，可使用 `{% if platform_name === "Go" %}Query.Count(){% endif %}{% if platform_name === "Objective-C" %}countObjectsInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}count{% endif %}{% if platform_name === "Python" %}count{% endif %}{% if platform_name === "PHP" %}count{% endif %}{% if platform_name === "Android / Java" %}count{% endif %}{% if platform_name === "Swift" %}count{% endif %}` 来代替 `{% if platform_name === "Objective-C" %}findObjectsInBackgroundWithBlock{% endif %}{% if platform_name === "JavaScript" %}find{% endif %}{% if platform_name === "Python" %}find{% endif %}{% if platform_name === "PHP" %}find{% endif %}{% if platform_name === "Android / Java" %}findInBackground{% endif %}{% if platform_name === "Swift" %}find{% endif %}{% if platform_name === "Go" %}Query.Find(){% endif %}`。比如说，查询有多少个已完成的 todo：
+如果只需知道有多少对象匹配查询条件而无需获取对象本身，可使用 `{% if platform_name === "Go" %}Query.Count(){% endif %}{% if platform_name === "JavaScript" %}count{% endif %}{% if platform_name === "Python" %}count{% endif %}{% if platform_name === "PHP" %}count{% endif %}{% if platform_name === "Swift" %}count{% endif %}` 来代替 `{% if platform_name === "JavaScript" %}find{% endif %}{% if platform_name === "Python" %}find{% endif %}{% if platform_name === "PHP" %}find{% endif %}{% if platform_name === "Swift" %}find{% endif %}{% if platform_name === "Go" %}Query.Find(){% endif %}`。比如说，查询有多少个已完成的 todo：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-[query whereKey:@"isComplete" equalTo:@(YES)];
-[query countObjectsInBackgroundWithBlock:^(NSInteger count, NSError *error) {
-    NSLog(@"%ld 个 todo 已完成。", count);
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
@@ -4435,20 +3548,7 @@ $query->equalTo("isComplete", true);
 $count = $query->count();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-query.whereEqualTo("isComplete", true);
-query.countInBackground().subscribe(new Observer<Integer>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(Integer count) {
-        System.out.println(count + " 个 todo 已完成。");
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Todo")
@@ -4484,17 +3584,7 @@ fmt.Printf("%d 个 todo 已完成。", count)
 
 OR 操作表示多个查询条件符合其中任意一个即可。 例如，查询优先级大于等于 `3` 或者已经完成了的 todo：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *priorityQuery = [LCQuery queryWithClassName:@"Todo"];
-[priorityQuery whereKey:@"priority" greaterThanOrEqualTo:@3];
 
-LCQuery *isCompleteQuery = [LCQuery queryWithClassName:@"Todo"];
-[isCompleteQuery whereKey:@"isComplete" equalTo:@(YES)];
-
-LCQuery *query = [LCQuery orQueryWithSubqueries:[NSArray arrayWithObjects:priorityQuery, isCompleteQuery, nil]];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 const priorityQuery = new AV.Query('Todo');
@@ -4530,17 +3620,7 @@ $isCompleteQuery->equalTo("isComplete", true);
 $query = Query::orQuery($priorityQuery, $isCompleteQuery);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-final LCQuery<LCObject> priorityQuery = new LCQuery<>("Todo");
-priorityQuery.whereGreaterThanOrEqualTo("priority", 3);
 
-final LCQuery<LCObject> isCompleteQuery = new LCQuery<>("Todo");
-isCompleteQuery.whereEqualTo("isComplete", true);
-
-LCQuery<LCObject> query = LCQuery.or(Arrays.asList(priorityQuery, isCompleteQuery));
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 let priorityQuery = LCQuery(className: "Todo")
@@ -4578,23 +3658,7 @@ query = client.Class("Todo").NewQuery().Or(priorityQuery, isCompleteQuery)
 
 使用 AND 查询的效果等同于往 `{{ baseQueryClassName }}` 添加多个条件。下面的代码构建的查询会查找创建时间在 `2016-11-13` 和 `2016-12-02` 之间的 todo：
 
-{% if platform_name === "Objective-C" %}
-```objc
-NSDate *(^dateFromString)(NSString *string) = ^(NSString *string) {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    return [dateFormatter dateFromString:string];
-};
 
-LCQuery *startDateQuery = [LCQuery queryWithClassName:@"Todo"];
-[startDateQuery whereKey:@"createdAt" greaterThanOrEqualTo:dateFromString(@"2016-11-13")];
-
-LCQuery *endDateQuery = [LCQuery queryWithClassName:@"Todo"];
-[endDateQuery whereKey:@"createdAt" lessThan:dateFromString(@"2016-12-03")];
-
-LCQuery *query = [LCQuery andQueryWithSubqueries:[NSArray arrayWithObjects:startDateQuery, endDateQuery, nil]];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 const startDateQuery = new AV.Query('Todo');
@@ -4634,23 +3698,7 @@ $endDateQuery->lessThan("createdAt", $endDate);
 $query = Query::andQuery($startDateQuery, $endDateQuery);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-Date getDateWithDateString(String dateString) {
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    Date date = dateFormat.parse(dateString);
-    return date;
-}
 
-final LCQuery<LCObject> startDateQuery = new LCQuery<>("Todo");
-startDateQuery.whereGreaterThanOrEqualTo("createdAt", getDateWithDateString("2016-11-13"));
-
-final LCQuery<LCObject> endDateQuery = new LCQuery<>("Todo");
-endDateQuery.whereLessThan("createdAt", getDateWithDateString("2016-12-03"));
-
-LCQuery<LCObject> query = LCQuery.and(Arrays.asList(startDateQuery, endDateQuery));
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 let dateFromString: (String) -> Date? = { string in
@@ -4708,32 +3756,7 @@ timeLocationQuery := client.Class("Todo").NewQuery().Or(createdAtQuery, location
 query := client.Class("Todo").NewQuery().And(priorityQuery, timeLocationQuery)
 ```
 {% endif %}
-{% if platform_name === "Objective-C" %}
-```objc
-NSDate *(^dateFromString)(NSString *string) = ^(NSString *string) {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    return [dateFormatter dateFromString:string];
-};
 
-LCQuery *createdAtQuery = [LCQuery queryWithClassName:@"Todo"];
-[createdAtQuery whereKey:@"createdAt" greaterThanOrEqualTo:dateFromString(@"2018-04-30")];
-[createdAtQuery whereKey:@"createdAt" lessThan:dateFromString(@"2018-05-01")];
-
-LCQuery *locationQuery = [LCQuery queryWithClassName:@"Todo"];
-[locationQuery whereKeyDoesNotExist:@"location"];
-
-LCQuery *priority2Query = [LCQuery queryWithClassName:@"Todo"];
-[priority2Query whereKey:@"priority" equalTo:@2];
-
-LCQuery *priority3Query = [LCQuery queryWithClassName:@"Todo"];
-[priority3Query whereKey:@"priority" equalTo:@3];
-
-LCQuery *priorityQuery = [LCQuery orQueryWithSubqueries:[NSArray arrayWithObjects:priority2Query, priority3Query, nil]];
-LCQuery *timeLocationQuery = [LCQuery orQueryWithSubqueries:[NSArray arrayWithObjects:locationQuery, createdAtQuery, nil]];
-LCQuery *query = [LCQuery andQueryWithSubqueries:[NSArray arrayWithObjects:priorityQuery, timeLocationQuery, nil]];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 const createdAtQuery = new AV.Query('Todo');
@@ -4800,32 +3823,7 @@ $timeLocationQuery = Query::orQuery($createdAtQuery, $locationQuery);
 $query = Query::andQuery($priorityQuery, $timeLocationQuery);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-Date getDateWithDateString(String dateString) {
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    Date date = dateFormat.parse(dateString);
-    return date;
-}
 
-final LCQuery<LCObject> createdAtQuery = new LCQuery<>("Todo");
-createdAtQuery.whereGreaterThanOrEqualTo("createdAt", getDateWithDateString("2018-04-30"));
-createdAtQuery.whereLessThan("createdAt", getDateWithDateString("2018-05-01"));
-
-final LCQuery<LCObject> locationQuery = new LCQuery<>("Todo");
-locationQuery.whereDoesNotExist("location");
-
-final LCQuery<LCObject> priority2Query = new LCQuery<>("Todo");
-priority2Query.whereEqualTo("priority", 2);
-
-final LCQuery<LCObject> priority3Query = new LCQuery<>("Todo");
-priority3Query.whereEqualTo("priority", 3);
-
-LCQuery<LCObject> priorityQuery = LCQuery.or(Arrays.asList(priority2Query, priority3Query));
-LCQuery<LCObject> timeLocationQuery = LCQuery.or(Arrays.asList(locationQuery, createdAtQuery));
-LCQuery<LCObject> query = LCQuery.and(Arrays.asList(priorityQuery, timeLocationQuery));
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 let dateFromString: (String) -> Date? = { string in
@@ -4873,70 +3871,6 @@ LCQuery<LCObject> query = LCQuery.and([priorityQuery, timeLocationQuery]);
 ```
 {% endif %}
 
-
-{% if platform_name === "Objective-C" %}
-### 缓存查询
-
-缓存一些查询的结果到磁盘上，这可以让你在离线的时候，或者应用刚启动，网络请求还没有足够时间完成的时候可以展现一些数据给用户。当缓存占用了太多空间的时候，LeanStorage 会自动清空缓存。
-
-默认情况下的查询不会使用缓存，除非你调用接口明确设置启用。例如，尝试从网络请求，如果网络不可用则从缓存数据中获取，可以这样设置：
-
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Post"];
-query.cachePolicy = kAVCachePolicyNetworkElseCache;
-
-// 设置缓存有效期
-query.maxCacheAge = 24*3600;
-
-[query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-    if (!error) {
-        // 成功找到结果，先找网络再访问磁盘
-    } else {
-        // 无法访问网络，本次查询结果未做缓存
-    }
-}];
-```
-
-#### 缓存策略
-
-为了满足多变的需求，SDK 默认提供了以下几种缓存策略：
-
-策略枚举 | 含义及解释
---- | ---
-`kAVCachePolicyIgnoreCache`| **（默认缓存策略）**查询行为不从缓存加载，也不会将结果保存到缓存中。
-`kAVCachePolicyCacheOnly` | 查询行为忽略网络状况，只从缓存加载。如果没有缓存结果，该策略会产生 `AVError`。
-`kAVCachePolicyCacheElseNetwork` | 查询行为首先尝试从缓存加载，若加载失败，则通过网络加载结果。如果缓存和网络获取行为均为失败，则产生 `AVError`。注意查询条件默认会从当前时间从新往旧查询，因此这种情况下第一次查询总需要访问网络。
-`kAVCachePolicyNetworkElseCache` | 查询行为先尝试从网络加载，若加载失败，则从缓存加载结果。如果缓存和网络获取行为均为失败，则产生 `AVError`。
-`kAVCachePolicyCacheThenNetwork` | 查询先从缓存加载，然后从网络加载。在这种情况下，回调函数会被调用两次，第一次是缓存中的结果，然后是从网络获取的结果。因为它会在不同的时间返回两个结果，所以该策略不能与 `findObjects` 同时使用。
-
-#### 缓存相关的操作
-
-- 检查是否存在缓存查询结果：
-
-  ```objc
-  BOOL isInCache = [query hasCachedResult];
-  ```
-
-- 删除某一查询的任何缓存结果：（删除缓存只影响持久化缓存（磁盘缓存），不影响内存缓存，下同）
-
-  ```objc
-  [query clearCachedResult];
-  ```
-
-- 删除查询的所有缓存结果：
-
-  ```objc
-  [LCQuery clearAllCachedResults];
-  ```
-
-- 设定缓存结果的最长时限：
-
-  ```objc
-  query.maxCacheAge = 60 * 60 * 24; // 一天的总秒数
-  ```
-
-查询缓存也适用于 `LCQuery` 的辅助方法，包括 `getFirstObject` 和 `getObjectInBackground`。
-{% endif %}
 {% if platform_name === "Swift" %}
 ### 缓存查询
 
@@ -5023,23 +3957,9 @@ LiveQuery 使用 WebSocket 在客户端和云端之间建立连接。WebSocket �
 
 ### 启用 LiveQuery
 
-进入 **控制台 > 存储 > 设置**，在 **其他** 里面勾选 **启用 LiveQuery**{% if platform_name === "Swift" %}，然后导入云服务Swift SDK：{% endif %}{% if platform_name === "JavaScript" %}，然后将下面的 npm 模块添加到项目中即可：{% endif %}{% if platform_name === "Android / Java" %}即可。确保即时通信模块已被添加到 `AndroidManifest.xml`：{% endif %}
+进入 **控制台 > 存储 > 设置**，在 **其他** 里面勾选 **启用 LiveQuery**{% if platform_name === "Swift" %}，然后导入云服务Swift SDK：{% endif %}{% if platform_name === "JavaScript" %}，然后将下面的 npm 模块添加到项目中即可：{% endif %}
 
-{% if platform_name === "Objective-C" %}
-如果没有集成 `Realtime` 模块，需先集成 `Realtime` 模块，pod 添加示例如下：
 
-```ruby
-pod 'LeanCloudObjc/Realtime'
-```
-
-可以在 [SDK 安装与初始化](#SDK-安装与初始化) 中找到完整设置方法。
-
-之后在相关头文件中导入 `Realtime` 模块，示例如下：
-
-```objc
-#import <LeanCloudObjc/Realtime.h>
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 import LeanCloud
@@ -5060,21 +3980,6 @@ const AV = require('leancloud-storage/live-query');
 
 可以在 [SDK 安装与初始化](#SDK-安装与初始化) 中找到完整设置方法。
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```xml
-<service android:name="cn.leancloud.push.PushService"/>
-<receiver android:name="cn.leancloud.push.LCBroadcastReceiver">
-  <intent-filter>
-    <action android:name="android.intent.action.BOOT_COMPLETED"/>
-    <action android:name="android.intent.action.USER_PRESENT"/>
-    <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-  </intent-filter>
-</receiver>
-```
-
-可以在 [SDK 安装与初始化](#SDK-安装与初始化) 中找到完整设置方法。
-{% endif %}
-
 
 ### Demo
 
@@ -5090,7 +3995,7 @@ const AV = require('leancloud-storage/live-query');
 
 1. 微信扫码，添加小程序「LeanTodo」；
 
-    ![LeanTodo mini program](images/leantodo-weapp-qr.jpg" width="150" height="150")
+    ![LeanTodo mini program](images/leantodo-weapp-qr.jpg)
 
 2. 进入小程序，点击首页左下角 **设置** > **账户设置**，输入便于记忆的用户名和密码；
 
@@ -5106,16 +4011,7 @@ const AV = require('leancloud-storage/live-query');
 
 首先创建一个普通的 `{{ baseQueryClassName }}` 对象，添加查询条件（如有），然后进行订阅操作：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-self.liveQuery = [[LCLiveQuery alloc] initWithQuery:query];
-self.liveQuery.delegate = self;
-[self.liveQuery subscribeWithCallback:^(BOOL succeeded, NSError * _Nonnull error) {
-    // 订阅成功
-}];
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -5142,42 +4038,12 @@ query.subscribe().then((liveQuery) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-query.whereEqualTo("isComplete", true);
-LCLiveQuery liveQuery = LCLiveQuery.initWithQuery(query);
-liveQuery.subscribeInBackground(new LCLiveQuerySubscribeCallback() {
-    @Override
-    public void done(LCException e) {
-        if (e == null) {
-            // 订阅成功
-        }
-    }
-});
-```
-{% endif %}
-
 
 LiveQuery 不支持内嵌查询，也不支持返回指定属性。
 
 订阅成功后，就可以接收到和 `{{ baseObjectName }}` 相关的更新了。假如在另一个客户端上创建了一个 `Todo` 对象，对象的 `title` 设为 `更新作品集`，那么下面的代码可以获取到这个新的 `Todo`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-self.liveQuery = [[LCLiveQuery alloc] initWithQuery:query];
-self.liveQuery.delegate = self;
-[self.liveQuery subscribeWithCallback:^(BOOL succeeded, NSError * _Nonnull error) {
-    // 订阅成功
-}];
-- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidCreate:(id)object {
-    if (liveQuery == self.liveQuery) {
-        NSLog(@"%@", object[@"title"]); // 更新作品集
-    }
-}
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -5205,38 +4071,10 @@ query.subscribe().then((liveQuery) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-query.whereEqualTo("isComplete", true);
-LCLiveQuery liveQuery = LCLiveQuery.initWithQuery(query);
-liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
-    @Override
-    public void onObjectCreated(LCObject newTodo) {
-        System.out.println(newTodo.getString("title")); // 更新作品集
-    }
-});
-liveQuery.subscribeInBackground(new LCLiveQuerySubscribeCallback() {
-    @Override
-    public void done(LCException e) {
-        if (e == null) {
-            // 订阅成功
-        }
-    }
-});
-```
-{% endif %}
-
 
 此时如果有人把 `Todo` 的 `content` 改为 `把我最近画的插画放上去`，那么下面的代码可以获取到本次更新：
 
-{% if platform_name === "Objective-C" %}
-```objc
-- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidUpdate:(id)updatedTodo updatedKeys:(NSArray<NSString *> *)updatedKeys {
-    NSLog(@"%@", updatedTodo[@"content"]); // 把我最近画的插画放上去
-}
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -5263,17 +4101,6 @@ liveQuery.on('update', (updatedTodo, updatedKeys) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
-    @Override
-    public void onObjectUpdated(LCObject updatedTodo, List<String> updatedKeys) {
-        System.out.println(updatedTodo.getString("content")); // 把我最近画的插画放上去
-    }
-});
-```
-{% endif %}
-
 
 ### 事件处理
 
@@ -5289,15 +4116,7 @@ liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
 
 当有新的满足 `{{ baseQueryClassName }}` 查询条件的 `{{ baseObjectName }}` 被创建时，`create` 事件会被触发。下面的 `object` 就是新建的 `{{ baseObjectName }}`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidCreate:(id)object {
-    if (liveQuery == self.liveQuery) {
-        NSLog(@"对象被创建。");
-    }
-}
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 self.liveQuery = try LiveQuery(query: query, eventHandler: { (liveQuery, event) in
@@ -5317,31 +4136,12 @@ liveQuery.on('create', (object) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
-    @Override
-    public void onObjectCreated(LCObject object) {
-        System.out.println("对象被创建。");
-    }
-});
-```
-{% endif %}
-
 
 #### `update` 事件
 
 当有满足 `{{ baseQueryClassName }}` 查询条件的 `{{ baseObjectName }}` 被更新时，`update` 事件会被触发。下面的 `object` 就是有更新的 `{{ baseObjectName }}`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidUpdate:(id)object updatedKeys:(NSArray<NSString *> *)updatedKeys {
-    if (liveQuery == self.liveQuery) {
-        NSLog(@"对象被更新。");
-    }
-}
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 self.liveQuery = try LiveQuery(query: query, eventHandler: { (liveQuery, event) in
@@ -5361,31 +4161,12 @@ liveQuery.on('update', (object, updatedKeys) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
-    @Override
-    public void onObjectUpdated(LCObject object, List<String> updatedKeys) {
-        System.out.println("对象被更新。");
-    }
-});
-```
-{% endif %}
-
 
 #### `enter` 事件
 
 当一个已存在的、原本不符合 `{{ baseQueryClassName }}` 查询条件的 `{{ baseObjectName }}` 发生更新，且更新后符合查询条件，`enter` 事件会被触发。下面的 `object` 就是进入 `{{ baseQueryClassName }}` 的 `{{ baseObjectName }}`，其内容为该对象最新的值：
 
-{% if platform_name === "Objective-C" %}
-```objc
-- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidEnter:(id)object updatedKeys:(nonnull NSArray<NSString *> *)updatedKeys {
-    if (liveQuery == self.liveQuery) {
-        NSLog(@"对象进入。");
-    }
-}
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 self.liveQuery = try LiveQuery(query: query, eventHandler: { (liveQuery, event) in
@@ -5405,17 +4186,6 @@ liveQuery.on('enter', (object, updatedKeys) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
-    @Override
-    public void onObjectEnter(LCObject object, List<String> updatedKeys) {
-        System.out.println("对象进入。");
-    }
-});
-```
-{% endif %}
-
 
 注意区分 `create` 和 `enter` 的不同行为。如果一个对象已经存在，在更新之前不符合查询条件，而在更新之后符合查询条件，那么 `enter` 事件会被触发。如果一个对象原本不存在，后来被构建了出来，那么 `create` 事件会被触发。
 
@@ -5423,15 +4193,7 @@ liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
 
 当一个已存在的、原本符合 `{{ baseQueryClassName }}` 查询条件的 `{{ baseObjectName }}` 发生更新，且更新后不符合查询条件，`leave` 事件会被触发。下面的 `object` 就是离开 `{{ baseQueryClassName }}` 的 `{{ baseObjectName }}`，其内容为该对象最新的值：
 
-{% if platform_name === "Objective-C" %}
-```objc
-- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidLeave:(id)object updatedKeys:(nonnull NSArray<NSString *> *)updatedKeys {
-    if (liveQuery == self.liveQuery) {
-        NSLog(@"对象离开。");
-    }
-}
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 self.liveQuery = try LiveQuery(query: query, eventHandler: { (liveQuery, event) in
@@ -5451,31 +4213,12 @@ liveQuery.on('leave', (object, updatedKeys) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
-    @Override
-    public void onObjectLeave(LCObject object, List<String> updatedKeys) {
-        System.out.println("对象离开。");
-    }
-});
-```
-{% endif %}
-
 
 #### `delete` 事件
 
 当一个已存在的、原本符合 `{{ baseQueryClassName }}` 查询条件的 `{{ baseObjectName }}` 被删除，`delete` 事件会被触发。下面的 `object` 就是被删除的 `{{ baseObjectName }}` 的 `objectId`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-- (void)liveQuery:(LCLiveQuery *)liveQuery objectDidDelete:(id)object {
-    if (liveQuery == self.liveQuery) {
-        NSLog(@"对象被删除。");
-    }
-}
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 self.liveQuery = try LiveQuery(query: query, eventHandler: { (liveQuery, event) in
@@ -5495,34 +4238,13 @@ liveQuery.on('delete', (object) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-liveQuery.setEventHandler(new LCLiveQueryEventHandler() {
-    @Override
-    public void onObjectDeleted(String object) {
-        System.out.println("对象被删除。");
-    }
-});
-```
-{% endif %}
-
 
 
 ### 取消订阅
 
 如果不再需要接收有关 `{{ baseQueryClassName }}` 的更新，可以取消订阅。
 
-{% if platform_name === "Objective-C" %}
-```objc
-[liveQuery unsubscribeWithCallback:^(BOOL succeeded, NSError * _Nonnull error) {
-    if (succeeded) {
-        // 成功取消订阅
-    } else {
-        // 错误处理
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 self.liveQuery.unsubscribe { (result) in
@@ -5542,19 +4264,6 @@ liveQuery.unsubscribe().then(() => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-liveQuery.unsubscribeInBackground(new LCLiveQuerySubscribeCallback() {
-    @Override
-    public void done(LCException e) {
-        if (e == null) {
-            // 成功取消订阅
-        }
-    }
-});
-```
-{% endif %}
-
 
 ### 断开连接
 
@@ -5573,14 +4282,6 @@ liveQuery.unsubscribeInBackground(new LCLiveQuerySubscribeCallback() {
 我们不建议这样做，因为使用 LiveQuery 构建聊天服务会承担额外的存储成本，产生的费用会增加，后期维护的难度非常大（聊天记录、对话维护之类的代码会很混乱），并且云服务已经提供了即时通讯的服务。
 LiveQuery 的核心还是提供一个针对查询的推拉结合的用法，脱离设计初衷容易造成前端的模块混乱。
 
-
-{% if platform_name === "Android / Java" %}
-如果你的应用只使用 LiveQuery （不使用即时通讯和其他推送服务），那么可以在初始化 SDK 时使用 `PushService` 的静态方法 `startIfRequired` 来创建 WebSocket 连接：
-
-```java
-PushService.startIfRequired(android.content.Context context);
-```
-{% endif %}
 
 {% endif %}
 
@@ -5616,15 +4317,7 @@ if err := client.Files.Upload(file, fd); err != nil {
 ```
 {% endif %}
 
-{% if platform_name === "Objective-C" %}
-可以通过字符串构建文件：
 
-```objc
-NSData *data = [@"LeanCloud" dataUsingEncoding:NSUTF8StringEncoding];
-// resume.txt 是文件名
-LCFile *file = [LCFile fileWithData:data name:@"resume.txt"];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 可以通过 base64 编码的字符串构建文件：
 
@@ -5676,14 +4369,7 @@ file = leancloud.File('resume.txt', data)
 $file = File::createWithData("resume.txt", "LeanCloud");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-可以通过字符串构建文件：
 
-```java
-// resume.txt 是文件名
-LCFile file = new LCFile("resume.txt", "LeanCloud".getBytes());
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 可以通过字符串构建文件：
 
@@ -5703,11 +4389,7 @@ LCFile file = LCFile.fromBytes('resume.txt', utf8.encode('LeanCloud'));
 
 除此之外，还可以通过 URL 构建文件：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCFile *file = [LCFile fileWithRemoteURL:[NSURL URLWithString:@"https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png"]];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const file = AV.File.withURL(
@@ -5726,15 +4408,7 @@ file = leancloud.File.create_with_url('logo.png', 'https://leancloud.cn/assets/i
 $file = File::createWithUrl("logo.png", "https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCFile file = new LCFile(
-    "logo.png",
-    "https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png",
-    new HashMap<String, Object>()
-);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 if let url = URL(string: "https://leancloud.cn/assets/imgs/press/Logo%20-%20Blue%20Padding.a60eb2fa.png") {
@@ -5785,13 +4459,7 @@ file = leancloud.File('resume.txt', StringIO('{"company":"LeanCloud"}'), 'applic
 $file = File::createWithData("resume.txt", "{\"company\":\"LeanCloud\"}", "application/json");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-Map<String, Object> meta = new HashMap<String, Object>();
-meta.put("mime_type", "application/json");
-LCFile file = new LCFile("resume.txt", "LeanCloud".getBytes(), meta);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 if let data = "{\"company\":\"LeanCloud\"}".data(using: .utf8) {
@@ -5818,15 +4486,7 @@ if err != nil {
 }
 ```
 {% endif %}
-{% if platform_name === "Objective-C" %}
-```objc
-NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-NSString *documentsDirectory = [paths objectAtIndex:0];
-NSString *imagePath = [documentsDirectory stringByAppendingPathComponent:@"avatar.jpg"];
-NSError *error;
-LCFile *file = [LCFile fileWithLocalPath:imagePath error:&error];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```html
 <input type="file" id="avatar-upload" />
@@ -5853,11 +4513,7 @@ with open('/tmp/avatar.jpg', 'rb') as f:
 $file = File::createWithLocalFile("/tmp/avatar.jpg");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCFile file = LCFile.withAbsoluteLocalPath("avatar.jpg", "/tmp/avatar.jpg");
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 if let url = Bundle.main.url(forResource: "avatar", withExtension: "jpg") {
@@ -5910,17 +4566,7 @@ $file->setKey("robots.txt");
 
 将文件保存到云端后，便可获得一个永久指向该文件的 URL：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[file uploadWithCompletionHandler:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        NSLog(@"文件保存完成。objectId：%@", file.objectId);
-    } else {
-        // 保存失败，可能是文件无法被读取，或者上传过程中出现问题
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 file.save().then((file) => {
@@ -5940,20 +4586,7 @@ file.save()
 $file->save();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-file.saveInBackground().subscribe(new Observer<LCFile>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCFile file) {
-        System.out.println("文件保存完成。objectId：" + file.getObjectId());
-    }
-    public void onError(Throwable throwable) {
-        // 保存失败，可能是文件无法被读取，或者上传过程中出现问题
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = file.save { result in
@@ -5988,10 +4621,6 @@ fmt.Println("The URL of file is ", file.URL)
 {% endif %}
 文件上传后，可以在 `_File` class 中找到。已上传的文件无法再被修改。如果需要修改文件，只能重新上传修改过的文件并取得新的 `objectId` 和 URL。
 
-{% if platform_name in ["JavaScript", "Android / Java"] %}
-如果希望在文件的 url 中保留文件名，可以在保存时传入 `keepFileName` 参数。
-{% endif %}
-
 {% if platform_name === "JavaScript" %}
 ```js
 const data = [0x4c, 0x65, 0x61, 0x6e, 0x43, 0x6c, 0x6f, 0x75, 0x64];
@@ -6003,33 +4632,10 @@ file.save({ keepFileName: true }).then((file) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-file.saveInBackground(true).subscribe(new Observer<LCFile>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCFile file) {
-        System.out.println("文件保存完成。objectId：" + file.getObjectId());
-    }
-    public void onError(Throwable throwable) {
-        // 保存失败，可能是文件无法被读取，或者上传过程中出现问题
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
-
 
 已经保存到云端的文件可以关联到 `{{ baseObjectName }}`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCObject *todo = [LCObject objectWithClassName:@"Todo"];
-[todo setObject:@"买蛋糕" forKey:@"title"];
-// attachments 是一个 Array 属性
-[todo addObject:file forKey:@"attachments"];
-[todo saveInBackground];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const Todo = AV.Object.extend('Todo');
@@ -6059,15 +4665,7 @@ $todo->addIn("attachments", $file);
 $todo->save();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject todo = new LCObject("Todo");
-todo.put("title", "买蛋糕");
-// attachments 是一个 Array 属性
-todo.add("attachments", file);
-todo.save();
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -6117,11 +4715,7 @@ if err := client.Class("Todo").Create(todo); err != nil {
 {% endif %}
 也可以通过构建 `{{ baseQueryClassName }}` 进行[查询](#查询)：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"_File"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('_File');
@@ -6137,11 +4731,7 @@ query = leancloud.Query('_File')
 $query = new Query("_File");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("_File");
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "_File")
@@ -6164,27 +4754,10 @@ query := client.Class("_File").NewQuery()
 因此，通过 url 字段查询文件仅适用于外部文件（直接保存外部 URL 到 `_File` 表创建的文件），内部文件请改用 key 字段（URL 中的路径）查询。
 
 {% if platform_name === "Objective-C" or platform_name === "JavaScript" or platform_name === "Android / Java" or platform_name === "Flutter" or platform_name === ".Net"  %}
-注意，如果文件被保存到了 `{{ baseObjectName }}` 的一个数组属性中，那么在查询 `{{ baseObjectName }}` 时如果需要包含文件，则要用到 `{{ baseQueryClassName }}` 的 `{% if platform_name === "Objective-C" %}includeKey{% endif %}{% if platform_name === "JavaScript" %}include{% endif %}{% if platform_name === "Android / Java"%}include{% endif %}` 方法。比如说，在获取所有标题为 `买蛋糕` 的 todo 的同时获取附件中的文件：
+注意，如果文件被保存到了 `{{ baseObjectName }}` 的一个数组属性中，那么在查询 `{{ baseObjectName }}` 时如果需要包含文件，则要用到 `{{ baseQueryClassName }}` 的 `{% if platform_name === "JavaScript" %}include{% endif %}` 方法。比如说，在获取所有标题为 `买蛋糕` 的 todo 的同时获取附件中的文件：
 {% endif %}
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 获取同一标题且包含附件的 todo
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-[query whereKey:@"title" equalTo:@"买蛋糕"];
-[query whereKeyExists:@"attachments"];
 
-// 同时获取附件中的文件
-[query includeKey:@"attachments"];
-
-[query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable todos, NSError * _Nullable error) {
-    for (LCObject *todo in todos) {
-        // 获取每个 todo 的 attachments 数组
-        // {# TODO #}
-    }
-}];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 获取同一标题且包含附件的 todo
@@ -6207,29 +4780,7 @@ query.find().then((todos) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 获取同一标题且包含附件的 todo
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-query.whereEqualTo("title", "买蛋糕");
-query.whereExists("attachments");
 
-// 同时获取附件中的文件
-query.include("attachments");
-
-query.findInBackground().subscribe(new Observer<List<LCObject>>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<LCObject> todos) {
-        for (LCObject todo : todos) {
-            // 获取每个 todo 的 attachments 数组
-            // {# TODO #}
-        }
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
 {% if platform_name === "Flutter" %}
 ```dart
 // 获取同一标题且包含附件的 todo
@@ -6254,15 +4805,7 @@ for (LCObject todo in todos) {
 上传过程中可以实时向用户展示进度：
 {% endif %}
 
-{% if platform_name === "Objective-C" %}
-```objc
-[file uploadWithProgress:^(NSInteger percent) {
-    // percent 是一个 0 到 100 之间的整数，表示上传进度
-} completionHandler:^(BOOL succeeded, NSError *error) {
-    // 保存后的操作
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 file.save({
@@ -6279,16 +4822,7 @@ file.save({
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-file.saveInBackground(new ProgressCallback() {
-    @Override
-    public void done(Integer percent) {
-        // percent 是一个 0 到 100 之间的整数，表示上传进度
-    }
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = file.save(progress: { (progress) in
@@ -6320,22 +4854,7 @@ if (count == total) {
 
 上传文件时，可以用 `metaData` 添加额外的属性。文件一旦保存，`metaData` 便不可再修改。
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 设置元数据
-[file.metaData setObject:@"LeanCloud" forKey:@"author"];
-[file uploadWithCompletionHandler:^(BOOL succeeded, NSError *error) {
-    // 获取全部元数据
-    NSDictionary *metadata = file.metaData;
-    // 获取 author 属性
-    NSString *author = metadata[@"author"];
-    // 获取文件名
-    NSString *fileName = file.name;
-    // 获取大小（不适用于通过 base64 编码的字符串或者 URL 保存的文件）
-    NSUInteger *size = file.size;
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 // 设置元数据
@@ -6384,25 +4903,7 @@ $fileName = $file->getName();
 $size = $file->getSize();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 设置元数据
-file.addMetaData("author", "LeanCloud");
-file.saveInBackground().subscribe(new Observer<LCFile>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCFile file) {
-        // 获取 author 属性
-        String author = (String) file.getMetaData("author");
-        // 获取文件名
-        String fileName = file.getName();
-        // 获取大小（不适用于通过 base64 编码的字符串或者 URL 保存的文件）
-        int size = file.getSize();
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 // 设置元数据
@@ -6459,40 +4960,14 @@ if err := client.Files.Upload(file, fd); err != nil {
 
 ```
 {% endif %}
-{% if platform_name === "Objective-C" %}
-### 文件下载
 
-客户端 SDK 接口可以下载文件并把它缓存起来，只要文件的 URL 不变，那么一次下载成功之后，就不会再重复下载，目的是为了减少客户端的流量。
 
-{% if platform_name === "Objective-C" %}
-```objc
-[file downloadWithProgress:^(NSInteger number) {
-    // 下载的进度数据，number 介于 0 和 100
-} completionHandler:^(NSURL * _Nullable filePath, NSError * _Nullable error) {
-    // filePath 是文件下载到本地的地址
-}];
-```
-
-`filePath` 是一个相对路径，文件存储在缓存目录（使用缓存功能）或系统临时目录（不使用缓存功能）中。
-
-请注意代码中 `下载进度` 数据的读取。
-{% endif %}
-{% endif %}
-
-{% if node !== "qcloud" %}
 {% if platform_name === "Objective-C" or platform_name === "Swift" or platform_name === "JavaScript" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Android / Java" %}
 ### 图像缩略图
 
 成功保存图像后，除了可以获取指向该文件的 URL 外，还可以获取图像的缩略图 URL，并且可以指定缩略图的宽度和高度：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCFile *file = [LCFile fileWithRemoteURL:[NSURL URLWithString:@"文件-url"]];
-[file getThumbnail:YES width:100 height:100 withBlock:^(UIImage *image, NSError *error) {
-    // 其他逻辑
-}];
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 // 基于原图大小，按指定百分比缩放到 25%
@@ -6522,12 +4997,7 @@ $file = File::createWithUrl("test.jpg", "文件-url");
 $file->getThumbUrl(100, 200);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCFile file = new LCFile("test.jpg", "文件-url", new HashMap<String, Object>());
-file.getThumbnailUrl(true, 100, 100);
-```
-{% endif %}
+
 {% if platform_name === "Flutter" %}
 ```dart
  // 获得宽度为 100 像素，高度为 200 像素的缩略图 url
@@ -6540,85 +5010,14 @@ file.getThumbnailUrl(true, 100, 100);
 
 国际版不支持图片缩略图。
 {% endif %}
-{% endif %}
 
-{% if platform_name === "Objective-C" %}
-### 清除缓存
 
-LCFile 也提供了清除缓存的方法：
-
-```objc
-// 清除当前文件缓存
-- (void)clearPersistentCache;
-
-// 类方法, 清除所有缓存
-+ (BOOL)clearAllPersistentCache;
-```
-{% endif %}
-
-{% if platform_name === "Android / Java" %}
-### 下载文件
-
-可以调用 LCFile 的 `getDataInBackground` 或 `getDataStreamInBackground` 方法下载文件：
-
-```java
-avFile.getDataInBackground().subscribe(new Observer<byte[]>() {
-    @Override
-    public void onSubscribe(Disposable d) {}
-
-    @Override
-    public void onNext(byte[] bytes) {
-        Log.d("file data length: " + bytes.length);
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        Log.d("failed to get data. cause: " + e.getMessage());
-    }
-
-    @Override
-    public void onComplete() {}
-});
-
-avFile.getDataStreamInBackground().subscribe(new Observer<InputStream>() {
-    @Override
-    public void onSubscribe(Disposable d) {}
-
-    @Override
-    public void onNext(InputStream inputStream) {
-        try {
-            byte[] buffer = new byte[102400];
-            int read = inputStream.read(buffer);
-            Log.d("file data length: " + read);
-            inputStream.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        Log.d("failed to get data. cause: " + e.getMessage());
-    }
-
-    @Override
-    public void onComplete() {}
-});
-```
-
-除了使用 SDK 提供的方法外，也可以获取 LCFile 的 url 后调用标准库和第三方库下载文件。
-{% endif %}
 
 ### 删除文件
 
 下面的代码从云端删除一个文件：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCFile *file = [LCFile getFileWithObjectId:@"552e0a27e4b0643b709e891e"];
-[file deleteInBackground];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const file = AV.File.createWithoutData('552e0a27e4b0643b709e891e');
@@ -6637,12 +5036,7 @@ $file = File::fetch("552e0a27e4b0643b709e891e");
 $file->destroy();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject file = LCObject.createWithoutData("_File", "552e0a27e4b0643b709e891e");
-file.delete()
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let file = LCObject(className: "_File", objectId: "552e0a27e4b0643b709e891e")
@@ -6663,39 +5057,7 @@ if err := client.File("552e0a27e4b0643b709e891e").Destroy(); err != nil {
 }
 ```
 {% endif %}
-默认情况下，文件的删除权限是关闭的，需要进入 **控制台 > 数据存储 > 结构化数据 > `_File`**，选择 **其他** > **权限设置** > **`delete`** 来开启。
-
-{% if platform_name === "Objective-C" %}
-#### iOS 9 适配
-
-从 iOS 9 开始，Apple 默认屏蔽 HTTP 访问，只支持 HTTPS 访问。云服务除了 `LCFile` 的 `getData` 之外的 API 都支持通过 HTTPS 访问。
-
-如果你仍然需要 HTTP 访问，例如即时通讯消息中仍然有使用 HTTP 域名的文件，你可以 **为项目配置访问策略来允许 HTTP 访问**，从而解决这个问题。方法如下：
-
-选择项目的 `Info.plist`，右击选择 **Opened As** > **Source Code**，在 **plist** > **dict** 节点中加入以下文本：
-
-```xml
-<key>NSAppTransportSecurity</key>
-<dict>
-  <key>NSExceptionDomains</key>
-  <dict>
-    <key>clouddn.com</key>
-    <dict>
-      <key>NSIncludesSubdomains</key>
-      <true/>
-      <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-      <true/>
-    </dict>
-  </dict>
-</dict>
-```
-
-或者在 **Target** 的 **Info** 标签中修改配置：
-
-![在「NSAppTransportSecurity > NSExceptionDomains > clouddn.com」下面分别添加「NSTemporaryExceptionAllowsInsecureHTTPLoads」和「NSIncludesSubdomains」两个 Boolean 字段并将它们的值设为 YES。](../images/ios_qiniu_http.png)
-
-你也可以根据项目需要，允许所有的 HTTP 访问，更多可参考 [iOS 9 适配系列教程](https://github.com/ChenYilong/iOS9AdaptationTips)。
-{% endif %}
+默认情况下，文件的删除权限是关闭的，需要进入 **云服务控制台 > 数据存储 > 结构化数据 > `_File`**，选择 **其他** > **权限设置** > **`delete`** 来开启。
 
 {% if platform_name === "JavaScript" %}
 ## Promise
@@ -6826,11 +5188,7 @@ async function example() {
 
 要构建一个包含地理位置的对象，首先要构建一个地理位置。下面的代码构建了一个 `{{geoPointObjectName}}` 并将其纬度（`latitude`）设为 `39.9`，经度（`longitude`）设为 `116.4`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCGeoPoint *point = [LCGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const point = new AV.GeoPoint(39.9, 116.4);
@@ -6850,11 +5208,7 @@ point = leancloud.GeoPoint(39.9, 116.4)
 $point = new GeoPoint(39.9, 116.4);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCGeoPoint point = new LCGeoPoint(39.9, 116.4);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let point = LCGeoPoint(latitude: 39.9, longitude: 116.4)
@@ -6877,11 +5231,7 @@ point := leancloud.GeoPoint{
 
 现在可以将这个地理位置存储为一个对象的属性：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[todo setObject:point forKey:@"location"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 todo.set('location', point);
@@ -6897,11 +5247,7 @@ todo.set('location', point)
 $todo->set("location", $point);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-todo.put("location", point);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 try todo.set("location", value: point)
@@ -6922,21 +5268,9 @@ if err := client.Class("Todo").Set("location", point); err != nil {
 {% endif %}
 ### 地理位置查询
 
-给定一些含有地理位置的对象，可以从中找出离某一点最近的几个，或者处于某一范围内的几个。要执行这样的查询，可以向普通的 `{{ baseQueryClassName }}` 添加 `{% if platform_name === "Go" %}Near{% endif %}{% if platform_name === "Objective-C" %}nearGeoPoint{% endif %}{% if platform_name === "JavaScript" %}near{% endif %}{% if platform_name === "Python" %}near{% endif %}{% if platform_name === "PHP" %}near{% endif %}{% if platform_name === "Android / Java" %}whereNear{% endif %}{% if platform_name === "Swift" %}.locatedNear{% endif %}` 条件。下面的代码查找 `location` 属性值离某一点最近的 `Todo` 对象：
+给定一些含有地理位置的对象，可以从中找出离某一点最近的几个，或者处于某一范围内的几个。要执行这样的查询，可以向普通的 `{{ baseQueryClassName }}` 添加 `{% if platform_name === "Go" %}Near{% endif %}{% if platform_name === "JavaScript" %}near{% endif %}{% if platform_name === "Python" %}near{% endif %}{% if platform_name === "PHP" %}near{% endif %}{% if platform_name === "Swift" %}.locatedNear{% endif %}` 条件。下面的代码查找 `location` 属性值离某一点最近的 `Todo` 对象：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-LCGeoPoint *point = [LCGeoPoint geoPointWithLatitude:39.9 longitude:116.4];
-[query whereKey:@"location" nearGeoPoint:point];
 
-// 限制为 10 条结果
-query.limit = 10;
-[query findObjectsInBackgroundWithBlock:^(NSArray *todos, NSError *error) {
-    // todos 是包含满足条件的 Todo 对象的数组
-}];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
@@ -6972,24 +5306,7 @@ $query->limit(10);
 $todos = $query->find();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-LCGeoPoint point = new LCGeoPoint(39.9, 116.4);
-query.whereNear("location", point);
 
-// 限制为 10 条结果
-query.limit(10);
-query.findInBackground().subscribe(new Observer<List<LCObject>>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(List<LCObject> todos) {
-        // todos 是包含满足条件的 Todo 对象的数组
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Todo")
@@ -7038,23 +5355,16 @@ if err := client.Class("Todo").NewQuery().Near("location", point).Limit(10).Find
 像 `Order` 这样额外的排序条件会获得比默认的距离排序更高的优先级。
 {% endif %}
 {% if platform_name !== "Go" %}
-像 `{% if platform_name === "Objective-C" %}orderByAscending{% endif %}{% if platform_name === "JavaScript" %}ascending{% endif %}{% if platform_name === "Python" %}ascending{% endif %}{% if platform_name === "PHP" %}ascend{% endif %}{% if platform_name === "Android / Java" %}orderByAscending{% endif %}{% if platform_name === "Swift" %}.ascending{% endif %}{% if platform_name === "Flutter" %}orderByAscending{% endif %}{% if platform_name === ".Net" %}OrderByAscending{% endif %}` 和 `{% if platform_name === "Objective-C" %}orderByDescending{% endif %}{% if platform_name === "JavaScript" %}descending{% endif %}{% if platform_name === "Python" %}descending{% endif %}{% if platform_name === "PHP" %}descend{% endif %}{% if platform_name === "Android / Java" %}orderByDescending{% endif %}{% if platform_name === "Swift" %}.descending{% endif %}{% if platform_name === "Flutter" %}orderByDescending{% endif %}{% if platform_name === ".Net" %}OrderByDescending{% endif %}` 这样额外的排序条件会获得比默认的距离排序更高的优先级。
+像 `{% if platform_name === "JavaScript" %}ascending{% endif %}{% if platform_name === "Python" %}ascending{% endif %}{% if platform_name === "PHP" %}ascend{% endif %}{% if platform_name === "Swift" %}.ascending{% endif %}{% if platform_name === "Flutter" %}orderByAscending{% endif %}` 和 `{% if platform_name === "JavaScript" %}descending{% endif %}{% if platform_name === "Python" %}descending{% endif %}{% if platform_name === "PHP" %}descend{% endif %}{% if platform_name === "Swift" %}.descending{% endif %}{% if platform_name === "Flutter" %}orderByDescending{% endif %}` 这样额外的排序条件会获得比默认的距离排序更高的优先级。
 {% endif %}
 
-若要限制结果和给定地点之间的距离，可以参考 API 文档中的 {% if platform_name === "Go" %}`WithinKilometers`、`WithinMiles` 和 `WithinRadians`{% endif %}{% if platform_name === "Objective-C" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "JavaScript" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Python" %}`within_kilometers`、`within_miles` 和 `within_radians`{% endif %}{% if platform_name === "PHP" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinKilometers`、`whereWithinMiles` 和 `whereWithinRadians`{% endif %}{% if platform_name === "Swift" %} `kilometersTo`、`milesTo` 和 `radiansTo`{% endif %} 参数。
+若要限制结果和给定地点之间的距离，可以参考 API 文档中的 {% if platform_name === "Go" %}`WithinKilometers`、`WithinMiles` 和 `WithinRadians`{% endif %}{% if platform_name === "JavaScript" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Python" %}`within_kilometers`、`within_miles` 和 `within_radians`{% endif %}{% if platform_name === "PHP" %}`withinKilometers`、`withinMiles` 和 `withinRadians`{% endif %}{% if platform_name === "Swift" %} `kilometersTo`、`milesTo` 和 `radiansTo`{% endif %} 参数。
 
-若要查询在某一矩形范围内的对象，可以用 {% if platform_name === "Go" %}`WithinGeoBox`{% endif %}{% if platform_name === "Objective-C" %}`withinGeoBoxFromSouthwest` 和 `toNortheast`{% endif %}{% if platform_name === "JavaScript" %}`withinGeoBox`{% endif %}{% if platform_name === "Python" %}`within_geo_box`{% endif %}{% if platform_name === "PHP" %}`withinBox`{% endif %}{% if platform_name === "Android / Java" %}`whereWithinGeoBox`{% endif %}{% if platform_name === "Swift" %}`.locatedWithin`{% endif %}{% if platform_name === "Flutter" %}`whereWithinGeoBox`{% endif %}{% if platform_name === ".Net" %}`WhereWithinGeoBox`{% endif %}：
+若要查询在某一矩形范围内的对象，可以用 {% if platform_name === "Go" %}`WithinGeoBox`{% endif %}{% if platform_name === "JavaScript" %}`withinGeoBox`{% endif %}{% if platform_name === "Python" %}`within_geo_box`{% endif %}{% if platform_name === "PHP" %}`withinBox`{% endif %}{% if platform_name === "Swift" %}`.locatedWithin`{% endif %}{% if platform_name === "Flutter" %}`whereWithinGeoBox`{% endif %}：
 
 ![withinGeoBox](images/geopoint-withingeobox.svg)
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *query = [LCQuery queryWithClassName:@"Todo"];
-LCGeoPoint *southwest = [LCGeoPoint geoPointWithLatitude:30 longitude:115];
-LCGeoPoint *northeast = [LCGeoPoint geoPointWithLatitude:40 longitude:118];
-[query whereKey:@"location" withinGeoBoxFromSouthwest:southwest toNortheast:northeast];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const query = new AV.Query('Todo');
@@ -7079,14 +5389,7 @@ $northeast = new GeoPoint(40, 118);
 $query->withinBox("location", $southwest, $northeast);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCObject> query = new LCQuery<>("Todo");
-LCGeoPoint southwest = new LCGeoPoint(30, 115);
-LCGeoPoint northeast = new LCGeoPoint(40, 118);
-query.whereWithinGeoBox("location", southwest, northeast);
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let query = LCQuery(className: "Todo")
@@ -7116,10 +5419,6 @@ query := client.Class("Todo").WithinBox("location", southwest, northeast)
 GeoPoint 的经纬度的类型是数字，且经度需在 -180.0 到 180.0 之间，纬度需在 -90.0 到 90.0 之间。
 另外，每个对象最多只能有一个类型为 GeoPoint 的属性。
 
-{% if platform_name === "Objective-C" %}
-iOS 8.0 之后，使用定位服务之前，需要调用 `[locationManager requestWhenInUseAuthorization]` 或 `[locationManager requestAlwaysAuthorization]` 来获取用户的「使用期授权」或「永久授权」，而这两个请求授权需要在 `info.plist` 里面对应添加 `NSLocationWhenInUseUsageDescription` 或 `NSLocationAlwaysUsageDescription` 的键值对，值为开启定位服务原因的描述。SDK 内部默认使用的是「使用期授权」。
-{% endif %}
-
 ## 用户
 
 用户系统几乎是每款应用都要加入的功能，我们为此专门提供了一个 `{{ userObjectName }}` 类来方便应用使用各项用户管理的功能。
@@ -7143,32 +5442,7 @@ iOS 8.0 之后，使用定位服务之前，需要调用 `[locationManager reque
 
 用户第一次打开应用的时候，可以让用户注册一个账户。下面的代码展示了一个典型的使用用户名和密码注册的流程：
 
-{% if platform_name === "Objective-C" %}
-```objc
-// 创建实例
-LCUser *user = [LCUser user];
 
-// 等同于 [user setObject:@"Tom" forKey:@"username"]
-user.username = @"Tom";
-user.password = @"cat!@#123";
-
-// 可选
-user.email = @"tom@leancloud.rocks";
-user.mobilePhoneNumber = @"+8618200008888";
-
-// 设置其他属性的方法跟 LCObject 一样
-[user setObject:@"secret" forKey:@"gender"];
-
-[user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        // 注册成功
-        NSLog(@"注册成功。objectId：%@", user.objectId);
-    } else {
-        // 注册失败（通常是因为用户名已被使用）
-    }
-}];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 // 创建实例
@@ -7231,35 +5505,7 @@ $user->set("gender", "secret");
 $user->signUp();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-// 创建实例
-LCUser user = new LCUser();
 
-// 等同于 user.put("username", "Tom")
-user.setUsername("Tom");
-user.setPassword("cat!@#123");
-
-// 可选
-user.setEmail("tom@leancloud.rocks");
-user.setMobilePhoneNumber("+8618200008888");
-
-// 设置其他属性的方法跟 LCObject 一样
-user.put("gender", "secret");
-
-user.signUpInBackground().subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // 注册成功
-        System.out.println("注册成功。objectId：" + user.getObjectId());
-    }
-    public void onError(Throwable throwable) {
-        // 注册失败（通常是因为用户名已被使用）
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -7324,7 +5570,7 @@ if err := client.Users.ID(user.ID).Set("email", "tom@leancloud.rocks"); err != n
 ```
 {% endif %}
 {% if platform_name !== "Go" %}
-新建 `{{ userObjectName }}` 的操作应使用 `{% if platform_name === "Objective-C" %}signUpInBackground{% endif %}{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Android / Java" %}signUpInBackground{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}{% if platform_name === "Flutter" %}signUp{% endif %}{% if platform_name === ".Net" %}SignUp{% endif %}` 而不是 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}{% if platform_name === ".Net" %}Save{% endif %}`，但以后的更新操作就可以用 `{% if platform_name === "Objective-C" %}saveInBackground{% endif %}{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Android / Java" %}saveInBackground{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}{% if platform_name === ".Net" %}Save{% endif %}` 了。
+新建 `{{ userObjectName }}` 的操作应使用 `{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}{% if platform_name === "Flutter" %}signUp{% endif %}` 而不是 `{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}`，但以后的更新操作就可以用 `{% if platform_name === "JavaScript" %}save{% endif %}{% if platform_name === "Python" %}save{% endif %}{% if platform_name === "PHP" %}save{% endif %}{% if platform_name === "Swift" %}save{% endif %}{% if platform_name === "Flutter" %}save{% endif %}` 了。
 {% endif %}
 如果收到 `202` 错误码，意味着 `_User` 表里已经存在使用同一 `username` 的账号，此时应提示用户换一个用户名。除此之外，每个用户的 `email` 和 `mobilePhoneNumber` 也需要保持唯一性，否则会收到 `203` 或 `214` 错误。
 可以考虑在注册时把用户的 `username` 设为与 `email` 相同，这样用户可以直接 [用邮箱重置密码](#重置密码)。
@@ -7335,20 +5581,7 @@ if err := client.Users.ID(user.ID).Set("email", "tom@leancloud.rocks"); err != n
 
 对于移动应用来说，允许用户以手机号注册是个很常见的需求。实现该功能大致分两步，第一步是让用户提供手机号，点击「获取验证码」按钮后，该号码会收到一个六位数的验证码：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCShortMessageRequestOptions *options = [[LCShortMessageRequestOptions alloc] init];
-options.templateName = @"template_name";// 控制台配置好的模板名称
-options.signatureName = @"sign_name";     // 控制台配置好的短信签名
-[LCSMS requestShortMessageForPhoneNumber:@"186xxxxxxxx" options:options callback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        /* 请求成功 */
-    } else {
-        /* 请求失败 */
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.Cloud.requestSmsCode('+8618200008888');
@@ -7364,28 +5597,7 @@ leancloud.cloud.request_sms_code('+8618200008888')
 SMS::requestSmsCode("+8618200008888");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCSMSOption option = new LCSMSOption();
-option.setSignatureName("sign_name"); //设置短信签名名称
-LCSMS.requestSMSCodeInBackground("+8618200008888", option).subscribe(new Observer<LCNull>() {
-    @Override
-    public void onSubscribe(Disposable disposable) {
-    }
-    @Override
-    public void onNext(LCNull avNull) {
-        Log.d("TAG","Result: succeed to request SMSCode.");
-    }
-    @Override
-    public void onError(Throwable throwable) {
-        Log.d("TAG","Result: failed to request SMSCode. cause:" + throwable.getMessage()）;
-    }
-    @Override
-    public void onComplete() {
-    }
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 //templateName 是短信模版名称，signatureName 是短信签名名称。可以在控制台 > 消息 > 短信 >设置中查看。
@@ -7414,18 +5626,7 @@ if err := client.Users.RequestMobilePhoneVerify("+8618200008888"); err != nil {
 {% endif %}
 用户填入验证码后，用下面的方法完成注册：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser signUpOrLoginWithMobilePhoneNumberInBackground:@"+8618200008888" smsCode:@"123456" block:^(LCUser *user, NSError *error) {
-    if (user != nil) {
-        // 注册成功
-        NSLog(@"注册成功。objectId：%@", user.objectId);
-    } else {
-        // 验证码不正确
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.signUpOrlogInWithMobilePhone('+8618200008888', '123456').then((user) => {
@@ -7446,21 +5647,7 @@ user = leancloud.User.signup_or_login_with_mobile_phone('+8618200008888', '12345
 User::signUpOrLoginByMobilePhone("+8618200008888", "123456");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.signUpOrLoginByMobilePhoneInBackground("+8618200008888", "123456").subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // 注册成功
-        System.out.println("注册成功。objectId：" + user.getObjectId());
-    }
-    public void onError(Throwable throwable) {
-        // 验证码不正确
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.signUpOrLogIn(mobilePhoneNumber: "+8618200008888", verificationCode: "123456", completion: { (result) in
@@ -7489,7 +5676,7 @@ if err != nil {
 {% endif %}
 `username` 将与 `mobilePhoneNumber` 相同，`password` 会由云端随机生成。
 如果希望让用户指定密码，可以在客户端让用户填写手机号和密码，然后按照上一小节使用用户名和密码注册的流程，将用户填写的手机号作为 `username` 和 `mobilePhoneNumber` 的值同时提交。
-同时根据业务需求，在**云服务控制台 > 数据存储 > 用户 > 设置**勾选**未验证手机号码的用户，禁止登录**、**已验证手机号码的用户，允许以短信验证码登录**。
+同时根据业务需求，在**云服务云服务控制台 > 数据存储 > 用户 > 设置**勾选**未验证手机号码的用户，禁止登录**、**已验证手机号码的用户，允许以短信验证码登录**。
 
 #### 手机号格式
 
@@ -7501,17 +5688,7 @@ if err != nil {
 
 下面的代码用用户名和密码登录一个账户：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser logInWithUsernameInBackground:@"Tom" password:@"cat!@#123" block:^(LCUser *user, NSError *error) {
-    if (user != nil) {
-        // 登录成功
-    } else {
-        // 登录失败（可能是密码错误）
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.logIn('Tom', 'cat!@#123').then((user) => {
@@ -7532,20 +5709,7 @@ user.login(username='Tom', password='cat!@#123')
 User::logIn("Tom", "cat!@#123");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.logIn("Tom", "cat!@#123").subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // 登录成功
-    }
-    public void onError(Throwable throwable) {
-        // 登录失败（可能是密码错误）
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.logIn(username: "Tom", password: "cat!@#123") { result in
@@ -7582,17 +5746,7 @@ if err != nil {
 
 下面的代码用邮箱和密码登录一个账户：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser loginWithEmail:@"tom@leancloud.rocks" password:@"cat!@#123" block:^(LCUser *user, NSError *error) {
-    if (user != nil) {
-        // 登录成功
-    } else {
-        // 登录失败（可能是密码错误）
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.loginWithEmail('tom@leancloud.rocks', 'cat!@#123').then((user) => {
@@ -7613,20 +5767,7 @@ user.login(email='tom@leancloud.rocks', password='cat!@#123')
 User::logInWithEmail("tom@leancloud.rocks", "cat!@#123");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.loginByEmail("tom@leancloud.rocks", "cat!@#123").subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // 登录成功
-    }
-    public void onError(Throwable throwable) {
-        // 登录失败（可能是密码错误）
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.logIn(email: "tom@leancloud.rocks", password: "cat!@#123") { result in
@@ -7665,17 +5806,7 @@ fmt.Println(user)
 
 如果应用允许用户以手机号注册，那么也可以让用户以手机号配合密码或短信验证码登录。下面的代码用手机号和密码登录一个账户：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser logInWithMobilePhoneNumberInBackground:@"+8618200008888" password:@"cat!@#123" block:^(LCUser *user, NSError *error) {
-    if (user != nil) {
-        // 登录成功
-    } else {
-        // 登录失败（可能是密码错误）
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.logInWithMobilePhone('+8618200008888', 'cat!@#123').then((user) => {
@@ -7695,20 +5826,7 @@ user = leancloud.User.login_with_mobile_phone('+8618200008888', 'cat!@#123')
 User::logInWithMobilePhoneNumber("+8618200008888", "cat!@#123");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.loginByMobilePhoneNumber("+8618200008888", "cat!@#123").subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // 登录成功
-    }
-    public void onError(Throwable throwable) {
-        // 登录失败（可能是密码错误）
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.logIn(mobilePhoneNumber: "+8618200008888", password: "cat!@#123") { result in
@@ -7738,11 +5856,7 @@ try {
 
 除此之外，还可以让用户通过短信验证码登录，适用于用户忘记密码且不愿重置密码的情况。和 [通过手机号注册](#手机号注册) 的步骤类似，首先让用户填写与账户关联的手机号码，然后在用户点击「获取验证码」后调用下面的方法：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser requestLoginSmsCode:@"+8618200008888"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.requestLoginSmsCode('+8618200008888');
@@ -7758,20 +5872,7 @@ leancloud.User.request_login_sms_code('+8618200008888')
 SMS::requestSmsCode("+8618200008888");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.requestLoginSmsCodeInBackground("+8618200008888").subscribe(new Observer<LCNull>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCNull null) {
-        // 成功调用
-    }
-    public void onError(Throwable throwable) {
-        // 调用出错
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.requestLoginVerificationCode(mobilePhoneNumber: "+8618200008888") { result in
@@ -7799,17 +5900,7 @@ if err := client.Users.RequestLoginSMSCode("+8618200008888"); err != nil {
 {% endif %}
 用户填写收到的验证码后，用下面的方法完成登录：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser logInWithMobilePhoneNumberInBackground:@"+8618200008888" smsCode:@"123456" block:^(LCUser *user, NSError *error) {
-    if (user != nil) {
-        // 登录成功
-    } else {
-        // 验证码不正确
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.logInWithMobilePhoneSmsCode('+8618200008888', '123456').then((user) => {
@@ -7829,20 +5920,7 @@ user = leancloud.User.signup_or_login_with_mobile_phone('+8618200008888', '12345
 User::signUpOrLoginByMobilePhone("+8618200008888", "123456");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.signUpOrLoginByMobilePhoneInBackground("+8618200008888", "123456").subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // 登录成功
-    }
-    public void onError(Throwable throwable) {
-        // 验证码不正确
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.logIn(mobilePhoneNumber: "+8618200008888", verificationCode: "123456") { result in
@@ -7901,15 +5979,11 @@ if err != nil {
 
 ### 验证邮箱
 
-可以通过要求用户在登录或使用特定功能之前验证邮箱的方式防止恶意注册。默认情况下，当用户注册或变更邮箱后，`emailVerified` 会被设为 `false`。在应用的 **控制台 > 数据存储 > 用户 > 设置** 中，可以开启 **启用邮箱验证功能** 选项，这样当用户注册或变更邮箱时，会收到一封含有验证链接的邮件。在同一设置页面还可找到阻止未验证邮箱的用户登录的选项。
+可以通过要求用户在登录或使用特定功能之前验证邮箱的方式防止恶意注册。默认情况下，当用户注册或变更邮箱后，`emailVerified` 会被设为 `false`。在应用的 **云服务控制台 > 数据存储 > 用户 > 设置** 中，可以开启 **启用邮箱验证功能** 选项，这样当用户注册或变更邮箱时，会收到一封含有验证链接的邮件。在同一设置页面还可找到阻止未验证邮箱的用户登录的选项。
 
 如果用户忘记点击链接并且在未来某一时刻需要进行验证，可以用下面的代码发送一封新的邮件：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser requestEmailVerify:@"tom@leancloud.rocks"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.requestEmailVerify('tom@leancloud.rocks');
@@ -7925,20 +5999,7 @@ leancloud.User.request_email_verify('tom@leancloud.rocks')
 User::requestEmailVerify("tom@leancloud.rocks");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.requestEmailVerifyInBackground("tom@leancloud.rocks").subscribe(new Observer<LCNull>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCNull null) {
-        // 成功调用
-    }
-    public void onError(Throwable throwable) {
-        // 调用出错
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.requestVerificationMail(email: "tom@leancloud.rocks") { result in
@@ -7973,17 +6034,7 @@ if err := client.Users.RequestEmailVerify("tom@leancloud.rocks"); err != nil {
 
 可以用下面的代码发送一条新的验证码：（如果相应用户的 `mobilePhoneVerified` 已经为 `true`，那么验证短信不会发送）
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser requestMobilePhoneVerify:@"+8618200008888" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
-    if(succeeded){
-        //请求成功
-    }else{
-        //请求失败
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.requestMobilePhoneVerify('+8618200008888');
@@ -7999,20 +6050,7 @@ leancloud.User.request_mobile_phone_verify('+8618200008888')
 User::requestMobilePhoneVerify("+8618200008888");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.requestMobilePhoneVerifyInBackground("+8618200008888").subscribe(new Observer<LCNull>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCNull null) {
-        // 成功调用
-    }
-    public void onError(Throwable throwable) {
-        // 调用出错
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.requestVerificationCode(mobilePhoneNumber: "+8618200008888") { result in
@@ -8040,17 +6078,7 @@ if err := client.Users.RequestMobilePhoneVerify("+8618200008888"); err != nil {
 {% endif %}
 用户填写验证码后，调用下面的方法来完成验证。`mobilePhoneVerified` 将变为 `true`：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser verifyMobilePhone:@"123456" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
-    if(succeeded){
-        // mobilePhoneVerified 将变为 true
-    }else{
-        // 验证码不正确
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.verifyMobilePhone('123456').then(() => {
@@ -8070,20 +6098,7 @@ leancloud.User.verify_mobile_phone_number('123456')
 User::verifyMobilePhone("123456");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.verifyMobilePhoneInBackground("123456").subscribe(new Observer<LCNull>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCNull null) {
-        // mobilePhoneVerified 将变为 true
-    }
-    public void onError(Throwable throwable) {
-        // 验证码不正确
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.verifyMobilePhoneNumber(mobilePhoneNumber: "+8618200008888", verificationCode: "123456") { result in
@@ -8123,26 +6138,7 @@ AV.User.changePhoneNumber('+8618200008888', '123456').then(() => {
 });
 ```
 {% endif %}
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser requestVerificationCodeForUpdatingPhoneNumber:@"+8618200008888" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        // 请求成功
-    } else {
-        // 请求失败
-    }
-}];
 
-[LCUser verifyCodeToUpdatePhoneNumber:@"+8618200008888" code:@"123456" withBlock:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        // mobilePhoneNumber 变为 +8618200008888
-        // mobilePhoneVerified 变为 true
-    } else {
-        // 验证码不正确
-    }
-}];
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.requestVerificationCode(forUpdatingMobilePhoneNumber: "+8618200008888") { result in
@@ -8167,33 +6163,7 @@ _ = LCUser.verifyVerificationCode("123456", toUpdateMobilePhoneNumber:"+86182000
 }
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.requestSMSCodeForUpdatingPhoneNumberInBackground("+8618200008888").subscribe(new Observer<LCNull>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCNull null) {
-        // 成功调用
-    }
-    public void onError(Throwable throwable) {
-        // 调用出错
-    }
-    public void onComplete() {}
-});
 
-LCUser.verifySMSCodeForUpdatingPhoneNumberInBackground("123456", "+8618200008888").subscribe(new Observer<LCNull>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCNull null) {
-        // 更新本地数据
-        LCUser currentUser = LCUser.getCurrentUser();
-        currentUser.setMobilePhoneNumber("+8618200008888");
-    }
-    public void onError(Throwable throwable) {
-        // 验证码不正确
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
 {% if platform_name === "Flutter" %}
 ```dart
 await LCUser.requestSMSCodeForUpdatingPhoneNumber('+8618200008888');
@@ -8240,16 +6210,7 @@ if err := client.Users.ChangePhoneNumber("123456", "+8618200008888"); err != nil
 
 用户登录后，SDK 会自动将会话信息存储到客户端，这样用户在下次打开客户端时无需再次登录。下面的代码检查是否有已经登录的用户：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCUser *currentUser = [LCUser currentUser];
-if (currentUser != nil) {
-    // 跳到首页
-} else {
-    // 显示注册或登录页面
-}
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 if let user = LCApplication.default.currentUser {
@@ -8290,16 +6251,7 @@ if ($currentUser != null) {
 }
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser currentUser = LCUser.getCurrentUser();
-if (currentUser != null) {
-    // 跳到首页
-} else {
-    // 显示注册或登录页面
-}
-```
-{% endif %}
+
 {% if platform_name === "Flutter" %}
 ```dart
 LCUser currentUser = await LCUser.getCurrent();
@@ -8318,14 +6270,7 @@ if (currentUser != null) {
 {% endif %}
 会话信息会长期有效，直到用户主动登出：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser logOut];
 
-// currentUser 变为 nil
-LCUser *currentUser = [LCUser currentUser];
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 LCUser.logOut()
@@ -8357,14 +6302,7 @@ User::logOut();
 $currentUser = User::getCurrentUser();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.logOut();
 
-// currentUser 变为 null
-LCUser currentUser = LCUser.getCurrentUser();
-```
-{% endif %}
 {% if platform_name === "Flutter" %}
 ```dart
 await LCUser.logout();
@@ -8381,23 +6319,13 @@ LCUser currentUser = await LCUser.getCurrent();
 
 以下是一些应用可能需要用到 session token 的场景：
 
-- 应用根据以前缓存的 session token 登录（可以用 `{% if platform_name === "Objective-C" %}[LCUser currentUser].sessionToken{% endif %}{% if platform_name === "JavaScript" %}AV.User.current().getSessionToken(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current().get_session_token(){% endif %}{% if platform_name === "PHP" %}User::getCurrentSessionToken(){% endif %}{% if platform_name === "Android / Java" %}LCUser.getCurrentUser().getSessionToken(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser?.sessionToken?.value{% endif %}` 获取到当前用户的 session token，在服务端等受信任的环境下，可以通过 Master Key 读取任意用户的 `sessionToken` 字段以获取 session token）。
+- 应用根据以前缓存的 session token 登录（可以用 `{% if platform_name === "JavaScript" %}AV.User.current().getSessionToken(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current().get_session_token(){% endif %}{% if platform_name === "PHP" %}User::getCurrentSessionToken(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser?.sessionToken?.value{% endif %}` 获取到当前用户的 session token，在服务端等受信任的环境下，可以通过 Master Key 读取任意用户的 `sessionToken` 字段以获取 session token）。
 - 应用内的某个 WebView 需要知道当前登录的用户。
 - 在服务端登录后，返回 session token 给客户端，客户端根据返回的 session token 登录。
 
 下面的代码使用 session token 登录一个用户（云端会验证 session token 是否有效）：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser becomeWithSessionTokenInBackground:@"anmlwi96s381m6ca7o7266pzf" block:^(LCUser * _Nullable user, NSError * _Nullable error) {
-    if (user != nil) {
-        // 登录成功
-    } else {
-        // session token 无效
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.logIn(sessionToken: "anmlwi96s381m6ca7o7266pzf") { (result) in
@@ -8431,21 +6359,7 @@ user = leancloud.User.become('anmlwi96s381m6ca7o7266pzf')
 User::become("anmlwi96s381m6ca7o7266pzf");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.becomeWithSessionTokenInBackground("anmlwi96s381m6ca7o7266pzf").subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // 修改 currentUser
-        LCUser.changeCurrentUser(user, true);
-    }
-    public void onError(Throwable throwable) {
-        // session token 无效
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Flutter" %}
 ```dart
 await LCUser.becomeWithSessionToken('anmlwi96s381m6ca7o7266pzf');
@@ -8466,19 +6380,7 @@ if err != nil {
 
 下面的代码检查 session token 是否有效：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCUser *currentUser = [LCUser currentUser];
-NSString *token = currentUser.sessionToken;
-[currentUser isAuthenticatedWithSessionToken:token callback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        // session token 有效
-    } else {
-        // session token 无效
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 if let sessionToken = LCApplication.default.currentUser?.sessionToken?.value {
@@ -8525,16 +6427,7 @@ if ($authenticated) {
 }
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-boolean authenticated = LCUser.getCurrentUser().isAuthenticated();
-if (authenticated) {
-    // session token 有效
-} else {
-    // session token 无效
-}
-```
-{% endif %}
+
 {% if platform_name === "Flutter" %}
 ```dart
 LCUser currentUser = await LCUser.getCurrent();
@@ -8565,11 +6458,7 @@ if (isAuthenticated) {
 
 首先让用户填写注册账户时使用的邮箱，然后调用下面的方法：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser requestPasswordResetForEmailInBackground:@"tom@leancloud.rocks"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.requestPasswordReset('tom@leancloud.rocks');
@@ -8585,20 +6474,7 @@ leancloud.User.request_password_reset('tom@leancloud.rocks')
 User::requestPasswordReset("tom@leancloud.rocks");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.requestPasswordResetInBackground("tom@leancloud.rocks").subscribe(new Observer<LCNull>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCNull null) {
-        // 成功调用
-    }
-    public void onError(Throwable throwable) {
-        // 调用出错
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.requestPasswordReset(email: "tom@leancloud.rocks") { (result) in
@@ -8626,7 +6502,7 @@ if err := client.Users.RequestPasswordReset("tom@leancloud.rocks"); err != nil {
 {% endif %}
 上面的代码会查询 `_User` 表中是否有对象的 `email` 属性与前面提供的邮箱匹配。如果有的话，则向该邮箱发送一封密码重置邮件。之前提到过，应用可以让 `username` 与 `email` 保持一致，也可以单独收集用户的邮箱并将其存为 `email`。
 
-密码重置邮件的内容可在应用的 **云服务控制台 > 数据存储 > 用户 > 邮件模版** 中自定义。更多关于自定义邮件模板和验证链接的内容，请参考 [自定义邮件验证和重设密码页面](custom-reset-verify-page.html)。
+密码重置邮件的内容可在应用的 **云服务云服务控制台 > 数据存储 > 用户 > 邮件模版** 中自定义。更多关于自定义邮件模板和验证链接的内容，请参考《自定义邮件验证和重设密码页面》。
 
 除此之外，还可以用手机号重置密码：
 
@@ -8636,11 +6512,7 @@ if err := client.Users.RequestPasswordReset("tom@leancloud.rocks"); err != nil {
 
 下面的代码向用户发送含有验证码的短信：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser requestPasswordResetWithPhoneNumber:@"+8618200008888"];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.requestPasswordResetBySmsCode('+8618200008888');
@@ -8656,20 +6528,7 @@ leancloud.User.request_password_reset_by_sms_code('+8618200008888')
 User::requestPasswordResetBySmsCode("+8618200008888");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.requestPasswordResetBySmsCodeInBackground("+8618200008888").subscribe(new Observer<LCNull>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCNull null) {
-        // 成功调用
-    }
-    public void onError(Throwable throwable) {
-        // 调用出错
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.requestPasswordReset(mobilePhoneNumber: "+8618200008888") { (result) in
@@ -8697,21 +6556,11 @@ if err := client.Users.RequestPasswordResetBySmsCode("+8618200008888"); err != n
 {% endif %}
 上面的代码会查询 `_User` 表中是否有对象的 `mobilePhoneNumber` 属性与前面提供的手机号匹配。如果有的话，则向该号码发送验证码短信。
 
-可以在 **云服务控制台 > 数据存储 > 用户 > 设置** 中设置只有在 `mobilePhoneVerified` 为 `true` 的情况下才能用手机号重置密码。
+可以在 **云服务云服务控制台 > 数据存储 > 用户 > 设置** 中设置只有在 `mobilePhoneVerified` 为 `true` 的情况下才能用手机号重置密码。
 
 用户输入验证码和新密码后，用下面的代码完成密码重置：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser resetPasswordWithSmsCode:@"123456" newPassword:@"cat!@#123" block:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        // 密码重置成功
-    } else {
-        // 验证码不正确
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.resetPasswordBySmsCode('123456', 'cat!@#123').then(() => {
@@ -8731,20 +6580,7 @@ leancloud.User.reset_password_by_sms_code('123456', 'cat!@#123')
 User::resetPasswordBySmsCode("123456", "cat!@#123");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.resetPasswordBySmsCodeInBackground("123456", "cat!@#123").subscribe(new Observer<LCNull>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCNull null) {
-        // 密码重置成功
-    }
-    public void onError(Throwable throwable) {
-        // 验证码不正确
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.resetPassword(mobilePhoneNumber: "+8618200008888", verificationCode: "123456", newPassword: "cat!@#123") { result in
@@ -8777,11 +6613,7 @@ if err := client.Users.ResetPasswordBySmsCode("+8618200008888", "123456", "cat!@
 
 可以直接构建一个针对 `_User` 的 `{{ baseQueryClassName }}` 来查询用户：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCQuery *userQuery = [LCUser query];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const userQuery = new AV.Query('_User');
@@ -8797,11 +6629,7 @@ user_query = leancloud.Query('_leancloud.User')
 $userQuery = new Query("_User");
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCQuery<LCUser> userQuery = LCUser.getQuery();
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 let userQuery = LCQuery(className: "_User")
@@ -8821,28 +6649,13 @@ userQuery := client.Users.NewUserQuery()
 
 为了安全起见，**新创建的应用的 `_User` 表默认关闭了 `find` 权限**，这样每位用户登录后只能查询到自己在 `_User` 表中的数据，无法查询其他用户的数据。如果需要让其查询其他用户的数据，建议单独创建一张表来保存这类数据，并开放这张表的 `find` 查询权限。除此之外，还可以在云引擎里封装用户查询相关的方法。
 
-可以参见 [用户对象的安全](#用户对象的安全) 来了解 `_User` 表的一些限制，还可以阅读 [数据和安全](data_security.html) 来了解更多 class 级权限设置的方法。
+可以参见 [用户对象的安全](#用户对象的安全) 来了解 `_User` 表的一些限制，还可以阅读《数据和安全》来了解更多 class 级权限设置的方法。
 
 ### 关联用户对象
 
 关联 `{{ userObjectName }}` 的方法和 `{{ baseObjectName }}` 是一样的。下面的代码为一名作者保存了一本书，然后获取所有该作者写的书：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCObject *book = [LCObject objectWithClassName:@"Book"];
-LCUser *author = [LCUser currentUser];
-[book setObject:@"我的第五本书" forKey:@"title"];
-[book setObject:author forKey:@"author"];
-[book saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-    // 获取所有该作者写的书
-    LCQuery *query = [LCQuery queryWithClassName:@"Book"];
-    [query whereKey:@"author" equalTo:author];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *books, NSError *error) {
-        // books 是包含同一作者所有 Book 对象的数组
-    }];
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const Book = AV.Object.extend('Book');
@@ -8889,32 +6702,7 @@ $query->equalTo("author", $author);
 $books = $query->find();
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCObject book = new LCObject("Book");
-LCUser author = LCUser.getCurrentUser();
-book.put("title", "我的第五本书");
-book.put("author", author);
-book.saveInBackground().subscribe(new Observer<LCObject>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCObject book) {
-        // 获取所有该作者写的书
-        LCQuery<LCObject> query = new LCQuery<>("Book");
-        query.whereEqualTo("author", author);
-        query.findInBackground().subscribe(new Observer<List<LCObject>>() {
-            public void onSubscribe(Disposable disposable) {}
-            public void onNext(List<LCObject> books) {
-                // books 是包含同一作者所有 Book 对象的数组
-            }
-            public void onError(Throwable throwable) {}
-            public void onComplete() {}
-        });
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 do {
@@ -8970,47 +6758,13 @@ List<LCObject> books = await query.find();
 {% endif %}
 ### 用户对象的安全
 
-`{{ userObjectName }}` 类自带安全保障，只有通过 `{%if platform_name === "Go" %}LogIn{% endif %}{% if platform_name === "Objective-C" %}logInWithUsername{% endif %}{% if platform_name === "JavaScript" %}logIn{% endif %}{% if platform_name === "Python" %}login{% endif %}{% if platform_name === "PHP" %}logIn{% endif %}{% if platform_name === "Android / Java" %}logIn{% endif %}{% if platform_name === "Swift" %}logIn{% endif %}` 或者 `{% if platform_name === "Objective-C" %}signUpInBackground{% endif %}{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Android / Java" %}signUpInBackground{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}{%if platform_name === "Go" %}SignUp{% endif %}` 这种经过鉴权的方法获取到的 `{{ userObjectName }}` 才能进行保存或删除相关的操作，保证每个用户只能修改自己的数据。
+`{{ userObjectName }}` 类自带安全保障，只有通过 `{%if platform_name === "Go" %}LogIn{% endif %}{% if platform_name === "JavaScript" %}logIn{% endif %}{% if platform_name === "Python" %}login{% endif %}{% if platform_name === "PHP" %}logIn{% endif %}{% if platform_name === "Swift" %}logIn{% endif %}` 或者 `{% if platform_name === "JavaScript" %}signUp{% endif %}{% if platform_name === "Python" %}sign_up{% endif %}{% if platform_name === "PHP" %}signUp{% endif %}{% if platform_name === "Swift" %}signUp{% endif %}{%if platform_name === "Go" %}SignUp{% endif %}` 这种经过鉴权的方法获取到的 `{{ userObjectName }}` 才能进行保存或删除相关的操作，保证每个用户只能修改自己的数据。
 
 这样设计是因为 `{{ userObjectName }}` 中存储的大多数数据都比较敏感，包括手机号、社交网络账号等等。为了用户的隐私安全，即使是应用的开发者也应避免直接接触这些数据。
 
 下面的代码展现了这种安全措施：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser logInWithUsernameInBackground:@"Tom" password:@"cat!@#123" block:^(LCUser *user, NSError *error) {
-    if (user != nil) {
-        // 试图修改用户名
-        [user setObject:@"Jerry" forKey:@"username")];
-        // 密码已被加密，这样做会获取到空字符串
-        NSString *password = user[@"password"];
-        // 保存更改
-        [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (succeeded) {
-                // 可以执行，因为用户已鉴权
 
-                // 绕过鉴权直接获取用户
-                LCQuery *query = [LCQuery queryWithClassName:@"_User"];
-                [query getObjectInBackgroundWithId:user.objectId block:^(LCObject *unauthenticatedUser, NSError *error) {
-                    [unauthenticatedUser setObject:@"Toodle" forKey:@"username"];
-                    [unauthenticatedUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                        if (succeeded) {
-                            // 无法执行，因为用户未鉴权
-                        } else {
-                            // 操作失败
-                        }
-                    }];
-                }];
-            } else {
-                // 错误处理
-            }
-        }];
-    } else {
-        // 错误处理
-    }
-}];
-```
-{% endif %}
 {% if platform_name === "JavaScript" %}
 ```js
 const user = AV.User.logIn('Tom', 'cat!@#123').then((user) => {
@@ -9074,36 +6828,7 @@ $unauthenticatedUser->set("username", "Toodle");
 $unauthenticatedUser->save()
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.logIn("Tom", "cat!@#123").subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // 试图修改用户名
-        user.put("username", "Jerry");
-        // 密码已被加密，这样做会获取到空字符串
-        String password = user.getString("password");
-        // 可以执行，因为用户已鉴权
-        user.save();
 
-        // 绕过鉴权直接获取用户
-        LCQuery<LCUser> query = new LCQuery<>("_User");
-        query.getInBackground(user.getObjectId()).subscribe(new Observer<LCUser>() {
-            public void onSubscribe(Disposable disposable) {}
-            public void onNext(LCUser unauthenticatedUser) {
-                unauthenticatedUser.put("username", "Toodle");
-                // 会出错，因为用户未鉴权
-                unauthenticatedUser.save();
-            }
-            public void onError(Throwable throwable) {}
-            public void onComplete() {}
-        });
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
 {% if platform_name === "Swift" %}
 ```swift
 _ = LCUser.logIn(username: "Tom", password: "cat!@#123") { result in
@@ -9196,46 +6921,21 @@ if err := client.User(unauthenticatedUser).Set("username", "Toodle"); err != nil
 }
 ```
 {% endif %}
-通过 `{% if platform_name === "Objective-C" %}[LCUser currentUser]{% endif %}{% if platform_name === "JavaScript" %}AV.User.current(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current(){% endif %}{% if platform_name === "PHP" %}User::getCurrentUser(){% endif %}{% if platform_name === "Android / Java" %}LCUser.getCurrentUser(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser{% endif %}{% if platform_name === "Flutter" %}LCUser.getCurrent(){% endif %}{% if platform_name === ".Net" %}LCUser.GetCurrent(){% endif %}` 获取的 `{{ userObjectName }}` 总是经过鉴权的。
+通过 `{% if platform_name === "JavaScript" %}AV.User.current(){% endif %}{% if platform_name === "Python" %}leancloud.User.get_current(){% endif %}{% if platform_name === "PHP" %}User::getCurrentUser(){% endif %}{% if platform_name === "Swift" %}LCApplication.default.currentUser{% endif %}{% if platform_name === "Flutter" %}LCUser.getCurrent(){% endif %}` 获取的 `{{ userObjectName }}` 总是经过鉴权的。
 
-要查看一个 `{{ userObjectName }}` 是否经过鉴权，可以调用 `{% if platform_name === "Objective-C" %}isAuthenticatedWithSessionToken{% endif %}{% if platform_name === "JavaScript" %}isAuthenticated{% endif %}{% if platform_name === "Python" %}is_authenticated{% endif %}{% if platform_name === "PHP" %}isAuthenticated{% endif %}{% if platform_name === "Android / Java" %}isAuthenticated{% endif %}{% if platform_name === "Swift" %}{# TODO #}{% endif %}` 方法。通过经过鉴权的方法获取到的 `{{ userObjectName }}` 无需进行该检查。
+要查看一个 `{{ userObjectName }}` 是否经过鉴权，可以调用 `{% if platform_name === "JavaScript" %}isAuthenticated{% endif %}{% if platform_name === "Python" %}is_authenticated{% endif %}{% if platform_name === "PHP" %}isAuthenticated{% endif %}{% if platform_name === "Swift" %}{# TODO #}{% endif %}` 方法。通过经过鉴权的方法获取到的 `{{ userObjectName }}` 无需进行该检查。
 
 注意，用户的密码只能在注册的时候进行设置，日后如需修改，只能通过 [重置密码](#重置密码) 的方式进行。密码不会被缓存在本地。如果尝试直接获取已登录用户的密码，会得到 `null`。
 
 ### 其他对象的安全
 
-对于给定的一个对象，可以指定哪些用户有权限读取或修改它。为实现该功能，每个对象都有一个由 `{% if platform_name === "Objective-C" %}AVACL{% endif %}{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Android / Java" %}LCACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}` 对象组成的访问控制表。请参阅 [ACL 权限管理开发指南](acl-guide.html)。
+对于给定的一个对象，可以指定哪些用户有权限读取或修改它。为实现该功能，每个对象都有一个由 `{% if platform_name === "JavaScript" %}AV.ACL{% endif %}{% if platform_name === "Python" %}leancloud.ACL{% endif %}{% if platform_name === "PHP" %}ACL{% endif %}{% if platform_name === "Swift" %}LCACL{% endif %}` 对象组成的访问控制表。请参阅《ACL 权限管理开发指南》。
 
 ### 第三方账户登录
 
 云服务支持应用层直接使用第三方社交平台（例如微信、微博、QQ 等）的账户信息来创建自己的账户体系并完成登录，也允许将既有账户与第三方账户绑定起来，这样终端用户后续可以直接用第三方账户信息来便捷登录。
 
 例如以下的代码展示了终端用户使用微信登录的处理流程：
-
-{% if platform_name === "Objective-C" %}
-```objc
-NSDictionary *thirdPartyData = @{
-                            // 必须
-                            @"openid":@"OPENID",
-                            @"access_token":@"ACCESS_TOKEN",
-                            @"expires_in":@7200,
-
-                            // 可选
-                            @"refresh_token":@"REFRESH_TOKEN",
-                            @"scope":@"SCOPE",
-                            };
-LCUser *user = [LCUser user];
-LCUserAuthDataLoginOption *option = [LCUserAuthDataLoginOption new];
-option.platform = LeanCloudSocialPlatformWeiXin;
-[user loginWithAuthData:thirdPartyData platformId:LeanCloudSocialPlatformWeiXin options:option callback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        NSLog(@"登录成功");
-    }else{
-        NSLog(@"登录失败：%@",error.localizedFailureReason);
-    }
-}];
-```
-{% endif %}
 
 {% if platform_name === "JavaScript" %}
 ```js
@@ -9263,31 +6963,6 @@ AV.User.loginWithAuthData(thirdPartyData, 'weixin').then((user) => {
 
 {% if platform_name === "PHP" %}
 {# TODO #}
-{% endif %}
-
-{% if platform_name === "Android / Java" %}
-```java
-Map<String, Object> thirdPartyData = new HashMap<String, Object>();
-// 必须
-thirdPartyData.put("expires_in", 7200);
-thirdPartyData.put("openid", "OPENID");
-thirdPartyData.put("access_token", "ACCESS_TOKEN");
-//可选
-thirdPartyData.put("refresh_token", "REFRESH_TOKEN");
-thirdPartyData.put("scope", "SCOPE");
-LCUser.loginWithAuthData(thirdPartyData, "weixin").subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {
-    }
-    public void onNext(LCUser avUser) {
-       System.out.println("成功登录");
-    }
-    public void onError(Throwable throwable) {
-       System.out.println("尝试使用第三方账号登录，发生错误。");
-    }
-    public void onComplete() {
-    }
-});
-```
 {% endif %}
 
 {% if platform_name === "Swift" %}
@@ -9405,28 +7080,6 @@ Team ID 用于获取 `access_token`。登录 Apple 开发者平台，在右上�
 ##### 使用 Apple Sign In 登录云服务
 
 在控制台填写完成所有信息后，使用以下代码登录
-
-{% endif %}
-
-{% if platform_name === "Objective-C" %}
-```objc
-NSDictionary *appleAuthData = @{
-                            // 必须
-                            @"uid":@"USER IDENTIFIER",
-                            // 可选
-                            @"identity_token":@"IDENTITY TOKEN",
-                            @"code":@"AUTHORIZATION CODE",
-                            };
-LCUser *user = [LCUser user];
-[user loginWithAuthData:appleAuthData platformId:"lc_apple" options:nil callback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        NSLog(@"登录成功");
-    }else{
-        NSLog(@"登录失败：%@",error.localizedFailureReason);
-    }
-}];
-
-```
 
 {% endif %}
 
@@ -9553,17 +7206,7 @@ LCUser currentUser = await LCUser.loginWithAuthData(appleData, 'lc_apple');
 
 例如，下面的代码可以关联微信账户：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[user associateWithAuthData:weixinData platformId:LeanCloudSocialPlatformWeiXin options:nil callback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        NSLog(@"成功");
-    } else{
-        NSLog(@"失败：%@",error.localizedFailureReason);
-    }
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 user.associateWithAuthData(weixinData, 'weixin').then(function(user) {
@@ -9583,26 +7226,7 @@ user.link_with("weixin", weixin_data)
 $user->linkWith("weixin", $weixinData);
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-avUser.associateWithAuthData(weixinData, "weixin").subscribe(new Observer<LCUser>() {
-    @Override
-    public void onSubscribe(Disposable d) {
-    }
-    @Override
-    public void onNext(LCUser avUser) {
-        System.out.println("绑定成功");
-    }
-    @Override
-    public void onError(Throwable e) {
-        System.out.println("绑定失败：" + e.getMessage());
-    }
-    @Override
-    public void onComplete() {
-    }
-});
-```
-{% endif %}
+
 {% if platform_name === "Swift" %}
 ```swift
 currentUser.associate(authData: weixinData, platform: .weixin) { (result) in
@@ -9631,18 +7255,6 @@ await currentUser.associateAuthData(weixinData, 'weixin');
 
 例如，下面的代码可以解除用户和微信账户的关联：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[user disassociateWithPlatform:LeanCloudSocialPlatformWeiXin callback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        NSLog(@"成功");
-    } else{
-        NSLog(@"失败：%@",error.localizedFailureReason);
-    }
-}];
-```
-{% endif %}
-
 {% if platform_name === "JavaScript" %}
 ```js
 user.dissociateAuthData('weixin').then((s) => {
@@ -9662,28 +7274,6 @@ user.unlink_from("weixin")
 {% if platform_name === "PHP" %}
 ```php
 $user->unlinkWith("weixin");
-```
-{% endif %}
-
-{% if platform_name === "Android / Java" %}
-```java
-LCUser avUser = LCUser.currentUser();
-avUser.dissociateWithAuthData("weixin").subscribe(new Observer<LCUser>() {
-    @Override
-    public void onSubscribe(Disposable d) {
-    }
-    @Override
-    public void onNext(LCUser avUser) {
-        System.out.println("解绑成功");
-    }
-    @Override
-    public void onError(Throwable e) {
-        System.out.println("解绑失败：" + e.getMessage());
-    }
-    @Override
-    public void onComplete() {
-    }
-});
 ```
 {% endif %}
 
@@ -9707,50 +7297,11 @@ await currentUser.disassociateWithAuthData('weixin');
 ```
 {% endif %}
 
-
-
 #### 扩展：第三方登录时补充完整的用户信息
 
 有些产品，新用户在使用第三方账号授权拿到相关信息后，仍然需要补充设置用户名、手机号、密码等重要信息后，才被允许登录成功。
 
 这时要使用 `loginWithauthData` 登录接口的 `failOnNotExist` 参数并将其设置为 `true`。服务端会判断是否已存在能匹配上的 `authData`，如果不存在则会返回 `211` 错误码和 `Could not find user` 报错信息。开发者根据这个 `211` 错误码，跳转到要求输入用户名、密码、手机号等信息的页面，实例化一个 `{{ userObjectName }}` 对象，保存上述补充数据，再次调用 `loginWithauthData` 接口进行登录，并 **不再传入 `failOnNotExist` 参数**。示例代码如下：
-
-{% if platform_name === "Objective-C" %}
-```objc
-NSDictionary *thirdPartyData = @{
-                            @"access_token":@"ACCESS_TOKEN",
-                            @"expires_in":@7200,
-                            @"refresh_token":@"REFRESH_TOKEN",
-                            @"openid":@"OPENID",
-                            @"scope":@"SCOPE",
-                            };
-LCUser *user = [LCUser user];
-LCUserAuthDataLoginOption *option = [LCUserAuthDataLoginOption new];
-option.platform = LeanCloudSocialPlatformWeiXin;
-option.failOnNotExist = true;
-[user loginWithAuthData:thirdPartyData platformId:LeanCloudSocialPlatformWeiXin options:option callback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-        // 你的逻辑
-    } else if ([error.domain isEqualToString:kLeanCloudErrorDomain] && error.code == 211) {
-        // 不存在 thirdPartyData 的 LCUser 的实例，跳转到输入用户名、密码、手机号等业务页面
-    }
-}];
-
-// 跳转到输入用户名、密码、手机号等业务页面之后
-LCUser *user = [LCUser user];
-user.username = @"Tom";
-user.mobilePhoneNumber = @"+8618200008888";
-LCUserAuthDataLoginOption *option = [LCUserAuthDataLoginOption new];
-option.platform = LeanCloudSocialPlatformWeiXin;
-[user loginWithAuthData:thirdPartyData platformId:LeanCloudSocialPlatformWeiXin options:option callback:^(BOOL succeeded, NSError * _Nullable error) {
-        if (succeeded) {
-            NSLog(@"登录成功");
-    }else{
-            NSLog(@"登录失败：%@",error.localizedFailureReason);
-    }
-}];
-```
-{% endif %}
 
 {% if platform_name === "JavaScript" %}
 ```js
@@ -9819,62 +7370,6 @@ user.logIn(authData: thirdPartyData, platform: .weixin, options: [.failOnNotExis
 ```
 {% endif %}
 
-{% if platform_name === "Android / Java" %}
-```java
-Map<String, Object> thirdPartyData = new HashMap<String, Object>();
-thirdPartyData.put("expires_in", 7200);
-thirdPartyData.put("openid", "OPENID");
-thirdPartyData.put("access_token", "ACCESS_TOKEN");
-thirdPartyData.put("refresh_token", "REFRESH_TOKEN");
-thirdPartyData.put("scope", "SCOPE");
-Boolean failOnNotExist = true;
-LCUser user = new LCUser();
-user.loginWithAuthData(thirdPartyData, "weixin", failOnNotExist).subscribe(new Observer<LCUser>() {
-    @Override
-    public void onSubscribe(Disposable d) {
-    }
-    @Override
-    public void onNext(LCUser avUser) {
-        System.out.println("存在匹配的用户，登录成功");
-    }
-    @Override
-    public void onError(Throwable e) {
-        LCException avException = new LCException(e);
-        int code = avException.getCode();
-        if (code == 211){
-            // 跳转到输入用户名、密码、手机号等业务页面
-        } else {
-            System.out.println("发生错误:" + e.getMessage());
-        }
-    }
-    @Override
-    public void onComplete() {
-    }
-});
-
-// 跳转到输入用户名、密码、手机号等业务页面之后
-LCUser avUser = new LCUser();
-avUser.setUsername("Tom");
-avUser.setMobilePhoneNumber("+8618200008888");
-avUser.loginWithAuthData(thirdPartyData, "weixin").subscribe(new Observer<LCUser>() {
-    @Override
-    public void onSubscribe(Disposable d) {
-    }
-    @Override
-    public void onNext(LCUser avUser) {
-        System.out.println("登录成功");
-    }
-    @Override
-    public void onError(Throwable e) {
-        System.out.println("登录失败：" + e.getMessage());
-    }
-    @Override
-    public void onComplete() {
-    }
-});
-```
-{% endif %}
-
 {% if platform_name === "Flutter" %}
 ```dart
 try {
@@ -9916,8 +7411,6 @@ try {
 ```
 {% endif %}
 
-
-
 #### 扩展：接入 UnionID 体系，打通不同子产品的账号系统
 
 随着第三方平台的账户体系变得日渐复杂，它们的第三方鉴权信息出现了一些较大的变化。下面我们以最典型的微信开放平台为例来进行说明。
@@ -9956,30 +7449,6 @@ try {
 ```
 
 现在，用户 A 在「云服务通讯」中通过微信登录，其调用请求为：
-
-{% if platform_name === "Objective-C" %}
-```objc
-NSDictionary *thirdPartyData = @{
-                            @"access_token":@"officetoken",
-                            @"expires_in":@1384686496,
-                            @"uid":@"officeopenid",
-                            @"scope":@"SCOPE",
-                            @"unionid":@"unionid4a" // 新增属性
-                            };
-LCUser *currentuser = [LCUser user];
-LCUserAuthDataLoginOption *option = [LCUserAuthDataLoginOption new];
-option.platform = @"weixin";   // 这里指定 UnionIdPlatform，使用「weixin」来指代微信平台。
-option.unionId = thirdPartyData[@"unionid"];
-option.isMainAccount = true;
-[currentuser loginWithAuthData:thirdPartyData platformId:@"wxleanoffice" options:option callback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-            NSLog(@"登录成功");
-        }else{
-            NSLog(@"登录失败：%@",error.localizedFailureReason);
-        }
-}];
-```
-{% endif %}
 
 {% if platform_name === "JavaScript" %}
 ```js
@@ -10032,35 +7501,6 @@ user.logIn(
 ```
 {% endif %}
 
-{% if platform_name === "Android / Java" %}
-```java
-Map<String, Object> thirdPartyData = new HashMap<String, Object>();
-thirdPartyData.put("expires_in", 1384686496);
-thirdPartyData.put("uid", "officeopenid");
-thirdPartyData.put("access_token", "officetoken");
-thirdPartyData.put("scope", "SCOPE");
-LCUser.loginWithAuthData(thirdPartyData, "wxleanoffice",
-   "unionid4a", "weixin", true)   // 新增参数，分别表示 uniondId，unionIdPlatform，asMainAccount
-                                  // 对于 unionIdPlatform，这里使用「weixin」来指代微信平台。
-   .subscribe(new Observer<LCUser>() {
-    @Override
-    public void onSubscribe(Disposable d) {
-    }
-    @Override
-    public void onNext(LCUser avUser) {
-        System.out.println("登录成功");
-    }
-    @Override
-    public void onError(Throwable e) {
-        System.out.println("登录失败：" + e.getMessage());
-    }
-    @Override
-    public void onComplete() {
-    }
-});
-```
-{% endif %}
-
 {% if platform_name === "Flutter" %}
 ```dart
 Map<String, dynamic> thirdPartyData = {
@@ -10082,8 +7522,6 @@ LCUser currentUser = await LCUser.loginWithAuthDataAndUnionId(
     option: option);
 ```
 {% endif %}
-
-
 
 > 注意代码中将微信传回来的 openid 属性改为了 uid，这是因为云端要求对于自定义的 platform，只能使用 uid 这样的属性名，才能保证自动建立 `authData.<PLATFORM>.uid` 的唯一索引，具体可以参考《数据存储 REST API 使用详解》的《连接用户账户和第三方平台》。
 
@@ -10112,30 +7550,6 @@ LCUser currentUser = await LCUser.loginWithAuthDataAndUnionId(
 
 
 接下来，用户 A 继续在「云服务技术支持」中进行微信登录，其登录逻辑为：
-
-{% if platform_name === "Objective-C" %}
-```objc
-NSDictionary *thirdPartyData = @{
-                            @"access_token":@"supporttoken",
-                            @"expires_in":@1384686496,
-                            @"uid":@"supportopenid",
-                            @"scope":@"SCOPE",
-                            @"unionid":@"unionid4a"
-                            };
-LCUser *currentuser = [LCUser user];
-LCUserAuthDataLoginOption *option = [LCUserAuthDataLoginOption new];
-option.platform = @"weixin";   // 这里指定 unionIdPlatform，使用「weixin」来指代微信平台。
-option.unionId = thirdPartyData[@"unionid"];
-option.isMainAccount = false;
-[currentuser loginWithAuthData:thirdPartyData platformId:@"wxleansupport" options:option callback:^(BOOL succeeded, NSError * _Nullable error) {
-    if (succeeded) {
-            NSLog(@"登录成功");
-        }else{
-            NSLog(@"登录失败：%@",error.localizedFailureReason);
-        }
-}];
-```
-{% endif %}
 
 {% if platform_name === "JavaScript" %}
 ```js
@@ -10188,34 +7602,6 @@ user.logIn(
 ```
 {% endif %}
 
-{% if platform_name === "Android / Java" %}
-```java
-Map<String, Object> thirdPartyData = new HashMap<String, Object>();
-thirdPartyData.put("expires_in", 1384686496);
-thirdPartyData.put("uid", "supportopenid");
-thirdPartyData.put("access_token", "supporttoken");
-thirdPartyData.put("scope", "SCOPE");
-LCUser.loginWithAuthData(thirdPartyData, "wxleansupport", "unionid4a",
-  "weixin",     // 这里指定 unionIdPlatform，使用「weixin」来指代微信平台。
-  false).subscribe(new Observer<LCUser>() {
-    @Override
-    public void onSubscribe(Disposable d) {
-    }
-    @Override
-    public void onNext(LCUser avUser) {
-        System.out.println("登录成功");
-    }
-    @Override
-    public void onError(Throwable e) {
-        System.out.println("登录失败：" + e.getMessage());
-    }
-    @Override
-    public void onComplete() {
-    }
-});
-```
-{% endif %}
-
 {% if platform_name === "Flutter" %}
 ```dart
 Map<String, dynamic> thirdPartyData = {
@@ -10237,8 +7623,6 @@ LCUser currentUser = await LCUser.loginWithAuthDataAndUnionId(
     option: option);
 ```
 {% endif %}
-
-
 
 与「云服务通讯」中的登录过程相比，在「云服务技术支持」这个应用中，我们在登录时只是将 `asMainAccount` 设为了 false。 这时我们看到，本次登录得到的还是 objectId 为 `ThisIsUserA` 的 _User 表记录（同一个账户），同时该账户的 `authData` 属性中发生了变化，多了 `wxleansupport` 的数据，如下：
 
@@ -10286,8 +7670,8 @@ LCUser currentUser = await LCUser.loginWithAuthDataAndUnionId(
 
 本来 `unionIdPlatform` 的取值，应该是开发者可以自行决定的，但是 Javascript SDK 基于易用性的目的，在 `loginWithAuthDataAndUnionId` 之外，还额外提供了两个接口：
 
-- `AV.User.loginWithQQAppWithUnionId`，这里默认使用 `qq` 作为 `unionIdPlatform`。
-- `AV.User.loginWithWeappWithUnionId`，这里默认使用 `weixin` 作为 `unionIdPlatform`。
+- `LC.User.loginWithQQAppWithUnionId`，这里默认使用 `qq` 作为 `unionIdPlatform`。
+- `LC.User.loginWithWeappWithUnionId`，这里默认使用 `weixin` 作为 `unionIdPlatform`。
 
 从我们的统计来看，这两个接口已经被很多开发者接受，在大量线上产品中产生着实际数据。所以为了避免数据在不同平台（例如 Android 和 iOS 应用）间发生冲突，建议大家统一按照 Javascript SDK 的默认值来设置 `unionIdPlatform`，即：
 
@@ -10397,13 +7781,7 @@ objectId | 微信用户 | authData.{platform} | authData._{platform}_unionid
 
 将数据与用户关联需要首先创建一个用户，但有时你不希望强制用户在一开始就进行注册。使用匿名用户，可以让应用不提供注册步骤也能创建用户。下面的代码创建一个新的匿名用户：
 
-{% if platform_name === "Objective-C" %}
-```objc
-[LCUser loginAnonymouslyWithCallback:^(LCUser *user, NSError *error) {
-    // user 是新的匿名用户
-}];
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 AV.User.loginAnonymously().then((user) => {
@@ -10411,18 +7789,7 @@ AV.User.loginAnonymously().then((user) => {
 });
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser.logInAnonymously().subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // user 是新的匿名用户
-    }
-    public void onError(Throwable throwable) {}
-    public void onComplete() {}
-});
-```
-{% endif %}
+
 {% if platform_name === "Flutter" %}
 ```dart
 await LCUser.loginAnonymously();
@@ -10436,24 +7803,6 @@ await LCUser.loginAnonymously();
 - [关联第三方平台](#第三方账户登录)，比如微信
 
 下面的代码为一名匿名用户设置用户名和密码：
-
-{% if platform_name === "Objective-C" %}
-```objc
-// currentUser 是个匿名用户
-LCUser *currentUser = [LCUser currentUser];
-
-user.username = @"Tom";
-user.password = @"cat!@#123";
-
-[user signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-    if (succeeded) {
-        // currentUser 已经转化为普通用户
-    } else {
-        // 注册失败（通常是因为用户名已被使用）
-    }
-}];
-```
-{% endif %}
 
 {% if platform_name === "JavaScript" %}
 ```js
@@ -10471,27 +7820,6 @@ user.signUp().then((user) => {
 ```
 {% endif %}
 
-{% if platform_name === "Android / Java" %}
-```java
-// currentUser 是个匿名用户
-LCUser currentUser = LCUser.getCurrentUser();
-
-currentUser.setUsername("Tom");
-currentUser.setPassword("cat!@#123");
-
-currentUser.signUpInBackground().subscribe(new Observer<LCUser>() {
-    public void onSubscribe(Disposable disposable) {}
-    public void onNext(LCUser user) {
-        // currentUser 已经转化为普通用户
-    }
-    public void onError(Throwable throwable) {
-        // 注册失败（通常是因为用户名已被使用）
-    }
-    public void onComplete() {}
-});
-```
-{% endif %}
-
 {% if platform_name === "Flutter" %}
 ```dart
 LCUser currentUser = await LCUser.loginAnonymously();
@@ -10502,20 +7830,9 @@ await currentUser.signUp();
 ```
 {% endif %}
 
-
-
 下面的代码检查当前用户是否为匿名用户：
 
-{% if platform_name === "Objective-C" %}
-```objc
-LCUser *currentUser = [LCUser currentUser];
-if (currentUser.isAnonymous) {
-    // currentUser 是匿名用户
-} else {
-    // currentUser 不是匿名用户
-}
-```
-{% endif %}
+
 {% if platform_name === "JavaScript" %}
 ```js
 const currentUser = AV.User.current();
@@ -10526,16 +7843,7 @@ if (currentUser.isAnonymous()) {
 }
 ```
 {% endif %}
-{% if platform_name === "Android / Java" %}
-```java
-LCUser currentUser = LCUser.getCurrentUser();
-if (currentUser.isAnonymous()) {
-  // currentUser 是匿名用户
-} else {
-  // currentUser 不是匿名用户
-}
-```
-{% endif %}
+
 {% if platform_name === "Flutter" %}
 ```dart
 LCUser currentUser = await LCUser.getCurrent();
@@ -10558,204 +7866,6 @@ if (currentUser.isAnonymous) {
 {% if platform_name === "Objective-C" or platform_name === "Python" or platform_name === "PHP" or platform_name === "Swift" %}
 ## 子类化
 
-{% if platform_name === "Objective-C" %}
-子类化推荐给进阶的开发者在进行代码重构的时候做参考。你可以用 `LCObject` 访问到所有的数据，用 `objectForKey:` 获取任意字段。在成熟的代码中，子类化有很多优势，包括降低代码量，具有更好的扩展性，和支持自动补全。
-
-子类化是可选的，请对照下面的例子来加深理解：
-
-```objc
-LCObject *student = [LCObject objectWithClassName:@"Student"];
-[student setObject:@"小明" forKey:@"name"];
-[student saveInBackground];
-```
-
-可改写成：
-
-```objc
-Student *student = [Student object];
-student.name = @"小明";
-[student saveInBackground];
-```
-
-这样代码看起来是不是更简洁呢？
-
-### 子类化的实现
-
-要实现子类化，需要下面几个步骤：
-
-1. 导入 `LCObject+Subclass.h`；
-2. 继承 `LCObject` 并实现 `LCSubclassing` 协议；
-3. 实现类方法 `parseClassName`，返回的字符串是原先要传给 `initWithClassName:` 的参数，这样后续就不必再进行类名引用了。如果不实现，默认返回的是类的名字。**请注意：`LCUser` 子类化后必须返回 `_User`**；
-4. 在实例化子类之前调用 `[YourClass registerSubclass]`（**在应用当前生命周期中，只需要调用一次**。可在子类的 `+load` 方法或者 `UIApplication` 的 `-application:didFinishLaunchingWithOptions:` 方法里面调用）。
-
-下面是实现 `Student` 子类化的例子：
-
-```objc
-  // Student.h
-
-  @interface Student : LCObject <LCSubclassing>
-
-  @property(nonatomic,copy) NSString *name;
-
-  @end
-
-
-  // Student.m
-  #import "Student.h"
-
-  @implementation Student
-
-  @dynamic name;
-
-  + (NSString *)parseClassName {
-      return @"Student";
-  }
-
-  @end
-
-
-  // AppDelegate.m
-  #import "Student.h"
-
-  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [Student registerSubclass];
-    [LCApplication setApplicationId:{{appid}}
-                          clientKey:{{appkey}}
-                    serverURLString:"https://please-replace-with-your-customized.domain.com"];
-  }
-```
-
-### 属性
-
-为 `LCObject` 的子类添加自定义的属性和方法，可以更好地将这个类的逻辑封装起来。用 `LCSubclassing` 可以把所有的相关逻辑放在一起，这样不必再使用不同的类来区分业务逻辑和存储转换逻辑了。
-
-`LCObject` 支持动态 synthesizer，就像 `NSManagedObject` 一样。先正常声明一个属性，只是在 `.m` 文件中把 `@synthesize` 变成 `@dynamic`。
-
-请看下面的例子是怎么添加一个「年龄」属性：
-
-```objc
-  // Student.h
-
-  @interface Student : LCObject <LCSubclassing>
-
-  @property int age;
-
-  @end
-
-
-  // Student.m
-  #import "Student.h"
-
-  @implementation Student
-
-  @dynamic age;
-
-  …
-```
-
-这样就可以通过 `student.age = 19` 这样的方式来读写 `age` 字段了，当然也可以写成：
-
-```objc
-[student setAge:19]
-```
-
-**注意：属性名称保持首字母小写**（错误：`student.Age`；正确：`student.age`）。
-
-`NSNumber` 类型的属性可用 `NSNumber` 或者是它的原始数据类型（`int`、`long` 等）来实现。例如，`[student objectForKey:@"age"]` 返回的是 `NSNumber` 类型，而实际被设为 `int` 类型。
-
-你可以根据自己的需求来选择使用哪种类型。原始类型更为易用，而 `NSNumber` 支持 `nil` 值，这可以让结果更清晰易懂。
-
-注意：`LCRelation` 同样可以作为子类化的一个属性来使用，比如：
-
-```objc
-@interface Student : LCUser <LCSubclassing>
-@property(retain) LCRelation *friends;
-  …
-@end
-
-@implementation Student
-@dynamic friends;
-  …
-```
-
-另外，值为 `Pointer` 的实例可用 `LCObject*` 来表示。例如，如果 `Student` 中 `bestFriend` 代表一个指向另一个 `Student` 的键，由于 `Student` 是一个 `LCObject`，因此在表示这个键的值的时候，可以用一个 `LCObject*` 来代替：
-
-```objc
-@interface Student : LCUser <LCSubclassing>
-@property(nonatomic, strong) LCObject *bestFriend;
- …
-@end
-
-@implementation Student
-@dynamic bestFriend;
-  …
-```
-
-提示：当需要更新的时候，最后都要记得加上 `[student save]` 或者对应的后台存储函数进行更新，才会同步至服务器。
-
-如果要使用更复杂的逻辑而不是简单的属性访问，可以这样实现：
-
-```objc
-  @dynamic iconFile;
-
-  - (UIImageView *)iconView {
-    UIImageView *view = [[UIImageView alloc] initWithImage:kPlaceholderImage];
-    view.image = [UIImage imageNamed:self.iconFile];
-    return [view autorelease];
-  }
-
-```
-
-### 针对 LCUser 子类化的特别说明
-
-假如现在已经有一个基于 `LCUser` 的子类，如上面提到的 `Student`：
-
-```objc
-@interface Student : LCUser<LCSubclassing>
-@property NSString *displayName;
-@end
-
-
-@implementation Student
-@dynamic displayName;
-+ (NSString *)parseClassName {
-    return @"_User";
-}
-@end
-```
-
-登录时需要调用 `Student` 的登录方法才能通过 `currentUser` 得到这个子类：
-
-```objc
-[Student logInWithUsernameInBackground:@"USER_NAME" password:@"PASSWORD" block:^(LCUser *user, NSError *error) {
-        Student *student = [Student currentUser];
-        student.displayName = @"YOUR_DISPLAY_NAME";
-    }];
-```
-
-同样需要调用 `[Student registerSubclass];`，确保在其它地方得到的对象是 `Student`，而非 `LCUser`。
-
-### 初始化子类
-
-创建一个子类实例，要使用 `object` 类方法。要创建并关联到已有的对象，请使用 `objectWithObjectId:` 类方法。
-
-### 子类查询
-
-使用类方法 `query` 可以得到这个子类的查询对象。
-
-例如，查询年龄小于 21 岁的学生：
-
-```objc
-  LCQuery *query = [Student query];
-  [query whereKey:@"age" lessThanOrEqualTo:@(21)];
-  [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-    if (!error) {
-      Student *stu1 = [objects objectAtIndex:0];
-      // …
-    }
-  }];
-```
-{% endif %}
 {% if platform_name === "Python" %}
 云服务希望设计成能让人尽快上手并使用。你可以通过 `{{baseObjectName}}.get()` 方法访问所有的数据。但是在很多现有成熟的代码中，子类化能带来更多优点，诸如简洁、可扩展性以及 IDE 提供的代码自动完成的支持等等。子类化不是必须的，你可以将下列代码转化：
 
