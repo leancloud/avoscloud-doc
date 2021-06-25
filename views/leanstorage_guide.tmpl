@@ -10563,7 +10563,7 @@ if (currentUser.isAnonymous) {
 
 子类化是可选的，请对照下面的例子来加深理解：
 
-```
+```objc
 LCObject *student = [LCObject objectWithClassName:@"Student"];
 [student setObject:@"小明" forKey:@"name"];
 [student saveInBackground];
@@ -10571,7 +10571,7 @@ LCObject *student = [LCObject objectWithClassName:@"Student"];
 
 可改写成：
 
-```
+```objc
 Student *student = [Student object];
 student.name = @"小明";
 [student saveInBackground];
@@ -10592,7 +10592,6 @@ student.name = @"小明";
 
 ```objc
   // Student.h
-  #import <AVOSCloud/AVOSCloud.h>
 
   @interface Student : LCObject <LCSubclassing>
 
@@ -10616,13 +10615,13 @@ student.name = @"小明";
 
 
   // AppDelegate.m
-  #import <AVOSCloud/AVOSCloud.h>
   #import "Student.h"
 
-  - (BOOL)application:(UIApplication *)application
-  didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [Student registerSubclass];
-    [AVOSCloud setApplicationId:appid clientKey:appkey];
+    [LCApplication setApplicationId:{{appid}}
+                          clientKey:{{appkey}}
+                    serverURLString:"https://please-replace-with-your-customized.domain.com"];
   }
 ```
 
@@ -10636,9 +10635,8 @@ student.name = @"小明";
 
 ```objc
   // Student.h
-  #import <AVOSCloud/AVOSCloud.h>
 
-  @interface Student : LCObject <AVSubclassing>
+  @interface Student : LCObject <LCSubclassing>
 
   @property int age;
 
@@ -10667,11 +10665,11 @@ student.name = @"小明";
 
 你可以根据自己的需求来选择使用哪种类型。原始类型更为易用，而 `NSNumber` 支持 `nil` 值，这可以让结果更清晰易懂。
 
-注意：`AVRelation` 同样可以作为子类化的一个属性来使用，比如：
+注意：`LCRelation` 同样可以作为子类化的一个属性来使用，比如：
 
 ```objc
-@interface Student : LCUser <AVSubclassing>
-@property(retain) AVRelation *friends;
+@interface Student : LCUser <LCSubclassing>
+@property(retain) LCRelation *friends;
   …
 @end
 
@@ -10714,7 +10712,7 @@ student.name = @"小明";
 
 ```objc
 @interface Student : LCUser<LCSubclassing>
-@property (retain) NSString *displayName;
+@property NSString *displayName;
 @end
 
 
@@ -11031,6 +11029,34 @@ student.name = LCString("小明")
 assert(student.save().isSuccess)
 ```
 {% endif %}
+{% endif %}
+
+{% if platform_name === "Swift" %}
+
+## 多线程安全
+
+SDK 提供了一个便利的选项，可以确保 `LCObject` 的属性的存取操作在多线程环境中是安全的，该选项默认为关闭，开启示例如下：
+
+```swift
+var config = LCApplication.Configuration()
+config.isObjectRawDataAtomic = true
+do {
+    try LCApplication.default.set(
+        id: {{appid}},
+        key: {{appkey}},
+        serverURL: "https://please-replace-with-your-customized.domain.com"
+        configuration: config)
+} catch {
+    print(error)
+}
+```
+
+开启该选项后，每个 `LCObject` 实例对象的属性的存取操作都会被加锁。通常来说，锁以及加锁、解锁操作会有一定的开销，是否开启该选项需要开发者根据实际情况衡权利弊后决定。
+
+如果对性能不敏感，同时又不想额外处理数据竞争的情况，可以选择开启该选项。
+
+如果对性能非常敏感，或者程序中不可能出现数据竞争的情况，那么不用开启该选项。
+
 {% endif %}
 
 ## 全文搜索
