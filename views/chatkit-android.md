@@ -160,7 +160,7 @@ public class CustomUserProvider implements LCChatProfileProvider {
 
 1. 通过指定另一个参与者的 clientId 的方式，开启一对一的聊天；<br/>
   此时，通过调用 `intent.putExtra(LCIMConstants.PEER_ID, "peermemberId")` 来传递另一参与者的 clientId。
-2. 通过指定一个已经存在的 AVIMConversation id 的方式，开启单人、多人或者开放式聊天室；<br/>
+2. 通过指定一个已经存在的 LCIMConversation id 的方式，开启单人、多人或者开放式聊天室；<br/>
 此时，通过调用 `LCIMConstants.CONVERSATION_ID, "particularConversationId")` 来传递特定对话 Id。
 
 下面的代码展示了如何通过第一种方式来开启聊天界面：
@@ -220,7 +220,7 @@ LCChatKit.getInstance().open("Tom", new AVIMClientCallback() {
 
 ### 对话列表界面
 
-对话 `AVIMConversation` 是 LeanMessage 封装的用来管理对话中的成员以及发送消息的载体，不论是群聊还是单聊都是在一个对话当中；而对话列表可以作为聊天应用默认的首页显示出来，主流的社交聊天软件，例如微信，就是把最近的对话列表作为登录后的首页。
+对话 `LCIMConversation` 是 LeanMessage 封装的用来管理对话中的成员以及发送消息的载体，不论是群聊还是单聊都是在一个对话当中；而对话列表可以作为聊天应用默认的首页显示出来，主流的社交聊天软件，例如微信，就是把最近的对话列表作为登录后的首页。
 
 因此，我们也提供了对话列表 `LCIMConversationListFragment` 页面供开发者使用，在 Demo 项目中的 `MainActivity` 中的 `initTabLayout` 方法中演示了如何引入对话列表页面：
 

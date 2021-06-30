@@ -1,21 +1,19 @@
 {% import "views/_helper.njk" as docs %}
-{% import "views/_im.njk" as im %}
 
 {{ docs.defaultLang('js') }}
 
-# 四，详解消息 hook 与系统对话，打造自己的聊天机器人
+# 四，详解消息 hook 与系统对话
 
 ## 本章导读
 
-在前一章 [安全与签名、黑名单和权限管理、玩转聊天室和临时对话](realtime-guide-senior.html) 中，我们解释了一些第三方鉴权以及成员权限设置方面的问题，在这里我们会更进一步，给大家说明：
+在前一篇《安全与签名、黑名单和权限管理、玩转聊天室和临时对话》中，我们解释了一些第三方鉴权以及成员权限设置方面的问题，在这里我们会更进一步，给大家说明：
 
 - 即时通讯的消息 Hook 机制
 - 系统对话的使用方法
-- 如何结合消息 Hook 与系统对话来实现一个聊天机器人
 
 ## 万能的 Hook 机制
 
-完全开放的架构，支持强大的业务扩展能力，是 LeanCloud 即时通讯服务的特色之一，这种优势的体现就是这里将要给大家介绍的「Hook 机制」。
+完全开放的架构，支持强大的业务扩展能力，是即时通讯服务的特色之一，这种优势的体现就是这里将要给大家介绍的「Hook 机制」。
 
 ### Hook 与即时通讯服务的关系
 
@@ -23,7 +21,7 @@ Hook 也可以称为「钩子」，是一种特殊的消息处理机制，与 Wi
 
 以 **_messageRecieved** Hook 为例，它在消息送达服务器后会被调用，在 Hook 内可以捕获消息内容、消息发送者、消息接收者等信息，这些信息均能在 Hook 内做修改并将修改后的值转交回服务器，服务器会使用修改后的消息继续完成消息投递工作。最终收消息用户收到的会是被 Hook 修改过后的消息，而不再是最初送达服务器的原始消息。Hook 也可以选择拒绝消息发送，服务器会在给客户端回复消息被 Hook 拒绝后丢弃消息不再完成后续消息处理及转发流程。
 
-**需要注意的是，默认情况下如果 Hook 调用失败，例如超时、返回状态码非 200 的结果等，服务器会忽略 Hook 的错误继续处理原始请求**。如果您需要改变这个行为，可以在**控制台 > 消息 > 即时通讯 > 设置 > 即时通讯选项** 内开启 「Hook 调用失败时返回错误给客户端并放弃继续处理请求」。开启后如果 Hook 调用失败，服务器会返回错误信息给客户端告知 Hook 调用错误，并拒绝继续处理请求。
+**需要注意的是，默认情况下如果 Hook 调用失败，例如超时、返回状态码非 200 的结果等，服务器会忽略 Hook 的错误继续处理原始请求**。如果您需要改变这个行为，可以在**云服务控制台 > 即时通讯 > 设置 > 即时通讯选项** 内开启 「Hook 调用失败时返回错误给客户端并放弃继续处理请求」。开启后如果 Hook 调用失败，服务器会返回错误信息给客户端告知 Hook 调用错误，并拒绝继续处理请求。
 
 ### 消息类 Hook
 
@@ -66,16 +64,11 @@ Hook 也可以称为「钩子」，是一种特殊的消息处理机制，与 Wi
 * **_clientOffline**<br/>
   客户端下线，客户端登出成功或意外下线后调用。
 
-开发者可以利用这两个 Hook 函数，结合 LeanCache 来完成一组客户端实时状态查询的 endpoint，具体可以参考文档[即时通讯中的在线状态查询](realtime-guide-onoff-status.html)。
+开发者可以利用这两个 Hook 函数，结合 LeanCache 来完成一组客户端实时状态查询的 endpoint，具体可以参考文档《即时通讯中的在线状态查询》。
 
 ### Hook 与云引擎的关系
 
-因为 Hook 发生在即时通讯的在线处理环节，而即时通讯服务端每秒钟需要处理的消息和对话事件数量远超大家的想象，出于性能考虑，我们要求开发者使用 [LeanCloud 云引擎](leanengine_overview.html) 来实现 Hook 函数，为此我们也提供了多种服务端 SDK 供大家选择：
-
-- [Node.js 开发指南](leanengine_cloudfunction_guide-node.html)
-- [Python SDK 开发指南](leanengine_cloudfunction_guide-python.html)
-- [Java SDK 开发指南](leanengine_cloudfunction_guide-java.html)
-- [PHP SDK 开发指南](leanengine_cloudfunction_guide-php.html)
+因为 Hook 发生在即时通讯的在线处理环节，而即时通讯服务端每秒钟需要处理的消息和对话事件数量远超大家的想象，出于性能考虑，我们要求开发者使用云引擎来实现 Hook 函数。
 
 即时通讯的云引擎 Hook 要求云引擎部署在云引擎的 **生产环境**，测试环境仅用于开发者手动调用测试。由于缓存的原因，首次部署的云引擎 Hook 需要至多三分钟来正式生效，后续修改会实时生效。
 
@@ -85,13 +78,13 @@ Hook 也可以称为「钩子」，是一种特殊的消息处理机制，与 Wi
 
 #### `_messageReceived`
 
-这个 hook 发生在消息到达 LeanCloud 云端之后。如果是群组消息，我们会解析出所有消息收件人。
+这个 hook 发生在消息到达云端之后。如果是群组消息，我们会解析出所有消息收件人。
 
-你可以通过返回参数控制消息是否需要被丢弃，删除个别收件人，还可以修改消息内容，例如过滤应用中的敏感词（[示例](leanengine_cloudfunction_guide-node.html#onIMMessageReceived)）。返回空对象（`response.success({})`）则会执行系统默认的流程。
+你可以通过返回参数控制消息是否需要被丢弃，删除个别收件人，还可以修改消息内容，例如过滤应用中的敏感词。返回空对象（`response.success({})`）则会执行系统默认的流程。
 
-<div class="callout callout-info">请注意，在这个 hook 的代码实现的任何分支上 **请确保最终会调用 `response.success` 返回结果**，使得消息可以尽快投递给收件人。这个 hook 将 **阻塞发送流程**，因此请尽量减少无谓的代码调用，提升效率。</div>
+请注意，在这个 hook 的代码实现的任何分支上 **请确保最终会调用 `response.success` 返回结果**，使得消息可以尽快投递给收件人。这个 hook 将 **阻塞发送流程**，因此请尽量减少无谓的代码调用，提升效率。
 
-如果你使用了 LeanCloud 默认提供的富媒体消息格式，云引擎参数中的 `content` 接收的是 JSON 结构的字符串形式。关于这个结构的详细说明，请参考 [即时通讯 REST API 指南 · 富媒体消息格式说明](./realtime_v2.html#富媒体消息)。
+如果你使用了默认提供的富媒体消息格式，云引擎参数中的 `content` 接收的是 JSON 结构的字符串形式。关于这个结构的详细说明，请参考《即时通讯 REST API 使用指南》的《富媒体消息格式说明》一节。
 
 参数：
 
@@ -110,7 +103,7 @@ Hook 也可以称为「钩子」，是一种特殊的消息处理机制，与 Wi
 
 参数示例：
 
-```
+```json
 {
   "fromPeer": "Tom",
   "receipt": false,
@@ -367,7 +360,7 @@ public static Dictionary<string, object> OnReceiversOffline(Dictionary<string, o
 
 参数示例：
 
-```
+```json
 {
   "fromPeer": "Tom",
   "receipt": false,
@@ -429,13 +422,13 @@ public static Dictionary<string, object> OnMessageSent(Dictionary<string, object
 
 #### `_messageUpdate`
 
-这个 hook 发生在修改消息请求到达 LeanCloud 云端，LeanCloud 云端正式修改消息之前。
+这个 hook 发生在修改消息请求到达云端，云端正式修改消息之前。
 
 你可以通过返回参数控制修改消息请求是否需要被丢弃，删除个别收件人，或再次修改这个修改消息请求中的消息内容。
 
-<div class="callout callout-info">请注意，在这个 hook 的代码实现的任何分支上 **请确保最终会调用 `response.success` 返回结果**，使得修改消息可以尽快投递给收件人。这个 hook 将 **阻塞发送流程**，因此请尽量减少无谓的代码调用，提升效率。</div>
+请注意，在这个 hook 的代码实现的任何分支上 **请确保最终会调用 `response.success` 返回结果**，使得修改消息可以尽快投递给收件人。这个 hook 将 **阻塞发送流程**，因此请尽量减少无谓的代码调用，提升效率。
 
-如果你使用了 LeanCloud 默认提供的富媒体消息格式，云引擎参数中的 `content` 接收的是 JSON 结构的字符串形式。关于这个结构的详细说明，请参考 [即时通讯 REST API 指南 · 富媒体消息格式说明](./realtime_v2.html#富媒体消息)。
+如果你使用了默认提供的富媒体消息格式，云引擎参数中的 `content` 接收的是 JSON 结构的字符串形式。关于这个结构的详细说明，请参考《即时通讯 REST API 使用指南》的《富媒体消息》一节。
 
 参数：
 
@@ -1088,11 +1081,8 @@ reconnect | 标识客户端本次登录是否是自动重连，无值或值为 0
 
 这个 hook 不会对返回值进行检查。
 
-{% if platformName === ".NET" %}
-例如，客户端上线后输出用户信息：
-{% else %}
+
 例如，客户端上线后更新 LeanCache，供查询客户端的实时在线状态：
-{% endif %}
 
 ```js
 AV.Cloud.onIMClientOnline((request) => {
@@ -1120,6 +1110,7 @@ public static void onClientOnline(Map<String, Object> params) {
 }
 ```
 ```cs
+// 注意，C# 代码示例中没有更新 LeanCache，仅仅输出了用户状态
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ClientOnline)]
 public static void OnClientOnline(Dictionary<string, object> parameters) {
     Console.WriteLine($"{parameters["peerId"]} online.");
@@ -1158,11 +1149,7 @@ errorMsg | 导致连接断开的错误信息，可选
 
 这个 hook 不会对返回值进行检查。
 
-{% if platformName === ".NET" %}
 例如，客户端下线后更新 LeanCache，供查询客户端的实时在线状态：
-{% else %}
-例如，客户端下线后输出用户信息：
-{% endif %}
 
 ```js
 AV.Cloud.onIMClientOffline((request) => {
@@ -1190,25 +1177,25 @@ public static void onClientOffline(Map<String, Object> params) {
 }
 ```
 ```cs
+// 注意，C# 代码示例中没有更新 LeanCache，仅仅输出了用户状态
 [LCEngineRealtimeHook(LCEngineRealtimeHookType.ClientOffline)]
 public static void OnClientOffline(Dictionary<string, object> parameters) {
     Console.WriteLine($"{parameters["peerId"]} offline");
 }
 ```
 
-[即时通讯中的在线状态查询](realtime-guide-onoff-status.html) 提供了完整的 Node.js 示例（包括 LeanCache 连接，久未上线的客户端清理，配套的返回在线状态的云函数，以及如何在客户端调用），可以参考。
+《即时通讯中的在线状态查询》提供了完整的 Node.js 示例（包括 LeanCache 连接，久未上线的客户端清理，配套的返回在线状态的云函数，以及如何在客户端调用），可以参考。
 
 ## 「系统对话」的使用
 
-系统对话可以用于实现机器人自动回复、公众号、服务账号等功能。在我们的 [官方聊天 Demo](http://leancloud.github.io/leanmessage-demo/) 中就有一个使用系统对话 hook 实现的机器人 MathBot，它能计算用户发送来的数学表达式并返回结果，[其服务端源码](https://github.com/leancloud/leanmessage-demo/tree/master/server) 可以从 GitHub 上获取。
+系统对话可以用于实现机器人自动回复、公众号、服务账号等功能。在我们的 [官方聊天 Demo](https://leancloud.github.io/leanmessage-demo/) 中就有一个使用系统对话 hook 实现的机器人 MathBot，它能计算用户发送来的数学表达式并返回结果，[其服务端源码](https://github.com/leancloud/leanmessage-demo/tree/master/server) 可以从 GitHub 上获取。
 
 ### 系统对话的创建
 
-系统对话也是对话的一种，创建后也是在 `_Conversation` 表中增加一条记录，只是该记录 `sys` 列的值为 `true`，从而与普通会话进行区别。具体创建方法请参考 [REST API 创建服务号](realtime_rest_api_v2.html#创建服务号)。
-
+系统对话也是对话的一种，创建后也是在 `_Conversation` 表中增加一条记录，只是该记录 `sys` 列的值为 `true`，从而与普通会话进行区别。具体创建方法请参考《即时通讯 REST API 使用指南》的《创建服务号》一节。
 ### 系统对话消息的发送
 
-系统对话给用户发消息请参考：[REST API · 给任意用户单独发消息](realtime_rest_api_v2.html#给任意用户单独发消息)。用户给系统对话发送消息跟用户给普通对话发消息方法一致。
+系统对话给用户发消息请参考《即时通讯 REST API 使用指南》的《给任意用户单独发消息》一节。用户给系统对话发送消息跟用户给普通对话发消息方法一致。
 
 您还可以利用系统对话发送广播消息给全部用户。相比遍历所有用户 ID 逐个发送，广播消息只需要调用一次 REST API。广播消息具有以下特征：
 
@@ -1217,11 +1204,11 @@ public static void OnClientOffline(Dictionary<string, object> parameters) {
 * 广播消息具有实效性，可以设置过期时间；过期的消息不会作为离线消息发送给用户，不过仍然可以在历史消息中获取到
 * 新用户第一次登录后，会收到最近一条未过期的系统广播消息
 
-除此以外广播消息与普通消息的处理完全一致。广播消息的发送可以参考 [广播消息 REST API](./realtime_rest_api_v2.html#全局广播)。
+除此以外广播消息与普通消息的处理完全一致。广播消息的发送可以参考《即时通讯 REST API 使用指南》的《全局广播》一节。
 
 ### 获取系统对话消息记录
 
-获取系统对话给用户发送的消息记录请参考：[查询服务号给某用户发的消息](realtime_rest_api_v2.html#查询服务号给某用户发的消息)。
+获取系统对话给用户发送的消息记录请参考：《即时通讯 REST API 使用指南》的《查询服务号给某用户发的消息》一节。
 
 获取用户给系统对话发送的消息记录有以下两种方式实现：
 
@@ -1247,7 +1234,7 @@ public static void OnClientOffline(Dictionary<string, object> parameters) {
 
 #### Web Hook
 
-需要开发者自行在 **控制台 > 消息 > 即时通讯 > 设置 > 系统对话消息回调设置** 定义，来实时接收用户发给系统对话的消息，消息的数据结构与上文所述的 `_SysMessage` 一致。
+需要开发者自行在 **云服务控制台 > 即时通讯 > 设置 > 系统对话消息回调设置** 定义，来实时接收用户发给系统对话的消息，消息的数据结构与上文所述的 `_SysMessage` 一致。
 
 当有用户向系统对话发送消息时，我们会通过 HTTP POST 请求将 JSON 格式的数据发送到用户设置的 Web Hook 上。请注意，我们调用 Web Hook 时并不是一次调用只发送一条消息，而是会以批量的形式将消息发送过去。从下面的发送消息格式中能看到，JSON 的最外层是个 `Array`。
 
@@ -1280,18 +1267,12 @@ public static void OnClientOffline(Dictionary<string, object> parameters) {
 ]
 ```
 
-## 打造自己的聊天机器人
-
-![comingsoon](images/comingsoon.jpg)
-
-> 这部分内容我们还在准备中，敬请期待。
-
 ## 即时通讯开发指南一览
 
-[服务总览](realtime_v2.html)
+《服务总览》
 
-[一，从简单的单聊、群聊、收发图文消息开始](realtime-guide-beginner.html)
+《一，从简单的单聊、群聊、收发图文消息开始》
 
-[二，消息收发的更多方式，离线推送与消息同步，多设备登录](realtime-guide-intermediate.html)
+《二，消息收发的更多方式，离线推送与消息同步，多设备登录》
 
-[三，安全与签名、黑名单和权限管理、玩转直播聊天室和临时对话](realtime-guide-senior.html)
+《三，安全与签名、黑名单和权限管理、玩转直播聊天室和临时对话》

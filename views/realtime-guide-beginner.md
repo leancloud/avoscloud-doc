@@ -2635,7 +2635,7 @@ jerry.onMessage = ({
 
 {{ docs.langSpecStart('cs') }}
 
-| `AVIMConversation` 属性名 | `_Conversation` 字段 | 含义 |
+| `LCIMConversation` 属性名 | `_Conversation` 字段 | 含义 |
 | --- | --- | --- |
 | `CurrentClient`         | N/A                | 对话所属的 `AVIMClient` 对象 |
 | `ConversationId`        | `objectId`         | 全局唯一的 ID                                    |
@@ -3233,7 +3233,7 @@ try {
 
 {{ docs.langSpecStart('cs') }}
 
-| 逻辑比较 | `AVIMConversationQuery` 方法 |
+| 逻辑比较 | `LCIMConversationQuery` 方法 |
 | --- | --- |
 | 等于     | `WhereEqualTo`               |
 | 不等于   | `WhereNotEqualsTo`           |
@@ -4457,4 +4457,4 @@ func client(_ client: IMClient, event: IMClientEvent) {
 
 [三，安全与签名、黑名单和权限管理、玩转直播聊天室和临时对话](realtime-guide-senior.html)
 
-[四，详解消息 hook 与系统对话，打造自己的聊天机器人](realtime-guide-systemconv.html)
+[四，详解消息 hook 与系统对话](realtime-guide-systemconv.html)
