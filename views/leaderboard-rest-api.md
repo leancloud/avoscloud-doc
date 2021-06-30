@@ -29,8 +29,8 @@ Key|Value|含义|来源
 
 * `statisticName`：排行榜名称。
 * `uid`：user 的 objectId。
-* `objectId`：在 `memberType` 中填入的 class 表中某个对象的 `objectId`。
-* `entityId`：自行设定的 entity id
+* `objectId`：在 `memberType` 中填入的 class 中某个对象的 `objectId`。
+* `entityId`：自行设定的 entity id。
 
 ## 管理排行榜
 
@@ -40,7 +40,7 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
-  -d '{"statisticName": "world", "memberType":"_User","order": "descending","updateStrategy": "better", "versionChangeInterval": "month"}' \
+  -d '{"statisticName": "world", "memberType": "_User", "order": "descending", "updateStrategy": "better", "versionChangeInterval": "month"}' \
   https://{{host}}/1.1/leaderboard/leaderboards
 ```
 | 参数        | 约束   | 说明                                   |
@@ -61,7 +61,7 @@ curl -X POST \
 {
   "objectId": "5b62c15a9f54540062427acc",
   "statisticName": "world",
-  "memberType":"_User",
+  "memberType": "_User",
   "versionChangeInterval": "month",
   "order": "descending",
   "updateStrategy": "better",
@@ -96,7 +96,7 @@ curl -X GET \
 {
   "objectId": "5b0b97cf06f4fd0abc0abe35",
   "statisticName": "world",
-  "memberType":"_User",
+  "memberType": "_User",
   "order": "descending",
   "updateStrategy": "better",
   "version": 5,
@@ -226,7 +226,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "X-LC-Session: <sessionToken>" \
   -H "Content-Type: application/json" \
-  -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world","statisticValue": 91}]' \
+  -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world", "statisticValue": 91}]' \
   https://{{host}}/1.1/leaderboard/users/self/statistics
 ```
 
@@ -237,7 +237,7 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
-  -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world","statisticValue": 91}]' \
+  -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world", "statisticValue": 91}]' \
   https://{{host}}/1.1/leaderboard/users/<uid>/statistics
 ```
 
@@ -379,6 +379,87 @@ curl -X GET \
   ]
 }
 ```
+
+#### 查询一组 user 的成绩
+
+通过这个接口可以一次性拉取多个 user 的成绩，最多不超过 200 个。在请求中，需要在 body 中传入 user 的 `objectId` 的 Array。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -d '["60d950629be318a249000001", "60d950629be318a249000000"]'
+  https://{{host}}/1.1/leaderboard/users/statistics/<statisticName>
+```
+
+返回示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 1,
+      "version": 0,
+      "user": {
+        "__type": "Pointer",
+        "className": "_User",
+        "objectId": "60d950629be318a249000001"
+      }
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 2,
+      "version": 0,
+      "user": {
+        "__type": "Pointer",
+        "className": "_User",
+        "objectId": "60d950629be318a249000000"
+      }
+    }
+  ]
+}
+```
+
+如果你需要获得用户的其他信息，例如 `username`，可以在请求 url 中指定 `selectUserKeys` 来获取。如果用户的其他信息中有 pointer 字段，可以在请求 url 中指定 `includeUser` 来获取 pointer 字段的更详细的信息。这两个参数需要用户登录或使用 masterKey 权限，否则会报权限错误。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -d '["60d950629be318a249000001", "60d950629be318a249000000"]'
+  https://{{host}}/1.1/leaderboard/users/statistics/<statisticName>?selectUserKeys=username,avatar&includeUser=avatar
+```
+
+返回示例
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 1,
+      "version": 0,
+      "user": {
+        "__type": "Pointer",
+        "className": "_User",
+        "username": "user_1",
+        "avatar": {
+          "bucket": "test_files",
+          "provider": "leancloud",
+          "name": "user_1.jpg",
+          "url": "https://example.com/user_1.jpg",
+          "objectId": "60dbec5a9be318df3c000002",
+          "__type": "File"
+        },
+        "objectId": "60d950629be318a249000001"
+      }
+    },
+    {...}
+  ]
+}
+```
+
 
 #### 删除成绩
 
@@ -588,6 +669,90 @@ curl -X GET \
 }
 ```
 
+
+
+#### 查询一组 object 的成绩
+
+通过这个接口可以一次性拉取多个 object 的成绩，最多不超过 200 个。在请求中，需要在 body 中传入 object 的 `objectId` 的 Array。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -d '["60d950629be318a249000001", "60d950629be318a249000000"]'
+  https://{{host}}/1.1/leaderboard/objects/statistics/<statisticName>
+```
+
+返回示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 1,
+      "version": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "objectId": "60d950629be318a249000001"
+      }
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 2,
+      "version": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "objectId": "60d950629be318a249000000"
+      }
+    }
+  ]
+}
+```
+
+你可以在请求 url 中用 `selectObjectKeys` 来指定一同返回 object 在数据存储中的字段数据，多个字段用英文逗号 `,` 隔开，能否返回数据受 acl 限制。如果 object 的某个字段属性是 pointer 类型，可以使用 `includeObject` 来获取该 pointer 字段的数据，多个字段用英文逗号 `,` 隔开。
+
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -d '["60d950629be318a249000001"]'
+  https://{{host}}/1.1/leaderboard/objects/statistics/<statisticName>?selectObjectKeys=name,avatar&includeObject=avatar
+```
+
+返回示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 1,
+      "version": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "name": "sword_1",
+        "avatar": {
+          "bucket": "test_files",
+          "provider": "leancloud",
+          "name": "user_1.jpg",
+          "url": "https://example.com/user_1.jpg",
+          "objectId": "60dbec5a9be318df3c000002",
+          "__type": "File"
+        },
+        "objectId": "60d950629be318a249000001",
+      }
+    },
+    {...}
+  ]
+}
+```
+
+
 #### 删除成绩
 
 可以使用该接口删除该 object 的成绩以及在榜单中的排名（仅删除当前排行榜的成绩，不能删除历史版本的成绩）。只能使用 master key 来删除某个 object 的成绩：
@@ -622,7 +787,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world","statisticValue": 91}]' \
-  https://{{host}}/1.1/leaderboard/entities/<id>/statistics
+  https://{{host}}/1.1/leaderboard/entities/<entityId>/statistics
 ```
 
 返回的数据是服务端当前使用的分数：
@@ -655,7 +820,7 @@ curl -X POST \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
   -d '[{"statisticName": "wins", "statisticValue": 10}]' \
-  https://{{host}}/1.1/leaderboard/entities/<id>/statistics?overwrite=1
+  https://{{host}}/1.1/leaderboard/entities/<entityId>/statistics?overwrite=1
 ```
 
 返回的数据是当前服务端使用的分数：
@@ -682,7 +847,7 @@ curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
   --data-urlencode 'statistics=wins,world' \
-  https://{{host}}/1.1/leaderboard/entities/<id>/statistics
+  https://{{host}}/1.1/leaderboard/entities/<entityId>/statistics
 ```
 
 返回示例：
@@ -706,16 +871,49 @@ curl -X GET \
 }
 ```
 
+#### 查询一组 entity 的成绩
+
+通过这个接口可以一次性拉取多个 entitiy 的成绩，最多不超过 200 个。在请求中，需要在 body 中传入 entity 的 `id` 的 Array。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -d '["1234567890ab", "0123456789ab"]'
+  https://{{host}}/1.1/leaderboard/entities/statistics/<statisticName>
+```
+
+返回示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 1,
+      "version": 0,
+      "entity": "1234567890ab"
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 2,
+      "version": 0,
+      "entity": "0123456789ab"
+    }
+  ]
+}
+```
+
 #### 删除成绩
 
-可以使用该接口删除该 object 的成绩以及在榜单中的排名（仅删除当前排行榜的成绩，不能删除历史版本的成绩）。只能使用 master key 来删除某个 object 的成绩：
+可以使用该接口删除该 entity 的成绩以及在榜单中的排名（仅删除当前排行榜的成绩，不能删除历史版本的成绩）。只能使用 master key 来删除某个 entity 的成绩：
 
 ```
 curl -X DELETE \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   --data-urlencode 'statistics=wins,world' \
-  https://{{host}}/1.1/leaderboard/entities/<id>/statistics
+  https://{{host}}/1.1/leaderboard/entities/<entityId>/statistics
 ```
 
 成功返回空对象：
@@ -742,7 +940,7 @@ curl -X GET \
   --data-urlencode 'includeUser=username,avatar_url' \
   --data-urlencode 'includeStatistics=wins' \
   --data-urlencode 'version=1' \
-  https://{{host}}/1.1/leaderboard/leaderboards/users/<statisticName>/ranks
+  https://{{host}}/1.1/leaderboard/leaderboards/user/<statisticName>/ranks
 ```
 
 | 参数        | 约束   | 说明                                   |
@@ -797,7 +995,7 @@ curl -X GET \
   --data-urlencode 'includeUser=username,avatar_url' \
   --data-urlencode 'includeStatistics=wins' \
   --data-urlencode 'version=1' \
-  https://{{host}}/1.1/leaderboard/leaderboards/users/<statisticName>/ranks/<uid>
+  https://{{host}}/1.1/leaderboard/leaderboards/user/<statisticName>/ranks/<uid>
 ```
 | 参数        | 约束   | 说明                                   |
 | --------- | ---- | ---------------------------------------- |
@@ -864,7 +1062,7 @@ curl -X GET \
   --data-urlencode 'includeObject=avatar' \
   --data-urlencode 'version=1' \
   --data-urlencode 'count=1' \
-  https://{{host}}/1.1/leaderboard/leaderboards/objects/<statisticName>/ranks
+  https://{{host}}/1.1/leaderboard/leaderboards/object/<statisticName>/ranks
 ```
 
 | 参数        | 约束   | 说明                                   |
@@ -928,7 +1126,7 @@ curl -X GET \
   --data-urlencode 'includeObject=avatar' \
   --data-urlencode 'version=1' \
   --data-urlencode 'count=1' \
-  https://{{host}}/1.1/leaderboard/leaderboards/objects/<statisticName>/ranks/<objectId>
+  https://{{host}}/1.1/leaderboard/leaderboards/object/<statisticName>/ranks/<objectId>
 ```
 | 参数        | 约束   | 说明                                   |
 | --------- | ---- | ---------------------------------------- |
@@ -995,7 +1193,7 @@ curl -X GET \
   --data-urlencode 'maxResultsCount=2' \
   --data-urlencode 'version=1' \
   --data-urlencode 'count=1' \
-  https://{{host}}/1.1/leaderboard/leaderboards/objects/<statisticName>/ranks
+  https://{{host}}/1.1/leaderboard/leaderboards/entity/<statisticName>/ranks
 ```
 
 | 参数        | 约束   | 说明                                   |
@@ -1042,7 +1240,7 @@ curl -X GET \
   --data-urlencode 'maxResultsCount=2' \
   --data-urlencode 'version=1' \
   --data-urlencode 'count=1' \
-  https://{{host}}/1.1/leaderboard/leaderboards/entities/<statisticName>/ranks/<id>
+  https://{{host}}/1.1/leaderboard/leaderboards/entity/<statisticName>/ranks/<id>
 ```
 | 参数        | 约束   | 说明                                   |
 | --------- | ---- | ---------------------------------------- |
