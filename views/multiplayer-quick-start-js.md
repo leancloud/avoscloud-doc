@@ -290,7 +290,7 @@ onLoad() {
   if (cc.sys.platform === cc.sys.ANDROID) {
     const caPath = cc.url.raw('resources/cacert.pem');
     setAdapters({
-      WebSocket: (url) => new WebSocket(url, null, caPath)
+      WebSocket: (url) => new WebSocket(url, 'protobuf.1', caPath)
     });
   }
 }
