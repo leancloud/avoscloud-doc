@@ -188,11 +188,12 @@ public static object OnMessageReceived(Dictionary<string, object> parameters) {
 
 而实际上启用上述代码之后，一条消息的时序图如下：
 
-```seq
-SDK->RTM: 1. 发送消息
-RTM-->Engine: 2. 触发 _messageReceived hook 调用
-Engine-->RTM: 3. 返回 hook 函数处理结果
-RTM-->SDK: 4. 将 hook 函数处理结果发送给接收方
+```mermaid
+sequenceDiagram
+SDK->>RTM: 1. 发送消息
+RTM-->>Engine: 2. 触发 _messageReceived hook 调用
+Engine-->>RTM: 3. 返回 hook 函数处理结果
+RTM-->>SDK: 4. 将 hook 函数处理结果发送给接收方
 ```
 
 - 上图假设的是对话所有成员都在线，而如果有成员不在线，流程有些不一样，下一节会做介绍。
