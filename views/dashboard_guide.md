@@ -620,7 +620,7 @@ JSON 格式要求是一个符合我们 REST 格式的 JSON 对象数组：
 如有覆盖数据的需要，建议您通过控制台或 REST API 直接更新相应数据。
 如果客户端不会请求这些数据，或者在导入期间请求不到结果是可以接受的，也可以通过控制台或 REST API 删除相应数据后重新进行导入操作。
 
-注意，通过 LeanCloud 控制台导出的数据为 [JSON Lines] 格式：
+除了上述 JSON 格式外，还支持导入如下 [JSON Lines] 格式的数据：
 
 ```jsonl
 {"updatedAt":"2020-11-04T03:29:17.441Z","ACL":{"*":{"read":true,"write":true}},"objectId":"5cc6abe117b54d7448151efc","createdAt":"2019-04-29T07:46:41.687Z","likes":123}
@@ -629,14 +629,7 @@ JSON 格式要求是一个符合我们 REST 格式的 JSON 对象数组：
 
 [JSON Lines]: https://jsonlines.org/
 
-需要转换一下才能导入：
-
-```
-            {"results": [
-{A}    ->    {A},
-{B}          {B}
-            ]}
-```
+控制台导出的数据即为 JSON Lines 格式，导出文件扩展名为 `.jsonl`。
 
 #### CSV 格式文件
 
