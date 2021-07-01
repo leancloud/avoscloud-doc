@@ -452,7 +452,7 @@ const realtime = new Realtime({
   appId: '{{appid}}',
   appKey: '{{appkey}}',
   // 请将 xxx.example.com 替换为你的应用绑定的自定义 API 域名
-  serverURLs: "https://xxx.example.com",
+  server: "https://xxx.example.com",
 });
 ```
 
@@ -468,7 +468,7 @@ const realtime = new Realtime({
   appId: '{{appid}}',
   appKey: '{{appkey}}',
   // 请将 xxx.example.com 替换为你的应用绑定的自定义 API 域名
-  serverURLs: "https://xxx.example.com",
+  server: "https://xxx.example.com",
 });
 App({
   realtime: realtime,
@@ -509,7 +509,7 @@ const realtime = getApp().realtime;
     appId: '{{appid}}',
     appKey: '{{appkey}}',
     plugins: [TypedMessagesPlugin], // 注册富媒体消息插件
-    serverURLs: "https://xxx.example.com",
+    server: "https://xxx.example.com",
   });
   // 请将 xxx.example.com 替换为你的应用绑定的自定义 API 域名
   ```
