@@ -388,6 +388,7 @@ curl -X GET \
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
   -d '["60d950629be318a249000001", "60d950629be318a249000000"]'
   https://{{host}}/1.1/leaderboard/users/statistics/<statisticName>
 ```
@@ -427,6 +428,7 @@ curl -X POST \
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
   -d '["60d950629be318a249000001", "60d950629be318a249000000"]'
   https://{{host}}/1.1/leaderboard/users/statistics/<statisticName>?selectUserKeys=username,avatar&includeUser=avatar
 ```
@@ -679,6 +681,7 @@ curl -X GET \
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
   -d '["60d950629be318a249000001", "60d950629be318a249000000"]'
   https://{{host}}/1.1/leaderboard/objects/statistics/<statisticName>
 ```
@@ -719,6 +722,7 @@ curl -X POST \
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
   -d '["60d950629be318a249000001"]'
   https://{{host}}/1.1/leaderboard/objects/statistics/<statisticName>?selectObjectKeys=name,avatar&includeObject=avatar
 ```
@@ -879,6 +883,7 @@ curl -X GET \
 curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
   -d '["1234567890ab", "0123456789ab"]'
   https://{{host}}/1.1/leaderboard/entities/statistics/<statisticName>
 ```
