@@ -27,12 +27,12 @@ Key|Value|含义|来源
 
 本文档中请求 url 中需要的填充的变量有：
 
-* statisticName：排行榜名称。
-* uid：user 的 objectId。
+* `statisticName`：排行榜名称。
+* `uid`：user 的 objectId。
+* `objectId`：在 `memberType` 中填入的 class 中某个对象的 `objectId`。
+* `entityId`：自行设定的 entity id。
 
-## 排行榜操作
-
-### 管理排行榜
+## 管理排行榜
 
 #### 创建排行榜
 ```sh
@@ -40,13 +40,14 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
-  -d '{"statisticName": "world","order": "descending","updateStrategy": "better", "versionChangeInterval": "month"}' \
+  -d '{"statisticName": "world", "memberType": "_User", "order": "descending", "updateStrategy": "better", "versionChangeInterval": "month"}' \
   https://{{host}}/1.1/leaderboard/leaderboards
 ```
 | 参数        | 约束   | 说明                                   |
 | --------- | ---- | ---------------------------------------- |
 | statisticName      | 必须   | 排行榜的名称，创建后不可修改。 |
-| order | 可选   | 可选项有 ascending 或 descending，默认为 descending。 |
+| memberType      | 必须   | 排行榜的成员类型，创建后不可修改。可填写 `_Entity`、`_User` 及其他已有的 class 名称。具体区别请参考[排行榜成员](leaderboard.html#排行榜成员)。 |
+| order | 可选   | 排行榜的排序策略，创建后不可修改。可选项有 ascending 或 descending，默认为 descending。 |
 | updateStrategy | 可选   |  可选项有 better、last、sum，默认为 better，具体行为请参考 [更新策略](leaderboard.html#更新策略)。|
 | versionChangeInterval | 可选   |  可选项有 day、week、month、never，默认为 week。 |
 
@@ -60,6 +61,7 @@ curl -X POST \
 {
   "objectId": "5b62c15a9f54540062427acc",
   "statisticName": "world",
+  "memberType": "_User",
   "versionChangeInterval": "month",
   "order": "descending",
   "updateStrategy": "better",
@@ -94,6 +96,7 @@ curl -X GET \
 {
   "objectId": "5b0b97cf06f4fd0abc0abe35",
   "statisticName": "world",
+  "memberType": "_User",
   "order": "descending",
   "updateStrategy": "better",
   "version": 5,
@@ -108,7 +111,7 @@ curl -X GET \
 
 #### 修改排行榜属性
 
-这个接口可以用来修改排行榜的 `updateStrategy` 和 `versionChangeInterval` 属性。可以只更新某一个属性，例如只修改 versionChangeInterval：
+这个接口可以用来修改排行榜的 `updateStrategy` 和 `versionChangeInterval` 属性，其他属性不可修改。可以只更新某一个属性，例如只修改 versionChangeInterval：
 
 ```sh
 curl -X PUT \
@@ -207,13 +210,15 @@ curl -X DELETE \
 {}
 ```
 
-### 用户成绩管理
-#### 更新成绩
+## 成员成绩管理
+
+### user 成绩
+
+#### 更新 user 成绩
+
 更新成绩遵循排行榜的 `updateStrategy` 属性，具体行为请参考 [更新策略](leaderboard.html#更新策略)。
 
-在这个接口中可以一次更新多个排行榜的成绩。
-
-客户端在更新用户成绩时，需要用户先登录，拿到用户的 `sessionToken`，将 `sessionToken` 作为 `X-LC-Session` 的值。例如：
+在这个接口中可以一次更新多个排行榜的成绩。客户端在更新用户成绩时，需要用户先登录，拿到用户的 `sessionToken`，将 `sessionToken` 作为 `X-LC-Session` 的值。例如：
 
 ```sh
 curl -X POST \
@@ -221,7 +226,7 @@ curl -X POST \
   -H "X-LC-Key: {{appkey}}" \
   -H "X-LC-Session: <sessionToken>" \
   -H "Content-Type: application/json" \
-  -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world","statisticValue": 91}]' \
+  -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world", "statisticValue": 91}]' \
   https://{{host}}/1.1/leaderboard/users/self/statistics
 ```
 
@@ -232,7 +237,7 @@ curl -X POST \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{masterkey}},master" \
   -H "Content-Type: application/json" \
-  -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world","statisticValue": 91}]' \
+  -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world", "statisticValue": 91}]' \
   https://{{host}}/1.1/leaderboard/users/<uid>/statistics
 ```
 
@@ -256,7 +261,7 @@ curl -X POST \
 }
 ```
 
-#### 强制更新成绩
+#### 强制更新 user 成绩
 使用这个接口会无视更新策略 better 及 sum，强制使用 last 策略更新用户的成绩。例如你发现某个用户存在作弊行为时，可能需要用到这个接口。
 
 使用服务端 masterKey 超级权限，在 url 中设置 `overwrite = 1` 就可以达到目的。
@@ -277,68 +282,186 @@ curl -X POST \
 ```
 
 
-#### 查询当前用户的成绩
+#### 查询某个用户的成绩
 
-你可以在请求 url 中指定多个 `statistics` 来获得多个排行榜中的成绩，排行榜名称用英文逗号 `,` 隔开，如果不指定将会返回该用户参与的所有排行榜中的成绩。如果你需要获得用户的其他信息，例如 `username`，可以在请求 url 中指定 `includeUser` 来获取。
-
-客户端在查询当前用户成绩时，需要用户先登录，拿到用户的 `sessionToken`，将 `sessionToken` 作为 `X-LC-Session` 的值，例如：
+你可以在请求 url 中指定多个 `statistics` 来获得多个排行榜中的成绩，排行榜名称用英文逗号 `,` 隔开，如果不指定将会返回该用户参与的所有排行榜中的成绩。
 
 ```sh
 curl -X GET \
   -H "X-LC-Id: {{appid}}" \
   -H "X-LC-Key: {{appkey}}" \
-  -H "X-LC-Session: <sessionToken>" \
   --data-urlencode 'statistics=wins,world' \
-  --data-urlencode 'includeUser=username,avatar_url' \
-  https://{{host}}/1.1/leaderboard/users/self/statistics
-```
-
-如果你使用服务端 masterKey 超级权限，可以不传入 `X-LC-Session` 查询用户分数，但是要在请求 url 中指定 `uid`。例如：
-
-```sh
-curl -X GET \
-  -H "X-LC-Id: {{appid}}" \
-  -H "X-LC-Key: {{masterkey}},master" \
-  --data-urlencode 'statistics=wins,world' \
-  --data-urlencode 'includeUser=username,avatar_url' \
   https://{{host}}/1.1/leaderboard/users/<uid>/statistics
 ```
 
-返回值是查询到的所有成绩结果：
+返回结果：
 
 ```json
 {
   "results": [
     {
       "statisticName": "wins",
-      "statisticValue": 10,
+      "statisticValue": 5,
       "version": 0,
       "user": {
         "__type": "Pointer",
         "className": "_User",
-        "updatedAt": "2018-08-01T07:54:19.217Z",
-        "ACL": {
-          "*": {
-            "read": true,
-            "write": true
-          }
-        },
-        "username": "hjiang",
-        "createdAt": "2018-08-01T07:54:19.217Z",
-        "objectId": "5b61672b808ca4006ff41a8d"
+        "objectId": "60d950629be318a249000001"
       }
     },
     {
       "statisticName": "world",
       "statisticValue": 91,
-      "version": 2,
+      "version": 0,
+      "user": {...}
+    }
+  ]
+}
+```
+
+如果你需要获得用户的其他信息，例如 `username`，可以在请求 url 中指定 `selectUserKeys` 来获取。如果用户的其他信息中有 pointer 字段，可以在请求 url 中指定 `includeUser` 来获取 pointer 字段的更详细的信息。这两个参数需要用户登录或使用 masterKey 权限，否则会报权限错误。
+
+通过用户登录，传入 `sessionToken` 获取更多信息：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "X-LC-Session: <sessionToken>" \
+  --data-urlencode 'statistics=world' \
+  --data-urlencode 'selectUserKeys=username,avatar.url' \
+  --data-urlencode 'includeUser=avatar' \
+  https://{{host}}/1.1/leaderboard/users/self/statistics
+```
+
+使用服务端 masterKey 超级权限来获取更多信息。例如：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  --data-urlencode 'statistics=wins' \
+  --data-urlencode 'selectUserKeys=username,avatar.url' \
+  --data-urlencode 'includeUser=avatar' \
+  https://{{host}}/1.1/leaderboard/users/<uid>/statistics
+```
+
+返回结果：
+
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 5,
+      "version": 0,
       "user": {
-      ......
+        "__type": "Pointer",
+        "className": "_User",
+        "username": "xiaoli",
+        "avatar": {
+          "bucket": "test_files",
+          "url": "https://example.com/xiaoli.jpg",
+          "objectId": "60d950629be318a249000000",
+          "__type": "File",
+          "provider": "qiniu"
+        },
+        "objectId": "60d950629be318a249000001"
+      }
+    },
+    {
+      "statisticName": "world",
+      "statisticValue": 91,
+      "version": 0,
+      "user": {...}
+    }
+  ]
+}
+```
+
+#### 查询一组 user 的成绩
+
+通过这个接口可以一次性拉取多个 user 的成绩，最多不超过 200 个。在请求中，需要在 body 中传入 user 的 `objectId` 的 Array。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '["60d950629be318a249000001", "60d950629be318a249000000"]'
+  https://{{host}}/1.1/leaderboard/users/statistics/<statisticName>
+```
+
+返回示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 1,
+      "version": 0,
+      "user": {
+        "__type": "Pointer",
+        "className": "_User",
+        "objectId": "60d950629be318a249000001"
+      }
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 2,
+      "version": 0,
+      "user": {
+        "__type": "Pointer",
+        "className": "_User",
+        "objectId": "60d950629be318a249000000"
       }
     }
   ]
 }
 ```
+
+如果你需要获得用户的其他信息，例如 `username`，可以在请求 url 中指定 `selectUserKeys` 来获取。如果用户的其他信息中有 pointer 字段，可以在请求 url 中指定 `includeUser` 来获取 pointer 字段的更详细的信息。这两个参数需要用户登录或使用 masterKey 权限，否则会报权限错误。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '["60d950629be318a249000001", "60d950629be318a249000000"]'
+  https://{{host}}/1.1/leaderboard/users/statistics/<statisticName>?selectUserKeys=username,avatar&includeUser=avatar
+```
+
+返回示例
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 1,
+      "version": 0,
+      "user": {
+        "__type": "Pointer",
+        "className": "_User",
+        "username": "user_1",
+        "avatar": {
+          "bucket": "test_files",
+          "provider": "leancloud",
+          "name": "user_1.jpg",
+          "url": "https://example.com/user_1.jpg",
+          "objectId": "60dbec5a9be318df3c000002",
+          "__type": "File"
+        },
+        "objectId": "60d950629be318a249000001"
+      }
+    },
+    {...}
+  ]
+}
+```
+
 
 #### 删除成绩
 
@@ -372,7 +495,443 @@ curl -X DELETE \
 ```
 
 
-### 获取排行榜结果
+### object 成绩
+
+#### 更新 object 成绩
+
+更新成绩遵循排行榜的 `updateStrategy` 属性，具体行为请参考 [更新策略](leaderboard.html#更新策略)。
+
+在这个接口中可以一次更新多个排行榜的成绩。**注意 object 的成绩只能使用服务端超级权限 masterKey 更新**。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world","statisticValue": 91}]' \
+  https://{{host}}/1.1/leaderboard/objects/<objectId>/statistics
+```
+
+返回的数据是服务端当前使用的分数：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "version": 0,
+      "statisticValue": 5
+    },
+    {
+      "statisticName": "world",
+      "version": 2,
+      "statisticValue": 91
+    }
+  ]
+}
+```
+
+#### 强制更新 object 成绩
+使用这个接口会无视更新策略 better 及 sum，强制使用 last 策略更新用户的成绩。例如你发现某个用户存在作弊行为时，可能需要用到这个接口。
+
+使用服务端 masterKey 超级权限，在 url 中设置 `overwrite = 1` 就可以达到目的。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '[{"statisticName": "wins", "statisticValue": 10}]' \
+  https://{{host}}/1.1/leaderboard/objects/<objectId>/statistics?overwrite=1
+```
+
+返回的数据是当前服务端使用的分数：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "version": 0,
+      "statisticValue": 10
+    }
+  ]
+}
+```
+
+
+#### 查询某个 object 的成绩
+
+你可以在请求 url 中指定多个 `statistics` 来获得多个排行榜中的成绩，排行榜名称用英文逗号 `,` 隔开，如果不指定将会返回该 object 参与的所有排行榜中的成绩。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  --data-urlencode 'statistics=wins,world' \
+  https://{{host}}/1.1/leaderboard/objects/<objectId>/statistics
+```
+
+返回示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 5,
+      "version": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "objectId": "60d1af149be3180684000002"
+      }
+    },
+    {
+      "statisticName": "world",
+      "statisticValue": 91,
+      "version": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "objectId": "60d1af149be3180684000002"
+      }
+    }
+  ]
+}
+```
+
+你可以在请求中用 `selectObjectKeys` 来指定一同返回 object 在数据存储中的字段数据，多个字段用英文逗号 `,` 隔开，能否返回数据受 acl 限制。例如一并返回 object 在存储中的 `name` 和 `level` 字段属性：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  --data-urlencode 'statistics=wins' \
+  --data-urlencode 'selectObjectKeys=name,level' \
+  https://{{host}}/1.1/leaderboard/objects/<objectId>/statistics
+```
+
+返回值示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 5,
+      "version": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "name": "sword",
+        "level": "10",
+        "objectId": "60d1b38b9be318093f000002"
+      }
+    }
+  ]
+}
+```
+
+如果 object 的某个字段属性是 pointer 类型，可以使用 `includeObject` 来获取该 pointer 字段的数据，多个字段用英文逗号 `,` 隔开。例如获取 `memberType` 是 `Weapon` 的某个 object 的 `avatar` 字段：
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  --data-urlencode 'statistics=wins' \
+  --data-urlencode 'includeObject=avatar' \
+  https://{{host}}/1.1/leaderboard/objects/<objectId>/statistics
+```
+
+返回结果中会包含 `avatar` 的全部信息：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 8.5,
+      "version": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "avatar": {
+          "bucket": "test_files",
+          "provider": "leancloud",
+          "name": "clothes.jpg",
+          "url": "https://example.com/clothes.jpg",
+          "objectId": "60d2ceb09be318244c000004",
+          "__type": "File"
+        },
+        "objectId": "60d2ceb09be318244c000005"
+      }
+    }
+  ]
+}
+```
+
+
+
+#### 查询一组 object 的成绩
+
+通过这个接口可以一次性拉取多个 object 的成绩，最多不超过 200 个。在请求中，需要在 body 中传入 object 的 `objectId` 的 Array。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '["60d950629be318a249000001", "60d950629be318a249000000"]'
+  https://{{host}}/1.1/leaderboard/objects/statistics/<statisticName>
+```
+
+返回示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 1,
+      "version": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "objectId": "60d950629be318a249000001"
+      }
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 2,
+      "version": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "objectId": "60d950629be318a249000000"
+      }
+    }
+  ]
+}
+```
+
+你可以在请求 url 中用 `selectObjectKeys` 来指定一同返回 object 在数据存储中的字段数据，多个字段用英文逗号 `,` 隔开，能否返回数据受 acl 限制。如果 object 的某个字段属性是 pointer 类型，可以使用 `includeObject` 来获取该 pointer 字段的数据，多个字段用英文逗号 `,` 隔开。
+
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '["60d950629be318a249000001"]'
+  https://{{host}}/1.1/leaderboard/objects/statistics/<statisticName>?selectObjectKeys=name,avatar&includeObject=avatar
+```
+
+返回示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 1,
+      "version": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "name": "sword_1",
+        "avatar": {
+          "bucket": "test_files",
+          "provider": "leancloud",
+          "name": "user_1.jpg",
+          "url": "https://example.com/user_1.jpg",
+          "objectId": "60dbec5a9be318df3c000002",
+          "__type": "File"
+        },
+        "objectId": "60d950629be318a249000001",
+      }
+    },
+    {...}
+  ]
+}
+```
+
+
+#### 删除成绩
+
+可以使用该接口删除该 object 的成绩以及在榜单中的排名（仅删除当前排行榜的成绩，不能删除历史版本的成绩）。只能使用 master key 来删除某个 object 的成绩：
+
+```
+curl -X DELETE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  --data-urlencode 'statistics=wins,world' \
+  https://{{host}}/1.1/leaderboard/objects/<objectId>/statistics
+```
+
+成功返回空对象：
+
+```
+{}
+```
+
+
+
+### entity 成绩
+
+#### 更新 entity 成绩
+
+更新成绩遵循排行榜的 `updateStrategy` 属性，具体行为请参考 [更新策略](leaderboard.html#更新策略)。
+
+在这个接口中可以一次更新多个排行榜的成绩。**注意 entity 的成绩只能使用服务端超级权限 masterKey 更新**。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '[{"statisticName": "wins", "statisticValue": 5}, {"statisticName": "world","statisticValue": 91}]' \
+  https://{{host}}/1.1/leaderboard/entities/<entityId>/statistics
+```
+
+返回的数据是服务端当前使用的分数：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "version": 0,
+      "statisticValue": 5
+    },
+    {
+      "statisticName": "world",
+      "version": 2,
+      "statisticValue": 91
+    }
+  ]
+}
+```
+
+#### 强制更新 entity 成绩
+使用这个接口会无视更新策略 better 及 sum，强制使用 last 策略更新 entity 的成绩。例如你发现某个 entity 存在作弊行为时，可能需要用到这个接口。
+
+使用服务端 masterKey 超级权限，在 url 中设置 `overwrite = 1` 就可以达到目的。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  -H "Content-Type: application/json" \
+  -d '[{"statisticName": "wins", "statisticValue": 10}]' \
+  https://{{host}}/1.1/leaderboard/entities/<entityId>/statistics?overwrite=1
+```
+
+返回的数据是当前服务端使用的分数：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "version": 0,
+      "statisticValue": 10
+    }
+  ]
+}
+```
+
+
+#### 查询某个 entity 的成绩
+
+你可以在请求 url 中指定多个 `statistics` 来获得多个排行榜中的成绩，排行榜名称用英文逗号 `,` 隔开，如果不指定将会返回该 entity 参与的所有排行榜中的成绩。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  --data-urlencode 'statistics=wins,world' \
+  https://{{host}}/1.1/leaderboard/entities/<entityId>/statistics
+```
+
+返回示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 5,
+      "version": 0,
+      "entity": "1a2b3c4d"
+    },
+    {
+      "statisticName": "world",
+      "statisticValue": 91,
+      "version": 0,
+      "entity": "1a2b3c4d"
+    }
+  ]
+}
+```
+
+#### 查询一组 entity 的成绩
+
+通过这个接口可以一次性拉取多个 entitiy 的成绩，最多不超过 200 个。在请求中，需要在 body 中传入 entity 的 `id` 的 Array。
+
+```sh
+curl -X POST \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -H "Content-Type: application/json" \
+  -d '["1234567890ab", "0123456789ab"]'
+  https://{{host}}/1.1/leaderboard/entities/statistics/<statisticName>
+```
+
+返回示例：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 1,
+      "version": 0,
+      "entity": "1234567890ab"
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 2,
+      "version": 0,
+      "entity": "0123456789ab"
+    }
+  ]
+}
+```
+
+#### 删除成绩
+
+可以使用该接口删除该 entity 的成绩以及在榜单中的排名（仅删除当前排行榜的成绩，不能删除历史版本的成绩）。只能使用 master key 来删除某个 entity 的成绩：
+
+```
+curl -X DELETE \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{masterkey}},master" \
+  --data-urlencode 'statistics=wins,world' \
+  https://{{host}}/1.1/leaderboard/entities/<entityId>/statistics
+```
+
+成功返回空对象：
+
+```
+{}
+```
+
+
+## 获取排行榜结果
+
+### 获取 user 排行榜结果
+
 #### 获取指定区间的排名
 你可以使用这个接口来获取 Top 排名。
 
@@ -386,7 +945,7 @@ curl -X GET \
   --data-urlencode 'includeUser=username,avatar_url' \
   --data-urlencode 'includeStatistics=wins' \
   --data-urlencode 'version=1' \
-  https://{{host}}/1.1/leaderboard/leaderboards/<statisticName>/ranks
+  https://{{host}}/1.1/leaderboard/leaderboards/user/<statisticName>/ranks
 ```
 
 | 参数        | 约束   | 说明                                   |
@@ -441,7 +1000,7 @@ curl -X GET \
   --data-urlencode 'includeUser=username,avatar_url' \
   --data-urlencode 'includeStatistics=wins' \
   --data-urlencode 'version=1' \
-  https://{{host}}/1.1/leaderboard/leaderboards/<statisticName>/ranks/<uid>
+  https://{{host}}/1.1/leaderboard/leaderboards/user/<statisticName>/ranks/<uid>
 ```
 | 参数        | 约束   | 说明                                   |
 | --------- | ---- | ---------------------------------------- |
@@ -457,28 +1016,269 @@ curl -X GET \
 {
   "results": [
     {
-      "user": {...},
-      "postition": 9,
-    }, {
+      "statisticName": "wins",
+      "statisticValue": 3,
+      "rank": 2,
+      "user": {...}
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 2.5,
+      "rank": 3,
       "user": {
-        "objectId": "5ab9f63910b03545c0f529df",
         "__type": "Pointer",
-        "username": "Superman",
-        "avatar_url": "http://example.com/avatar.png",
-        "className": "User"
-      },
-      "rank": 10,
-      "statisticName": "world",
-      "statisticValue": 42,
-      "statistics": [{
-        "statisticName": "wins",
-        "statisticValue": 12.3,
-        "version": 1,
-      }]
-    }, {
-      "user": {...},
-      "rank": 11,
-    } ...
-  ]
+        "className": "_User",
+        "username": "kate",
+        "avatar": {
+          "bucket": "test_files",
+          "url": "https://example.com/kate.jpg",
+          "objectId": "60d2faa99be3183623000000",
+          "__type": "File",
+          "provider": "qiniu"
+        },
+        "objectId": "60d2faa99be3183623000001"
+      }
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 2,
+      "rank": 4,
+      "user": {...}
+    }
+  ],
+  "count": 5
+}
+```
+
+
+### 获取 object 排行榜结果
+
+#### 获取指定区间的排名
+你可以使用这个接口来获取 Top 排名。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -G \
+  --data-urlencode 'startPosition=0' \
+  --data-urlencode 'maxResultsCount=2' \
+  --data-urlencode 'selectObjectKeys=name,avatar' \
+  --data-urlencode 'includeObject=avatar' \
+  --data-urlencode 'version=1' \
+  --data-urlencode 'count=1' \
+  https://{{host}}/1.1/leaderboard/leaderboards/object/<statisticName>/ranks
+```
+
+| 参数        | 约束   | 说明                                   |
+| --------- | ---- | ---------------------------------------- |
+| startPosition  | 可选  | 排行头部起始位置，默认为 0。 |
+| maxResultsCount | 可选   | 最大返回数量，默认为 20。 |
+| selectObjectKeys | 可选   | 返回 object 在数据存储中的其他字段信息，支持多个字段，用英文逗号 `,` 隔开。返回的数据尊重 acl 权限。 |
+| includeObject | 可选   |  返回 object 在数据存储中的 pointer 字段的详细信息，支持多个字段，用英文逗号 `,` 隔开。 返回的数据尊重 acl 权限。 |
+| includeStatistics | 可选   |  返回该用户在其他排行榜中的成绩，支持用英文逗号 `,` 隔开传入多个值。如果传入了不存在的排行榜名称，将会返回错误。 |
+| version | 可选   | 返回指定 version 的排行结果，默认返回当前版本的数据。可查询的历史版本请参考 [历史数据](leaderboard.html#历史数据)。|
+| count  | 可选  | 值为 1 时返回该排行榜中的成员数量，默认为 0。 |
+
+
+返回 JSON 对象：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 4,
+      "rank": 0,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "name": "sword",
+        "avatar": {
+          "bucket": "test_files",
+          "provider": "leancloud",
+          "name": "sword.jpg",
+          "url": "https://example.com/sword.jpg",
+          "objectId": "60d2f3a39be3183377000002",
+          "__type": "File"
+        },
+        "objectId": "60d2f22f9be318328b000007"
+      }
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 3,
+      "rank": 1,
+      "object": {...}
+    }
+  ],
+  "count": 500
+}
+```
+
+#### 获取 object 及附近的排名
+
+在请求 url 中指定排行榜名称 `statisticName` 及 objectId 就可以获取该 object 及其附近的排名。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -G \
+  --data-urlencode 'startPosition=0' \
+  --data-urlencode 'maxResultsCount=2' \
+  --data-urlencode 'selectObjectKeys=name,avatar' \
+  --data-urlencode 'includeObject=avatar' \
+  --data-urlencode 'version=1' \
+  --data-urlencode 'count=1' \
+  https://{{host}}/1.1/leaderboard/leaderboards/object/<statisticName>/ranks/<objectId>
+```
+| 参数        | 约束   | 说明                                   |
+| --------- | ---- | ---------------------------------------- |
+| startPosition  | 可选  | 排行头部起始位置，默认为 0。 |
+| maxResultsCount | 可选   | 最大返回数量，默认为 20。 |
+| selectObjectKeys | 可选   | 返回 object 在数据存储中的其他字段信息，支持多个字段，用英文逗号 `,` 隔开。返回的数据尊重 acl 权限。 |
+| includeObject | 可选   |  返回 object 在数据存储中的 pointer 字段的详细信息，支持多个字段，用英文逗号 `,` 隔开。 返回的数据尊重 acl 权限。 |
+| includeStatistics | 可选   |  返回该用户在其他排行榜中的成绩，支持用英文逗号 `,` 隔开传入多个值。如果传入了不存在的排行榜名称，将会返回错误。 |
+| version | 可选   | 返回指定 version 的排行结果，默认返回当前版本的数据。可查询的历史版本请参考 [历史数据](leaderboard.html#历史数据)。|
+| count  | 可选  | 值为 1 时返回该排行榜中的成员数量，默认为 0。 |
+
+返回：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 3,
+      "rank": 1,
+      "object": {...}
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 2.5,
+      "rank": 2,
+      "object": {
+        "__type": "Pointer",
+        "className": "Weapon",
+        "avatar": {
+          "bucket": "test_files",
+          "url": "https://example.com/sword.jpg",
+          "objectId": "60d2fcc49be3183747000002",
+          "__type": "File",
+          "provider": "qiniu"
+        },
+        "name": "sword",
+        "objectId": "60d2fcc49be3183747000003"
+      }
+    },
+    {
+      "statisticName": "score_816",
+      "statisticValue": 2,
+      "rank": 3,
+      "object": {...}
+    }
+  ],
+  "count": 5
+}
+```
+
+
+### 获取 entity 排行榜结果
+
+#### 获取指定区间的排名
+你可以使用这个接口来获取 Top 排名。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -G \
+  --data-urlencode 'startPosition=0' \
+  --data-urlencode 'maxResultsCount=2' \
+  --data-urlencode 'version=1' \
+  --data-urlencode 'count=1' \
+  https://{{host}}/1.1/leaderboard/leaderboards/entity/<statisticName>/ranks
+```
+
+| 参数        | 约束   | 说明                                   |
+| --------- | ---- | ---------------------------------------- |
+| startPosition  | 可选  | 排行头部起始位置，默认为 0。 |
+| maxResultsCount | 可选   | 最大返回数量，默认为 20。 |
+| includeStatistics | 可选   |  返回该 entity 在其他排行榜中的成绩，支持用英文逗号 `,` 隔开传入多个值。如果传入了不存在的排行榜名称，将会返回错误。 |
+| version | 可选   | 返回指定 version 的排行结果，默认返回当前版本的数据。可查询的历史版本请参考 [历史数据](leaderboard.html#历史数据)。|
+| count  | 可选  | 值为 1 时返回该排行榜中的成员数量，默认为 0。 |
+
+
+返回 JSON 对象：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 4,
+      "rank": 0,
+      "entity": "1234567890"
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 3,
+      "rank": 1,
+      "entity": "2345678901"
+    }
+  ],
+  "count": 500
+}
+```
+
+#### 获取 entity 及附近的排名
+
+在请求 url 中指定排行榜名称 `statisticName` 及 id 就可以获取该 entity 及其附近的排名。
+
+```sh
+curl -X GET \
+  -H "X-LC-Id: {{appid}}" \
+  -H "X-LC-Key: {{appkey}}" \
+  -G \
+  --data-urlencode 'startPosition=0' \
+  --data-urlencode 'maxResultsCount=2' \
+  --data-urlencode 'version=1' \
+  --data-urlencode 'count=1' \
+  https://{{host}}/1.1/leaderboard/leaderboards/entity/<statisticName>/ranks/<id>
+```
+| 参数        | 约束   | 说明                                   |
+| --------- | ---- | ---------------------------------------- |
+| startPosition  | 可选  | 排行头部起始位置，默认为 0。 |
+| maxResultsCount | 可选   | 最大返回数量，默认为 20。 |
+| includeStatistics | 可选   |  返回该用户在其他排行榜中的成绩，支持用英文逗号 `,` 隔开传入多个值。如果传入了不存在的排行榜名称，将会返回错误。 |
+| version | 可选   | 返回指定 version 的排行结果，默认返回当前版本的数据。可查询的历史版本请参考 [历史数据](leaderboard.html#历史数据)。|
+| count  | 可选  | 值为 1 时返回该排行榜中的成员数量，默认为 0。 |
+
+返回：
+
+```json
+{
+  "results": [
+    {
+      "statisticName": "wins",
+      "statisticValue": 3,
+      "rank": 1,
+      "entity": "1234567890"
+    },
+    {
+      "statisticName": "wins",
+      "statisticValue": 2.5,
+      "rank": 2,
+      "entity": "3456789012"
+    },
+    {
+      "statisticName": "score_816",
+      "statisticValue": 2,
+      "rank": 3,
+      "entity": "2345678901"
+    }
+  ],
+  "count": 5
 }
 ```
