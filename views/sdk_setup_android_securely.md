@@ -144,7 +144,7 @@ android {
 现在支持 Android SDK 新认证方式的云引擎 runtime SDK 版本如下：
 - Python SDK：2.3.0 and later
 - Node.js SDK：3.5.0 and later
-- Java SDK (engine-core)：8.0.1 and later
+- Java SDK (engine-core)：6.1.0 and later
 
 大家更新云引擎代码依赖的版本，通过 `lean publish` 进行发布即可。
 
