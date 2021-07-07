@@ -4570,7 +4570,7 @@ $file->setKey("robots.txt");
 {% if platform_name === "JavaScript" %}
 ```js
 file.save().then((file) => {
-  console.log(`文件保存完成。objectId：${file.id}`);
+  console.log(`文件保存完成。URL：${file.url}`);
 }, (error) => {
   // 保存失败，可能是文件无法被读取，或者上传过程中出现问题
 });
@@ -4584,6 +4584,7 @@ file.save()
 {% if platform_name === "PHP" %}
 ```php
 $file->save();
+print $file->getUrl();
 ```
 {% endif %}
 
@@ -4592,8 +4593,8 @@ $file->save();
 _ = file.save { result in
     switch result {
     case .success:
-        if let value = file.objectId?.value {
-            print("文件保存完成。objectId: \(value)")
+        if let value = file.url?.value {
+            print("文件保存完成。URL: \(value)")
         }
     case .failure(error: let error):
         // 保存失败，可能是文件无法被读取，或者上传过程中出现问题
@@ -4605,7 +4606,7 @@ _ = file.save { result in
 {% if platform_name === "Flutter" %}
 ```dart
 await file.save();
-print(file.objectId);
+print(file.url);
 ```
 {% endif %}
 
