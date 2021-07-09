@@ -170,10 +170,10 @@ className-{{ name }}
 {% macro useIMLangSpec() %}
   {{ useLangSpec('Conversation.id',[
     { lang: "js", value: "Conversation.id" },
-    { lang: "objc", value: "AVIMConversation.conversationId" },
+    { lang: "objc", value: "LCIMConversation.conversationId" },
     { lang: "swift", value: "IMConversation.conversationId"},
-    { lang: "java", value: "AVIMConversation.conversationId"},
-    { lang: "cs", value: "AVIMConversation.conversationId"}
+    { lang: "java", value: "LCIMConversation.conversationId"},
+    { lang: "cs", value: "LCIMConversation.conversationId"}
   ])}}
   {{ useLangSpec('IMClient',[
     { lang: "js", value: "IMClient" },
@@ -184,10 +184,10 @@ className-{{ name }}
   ])}}
   {{ useLangSpec('Conversation',[
     { lang: "js", value: "Conversation" },
-    { lang: "objc", value: "AVIMConversation" },
+    { lang: "objc", value: "LCIMConversation" },
     { lang: "swift", value: "IMConversation" },
-    { lang: "java", value: "AVIMConversation"},
-    { lang: "cs", value: "AVIMConversation"}
+    { lang: "java", value: "LCIMConversation"},
+    { lang: "cs", value: "LCIMConversation"}
   ])}}
   {{ useLangSpec('conversation.send',[
     { lang: "js", value: "conversation.send" },
@@ -200,28 +200,28 @@ className-{{ name }}
     { lang: "js", value: "INVITED" },
     { lang: "objc", value: "AVIMClientDelegate.invitedByClientId" },
     { lang: "swift", value: "IMConversationEvent.joined" },
-    { lang: "java", value: "AVIMConversationEventHandler.onInvited"},
+    { lang: "java", value: "LCIMConversationEventHandler.onInvited"},
     { lang: "cs", value: "AVIMClient.OnInvited"}
   ])}}
   {{ useLangSpec('KICKED',[
     { lang: "js", value: "KICKED" },
     { lang: "objc", value: "AVIMClientDelegate.kickedByClientId" },
     { lang: "swift", value: "IMConversationEvent.left" },
-    { lang: "java", value: "AVIMConversationEventHandler.onKicked"},
+    { lang: "java", value: "LCIMConversationEventHandler.onKicked"},
     { lang: "cs", value: "AVIMClient.OnKicked"}
   ])}}
   {{ useLangSpec('MESSAGE_RECALL',[
     { lang: "js", value: "MESSAGE_RECALL" },
     { lang: "objc", value: "conversation:messageHasBeenUpdated:" },
     { lang: "swift", value: "IMConversationEvent.updated" },
-    { lang: "java", value: "AVIMConversationEventHandler.onMessageRecalled"},
+    { lang: "java", value: "LCIMConversationEventHandler.onMessageRecalled"},
     { lang: "cs", value: "AVIMClient.OnMessageRecalled"}
   ])}}
   {{ useLangSpec('MESSAGE_UPDATE',[
     { lang: "js", value: "MESSAGE_UPDATE" },
     { lang: "objc", value: "conversation:messageHasBeenUpdated:" },
     { lang: "swift", value: "IMConversationEvent.updated" },
-    { lang: "java", value: "AVIMConversationEventHandler.onMessageUpdated"},
+    { lang: "java", value: "LCIMConversationEventHandler.onMessageUpdated"},
     { lang: "cs", value: "AVIMClient.OnMessageUpdated"}
   ])}}
   {{ useLangSpec('MESSAGE',[
