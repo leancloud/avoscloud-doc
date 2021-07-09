@@ -261,7 +261,7 @@
   },
   "_lcfile": {
     "url":      "http://ac-p2bpmgci.clouddn.com/246b8acc-2e12-4a9d-a255-8d17a3059d25", // 必要参数
-    "objId":    "54699d87e4b0a56c64f470a4", // 文件对应的AVFile.objectId
+    "objId":    "54699d87e4b0a56c64f470a4", // 文件对应的 LCFile.objectId
     "metaData": {
       "name":   "IMG_20141223.jpeg",   // 图像的名称
       "format": "png",                 // 图像的格式
@@ -295,7 +295,7 @@
   },
   "_lcfile": {
     "url":        "http://ac-p2bpmgci.clouddn.com/246b8acc-2e12-4a9d-a255-8d17a3059d25",
-    "objId":      "54699d87e4b0a56c64f470a4//文件对应的AVFile.objectId",
+    "objId":      "54699d87e4b0a56c64f470a4", //文件对应的 LCFile.objectId
     "metaData": {
       "name":     "我的滑板鞋.wav",
       "format":   "wav",
@@ -328,7 +328,7 @@
   },
   "_lcfile": {
     "url":        "http://ac-p2bpmgci.clouddn.com/99de0f45-171c-4fdd-82b8-1877b29bdd12",
-    "objId":      "54699d87e4b0a56c64f470a4", //文件对应的 AVFile.objectId
+    "objId":      "54699d87e4b0a56c64f470a4", //文件对应的 LCFile.objectId
     "metaData": {
       "name":     "录制的视频.mov",
       "format":   "avi",
