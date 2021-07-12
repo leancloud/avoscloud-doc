@@ -240,7 +240,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         name: '猜拳游戏',
         desc: 'LeanCloud Client Engine 服务端（Node.js）示例',
         downPath: '',
-        mdPath: 'https://rpsgame.cn-e1.leanapp.cn/',
+        mdPath: 'https://github.com/leancloud/client-engine-nodejs-getting-started',
         type: 'typescript',
         qcloudShow: true
       }]
