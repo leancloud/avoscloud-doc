@@ -225,7 +225,7 @@ angular.module('app').controller('DemoCtrl', ['$http', '$scope', '$rootScope', '
         name: '球球大作战',
         desc: '使用 LeanCloud 实时对战服务 + Cocos Creator 开发的模拟《球球大作战》demo',
         downPath: '',
-        mdPath: 'https://github.com/leancloud/BallBattle',
+        mdPath: 'https://github.com/leancloud/BallBattle-Cocos',
         type: 'node',
         qcloudShow: true
       }],
